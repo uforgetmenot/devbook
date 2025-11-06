@@ -1,0 +1,764 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ZeroMQ 技术笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="zeromq-技术笔记"><a class="header" href="#zeromq-技术笔记">ZeroMQ 技术笔记</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>ZeroMQ（ØMQ）是一个高性能异步消息库，用于分布式或并发应用程序。它提供了一个消息队列，但是和面向消息的中间件不同，ZeroMQ的运行不需要专门的消息代理（broker）。该库被设计成具有熟悉的套接字风格的API。</p>
+<h3 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h3>
+<ul>
+<li>无代理架构（Brokerless）</li>
+<li>多种消息模式</li>
+<li>异步I/O处理</li>
+<li>多语言绑定</li>
+<li>高性能和低延迟</li>
+<li>内置负载均衡</li>
+<li>自动重连机制</li>
+</ul>
+<h2 id="消息模式"><a class="header" href="#消息模式">消息模式</a></h2>
+<h3 id="1-请求-应答模式request-reply"><a class="header" href="#1-请求-应答模式request-reply">1. 请求-应答模式（Request-Reply）</a></h3>
+<pre><code class="language-cpp">// 服务器端
+#include &lt;zmq.hpp&gt;
+#include &lt;string&gt;
+#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;chrono&gt;
+
+class ZMQServer {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket;
+
+public:
+    ZMQServer() : context(1), socket(context, ZMQ_REP) {
+        socket.bind("tcp://*:5555");
+        std::cout &lt;&lt; "Server listening on port 5555..." &lt;&lt; std::endl;
+    }
+
+    void run() {
+        while (true) {
+            zmq::message_t request;
+
+            // 接收请求
+            socket.recv(request, zmq::recv_flags::none);
+            std::string req_str = std::string(static_cast&lt;char*&gt;(request.data()), request.size());
+            std::cout &lt;&lt; "Received: " &lt;&lt; req_str &lt;&lt; std::endl;
+
+            // 模拟处理时间
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+            // 发送应答
+            std::string reply = "Echo: " + req_str;
+            zmq::message_t response(reply.length());
+            memcpy(response.data(), reply.c_str(), reply.length());
+            socket.send(response, zmq::send_flags::none);
+        }
+    }
+};
+
+// 客户端
+class ZMQClient {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket;
+
+public:
+    ZMQClient() : context(1), socket(context, ZMQ_REQ) {
+        socket.connect("tcp://localhost:5555");
+    }
+
+    std::string sendRequest(const std::string&amp; message) {
+        // 发送请求
+        zmq::message_t request(message.length());
+        memcpy(request.data(), message.c_str(), message.length());
+        socket.send(request, zmq::send_flags::none);
+
+        // 接收应答
+        zmq::message_t reply;
+        socket.recv(reply, zmq::recv_flags::none);
+
+        return std::string(static_cast&lt;char*&gt;(reply.data()), reply.size());
+    }
+};
+</code></pre>
+<h3 id="2-发布-订阅模式publish-subscribe"><a class="header" href="#2-发布-订阅模式publish-subscribe">2. 发布-订阅模式（Publish-Subscribe）</a></h3>
+<pre><code class="language-cpp">// 发布者
+class ZMQPublisher {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket;
+
+public:
+    ZMQPublisher() : context(1), socket(context, ZMQ_PUB) {
+        socket.bind("tcp://*:5556");
+        // 给订阅者一些时间连接
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    void publish(const std::string&amp; topic, const std::string&amp; message) {
+        std::string full_message = topic + " " + message;
+        zmq::message_t zmq_message(full_message.length());
+        memcpy(zmq_message.data(), full_message.c_str(), full_message.length());
+        socket.send(zmq_message, zmq::send_flags::none);
+    }
+
+    void run() {
+        int message_count = 0;
+        while (true) {
+            // 发布不同主题的消息
+            publish("weather", "Temperature: " + std::to_string(20 + (message_count % 10)));
+            publish("news", "Breaking news #" + std::to_string(message_count));
+            publish("sports", "Score update: " + std::to_string(message_count));
+
+            message_count++;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+    }
+};
+
+// 订阅者
+class ZMQSubscriber {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket;
+
+public:
+    ZMQSubscriber(const std::string&amp; filter = "") : context(1), socket(context, ZMQ_SUB) {
+        socket.connect("tcp://localhost:5556");
+
+        // 设置订阅过滤器
+        socket.setsockopt(ZMQ_SUBSCRIBE, filter.c_str(), filter.length());
+    }
+
+    void run() {
+        while (true) {
+            zmq::message_t message;
+            socket.recv(message, zmq::recv_flags::none);
+
+            std::string msg_str = std::string(static_cast&lt;char*&gt;(message.data()), message.size());
+            std::cout &lt;&lt; "Received: " &lt;&lt; msg_str &lt;&lt; std::endl;
+        }
+    }
+};
+</code></pre>
+<h3 id="3-推拉模式push-pull"><a class="header" href="#3-推拉模式push-pull">3. 推拉模式（Push-Pull）</a></h3>
+<pre><code class="language-cpp">// 工作分发器（Push）
+class WorkDistributor {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket;
+
+public:
+    WorkDistributor() : context(1), socket(context, ZMQ_PUSH) {
+        socket.bind("tcp://*:5557");
+    }
+
+    void distributeWork() {
+        std::cout &lt;&lt; "Distributing work..." &lt;&lt; std::endl;
+
+        for (int task_id = 0; task_id &lt; 100; ++task_id) {
+            // 创建工作任务
+            std::string work = "Task " + std::to_string(task_id);
+            zmq::message_t message(work.length());
+            memcpy(message.data(), work.c_str(), work.length());
+
+            socket.send(message, zmq::send_flags::none);
+            std::cout &lt;&lt; "Sent: " &lt;&lt; work &lt;&lt; std::endl;
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+    }
+};
+
+// 工作者（Pull）
+class Worker {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket;
+    int worker_id;
+
+public:
+    Worker(int id) : context(1), socket(context, ZMQ_PULL), worker_id(id) {
+        socket.connect("tcp://localhost:5557");
+    }
+
+    void work() {
+        while (true) {
+            zmq::message_t message;
+            socket.recv(message, zmq::recv_flags::none);
+
+            std::string work = std::string(static_cast&lt;char*&gt;(message.data()), message.size());
+            std::cout &lt;&lt; "Worker " &lt;&lt; worker_id &lt;&lt; " processing: " &lt;&lt; work &lt;&lt; std::endl;
+
+            // 模拟工作时间
+            std::this_thread::sleep_for(std::chrono::milliseconds(100 + rand() % 200));
+
+            std::cout &lt;&lt; "Worker " &lt;&lt; worker_id &lt;&lt; " completed: " &lt;&lt; work &lt;&lt; std::endl;
+        }
+    }
+};
+</code></pre>
+<h2 id="高级特性"><a class="header" href="#高级特性">高级特性</a></h2>
+<h3 id="1-多部分消息"><a class="header" href="#1-多部分消息">1. 多部分消息</a></h3>
+<pre><code class="language-cpp">class MultipartMessage {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket;
+
+public:
+    MultipartMessage() : context(1), socket(context, ZMQ_REQ) {
+        socket.connect("tcp://localhost:5555");
+    }
+
+    void sendMultipartMessage() {
+        // 发送多部分消息
+        zmq::message_t header("HEADER");
+        zmq::message_t body("BODY_DATA");
+        zmq::message_t footer("FOOTER");
+
+        socket.send(header, zmq::send_flags::sndmore);
+        socket.send(body, zmq::send_flags::sndmore);
+        socket.send(footer, zmq::send_flags::none);
+    }
+
+    void receiveMultipartMessage() {
+        std::vector&lt;std::string&gt; parts;
+
+        while (true) {
+            zmq::message_t message;
+            socket.recv(message, zmq::recv_flags::none);
+
+            std::string part = std::string(static_cast&lt;char*&gt;(message.data()), message.size());
+            parts.push_back(part);
+
+            // 检查是否还有更多部分
+            int more;
+            size_t more_size = sizeof(more);
+            socket.getsockopt(ZMQ_RCVMORE, &amp;more, &amp;more_size);
+
+            if (!more) break;
+        }
+
+        std::cout &lt;&lt; "Received multipart message with " &lt;&lt; parts.size() &lt;&lt; " parts:" &lt;&lt; std::endl;
+        for (size_t i = 0; i &lt; parts.size(); ++i) {
+            std::cout &lt;&lt; "Part " &lt;&lt; i &lt;&lt; ": " &lt;&lt; parts[i] &lt;&lt; std::endl;
+        }
+    }
+};
+</code></pre>
+<h3 id="2-轮询和非阻塞io"><a class="header" href="#2-轮询和非阻塞io">2. 轮询和非阻塞I/O</a></h3>
+<pre><code class="language-cpp">class ZMQPoller {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket1;
+    zmq::socket_t socket2;
+
+public:
+    ZMQPoller() : context(1),
+                  socket1(context, ZMQ_SUB),
+                  socket2(context, ZMQ_SUB) {
+        socket1.connect("tcp://localhost:5556");
+        socket2.connect("tcp://localhost:5557");
+
+        socket1.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+        socket2.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+    }
+
+    void poll() {
+        // 创建轮询项
+        zmq::pollitem_t items[] = {
+            { socket1, 0, ZMQ_POLLIN, 0 },
+            { socket2, 0, ZMQ_POLLIN, 0 }
+        };
+
+        while (true) {
+            // 轮询，超时时间1000ms
+            zmq::poll(items, 2, std::chrono::milliseconds(1000));
+
+            if (items[0].revents &amp; ZMQ_POLLIN) {
+                zmq::message_t message;
+                socket1.recv(message, zmq::recv_flags::dontwait);
+                std::cout &lt;&lt; "Socket1: " &lt;&lt; std::string(static_cast&lt;char*&gt;(message.data()), message.size()) &lt;&lt; std::endl;
+            }
+
+            if (items[1].revents &amp; ZMQ_POLLIN) {
+                zmq::message_t message;
+                socket2.recv(message, zmq::recv_flags::dontwait);
+                std::cout &lt;&lt; "Socket2: " &lt;&lt; std::string(static_cast&lt;char*&gt;(message.data()), message.size()) &lt;&lt; std::endl;
+            }
+        }
+    }
+};
+</code></pre>
+<h3 id="3-代理模式"><a class="header" href="#3-代理模式">3. 代理模式</a></h3>
+<pre><code class="language-cpp">class ZMQProxy {
+private:
+    zmq::context_t context;
+    zmq::socket_t frontend;
+    zmq::socket_t backend;
+
+public:
+    ZMQProxy() : context(1),
+                 frontend(context, ZMQ_ROUTER),
+                 backend(context, ZMQ_DEALER) {
+        frontend.bind("tcp://*:5559");  // 客户端连接
+        backend.bind("tcp://*:5560");   // 服务器连接
+    }
+
+    void run() {
+        // 启动代理
+        zmq::proxy(frontend, backend);
+    }
+};
+
+// 负载均衡代理
+class LoadBalancerProxy {
+private:
+    zmq::context_t context;
+    zmq::socket_t frontend;  // 客户端连接
+    zmq::socket_t backend;   // 工作者连接
+
+public:
+    LoadBalancerProxy() : context(1),
+                          frontend(context, ZMQ_ROUTER),
+                          backend(context, ZMQ_DEALER) {
+        frontend.bind("tcp://*:5561");
+        backend.bind("tcp://*:5562");
+    }
+
+    void run() {
+        // 使用内置的负载均衡代理
+        zmq::proxy(frontend, backend);
+    }
+};
+</code></pre>
+<h2 id="错误处理和监控"><a class="header" href="#错误处理和监控">错误处理和监控</a></h2>
+<h3 id="1-错误处理"><a class="header" href="#1-错误处理">1. 错误处理</a></h3>
+<pre><code class="language-cpp">class ZMQErrorHandler {
+public:
+    static bool sendWithRetry(zmq::socket_t&amp; socket, const std::string&amp; message, int max_retries = 3) {
+        for (int attempt = 0; attempt &lt; max_retries; ++attempt) {
+            try {
+                zmq::message_t zmq_msg(message.length());
+                memcpy(zmq_msg.data(), message.c_str(), message.length());
+                socket.send(zmq_msg, zmq::send_flags::none);
+                return true;
+            } catch (const zmq::error_t&amp; e) {
+                std::cerr &lt;&lt; "Send attempt " &lt;&lt; (attempt + 1) &lt;&lt; " failed: " &lt;&lt; e.what() &lt;&lt; std::endl;
+                if (attempt == max_retries - 1) {
+                    std::cerr &lt;&lt; "All send attempts failed" &lt;&lt; std::endl;
+                    return false;
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(100 * (attempt + 1)));
+            }
+        }
+        return false;
+    }
+
+    static bool receiveWithTimeout(zmq::socket_t&amp; socket, std::string&amp; message, int timeout_ms) {
+        zmq::pollitem_t items[] = { { socket, 0, ZMQ_POLLIN, 0 } };
+
+        int rc = zmq::poll(items, 1, std::chrono::milliseconds(timeout_ms));
+
+        if (rc &gt; 0 &amp;&amp; (items[0].revents &amp; ZMQ_POLLIN)) {
+            zmq::message_t zmq_msg;
+            socket.recv(zmq_msg, zmq::recv_flags::none);
+            message = std::string(static_cast&lt;char*&gt;(zmq_msg.data()), zmq_msg.size());
+            return true;
+        }
+
+        return false; // 超时或错误
+    }
+};
+</code></pre>
+<h3 id="2-连接监控"><a class="header" href="#2-连接监控">2. 连接监控</a></h3>
+<pre><code class="language-cpp">class ZMQMonitor {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket;
+    zmq::socket_t monitor;
+
+public:
+    ZMQMonitor() : context(1), socket(context, ZMQ_REQ) {
+        // 启用套接字监控
+        socket.monitor("inproc://monitor", ZMQ_EVENT_ALL);
+
+        // 创建监控套接字
+        monitor = zmq::socket_t(context, ZMQ_PAIR);
+        monitor.connect("inproc://monitor");
+    }
+
+    void startMonitoring() {
+        std::thread monitor_thread([this]() {
+            while (true) {
+                zmq::message_t msg;
+                monitor.recv(msg, zmq::recv_flags::none);
+
+                // 解析监控事件
+                uint16_t event = *(uint16_t*)msg.data();
+
+                switch (event) {
+                    case ZMQ_EVENT_CONNECTED:
+                        std::cout &lt;&lt; "Socket connected" &lt;&lt; std::endl;
+                        break;
+                    case ZMQ_EVENT_DISCONNECTED:
+                        std::cout &lt;&lt; "Socket disconnected" &lt;&lt; std::endl;
+                        break;
+                    case ZMQ_EVENT_CONNECT_RETRIED:
+                        std::cout &lt;&lt; "Connection retry" &lt;&lt; std::endl;
+                        break;
+                    default:
+                        std::cout &lt;&lt; "Monitor event: " &lt;&lt; event &lt;&lt; std::endl;
+                        break;
+                }
+            }
+        });
+
+        monitor_thread.detach();
+    }
+};
+</code></pre>
+<h2 id="性能优化"><a class="header" href="#性能优化">性能优化</a></h2>
+<h3 id="1-高水位标记hwm"><a class="header" href="#1-高水位标记hwm">1. 高水位标记（HWM）</a></h3>
+<pre><code class="language-cpp">class ZMQPerformanceOptimizer {
+public:
+    static void optimizeSocket(zmq::socket_t&amp; socket) {
+        // 设置高水位标记
+        int hwm = 1000;
+        socket.setsockopt(ZMQ_SNDHWM, &amp;hwm, sizeof(hwm));
+        socket.setsockopt(ZMQ_RCVHWM, &amp;hwm, sizeof(hwm));
+
+        // 设置超时
+        int timeout = 5000; // 5秒
+        socket.setsockopt(ZMQ_SNDTIMEO, &amp;timeout, sizeof(timeout));
+        socket.setsockopt(ZMQ_RCVTIMEO, &amp;timeout, sizeof(timeout));
+
+        // 设置TCP保活
+        int keepalive = 1;
+        socket.setsockopt(ZMQ_TCP_KEEPALIVE, &amp;keepalive, sizeof(keepalive));
+
+        // 设置立即发送
+        int nodelay = 1;
+        socket.setsockopt(ZMQ_TCP_NODELAY, &amp;nodelay, sizeof(nodelay));
+    }
+};
+</code></pre>
+<h3 id="2-批量处理"><a class="header" href="#2-批量处理">2. 批量处理</a></h3>
+<pre><code class="language-cpp">class BatchProcessor {
+private:
+    zmq::context_t context;
+    zmq::socket_t socket;
+    std::vector&lt;std::string&gt; batch;
+    size_t batch_size;
+
+public:
+    BatchProcessor(size_t batch_size = 100)
+        : context(1), socket(context, ZMQ_PUSH), batch_size(batch_size) {
+        socket.bind("tcp://*:5563");
+        batch.reserve(batch_size);
+    }
+
+    void addMessage(const std::string&amp; message) {
+        batch.push_back(message);
+
+        if (batch.size() &gt;= batch_size) {
+            sendBatch();
+        }
+    }
+
+    void sendBatch() {
+        if (batch.empty()) return;
+
+        // 发送批量消息
+        for (size_t i = 0; i &lt; batch.size(); ++i) {
+            zmq::message_t msg(batch[i].length());
+            memcpy(msg.data(), batch[i].c_str(), batch[i].length());
+
+            zmq::send_flags flags = (i == batch.size() - 1) ?
+                zmq::send_flags::none : zmq::send_flags::sndmore;
+
+            socket.send(msg, flags);
+        }
+
+        batch.clear();
+    }
+
+    ~BatchProcessor() {
+        sendBatch(); // 发送剩余消息
+    }
+};
+</code></pre>
+<h2 id="编译和部署"><a class="header" href="#编译和部署">编译和部署</a></h2>
+<h3 id="cmake配置"><a class="header" href="#cmake配置">CMake配置</a></h3>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.12)
+project(ZeroMQExample)
+
+set(CMAKE_CXX_STANDARD 17)
+
+# 查找ZeroMQ
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(ZMQ REQUIRED libzmq)
+
+# 查找cppzmq
+find_path(CPPZMQ_INCLUDE_DIR zmq.hpp)
+
+# 创建可执行文件
+add_executable(${PROJECT_NAME} main.cpp)
+
+# 链接库
+target_link_libraries(${PROJECT_NAME} ${ZMQ_LIBRARIES})
+
+# 包含目录
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${ZMQ_INCLUDE_DIRS}
+    ${CPPZMQ_INCLUDE_DIR}
+)
+
+# 编译标志
+target_compile_options(${PROJECT_NAME} PRIVATE ${ZMQ_CFLAGS_OTHER})
+</code></pre>
+<h2 id="技术要点总结"><a class="header" href="#技术要点总结">技术要点总结</a></h2>
+<ol>
+<li><strong>无代理架构</strong>：直接连接，减少单点故障</li>
+<li><strong>多种模式</strong>：支持多种消息传递模式</li>
+<li><strong>高性能</strong>：异步I/O，低延迟传输</li>
+<li><strong>可靠性</strong>：内置重连和错误处理机制</li>
+<li><strong>可扩展性</strong>：支持大规模分布式系统</li>
+<li><strong>简单API</strong>：类似socket的API设计</li>
+</ol>
+<p>ZeroMQ是构建分布式系统的强大工具，其灵活的消息模式和高性能特性使其成为微服务架构和实时系统的理想选择。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/xmake.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/database/00-sqlite3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/xmake.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/database/00-sqlite3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

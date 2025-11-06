@@ -1,0 +1,1385 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>三层交换机学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="三层交换机学习笔记"><a class="header" href="#三层交换机学习笔记">三层交换机学习笔记</a></h1>
+<h2 id="学习目标定位"><a class="header" href="#学习目标定位">学习目标定位</a></h2>
+<p><strong>角色定位</strong>: 0-5年经验的网络工程师/网络管理员，希望系统掌握三层交换机的配置和管理</p>
+<p><strong>学习成果</strong>: 完成本笔记学习后，你将能够：</p>
+<ul>
+<li>理解二层交换和三层交换的工作原理</li>
+<li>熟练配置VLAN和VLAN间路由</li>
+<li>掌握路由协议在三层交换机上的应用</li>
+<li>配置ACL、QoS等高级特性</li>
+<li>实现网络高可用性和冗余</li>
+<li>进行故障排查和性能优化</li>
+<li>在企业网络中独立部署三层交换机</li>
+</ul>
+<hr />
+<h2 id="第一部分三层交换机基础"><a class="header" href="#第一部分三层交换机基础">第一部分：三层交换机基础</a></h2>
+<h3 id="11-什么是三层交换机"><a class="header" href="#11-什么是三层交换机">1.1 什么是三层交换机</a></h3>
+<h4 id="定义与核心特点"><a class="header" href="#定义与核心特点">定义与核心特点</a></h4>
+<p>三层交换机是一种具有路由功能的交换机，它在第二层（数据链路层）和第三层（网络层）同时工作，能够实现VLAN间的高速路由转发。</p>
+<p><strong>核心特点</strong>：</p>
+<ul>
+<li><strong>硬件路由</strong>: 使用ASIC芯片进行线速路由转发</li>
+<li><strong>二三层一体</strong>: 集成交换和路由功能</li>
+<li><strong>性能高</strong>: 转发性能远超传统路由器</li>
+<li><strong>成本适中</strong>: 比路由器便宜，比纯二层交换机略贵</li>
+<li><strong>配置灵活</strong>: 支持丰富的网络特性</li>
+</ul>
+<h4 id="三层交换机-vs-二层交换机-vs-路由器"><a class="header" href="#三层交换机-vs-二层交换机-vs-路由器">三层交换机 vs 二层交换机 vs 路由器</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>二层交换机</th><th>三层交换机</th><th>路由器</th></tr></thead><tbody>
+<tr><td><strong>工作层次</strong></td><td>第2层（MAC）</td><td>第2+3层（MAC+IP）</td><td>第3层（IP）</td></tr>
+<tr><td><strong>转发方式</strong></td><td>MAC地址表</td><td>MAC表+路由表+硬件加速</td><td>路由表（软件）</td></tr>
+<tr><td><strong>VLAN间路由</strong></td><td>不支持</td><td>支持（硬件加速）</td><td>支持（软件处理）</td></tr>
+<tr><td><strong>转发性能</strong></td><td>高</td><td>非常高</td><td>中等</td></tr>
+<tr><td><strong>端口密度</strong></td><td>高（24-48口）</td><td>高（24-48口）</td><td>低（4-8口）</td></tr>
+<tr><td><strong>价格</strong></td><td>低</td><td>中</td><td>高</td></tr>
+<tr><td><strong>应用场景</strong></td><td>接入层</td><td>汇聚层/核心层</td><td>广域网互联</td></tr>
+</tbody></table>
+</div>
+<h4 id="应用场景"><a class="header" href="#应用场景">应用场景</a></h4>
+<pre><code>企业网络典型架构:
+
+┌─────────────────────────────────────────┐
+│           核心层 (Core)                  │
+│     三层交换机 (高性能路由转发)           │
+└──────────────┬──────────────────────────┘
+               │
+    ┌──────────┼──────────┐
+    │          │          │
+┌───▼───┐  ┌──▼────┐  ┌──▼────┐
+│汇聚层  │  │汇聚层  │  │汇聚层  │
+│三层交换│  │三层交换│  │三层交换│
+│VLAN路由│  │VLAN路由│  │VLAN路由│
+└───┬───┘  └───┬───┘  └───┬───┘
+    │          │          │
+┌───▼───┐  ┌──▼────┐  ┌──▼────┐
+│接入层  │  │接入层  │  │接入层  │
+│二层交换│  │二层交换│  │二层交换│
+│终端接入│  │终端接入│  │终端接入│
+└───────┘  └───────┘  └───────┘
+</code></pre>
+<h3 id="12-工作原理"><a class="header" href="#12-工作原理">1.2 工作原理</a></h3>
+<h4 id="二层交换原理"><a class="header" href="#二层交换原理">二层交换原理</a></h4>
+<p><strong>MAC地址学习过程</strong>：</p>
+<pre><code>1. 数据帧到达 → 记录源MAC地址和入端口
+2. 查找MAC地址表 → 查询目标MAC对应的端口
+3. 转发决策:
+   - 已知单播: 转发到目标端口
+   - 未知单播: 泛洪到除入端口外的所有端口
+   - 广播: 泛洪到VLAN内所有端口
+   - 组播: 根据组播表转发
+</code></pre>
+<p><strong>示例</strong>：</p>
+<pre><code>MAC地址表:
+┌──────────────────┬──────┬──────┐
+│ MAC地址          │ 端口 │ VLAN │
+├──────────────────┼──────┼──────┤
+│ 00:11:22:33:44:55│ Gi1/1│ 10   │
+│ 00:aa:bb:cc:dd:ee│ Gi1/2│ 10   │
+│ 00:ff:ee:dd:cc:bb│ Gi1/3│ 20   │
+└──────────────────┴──────┴──────┘
+</code></pre>
+<h4 id="三层路由原理"><a class="header" href="#三层路由原理">三层路由原理</a></h4>
+<p><strong>路由转发流程</strong>：</p>
+<pre><code>1. 数据包到达 → 解析目标IP地址
+2. 查找路由表 → 匹配最长前缀
+3. 查找ARP表 → 获取下一跳MAC地址
+4. 重新封装 → 修改MAC地址
+5. 转发数据包 → 从出接口发送
+
+关键优化: 硬件路由表（CAM/TCAM）
+- 首包: 软件处理，建立硬件表项
+- 后续包: 硬件直接转发（线速）
+</code></pre>
+<h3 id="13-核心概念"><a class="header" href="#13-核心概念">1.3 核心概念</a></h3>
+<h4 id="vlan虚拟局域网"><a class="header" href="#vlan虚拟局域网">VLAN（虚拟局域网）</a></h4>
+<p>VLAN是将一个物理网络划分为多个逻辑网络的技术。</p>
+<p><strong>VLAN的作用</strong>：</p>
+<ul>
+<li><strong>隔离广播域</strong>: 减少广播风暴</li>
+<li><strong>增强安全性</strong>: 不同部门网络隔离</li>
+<li><strong>灵活组网</strong>: 不受物理位置限制</li>
+<li><strong>提高性能</strong>: 减少不必要的流量</li>
+</ul>
+<p><strong>VLAN类型</strong>：</p>
+<pre><code>1. Port-Based VLAN (基于端口)
+   - 最常用
+   - 配置简单
+   - 一个端口属于一个VLAN
+
+2. MAC-Based VLAN (基于MAC)
+   - 设备移动后仍保持VLAN
+   - 配置复杂
+   - 适合移动办公
+
+3. Protocol-Based VLAN (基于协议)
+   - 根据协议类型划分
+   - 较少使用
+
+4. Subnet-Based VLAN (基于子网)
+   - 根据IP子网划分
+   - 灵活性高
+</code></pre>
+<h4 id="svi交换虚拟接口"><a class="header" href="#svi交换虚拟接口">SVI（交换虚拟接口）</a></h4>
+<p>SVI是为VLAN创建的虚拟三层接口，用于VLAN间路由。</p>
+<pre><code>VLAN 10: 192.168.10.0/24
+VLAN 20: 192.168.20.0/24
+
+三层交换机创建SVI:
+- interface vlan 10
+  ip address 192.168.10.1 255.255.255.0
+- interface vlan 20
+  ip address 192.168.20.1 255.255.255.0
+
+PC在VLAN10可以通过192.168.10.1网关访问VLAN20
+</code></pre>
+<hr />
+<h2 id="第二部分基础配置"><a class="header" href="#第二部分基础配置">第二部分：基础配置</a></h2>
+<h3 id="21-设备初始化"><a class="header" href="#21-设备初始化">2.1 设备初始化</a></h3>
+<h4 id="实战案例1首次登录和基本配置"><a class="header" href="#实战案例1首次登录和基本配置">实战案例1：首次登录和基本配置</a></h4>
+<pre><code class="language-cisco">! 首次登录（Console连接）
+! 进入特权模式
+Switch&gt; enable
+Switch#
+
+! 进入全局配置模式
+Switch# configure terminal
+Switch(config)#
+
+! 设置主机名
+Switch(config)# hostname SW-Core-01
+SW-Core-01(config)#
+
+! 配置管理IP（用于远程登录）
+SW-Core-01(config)# interface vlan 1
+SW-Core-01(config-if)# ip address 192.168.1.100 255.255.255.0
+SW-Core-01(config-if)# no shutdown
+SW-Core-01(config-if)# exit
+
+! 配置默认网关
+SW-Core-01(config)# ip default-gateway 192.168.1.1
+
+! 配置Enable密码
+SW-Core-01(config)# enable secret Cisco@123
+
+! 配置Console密码
+SW-Core-01(config)# line console 0
+SW-Core-01(config-line)# password Console@123
+SW-Core-01(config-line)# login
+SW-Core-01(config-line)# exit
+
+! 配置VTY密码（Telnet/SSH）
+SW-Core-01(config)# line vty 0 15
+SW-Core-01(config-line)# password Telnet@123
+SW-Core-01(config-line)# login
+SW-Core-01(config-line)# transport input telnet ssh
+SW-Core-01(config-line)# exit
+
+! 保存配置
+SW-Core-01(config)# end
+SW-Core-01# write memory
+或
+SW-Core-01# copy running-config startup-config
+</code></pre>
+<h4 id="实战案例2配置ssh远程登录"><a class="header" href="#实战案例2配置ssh远程登录">实战案例2：配置SSH远程登录</a></h4>
+<pre><code class="language-cisco">! 配置域名
+SW-Core-01(config)# ip domain-name example.com
+
+! 生成RSA密钥对
+SW-Core-01(config)# crypto key generate rsa
+! 输入模数（建议2048）
+How many bits in the modulus [512]: 2048
+
+! 创建本地用户
+SW-Core-01(config)# username admin privilege 15 secret Admin@123
+
+! 配置SSH版本
+SW-Core-01(config)# ip ssh version 2
+
+! 配置VTY使用本地认证
+SW-Core-01(config)# line vty 0 15
+SW-Core-01(config-line)# login local
+SW-Core-01(config-line)# transport input ssh
+SW-Core-01(config-line)# exit
+
+! 验证配置
+SW-Core-01# show ip ssh
+SW-Core-01# show ssh
+
+! 从其他设备测试SSH连接
+Client$ ssh admin@192.168.1.100
+</code></pre>
+<h3 id="22-vlan配置"><a class="header" href="#22-vlan配置">2.2 VLAN配置</a></h3>
+<h4 id="实战案例3创建和配置vlan"><a class="header" href="#实战案例3创建和配置vlan">实战案例3：创建和配置VLAN</a></h4>
+<pre><code class="language-cisco">! 创建VLAN
+SW-Core-01(config)# vlan 10
+SW-Core-01(config-vlan)# name IT-Department
+SW-Core-01(config-vlan)# exit
+
+SW-Core-01(config)# vlan 20
+SW-Core-01(config-vlan)# name HR-Department
+SW-Core-01(config-vlan)# exit
+
+SW-Core-01(config)# vlan 30
+SW-Core-01(config-vlan)# name Finance-Department
+SW-Core-01(config-vlan)# exit
+
+! 查看VLAN
+SW-Core-01# show vlan brief
+
+VLAN Name                Status    Ports
+---- -------------------- --------- ------------------------
+1    default             active    Gi1/1, Gi1/2, ...
+10   IT-Department       active
+20   HR-Department       active
+30   Finance-Department  active
+
+! 将端口分配到VLAN (Access模式)
+SW-Core-01(config)# interface range gigabitEthernet 1/1-10
+SW-Core-01(config-if-range)# switchport mode access
+SW-Core-01(config-if-range)# switchport access vlan 10
+SW-Core-01(config-if-range)# exit
+
+SW-Core-01(config)# interface range gigabitEthernet 1/11-20
+SW-Core-01(config-if-range)# switchport mode access
+SW-Core-01(config-if-range)# switchport access vlan 20
+SW-Core-01(config-if-range)# exit
+
+! 配置Trunk端口（连接其他交换机）
+SW-Core-01(config)# interface gigabitEthernet 1/48
+SW-Core-01(config-if)# switchport mode trunk
+SW-Core-01(config-if)# switchport trunk allowed vlan 10,20,30
+SW-Core-01(config-if)# switchport trunk native vlan 999
+SW-Core-01(config-if)# exit
+
+! 验证配置
+SW-Core-01# show interfaces trunk
+SW-Core-01# show vlan
+</code></pre>
+<h4 id="vlan配置要点"><a class="header" href="#vlan配置要点">VLAN配置要点</a></h4>
+<p><strong>Access端口 vs Trunk端口</strong>：</p>
+<pre><code>Access端口 (接终端设备):
+┌─────────┐    Access     ┌──────────┐
+│   PC    │────VLAN 10────│  Switch  │
+└─────────┘               └──────────┘
+- 只传输一个VLAN的数据
+- 数据帧不打标签
+
+Trunk端口 (交换机互联):
+┌──────────┐   Trunk   ┌──────────┐
+│ Switch 1 │───────────│ Switch 2 │
+└──────────┘  VLAN 10  └──────────┘
+              VLAN 20
+              VLAN 30
+- 传输多个VLAN的数据
+- 数据帧打802.1Q标签
+</code></pre>
+<h3 id="23-三层路由配置"><a class="header" href="#23-三层路由配置">2.3 三层路由配置</a></h3>
+<h4 id="实战案例4配置vlan间路由svi"><a class="header" href="#实战案例4配置vlan间路由svi">实战案例4：配置VLAN间路由（SVI）</a></h4>
+<pre><code class="language-cisco">! 启用IP路由功能
+SW-Core-01(config)# ip routing
+
+! 为VLAN 10创建SVI
+SW-Core-01(config)# interface vlan 10
+SW-Core-01(config-if)# description IT-Department-Gateway
+SW-Core-01(config-if)# ip address 192.168.10.1 255.255.255.0
+SW-Core-01(config-if)# no shutdown
+SW-Core-01(config-if)# exit
+
+! 为VLAN 20创建SVI
+SW-Core-01(config)# interface vlan 20
+SW-Core-01(config-if)# description HR-Department-Gateway
+SW-Core-01(config-if)# ip address 192.168.20.1 255.255.255.0
+SW-Core-01(config-if)# no shutdown
+SW-Core-01(config-if)# exit
+
+! 为VLAN 30创建SVI
+SW-Core-01(config)# interface vlan 30
+SW-Core-01(config-if)# description Finance-Department-Gateway
+SW-Core-01(config-if)# ip address 192.168.30.1 255.255.255.0
+SW-Core-01(config-if)# no shutdown
+SW-Core-01(config-if)# exit
+
+! 查看路由表
+SW-Core-01# show ip route
+
+Codes: C - connected, S - static, R - RIP, O - OSPF
+       B - BGP, D - EIGRP
+
+Gateway of last resort is not set
+
+C    192.168.10.0/24 is directly connected, Vlan10
+C    192.168.20.0/24 is directly connected, Vlan20
+C    192.168.30.0/24 is directly connected, Vlan30
+
+! 查看ARP表
+SW-Core-01# show ip arp
+
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  192.168.10.1            -   0011.2233.4455  ARPA   Vlan10
+Internet  192.168.10.10          15   0011.2233.4466  ARPA   Vlan10
+
+! 测试连通性
+SW-Core-01# ping 192.168.20.1
+</code></pre>
+<p><strong>配置终端设备</strong>：</p>
+<pre><code class="language-bash"># VLAN 10中的PC配置
+IP地址: 192.168.10.10
+子网掩码: 255.255.255.0
+默认网关: 192.168.10.1  # 三层交换机的SVI
+
+# VLAN 20中的PC配置
+IP地址: 192.168.20.10
+子网掩码: 255.255.255.0
+默认网关: 192.168.20.1  # 三层交换机的SVI
+
+# 测试VLAN间通信
+PC1(VLAN10)&gt; ping 192.168.20.10  # 应该能ping通
+</code></pre>
+<h4 id="实战案例5配置静态路由"><a class="header" href="#实战案例5配置静态路由">实战案例5：配置静态路由</a></h4>
+<pre><code class="language-cisco">! 场景：连接到其他网段或外部网络
+
+! 配置到外网的静态路由
+SW-Core-01(config)# ip route 0.0.0.0 0.0.0.0 10.0.0.1
+! 说明: 所有未知目标通过10.0.0.1转发（默认路由）
+
+! 配置到特定网段的静态路由
+SW-Core-01(config)# ip route 172.16.0.0 255.255.0.0 10.0.0.2
+! 说明: 访问172.16.0.0/16通过10.0.0.2转发
+
+! 配置管理距离（可选）
+SW-Core-01(config)# ip route 192.168.100.0 255.255.255.0 10.0.0.3 10
+! 说明: 最后的10是管理距离，数值越小优先级越高
+
+! 查看路由表
+SW-Core-01# show ip route
+
+Gateway of last resort is 10.0.0.1 to network 0.0.0.0
+
+S*   0.0.0.0/0 [1/0] via 10.0.0.1
+C    192.168.10.0/24 is directly connected, Vlan10
+C    192.168.20.0/24 is directly connected, Vlan20
+C    192.168.30.0/24 is directly connected, Vlan30
+S    172.16.0.0/16 [1/0] via 10.0.0.2
+S    192.168.100.0/24 [10/0] via 10.0.0.3
+</code></pre>
+<hr />
+<h2 id="第三部分动态路由协议"><a class="header" href="#第三部分动态路由协议">第三部分：动态路由协议</a></h2>
+<h3 id="31-ospf配置"><a class="header" href="#31-ospf配置">3.1 OSPF配置</a></h3>
+<h4 id="实战案例6配置单区域ospf"><a class="header" href="#实战案例6配置单区域ospf">实战案例6：配置单区域OSPF</a></h4>
+<pre><code class="language-cisco">! 启用OSPF进程
+SW-Core-01(config)# router ospf 1
+SW-Core-01(config-router)# router-id 1.1.1.1
+
+! 宣告网络
+SW-Core-01(config-router)# network 192.168.10.0 0.0.0.255 area 0
+SW-Core-01(config-router)# network 192.168.20.0 0.0.0.255 area 0
+SW-Core-01(config-router)# network 192.168.30.0 0.0.0.255 area 0
+SW-Core-01(config-router)# network 10.0.0.0 0.0.0.3 area 0
+SW-Core-01(config-router)# exit
+
+! 配置被动接口（不发送OSPF Hello）
+SW-Core-01(config)# router ospf 1
+SW-Core-01(config-router)# passive-interface vlan 10
+SW-Core-01(config-router)# passive-interface vlan 20
+SW-Core-01(config-router)# passive-interface vlan 30
+SW-Core-01(config-router)# exit
+
+! 验证OSPF配置
+SW-Core-01# show ip ospf neighbor
+
+Neighbor ID     Pri   State           Dead Time   Address         Interface
+2.2.2.2          1    FULL/DR         00:00:35    10.0.0.2        Gi1/1
+
+SW-Core-01# show ip ospf interface brief
+SW-Core-01# show ip route ospf
+
+! 调试OSPF
+SW-Core-01# debug ip ospf events
+SW-Core-01# debug ip ospf adj
+</code></pre>
+<h4 id="实战案例7配置多区域ospf"><a class="header" href="#实战案例7配置多区域ospf">实战案例7：配置多区域OSPF</a></h4>
+<pre><code class="language-cisco">! 核心交换机（ABR - Area Border Router）
+SW-Core-01(config)# router ospf 1
+SW-Core-01(config-router)# router-id 1.1.1.1
+SW-Core-01(config-router)# network 192.168.10.0 0.0.0.255 area 0
+SW-Core-01(config-router)# network 192.168.20.0 0.0.0.255 area 1
+SW-Core-01(config-router)# network 192.168.30.0 0.0.0.255 area 2
+SW-Core-01(config-router)# exit
+
+! 配置Area 1为Stub区域（减少路由表）
+SW-Core-01(config)# router ospf 1
+SW-Core-01(config-router)# area 1 stub
+SW-Core-01(config-router)# exit
+
+! 配置Area 2为完全Stub区域
+SW-Core-01(config)# router ospf 1
+SW-Core-01(config-router)# area 2 stub no-summary
+SW-Core-01(config-router)# exit
+
+! 查看OSPF数据库
+SW-Core-01# show ip ospf database
+SW-Core-01# show ip ospf border-routers
+</code></pre>
+<h3 id="32-eigrp配置cisco专有"><a class="header" href="#32-eigrp配置cisco专有">3.2 EIGRP配置（Cisco专有）</a></h3>
+<h4 id="实战案例8配置eigrp"><a class="header" href="#实战案例8配置eigrp">实战案例8：配置EIGRP</a></h4>
+<pre><code class="language-cisco">! 启用EIGRP
+SW-Core-01(config)# router eigrp 100
+SW-Core-01(config-router)# eigrp router-id 1.1.1.1
+
+! 宣告网络（自动汇总已禁用）
+SW-Core-01(config-router)# no auto-summary
+SW-Core-01(config-router)# network 192.168.10.0 0.0.0.255
+SW-Core-01(config-router)# network 192.168.20.0 0.0.0.255
+SW-Core-01(config-router)# network 192.168.30.0 0.0.0.255
+SW-Core-01(config-router)# exit
+
+! 配置被动接口
+SW-Core-01(config)# router eigrp 100
+SW-Core-01(config-router)# passive-interface vlan 10
+SW-Core-01(config-router)# passive-interface vlan 20
+SW-Core-01(config-router)# exit
+
+! 配置认证（增强安全性）
+SW-Core-01(config)# key chain EIGRP-KEY
+SW-Core-01(config-keychain)# key 1
+SW-Core-01(config-keychain-key)# key-string MySecret@123
+SW-Core-01(config-keychain-key)# exit
+SW-Core-01(config-keychain)# exit
+
+SW-Core-01(config)# interface gigabitEthernet 1/1
+SW-Core-01(config-if)# ip authentication mode eigrp 100 md5
+SW-Core-01(config-if)# ip authentication key-chain eigrp 100 EIGRP-KEY
+SW-Core-01(config-if)# exit
+
+! 验证EIGRP
+SW-Core-01# show ip eigrp neighbors
+SW-Core-01# show ip eigrp topology
+SW-Core-01# show ip route eigrp
+</code></pre>
+<hr />
+<h2 id="第四部分访问控制列表acl"><a class="header" href="#第四部分访问控制列表acl">第四部分：访问控制列表（ACL）</a></h2>
+<h3 id="41-标准acl"><a class="header" href="#41-标准acl">4.1 标准ACL</a></h3>
+<h4 id="实战案例9标准acl配置"><a class="header" href="#实战案例9标准acl配置">实战案例9：标准ACL配置</a></h4>
+<pre><code class="language-cisco">! 场景：只允许特定网段访问管理VLAN
+
+! 创建标准ACL（编号1-99）
+SW-Core-01(config)# access-list 10 remark Allow-Management-Access
+SW-Core-01(config)# access-list 10 permit 192.168.10.0 0.0.0.255
+SW-Core-01(config)# access-list 10 deny any
+
+! 应用到VTY线路（限制远程登录）
+SW-Core-01(config)# line vty 0 15
+SW-Core-01(config-line)# access-class 10 in
+SW-Core-01(config-line)# exit
+
+! 查看ACL
+SW-Core-01# show access-lists
+SW-Core-01# show access-lists 10
+
+! 命名标准ACL（推荐）
+SW-Core-01(config)# ip access-list standard MGMT-ACCESS
+SW-Core-01(config-std-nacl)# permit 192.168.10.0 0.0.0.255
+SW-Core-01(config-std-nacl)# permit host 192.168.20.100
+SW-Core-01(config-std-nacl)# deny any
+SW-Core-01(config-std-nacl)# exit
+</code></pre>
+<h3 id="42-扩展acl"><a class="header" href="#42-扩展acl">4.2 扩展ACL</a></h3>
+<h4 id="实战案例10扩展acl配置"><a class="header" href="#实战案例10扩展acl配置">实战案例10：扩展ACL配置</a></h4>
+<pre><code class="language-cisco">! 场景：限制网络访问，只允许特定服务
+
+! 创建扩展ACL（编号100-199）
+SW-Core-01(config)# access-list 100 remark Finance-Network-Policy
+! 允许Finance访问Web服务器
+SW-Core-01(config)# access-list 100 permit tcp 192.168.30.0 0.0.0.255 host 192.168.10.100 eq 80
+SW-Core-01(config)# access-list 100 permit tcp 192.168.30.0 0.0.0.255 host 192.168.10.100 eq 443
+! 允许Finance访问DNS
+SW-Core-01(config)# access-list 100 permit udp 192.168.30.0 0.0.0.255 any eq 53
+! 拒绝其他所有流量
+SW-Core-01(config)# access-list 100 deny ip any any
+
+! 应用到接口（出方向）
+SW-Core-01(config)# interface vlan 30
+SW-Core-01(config-if)# ip access-group 100 out
+SW-Core-01(config-if)# exit
+
+! 命名扩展ACL（推荐）
+SW-Core-01(config)# ip access-list extended WEB-ACCESS-POLICY
+SW-Core-01(config-ext-nacl)# permit tcp any host 192.168.10.100 eq 80
+SW-Core-01(config-ext-nacl)# permit tcp any host 192.168.10.100 eq 443
+SW-Core-01(config-ext-nacl)# permit icmp any any echo
+SW-Core-01(config-ext-nacl)# permit icmp any any echo-reply
+SW-Core-01(config-ext-nacl)# deny ip any any log
+SW-Core-01(config-ext-nacl)# exit
+
+SW-Core-01(config)# interface vlan 10
+SW-Core-01(config-if)# ip access-group WEB-ACCESS-POLICY in
+SW-Core-01(config-if)# exit
+
+! 查看ACL命中统计
+SW-Core-01# show access-lists 100
+SW-Core-01# show ip access-lists WEB-ACCESS-POLICY
+</code></pre>
+<h4 id="acl配置最佳实践"><a class="header" href="#acl配置最佳实践">ACL配置最佳实践</a></h4>
+<pre><code>1. 配置顺序很重要
+   - 从上到下匹配，匹配到就停止
+   - 具体规则在前，通用规则在后
+
+2. 隐式拒绝
+   - ACL末尾有隐式的 deny any any
+   - 建议显式配置
+
+3. 应用位置
+   - 标准ACL: 靠近目标
+   - 扩展ACL: 靠近源
+
+4. 性能考虑
+   - ACL条目越少越好
+   - 常匹配的规则放前面
+
+5. 文档化
+   - 使用remark添加注释
+   - 使用命名ACL增加可读性
+</code></pre>
+<hr />
+<h2 id="第五部分高可用性配置"><a class="header" href="#第五部分高可用性配置">第五部分：高可用性配置</a></h2>
+<h3 id="51-hsrp热备份路由协议"><a class="header" href="#51-hsrp热备份路由协议">5.1 HSRP（热备份路由协议）</a></h3>
+<h4 id="实战案例11配置hsrp"><a class="header" href="#实战案例11配置hsrp">实战案例11：配置HSRP</a></h4>
+<pre><code class="language-cisco">! 场景：两台三层交换机互为备份
+
+! 主交换机配置
+SW-Core-01(config)# interface vlan 10
+SW-Core-01(config-if)# ip address 192.168.10.2 255.255.255.0
+SW-Core-01(config-if)# standby 1 ip 192.168.10.1
+SW-Core-01(config-if)# standby 1 priority 110
+SW-Core-01(config-if)# standby 1 preempt
+SW-Core-01(config-if)# standby 1 authentication md5 key-string MySecret
+SW-Core-01(config-if)# exit
+
+! 备份交换机配置
+SW-Core-02(config)# interface vlan 10
+SW-Core-02(config-if)# ip address 192.168.10.3 255.255.255.0
+SW-Core-02(config-if)# standby 1 ip 192.168.10.1
+SW-Core-02(config-if)# standby 1 priority 100
+SW-Core-02(config-if)# standby 1 preempt
+SW-Core-02(config-if)# standby 1 authentication md5 key-string MySecret
+SW-Core-02(config-if)# exit
+
+! 验证HSRP状态
+SW-Core-01# show standby
+SW-Core-01# show standby brief
+
+Vlan10 - Group 1
+  State is Active
+    2 state changes, last state change 00:05:12
+  Virtual IP address is 192.168.10.1
+  Active virtual MAC address is 0000.0c07.ac01
+  Local virtual MAC address is 0000.0c07.ac01 (v1 default)
+  Hello time 3 sec, hold time 10 sec
+  Preemption enabled
+  Active router is local
+  Standby router is 192.168.10.3, priority 100
+
+! 配置接口追踪（链路故障自动切换）
+SW-Core-01(config)# interface vlan 10
+SW-Core-01(config-if)# standby 1 track gigabitEthernet 1/1 20
+! 说明: Gi1/1故障时，优先级降低20
+</code></pre>
+<h3 id="52-vrrp虚拟路由冗余协议"><a class="header" href="#52-vrrp虚拟路由冗余协议">5.2 VRRP（虚拟路由冗余协议）</a></h3>
+<h4 id="实战案例12配置vrrp"><a class="header" href="#实战案例12配置vrrp">实战案例12：配置VRRP</a></h4>
+<pre><code class="language-cisco">! 主交换机配置
+SW-Core-01(config)# interface vlan 10
+SW-Core-01(config-if)# ip address 192.168.10.2 255.255.255.0
+SW-Core-01(config-if)# vrrp 1 ip 192.168.10.1
+SW-Core-01(config-if)# vrrp 1 priority 110
+SW-Core-01(config-if)# vrrp 1 preempt
+SW-Core-01(config-if)# vrrp 1 authentication md5 key-string MySecret
+SW-Core-01(config-if)# exit
+
+! 备份交换机配置
+SW-Core-02(config)# interface vlan 10
+SW-Core-02(config-if)# ip address 192.168.10.3 255.255.255.0
+SW-Core-02(config-if)# vrrp 1 ip 192.168.10.1
+SW-Core-02(config-if)# vrrp 1 priority 100
+SW-Core-02(config-if)# vrrp 1 preempt
+SW-Core-02(config-if)# vrrp 1 authentication md5 key-string MySecret
+SW-Core-02(config-if)# exit
+
+! 验证VRRP
+SW-Core-01# show vrrp
+SW-Core-01# show vrrp brief
+</code></pre>
+<h3 id="53-etherchannel链路聚合"><a class="header" href="#53-etherchannel链路聚合">5.3 EtherChannel（链路聚合）</a></h3>
+<h4 id="实战案例13配置etherchannel"><a class="header" href="#实战案例13配置etherchannel">实战案例13：配置EtherChannel</a></h4>
+<pre><code class="language-cisco">! 使用LACP协议（推荐，标准协议）
+
+! 交换机1配置
+SW-Core-01(config)# interface range gigabitEthernet 1/47-48
+SW-Core-01(config-if-range)# channel-group 1 mode active
+SW-Core-01(config-if-range)# exit
+
+SW-Core-01(config)# interface port-channel 1
+SW-Core-01(config-if)# switchport mode trunk
+SW-Core-01(config-if)# switchport trunk allowed vlan 10,20,30
+SW-Core-01(config-if)# exit
+
+! 交换机2配置
+SW-Core-02(config)# interface range gigabitEthernet 1/47-48
+SW-Core-02(config-if-range)# channel-group 1 mode active
+SW-Core-02(config-if-range)# exit
+
+SW-Core-02(config)# interface port-channel 1
+SW-Core-02(config-if)# switchport mode trunk
+SW-Core-02(config-if)# switchport trunk allowed vlan 10,20,30
+SW-Core-02(config-if)# exit
+
+! 验证EtherChannel
+SW-Core-01# show etherchannel summary
+SW-Core-01# show etherchannel port-channel
+SW-Core-01# show lacp neighbor
+
+! 使用PAgP协议（Cisco专有）
+SW-Core-01(config)# interface range gigabitEthernet 1/45-46
+SW-Core-01(config-if-range)# channel-group 2 mode desirable
+SW-Core-01(config-if-range)# exit
+</code></pre>
+<p><strong>EtherChannel模式对比</strong>：</p>
+<div class="table-wrapper"><table><thead><tr><th>协议</th><th>模式</th><th>说明</th><th>对端模式</th></tr></thead><tbody>
+<tr><td>LACP</td><td>active</td><td>主动协商</td><td>active/passive</td></tr>
+<tr><td>LACP</td><td>passive</td><td>被动等待</td><td>active</td></tr>
+<tr><td>PAgP</td><td>desirable</td><td>主动协商</td><td>desirable/auto</td></tr>
+<tr><td>PAgP</td><td>auto</td><td>被动等待</td><td>desirable</td></tr>
+<tr><td>-</td><td>on</td><td>强制开启（无协商）</td><td>on</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="第六部分qos服务质量"><a class="header" href="#第六部分qos服务质量">第六部分：QoS（服务质量）</a></h2>
+<h3 id="61-qos基础配置"><a class="header" href="#61-qos基础配置">6.1 QoS基础配置</a></h3>
+<h4 id="实战案例14配置qos优先级"><a class="header" href="#实战案例14配置qos优先级">实战案例14：配置QoS优先级</a></h4>
+<pre><code class="language-cisco">! 场景：VoIP流量优先，保证通话质量
+
+! 1. 创建Class Map（分类流量）
+SW-Core-01(config)# class-map match-any VOIP-TRAFFIC
+SW-Core-01(config-cmap)# match ip dscp ef
+SW-Core-01(config-cmap)# match access-group 110
+SW-Core-01(config-cmap)# exit
+
+! 创建访问控制列表识别VoIP
+SW-Core-01(config)# access-list 110 permit udp any any range 16384 32767
+
+! 2. 创建Policy Map（定义策略）
+SW-Core-01(config)# policy-map VOIP-POLICY
+SW-Core-01(config-pmap)# class VOIP-TRAFFIC
+SW-Core-01(config-pmap-c)# set ip dscp ef
+SW-Core-01(config-pmap-c)# priority percent 30
+SW-Core-01(config-pmap-c)# exit
+SW-Core-01(config-pmap)# class class-default
+SW-Core-01(config-pmap-c)# fair-queue
+SW-Core-01(config-pmap-c)# exit
+SW-Core-01(config-pmap)# exit
+
+! 3. 应用到接口
+SW-Core-01(config)# interface gigabitEthernet 1/1
+SW-Core-01(config-if)# service-policy output VOIP-POLICY
+SW-Core-01(config-if)# exit
+
+! 验证QoS配置
+SW-Core-01# show policy-map
+SW-Core-01# show policy-map interface gigabitEthernet 1/1
+</code></pre>
+<h3 id="62-带宽限制"><a class="header" href="#62-带宽限制">6.2 带宽限制</a></h3>
+<h4 id="实战案例15配置端口带宽限制"><a class="header" href="#实战案例15配置端口带宽限制">实战案例15：配置端口带宽限制</a></h4>
+<pre><code class="language-cisco">! 场景：限制下载流量，防止带宽被占满
+
+! 方法1：使用policing（硬限制）
+SW-Core-01(config)# class-map match-all DOWNLOAD-TRAFFIC
+SW-Core-01(config-cmap)# match access-group 120
+SW-Core-01(config-cmap)# exit
+
+SW-Core-01(config)# access-list 120 permit tcp any any eq 80
+SW-Core-01(config)# access-list 120 permit tcp any any eq 443
+
+SW-Core-01(config)# policy-map RATE-LIMIT-10M
+SW-Core-01(config-pmap)# class DOWNLOAD-TRAFFIC
+SW-Core-01(config-pmap-c)# police 10000000 1000000 exceed-action drop
+! 说明: 限制为10Mbps，突发1Mbps，超过则丢弃
+SW-Core-01(config-pmap-c)# exit
+SW-Core-01(config-pmap)# exit
+
+SW-Core-01(config)# interface gigabitEthernet 1/10
+SW-Core-01(config-if)# service-policy input RATE-LIMIT-10M
+SW-Core-01(config-if)# exit
+
+! 方法2：使用shaping（软限制，平滑流量）
+SW-Core-01(config)# policy-map SHAPE-5M
+SW-Core-01(config-pmap)# class class-default
+SW-Core-01(config-pmap-c)# shape average 5000000
+SW-Core-01(config-pmap-c)# exit
+SW-Core-01(config-pmap)# exit
+
+SW-Core-01(config)# interface gigabitEthernet 1/10
+SW-Core-01(config-if)# service-policy output SHAPE-5M
+SW-Core-01(config-if)# exit
+</code></pre>
+<hr />
+<h2 id="第七部分安全特性"><a class="header" href="#第七部分安全特性">第七部分：安全特性</a></h2>
+<h3 id="71-端口安全"><a class="header" href="#71-端口安全">7.1 端口安全</a></h3>
+<h4 id="实战案例16配置端口安全"><a class="header" href="#实战案例16配置端口安全">实战案例16：配置端口安全</a></h4>
+<pre><code class="language-cisco">! 场景：防止MAC地址欺骗和未授权设备接入
+
+! 基本端口安全配置
+SW-Core-01(config)# interface gigabitEthernet 1/10
+SW-Core-01(config-if)# switchport mode access
+SW-Core-01(config-if)# switchport port-security
+! 允许最多2个MAC地址
+SW-Core-01(config-if)# switchport port-security maximum 2
+! 违规时的动作（shutdown/restrict/protect）
+SW-Core-01(config-if)# switchport port-security violation shutdown
+! 手动指定允许的MAC
+SW-Core-01(config-if)# switchport port-security mac-address 0011.2233.4455
+! 自动学习并保存MAC
+SW-Core-01(config-if)# switchport port-security mac-address sticky
+SW-Core-01(config-if)# exit
+
+! 批量配置
+SW-Core-01(config)# interface range gigabitEthernet 1/1-24
+SW-Core-01(config-if-range)# switchport mode access
+SW-Core-01(config-if-range)# switchport port-security
+SW-Core-01(config-if-range)# switchport port-security maximum 1
+SW-Core-01(config-if-range)# switchport port-security violation restrict
+SW-Core-01(config-if-range)# switchport port-security mac-address sticky
+SW-Core-01(config-if-range)# exit
+
+! 查看端口安全状态
+SW-Core-01# show port-security
+SW-Core-01# show port-security interface gigabitEthernet 1/10
+SW-Core-01# show port-security address
+
+! 恢复被shutdown的端口
+SW-Core-01# configure terminal
+SW-Core-01(config)# interface gigabitEthernet 1/10
+SW-Core-01(config-if)# shutdown
+SW-Core-01(config-if)# no shutdown
+SW-Core-01(config-if)# exit
+</code></pre>
+<h3 id="72-dhcp-snooping"><a class="header" href="#72-dhcp-snooping">7.2 DHCP Snooping</a></h3>
+<h4 id="实战案例17配置dhcp-snooping"><a class="header" href="#实战案例17配置dhcp-snooping">实战案例17：配置DHCP Snooping</a></h4>
+<pre><code class="language-cisco">! 场景：防止恶意DHCP服务器
+
+! 全局启用DHCP Snooping
+SW-Core-01(config)# ip dhcp snooping
+SW-Core-01(config)# ip dhcp snooping vlan 10,20,30
+
+! 配置信任端口（连接合法DHCP服务器的端口）
+SW-Core-01(config)# interface gigabitEthernet 1/1
+SW-Core-01(config-if)# ip dhcp snooping trust
+SW-Core-01(config-if)# exit
+
+! 配置速率限制（防止DHCP攻击）
+SW-Core-01(config)# interface range gigabitEthernet 1/2-24
+SW-Core-01(config-if-range)# ip dhcp snooping limit rate 10
+SW-Core-01(config-if-range)# exit
+
+! 启用Option 82插入
+SW-Core-01(config)# ip dhcp snooping information option
+
+! 查看DHCP Snooping绑定表
+SW-Core-01# show ip dhcp snooping binding
+
+MacAddress          IpAddress   Lease(sec)  Type           VLAN  Interface
+------------------  ----------  ----------  -------------  ----  ---------
+00:11:22:33:44:55   192.168.10.100  86400   dhcp-snooping  10    Gi1/10
+</code></pre>
+<h3 id="73-动态arp检测dai"><a class="header" href="#73-动态arp检测dai">7.3 动态ARP检测（DAI）</a></h3>
+<h4 id="实战案例18配置dai"><a class="header" href="#实战案例18配置dai">实战案例18：配置DAI</a></h4>
+<pre><code class="language-cisco">! 场景：防止ARP欺骗攻击（需先配置DHCP Snooping）
+
+! 启用DAI
+SW-Core-01(config)# ip arp inspection vlan 10,20,30
+
+! 配置信任端口
+SW-Core-01(config)# interface gigabitEthernet 1/1
+SW-Core-01(config-if)# ip arp inspection trust
+SW-Core-01(config-if)# exit
+
+! 配置速率限制
+SW-Core-01(config)# interface range gigabitEthernet 1/2-24
+SW-Core-01(config-if-range)# ip arp inspection limit rate 15
+SW-Core-01(config-if-range)# exit
+
+! 配置验证选项
+SW-Core-01(config)# ip arp inspection validate src-mac dst-mac ip
+
+! 查看DAI状态
+SW-Core-01# show ip arp inspection
+SW-Core-01# show ip arp inspection statistics
+</code></pre>
+<hr />
+<h2 id="第八部分监控与故障排查"><a class="header" href="#第八部分监控与故障排查">第八部分：监控与故障排查</a></h2>
+<h3 id="81-常用监控命令"><a class="header" href="#81-常用监控命令">8.1 常用监控命令</a></h3>
+<pre><code class="language-cisco">! 查看系统信息
+SW-Core-01# show version
+SW-Core-01# show running-config
+SW-Core-01# show startup-config
+SW-Core-01# show inventory
+
+! 查看接口状态
+SW-Core-01# show interfaces status
+SW-Core-01# show interfaces gigabitEthernet 1/1
+SW-Core-01# show interfaces description
+SW-Core-01# show interfaces trunk
+
+! 查看MAC地址表
+SW-Core-01# show mac address-table
+SW-Core-01# show mac address-table vlan 10
+SW-Core-01# show mac address-table interface gigabitEthernet 1/1
+
+! 查看ARP表
+SW-Core-01# show ip arp
+SW-Core-01# show ip arp vlan 10
+
+! 查看路由表
+SW-Core-01# show ip route
+SW-Core-01# show ip route summary
+SW-Core-01# show ip route 192.168.10.0
+
+! 查看VLAN
+SW-Core-01# show vlan
+SW-Core-01# show vlan brief
+SW-Core-01# show vlan id 10
+
+! 查看CPU和内存
+SW-Core-01# show processes cpu
+SW-Core-01# show processes memory
+SW-Core-01# show memory statistics
+
+! 查看日志
+SW-Core-01# show logging
+SW-Core-01# show logging | include ERROR
+</code></pre>
+<h3 id="82-故障排查"><a class="header" href="#82-故障排查">8.2 故障排查</a></h3>
+<h4 id="实战案例19网络连通性故障排查"><a class="header" href="#实战案例19网络连通性故障排查">实战案例19：网络连通性故障排查</a></h4>
+<pre><code class="language-cisco">! 问题: PC无法ping通网关
+
+! 步骤1: 检查物理连接
+SW-Core-01# show interfaces gigabitEthernet 1/10
+! 查看: 接口状态、错误计数、双工模式
+
+! 步骤2: 检查VLAN配置
+SW-Core-01# show vlan id 10
+SW-Core-01# show interfaces gigabitEthernet 1/10 switchport
+! 确认端口在正确的VLAN中
+
+! 步骤3: 检查MAC地址表
+SW-Core-01# show mac address-table interface gigabitEthernet 1/10
+! 确认PC的MAC地址已学习
+
+! 步骤4: 检查ARP
+SW-Core-01# show ip arp | include 192.168.10.10
+! 确认IP和MAC的映射关系
+
+! 步骤5: 检查路由
+SW-Core-01# show ip route
+! 确认路由表正确
+
+! 步骤6: 检查ACL
+SW-Core-01# show ip interface vlan 10
+! 查看是否有ACL阻止流量
+
+! 步骤7: 使用traceroute
+SW-Core-01# traceroute 192.168.10.10
+
+! 步骤8: 抓包分析
+SW-Core-01# monitor session 1 source interface gigabitEthernet 1/10
+SW-Core-01# monitor session 1 destination interface gigabitEthernet 1/48
+! 在Gi1/48上连接抓包工具
+</code></pre>
+<h4 id="常见问题和解决方案"><a class="header" href="#常见问题和解决方案">常见问题和解决方案</a></h4>
+<p><strong>问题1：VLAN间无法通信</strong></p>
+<pre><code class="language-cisco">! 原因1: 未启用IP路由
+SW-Core-01# show ip route
+! 如果没有路由，执行:
+SW-Core-01(config)# ip routing
+
+! 原因2: SVI未启用
+SW-Core-01# show ip interface brief
+! 如果SVI状态为down，执行:
+SW-Core-01(config)# interface vlan 10
+SW-Core-01(config-if)# no shutdown
+
+! 原因3: ACL阻止流量
+SW-Core-01# show ip access-lists
+! 检查并修改ACL规则
+</code></pre>
+<p><strong>问题2：端口频繁up/down</strong></p>
+<pre><code class="language-cisco">! 原因1: 链路质量问题
+SW-Core-01# show interfaces gigabitEthernet 1/10
+! 查看错误计数（CRC, runts, giants）
+
+! 原因2: 双工不匹配
+SW-Core-01# show interfaces gigabitEthernet 1/10 | include duplex
+! 配置正确的双工模式:
+SW-Core-01(config)# interface gigabitEthernet 1/10
+SW-Core-01(config-if)# duplex auto  或 full
+
+! 原因3: STP问题
+SW-Core-01# show spanning-tree interface gigabitEthernet 1/10
+! 配置portfast（仅用于连接终端设备）:
+SW-Core-01(config-if)# spanning-tree portfast
+</code></pre>
+<p><strong>问题3：MAC地址表溢出</strong></p>
+<pre><code class="language-cisco">! 检查MAC地址表
+SW-Core-01# show mac address-table count
+
+! 可能的攻击，查看异常端口
+SW-Core-01# show mac address-table | include &lt;端口号&gt;
+
+! 配置端口安全防护
+SW-Core-01(config)# interface gigabitEthernet 1/10
+SW-Core-01(config-if)# switchport port-security
+SW-Core-01(config-if)# switchport port-security maximum 10
+</code></pre>
+<h3 id="83-性能优化"><a class="header" href="#83-性能优化">8.3 性能优化</a></h3>
+<pre><code class="language-cisco">! 禁用不必要的服务
+SW-Core-01(config)# no ip http server
+SW-Core-01(config)# no ip http secure-server
+SW-Core-01(config)# no cdp run  ! 如果不需要CDP
+
+! 优化STP
+SW-Core-01(config)# spanning-tree mode rapid-pvst
+SW-Core-01(config)# spanning-tree portfast default
+
+! 配置日志缓冲区
+SW-Core-01(config)# logging buffered 64000
+
+! 配置NTP同步时间
+SW-Core-01(config)# ntp server 192.168.1.1
+
+! 配置SNMP监控
+SW-Core-01(config)# snmp-server community public RO
+SW-Core-01(config)# snmp-server location "Server Room"
+SW-Core-01(config)# snmp-server contact "admin@example.com"
+</code></pre>
+<hr />
+<h2 id="学习验证标准"><a class="header" href="#学习验证标准">学习验证标准</a></h2>
+<p>完成本笔记学习后，你应该能够独立完成以下任务：</p>
+<h3 id="验证标准1基础配置能力"><a class="header" href="#验证标准1基础配置能力">验证标准1：基础配置能力</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+完成设备初始化配置</li>
+<li><input disabled="" type="checkbox"/>
+配置SSH远程登录</li>
+<li><input disabled="" type="checkbox"/>
+创建VLAN并分配端口</li>
+<li><input disabled="" type="checkbox"/>
+配置Trunk链路</li>
+</ul>
+<h3 id="验证标准2三层路由能力"><a class="header" href="#验证标准2三层路由能力">验证标准2：三层路由能力</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置VLAN间路由（SVI）</li>
+<li><input disabled="" type="checkbox"/>
+配置静态路由和默认路由</li>
+<li><input disabled="" type="checkbox"/>
+配置OSPF或EIGRP动态路由</li>
+<li><input disabled="" type="checkbox"/>
+验证路由表和连通性</li>
+</ul>
+<h3 id="验证标准3访问控制能力"><a class="header" href="#验证标准3访问控制能力">验证标准3：访问控制能力</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置标准和扩展ACL</li>
+<li><input disabled="" type="checkbox"/>
+理解ACL匹配顺序</li>
+<li><input disabled="" type="checkbox"/>
+实现网络访问策略</li>
+<li><input disabled="" type="checkbox"/>
+排查ACL配置问题</li>
+</ul>
+<h3 id="验证标准4高可用性配置"><a class="header" href="#验证标准4高可用性配置">验证标准4：高可用性配置</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置HSRP或VRRP</li>
+<li><input disabled="" type="checkbox"/>
+配置EtherChannel链路聚合</li>
+<li><input disabled="" type="checkbox"/>
+实现网络冗余</li>
+<li><input disabled="" type="checkbox"/>
+测试故障切换</li>
+</ul>
+<h3 id="验证标准5生产环境运维"><a class="header" href="#验证标准5生产环境运维">验证标准5：生产环境运维</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置端口安全和DHCP Snooping</li>
+<li><input disabled="" type="checkbox"/>
+实施QoS策略</li>
+<li><input disabled="" type="checkbox"/>
+监控网络性能</li>
+<li><input disabled="" type="checkbox"/>
+排查常见网络故障</li>
+</ul>
+<hr />
+<h2 id="扩展资源与进阶建议"><a class="header" href="#扩展资源与进阶建议">扩展资源与进阶建议</a></h2>
+<h3 id="官方资源"><a class="header" href="#官方资源">官方资源</a></h3>
+<ul>
+<li><a href="https://www.cisco.com/c/en/us/support/index.html">Cisco官方文档</a></li>
+<li><a href="https://learningnetwork.cisco.com/">Cisco学习网络</a></li>
+<li><a href="https://developer.cisco.com/">Cisco DevNet</a></li>
+</ul>
+<h3 id="推荐认证"><a class="header" href="#推荐认证">推荐认证</a></h3>
+<ul>
+<li><strong>CCNA</strong> (Cisco Certified Network Associate) - 入门级</li>
+<li><strong>CCNP Enterprise</strong> - 专业级</li>
+<li><strong>CCIE</strong> (Cisco Certified Internetwork Expert) - 专家级</li>
+</ul>
+<h3 id="推荐书籍"><a class="header" href="#推荐书籍">推荐书籍</a></h3>
+<ul>
+<li>《CCNA学习指南》</li>
+<li>《TCP/IP路由技术（卷1）》</li>
+<li>《网络工程师教程》</li>
+<li>《交换技术详解》</li>
+</ul>
+<h3 id="学习路线图"><a class="header" href="#学习路线图">学习路线图</a></h3>
+<pre><code>阶段1（1-2周）：基础入门
+├── 设备初始化
+├── VLAN配置
+└── 基本命令
+
+阶段2（2-3周）：三层路由
+├── VLAN间路由
+├── 静态路由
+└── 动态路由协议
+
+阶段3（2-3周）：访问控制
+├── 标准ACL
+├── 扩展ACL
+└── 安全特性
+
+阶段4（2-4周）：高级特性
+├── HSRP/VRRP
+├── EtherChannel
+└── QoS配置
+
+阶段5（持续）：生产实战
+├── 网络设计
+├── 故障排查
+└── 性能优化
+</code></pre>
+<h3 id="实战项目建议"><a class="header" href="#实战项目建议">实战项目建议</a></h3>
+<ol>
+<li>搭建小型企业网络（3层架构）</li>
+<li>实现多VLAN网络和VLAN间路由</li>
+<li>配置网络高可用性方案</li>
+<li>实施网络安全策略</li>
+<li>配置QoS保证VoIP质量</li>
+</ol>
+<hr />
+<h2 id="附录快速参考"><a class="header" href="#附录快速参考">附录：快速参考</a></h2>
+<h3 id="a1-常用命令速查"><a class="header" href="#a1-常用命令速查">A1. 常用命令速查</a></h3>
+<pre><code class="language-cisco"># 模式切换
+enable                    # 进入特权模式
+configure terminal        # 进入全局配置
+interface vlan 10         # 进入接口配置
+end 或 Ctrl+Z            # 退出到特权模式
+exit                      # 退出到上一级
+
+# 保存配置
+write memory
+copy running-config startup-config
+
+# 查看命令
+show running-config       # 查看运行配置
+show startup-config       # 查看启动配置
+show vlan brief           # 查看VLAN
+show ip route             # 查看路由表
+show ip interface brief   # 查看接口IP
+show interfaces status    # 查看接口状态
+</code></pre>
+<h3 id="a2-vlan配置模板"><a class="header" href="#a2-vlan配置模板">A2. VLAN配置模板</a></h3>
+<pre><code class="language-cisco"># 创建VLAN
+vlan 10
+ name IT-Department
+
+# Access端口
+interface gi1/1
+ switchport mode access
+ switchport access vlan 10
+
+# Trunk端口
+interface gi1/48
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30
+</code></pre>
+<h3 id="a3-svi配置模板"><a class="header" href="#a3-svi配置模板">A3. SVI配置模板</a></h3>
+<pre><code class="language-cisco"># 启用IP路由
+ip routing
+
+# 配置SVI
+interface vlan 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+</code></pre>
+<h3 id="a4-故障排查清单"><a class="header" href="#a4-故障排查清单">A4. 故障排查清单</a></h3>
+<pre><code>□ 检查物理连接（线缆、端口灯）
+□ 检查接口状态（show interfaces）
+□ 检查VLAN配置（show vlan）
+□ 检查MAC地址表（show mac address-table）
+□ 检查ARP表（show ip arp）
+□ 检查路由表（show ip route）
+□ 检查ACL（show access-lists）
+□ 测试连通性（ping、traceroute）
+</code></pre>
+<hr />
+<h2 id="结语"><a class="header" href="#结语">结语</a></h2>
+<p>三层交换机是企业网络的核心设备，掌握它需要：</p>
+<ol>
+<li><strong>扎实的网络基础</strong>：理解OSI模型、TCP/IP协议栈</li>
+<li><strong>动手实践</strong>：多配置、多测试、多总结</li>
+<li><strong>理论结合实际</strong>：理解原理，灵活应用</li>
+<li><strong>持续学习</strong>：网络技术不断发展，保持学习</li>
+<li><strong>系统思维</strong>：从全局角度设计和优化网络</li>
+</ol>
+<p>记住：<strong>网络工程师的价值不在于记住多少命令，而在于能够设计、实施和维护稳定可靠的网络</strong>。</p>
+<p>祝你早日成为优秀的网络工程师！</p>
+<hr />
+<p><strong>文档版本</strong>: v1.0
+<strong>最后更新</strong>: 2025-11-02
+<strong>适用设备</strong>: Cisco Catalyst系列三层交换机</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/network/openvswitch.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/paas/ceph.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/network/openvswitch.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/paas/ceph.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

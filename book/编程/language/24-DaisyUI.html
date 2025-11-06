@@ -1,0 +1,2182 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>DaisyUI 实战导向学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="daisyui-实战导向学习笔记"><a class="header" href="#daisyui-实战导向学习笔记">DaisyUI 实战导向学习笔记</a></h1>
+<blockquote>
+<p>适合人群：0-5 年前端开发经验的工程师、希望快速掌握 Tailwind CSS 组件生态的转岗学习者、负责设计系统落地的应用架构师。</p>
+<p>学习目标：在 4-6 周内完成从 DaisyUI 基础到生产级应用交付的系统训练，能够独立完成组件设计、主题定制、工程集成与上线运维。</p>
+</blockquote>
+<hr />
+<h2 id="1-学习总览"><a class="header" href="#1-学习总览">1. 学习总览</a></h2>
+<h3 id="11-daisyui-是什么"><a class="header" href="#11-daisyui-是什么">1.1 DaisyUI 是什么</a></h3>
+<p>DaisyUI 是基于 <strong>Tailwind CSS</strong> 构建的开源组件库，通过语义化的 class 封装和主题系统，提供更加可维护、可复用的 UI 组件集。它兼容任何支持 Tailwind CSS 的前端框架（React、Next.js、Vue、Svelte、Laravel 等），并且具备以下特点：</p>
+<ul>
+<li>🌼 <strong>语义化类名</strong>：将 Tailwind 的原子化类组合成结构化、语义化的组件类（如 <code>btn</code>, <code>card</code>），降低样式记忆成本。</li>
+<li>🎨 <strong>内置 30+ 主题</strong>：通过 Theme API 实现主题切换、暗黑模式、品牌色定制。</li>
+<li>⚙️ <strong>自定义能力强</strong>：支持自定义主题、响应式控制、插件扩展等高级用法。</li>
+<li>🚀 <strong>生态成熟</strong>：配合 Tailwind 即装即用，拥有活跃的社区与文档资源。</li>
+</ul>
+<h3 id="12-学习路径速览"><a class="header" href="#12-学习路径速览">1.2 学习路径速览</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>学习阶段</th><th>目标产出</th><th>核心内容</th><th>预估时长</th></tr></thead><tbody>
+<tr><td>环境准备 &amp; 基础认知</td><td>搭建开发环境，完成首个组件</td><td>Tailwind &amp; DaisyUI 基础、配置流程</td><td>3 天</td></tr>
+<tr><td>组件体系精通</td><td>组件库用法、模式拆解</td><td>组件分类、API 掌握、复合组件实战</td><td>7 天</td></tr>
+<tr><td>主题与设计系统</td><td>支撑品牌自定义</td><td>主题结构、动态切换、设计 tokens</td><td>5 天</td></tr>
+<tr><td>场景化实战</td><td>交付完整页面/应用</td><td>多模块 UI 实战（仪表盘、表单、营销页）</td><td>10 天</td></tr>
+<tr><td>生产级优化</td><td>上线与运维</td><td>性能优化、无障碍、测试与团队协作</td><td>5 天</td></tr>
+</tbody></table>
+</div>
+<h3 id="13-前置知识与准备"><a class="header" href="#13-前置知识与准备">1.3 前置知识与准备</a></h3>
+<ul>
+<li>熟悉基础前端技术（HTML/ CSS / JavaScript）</li>
+<li>建议了解 Tailwind CSS 基础语法</li>
+<li>熟悉常用前端框架之一（React 或 Vue）</li>
+<li>Node.js &gt;= 16，安装 pnpm / npm / yarn 中任意工具</li>
+<li>IDE 推荐 VS Code（配合 Tailwind IntelliSense 插件）</li>
+</ul>
+<h3 id="14-实战导向的学习策略"><a class="header" href="#14-实战导向的学习策略">1.4 实战导向的学习策略</a></h3>
+<ol>
+<li><strong>系统拆解：</strong> 以功能模块划分学习内容，从基础概念到生产实践逐层深入。</li>
+<li><strong>案例驱动：</strong> 每个模块配备可直接运行的 Demo，强调手动复现而非只读文档。</li>
+<li><strong>结果量化：</strong> 明确阶段目标与验证标准，确保学习成果可被检验。</li>
+<li><strong>持续积累：</strong> 建议创建个人组件库仓库，跟踪学习过程中的最佳实践与借鉴案例。</li>
+</ol>
+<hr />
+<h2 id="2-知识结构图谱"><a class="header" href="#2-知识结构图谱">2. 知识结构图谱</a></h2>
+<pre><code>DaisyUI 学习图谱
+└── 核心基础
+    ├── DaisyUI 原理与生态
+    ├── Tailwind 配置与构建流程
+    └── 语义化组件与修饰器
+└── 组件体系
+    ├── 布局组件（layout, drawer, footer）
+    ├── 导航与交互组件（navbar, menu, tabs, steps）
+    ├── 数据展示组件（card, table, stats, timeline）
+    ├── 表单组件（input, select, checkbox, form-control）
+    └── 自定义组合与无障碍增强
+└── 主题系统
+    ├── 主题配置（`daisyui.themes`）
+    ├── 动态切换与存储策略
+    ├── Design Tokens 管理
+    └── 与设计稿对齐流程
+└── 场景化实战
+    ├── 仪表盘后台
+    ├── SaaS 营销官网
+    ├── 电商结算流
+    └── 移动端小程序样式借鉴
+└── 生产化能力
+    ├── 性能优化（摇树、按需加载、CLS 优化）
+    ├── 可访问性（ARIA 支持、键盘导航）
+    ├── 团队协同（组件规范、Storybook）
+    ├── 自动化测试
+    └── CI/CD 与设计系统演进
+</code></pre>
+<blockquote>
+<p>建议打印或导出此知识图谱，作为整个学习周期的对照表，持续标记已掌握的模块与待强化内容。</p>
+</blockquote>
+<hr />
+<h2 id="3-学习路径与实战规划"><a class="header" href="#3-学习路径与实战规划">3. 学习路径与实战规划</a></h2>
+<h3 id="31-阶段性目标与产出"><a class="header" href="#31-阶段性目标与产出">3.1 阶段性目标与产出</a></h3>
+<ol>
+<li><strong>第 1 阶段（第 1-3 天）</strong>：完成环境搭建和 DaisyUI 初体验；交付 <code>hello-daisy</code> demo 页面，掌握基本类名和组件结构。</li>
+<li><strong>第 2 阶段（第 4-10 天）</strong>：系统学习 30+ 核心组件；实现组件库文档复现与变体封装；搭建 <code>component-playground</code> 仓库。</li>
+<li><strong>第 3 阶段（第 11-15 天）</strong>：掌握主题系统；实现品牌主题定制与暗黑模式；构建 <code>theme-lab</code> 项目。</li>
+<li><strong>第 4 阶段（第 16-25 天）</strong>：完成至少两个场景化应用：一个数据密集型后台、一个营销落地页；输出复盘。</li>
+<li><strong>第 5 阶段（第 26-30 天）</strong>：优化生产部署流程，包括性能、测试、协同规范；准备上线演示或团队分享文档。</li>
+</ol>
+<h3 id="32-每周实践建议"><a class="header" href="#32-每周实践建议">3.2 每周实践建议</a></h3>
+<ul>
+<li><strong>周一-周二：</strong> 阅读官方文档 &amp; 组件手册，梳理本周要实现的页面原型。</li>
+<li><strong>周三：</strong> 编写组件，记录问题；使用 Storybook/Docs 展示组件状态。</li>
+<li><strong>周四：</strong> 集成主题、添加交互逻辑；编写基础测试。</li>
+<li><strong>周五：</strong> Review 代码与文档，输出总结与改进清单。</li>
+<li><strong>周末：</strong> 回顾笔记，观看社区案例，尝试在 side project 中应用。</li>
+</ul>
+<h3 id="33-实践仓库初始化建议"><a class="header" href="#33-实践仓库初始化建议">3.3 实践仓库初始化建议</a></h3>
+<ul>
+<li>建议创建单独 Git 仓库（如 <code>daisyui-labs</code>），按模块建立目录：
+<ul>
+<li><code>01-foundation/</code></li>
+<li><code>02-components/</code></li>
+<li><code>03-theme/</code></li>
+<li><code>04-scenarios/</code></li>
+<li><code>05-production/</code></li>
+</ul>
+</li>
+<li>每个目录以 README 或 mdx 记录学习要点与代码链接。</li>
+<li>配合 <code>pnpm workspaces</code> 或 <code>turbo repo</code> 组织多项目，便于管理不同 demo。</li>
+</ul>
+<hr />
+<h2 id="4-核心模块详解"><a class="header" href="#4-核心模块详解">4. 核心模块详解</a></h2>
+<p>以下内容拆分为六大模块，每个模块包含基础概念、实战案例、进阶扩展、常见陷阱与阶段练习。</p>
+<h3 id="模块一基础原理与环境搭建"><a class="header" href="#模块一基础原理与环境搭建">模块一：基础原理与环境搭建</a></h3>
+<h4 id="a-核心概念"><a class="header" href="#a-核心概念">A. 核心概念</a></h4>
+<ul>
+<li>DaisyUI 与 Tailwind 的关系：DaisyUI 通过 Tailwind 的插件体系扩展语义化 class；在构建阶段注入组件样式规则。</li>
+<li>安装方式：通过 npm/pnpm/yarn 安装 <code>daisyui</code>，并在 <code>tailwind.config.{js,ts}</code> 的 plugins 字段中引入。</li>
+<li>运行时表现：所有样式仍为 CSS 原子类的组合，便于后期调试与扩展。</li>
+<li>与传统 UI 库对比：无额外 JS 依赖，UI 行为可由框架逻辑控制；高度可定制。</li>
+</ul>
+<h4 id="b-环境准备步骤"><a class="header" href="#b-环境准备步骤">B. 环境准备步骤</a></h4>
+<ol>
+<li>
+<p><strong>创建项目</strong>：</p>
+<pre><code class="language-bash">pnpm create vite dsy-base --template react-ts
+cd dsy-base
+pnpm install
+</code></pre>
+</li>
+<li>
+<p><strong>安装 Tailwind 与 DaisyUI</strong>：</p>
+<pre><code class="language-bash">pnpm add -D tailwindcss postcss autoprefixer
+pnpm add daisyui
+npx tailwindcss init -p
+</code></pre>
+</li>
+<li>
+<p><strong>配置 <code>tailwind.config.ts</code></strong>：</p>
+<pre><code class="language-ts">import type { Config } from "tailwindcss";
+
+const config: Config = {
+  content: [
+    "./index.html",
+    "./src/**/*.{ts,tsx,js,jsx}"
+  ],
+  theme: {
+    extend: {}
+  },
+  plugins: [require("daisyui")],
+};
+
+export default config;
+</code></pre>
+</li>
+<li>
+<p><strong>引入基础样式</strong>：在 <code>src/index.css</code> 中加入：</p>
+<pre><code class="language-css">@tailwind base;
+@tailwind components;
+@tailwind utilities;
+</code></pre>
+</li>
+<li>
+<p><strong>验证安装</strong>：在 <code>App.tsx</code> 中写入：</p>
+<pre><code class="language-tsx">export default function App() {
+  return (
+    &lt;div className="min-h-screen bg-base-100 flex items-center justify-center"&gt;
+      &lt;button className="btn btn-primary"&gt;Hello DaisyUI&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<p>运行 <code>pnpm run dev</code>，确认按钮样式生效。</p>
+</li>
+</ol>
+<h4 id="c-实战案例环境验证脚手架"><a class="header" href="#c-实战案例环境验证脚手架">C. 实战案例：环境验证脚手架</a></h4>
+<ul>
+<li><strong>目标</strong>：创建一个包含 Navbar、Hero、Card 列表与 Footer 的单页，以验证 DaisyUI 的核心组件。</li>
+<li><strong>关键点</strong>：
+<ul>
+<li>使用 <code>navbar</code>, <code>hero</code>, <code>card</code>, <code>footer</code> 等组件组合；</li>
+<li>引入响应式断点 <code>lg:</code>, <code>md:</code> 调整布局；</li>
+<li>使用 <code>btn-primary</code>, <code>btn-outline</code> 对比按钮风格；</li>
+<li>添加 <code>data-theme="corporate"</code> 演示主题切换。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-tsx">import { useState } from "react";
+
+const themes = ["light", "dark", "corporate", "synthwave"];
+
+export default function LandingPage() {
+  const [theme, setTheme] = useState("light");
+
+  return (
+    &lt;div data-theme={theme} className="min-h-screen"&gt;
+      &lt;header className="navbar bg-base-100 shadow"&gt;
+        &lt;div className="flex-1 px-2 lg:flex-none"&gt;
+          &lt;a className="text-xl font-bold"&gt;DaisyUI Lab&lt;/a&gt;
+        &lt;/div&gt;
+        &lt;div className="flex justify-end flex-1 px-2"&gt;
+          &lt;div className="flex items-center gap-2"&gt;
+            &lt;select
+              className="select select-bordered"
+              value={theme}
+              onChange={(e) =&gt; setTheme(e.target.value)}
+            &gt;
+              {themes.map((t) =&gt; (
+                &lt;option key={t}&gt;{t}&lt;/option&gt;
+              ))}
+            &lt;/select&gt;
+            &lt;button className="btn btn-primary"&gt;开始体验&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/header&gt;
+
+      &lt;main className="hero bg-base-200 py-24"&gt;
+        &lt;div className="hero-content text-center"&gt;
+          &lt;div className="max-w-md"&gt;
+            &lt;h1 className="text-5xl font-bold"&gt;Tailwind 生态最轻量的组件库&lt;/h1&gt;
+            &lt;p className="py-6"&gt;
+              DaisyUI 让你用最简单的方式构建优雅界面。通过语义化的 class 名称，你可以像写普通 HTML 一样开发组件。
+            &lt;/p&gt;
+            &lt;button className="btn btn-secondary"&gt;查看组件库&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/main&gt;
+
+      &lt;section className="px-6 py-16 grid gap-8 lg:grid-cols-3"&gt;
+        {[1, 2, 3].map((i) =&gt; (
+          &lt;div key={i} className="card bg-base-100 shadow-xl"&gt;
+            &lt;figure&gt;
+              &lt;img src={`https://picsum.photos/seed/${i}/400/250`} alt="demo" /&gt;
+            &lt;/figure&gt;
+            &lt;div className="card-body"&gt;
+              &lt;h2 className="card-title"&gt;组件 {i}&lt;/h2&gt;
+              &lt;p&gt;结合 DaisyUI 和 Tailwind，快速实现响应式界面。&lt;/p&gt;
+              &lt;div className="card-actions justify-end"&gt;
+                &lt;button className="btn btn-outline"&gt;详情&lt;/button&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/section&gt;
+
+      &lt;footer className="footer p-10 bg-neutral text-neutral-content"&gt;
+        &lt;aside&gt;
+          &lt;h2 className="font-bold"&gt;DaisyUI Lab&lt;/h2&gt;
+          &lt;p&gt;构建现代化前端界面&lt;/p&gt;
+        &lt;/aside&gt;
+        &lt;nav&gt;
+          &lt;header className="footer-title"&gt;学习资源&lt;/header&gt;
+          &lt;a className="link link-hover"&gt;官方文档&lt;/a&gt;
+          &lt;a className="link link-hover"&gt;GitHub 仓库&lt;/a&gt;
+          &lt;a className="link link-hover"&gt;社区案例&lt;/a&gt;
+        &lt;/nav&gt;
+      &lt;/footer&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<blockquote>
+<p>建议将案例保存至 <code>01-foundation/landing-page</code>，并编写 <code>README.md</code> 记录构建流程及遇到的问题。</p>
+</blockquote>
+<h4 id="d-进阶与扩展"><a class="header" href="#d-进阶与扩展">D. 进阶与扩展</a></h4>
+<ul>
+<li>将 <code>tailwind.config.ts</code> 改写为 TypeScript，配合 <code>@types/tailwindcss</code> 提升类型安全。</li>
+<li>使用 <code>vite-plugin-tailwind-purge</code> 或内置 <code>content</code> 配置优化打包体积。</li>
+<li>尝试在 Next.js / Nuxt 中重复搭建流程，比较差异。</li>
+<li>探索 DaisyUI 插件机制，了解如何扩展新的组件类名。</li>
+</ul>
+<h4 id="e-常见错误与排查"><a class="header" href="#e-常见错误与排查">E. 常见错误与排查</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>场景</th><th>问题现象</th><th>解决方案</th></tr></thead><tbody>
+<tr><td><code>btn</code> 样式不生效</td><td>未引入 DaisyUI 插件</td><td>检查 <code>tailwind.config</code> 的 <code>plugins</code> 数组是否包含 <code>require('daisyui')</code></td></tr>
+<tr><td>自定义主题颜色不起作用</td><td>错误设置 CSS 变量</td><td>确认主题变量定义在 <code>daisyui.themes</code> 中，变量名与 DaisyUI 规范一致</td></tr>
+<tr><td>构建后样式丢失</td><td>Purge 路径未覆盖到组件</td><td>视情况增加 <code>content</code> 配置，包含 <code>.tsx/.vue/.mdx</code> 等文件</td></tr>
+<tr><td>主题切换时闪烁</td><td>未持久化主题选择</td><td>使用 <code>localStorage</code> 或框架状态管理保存主题值</td></tr>
+</tbody></table>
+</div>
+<h4 id="f-模块练习"><a class="header" href="#f-模块练习">F. 模块练习</a></h4>
+<ol>
+<li>使用 DaisyUI 组件重构既有项目中的登录页面，要求包括表单验证和响应式布局。</li>
+<li>编写脚本统计项目中使用的 DaisyUI 组件频率，并绘制简单报表。</li>
+<li>研究 DaisyUI 官方发布的 <code>Next.js</code> 模板，记录差异项。</li>
+</ol>
+<hr />
+<h3 id="模块二组件体系与模式化使用"><a class="header" href="#模块二组件体系与模式化使用">模块二：组件体系与模式化使用</a></h3>
+<h4 id="a-组件分类与设计理念"><a class="header" href="#a-组件分类与设计理念">A. 组件分类与设计理念</a></h4>
+<p>DaisyUI 将组件按照交互复杂度与使用频次划分为五大类。学习时建议从以下维度拆解：</p>
+<ul>
+<li><strong>结构组件（Layout）</strong>：<code>container</code>, <code>hero</code>, <code>footer</code>, <code>drawer</code>, <code>stack</code>。</li>
+<li><strong>导航组件（Navigation）</strong>：<code>navbar</code>, <code>menu</code>, <code>tabs</code>, <code>breadcrumbs</code>, <code>steps</code>。</li>
+<li><strong>数据展示（Data Display）</strong>：<code>card</code>, <code>table</code>, <code>stats</code>, <code>timeline</code>, <code>badge</code>。</li>
+<li><strong>反馈组件（Feedback）</strong>：<code>alert</code>, <code>toast</code>, <code>progress</code>, <code>modal</code>, <code>skeleton</code>。</li>
+<li><strong>表单组件（Form）</strong>：<code>input</code>, <code>select</code>, <code>textarea</code>, <code>checkbox</code>, <code>toggle</code>, <code>file-input</code>。</li>
+</ul>
+<p>核心理念：<strong>通过可组合的 class 语义实现组件模式</strong>。类名组合遵循“容器 + 状态 + 修饰”三段式，例如 <code>btn btn-primary btn-sm</code>。</p>
+<h4 id="b-组件-api-的通用规律"><a class="header" href="#b-组件-api-的通用规律">B. 组件 API 的通用规律</a></h4>
+<ul>
+<li>结构 class：定义组件类型，如 <code>card</code>, <code>alert</code>, <code>drawer</code>。</li>
+<li>状态 class：定义状态与语义，如 <code>btn-primary</code>, <code>alert-warning</code>, <code>badge-outline</code>。</li>
+<li>尺寸 class：<code>btn-sm</code>, <code>avatar-lg</code>, <code>table-xs</code>。</li>
+<li>布局 class：使用 Tailwind 原子类控制内外边距、Flex/Grid 布局。</li>
+<li>修饰 class：增强交互 <code>btn-ghost</code>, <code>modal-bottom</code>, <code>tabs-boxed</code>。</li>
+</ul>
+<p>掌握这些规律后，可以快速在文档中找到对应的 class 组合并迁移到项目。</p>
+<h4 id="c-实战案例组件变体库"><a class="header" href="#c-实战案例组件变体库">C. 实战案例：组件变体库</a></h4>
+<ul>
+<li><strong>目标</strong>：构建一个组件变体展示平台，类似 mini Storybook。</li>
+<li><strong>功能点</strong>：
+<ul>
+<li>左侧列表展示组件类别；</li>
+<li>右侧区域渲染不同变体；</li>
+<li>允许切换主题观察差异；</li>
+<li>提供复制 class 的功能。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>程序结构建议：使用 React + Vite + DaisyUI，利用 <code>useState</code> 管理选中的组件和主题；也可以改用 Vue + Pinia。</p>
+</blockquote>
+<p>核心代码片段：</p>
+<pre><code class="language-tsx">interface ComponentVariant {
+  name: string;
+  description: string;
+  preview: React.ReactNode;
+  code: string;
+}
+
+const buttonVariants: ComponentVariant[] = [
+  {
+    name: "Primary",
+    description: "主按钮，用于强调首要操作",
+    preview: &lt;button className="btn btn-primary"&gt;Primary&lt;/button&gt;,
+    code: `&lt;button class="btn btn-primary"&gt;Primary&lt;/button&gt;`
+  },
+  {
+    name: "Outline",
+    description: "次级操作或需要轻量视觉的场景",
+    preview: &lt;button className="btn btn-outline"&gt;Outline&lt;/button&gt;,
+    code: `&lt;button class="btn btn-outline"&gt;Outline&lt;/button&gt;`
+  },
+  {
+    name: "Ghost",
+    description: "背景色丰富、按钮需与背景融合时使用",
+    preview: &lt;button className="btn btn-ghost"&gt;Ghost&lt;/button&gt;,
+    code: `&lt;button class="btn btn-ghost"&gt;Ghost&lt;/button&gt;`
+  }
+];
+</code></pre>
+<p>案例拓展建议：</p>
+<ol>
+<li>将组件元数据抽象为 JSON 配置，利用 <code>map</code> 渲染，降低维护成本。</li>
+<li>集成 <code>copied</code> 状态提示（利用 DaisyUI 的 <code>toast</code>）。</li>
+<li>使用 <code>react-router</code> 构建模块化页面，展示更多组件类别。</li>
+</ol>
+<h4 id="d-创建设计语言统一组件语义"><a class="header" href="#d-创建设计语言统一组件语义">D. 创建设计语言：统一组件语义</a></h4>
+<ul>
+<li>定义命名规范：在团队中约定组件 class 的额外语义，如 <code>btn-primary</code> 对应主色、<code>btn-accent</code> 对应强调色。</li>
+<li>编写组件基线文档：记录每个组件的推荐尺寸、可用状态、禁用场景。</li>
+<li>使用 <code>clsx</code> 或 <code>cva</code>（Class Variance Authority）封装 DaisyUI class，提升组合的可读性。</li>
+</ul>
+<pre><code class="language-ts">import { cva, VariantProps } from "class-variance-authority";
+
+export const button = cva("btn", {
+  variants: {
+    intent: {
+      primary: "btn-primary",
+      secondary: "btn-secondary",
+      ghost: "btn-ghost",
+    },
+    size: {
+      sm: "btn-sm",
+      md: "btn-md",
+      lg: "btn-lg",
+    },
+  },
+  defaultVariants: {
+    intent: "primary",
+    size: "md",
+  },
+});
+
+export type ButtonProps = VariantProps&lt;typeof button&gt;;
+</code></pre>
+<h4 id="e-高级实践复合组件构建"><a class="header" href="#e-高级实践复合组件构建">E. 高级实践：复合组件构建</a></h4>
+<ul>
+<li>将 DaisyUI 组件与 Headless UI / Radix primitives 结合，为 <code>modal</code>、<code>dropdown</code> 等交互提供更强状态管理。</li>
+<li>使用 <code>@dnd-kit</code> 集成可拖拽界面，配合 DaisyUI 的 <code>card</code> 快速构建 Kanban。</li>
+<li>结合 <code>framer-motion</code> 为组件添加入场动画，提升视觉体验。</li>
+</ul>
+<h4 id="f-常见问题与解决策略"><a class="header" href="#f-常见问题与解决策略">F. 常见问题与解决策略</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>问题场景</th><th>解决策略</th></tr></thead><tbody>
+<tr><td>组件之间的间距定义不清晰</td><td>统一使用 Tailwind spacing scale，并在 <code>theme.extend.spacing</code> 定义 alias</td></tr>
+<tr><td>DaisyUI 与第三方组件样式冲突</td><td>利用 <code>@layer</code> 自定义覆盖，或限制 DaisyUI 样式作用域</td></tr>
+<tr><td>模态窗滚动穿透</td><td>在 <code>open</code> 状态添加 <code>modal-open</code> class，或结合框架控制 <code>body</code> 样式</td></tr>
+<tr><td>表单控件主题不一致</td><td>确保主题颜色覆盖 <code>--bc</code>, <code>--b1</code> 等基础变量，同时检查浏览器默认样式</td></tr>
+</tbody></table>
+</div>
+<h4 id="g-模块练习"><a class="header" href="#g-模块练习">G. 模块练习</a></h4>
+<ol>
+<li>构建一个包含导航、侧边栏、数据表格、统计卡片的后台布局，要求支持移动端适配。</li>
+<li>使用 DaisyUI 的 <code>timeline</code>、<code>steps</code> 组件复刻产品流程页面。</li>
+<li>将 <code>table</code> 与 <code>progress</code> 组件组合，展示任务列表的完成度。</li>
+</ol>
+<hr />
+<h3 id="模块三主题系统与设计对齐"><a class="header" href="#模块三主题系统与设计对齐">模块三：主题系统与设计对齐</a></h3>
+<h4 id="a-主题系统原理"><a class="header" href="#a-主题系统原理">A. 主题系统原理</a></h4>
+<ul>
+<li>DaisyUI 的主题以 <strong>CSS 变量</strong> 为核心，通过 <code>data-theme</code> 属性或 <code>class</code> 应用于根节点。</li>
+<li>官方内置 30+ 主题（<code>light</code>, <code>dark</code>, <code>cupcake</code>, <code>corporate</code> 等），底层变量如 <code>--p</code>（primary）、<code>--s</code>（secondary）、<code>--b1</code>（base-100）。</li>
+<li>可以通过 Tailwind 配置中的 <code>daisyui.themes</code> 定义自定义主题，或扩展现有主题。</li>
+</ul>
+<pre><code class="language-ts">const config = {
+  daisyui: {
+    themes: [
+      "light",
+      "dark",
+      {
+        brand: {
+          primary: "#1d4ed8",
+          secondary: "#9333ea",
+          accent: "#f59e0b",
+          neutral: "#1f2937",
+          "base-100": "#f9fafb",
+          info: "#0ea5e9",
+          success: "#22c55e",
+          warning: "#f97316",
+          error: "#ef4444",
+        },
+      },
+    ],
+  },
+};
+</code></pre>
+<h4 id="b-主题设计流程"><a class="header" href="#b-主题设计流程">B. 主题设计流程</a></h4>
+<ol>
+<li><strong>采集设计稿 tokens</strong>：与设计师确认品牌主色、副色、灰度、状态色。</li>
+<li><strong>映射 DaisyUI 变量</strong>：将设计 tokens 映射到 <code>primary</code>, <code>primary-content</code>, <code>neutral</code>, <code>base-100</code> 等变量。</li>
+<li><strong>配置与验证</strong>：更新 <code>tailwind.config</code> 后，使用 <code>Theme Generator</code> 页面验证效果。</li>
+<li><strong>主题切换策略</strong>：
+<ul>
+<li>前端直接通过 <code>document.documentElement.dataset.theme</code> 切换；</li>
+<li>将主题存储在 <code>localStorage</code> 或用户配置；</li>
+<li>SSR 场景（Next.js）要在服务端注入默认主题，避免闪烁。</li>
+</ul>
+</li>
+</ol>
+<h4 id="c-案例多品牌主题系统"><a class="header" href="#c-案例多品牌主题系统">C. 案例：多品牌主题系统</a></h4>
+<p>目标：为 SaaS 平台构建 <strong>默认</strong>、<strong>深色</strong>、<strong>品牌</strong> 三套主题，支持用户自定义。</p>
+<p>核心步骤：</p>
+<ol>
+<li>
+<p><strong>定义主题集</strong>：</p>
+<pre><code class="language-ts">const themes = [
+  "light",
+  "dark",
+  {
+    brand: {
+      primary: "#2563eb",
+      "primary-content": "#f8fafc",
+      secondary: "#22d3ee",
+      accent: "#f97316",
+      neutral: "#0f172a",
+      "base-100": "#f1f5f9",
+      info: "#38bdf8",
+      success: "#4ade80",
+      warning: "#facc15",
+      error: "#f87171",
+    },
+  },
+];
+</code></pre>
+</li>
+<li>
+<p><strong>主题管理 Hook</strong>：</p>
+<pre><code class="language-ts">import { useEffect, useState } from "react";
+
+const STORAGE_KEY = "daisyui-theme";
+
+export function useTheme() {
+  const [theme, setTheme] = useState(() =&gt; localStorage.getItem(STORAGE_KEY) || "light");
+
+  useEffect(() =&gt; {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem(STORAGE_KEY, theme);
+  }, [theme]);
+
+  return { theme, setTheme };
+}
+</code></pre>
+</li>
+<li>
+<p><strong>主题配置页面</strong>：使用 <code>select</code>, <code>input[type=color]</code>, <code>slider</code> 创建主题编辑界面，最终输出 JSON 片段供团队同步。</p>
+</li>
+<li>
+<p><strong>验证策略</strong>：集成 <code>jest-dom</code> 或 <code>vitest</code> 与 <code>@testing-library/react</code>，通过断言 CSS 变量值确保主题加载正确。</p>
+</li>
+</ol>
+<h4 id="d-将-daisyui-与设计系统对齐"><a class="header" href="#d-将-daisyui-与设计系统对齐">D. 将 DaisyUI 与设计系统对齐</a></h4>
+<ul>
+<li>与设计团队制定 <strong>Token 映射表</strong>，记录 Figma 变量 → DaisyUI 变量的对应关系。</li>
+<li>使用 <code>style-dictionary</code> 将设计 tokens 转换为 Tailwind 主题配置。</li>
+<li>在 Storybook 中开启 <code>ThemeSwitcher</code>，让设计评审时可以快速切换主题对比。</li>
+</ul>
+<h4 id="e-主题性能优化"><a class="header" href="#e-主题性能优化">E. 主题性能优化</a></h4>
+<ul>
+<li>禁用不需要的内置主题：<code>daisyui.themes = ["light", "dark", "brand"]</code>，避免构建多余类。</li>
+<li>使用 <code>prefers-color-scheme</code> 检测用户系统主题，提供默认值。</li>
+<li>SSR 场景（Next.js）：在 <code>_document.tsx</code> 中插入 <code>&lt;script&gt;</code> 同步主题，减少闪烁。</li>
+</ul>
+<h4 id="f-常见问题"><a class="header" href="#f-常见问题">F. 常见问题</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>原因</th><th>解决</th></tr></thead><tbody>
+<tr><td>自定义主题颜色生效不全</td><td>未覆盖 <code>primary-content</code> 等文本色变量</td><td>补充文本/边框变量，或检查 Tailwind <code>extend.colors</code> 冲突</td></tr>
+<tr><td>动态生成主题变量</td><td>运行时新增主题未在构建中生效</td><td>需要重载 <code>daisyui.themes</code> 或使用 <code>style</code> 标签注入变量</td></tr>
+<tr><td>主题切换闪烁</td><td>客户端渲染初始值与服务器不同</td><td>初始化时读取持久化主题，或在 SSR 中提前注入</td></tr>
+</tbody></table>
+</div>
+<h4 id="g-练习"><a class="header" href="#g-练习">G. 练习</a></h4>
+<ol>
+<li>将团队的品牌手册转换为 DaisyUI 主题配置，编写变更日志。</li>
+<li>实现 <code>Theme Playground</code> 页面，允许用户拖动滑块调节主色，实时展示按钮、表单、表格的样式。</li>
+<li>编写自动化测试，检测所有主题下的 <code>btn-primary</code> 与 <code>btn-secondary</code> 对比度，确保符合 WCAG AA。</li>
+</ol>
+<hr />
+<h3 id="模块四场景化实战项目"><a class="header" href="#模块四场景化实战项目">模块四：场景化实战项目</a></h3>
+<h4 id="a-实战一运营仪表盘"><a class="header" href="#a-实战一运营仪表盘">A. 实战一：运营仪表盘</a></h4>
+<ul>
+<li><strong>目标</strong>：实现包含顶部导航、关键指标卡片、带筛选的数据表格、活动进度时间线的仪表盘。</li>
+<li><strong>重点组件</strong>：<code>navbar</code>, <code>stats</code>, <code>table</code>, <code>badge</code>, <code>dropdown</code>, <code>tabs</code>, <code>modal</code>。</li>
+<li><strong>数据模拟</strong>：使用 <code>msw</code> 或 <code>faker.js</code> 生成模拟数据，便于重复调试。</li>
+</ul>
+<blockquote>
+<p>推荐步骤：</p>
+<ol>
+<li>绘制布局草图，确定响应式断点；</li>
+<li>按区域拆分组件（导航、侧边、主面板）;</li>
+<li>为每个区域选定 DaisyUI 组件基础，同时使用 Tailwind class 控制细节；</li>
+<li>编写数据逻辑和状态管理（React Query/ Zustand）。</li>
+</ol>
+</blockquote>
+<p>关键代码示例（统计卡片组件）：</p>
+<pre><code class="language-tsx">interface StatCardProps {
+  label: string;
+  value: string;
+  trend: number;
+}
+
+export function StatCard({ label, value, trend }: StatCardProps) {
+  const trendClass = trend &gt;= 0 ? "text-success" : "text-error";
+  return (
+    &lt;div className="stat"&gt;
+      &lt;div className="stat-title"&gt;{label}&lt;/div&gt;
+      &lt;div className="stat-value"&gt;{value}&lt;/div&gt;
+      &lt;div className={`stat-desc ${trendClass}`}&gt;
+        {trend &gt;= 0 ? "↑" : "↓"} {Math.abs(trend)}% vs last month
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<p><strong>测试点</strong>：</p>
+<ul>
+<li>主题切换后各组件对比度是否达标；</li>
+<li>表格滚动与固定列效果；</li>
+<li>Modal + <code>form-control</code> 组合的可用性。</li>
+</ul>
+<p><strong>扩展</strong>：接入真实接口时，考虑 <code>Loading</code> 占位与 <code>Empty State</code> 设计，DaisyUI 提供 <code>skeleton</code>、<code>empty</code> 组件模式。</p>
+<h4 id="b-实战二saas-营销落地页"><a class="header" href="#b-实战二saas-营销落地页">B. 实战二：SaaS 营销落地页</a></h4>
+<ul>
+<li><strong>目标</strong>：构建 Hero、客户案例、价格方案、FAQ 等模块，确保转化效率。</li>
+<li><strong>重点组件</strong>：<code>hero</code>, <code>carousel</code>, <code>card</code>, <code>pricing table (自定义)</code>, <code>collapse</code>, <code>cta</code>。</li>
+<li><strong>设计建议</strong>：
+<ul>
+<li>使用 <code>btn btn-primary</code> + <code>btn btn-outline</code> 组合强调主次操作；</li>
+<li><code>rating</code>, <code>badge</code>, <code>avatar</code> 组件用于增强社交证明；</li>
+<li>价格卡片可利用 <code>shadow-2xl</code> 与 <code>border</code> 强化视觉层级。</li>
+</ul>
+</li>
+</ul>
+<p><strong>SEO 与性能优化</strong>：</p>
+<ul>
+<li>使用 Next.js SSG，结合 DaisyUI 生成静态页面；</li>
+<li>通过 <code>@vercel/analytics</code> 观察用户行为；</li>
+<li>优化图片：使用 <code>next/image</code> 或 <code>astro</code> 处理。</li>
+</ul>
+<h4 id="c-实战三tailwind--daisyui-设计系统工作台"><a class="header" href="#c-实战三tailwind--daisyui-设计系统工作台">C. 实战三：Tailwind + DaisyUI 设计系统工作台</a></h4>
+<ul>
+<li><strong>目标</strong>：打造内部组件管理平台，实现组件文档、版本控制、发布流程。</li>
+<li><strong>核心能力</strong>：
+<ul>
+<li>引入 <code>Storybook</code> 并配置 DaisyUI 主题切换；</li>
+<li>借助 <code>storybook-addon-themes</code> 对比多主题；</li>
+<li>使用 <code>chromatic</code> 或 <code>loki</code> 做视觉回归测试。</li>
+</ul>
+</li>
+</ul>
+<p><strong>关键配置</strong>：</p>
+<pre><code class="language-js">// .storybook/main.js
+module.exports = {
+  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(ts|tsx)"],
+  addons: [
+    "@storybook/addon-essentials",
+    {
+      name: "storybook-addon-themes",
+      options: {
+        themes: [
+          { name: "Light", class: "light", color: "#ffffff" },
+          { name: "Dark", class: "dark", color: "#1f2937" },
+          { name: "Brand", class: "brand", color: "#2563eb" },
+        ],
+        defaultTheme: "Light",
+      },
+    },
+  ],
+  framework: {
+    name: "@storybook/react-vite",
+    options: {},
+  },
+};
+</code></pre>
+<h4 id="d-场景复盘模板"><a class="header" href="#d-场景复盘模板">D. 场景复盘模板</a></h4>
+<p>每次完成实战项目后，填写以下复盘列：</p>
+<div class="table-wrapper"><table><thead><tr><th>维度</th><th>关键问题</th><th>解决策略</th><th>后续改进</th></tr></thead><tbody>
+<tr><td>布局与响应式</td><td>手机端导航折叠策略？</td><td>使用 <code>drawer</code> + <code>lg:hidden</code> 控制</td><td>增加手势关闭</td></tr>
+<tr><td>品牌一致性</td><td>背景色与按钮色冲突</td><td>调整主题变量 <code>--b2</code>、<code>--p</code></td><td>引入设计审查流程</td></tr>
+<tr><td>交互反馈</td><td>提交表单反馈不足</td><td>使用 <code>toast</code> + <code>progress</code></td><td>增加失败提示与回退</td></tr>
+<tr><td>性能</td><td>首屏加载偏慢</td><td>利用 Vite 预构建、分离大资源</td><td>引入懒加载</td></tr>
+</tbody></table>
+</div>
+<h4 id="e-实战四多租户-crm-客户生命周期中心"><a class="header" href="#e-实战四多租户-crm-客户生命周期中心">E. 实战四：多租户 CRM 客户生命周期中心</a></h4>
+<ul>
+<li><strong>业务目标</strong>：对接多品牌的 SaaS CRM，呈现线索、商机、签约、续约的全生命周期数据，支持租户级主题与权限。</li>
+<li><strong>界面结构</strong>：
+<ol>
+<li>顶部多品牌切换栏（<code>tabs tabs-boxed</code> + <code>avatar</code> 展示 LOGO）。</li>
+<li>左侧租户导航（<code>menu menu-compact</code>）与指标筛选面板（<code>drawer</code>）。</li>
+<li>主区域包含漏斗统计（<code>stats</code> + <code>radial-progress</code>）、看板（<code>card</code> + <code>badge</code>）与活动时间轴（<code>timeline</code>）。</li>
+<li>右侧为提醒中心（<code>alert</code> + <code>toast</code>）与待办列表（<code>checkbox</code> + <code>list</code>）。</li>
+</ol>
+</li>
+<li><strong>组件映射表</strong>：</li>
+</ul>
+<div class="table-wrapper"><table><thead><tr><th>业务模块</th><th>DaisyUI 组件</th><th>Tailwind 配合点</th></tr></thead><tbody>
+<tr><td>品牌切换</td><td><code>tabs</code>, <code>avatar</code>, <code>dropdown</code></td><td><code>gap-2</code>, <code>rounded-full</code>, <code>shadow-md</code></td></tr>
+<tr><td>数据指标</td><td><code>stats</code>, <code>radial-progress</code>, <code>badge</code></td><td><code>text-success</code>, <code>grid grid-cols-4</code></td></tr>
+<tr><td>销售漏斗</td><td><code>steps</code>, <code>card</code>, <code>collapse</code></td><td><code>bg-base-200</code>, <code>border-l</code>, <code>space-y-4</code></td></tr>
+<tr><td>活动时间轴</td><td><code>timeline</code>, <code>badge</code>, <code>tooltip</code></td><td><code>timeline-middle</code>, <code>timeline-start</code>, <code>text-sm</code></td></tr>
+<tr><td>待办提醒</td><td><code>alert</code>, <code>checkbox</code>, <code>progress</code></td><td><code>flex flex-col gap-3</code>, <code>accent-primary</code></td></tr>
+</tbody></table>
+</div>
+<ul>
+<li><strong>实现步骤</strong>：
+<ol>
+<li>设计 <code>TenantContext</code>，管理当前品牌主题、权限和语言。</li>
+<li>创建 <code>useFunnelData</code> Hook，通过 REST/GraphQL 拉取漏斗数据，并在空态时使用 <code>skeleton</code>.</li>
+<li>使用 <code>stats</code> 组件组合 KPI，还原业务指标命名、同比环比提示。</li>
+<li>通过 <code>columns-3</code> 布局将漏斗看板卡片化，并结合 <code>collapse</code> 制作详情浮层。</li>
+<li>主题切换使用 <code>setTheme(tenant.theme)</code>，同时设置 <code>document.title</code>。</li>
+<li>右侧提醒区采用 <code>toast</code> + <code>swap</code> 切换状态，支持任务完成打勾。</li>
+</ol>
+</li>
+<li><strong>关键代码片段</strong>：</li>
+</ul>
+<pre><code class="language-tsx">interface Tenant {
+  id: string;
+  name: string;
+  theme: string;
+  accentColor: string;
+}
+
+const tenants: Tenant[] = [
+  { id: "alpha", name: "Alpha CRM", theme: "corporate", accentColor: "#2563eb" },
+  { id: "beta", name: "Beta Sales", theme: "luxury", accentColor: "#c084fc" },
+  { id: "gamma", name: "Gamma Retail", theme: "retro", accentColor: "#fb7185" },
+];
+
+export function TenantSwitcher() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    &lt;div className="tabs tabs-boxed"&gt;
+      {tenants.map((tenant) =&gt; (
+        &lt;button
+          key={tenant.id}
+          className={clsx("tab", { "tab-active": theme === tenant.theme })}
+          onClick={() =&gt; setTheme(tenant.theme)}
+          style={{ borderColor: tenant.accentColor }}
+        &gt;
+          &lt;div className="flex items-center gap-2"&gt;
+            &lt;span className="h-2 w-2 rounded-full" style={{ backgroundColor: tenant.accentColor }} /&gt;
+            {tenant.name}
+          &lt;/div&gt;
+        &lt;/button&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<pre><code class="language-tsx">interface FunnelStage {
+  id: string;
+  label: string;
+  leads: number;
+  conversion: number;
+}
+
+function FunnelSteps({ stages }: { stages: FunnelStage[] }) {
+  return (
+    &lt;ul className="steps steps-vertical lg:steps-horizontal"&gt;
+      {stages.map((stage) =&gt; (
+        &lt;li key={stage.id} className="step step-primary"&gt;
+          &lt;div className="flex flex-col items-start gap-2"&gt;
+            &lt;span className="font-semibold"&gt;{stage.label}&lt;/span&gt;
+            &lt;span className="text-sm opacity-80"&gt;{stage.leads} leads&lt;/span&gt;
+            &lt;progress className="progress progress-primary w-40" value={stage.conversion} max={100} /&gt;
+            &lt;span className="text-xs"&gt;转化率 {stage.conversion}%&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>数据状态规划</strong>：使用 React Query 的 <code>useQuery</code>，对租户切换时的缓存策略采用 <code>keepPreviousData</code>，避免 UI 抖动；空数据时使用 DaisyUI <code>empty</code> 模式。</li>
+<li><strong>测试与验证</strong>：
+<ul>
+<li>E2E：使用 Playwright 模拟租户切换、过滤条件设定，验证主题切换与数据刷新。</li>
+<li>可访问性：为 <code>tabs</code> 添加 <code>role="tablist"</code>、<code>aria-selected</code>，保证键盘导航。</li>
+<li>性能：使用 React Profiler 检查大数据表渲染，必要时引入虚拟滚动。</li>
+</ul>
+</li>
+<li><strong>扩展挑战</strong>：加入 SLA 预警（<code>badge badge-error</code> + <code>countdown</code>）、多时区展示（<code>tooltip</code> 标记归属时区），支持实时数据推送（结合 <code>pusher-js</code>）。</li>
+</ul>
+<h4 id="f-实战五智慧医疗预约与排班平台"><a class="header" href="#f-实战五智慧医疗预约与排班平台">F. 实战五：智慧医疗预约与排班平台</a></h4>
+<ul>
+<li><strong>业务目标</strong>：实现多科室预约、排班、医生详情与电子病历查看，涵盖移动端紧凑布局与无障碍需求。</li>
+<li><strong>界面构成</strong>：
+<ol>
+<li>顶部信息条显示医院公告（<code>alert alert-info</code>）。</li>
+<li>左侧科室筛选（<code>menu menu-lg</code>）+ 医生列表（<code>card</code> + <code>badge</code>）。</li>
+<li>中间预约日历（<code>tabs</code> + 自定义 <code>calendar</code> 组件 + <code>modal</code>）与候诊状态（<code>steps</code>）。</li>
+<li>右侧病历预览（<code>collapse</code> + <code>timeline</code>）。</li>
+</ol>
+</li>
+<li><strong>关键组件策略</strong>：
+<ul>
+<li>使用 <code>modal</code> 搭配 <code>form-control</code> 提交预约信息，校验与反馈依赖 <code>toast</code>。</li>
+<li><code>steps</code> 用于展示就诊流程：挂号 -&gt; 候诊 -&gt; 面诊 -&gt; 付费 -&gt; 开药。</li>
+<li><code>badge</code> 区分医生职称、是否可远程问诊。</li>
+<li><code>drawer</code> 在移动端展示预约筛选面板。</li>
+</ul>
+</li>
+<li><strong>实现流程</strong>：
+<ol>
+<li>使用 <code>FullCalendar</code> 或 <code>react-big-calendar</code> 与 DaisyUI 组合，实现周/月视图；在空白日期插入 <code>btn btn-ghost</code>.</li>
+<li>构建 <code>DoctorCard</code> 组件，嵌套 <code>avatar</code>, <code>rating</code>, <code>badge</code>。</li>
+<li>引入语音辅助（ Web Speech API ）；在 DaisyUI 组件上加 <code>aria-live</code>。</li>
+<li>拟定 <code>AppointmentForm</code> 表单，结合 <code>react-hook-form</code> + <code>zod</code> 进行验证。</li>
+<li>预约确认后触发 <code>toast</code>，并在 <code>timeline</code> 中追加记录。</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-tsx">function AppointmentModal({ doctor, open, onClose }: Props) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm&lt;FormValues&gt;({ resolver: zodResolver(schema) });
+
+  const onSubmit = async (values: FormValues) =&gt; {
+    await createAppointment(values);
+    toast.success("预约成功，已短信通知患者");
+    onClose();
+  };
+
+  return (
+    &lt;dialog className={`modal ${open ? "modal-open" : ""}`}&gt;
+      &lt;form className="modal-box space-y-4" onSubmit={handleSubmit(onSubmit)}&gt;
+        &lt;h3 className="font-bold text-lg"&gt;{doctor.name} - 预约信息&lt;/h3&gt;
+        &lt;label className="form-control w-full"&gt;
+          &lt;div className="label"&gt;
+            &lt;span className="label-text"&gt;预约日期&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;input
+            type="date"
+            className={clsx("input input-bordered", { "input-error": errors.date })}
+            {...register("date")}
+          /&gt;
+          {errors.date &amp;&amp; &lt;span className="text-error text-sm"&gt;{errors.date.message}&lt;/span&gt;}
+        &lt;/label&gt;
+        &lt;label className="form-control w-full"&gt;
+          &lt;div className="label"&gt;
+            &lt;span className="label-text"&gt;就诊时段&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;select className="select select-bordered" {...register("slot")}&gt;
+            &lt;option value="morning"&gt;上午&lt;/option&gt;
+            &lt;option value="afternoon"&gt;下午&lt;/option&gt;
+            &lt;option value="evening"&gt;夜诊&lt;/option&gt;
+          &lt;/select&gt;
+        &lt;/label&gt;
+        &lt;div className="modal-action"&gt;
+          &lt;button type="button" className="btn btn-ghost" onClick={onClose}&gt;
+            取消
+          &lt;/button&gt;
+          &lt;button type="submit" className={clsx("btn btn-primary", { loading: isSubmitting })}&gt;
+            确认预约
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/form&gt;
+    &lt;/dialog&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>测试要点</strong>：
+<ul>
+<li>端对端场景：预约流程、排队状态更新、取消预约。</li>
+<li>无障碍：应用 <code>prefers-reduced-motion</code>，为 <code>modal</code> 提供 <code>aria-modal="true"</code>。</li>
+<li>国际化：支持多语言日期格式与右到左布局（阿语）。</li>
+</ul>
+</li>
+<li><strong>扩展</strong>：
+<ul>
+<li>与 HIMSS 认证流程对齐，引入权限系统（医生、护士、管理员）。</li>
+<li>集成电子病历 PDF 预览（<code>react-pdf</code>），使用 DaisyUI <code>tabs</code> 切换视图。</li>
+</ul>
+</li>
+</ul>
+<h4 id="g-实战六电商全链路体验浏览-下单-售后"><a class="header" href="#g-实战六电商全链路体验浏览-下单-售后">G. 实战六：电商全链路体验（浏览-下单-售后）</a></h4>
+<ul>
+<li><strong>整体目标</strong>：构建电商前台 + 运营后台组合场景，涵盖商品浏览、购物车、支付、订单跟踪和售后工单。</li>
+<li><strong>模块划分</strong>：
+<ol>
+<li><strong>前台商城</strong>：<code>navbar</code>, <code>mega-menu</code>, <code>card</code>, <code>carousel</code>, <code>badge</code>, <code>drawer</code>（购物车）。</li>
+<li><strong>结算流程</strong>：<code>steps</code>, <code>form-control</code>, <code>input-group</code>, <code>collapse</code>（优惠券）。</li>
+<li><strong>订单跟踪</strong>：<code>timeline</code>, <code>progress</code>, <code>alert</code>.</li>
+<li><strong>售后后台</strong>：<code>table</code>, <code>tabs</code>, <code>modal</code>, <code>toast</code>, <code>chat bubble</code>.</li>
+</ol>
+</li>
+<li><strong>关键实现细节</strong>：
+<ul>
+<li>购物车 <code>drawer</code> 使用 <code>drawer-end</code> + <code>drawer-button</code> 控制显示；在移动端改用 <code>bottom-sheet</code> 模式（<code>modal-bottom</code>）。</li>
+<li>商品卡片 <code>card</code> 结合 <code>badge</code> 表示库存状态，<code>rating</code> 展示评分。</li>
+<li>使用 <code>grid grid-cols-1 md:grid-cols-4</code> 构建响应式产品列表；<code>aspect-square</code> 限制图片比例。</li>
+<li>结算页 <code>steps</code> 列出「填写地址 -&gt; 支付 -&gt; 确认」，步骤内嵌 <code>form-control</code>。</li>
+<li>售后工单使用 <code>chat</code> 组件模拟客服沟通，结合 <code>avatar</code> 区分角色。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-tsx">function CartDrawer({ open, onClose, items }: Props) {
+  const total = items.reduce((sum, item) =&gt; sum + item.price * item.quantity, 0);
+  return (
+    &lt;div className={`drawer ${open ? "drawer-open" : ""}`}&gt;
+      &lt;input id="cart-drawer" type="checkbox" className="drawer-toggle" checked={open} readOnly /&gt;
+      &lt;div className="drawer-side"&gt;
+        &lt;label htmlFor="cart-drawer" className="drawer-overlay" onClick={onClose} /&gt;
+        &lt;div className="menu p-4 w-96 min-h-full bg-base-100 text-base-content"&gt;
+          &lt;h2 className="text-xl font-bold mb-4"&gt;购物车&lt;/h2&gt;
+          &lt;ul className="flex-1 space-y-4 overflow-y-auto"&gt;
+            {items.map((item) =&gt; (
+              &lt;li key={item.id} className="card card-compact bg-base-200"&gt;
+                &lt;div className="card-body gap-2"&gt;
+                  &lt;div className="flex justify-between"&gt;
+                    &lt;span className="font-semibold"&gt;{item.name}&lt;/span&gt;
+                    &lt;span className="badge badge-outline"&gt;x{item.quantity}&lt;/span&gt;
+                  &lt;/div&gt;
+                  &lt;div className="text-sm opacity-80"&gt;{item.variant}&lt;/div&gt;
+                  &lt;div className="flex justify-between items-center"&gt;
+                    &lt;span className="text-lg font-bold text-primary"&gt;¥{item.price}&lt;/span&gt;
+                    &lt;button className="btn btn-xs btn-error"&gt;移除&lt;/button&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+              &lt;/li&gt;
+            ))}
+          &lt;/ul&gt;
+          &lt;div className="mt-4 space-y-3"&gt;
+            &lt;div className="flex justify-between font-semibold"&gt;
+              &lt;span&gt;合计&lt;/span&gt;
+              &lt;span&gt;¥{total.toFixed(2)}&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;button className="btn btn-primary btn-block"&gt;去结算&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>测试方案</strong>：
+<ul>
+<li>使用 Cypress 验证购物流程：加购 -&gt; 结算 -&gt; 支付 -&gt; 查看订单 -&gt; 发起售后。</li>
+<li>结合 Vercel Analytics 监控按钮点击热度，优化 CTA 布局。</li>
+<li>性能：Lazy-load <code>carousel</code> 和 <code>review</code> 区域，减少首屏负担。</li>
+</ul>
+</li>
+<li><strong>进阶挑战</strong>：构建多站点多语言，使用 <code>next-intl</code> 与 <code>daisyui</code> 主题映射；接入 A/B 测试框架（<code>growthbook</code>），在 UI 中动态切换 <code>btn</code> 风格。</li>
+</ul>
+<h4 id="h-实战七在线教育学习管理系统lms"><a class="header" href="#h-实战七在线教育学习管理系统lms">H. 实战七：在线教育学习管理系统（LMS）</a></h4>
+<ul>
+<li><strong>目标</strong>：支持课程大纲、学习计划、直播课堂、互动测验与学习数据分析。</li>
+<li><strong>关键模块</strong>：
+<ul>
+<li>课程目录：<code>tree</code>, <code>collapse</code>, <code>badge</code>, <code>progress</code>.</li>
+<li>学习计划：<code>calendar</code>, <code>timeline</code>, <code>alert</code>.</li>
+<li>课堂互动：<code>chat</code>, <code>modal</code>, <code>drawer</code>（课堂笔记）。</li>
+<li>数据分析：<code>stats</code>, <code>table</code>, <code>tabs</code>, <code>card</code>.</li>
+</ul>
+</li>
+<li><strong>实现重点</strong>：
+<ol>
+<li><code>CourseOutline</code> 组件使用 <code>collapse</code> 嵌套，将章节/小节层级通过 <code>pl-4</code> 表示缩进。</li>
+<li>学习进度条 <code>progress</code> + <code>badge</code> 表示已完成百分比，配合 <code>tooltip</code>.</li>
+<li>直播课堂使用 <code>modal</code> 播放视频，右侧 <code>chat-bubble</code> 互动与 <code>form-control</code> 提交提问。</li>
+<li>测验模块使用 <code>radio</code>, <code>checkbox</code>, <code>range</code> 等表单组件；提交后通过 <code>alert alert-success</code> 反馈成绩。</li>
+<li>数据分析页面使用 <code>tabs</code> 切换「课程参与、测验成绩、出勤率」视图，<code>table</code> + <code>badge</code> 强调异常数据。</li>
+</ol>
+</li>
+</ul>
+<pre><code class="language-tsx">function LessonTracker({ lessons }: { lessons: Lesson[] }) {
+  return (
+    &lt;div className="space-y-4"&gt;
+      {lessons.map((lesson) =&gt; (
+        &lt;div key={lesson.id} className="collapse collapse-plus bg-base-200"&gt;
+          &lt;input type="checkbox" defaultChecked={lesson.completed} /&gt;
+          &lt;div className="collapse-title text-lg font-medium flex justify-between"&gt;
+            &lt;span&gt;{lesson.title}&lt;/span&gt;
+            &lt;span className="badge badge-primary badge-outline"&gt;{lesson.duration} min&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;div className="collapse-content space-y-3"&gt;
+            &lt;p className="text-sm opacity-80"&gt;{lesson.summary}&lt;/p&gt;
+            &lt;div className="flex items-center gap-2"&gt;
+              &lt;progress className="progress progress-primary w-56" value={lesson.progress} max={100}&gt;&lt;/progress&gt;
+              &lt;span className="text-xs"&gt;{lesson.progress}%&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;button className="btn btn-sm btn-secondary"&gt;继续学习&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>教学运营建议</strong>：
+<ul>
+<li>结合 <code>badge badge-warning</code> 标识拖延任务，设置 <code>toast</code> 提醒。</li>
+<li><code>calendar</code> 上显示学习计划分布，使用 <code>tooltip</code> 显示课程名称。</li>
+<li>学生/教师角色使用主题区分：教师模式使用 <code>business</code> 主题，学生使用 <code>lofi</code>，通过 <code>role-based theme</code> 实现。</li>
+</ul>
+</li>
+<li><strong>评估与监控</strong>：
+<ul>
+<li>统计活跃度：集成 Mixpanel，将 DaisyUI <code>btn</code> 点击事件发送埋点。</li>
+<li>自动化测试：通过 Playwright 检查学习流程、提交作业、成绩反馈。</li>
+<li>可访问性：为视频播放器提供键盘控制，确保 <code>chat</code> 输入框的 <code>aria-label</code> 清晰。</li>
+</ul>
+</li>
+</ul>
+<h4 id="i-实战八金融风控监控系统"><a class="header" href="#i-实战八金融风控监控系统">I. 实战八：金融风控监控系统</a></h4>
+<ul>
+<li><strong>目标</strong>：为金融机构提供实时风控监控，通过 DaisyUI 构建可视化、预警、审批流。</li>
+<li><strong>核心板块</strong>：
+<ol>
+<li>风险仪表盘：<code>stats</code>, <code>radial-progress</code>, <code>badge</code>, <code>alert</code>.</li>
+<li>交易明细：<code>table</code>, <code>badge</code>, <code>pagination</code>, <code>modal</code>.</li>
+<li>预警中心：<code>toast</code>, <code>timeline</code>, <code>collapse</code>.</li>
+<li>审批流：<code>steps</code>, <code>card</code>, <code>avatar</code>, <code>modal</code>.</li>
+</ol>
+</li>
+<li><strong>实现重点</strong>：
+<ul>
+<li>仪表盘：使用 <code>grid grid-cols-1 lg:grid-cols-4</code> 布局 KPI 卡片；颜色按照风险等级（<code>badge-error</code>, <code>badge-warning</code>, <code>badge-success</code>）。</li>
+<li>交易明细：将 <code>table</code> 与 <code>table-zebra</code> 结合，突出偶数行；使用 <code>tooltip</code> 展示敏感信息时的掩码。</li>
+<li>预警：<code>toast</code> 结合声音提醒（Web Audio）；点击 <code>toast</code> 跳转至详情 <code>modal</code>.</li>
+<li>审批流：<code>steps</code> 呈现审批阶段，每个步骤内嵌 <code>card</code> 显示审批人、意见、时间。</li>
+</ul>
+</li>
+<li><strong>代码示例</strong>：</li>
+</ul>
+<pre><code class="language-tsx">function RiskAlertToast({ alert }: { alert: RiskAlert }) {
+  useEffect(() =&gt; {
+    const audio = new Audio("/sounds/alert.mp3");
+    if (alert.level === "high") {
+      audio.play();
+    }
+  }, [alert.level]);
+
+  return (
+    &lt;div className={clsx("toast", "toast-end")}&gt;
+      &lt;div className={clsx("alert", {
+        "alert-error": alert.level === "high",
+        "alert-warning": alert.level === "medium",
+        "alert-info": alert.level === "low",
+      })}&gt;
+        &lt;div&gt;
+          &lt;h3 className="font-bold"&gt;风险预警：{alert.code}&lt;/h3&gt;
+          &lt;div className="text-xs"&gt;{alert.message}&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;button className="btn btn-sm btn-outline" onClick={() =&gt; openModal(alert)}&gt;
+          查看
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>合规要求</strong>：
+<ul>
+<li>使用 <code>btn btn-outline</code> 避免颜色过度，遵守内部品牌指南。</li>
+<li>对敏感数据添加数据脱敏处理（<code>mask</code> class 结合 CSS <code>filter: blur</code>）。</li>
+<li>审批记录需提供导出（<code>btn btn-primary</code> + <code>icon</code>）。</li>
+</ul>
+</li>
+<li><strong>测试</strong>：
+<ul>
+<li>安全：结合 Cypress 模拟 SQL 注入输入；确保 DaisyUI 表单控件与后端验证协同。</li>
+<li>性能：在高频预警时进行压力测试，保证 <code>toast</code> 不阻塞主线程。</li>
+<li>无障碍：<code>alert</code> 需具备 <code>role="alert"</code>, <code>aria-live="assertive"</code>。</li>
+</ul>
+</li>
+</ul>
+<h4 id="j-实战九创作者内容管理与营销自动化"><a class="header" href="#j-实战九创作者内容管理与营销自动化">J. 实战九：创作者内容管理与营销自动化</a></h4>
+<ul>
+<li><strong>业务目标</strong>：为内容创作者或营销团队提供素材库、排期、跨平台发布与表现分析。</li>
+<li><strong>功能模块</strong>：
+<ol>
+<li>素材库：<code>card</code>, <code>badge</code>, <code>dropdown</code>, <code>tabs</code>.</li>
+<li>排期日历：<code>calendar</code>, <code>timeline</code>, <code>modal</code>, <code>drawer</code>.</li>
+<li>发布管理：<code>steps</code>, <code>progress</code>, <code>alert</code>.</li>
+<li>数据分析：<code>stats</code>, <code>table</code>, <code>badge</code>, <code>chart</code>.</li>
+</ol>
+</li>
+<li><strong>实现亮点</strong>：
+<ul>
+<li>素材卡片提供标签筛选（<code>badge badge-outline</code>），支持收藏（<code>btn btn-circle</code>）。</li>
+<li>排期日历使用 <code>drawer</code> 管理筛选（渠道、平台、目标受众），提交后 <code>toast</code> 确认。</li>
+<li>发布流程 <code>steps</code> 展示「编辑 -&gt; 审核 -&gt; 排期 -&gt; 发布 -&gt; 复盘」。</li>
+<li>数据分析页集成 Chart.js，使用 DaisyUI <code>card</code> 包裹图表，标题与分享按钮对齐。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-tsx">function ContentCalendar({ entries }: { entries: CalendarEntry[] }) {
+  return (
+    &lt;div className="grid grid-cols-7 gap-2"&gt;
+      {entries.map((entry) =&gt; (
+        &lt;div key={entry.id} className={clsx("card card-compact", {
+          "border border-primary": entry.highlight,
+          "bg-base-200": entry.isPast,
+        })}&gt;
+          &lt;div className="card-body space-y-2"&gt;
+            &lt;div className="flex justify-between items-center"&gt;
+              &lt;span className="text-sm font-semibold"&gt;{entry.date}&lt;/span&gt;
+              &lt;span className="badge badge-ghost"&gt;{entry.channel}&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;p className="text-xs line-clamp-2"&gt;{entry.title}&lt;/p&gt;
+            &lt;div className="flex flex-wrap gap-1"&gt;
+              {entry.tags.map((tag) =&gt; (
+                &lt;span key={tag} className="badge badge-outline badge-sm"&gt;{tag}&lt;/span&gt;
+              ))}
+            &lt;/div&gt;
+            &lt;div className="card-actions justify-end"&gt;
+              &lt;button className="btn btn-xs btn-secondary"&gt;详情&lt;/button&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>自动化流程</strong>：与 <code>Zapier</code>/<code>n8n</code> 集成发布，通过 DaisyUI <code>alert alert-info</code> 显示执行状态；失败时使用 <code>alert-error</code> + <code>tooltip</code>。</li>
+<li><strong>复盘面板</strong>：<code>table</code> + <code>badge</code> + <code>progress</code> 示意不同渠道表现；<code>modal</code> 展示详细数据。</li>
+<li><strong>团队协作</strong>：引入评论系统（<code>chat-bubble</code>），<code>avatar</code> 显示操作者，<code>badge</code> 显示角色。</li>
+</ul>
+<h4 id="k-实战十物联网设备监控与告警中心"><a class="header" href="#k-实战十物联网设备监控与告警中心">K. 实战十：物联网设备监控与告警中心</a></h4>
+<ul>
+<li><strong>目标</strong>：为 IoT 运行团队提供实时设备监控、地图分布、告警处理与离线设备排查。</li>
+<li><strong>核心功能</strong>：
+<ul>
+<li>实时监控面板：<code>stats</code>, <code>radial-progress</code>, <code>badge</code>.</li>
+<li>设备列表：<code>table</code>, <code>badge</code>, <code>pagination</code>, <code>dropdown</code>.</li>
+<li>告警处理：<code>alert</code>, <code>toast</code>, <code>steps</code>, <code>modal</code>.</li>
+<li>地图/拓扑：结合第三方库（Mapbox/Deck.gl）与 DaisyUI 布局。</li>
+</ul>
+</li>
+<li><strong>实现策略</strong>：
+<ol>
+<li>统一 <code>device-status</code> 组件，使用 DaisyUI <code>badge</code> 显示状态（在线、离线、维护）。</li>
+<li>告警队列放置于右下角 <code>toast</code> 区域，点击进入 <code>modal</code> 查看详情并执行操作。</li>
+<li>使用 <code>drawer</code> 分离筛选条件（地区、设备类型、固件版本）。</li>
+<li>拓扑图 <code>card</code> 中嵌入可视化图形，底部放置 <code>btn btn-outline</code> 做操作入口。</li>
+<li>批量操作使用 <code>dropdown</code> + <code>checkbox</code> 选择；确认操作 <code>modal</code> 提供风控提示。</li>
+</ol>
+</li>
+<li><strong>代码片段</strong>：</li>
+</ul>
+<pre><code class="language-tsx">function DeviceStatusBadge({ status }: { status: "online" | "offline" | "maintenance" }) {
+  switch (status) {
+    case "online":
+      return &lt;span className="badge badge-success"&gt;在线&lt;/span&gt;;
+    case "offline":
+      return &lt;span className="badge badge-error"&gt;离线&lt;/span&gt;;
+    case "maintenance":
+      return &lt;span className="badge badge-warning"&gt;维护中&lt;/span&gt;;
+  }
+}
+</code></pre>
+<pre><code class="language-tsx">function AlertDrawer({ alerts, open, onClose }: Props) {
+  return (
+    &lt;div className={`drawer drawer-end ${open ? "drawer-open" : ""}`}&gt;
+      &lt;input id="alert-drawer" type="checkbox" className="drawer-toggle" checked={open} readOnly /&gt;
+      &lt;div className="drawer-side"&gt;
+        &lt;label htmlFor="alert-drawer" className="drawer-overlay" onClick={onClose} /&gt;
+        &lt;div className="menu p-4 w-96 min-h-full bg-base-200 text-base-content space-y-4"&gt;
+          &lt;h2 className="text-lg font-semibold"&gt;告警中心&lt;/h2&gt;
+          {alerts.map((alert) =&gt; (
+            &lt;div key={alert.id} className="card shadow bg-base-100"&gt;
+              &lt;div className="card-body space-y-2"&gt;
+                &lt;div className="flex justify-between"&gt;
+                  &lt;span className="font-bold"&gt;{alert.title}&lt;/span&gt;
+                  &lt;span className="badge badge-error"&gt;{alert.severity}&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;p className="text-sm opacity-80"&gt;{alert.description}&lt;/p&gt;
+                &lt;div className="card-actions justify-end"&gt;
+                  &lt;button className="btn btn-sm btn-outline"&gt;派单&lt;/button&gt;
+                  &lt;button className="btn btn-sm btn-primary"&gt;处理&lt;/button&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>可观测性</strong>：
+<ul>
+<li>结合 <code>Grafana</code>/<code>Prometheus</code> 数据，通过 <code>iframe</code> 嵌入图表；外层 <code>card</code> 控制主题同步。</li>
+<li>定时刷新：使用 <code>setInterval</code> + <code>loading</code> 指示（<code>btn loading</code>）。</li>
+<li>SLA 面板：<code>stats</code> 显示在线率、告警响应时间等 KPI。</li>
+</ul>
+</li>
+<li><strong>风险与挑战</strong>：告警风暴时 <code>toast</code> 堆积，需实现合并策略；离线时的缘故分析可通过 <code>collapse</code> 展开原始日志。</li>
+</ul>
+<h4 id="l-实战十一政务服务大厅预约与评价系统"><a class="header" href="#l-实战十一政务服务大厅预约与评价系统">L. 实战十一：政务服务大厅预约与评价系统</a></h4>
+<ul>
+<li><strong>目标</strong>：满足政务办理预约、叫号、窗口排队与满意度调查等需求，强调可访问性与老年友好设计。</li>
+<li><strong>界面布局</strong>：
+<ul>
+<li>顶部横幅（<code>hero</code>）显示服务公告、天气与热线。</li>
+<li>主体区域划分为预约入口、办事指南、办理状态、评价反馈。</li>
+<li>结合大字体、对比度高的主题（自定义 <code>elder-friendly</code> 主题）。</li>
+</ul>
+</li>
+<li><strong>组件运用</strong>：
+<ul>
+<li>预约入口：<code>card</code> + <code>btn btn-accent</code>，支持 <code>modal</code> 填写预约信息。</li>
+<li>办事指南：<code>steps</code> + <code>collapse</code>，分解办理流程。</li>
+<li>办理状态：<code>timeline</code> + <code>badge</code> + <code>progress</code>。</li>
+<li>满意度调查：使用 <code>rating</code>, <code>textarea</code>, <code>toggle</code>。</li>
+</ul>
+</li>
+<li><strong>特殊设计</strong>：
+<ul>
+<li>添加语音播报按钮（<code>btn btn-circle</code> + <code>icon</code>），调用语音 API 朗读内容。</li>
+<li>采用 <code>btn btn-lg</code>、<code>input input-lg</code> 提供大字号控件；<code>focus-visible:outline</code> 强化焦点。</li>
+<li>提供高对比度与默认 <code>prefers-reduced-motion</code> 支持。</li>
+</ul>
+</li>
+<li><strong>流程示例</strong>：
+<ol>
+<li>用户选择办理事项 -&gt; <code>modal</code> 填写证件号 -&gt; 预约号生成。</li>
+<li>到场签到 -&gt; <code>alert alert-success</code> 提示 -&gt; <code>timeline</code> 更新为「候办中」。</li>
+<li>服务结束 -&gt; 弹出 <code>modal</code> 收集满意度。</li>
+</ol>
+</li>
+<li><strong>测试要求</strong>：
+<ul>
+<li>屏幕阅读器：NVDA/VoiceOver 验证 <code>aria-label</code>。</li>
+<li>老年模式：字体缩放 150%，仍保持布局可读；<code>btn</code> 间距增加。</li>
+<li>多语言：支持少数民族语言，使用 <code>tabs</code> 或 <code>dropdown</code> 切换。</li>
+</ul>
+</li>
+</ul>
+<h4 id="m-实战十二内嵌-ai-助手的知识库与工单协同平台"><a class="header" href="#m-实战十二内嵌-ai-助手的知识库与工单协同平台">M. 实战十二：内嵌 AI 助手的知识库与工单协同平台</a></h4>
+<ul>
+<li><strong>目标</strong>：在知识库平台集成 AI 问答、工单协同、反馈闭环，帮助客服团队提升效率。</li>
+<li><strong>模块</strong>：
+<ol>
+<li>知识库文档：<code>prose</code>、<code>card</code>, <code>breadcrumbs</code>.</li>
+<li>AI 助手面板：<code>drawer</code>, <code>chat</code>, <code>avatar</code>, <code>badge</code>.</li>
+<li>工单协同：<code>table</code>, <code>badge</code>, <code>progress</code>, <code>modal</code>.</li>
+<li>反馈追踪：<code>timeline</code>, <code>alert</code>, <code>toast</code>.</li>
+</ol>
+</li>
+<li><strong>实现亮点</strong>：
+<ul>
+<li>AI 助手使用 <code>chat-bubble</code> 区分机器人/人工；语气标签使用 <code>badge badge-info</code>.</li>
+<li><code>drawer</code> 控制 AI 面板开合；<code>btn btn-circle</code> 触发。</li>
+<li>引导用户提交工单：<code>modal</code> 中嵌入 <code>form-control</code>，提交后 <code>toast</code>.</li>
+<li>工单状态 <code>badge</code> 标识（新建、处理中、已解决、回访）。</li>
+<li>知识库文章内嵌 <code>tabs</code> 展示不同语言/版本。</li>
+</ul>
+</li>
+<li><strong>代码片段</strong>：</li>
+</ul>
+<pre><code class="language-tsx">function AiAssistantPanel({ open, onClose }: Props) {
+  const [messages, setMessages] = useState&lt;ChatMessage[]&gt;(initialMessages);
+
+  return (
+    &lt;div className={`drawer drawer-end ${open ? "drawer-open" : ""}`}&gt;
+      &lt;input type="checkbox" className="drawer-toggle" checked={open} readOnly /&gt;
+      &lt;div className="drawer-side"&gt;
+        &lt;label className="drawer-overlay" onClick={onClose} /&gt;
+        &lt;div className="menu w-[420px] max-w-full bg-base-100 min-h-full p-4 space-y-4"&gt;
+          &lt;div className="flex items-center justify-between"&gt;
+            &lt;h2 className="text-lg font-bold flex items-center gap-2"&gt;
+              &lt;span className="badge badge-primary badge-outline"&gt;AI 助手&lt;/span&gt;
+              Daisy Guide
+            &lt;/h2&gt;
+            &lt;button className="btn btn-sm btn-ghost" onClick={onClose}&gt;
+              关闭
+            &lt;/button&gt;
+          &lt;/div&gt;
+          &lt;div className="h-[60vh] overflow-y-auto space-y-3"&gt;
+            {messages.map((msg) =&gt; (
+              &lt;div key={msg.id} className={clsx("chat", { "chat-start": msg.role === "assistant", "chat-end": msg.role === "user" })}&gt;
+                &lt;div className="chat-image avatar"&gt;
+                  &lt;div className="w-8 rounded-full"&gt;
+                    &lt;img src={msg.role === "assistant" ? "/avatar-ai.png" : "/avatar-user.png"} alt={msg.role} /&gt;
+                  &lt;/div&gt;
+                &lt;/div&gt;
+                &lt;div className={clsx("chat-bubble", {
+                  "chat-bubble-info": msg.role === "assistant",
+                  "chat-bubble-primary": msg.role === "user",
+                })}&gt;
+                  {msg.content}
+                &lt;/div&gt;
+              &lt;/div&gt;
+            ))}
+          &lt;/div&gt;
+          &lt;form
+            className="join w-full"
+            onSubmit={(event) =&gt; {
+              event.preventDefault();
+              const formData = new FormData(event.currentTarget);
+              const content = formData.get("message")?.toString().trim();
+              if (!content) return;
+              setMessages((prev) =&gt; [...prev, { id: crypto.randomUUID(), role: "user", content }]);
+            }}
+          &gt;
+            &lt;input name="message" className="input input-bordered join-item flex-1" placeholder="请描述你的问题…" /&gt;
+            &lt;button type="submit" className="btn btn-primary join-item"&gt;
+              发送
+            &lt;/button&gt;
+          &lt;/form&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>性能与安全</strong>：
+<ul>
+<li>AI 接口请求添加节流（<code>debounce</code>），避免重复提交。</li>
+</ul>
+<ol start="2">
+<li>对敏感工单数据进行权限控制，按钮仅在 <code>role=admin</code> 时显示。</li>
+<li>记录 AI 建议与最终处理差异，使用 <code>table</code> + <code>badge</code> 对齐效果。</li>
+</ol>
+</li>
+<li><strong>测试</strong>：Playwright 模拟提问、生成工单、关闭 AI 面板；视觉回归确认 <code>chat</code> 气泡风格一致。</li>
+</ul>
+<h4 id="n-场景案例扩展矩阵与选型指南"><a class="header" href="#n-场景案例扩展矩阵与选型指南">N. 场景案例扩展矩阵与选型指南</a></h4>
+<ul>
+<li><strong>行业与组件映射表</strong>：</li>
+</ul>
+<div class="table-wrapper"><table><thead><tr><th>行业场景</th><th>核心页面</th><th>建议组件</th><th>备注</th></tr></thead><tbody>
+<tr><td>教育 LMS</td><td>学习计划、课堂互动、作业</td><td><code>tabs</code>, <code>collapse</code>, <code>chat</code>, <code>progress</code></td><td>注意学生/教师主题隔离</td></tr>
+<tr><td>金融风控</td><td>仪表盘、预警、审批</td><td><code>stats</code>, <code>alert</code>, <code>steps</code>, <code>modal</code></td><td>强调无障碍和数据脱敏</td></tr>
+<tr><td>医疗预约</td><td>排班、预约、病历</td><td><code>menu</code>, <code>card</code>, <code>timeline</code>, <code>modal</code></td><td>医患双端体验，做好键盘导航</td></tr>
+<tr><td>电商运营</td><td>商品、结算、售后</td><td><code>card</code>, <code>drawer</code>, <code>steps</code>, <code>table</code></td><td>关注移动端与性能</td></tr>
+<tr><td>政务服务</td><td>办理指南、叫号、评价</td><td><code>hero</code>, <code>steps</code>, <code>timeline</code>, <code>rating</code></td><td>老年友好主题，字体加大</td></tr>
+<tr><td>IoT 运维</td><td>实时监控、告警、拓扑</td><td><code>stats</code>, <code>badge</code>, <code>toast</code>, <code>drawer</code></td><td>告警聚合，监控刷新策略</td></tr>
+<tr><td>创作者营销</td><td>素材库、排期、复盘</td><td><code>card</code>, <code>calendar</code>, <code>progress</code>, <code>chat</code></td><td>提供自动化流程反馈</td></tr>
+<tr><td>AI 知识库</td><td>文档、AI 面板、工单</td><td><code>prose</code>, <code>drawer</code>, <code>chat</code>, <code>table</code></td><td>合规与敏感词过滤</td></tr>
+</tbody></table>
+</div>
+<ul>
+<li><strong>选型建议</strong>：
+<ol>
+<li>先明确业务 KPI → 确认页面需要的视觉层级 → 映射 DaisyUI 组件。</li>
+<li>预算/团队成熟度：小团队优先使用 DaisyUI 默认主题，大团队结合 <code>cva</code> 封装。</li>
+<li>多语言与品牌需求：为每个场景预设 <code>data-theme</code>，并设计 <code>ThemeProvider</code>.</li>
+<li>针对数据密集场景，引入虚拟滚动或懒加载，避免 DaisyUI 表格性能瓶颈。</li>
+</ol>
+</li>
+</ul>
+<h4 id="o-场景交付方式与-storybook-目录建议"><a class="header" href="#o-场景交付方式与-storybook-目录建议">O. 场景交付方式与 Storybook 目录建议</a></h4>
+<ul>
+<li><strong>推荐 Storybook 组织结构</strong>：
+<ul>
+<li><code>foundation/</code>：颜色、排版、Spacing tokens。</li>
+<li><code>components/</code>：按钮、表单、导航、反馈等基础组件。</li>
+<li><code>patterns/</code>：业务模式，如「结算流程」、「预约流程」。</li>
+<li><code>pages/</code>：仪表盘、营销页、知识库等整页展示。</li>
+<li><code>scenarios/</code>：与本笔记中的实际案例 1:1 对应，提供上下文。</li>
+</ul>
+</li>
+<li><strong>文档模板</strong>：
+<ul>
+<li>使用 <code>.mdx</code> 编写，每个场景包含「业务背景」「组件清单」「交互流程」「代码片段」「可访问性」「性能指标」。</li>
+<li>在 Storybook 中引入 <code>addon-interactions</code>，演练用户路径。</li>
+<li>结合 <code>storybook-addon-themes</code> 切换多主题，帮助设计评审。</li>
+</ul>
+</li>
+</ul>
+<h4 id="p-练习任务加量版结合新增场景"><a class="header" href="#p-练习任务加量版结合新增场景">P. 练习任务加量版（结合新增场景）</a></h4>
+<ol>
+<li><strong>CRM 漏斗拓展</strong>：为租户 CRM 场景增加实时活动 Stream，使用 <code>@tanstack/react-query</code> 结合 WebSocket，UI 部分使用 <code>toast</code> 和 <code>timeline</code> 展示最新变动。</li>
+<li><strong>医疗排班冲突检测</strong>：在预约表单中加入排班冲突校验，若时间段已满使用 <code>alert alert-warning</code> 提供替代建议。</li>
+<li><strong>电商售后流程图</strong>：构建一个 <code>steps</code> + <code>timeline</code> 组合，展示售后从工单提交到退款完成的全流程，支持与 ChatGPT 集成自动草拟回复。</li>
+<li><strong>LMS 学习激励系统</strong>：基于 <code>badge</code> 与 <code>progress</code> 创建积分体系，完成特定任务触发 <code>confetti</code> 动画（<code>canvas-confetti</code>）并使用 DaisyUI <code>modal</code> 弹窗祝贺。</li>
+<li><strong>金融审批权限验证</strong>：通过 <code>cva</code> 封装按钮，自动根据审批阶段调整颜色和尺寸，保证审批流程视觉一致性。</li>
+<li><strong>IoT 告警自动合并</strong>：实现告警聚合策略，当 5 分钟内同一设备同类告警出现多次时，合并为一条 <code>toast</code>，在详情 <code>modal</code> 中列出历史。</li>
+<li><strong>政务服务多端同步</strong>：建立 PWA 离线方案，使用 DaisyUI 控件构建离线提示与同步状态（<code>alert</code> + <code>progress</code>）。</li>
+<li><strong>知识库 AI 反馈闭环</strong>：当用户点赞/点踩 AI 答案时，更新 <code>badge</code> 统计并生成任务列表，确保反馈进入工单。</li>
+</ol>
+<h3 id="模块四扩展行业案例深度拆解"><a class="header" href="#模块四扩展行业案例深度拆解">模块四扩展：行业案例深度拆解</a></h3>
+<p>以下 12 个行业案例在原有模块基础上进一步深化，覆盖业务蓝图、信息架构、组件组合策略、跨端适配、测试与迭代方法。每个案例都提供了默认以 React + Vite 为核心的实现思路，并说明如何迁移至 Vue/Nuxt 或 SvelteKit。</p>
+<h4 id="案例一智慧能源调度中心"><a class="header" href="#案例一智慧能源调度中心">案例一：智慧能源调度中心</a></h4>
+<ul>
+<li><strong>业务背景</strong>：面向电网或新能源公司的调度平台，需要实时监控发电站、储能设备与负载曲线，执行调度指令、故障预案和能耗预测。</li>
+<li><strong>页面蓝图</strong>：
+<ol>
+<li>头部状态栏：显示电网健康度、告警数、调度模式（<code>navbar</code> + <code>badge</code> + <code>dropdown</code>）。</li>
+<li>主视图区：多图层地图（Mapbox）显示站点分布，右侧折线/柱形图展示实时功率（<code>card</code> 承载图表）。</li>
+<li>预案面板：<code>drawer</code> 呈现预案列表，<code>collapse</code> 展开步骤。</li>
+<li>操作日志：底部 <code>table</code> + <code>timeline</code> 记录调度历史。</li>
+</ol>
+</li>
+<li><strong>组件组合</strong>：
+<ul>
+<li><code>stats</code> 展示发电/负载/储能三大 KPI。</li>
+<li><code>progress</code> + <code>badge</code> 提示目标完成度。</li>
+<li><code>modal</code> 处理调度指令确认，结合 <code>form-control</code>。</li>
+</ul>
+</li>
+<li><strong>实现要点</strong>：
+<ul>
+<li>使用 <code>data-theme</code> 区分「日间模式」「夜间模式」以适应光线。</li>
+<li>地图层级刷新与 DaisyUI <code>card</code> 交互通过 <code>onHover</code> 联动。</li>
+<li>预案执行使用 <code>steps</code> 展示流程，状态使用 <code>badge</code>。</li>
+</ul>
+</li>
+<li><strong>代码提示</strong>：</li>
+</ul>
+<pre><code class="language-tsx">function DispatchPlanCard({ plan }: { plan: DispatchPlan }) {
+  return (
+    &lt;div className="collapse collapse-arrow bg-base-200"&gt;
+      &lt;input type="checkbox" defaultChecked={plan.priority === "high"} /&gt;
+      &lt;div className="collapse-title flex items-center justify-between"&gt;
+        &lt;span className="font-semibold"&gt;{plan.title}&lt;/span&gt;
+        &lt;span className={clsx("badge", {
+          "badge-error": plan.priority === "high",
+          "badge-warning": plan.priority === "medium",
+          "badge-success": plan.priority === "low",
+        })}&gt;
+          {plan.priority.toUpperCase()}
+        &lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div className="collapse-content space-y-3"&gt;
+        {plan.steps.map((step, index) =&gt; (
+          &lt;div key={step.id} className="flex gap-3 items-start"&gt;
+            &lt;span className="badge badge-outline"&gt;{index + 1}&lt;/span&gt;
+            &lt;div&gt;
+              &lt;p className="font-medium"&gt;{step.action}&lt;/p&gt;
+              &lt;p className="text-sm opacity-70"&gt;{step.description}&lt;/p&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        ))}
+        &lt;button className="btn btn-primary btn-sm"&gt;执行预案&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>性能与测试</strong>：
+<ul>
+<li>地图刷新频率与 UI 更新脱钩，利用 React <code>useTransition</code> 避免阻塞。</li>
+<li>Playwright 用例覆盖预案执行、告警确认；Lighthouse 检查暗色模式对比度。</li>
+</ul>
+</li>
+<li><strong>跨框架</strong>：在 Vue 中使用 <code>&lt;script setup&gt;</code> + <code>ref</code>；SvelteKit 使用 <code>stores</code> 管理主题。</li>
+</ul>
+<h4 id="案例二城市交通信号与拥堵监控平台"><a class="header" href="#案例二城市交通信号与拥堵监控平台">案例二：城市交通信号与拥堵监控平台</a></h4>
+<ul>
+<li><strong>业务背景</strong>：城市交通局需要监测路口信号状态、实时车流、事故告警、公交优先方案。</li>
+<li><strong>界面结构</strong>：
+<ul>
+<li><code>navbar</code> 集成城市切换、时间段选择。</li>
+<li>左侧 <code>menu</code> 分类（干道、支路、高速），中间为地图 + 流量图表，右侧事件列表。</li>
+<li><code>stats</code> 显示拥堵指数、平均车速、公交准点率。</li>
+</ul>
+</li>
+<li><strong>组件策略</strong>：
+<ul>
+<li><code>timeline</code> 展示事故处理流程，<code>badge</code> 标识状态。</li>
+<li><code>alert alert-warning</code> 处理紧急事件通知。</li>
+<li><code>modal</code> 提供策略调优界面（如延长绿灯时长），内嵌 <code>slider</code>、<code>range</code>。</li>
+</ul>
+</li>
+<li><strong>数据可视</strong>：
+<ul>
+<li>结合 <code>echarts-for-react</code>，在 <code>card</code> 内渲染热力图，用 DaisyUI 控制外层布局。</li>
+<li>交通事件列表使用 <code>table table-pin-rows</code> 突出头部。</li>
+</ul>
+</li>
+<li><strong>测试与运维</strong>：
+<ul>
+<li><code>axe-core</code> 检查无障碍，确保地图热力图提供文本描述。</li>
+<li>单元测试验证策略调整 API 调用。</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例三在线银行运营与客服协同平台"><a class="header" href="#案例三在线银行运营与客服协同平台">案例三：在线银行运营与客服协同平台</a></h4>
+<ul>
+<li><strong>业务目标</strong>：统一处理客户服务工单、风险预警、营销活动，需符合金融合规要求。</li>
+<li><strong>核心页面</strong>：
+<ul>
+<li>客服工单：<code>table</code>, <code>badge</code>, <code>modal</code>, <code>chat</code>.</li>
+<li>风险预警：<code>alert</code>, <code>toast</code>, <code>timeline</code>.</li>
+<li>活动运营：<code>card</code>, <code>steps</code>, <code>progress</code>.</li>
+</ul>
+</li>
+<li><strong>组件技巧</strong>：
+<ul>
+<li>为满足审计，所有 <code>modal</code> 操作按钮使用 <code>btn btn-outline</code> 并记录日志。</li>
+<li>工单详情使用 <code>tabs</code> 切换「客户信息」「操作记录」「附件」。</li>
+<li>使用 <code>badge badge-neutral</code> 打标 VIP 客户。</li>
+</ul>
+</li>
+<li><strong>安全与合规</strong>：
+<ul>
+<li>引入 Content Security Policy；DaisyUI class 不影响 CSP 设置。</li>
+<li>强制使用 <code>aria-label</code> 描述敏感按钮，如「冻结账户」。</li>
+</ul>
+</li>
+<li><strong>跨平台</strong>：通过 <code>Electron</code> + DaisyUI 构建客服桌面端，保留相同的 class 命名。</li>
+</ul>
+<h4 id="案例四保险理赔全流程协同"><a class="header" href="#案例四保险理赔全流程协同">案例四：保险理赔全流程协同</a></h4>
+<ul>
+<li><strong>业务背景</strong>：保险理赔需要处理报案、审核、跟进、结案，涉及多角色协作。</li>
+<li><strong>界面蓝图</strong>：
+<ul>
+<li>报案详情：<code>card</code> + <code>badge</code> + <code>steps</code> 显示状态。</li>
+<li>资料审核：<code>table</code> 列出材料清单，<code>modal</code> 上传补充材料。</li>
+<li>医疗费用：<code>table</code> + <code>collapse</code> 分组展示。</li>
+<li>结案反馈：<code>toast</code> + <code>alert</code> 提示客户。</li>
+</ul>
+</li>
+<li><strong>组件策略</strong>：
+<ul>
+<li>使用 <code>tabs tabs-lifted</code> 区分不同类型险种。</li>
+<li><code>modal</code> 结合 <code>file-input</code>, <code>textarea</code> 实现材料上传。</li>
+<li><code>timeline</code> 记录跟踪历史，<code>badge</code> 标识责任人部门。</li>
+</ul>
+</li>
+<li><strong>测试点</strong>：
+<ul>
+<li>针对附件上传使用 Cypress 文件上传能力。</li>
+<li>检查移动端 <code>drawer</code> 适配，便于在现场勘查时使用。</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例五制造业产线执行系统mes"><a class="header" href="#案例五制造业产线执行系统mes">案例五：制造业产线执行系统（MES）</a></h4>
+<ul>
+<li><strong>业务需求</strong>：管理工单、机器状态、质量检测，实时反馈产线信息。</li>
+<li><strong>模块</strong>：
+<ul>
+<li>工单驾驶舱：<code>stats</code>, <code>badge</code>, <code>progress</code>.</li>
+<li>产线监控：<code>table</code>, <code>toast</code>, <code>alert</code>.</li>
+<li>质量检测：<code>timeline</code>, <code>modal</code>, <code>form-control</code>.</li>
+</ul>
+</li>
+<li><strong>实现细节</strong>：
+<ul>
+<li>产线状态使用 <code>badge badge-success</code>、<code>badge badge-error</code> 区分。</li>
+<li>质量问题上报流程使用 <code>steps</code> + <code>modal</code>，记录责任人。</li>
+<li>通过 <code>drawer</code> 切换生产线视图；<code>select</code> 选择班次。</li>
+</ul>
+</li>
+<li><strong>代码片段</strong>：</li>
+</ul>
+<pre><code class="language-tsx">function WorkorderBoard({ orders }: { orders: Workorder[] }) {
+  return (
+    &lt;div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"&gt;
+      {orders.map((order) =&gt; (
+        &lt;div key={order.id} className="card bg-base-200 shadow"&gt;
+          &lt;div className="card-body space-y-3"&gt;
+            &lt;h3 className="card-title flex justify-between"&gt;
+              {order.product}
+              &lt;span className="badge badge-outline"&gt;{order.shift}&lt;/span&gt;
+            &lt;/h3&gt;
+            &lt;div className="text-sm opacity-70"&gt;工单号：{order.code}&lt;/div&gt;
+            &lt;progress className="progress progress-primary" value={order.progress} max={100}&gt;&lt;/progress&gt;
+            &lt;div className="flex justify-between text-sm"&gt;
+              &lt;span&gt;已完成：{order.completed}&lt;/span&gt;
+              &lt;span&gt;目标：{order.target}&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;button className="btn btn-sm btn-primary"&gt;查看详情&lt;/button&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ul>
+<li><strong>测试</strong>：
+<ul>
+<li>高并发测试：同时更新多个工单状态，确保 UI 不阻塞。</li>
+<li>离线模式：在 PWA 中缓存 DaisyUI 样式，以支持工厂离线环境。</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例六企业人力hr人才发展平台"><a class="header" href="#案例六企业人力hr人才发展平台">案例六：企业人力（HR）人才发展平台</a></h4>
+<ul>
+<li><strong>目标</strong>：涵盖招聘、入职、绩效、培训、晋升路径。</li>
+<li><strong>UI 要点</strong>：
+<ul>
+<li>招聘面板：<code>tabs</code> 按岗位类别分组，<code>table</code> 显示候选人，<code>badge</code> 标记状态。</li>
+<li>入职流程：<code>steps</code> + <code>modal</code> 提醒待办（设备领用、权限开通）。</li>
+<li>绩效评估：<code>card</code> + <code>progress</code> + <code>radial-progress</code>。</li>
+<li>培训计划：<code>calendar</code>, <code>collapse</code>, <code>alert</code>.</li>
+</ul>
+</li>
+<li><strong>组件技巧</strong>：
+<ul>
+<li><code>toast</code> 提醒关键节点，如试用期即将结束。</li>
+<li><code>avatar</code> + <code>dropdown</code> 显示导师与 buddy。</li>
+<li>绩效图表外层 <code>card</code> 使用 <code>btn btn-ghost</code> 切换周期。</li>
+</ul>
+</li>
+<li><strong>测试与资料</strong>：
+<ul>
+<li>版本迭代，记录在 <code>changelog</code> 组件；<code>timeline</code> 展示变更。</li>
+<li>可视化导出：<code>modal</code> + <code>btn btn-secondary</code> 导出 PDF/Excel。</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例七酒店与度假村预订管理"><a class="header" href="#案例七酒店与度假村预订管理">案例七：酒店与度假村预订管理</a></h4>
+<ul>
+<li><strong>需求</strong>：管理房态、预订、前台入住、客诉处理。</li>
+<li><strong>界面</strong>：
+<ul>
+<li>房态总览：<code>grid</code> + <code>card</code> 显示楼层与房型，<code>badge</code> 标识状态（空房、预留、维修）。</li>
+<li>预订表单：<code>form-control</code>, <code>date-picker</code>（第三方）、<code>toggle</code>（早餐、加床）。</li>
+<li>前台操作：<code>steps</code>（预订 -&gt; 入住 -&gt; 退房），<code>alert</code> 提醒。</li>
+<li>客诉处理：<code>chat</code>, <code>modal</code>, <code>toast</code>.</li>
+</ul>
+</li>
+<li><strong>特殊要求</strong>：
+<ul>
+<li>夜间模式主题 <code>daisyui.themes.push("coffee")</code> 提供更暖色调。</li>
+<li>自定义 <code>badge</code> + <code>tooltip</code> 提示 VIP/会员等级。</li>
+<li><code>drawer</code> 提供快速搜索与筛选功能。</li>
+</ul>
+</li>
+<li><strong>测试</strong>：
+<ul>
+<li>关键路径：预订 -&gt; 入住 -&gt; 退房 -&gt; 发票 -&gt; 评价。</li>
+<li>移动端 H5 兼容：DaisyUI <code>drawer</code> 转为 <code>modal</code>.</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例八物流车队调度与运输可视化"><a class="header" href="#案例八物流车队调度与运输可视化">案例八：物流车队调度与运输可视化</a></h4>
+<ul>
+<li><strong>业务背景</strong>：物流公司需要监控车队、运单、异常情况。</li>
+<li><strong>布局</strong>：
+<ul>
+<li>地图 + 路线（<code>card</code> 内嵌地图），右侧运单列表。</li>
+<li>运单详情：<code>steps</code> 展示「揽收 -&gt; 干线 -&gt; 到达仓 -&gt; 派送 -&gt; 签收」。</li>
+<li>异常管理：<code>alert</code>、<code>toast</code>、<code>timeline</code>.</li>
+</ul>
+</li>
+<li><strong>组件策略</strong>：
+<ul>
+<li>车辆状态使用 <code>badge</code> + <code>tooltip</code>。</li>
+<li><code>progress</code> 显示运单完成度。</li>
+<li>批量操作 <code>dropdown</code> + <code>checkbox</code>.</li>
+</ul>
+</li>
+<li><strong>优化</strong>：
+<ul>
+<li>WebSocket 接口更新位置，结合 <code>useSyncExternalStore</code>。</li>
+<li>低带宽优化：懒加载地图与路线图。</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例九saas-开发者门户api-控制台"><a class="header" href="#案例九saas-开发者门户api-控制台">案例九：SaaS 开发者门户（API 控制台）</a></h4>
+<ul>
+<li><strong>目标</strong>：提供 API 文档、Key 管理、配额监控、账单。</li>
+<li><strong>页面</strong>：
+<ul>
+<li>文档中心：<code>tabs</code> + <code>prose</code>.</li>
+<li>Key 管理：<code>table</code> + <code>badge</code> + <code>modal</code>.</li>
+<li>调试工具：<code>card</code> + <code>form-control</code> + <code>code-block</code>.</li>
+</ul>
+</li>
+<li><strong>实现</strong>：
+<ul>
+<li><code>modal</code> 新建 API Key，结合 <code>copy-to-clipboard</code>，反馈 <code>toast</code>.</li>
+<li><code>radial-progress</code> 显示配额使用情况，超过阈值 <code>alert</code>。</li>
+<li>账单使用 <code>table table-pin-cols</code> 固定字段。</li>
+</ul>
+</li>
+<li><strong>测试</strong>：
+<ul>
+<li>E2E：生成 Key -&gt; 调试 -&gt; 查看日志。</li>
+<li>无障碍：code block 提供复制按钮 <code>aria-label</code>.</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例十零售门店数字化运营平台"><a class="header" href="#案例十零售门店数字化运营平台">案例十：零售门店数字化运营平台</a></h4>
+<ul>
+<li><strong>业务需求</strong>：门店运营、库存、促销、员工排班。</li>
+<li><strong>界面</strong>：
+<ul>
+<li>门店概览：<code>stats</code>, <code>card</code>, <code>badge</code>.</li>
+<li>库存预警：<code>table</code>, <code>alert</code>.</li>
+<li>促销管理：<code>modal</code>, <code>steps</code>, <code>progress</code>.</li>
+<li>排班：<code>calendar</code>, <code>timeline</code>.</li>
+</ul>
+</li>
+<li><strong>组件技巧</strong>：
+<ul>
+<li>促销活动进度使用 <code>steps</code> + <code>badge</code>.</li>
+<li>员工排班冲突 <code>alert</code> + <code>toast</code> 提醒。</li>
+<li>主题定制：白天 <code>light</code>，夜间 <code>dark</code>.</li>
+</ul>
+</li>
+<li><strong>测试</strong>：
+<ul>
+<li>重点关注 POS 终端分辨率，确保 <code>card</code> 自适应。</li>
+<li>离线缓存 DaisyUI 样式，保障断网时可查看排班。</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例十一游戏发行后台与数据洞察"><a class="header" href="#案例十一游戏发行后台与数据洞察">案例十一：游戏发行后台与数据洞察</a></h4>
+<ul>
+<li><strong>需求</strong>：管理版本发布、活动配置、玩家数据。</li>
+<li><strong>模块</strong>：
+<ul>
+<li>版本发布：<code>steps</code>, <code>modal</code>, <code>toast</code>.</li>
+<li>活动配置：<code>form-control</code>, <code>table</code>, <code>badge</code>.</li>
+<li>玩家数据：<code>stats</code>, <code>radial-progress</code>, <code>card</code>.</li>
+<li>留存分析：<code>tabs</code> + <code>chart</code>.</li>
+</ul>
+</li>
+<li><strong>组件策略</strong>：
+<ul>
+<li>发布流程 <code>steps</code> + <code>badge</code> 表示状态（草稿、审核、上线）。</li>
+<li>活动列表 <code>table</code> + <code>badge badge-accent</code> 表示活动类型。</li>
+<li>玩家分层 <code>card</code> + <code>progress</code>.</li>
+</ul>
+</li>
+<li><strong>测试</strong>：
+<ul>
+<li>关键路径：配置活动 -&gt; 发布 -&gt; 回滚。</li>
+<li>灰度发布：<code>dropdown</code> 选择服务器组，用 <code>badge</code> 表示热度。</li>
+</ul>
+</li>
+</ul>
+<h4 id="案例十二科研实验数据管理平台"><a class="header" href="#案例十二科研实验数据管理平台">案例十二：科研实验数据管理平台</a></h4>
+<ul>
+<li><strong>业务目标</strong>：管理实验计划、数据记录、版本追踪、成果展示。</li>
+<li><strong>界面蓝本</strong>：
+<ul>
+<li>实验计划：<code>timeline</code>, <code>badge</code>, <code>alert</code>.</li>
+<li>数据录入：<code>form-control</code>, <code>table</code>, <code>tabs</code>.</li>
+<li>版本追踪：<code>timeline</code>, <code>card</code>.</li>
+<li>成果展示：<code>prose</code>, <code>modal</code>, <code>carousel</code>.</li>
+</ul>
+</li>
+<li><strong>组件亮点</strong>：
+<ul>
+<li>数据录入表单 <code>input</code>, <code>textarea</code>, <code>file-input</code>；错误状态 <code>input-error</code>.</li>
+<li>版本对比 <code>card</code> + <code>badge badge-outline</code> 表示当前/历史版本。</li>
+<li>成果展示 <code>carousel</code> + <code>modal</code> 显示图像。</li>
+</ul>
+</li>
+<li><strong>测试与合规</strong>：
+<ul>
+<li>数据完整性：表单验证 + 自动保存（<code>toast</code> 提醒）。</li>
+<li>权限控制：<code>badge</code> 显示权限等级；按钮根据角色控制显隐。</li>
+<li>可访问性：科学图表提供文本替代。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p><strong>迁移建议</strong>：以上案例都可在 Vue 中使用 <code>&lt;component :is&gt;</code> 动态组合 DaisyUI class；在 SvelteKit 中使用 <code>class:</code> 指令处理状态。确保 Tailwind <code>content</code> 配置覆盖 <code>.vue</code>/<code>.svelte</code> 文件。</p>
+</blockquote>
+<hr />
+<h3 id="模块五生产级优化与团队协作"><a class="header" href="#模块五生产级优化与团队协作">模块五：生产级优化与团队协作</a></h3>
+<h4 id="a-性能优化策略"><a class="header" href="#a-性能优化策略">A. 性能优化策略</a></h4>
+<ol>
+<li><strong>摇树优化</strong>：Tailwind JIT 会根据 <code>content</code> 搜索 class，确保路径覆盖所有组件；可借助 <code>@tailwindcss/container-queries</code> 等插件提升效率。</li>
+<li><strong>按需加载</strong>：结合框架的路由级别代码拆分，减少首屏资源。</li>
+<li><strong>关键 CSS</strong>：对 SEO 要求高的页面，考虑通过 <code>@apply</code> 抽离关键样式或 SSR 内联关键 CSS。</li>
+<li><strong>减少 CSS 体积</strong>：使用 <code>tailwindcss-animate</code> 等轻量化插件，避免引入大型 UI 库冲突。</li>
+</ol>
+<h4 id="b-无障碍与国际化"><a class="header" href="#b-无障碍与国际化">B. 无障碍与国际化</a></h4>
+<ul>
+<li>DaisyUI 组件基础上补充 <code>aria-*</code> 属性：例如模态、表单控件需要 <code>aria-label</code>、<code>aria-describedby</code>。</li>
+<li>使用 <code>tabIndex</code> 管理键盘导航，确保 <code>btn</code>、<code>link</code>、<code>dropdown</code> 的焦点顺序正确。</li>
+<li>国际化：结合 <code>i18next</code> 或 <code>next-intl</code> 处理多语言内容，注意组件文本的翻译占位。</li>
+</ul>
+<h4 id="c-测试体系"><a class="header" href="#c-测试体系">C. 测试体系</a></h4>
+<ul>
+<li><strong>单元测试</strong>：使用 <code>Vitest</code> 或 <code>Jest</code>，针对复杂组件封装（如按钮变体、表单），验证 class 组合是否符合预期。</li>
+<li><strong>端到端测试</strong>：利用 <code>Playwright</code> 或 <code>Cypress</code>，模拟主题切换、表单提交流程。</li>
+<li><strong>视觉回归</strong>：Storybook + Chromatic，避免主题调整造成 UI 回退。</li>
+</ul>
+<h4 id="d-团队协作与交付"><a class="header" href="#d-团队协作与交付">D. 团队协作与交付</a></h4>
+<ul>
+<li>建立 <code>changelog</code> 与 <code>design tokens</code> 文档，使用 <code>changeset</code> 管理版本。</li>
+<li>与设计团队建立周会同步，审查 DaisyUI 主题与组件实现是否匹配 Figma。</li>
+<li>在代码评审中重点关注 class 组合规范，避免出现魔法数或重复。</li>
+<li>建议创建内网文档站（Docusaurus 或 Nextra）承载组件说明文档。</li>
+</ul>
+<h4 id="e-devops-流程"><a class="header" href="#e-devops-流程">E. DevOps 流程</a></h4>
+<ul>
+<li>CI 中集成 <code>lint</code>（如 <code>eslint-plugin-tailwindcss</code>）校验 class 顺序与合法性。</li>
+<li>构建阶段运行 <code>pnpm build</code> + <code>pnpm test</code> + <code>pnpm storybook:build</code>。</li>
+<li>利用 GitHub Actions 或 GitLab CI 部署示例站点到 Vercel / Netlify。</li>
+<li>引入健康监控（Sentry, LogRocket）跟踪前端异常。</li>
+</ul>
+<h4 id="f-常见风险"><a class="header" href="#f-常见风险">F. 常见风险</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>风险</th><th>对策</th></tr></thead><tbody>
+<tr><td>组件 class 过于分散难以维护</td><td>引入 <code>cva</code> / 封装组件，文档化命名规范</td></tr>
+<tr><td>主题变量污染全局</td><td>限制主题应用范围，或使用 Shadow DOM 承载特定模块</td></tr>
+<tr><td>多人协作导致设计偏差</td><td>设立审查流程，使用 Storybook 作为唯一展示源</td></tr>
+<tr><td>性能退化</td><td>定期审查 CSS 构建体积，使用 <code>Bundle Analyzer</code></td></tr>
+</tbody></table>
+</div>
+<hr />
+<h3 id="模块六跨框架集成与生态扩展"><a class="header" href="#模块六跨框架集成与生态扩展">模块六：跨框架集成与生态扩展</a></h3>
+<h4 id="a-react--nextjs-集成"><a class="header" href="#a-react--nextjs-集成">A. React / Next.js 集成</a></h4>
+<ul>
+<li>使用 <code>@next/font</code> 与 DaisyUI 兼容，确保字体加载优先级。</li>
+<li>在 Next.js App Router 中配置全局 <code>layout.tsx</code>，设置 <code>html data-theme</code>。</li>
+<li>使用 <code>next-themes</code> 管理主题切换，同时确保 SSR 一致性。</li>
+</ul>
+<pre><code class="language-tsx">// app/providers.tsx
+"use client";
+import { ThemeProvider } from "next-themes";
+
+type Props = { children: React.ReactNode };
+
+export function Providers({ children }: Props) {
+  return (
+    &lt;ThemeProvider attribute="data-theme" defaultTheme="light"&gt;
+      {children}
+    &lt;/ThemeProvider&gt;
+  );
+}
+</code></pre>
+<h4 id="b-vue--nuxt-集成"><a class="header" href="#b-vue--nuxt-集成">B. Vue / Nuxt 集成</a></h4>
+<ul>
+<li>安装 <code>@nuxtjs/tailwindcss</code>，在 <code>tailwind.config</code> 中引入 DaisyUI。</li>
+<li>使用 <code>useHead</code> 或 <code>app.vue</code> 中的 <code>data-theme</code> 控制主题。</li>
+<li>利用 <code>definePageMeta</code> 配置页面级别的主题需求。</li>
+</ul>
+<h4 id="c-svelte--astro--laravel"><a class="header" href="#c-svelte--astro--laravel">C. Svelte / Astro / Laravel</a></h4>
+<ul>
+<li>SvelteKit：在 <code>+layout.svelte</code> 中设置 <code>data-theme</code>，配合 <code>stores</code> 保持状态。</li>
+<li>Astro：适合静态站点，与 DaisyUI 组合构建文档、博客。</li>
+<li>Laravel + Inertia：通过 mix/vite 引入 Tailwind，Blade 模板中使用 DaisyUI class。</li>
+</ul>
+<h4 id="d-与其他工具整合"><a class="header" href="#d-与其他工具整合">D. 与其他工具整合</a></h4>
+<ul>
+<li><strong>表单校验</strong>：结合 <code>react-hook-form</code>、<code>zod</code>，在 DaisyUI 表单组件上添加状态 class（<code>input-error</code>）。</li>
+<li><strong>图表库</strong>：与 <code>TanStack Table</code>, <code>ECharts</code>, <code>Chart.js</code> 等结合，使用 DaisyUI 控制外围 UI。</li>
+<li><strong>动画库</strong>：<code>framer-motion</code>, <code>@formkit/auto-animate</code> 提升交互体验。</li>
+</ul>
+<h4 id="e-社区插件与生态"><a class="header" href="#e-社区插件与生态">E. 社区插件与生态</a></h4>
+<ul>
+<li><code>daisyui-tailwind-merge</code>：避免 class 冲突。</li>
+<li><code>prettier-plugin-tailwindcss</code>：保持 class 顺序一致。</li>
+<li>非官方组件集（如 <code>daisyUI-addons</code>）提供额外 UI 模块，但使用需谨慎评估质量。</li>
+</ul>
+<hr />
+<h2 id="5-学习成果验证标准"><a class="header" href="#5-学习成果验证标准">5. 学习成果验证标准</a></h2>
+<ol>
+<li><strong>环境搭建验证</strong>：能够在 30 分钟内基于 Vite + DaisyUI 初始化项目，并完成基础组件 Demo。需包含至少 3 种 DaisyUI 组件，且通过主题切换测试。</li>
+<li><strong>组件掌握验证</strong>：在组件变体库中实现不少于 5 类（按钮、表单、导航、反馈、展示）共 20 个变体，并通过同事评审。</li>
+<li><strong>主题系统验证</strong>：自定义品牌主题后，对比官方主题完成 UI 差异截图；完成自动化测试确保 CSS 变量覆盖率 ≥ 95%。</li>
+<li><strong>场景实战验证</strong>：交付两套不同业务场景的页面 Demo（后台与营销页），每套包含桌面端与移动端适配。</li>
+<li><strong>生产化验证</strong>：完成性能监测（Lighthouse 总分 ≥ 90）、可访问性检测（对比度合规）、CI 构建与 Storybook 发布。</li>
+</ol>
+<blockquote>
+<p>建议使用 Notion / Confluence 建立验证仪表盘，定期更新进度与评分，方便团队监督与自我驱动。</p>
+</blockquote>
+<hr />
+<h2 id="6-常见错误排查指南与-faq"><a class="header" href="#6-常见错误排查指南与-faq">6. 常见错误、排查指南与 FAQ</a></h2>
+<h3 id="61-编译与构建问题"><a class="header" href="#61-编译与构建问题">6.1 编译与构建问题</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题现象</th><th>根因分析</th><th>排查步骤</th><th>解决方式</th></tr></thead><tbody>
+<tr><td>启动项目后页面无样式</td><td>Tailwind 样式未加载</td><td>检查 <code>index.css</code> 是否包含 <code>@tailwind</code> 指令；确认构建产物中存在 <code>daisyui</code> 生成的 CSS</td><td>重新导入 CSS，确保构建工具未忽略该文件</td></tr>
+<tr><td>生产环境构建后主题失效</td><td>SSR 渲染时主题变量缺失</td><td>查看服务器端是否注入 <code>data-theme</code>；确认主题脚本执行顺序</td><td>在 <code>_document</code> 中插入主题初始化脚本，或使用 <code>next-themes</code> 的 <code>defaultTheme</code></td></tr>
+<tr><td>打包体积过大</td><td>未清理未使用的 class</td><td>使用 <code>npx tailwindcss -o</code> 检查输出体积，确认 <code>content</code> 配置覆盖范围</td><td>调整 <code>content</code> 路径，或裁剪组件使用范围</td></tr>
+<tr><td>Class 顺序 lint 报错</td><td>Prettier/Tailwind 插件冲突</td><td>检查 <code>.prettierrc</code>、<code>.eslintrc</code> 配置</td><td>使用 <code>prettier-plugin-tailwindcss</code> 并禁用重复的排序规则</td></tr>
+</tbody></table>
+</div>
+<h3 id="62-组件使用常见陷阱"><a class="header" href="#62-组件使用常见陷阱">6.2 组件使用常见陷阱</a></h3>
+<ol>
+<li><strong>按钮宽度不一致</strong>：默认 <code>btn</code> 使用 <code>inline-flex</code>，若文本长度差异大，建议使用固定宽度或 <code>grow</code> 控制。</li>
+<li><strong>表单与第三方库样式冲突</strong>：使用 <code>form-control</code> 包裹自定义控件，确保 label 与 input 对齐。</li>
+<li><strong>Modal 嵌套滚动问题</strong>：在 <code>modal</code> 内部使用 <code>overflow-auto</code> 控制内容区滚动，外部使用 <code>modal-open</code> 防止背景滚动。</li>
+<li><strong>Dropdown 被其他元素遮挡</strong>：检查父级是否有 <code>overflow-hidden</code>；必要时使用 <code>menu</code> 放在 body 级别（React Portal）。</li>
+</ol>
+<h3 id="63-主题与设计-faq"><a class="header" href="#63-主题与设计-faq">6.3 主题与设计 FAQ</a></h3>
+<ul>
+<li><strong>Q:</strong> 如何根据用户角色自动切换主题？
+<strong>A:</strong> 登录成功后根据角色信息设置 <code>data-theme</code>，可结合 Zustand/Redux 全局存储，或在 SSR 时根据用户配置注入。</li>
+<li><strong>Q:</strong> 内联 SVG 如何适配主题色？
+<strong>A:</strong> 使用 CSS 变量 <code>stroke="currentColor"</code>，并通过 <code>text-primary</code> 控制颜色；或定义自定义变量覆盖。</li>
+<li><strong>Q:</strong> 如何实现渐进式主题调整？
+<strong>A:</strong> 使用 CSS 自定义属性过渡：<code>.theme-transition { transition: background-color 0.3s ease, color 0.3s ease; }</code>，并在切换时添加类名。</li>
+<li><strong>Q:</strong> DaisyUI 是否支持 RTL（从右到左）布局？
+<strong>A:</strong> Tailwind 支持 <code>dir="rtl"</code>；需检查组件对齐 class 是否受影响，必要时自定义变量或使用 <code>rtl:class</code>。</li>
+</ul>
+<h3 id="64-性能与监控-faq"><a class="header" href="#64-性能与监控-faq">6.4 性能与监控 FAQ</a></h3>
+<ul>
+<li><strong>Q:</strong> Lighthouse 检测 CSS 未使用率高？
+<strong>A:</strong> DaisyUI 提供大量组件 class，建议使用 <code>@tailwindcss/line-clamp</code> 等插件时限制路径，或通过 <code>tailwind-merge</code> 合并重复 class；对于未使用组件，考虑自定义构建。</li>
+<li><strong>Q:</strong> 如何监控组件使用频率？
+<strong>A:</strong> 在构建脚本中使用 AST 工具（如 <code>babel</code>）扫描 <code>className</code> 中的 DaisyUI 模式，生成统计报表。</li>
+<li><strong>Q:</strong> 组件交互卡顿？
+<strong>A:</strong> DaisyUI 本身不引入 JS 逻辑，卡顿多为框架逻辑问题。使用 Profiler 分析，优化状态管理或虚拟化列表。</li>
+</ul>
+<hr />
+<h2 id="7-扩展资源与持续学习建议"><a class="header" href="#7-扩展资源与持续学习建议">7. 扩展资源与持续学习建议</a></h2>
+<h3 id="71-官方与社区资源"><a class="header" href="#71-官方与社区资源">7.1 官方与社区资源</a></h3>
+<ul>
+<li><a href="https://daisyui.com/">DaisyUI 官网</a>：文档、示例、主题生成器。</li>
+<li><a href="https://github.com/saadeghi/daisyui">GitHub 仓库</a>：查看更新日志、Issue、Pull Request。</li>
+<li><a href="https://tailwindcss.com/docs">Tailwind CSS 文档</a>：打好原子化 CSS 语法基础。</li>
+<li><a href="https://discord.gg/daisyui">DaisyUI Discord 社区</a>：参与讨论、获取最新动态。</li>
+<li><a href="https://github.com/saadeghi/awesome-daisyui">Awesome DaisyUI</a>：精选社区项目集合。</li>
+</ul>
+<h3 id="72-推荐课程与视频"><a class="header" href="#72-推荐课程与视频">7.2 推荐课程与视频</a></h3>
+<ul>
+<li>YouTube 搜索关键字 "DaisyUI tutorial"，选择最近 1 年发布且兼顾 Tailwind 最新版本的课程。</li>
+<li>Egghead / Frontend Masters 上的 Tailwind 深度课程，可结合 DaisyUI 实践。</li>
+<li>Bilibli: 搜索 "DaisyUI 教程"，筛选 React/Vue 版本的视频，取其 Demo 练习。</li>
+</ul>
+<h3 id="73-实战案例仓库"><a class="header" href="#73-实战案例仓库">7.3 实战案例仓库</a></h3>
+<ul>
+<li><a href="https://github.com/ioda-net/daisyui-admin-dashboard">daisyui-admin-dashboard</a>：仪表盘模板，适合拆解布局与图表整合。</li>
+<li><a href="https://github.com/WGallon/nextjs-daisyui-starter">nextjs-daisyui-starter</a>：Next.js + DaisyUI 综合模板。</li>
+<li><a href="https://github.com/jonas-jonas/astro-daisyui-starter">astro-daisyui-starter</a>：静态站点最佳实践。</li>
+<li><a href="https://github.com/saadeghi/daisyui/tree/master/examples/storybook">storybook-daisyui-example</a>：组件文档集成示例。</li>
+</ul>
+<h3 id="74-工具链与插件"><a class="header" href="#74-工具链与插件">7.4 工具链与插件</a></h3>
+<ul>
+<li><code>@tailwindcss/typography</code>：增强内容页样式，与 DaisyUI <code>prose</code> 搭配。</li>
+<li><code>tailwindcss-animate</code>：提供常见动画 class，丰富 DaisyUI 交互。</li>
+<li><code>clsx</code> / <code>cva</code>：管理 class 组合，避免模板中出现冗长字符串。</li>
+<li><code>vite-plugin-inspect</code>：分析构建输出，帮助排查类名遗失问题。</li>
+</ul>
+<h3 id="75-进阶路线规划"><a class="header" href="#75-进阶路线规划">7.5 进阶路线规划</a></h3>
+<ol>
+<li><strong>深入 Tailwind JIT 原理</strong>：了解类名生成机制，为 DaisyUI 扩展提供底层支撑。</li>
+<li><strong>构建内部组件库</strong>：将 DaisyUI 结合业务逻辑封装成内部 npm 包，提供 Storybook 文档。</li>
+<li><strong>Design Token 自动化</strong>：与设计团队构建 token pipeline，通过脚本同步至 DaisyUI 主题配置。</li>
+<li><strong>多品牌管理</strong>：研究多租户、多品牌场景的主题切换策略，结合权限控制。</li>
+<li><strong>贡献社区</strong>：向 DaisyUI 提交 Issue 或 PR，参与生态建设。</li>
+</ol>
+<hr />
+<h2 id="8-附录"><a class="header" href="#8-附录">8. 附录</a></h2>
+<h3 id="81-学习周报模板"><a class="header" href="#81-学习周报模板">8.1 学习周报模板</a></h3>
+<pre><code>周次：2024-WXX
+阶段目标：
+- [ ] 完成组件变体库基础版
+- [ ] 实现品牌主题 v1
+- [ ] 交付仪表盘页面 Alpha
+
+本周完成：
+1. ...
+2. ...
+3. ...
+
+遇到的问题：
+- 问题描述 / 影响范围 / 已尝试解决方案
+
+下周计划：
+- ...
+
+需要支持：
+- ...
+</code></pre>
+<h3 id="82-代码评审检查清单"><a class="header" href="#82-代码评审检查清单">8.2 代码评审检查清单</a></h3>
+<ul>
+<li>样式 class 是否遵守 <code>组件 class + 状态 class + 修饰 class</code> 的组合规范？</li>
+<li>是否存在可提取为复用组件的 class 组合？</li>
+<li>主题变量是否符合命名规范，暗黑模式下是否可读？</li>
+<li>表单控件是否补充 <code>aria-*</code> 属性与错误提示？</li>
+<li>关键页面是否覆盖测试（单测 / E2E / 视觉回归）？</li>
+</ul>
+<h3 id="83-生产上线-checklist"><a class="header" href="#83-生产上线-checklist">8.3 生产上线 Checklist</a></h3>
+<ol>
+<li>Lighthouse Performance ≥ 90，Accessibility ≥ 90。</li>
+<li>CSS 体积 &lt; 150KB（gzip 后），确认未引入冗余主题。</li>
+<li>主题切换记忆策略（localStorage / cookie）已验证，SSR 页面无闪烁。</li>
+<li>表单流程具备错误提示、成功反馈、加载状态。</li>
+<li>日志与监控接入完成（Sentry / APM）。</li>
+<li>Storybook/Design System 文档与线上版本同步。</li>
+</ol>
+<h3 id="84-学习自测题节选"><a class="header" href="#84-学习自测题节选">8.4 学习自测题（节选）</a></h3>
+<ol>
+<li>DaisyUI 如何在 Tailwind 构建阶段注入组件样式？</li>
+<li><code>btn</code>, <code>btn-primary</code>, <code>btn-outline</code> 各自控制的样式层面是什么？</li>
+<li>设计主题时 <code>primary-content</code> 的作用是什么？如果忽略会造成哪些问题？</li>
+<li>在 Next.js 中如何避免主题切换的 FOUC（Flash of Unstyled Content）？</li>
+<li>如果 DaisyUI 的 <code>modal</code> 在移动端遮挡输入框，如何调整布局？</li>
+<li>如何在 CI 中确保 DaisyUI 组件不会因更新导致视觉回归？请列出工具链。</li>
+</ol>
+<h3 id="85-后续迭代建议"><a class="header" href="#85-后续迭代建议">8.5 后续迭代建议</a></h3>
+<ul>
+<li>维护 <code>CHANGELOG.md</code>，记录每次主题或组件调整的影响范围。</li>
+<li>定期与设计、产品组织 Design Review，保证 UI 一致性。</li>
+<li>根据业务反馈收集二次封装组件的复用情况，识别可抽象的模式。</li>
+<li>关注 DaisyUI 版本更新，及时评估 Breaking Change，并规划升级策略。</li>
+</ul>
+<hr />
+<h2 id="9-后记"><a class="header" href="#9-后记">9. 后记</a></h2>
+<p>DaisyUI 以轻量、语义化、可定制著称，适合作为 Tailwind 项目的 UI 起点。对于 0-5 年经验的开发者而言，掌握 DaisyUI 不仅能提升页面交付效率，还能借此理解设计系统、主题管理、组件工程化的关键路径。</p>
+<blockquote>
+<p>建议持续迭代本笔记，结合实践项目记录真实问题与解决方案，让 DaisyUI 学习成为构建前端设计系统的跳板。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/23-Taiwindcss.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/30-Javascript-01-基础.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/23-Taiwindcss.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/30-Javascript-01-基础.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

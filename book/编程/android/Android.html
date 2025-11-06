@@ -1,0 +1,468 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Android开发学习笔记 - 索引导航 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="android开发学习笔记---索引导航"><a class="header" href="#android开发学习笔记---索引导航">Android开发学习笔记 - 索引导航</a></h1>
+<blockquote>
+<p>本目录包含完整的Android开发学习笔记，从基础入门到高级进阶
+作者：技术学习笔记生成专家
+更新时间：2025年</p>
+</blockquote>
+<h2 id="-学习路径"><a class="header" href="#-学习路径">📚 学习路径</a></h2>
+<pre><code>Android-基础篇 → Android-进阶篇 → Android-高级篇
+    ↓               ↓               ↓
+  入门必备        深入学习        专业提升
+</code></pre>
+<h2 id="-笔记目录"><a class="header" href="#-笔记目录">📖 笔记目录</a></h2>
+<h3 id="1-android开发学习笔记---基础篇"><a class="header" href="#1-android开发学习笔记---基础篇">1️⃣ <a href="./Android-%E5%9F%BA%E7%A1%80%E7%AF%87.html">Android开发学习笔记 - 基础篇</a></a></h3>
+<p><strong>适用人群</strong>：0-2年Android开发经验者、Android入门学习者</p>
+<p><strong>核心内容</strong>：</p>
+<ul>
+<li>✅ Android系统架构与开发环境搭建</li>
+<li>✅ 四大组件详解（Activity、Service、BroadcastReceiver、ContentProvider）</li>
+<li>✅ 用户界面开发（布局管理器、常用控件、RecyclerView）</li>
+<li>✅ 数据存储（SharedPreferences、文件存储、SQLite、Room）</li>
+</ul>
+<p><strong>学习成果</strong>：</p>
+<ul>
+<li>能够搭建Android开发环境</li>
+<li>掌握Activity生命周期和四大组件使用</li>
+<li>能够开发常见的UI界面</li>
+<li>掌握本地数据存储方案</li>
+</ul>
+<p><strong>实战项目</strong>：笔记应用（包含登录、列表、CRUD操作）</p>
+<hr />
+<h3 id="2-android开发学习笔记---进阶篇"><a class="header" href="#2-android开发学习笔记---进阶篇">2️⃣ <a href="./Android-%E8%BF%9B%E9%98%B6%E7%AF%87.html">Android开发学习笔记 - 进阶篇</a></a></h3>
+<p><strong>适用人群</strong>：有Android基础开发经验，希望深入学习进阶技术</p>
+<p><strong>核心内容</strong>：</p>
+<ul>
+<li>✅ 网络编程（OkHttp、Retrofit、Gson、Glide）</li>
+<li>✅ 多线程与异步编程（Handler、协程、Flow）</li>
+<li>✅ Fragment深入（生命周期、通信、ViewPager）</li>
+<li>✅ 动画（视图动画、属性动画）</li>
+</ul>
+<p><strong>学习成果</strong>：</p>
+<ul>
+<li>熟练使用OkHttp和Retrofit进行网络请求</li>
+<li>掌握Kotlin协程进行异步操作</li>
+<li>能够实现Fragment通信和ViewPager切换</li>
+<li>掌握Android动画系统</li>
+</ul>
+<p><strong>实战重点</strong>：</p>
+<ul>
+<li>完整的网络请求封装</li>
+<li>用户列表与详情展示</li>
+<li>Tab切换页面实现</li>
+<li>动画效果应用</li>
+</ul>
+<hr />
+<h3 id="3-android开发学习笔记---高级篇"><a class="header" href="#3-android开发学习笔记---高级篇">3️⃣ <a href="./Android-%E9%AB%98%E7%BA%A7%E7%AF%87.html">Android开发学习笔记 - 高级篇</a></a></h3>
+<p><strong>适用人群</strong>：有1-2年Android开发经验，希望提升架构设计和性能优化能力</p>
+<p><strong>核心内容</strong>：</p>
+<ul>
+<li>✅ 性能优化（内存优化、布局优化、启动优化）</li>
+<li>✅ MVVM架构设计</li>
+<li>✅ 依赖注入（Hilt）</li>
+<li>✅ 单元测试与UI测试</li>
+<li>✅ 应用发布与签名配置</li>
+<li>✅ Jetpack组件（Navigation、DataBinding）</li>
+</ul>
+<p><strong>学习成果</strong>：</p>
+<ul>
+<li>能够检测和解决内存泄漏</li>
+<li>掌握MVVM架构模式和Hilt依赖注入</li>
+<li>能够编写单元测试和UI测试</li>
+<li>掌握应用签名、混淆和发布流程</li>
+</ul>
+<p><strong>实战项目</strong>：完整的Todo应用（包含MVVM架构、Room数据库、完整测试）</p>
+<hr />
+<h2 id="-学习建议"><a class="header" href="#-学习建议">🎯 学习建议</a></h2>
+<h3 id="初学者路径"><a class="header" href="#初学者路径">初学者路径</a></h3>
+<ol>
+<li><strong>第1-2周</strong>：学习基础篇，完成环境搭建和四大组件学习</li>
+<li><strong>第3-4周</strong>：学习基础篇UI部分，完成RecyclerView实战</li>
+<li><strong>第5-6周</strong>：学习数据存储，完成笔记应用实战</li>
+</ol>
+<h3 id="进阶者路径"><a class="header" href="#进阶者路径">进阶者路径</a></h3>
+<ol>
+<li><strong>第7-8周</strong>：学习进阶篇网络编程部分</li>
+<li><strong>第9-10周</strong>：学习Kotlin协程和Fragment</li>
+<li><strong>第11-12周</strong>：完成用户管理应用实战</li>
+</ol>
+<h3 id="高级开发者路径"><a class="header" href="#高级开发者路径">高级开发者路径</a></h3>
+<ol>
+<li><strong>第13-14周</strong>：学习性能优化技术</li>
+<li><strong>第15-16周</strong>：学习MVVM架构和Hilt</li>
+<li><strong>第17-18周</strong>：完成企业级Todo应用实战</li>
+</ol>
+<h2 id="-配套资源"><a class="header" href="#-配套资源">💡 配套资源</a></h2>
+<h3 id="开发工具"><a class="header" href="#开发工具">开发工具</a></h3>
+<ul>
+<li><strong>Android Studio</strong>：https://developer.android.com/studio</li>
+<li><strong>Kotlin文档</strong>：https://kotlinlang.org/docs/</li>
+<li><strong>Gradle构建工具</strong>：https://gradle.org/</li>
+</ul>
+<h3 id="官方文档"><a class="header" href="#官方文档">官方文档</a></h3>
+<ul>
+<li><strong>Android开发者文档</strong>：https://developer.android.com/docs</li>
+<li><strong>Android Codelabs</strong>：https://codelabs.developers.google.com/</li>
+<li><strong>Jetpack组件</strong>：https://developer.android.com/jetpack</li>
+</ul>
+<h3 id="推荐书籍"><a class="header" href="#推荐书籍">推荐书籍</a></h3>
+<ol>
+<li>《第一行代码 Android（第3版）》- 郭霖</li>
+<li>《Android进阶之光》- 刘望舒</li>
+<li>《Android开发艺术探索》- 任玉刚</li>
+<li>《Kotlin核心编程》- 水滴技术团队</li>
+</ol>
+<h3 id="开源项目"><a class="header" href="#开源项目">开源项目</a></h3>
+<ul>
+<li><strong>Now in Android</strong>：Google官方示例应用</li>
+<li><strong>Tivi</strong>：Jetpack Compose示例</li>
+<li><strong>Architecture Samples</strong>：Android架构示例</li>
+</ul>
+<h2 id="-学习进度追踪"><a class="header" href="#-学习进度追踪">📊 学习进度追踪</a></h2>
+<h3 id="基础篇"><a class="header" href="#基础篇">基础篇</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+Android系统架构</li>
+<li><input disabled="" type="checkbox"/>
+开发环境搭建</li>
+<li><input disabled="" type="checkbox"/>
+Activity生命周期</li>
+<li><input disabled="" type="checkbox"/>
+Service使用</li>
+<li><input disabled="" type="checkbox"/>
+BroadcastReceiver</li>
+<li><input disabled="" type="checkbox"/>
+ContentProvider</li>
+<li><input disabled="" type="checkbox"/>
+布局管理器</li>
+<li><input disabled="" type="checkbox"/>
+RecyclerView</li>
+<li><input disabled="" type="checkbox"/>
+数据存储</li>
+<li><input disabled="" type="checkbox"/>
+实战项目</li>
+</ul>
+<h3 id="进阶篇"><a class="header" href="#进阶篇">进阶篇</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+OkHttp和Retrofit</li>
+<li><input disabled="" type="checkbox"/>
+JSON数据解析</li>
+<li><input disabled="" type="checkbox"/>
+Glide图片加载</li>
+<li><input disabled="" type="checkbox"/>
+Handler消息机制</li>
+<li><input disabled="" type="checkbox"/>
+Kotlin协程</li>
+<li><input disabled="" type="checkbox"/>
+Fragment详解</li>
+<li><input disabled="" type="checkbox"/>
+ViewPager</li>
+<li><input disabled="" type="checkbox"/>
+动画系统</li>
+</ul>
+<h3 id="高级篇"><a class="header" href="#高级篇">高级篇</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+内存优化</li>
+<li><input disabled="" type="checkbox"/>
+布局优化</li>
+<li><input disabled="" type="checkbox"/>
+启动优化</li>
+<li><input disabled="" type="checkbox"/>
+MVVM架构</li>
+<li><input disabled="" type="checkbox"/>
+Hilt依赖注入</li>
+<li><input disabled="" type="checkbox"/>
+单元测试</li>
+<li><input disabled="" type="checkbox"/>
+UI测试</li>
+<li><input disabled="" type="checkbox"/>
+应用发布</li>
+</ul>
+<h2 id="-常见问题"><a class="header" href="#-常见问题">🔥 常见问题</a></h2>
+<h3 id="q1我需要先学java还是直接学kotlin"><a class="header" href="#q1我需要先学java还是直接学kotlin">Q1：我需要先学Java还是直接学Kotlin？</a></h3>
+<p><strong>A</strong>：推荐直接学Kotlin。现代Android开发推荐使用Kotlin，语法更简洁，功能更强大。</p>
+<h3 id="q2学完需要多长时间"><a class="header" href="#q2学完需要多长时间">Q2：学完需要多长时间？</a></h3>
+<p><strong>A</strong>：</p>
+<ul>
+<li><strong>基础篇</strong>：6-8周（每天2-3小时）</li>
+<li><strong>进阶篇</strong>：6-8周（每天2-3小时）</li>
+<li><strong>高级篇</strong>：6-8周（每天2-3小时）</li>
+<li><strong>总计</strong>：4-6个月可以达到中级水平</li>
+</ul>
+<h3 id="q3需要什么基础"><a class="header" href="#q3需要什么基础">Q3：需要什么基础？</a></h3>
+<p><strong>A</strong>：</p>
+<ul>
+<li>基础篇：Java或Kotlin基础语法</li>
+<li>进阶篇：完成基础篇学习</li>
+<li>高级篇：有实际项目开发经验</li>
+</ul>
+<h3 id="q4如何实践"><a class="header" href="#q4如何实践">Q4：如何实践？</a></h3>
+<p><strong>A</strong>：每个章节都有完整的代码示例，建议：</p>
+<ol>
+<li>跟着示例代码手敲一遍</li>
+<li>修改示例代码，观察效果</li>
+<li>独立完成章节实战项目</li>
+<li>尝试开发自己的应用</li>
+</ol>
+<h2 id="-下一步行动"><a class="header" href="#-下一步行动">🚀 下一步行动</a></h2>
+<ol>
+<li><strong>选择适合你的学习路径</strong></li>
+<li><strong>点击对应的笔记链接开始学习</strong></li>
+<li><strong>完成每章的实战项目</strong></li>
+<li><strong>加入Android开发者社区交流</strong></li>
+</ol>
+<hr />
+<h2 id="-相关笔记"><a class="header" href="#-相关笔记">📱 相关笔记</a></h2>
+<h3 id="跨平台开发"><a class="header" href="#跨平台开发">跨平台开发</a></h3>
+<ul>
+<li><a href="./TaroJS.html">TaroJS多端开发学习笔记</a> - 使用React开发微信小程序、H5等多端应用</li>
+</ul>
+<h3 id="android专项"><a class="header" href="#android专项">Android专项</a></h3>
+<ul>
+<li><strong>Jetpack Compose</strong>（规划中）- 现代化声明式UI</li>
+<li><strong>Kotlin协程深入</strong>（规划中）- 协程原理与实战</li>
+<li><strong>性能监控实战</strong>（规划中）- APM性能分析</li>
+</ul>
+<hr />
+<p><strong>开始学习</strong>: 点击上方链接，选择适合你的学习路径，开启Android开发之旅！</p>
+<p><strong>持续更新</strong>: 本笔记会定期更新，欢迎提供反馈和建议。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/android/Android-高级篇.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/android/TaroJS.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/android/Android-高级篇.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/android/TaroJS.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

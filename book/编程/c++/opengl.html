@@ -1,0 +1,1634 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>OpenGL 技术笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="opengl-技术笔记"><a class="header" href="#opengl-技术笔记">OpenGL 技术笔记</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>OpenGL（Open Graphics Library）是一个跨语言、跨平台的应用程序编程接口，用于渲染2D和3D矢量图形。OpenGL是由Khronos Group维护的图形标准，广泛应用于CAD、虚拟现实、科学可视化、信息可视化、飞行模拟器以及电子游戏开发。它提供了一套底层的图形绘制命令，允许开发者直接与GPU进行交互。</p>
+<h3 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h3>
+<ul>
+<li>跨平台图形API，支持Windows、Linux、macOS等</li>
+<li>硬件加速的3D图形渲染</li>
+<li>可编程渲染管线（着色器）</li>
+<li>高性能的几何处理和光栅化</li>
+<li>丰富的纹理和材质系统</li>
+<li>先进的光照和阴影技术</li>
+<li>多种渲染技术支持</li>
+</ul>
+<h2 id="系统架构"><a class="header" href="#系统架构">系统架构</a></h2>
+<h3 id="opengl渲染管线"><a class="header" href="#opengl渲染管线">OpenGL渲染管线</a></h3>
+<pre><code>应用程序 → OpenGL API
+    |
++----------------------------------+
+|         Vertex Processing        |
+| • Vertex Shader                  |
+| • Tessellation (可选)            |
+| • Geometry Shader (可选)         |
++----------------------------------+
+    |
++----------------------------------+
+|         Primitive Assembly       |
+| • 顶点组装                       |
+| • 裁剪                          |
+| • 面剔除                        |
++----------------------------------+
+    |
++----------------------------------+
+|         Rasterization            |
+| • 光栅化                        |
+| • 插值                          |
+| • 片段生成                      |
++----------------------------------+
+    |
++----------------------------------+
+|         Fragment Processing      |
+| • Fragment Shader               |
+| • 深度测试                      |
+| • 混合                          |
++----------------------------------+
+    |
+        帧缓冲区
+</code></pre>
+<h3 id="核心组件"><a class="header" href="#核心组件">核心组件</a></h3>
+<ol>
+<li><strong>Context（上下文）</strong> - OpenGL状态机的实例</li>
+<li><strong>Buffers（缓冲区）</strong> - 存储顶点数据、索引数据等</li>
+<li><strong>Shaders（着色器）</strong> - 可编程的渲染阶段</li>
+<li><strong>Textures（纹理）</strong> - 图像数据存储</li>
+<li><strong>Framebuffers（帧缓冲区）</strong> - 渲染目标</li>
+</ol>
+<h2 id="关键组件详解"><a class="header" href="#关键组件详解">关键组件详解</a></h2>
+<h3 id="1-opengl环境初始化"><a class="header" href="#1-opengl环境初始化">1. OpenGL环境初始化</a></h3>
+<pre><code class="language-cpp">#include &lt;GL/glew.h&gt;
+#include &lt;GLFW/glfw3.h&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+class OpenGLContext {
+private:
+    GLFWwindow* window;
+    int window_width;
+    int window_height;
+
+public:
+    OpenGLContext(int width = 800, int height = 600, const std::string&amp; title = "OpenGL Window")
+        : window_width(width), window_height(height) {
+        initializeGLFW();
+        createWindow(title);
+        initializeGLEW();
+        setupOpenGL();
+    }
+
+    ~OpenGLContext() {
+        if (window) {
+            glfwDestroyWindow(window);
+        }
+        glfwTerminate();
+    }
+
+    GLFWwindow* getWindow() { return window; }
+    int getWidth() const { return window_width; }
+    int getHeight() const { return window_height; }
+
+private:
+    bool initializeGLFW() {
+        if (!glfwInit()) {
+            std::cerr &lt;&lt; "Failed to initialize GLFW" &lt;&lt; std::endl;
+            return false;
+        }
+
+        // 设置OpenGL版本
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // macOS需要
+
+        // 其他窗口属性
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_SAMPLES, 4); // 4x MSAA
+
+        return true;
+    }
+
+    bool createWindow(const std::string&amp; title) {
+        window = glfwCreateWindow(window_width, window_height, title.c_str(), nullptr, nullptr);
+
+        if (!window) {
+            std::cerr &lt;&lt; "Failed to create GLFW window" &lt;&lt; std::endl;
+            glfwTerminate();
+            return false;
+        }
+
+        glfwMakeContextCurrent(window);
+
+        // 设置回调函数
+        glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+        glfwSetErrorCallback(errorCallback);
+
+        // 启用垂直同步
+        glfwSwapInterval(1);
+
+        return true;
+    }
+
+    bool initializeGLEW() {
+        if (glewInit() != GLEW_OK) {
+            std::cerr &lt;&lt; "Failed to initialize GLEW" &lt;&lt; std::endl;
+            return false;
+        }
+
+        // 输出OpenGL信息
+        std::cout &lt;&lt; "OpenGL Version: " &lt;&lt; glGetString(GL_VERSION) &lt;&lt; std::endl;
+        std::cout &lt;&lt; "GLSL Version: " &lt;&lt; glGetString(GL_SHADING_LANGUAGE_VERSION) &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Renderer: " &lt;&lt; glGetString(GL_RENDERER) &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Vendor: " &lt;&lt; glGetString(GL_VENDOR) &lt;&lt; std::endl;
+
+        return true;
+    }
+
+    void setupOpenGL() {
+        // 启用深度测试
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+
+        // 启用面剔除
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
+
+        // 启用多重采样抗锯齿
+        glEnable(GL_MULTISAMPLE);
+
+        // 设置视口
+        glViewport(0, 0, window_width, window_height);
+
+        // 设置清屏颜色
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    }
+
+    static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+    }
+
+    static void errorCallback(int error, const char* description) {
+        std::cerr &lt;&lt; "GLFW Error " &lt;&lt; error &lt;&lt; ": " &lt;&lt; description &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h3 id="2-着色器管理"><a class="header" href="#2-着色器管理">2. 着色器管理</a></h3>
+<pre><code class="language-cpp">class ShaderManager {
+private:
+    std::unordered_map&lt;std::string, GLuint&gt; shader_programs;
+
+public:
+    ~ShaderManager() {
+        for (auto&amp; pair : shader_programs) {
+            glDeleteProgram(pair.second);
+        }
+    }
+
+    GLuint loadShader(const std::string&amp; name,
+                     const std::string&amp; vertex_source,
+                     const std::string&amp; fragment_source,
+                     const std::string&amp; geometry_source = "") {
+
+        GLuint program = glCreateProgram();
+
+        // 编译顶点着色器
+        GLuint vertex_shader = compileShader(GL_VERTEX_SHADER, vertex_source);
+        if (vertex_shader == 0) return 0;
+        glAttachShader(program, vertex_shader);
+
+        // 编译片段着色器
+        GLuint fragment_shader = compileShader(GL_FRAGMENT_SHADER, fragment_source);
+        if (fragment_shader == 0) return 0;
+        glAttachShader(program, fragment_shader);
+
+        // 编译几何着色器（可选）
+        GLuint geometry_shader = 0;
+        if (!geometry_source.empty()) {
+            geometry_shader = compileShader(GL_GEOMETRY_SHADER, geometry_source);
+            if (geometry_shader == 0) return 0;
+            glAttachShader(program, geometry_shader);
+        }
+
+        // 链接程序
+        glLinkProgram(program);
+
+        // 检查链接状态
+        GLint link_status;
+        glGetProgramiv(program, GL_LINK_STATUS, &amp;link_status);
+        if (!link_status) {
+            GLchar info_log[512];
+            glGetProgramInfoLog(program, 512, nullptr, info_log);
+            std::cerr &lt;&lt; "Shader program linking failed: " &lt;&lt; info_log &lt;&lt; std::endl;
+
+            glDeleteShader(vertex_shader);
+            glDeleteShader(fragment_shader);
+            if (geometry_shader != 0) glDeleteShader(geometry_shader);
+            glDeleteProgram(program);
+            return 0;
+        }
+
+        // 清理着色器对象
+        glDeleteShader(vertex_shader);
+        glDeleteShader(fragment_shader);
+        if (geometry_shader != 0) glDeleteShader(geometry_shader);
+
+        shader_programs[name] = program;
+        return program;
+    }
+
+    GLuint loadShaderFromFiles(const std::string&amp; name,
+                              const std::string&amp; vertex_file,
+                              const std::string&amp; fragment_file,
+                              const std::string&amp; geometry_file = "") {
+        std::string vertex_source = readShaderFile(vertex_file);
+        std::string fragment_source = readShaderFile(fragment_file);
+        std::string geometry_source = geometry_file.empty() ? "" : readShaderFile(geometry_file);
+
+        return loadShader(name, vertex_source, fragment_source, geometry_source);
+    }
+
+    GLuint getProgram(const std::string&amp; name) {
+        auto it = shader_programs.find(name);
+        return (it != shader_programs.end()) ? it-&gt;second : 0;
+    }
+
+    void useProgram(const std::string&amp; name) {
+        GLuint program = getProgram(name);
+        if (program != 0) {
+            glUseProgram(program);
+        }
+    }
+
+    // Uniform设置函数
+    void setUniform(const std::string&amp; program_name, const std::string&amp; uniform_name, int value) {
+        GLuint program = getProgram(program_name);
+        if (program != 0) {
+            GLint location = glGetUniformLocation(program, uniform_name.c_str());
+            if (location != -1) {
+                glUniform1i(location, value);
+            }
+        }
+    }
+
+    void setUniform(const std::string&amp; program_name, const std::string&amp; uniform_name, float value) {
+        GLuint program = getProgram(program_name);
+        if (program != 0) {
+            GLint location = glGetUniformLocation(program, uniform_name.c_str());
+            if (location != -1) {
+                glUniform1f(location, value);
+            }
+        }
+    }
+
+    void setUniform(const std::string&amp; program_name, const std::string&amp; uniform_name,
+                   const glm::vec3&amp; value) {
+        GLuint program = getProgram(program_name);
+        if (program != 0) {
+            GLint location = glGetUniformLocation(program, uniform_name.c_str());
+            if (location != -1) {
+                glUniform3fv(location, 1, &amp;value[0]);
+            }
+        }
+    }
+
+    void setUniform(const std::string&amp; program_name, const std::string&amp; uniform_name,
+                   const glm::mat4&amp; value) {
+        GLuint program = getProgram(program_name);
+        if (program != 0) {
+            GLint location = glGetUniformLocation(program, uniform_name.c_str());
+            if (location != -1) {
+                glUniformMatrix4fv(location, 1, GL_FALSE, &amp;value[0][0]);
+            }
+        }
+    }
+
+private:
+    GLuint compileShader(GLenum type, const std::string&amp; source) {
+        GLuint shader = glCreateShader(type);
+        const char* source_cstr = source.c_str();
+        glShaderSource(shader, 1, &amp;source_cstr, nullptr);
+        glCompileShader(shader);
+
+        // 检查编译状态
+        GLint compile_status;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &amp;compile_status);
+        if (!compile_status) {
+            GLchar info_log[512];
+            glGetShaderInfoLog(shader, 512, nullptr, info_log);
+
+            std::string type_name;
+            switch (type) {
+                case GL_VERTEX_SHADER: type_name = "Vertex"; break;
+                case GL_FRAGMENT_SHADER: type_name = "Fragment"; break;
+                case GL_GEOMETRY_SHADER: type_name = "Geometry"; break;
+                default: type_name = "Unknown"; break;
+            }
+
+            std::cerr &lt;&lt; type_name &lt;&lt; " shader compilation failed: " &lt;&lt; info_log &lt;&lt; std::endl;
+            glDeleteShader(shader);
+            return 0;
+        }
+
+        return shader;
+    }
+
+    std::string readShaderFile(const std::string&amp; filepath) {
+        std::ifstream file(filepath);
+        if (!file.is_open()) {
+            std::cerr &lt;&lt; "Failed to open shader file: " &lt;&lt; filepath &lt;&lt; std::endl;
+            return "";
+        }
+
+        std::stringstream buffer;
+        buffer &lt;&lt; file.rdbuf();
+        return buffer.str();
+    }
+};
+</code></pre>
+<h3 id="3-几何数据管理"><a class="header" href="#3-几何数据管理">3. 几何数据管理</a></h3>
+<pre><code class="language-cpp">struct Vertex {
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec2 texture_coords;
+    glm::vec3 tangent;
+
+    Vertex() = default;
+    Vertex(const glm::vec3&amp; pos, const glm::vec3&amp; norm = glm::vec3(0.0f),
+           const glm::vec2&amp; tex = glm::vec2(0.0f), const glm::vec3&amp; tan = glm::vec3(0.0f))
+        : position(pos), normal(norm), texture_coords(tex), tangent(tan) {}
+};
+
+class Mesh {
+private:
+    GLuint VAO, VBO, EBO;
+    std::vector&lt;Vertex&gt; vertices;
+    std::vector&lt;unsigned int&gt; indices;
+    std::vector&lt;unsigned int&gt; textures;
+
+public:
+    Mesh(const std::vector&lt;Vertex&gt;&amp; vertices, const std::vector&lt;unsigned int&gt;&amp; indices,
+         const std::vector&lt;unsigned int&gt;&amp; textures = {})
+        : vertices(vertices), indices(indices), textures(textures) {
+        setupMesh();
+    }
+
+    ~Mesh() {
+        glDeleteVertexArrays(1, &amp;VAO);
+        glDeleteBuffers(1, &amp;VBO);
+        glDeleteBuffers(1, &amp;EBO);
+    }
+
+    void draw(GLuint shader_program) {
+        // 绑定纹理
+        for (size_t i = 0; i &lt; textures.size(); ++i) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, textures[i]);
+
+            std::string uniform_name = "texture" + std::to_string(i);
+            GLint location = glGetUniformLocation(shader_program, uniform_name.c_str());
+            if (location != -1) {
+                glUniform1i(location, i);
+            }
+        }
+
+        // 绘制网格
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        // 重置纹理单元
+        glActiveTexture(GL_TEXTURE0);
+    }
+
+    void drawInstanced(GLuint shader_program, unsigned int count) {
+        // 绑定纹理
+        for (size_t i = 0; i &lt; textures.size(); ++i) {
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, textures[i]);
+        }
+
+        // 绘制实例化网格
+        glBindVertexArray(VAO);
+        glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0, count);
+        glBindVertexArray(0);
+
+        glActiveTexture(GL_TEXTURE0);
+    }
+
+    GLuint getVAO() const { return VAO; }
+    size_t getVertexCount() const { return vertices.size(); }
+    size_t getIndexCount() const { return indices.size(); }
+
+private:
+    void setupMesh() {
+        // 生成缓冲区
+        glGenVertexArrays(1, &amp;VAO);
+        glGenBuffers(1, &amp;VBO);
+        glGenBuffers(1, &amp;EBO);
+
+        glBindVertexArray(VAO);
+
+        // 顶点缓冲区
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex),
+                    vertices.data(), GL_STATIC_DRAW);
+
+        // 索引缓冲区
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int),
+                    indices.data(), GL_STATIC_DRAW);
+
+        // 顶点属性指针
+        // 位置属性
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                             reinterpret_cast&lt;void*&gt;(offsetof(Vertex, position)));
+
+        // 法线属性
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                             reinterpret_cast&lt;void*&gt;(offsetof(Vertex, normal)));
+
+        // 纹理坐标属性
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                             reinterpret_cast&lt;void*&gt;(offsetof(Vertex, texture_coords)));
+
+        // 切线属性
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                             reinterpret_cast&lt;void*&gt;(offsetof(Vertex, tangent)));
+
+        glBindVertexArray(0);
+    }
+};
+
+// 基础几何体生成器
+class GeometryGenerator {
+public:
+    static std::unique_ptr&lt;Mesh&gt; createCube(float size = 1.0f) {
+        float half_size = size * 0.5f;
+
+        std::vector&lt;Vertex&gt; vertices = {
+            // 前面
+            {{-half_size, -half_size,  half_size}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},
+            {{ half_size, -half_size,  half_size}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},
+            {{ half_size,  half_size,  half_size}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+            {{-half_size,  half_size,  half_size}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
+
+            // 后面
+            {{-half_size, -half_size, -half_size}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}},
+            {{-half_size,  half_size, -half_size}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}},
+            {{ half_size,  half_size, -half_size}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},
+            {{ half_size, -half_size, -half_size}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}},
+
+            // 左面
+            {{-half_size,  half_size,  half_size}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+            {{-half_size,  half_size, -half_size}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},
+            {{-half_size, -half_size, -half_size}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},
+            {{-half_size, -half_size,  half_size}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+
+            // 右面
+            {{ half_size,  half_size,  half_size}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+            {{ half_size, -half_size,  half_size}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},
+            {{ half_size, -half_size, -half_size}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},
+            {{ half_size,  half_size, -half_size}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+
+            // 上面
+            {{-half_size,  half_size, -half_size}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}},
+            {{-half_size,  half_size,  half_size}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+            {{ half_size,  half_size,  half_size}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+            {{ half_size,  half_size, -half_size}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},
+
+            // 下面
+            {{-half_size, -half_size, -half_size}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}},
+            {{ half_size, -half_size, -half_size}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f}},
+            {{ half_size, -half_size,  half_size}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},
+            {{-half_size, -half_size,  half_size}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}}
+        };
+
+        std::vector&lt;unsigned int&gt; indices = {
+            0,  1,  2,   2,  3,  0,   // 前面
+            4,  5,  6,   6,  7,  4,   // 后面
+            8,  9,  10,  10, 11, 8,   // 左面
+            12, 13, 14,  14, 15, 12,  // 右面
+            16, 17, 18,  18, 19, 16,  // 上面
+            20, 21, 22,  22, 23, 20   // 下面
+        };
+
+        return std::make_unique&lt;Mesh&gt;(vertices, indices);
+    }
+
+    static std::unique_ptr&lt;Mesh&gt; createSphere(float radius = 1.0f, int slices = 32, int stacks = 16) {
+        std::vector&lt;Vertex&gt; vertices;
+        std::vector&lt;unsigned int&gt; indices;
+
+        // 生成顶点
+        for (int i = 0; i &lt;= stacks; ++i) {
+            float V = i / static_cast&lt;float&gt;(stacks);
+            float phi = V * M_PI;
+
+            for (int j = 0; j &lt;= slices; ++j) {
+                float U = j / static_cast&lt;float&gt;(slices);
+                float theta = U * 2.0f * M_PI;
+
+                float x = cos(theta) * sin(phi);
+                float y = cos(phi);
+                float z = sin(theta) * sin(phi);
+
+                vertices.push_back(Vertex(
+                    glm::vec3(x * radius, y * radius, z * radius),
+                    glm::vec3(x, y, z),
+                    glm::vec2(U, V)
+                ));
+            }
+        }
+
+        // 生成索引
+        for (int i = 0; i &lt; stacks; ++i) {
+            for (int j = 0; j &lt; slices; ++j) {
+                int first = (i * (slices + 1)) + j;
+                int second = first + slices + 1;
+
+                indices.push_back(first);
+                indices.push_back(second);
+                indices.push_back(first + 1);
+
+                indices.push_back(second);
+                indices.push_back(second + 1);
+                indices.push_back(first + 1);
+            }
+        }
+
+        return std::make_unique&lt;Mesh&gt;(vertices, indices);
+    }
+
+    static std::unique_ptr&lt;Mesh&gt; createPlane(float width = 1.0f, float height = 1.0f) {
+        float half_width = width * 0.5f;
+        float half_height = height * 0.5f;
+
+        std::vector&lt;Vertex&gt; vertices = {
+            {{-half_width, 0.0f, -half_height}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+            {{ half_width, 0.0f, -half_height}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},
+            {{ half_width, 0.0f,  half_height}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},
+            {{-half_width, 0.0f,  half_height}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}}
+        };
+
+        std::vector&lt;unsigned int&gt; indices = {
+            0, 1, 2,
+            2, 3, 0
+        };
+
+        return std::make_unique&lt;Mesh&gt;(vertices, indices);
+    }
+};
+</code></pre>
+<h3 id="4-纹理管理"><a class="header" href="#4-纹理管理">4. 纹理管理</a></h3>
+<pre><code class="language-cpp">#define STB_IMAGE_IMPLEMENTATION
+#include &lt;stb_image.h&gt;
+
+class TextureManager {
+private:
+    std::unordered_map&lt;std::string, GLuint&gt; textures;
+
+public:
+    ~TextureManager() {
+        for (auto&amp; pair : textures) {
+            glDeleteTextures(1, &amp;pair.second);
+        }
+    }
+
+    GLuint loadTexture2D(const std::string&amp; name, const std::string&amp; filepath,
+                        bool flip_vertically = true) {
+        // 检查是否已加载
+        auto it = textures.find(name);
+        if (it != textures.end()) {
+            return it-&gt;second;
+        }
+
+        GLuint texture_id;
+        glGenTextures(1, &amp;texture_id);
+
+        // 设置stb_image翻转
+        stbi_set_flip_vertically_on_load(flip_vertically);
+
+        int width, height, channels;
+        unsigned char* data = stbi_load(filepath.c_str(), &amp;width, &amp;height, &amp;channels, 0);
+
+        if (data) {
+            GLenum format;
+            GLenum internal_format;
+
+            switch (channels) {
+                case 1:
+                    format = GL_RED;
+                    internal_format = GL_R8;
+                    break;
+                case 3:
+                    format = GL_RGB;
+                    internal_format = GL_RGB8;
+                    break;
+                case 4:
+                    format = GL_RGBA;
+                    internal_format = GL_RGBA8;
+                    break;
+                default:
+                    std::cerr &lt;&lt; "Unsupported texture format: " &lt;&lt; channels &lt;&lt; " channels" &lt;&lt; std::endl;
+                    stbi_image_free(data);
+                    glDeleteTextures(1, &amp;texture_id);
+                    return 0;
+            }
+
+            glBindTexture(GL_TEXTURE_2D, texture_id);
+            glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+
+            // 生成mipmap
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            // 设置纹理参数
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            // 各向异性过滤（如果支持）
+            if (GLEW_EXT_texture_filter_anisotropic) {
+                GLfloat max_anisotropy;
+                glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &amp;max_anisotropy);
+                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_anisotropy);
+            }
+
+            stbi_image_free(data);
+            textures[name] = texture_id;
+
+            std::cout &lt;&lt; "Loaded texture: " &lt;&lt; name &lt;&lt; " (" &lt;&lt; width &lt;&lt; "x" &lt;&lt; height
+                     &lt;&lt; ", " &lt;&lt; channels &lt;&lt; " channels)" &lt;&lt; std::endl;
+
+            return texture_id;
+        } else {
+            std::cerr &lt;&lt; "Failed to load texture: " &lt;&lt; filepath &lt;&lt; std::endl;
+            stbi_image_free(data);
+            glDeleteTextures(1, &amp;texture_id);
+            return 0;
+        }
+    }
+
+    GLuint loadCubemap(const std::string&amp; name, const std::vector&lt;std::string&gt;&amp; faces) {
+        GLuint texture_id;
+        glGenTextures(1, &amp;texture_id);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, texture_id);
+
+        int width, height, channels;
+        for (size_t i = 0; i &lt; faces.size(); ++i) {
+            unsigned char* data = stbi_load(faces[i].c_str(), &amp;width, &amp;height, &amp;channels, 0);
+            if (data) {
+                GLenum format = (channels == 3) ? GL_RGB : GL_RGBA;
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format,
+                           width, height, 0, format, GL_UNSIGNED_BYTE, data);
+                stbi_image_free(data);
+            } else {
+                std::cerr &lt;&lt; "Failed to load cubemap face: " &lt;&lt; faces[i] &lt;&lt; std::endl;
+                stbi_image_free(data);
+            }
+        }
+
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+        textures[name] = texture_id;
+        return texture_id;
+    }
+
+    GLuint createFramebufferTexture(const std::string&amp; name, int width, int height,
+                                   GLenum internal_format = GL_RGBA,
+                                   GLenum format = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE) {
+        GLuint texture_id;
+        glGenTextures(1, &amp;texture_id);
+        glBindTexture(GL_TEXTURE_2D, texture_id);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, format, type, nullptr);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        textures[name] = texture_id;
+        return texture_id;
+    }
+
+    GLuint getTexture(const std::string&amp; name) {
+        auto it = textures.find(name);
+        return (it != textures.end()) ? it-&gt;second : 0;
+    }
+
+    void bindTexture(const std::string&amp; name, GLenum texture_unit = GL_TEXTURE0) {
+        GLuint texture_id = getTexture(name);
+        if (texture_id != 0) {
+            glActiveTexture(texture_unit);
+            glBindTexture(GL_TEXTURE_2D, texture_id);
+        }
+    }
+
+    void deleteTexture(const std::string&amp; name) {
+        auto it = textures.find(name);
+        if (it != textures.end()) {
+            glDeleteTextures(1, &amp;it-&gt;second);
+            textures.erase(it);
+        }
+    }
+};
+</code></pre>
+<h3 id="5-摄像机系统"><a class="header" href="#5-摄像机系统">5. 摄像机系统</a></h3>
+<pre><code class="language-cpp">class Camera {
+private:
+    glm::vec3 position;
+    glm::vec3 front;
+    glm::vec3 up;
+    glm::vec3 right;
+    glm::vec3 world_up;
+
+    float yaw;
+    float pitch;
+    float movement_speed;
+    float mouse_sensitivity;
+    float zoom;
+
+public:
+    Camera(glm::vec3 pos = glm::vec3(0.0f, 0.0f, 3.0f),
+           glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+           float yaw = -90.0f, float pitch = 0.0f)
+        : position(pos), world_up(up), yaw(yaw), pitch(pitch),
+          movement_speed(2.5f), mouse_sensitivity(0.1f), zoom(45.0f) {
+        updateCameraVectors();
+    }
+
+    glm::mat4 getViewMatrix() {
+        return glm::lookAt(position, position + front, up);
+    }
+
+    glm::mat4 getProjectionMatrix(float aspect_ratio, float near_plane = 0.1f, float far_plane = 100.0f) {
+        return glm::perspective(glm::radians(zoom), aspect_ratio, near_plane, far_plane);
+    }
+
+    // 键盘输入处理
+    enum CameraMovement {
+        FORWARD,
+        BACKWARD,
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN
+    };
+
+    void processKeyboard(CameraMovement direction, float delta_time) {
+        float velocity = movement_speed * delta_time;
+
+        switch (direction) {
+            case FORWARD:
+                position += front * velocity;
+                break;
+            case BACKWARD:
+                position -= front * velocity;
+                break;
+            case LEFT:
+                position -= right * velocity;
+                break;
+            case RIGHT:
+                position += right * velocity;
+                break;
+            case UP:
+                position += up * velocity;
+                break;
+            case DOWN:
+                position -= up * velocity;
+                break;
+        }
+    }
+
+    void processMouseMovement(float x_offset, float y_offset, bool constrain_pitch = true) {
+        x_offset *= mouse_sensitivity;
+        y_offset *= mouse_sensitivity;
+
+        yaw += x_offset;
+        pitch += y_offset;
+
+        if (constrain_pitch) {
+            pitch = glm::clamp(pitch, -89.0f, 89.0f);
+        }
+
+        updateCameraVectors();
+    }
+
+    void processMouseScroll(float y_offset) {
+        zoom = glm::clamp(zoom - y_offset, 1.0f, 75.0f);
+    }
+
+    // Getter functions
+    glm::vec3 getPosition() const { return position; }
+    glm::vec3 getFront() const { return front; }
+    glm::vec3 getUp() const { return up; }
+    glm::vec3 getRight() const { return right; }
+    float getZoom() const { return zoom; }
+
+    // Setter functions
+    void setPosition(const glm::vec3&amp; pos) { position = pos; }
+    void setMovementSpeed(float speed) { movement_speed = speed; }
+    void setMouseSensitivity(float sensitivity) { mouse_sensitivity = sensitivity; }
+
+private:
+    void updateCameraVectors() {
+        glm::vec3 front_new;
+        front_new.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front_new.y = sin(glm::radians(pitch));
+        front_new.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front = glm::normalize(front_new);
+
+        right = glm::normalize(glm::cross(front, world_up));
+        up = glm::normalize(glm::cross(right, front));
+    }
+};
+</code></pre>
+<h3 id="6-光照系统"><a class="header" href="#6-光照系统">6. 光照系统</a></h3>
+<pre><code class="language-cpp">struct DirectionalLight {
+    glm::vec3 direction;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+
+    DirectionalLight(const glm::vec3&amp; dir = glm::vec3(-0.2f, -1.0f, -0.3f),
+                    const glm::vec3&amp; amb = glm::vec3(0.1f),
+                    const glm::vec3&amp; diff = glm::vec3(0.5f),
+                    const glm::vec3&amp; spec = glm::vec3(1.0f))
+        : direction(dir), ambient(amb), diffuse(diff), specular(spec) {}
+};
+
+struct PointLight {
+    glm::vec3 position;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
+
+    PointLight(const glm::vec3&amp; pos = glm::vec3(0.0f),
+              const glm::vec3&amp; amb = glm::vec3(0.1f),
+              const glm::vec3&amp; diff = glm::vec3(0.8f),
+              const glm::vec3&amp; spec = glm::vec3(1.0f),
+              float c = 1.0f, float l = 0.09f, float q = 0.032f)
+        : position(pos), ambient(amb), diffuse(diff), specular(spec),
+          constant(c), linear(l), quadratic(q) {}
+};
+
+struct SpotLight {
+    glm::vec3 position;
+    glm::vec3 direction;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+
+    float inner_cutoff;
+    float outer_cutoff;
+    float constant;
+    float linear;
+    float quadratic;
+
+    SpotLight(const glm::vec3&amp; pos = glm::vec3(0.0f),
+             const glm::vec3&amp; dir = glm::vec3(0.0f, -1.0f, 0.0f),
+             const glm::vec3&amp; amb = glm::vec3(0.1f),
+             const glm::vec3&amp; diff = glm::vec3(0.8f),
+             const glm::vec3&amp; spec = glm::vec3(1.0f),
+             float inner = 12.5f, float outer = 17.5f,
+             float c = 1.0f, float l = 0.09f, float q = 0.032f)
+        : position(pos), direction(dir), ambient(amb), diffuse(diff), specular(spec),
+          inner_cutoff(inner), outer_cutoff(outer), constant(c), linear(l), quadratic(q) {}
+};
+
+class LightingSystem {
+private:
+    DirectionalLight directional_light;
+    std::vector&lt;PointLight&gt; point_lights;
+    std::vector&lt;SpotLight&gt; spot_lights;
+
+public:
+    void setDirectionalLight(const DirectionalLight&amp; light) {
+        directional_light = light;
+    }
+
+    void addPointLight(const PointLight&amp; light) {
+        point_lights.push_back(light);
+    }
+
+    void addSpotLight(const SpotLight&amp; light) {
+        spot_lights.push_back(light);
+    }
+
+    void applyLighting(ShaderManager&amp; shader_manager, const std::string&amp; program_name) {
+        // 设置方向光
+        shader_manager.setUniform(program_name, "directional_light.direction", directional_light.direction);
+        shader_manager.setUniform(program_name, "directional_light.ambient", directional_light.ambient);
+        shader_manager.setUniform(program_name, "directional_light.diffuse", directional_light.diffuse);
+        shader_manager.setUniform(program_name, "directional_light.specular", directional_light.specular);
+
+        // 设置点光源
+        shader_manager.setUniform(program_name, "num_point_lights", static_cast&lt;int&gt;(point_lights.size()));
+        for (size_t i = 0; i &lt; point_lights.size(); ++i) {
+            std::string base = "point_lights[" + std::to_string(i) + "]";
+            shader_manager.setUniform(program_name, base + ".position", point_lights[i].position);
+            shader_manager.setUniform(program_name, base + ".ambient", point_lights[i].ambient);
+            shader_manager.setUniform(program_name, base + ".diffuse", point_lights[i].diffuse);
+            shader_manager.setUniform(program_name, base + ".specular", point_lights[i].specular);
+            shader_manager.setUniform(program_name, base + ".constant", point_lights[i].constant);
+            shader_manager.setUniform(program_name, base + ".linear", point_lights[i].linear);
+            shader_manager.setUniform(program_name, base + ".quadratic", point_lights[i].quadratic);
+        }
+
+        // 设置聚光灯
+        shader_manager.setUniform(program_name, "num_spot_lights", static_cast&lt;int&gt;(spot_lights.size()));
+        for (size_t i = 0; i &lt; spot_lights.size(); ++i) {
+            std::string base = "spot_lights[" + std::to_string(i) + "]";
+            shader_manager.setUniform(program_name, base + ".position", spot_lights[i].position);
+            shader_manager.setUniform(program_name, base + ".direction", spot_lights[i].direction);
+            shader_manager.setUniform(program_name, base + ".ambient", spot_lights[i].ambient);
+            shader_manager.setUniform(program_name, base + ".diffuse", spot_lights[i].diffuse);
+            shader_manager.setUniform(program_name, base + ".specular", spot_lights[i].specular);
+            shader_manager.setUniform(program_name, base + ".inner_cutoff", glm::cos(glm::radians(spot_lights[i].inner_cutoff)));
+            shader_manager.setUniform(program_name, base + ".outer_cutoff", glm::cos(glm::radians(spot_lights[i].outer_cutoff)));
+            shader_manager.setUniform(program_name, base + ".constant", spot_lights[i].constant);
+            shader_manager.setUniform(program_name, base + ".linear", spot_lights[i].linear);
+            shader_manager.setUniform(program_name, base + ".quadratic", spot_lights[i].quadratic);
+        }
+    }
+
+    void clearLights() {
+        point_lights.clear();
+        spot_lights.clear();
+    }
+};
+</code></pre>
+<h2 id="高级渲染技术"><a class="header" href="#高级渲染技术">高级渲染技术</a></h2>
+<h3 id="1-阴影映射"><a class="header" href="#1-阴影映射">1. 阴影映射</a></h3>
+<pre><code class="language-cpp">class ShadowMapping {
+private:
+    GLuint shadow_fbo;
+    GLuint shadow_map;
+    int shadow_width, shadow_height;
+
+public:
+    ShadowMapping(int width = 1024, int height = 1024)
+        : shadow_width(width), shadow_height(height) {
+        setupShadowFramebuffer();
+    }
+
+    ~ShadowMapping() {
+        glDeleteFramebuffers(1, &amp;shadow_fbo);
+        glDeleteTextures(1, &amp;shadow_map);
+    }
+
+    void beginShadowMapPass() {
+        glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo);
+        glViewport(0, 0, shadow_width, shadow_height);
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
+
+    void endShadowMapPass(int viewport_width, int viewport_height) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, viewport_width, viewport_height);
+    }
+
+    void bindShadowMap(GLenum texture_unit = GL_TEXTURE1) {
+        glActiveTexture(texture_unit);
+        glBindTexture(GL_TEXTURE_2D, shadow_map);
+    }
+
+    glm::mat4 getLightSpaceMatrix(const DirectionalLight&amp; light, const Camera&amp; camera) {
+        float near_plane = 1.0f, far_plane = 7.5f;
+        glm::mat4 light_projection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+        glm::mat4 light_view = glm::lookAt(
+            -light.direction * 3.0f,  // 光源位置
+            glm::vec3(0.0f, 0.0f, 0.0f),  // 目标
+            glm::vec3(0.0f, 1.0f, 0.0f)   // 上向量
+        );
+        return light_projection * light_view;
+    }
+
+private:
+    void setupShadowFramebuffer() {
+        // 生成深度纹理
+        glGenTextures(1, &amp;shadow_map);
+        glBindTexture(GL_TEXTURE_2D, shadow_map);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                    shadow_width, shadow_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+        // 设置边界颜色（白色，表示光照区域外）
+        float border_color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, border_color);
+
+        // 创建帧缓冲区
+        glGenFramebuffers(1, &amp;shadow_fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER, shadow_fbo);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadow_map, 0);
+
+        // 告诉OpenGL我们不使用颜色缓冲区
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            std::cerr &lt;&lt; "Shadow framebuffer not complete!" &lt;&lt; std::endl;
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+};
+</code></pre>
+<h3 id="2-延迟渲染"><a class="header" href="#2-延迟渲染">2. 延迟渲染</a></h3>
+<pre><code class="language-cpp">class DeferredRenderer {
+private:
+    GLuint g_buffer;
+    GLuint g_position, g_normal, g_albedo_spec;
+    GLuint g_depth;
+    int screen_width, screen_height;
+
+    std::unique_ptr&lt;Mesh&gt; quad;
+
+public:
+    DeferredRenderer(int width, int height)
+        : screen_width(width), screen_height(height) {
+        setupGBuffer();
+        quad = GeometryGenerator::createQuad();
+    }
+
+    ~DeferredRenderer() {
+        glDeleteFramebuffers(1, &amp;g_buffer);
+        glDeleteTextures(1, &amp;g_position);
+        glDeleteTextures(1, &amp;g_normal);
+        glDeleteTextures(1, &amp;g_albedo_spec);
+        glDeleteTextures(1, &amp;g_depth);
+    }
+
+    void beginGeometryPass() {
+        glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void beginLightingPass() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // 绑定G-Buffer纹理
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, g_position);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, g_normal);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, g_albedo_spec);
+    }
+
+    void renderLightingPass(GLuint lighting_shader) {
+        glUseProgram(lighting_shader);
+
+        // 设置纹理uniforms
+        glUniform1i(glGetUniformLocation(lighting_shader, "g_position"), 0);
+        glUniform1i(glGetUniformLocation(lighting_shader, "g_normal"), 1);
+        glUniform1i(glGetUniformLocation(lighting_shader, "g_albedo_spec"), 2);
+
+        // 渲染全屏四边形
+        quad-&gt;draw(lighting_shader);
+    }
+
+private:
+    void setupGBuffer() {
+        glGenFramebuffers(1, &amp;g_buffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, g_buffer);
+
+        // 位置缓冲区
+        glGenTextures(1, &amp;g_position);
+        glBindTexture(GL_TEXTURE_2D, g_position);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, screen_width, screen_height, 0, GL_RGBA, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, g_position, 0);
+
+        // 法线缓冲区
+        glGenTextures(1, &amp;g_normal);
+        glBindTexture(GL_TEXTURE_2D, g_normal);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, screen_width, screen_height, 0, GL_RGBA, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, g_normal, 0);
+
+        // 反照率 + 镜面反射缓冲区
+        glGenTextures(1, &amp;g_albedo_spec);
+        glBindTexture(GL_TEXTURE_2D, g_albedo_spec);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, screen_width, screen_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, g_albedo_spec, 0);
+
+        // 告诉OpenGL使用哪些颜色附件
+        unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+        glDrawBuffers(3, attachments);
+
+        // 深度缓冲区
+        glGenTextures(1, &amp;g_depth);
+        glBindTexture(GL_TEXTURE_2D, g_depth);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, screen_width, screen_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, g_depth, 0);
+
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            std::cerr &lt;&lt; "G-Buffer framebuffer not complete!" &lt;&lt; std::endl;
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+};
+</code></pre>
+<h2 id="编译和部署"><a class="header" href="#编译和部署">编译和部署</a></h2>
+<h3 id="1-cmake配置"><a class="header" href="#1-cmake配置">1. CMake配置</a></h3>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.12)
+project(OpenGLApp)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 查找必要的库
+find_package(OpenGL REQUIRED)
+find_package(glfw3 REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(glm REQUIRED)
+
+# 创建可执行文件
+add_executable(${PROJECT_NAME}
+    main.cpp
+    # 其他源文件...
+)
+
+# 包含头文件目录
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${OPENGL_INCLUDE_DIRS}
+    ${GLM_INCLUDE_DIRS}
+)
+
+# 链接库
+target_link_libraries(${PROJECT_NAME}
+    ${OPENGL_LIBRARIES}
+    glfw
+    GLEW::GLEW
+)
+
+# 平台特定设置
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} opengl32)
+elseif(APPLE)
+    find_library(COCOA_LIBRARY Cocoa)
+    find_library(IOKIT_LIBRARY IOKit)
+    find_library(COREVIDEO_LIBRARY CoreVideo)
+    target_link_libraries(${PROJECT_NAME}
+        ${COCOA_LIBRARY}
+        ${IOKIT_LIBRARY}
+        ${COREVIDEO_LIBRARY}
+    )
+endif()
+
+# 复制着色器文件
+file(COPY ${CMAKE_SOURCE_DIR}/shaders DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/textures DESTINATION ${CMAKE_BINARY_DIR})
+</code></pre>
+<h3 id="2-应用程序框架"><a class="header" href="#2-应用程序框架">2. 应用程序框架</a></h3>
+<pre><code class="language-cpp">class OpenGLApplication {
+private:
+    std::unique_ptr&lt;OpenGLContext&gt; context;
+    std::unique_ptr&lt;ShaderManager&gt; shader_manager;
+    std::unique_ptr&lt;TextureManager&gt; texture_manager;
+    std::unique_ptr&lt;Camera&gt; camera;
+    std::unique_ptr&lt;LightingSystem&gt; lighting_system;
+
+    float delta_time;
+    float last_frame;
+
+    // 输入状态
+    bool keys[1024];
+    bool first_mouse;
+    float last_x, last_y;
+
+public:
+    OpenGLApplication() {
+        initializeApplication();
+        setupInputCallbacks();
+        loadResources();
+    }
+
+    void run() {
+        while (!glfwWindowShouldClose(context-&gt;getWindow())) {
+            float current_frame = glfwGetTime();
+            delta_time = current_frame - last_frame;
+            last_frame = current_frame;
+
+            processInput();
+            update(delta_time);
+            render();
+
+            glfwSwapBuffers(context-&gt;getWindow());
+            glfwPollEvents();
+        }
+    }
+
+private:
+    void initializeApplication() {
+        context = std::make_unique&lt;OpenGLContext&gt;(1200, 800, "OpenGL Application");
+        shader_manager = std::make_unique&lt;ShaderManager&gt;();
+        texture_manager = std::make_unique&lt;TextureManager&gt;();
+        camera = std::make_unique&lt;Camera&gt;(glm::vec3(0.0f, 0.0f, 3.0f));
+        lighting_system = std::make_unique&lt;LightingSystem&gt;();
+
+        // 初始化时间
+        delta_time = 0.0f;
+        last_frame = 0.0f;
+
+        // 初始化输入状态
+        std::fill(std::begin(keys), std::end(keys), false);
+        first_mouse = true;
+        last_x = context-&gt;getWidth() / 2.0f;
+        last_y = context-&gt;getHeight() / 2.0f;
+
+        // 设置鼠标模式
+        glfwSetInputMode(context-&gt;getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    void setupInputCallbacks() {
+        // 存储应用程序指针
+        glfwSetWindowUserPointer(context-&gt;getWindow(), this);
+
+        // 设置回调函数
+        glfwSetKeyCallback(context-&gt;getWindow(), keyCallback);
+        glfwSetCursorPosCallback(context-&gt;getWindow(), mouseCallback);
+        glfwSetScrollCallback(context-&gt;getWindow(), scrollCallback);
+    }
+
+    void loadResources() {
+        // 加载着色器
+        shader_manager-&gt;loadShaderFromFiles("basic", "shaders/basic.vs", "shaders/basic.fs");
+        shader_manager-&gt;loadShaderFromFiles("lighting", "shaders/lighting.vs", "shaders/lighting.fs");
+
+        // 加载纹理
+        texture_manager-&gt;loadTexture2D("container", "textures/container.jpg");
+        texture_manager-&gt;loadTexture2D("wood", "textures/wood.png");
+
+        // 设置光照
+        DirectionalLight dir_light(glm::vec3(-0.2f, -1.0f, -0.3f));
+        lighting_system-&gt;setDirectionalLight(dir_light);
+
+        PointLight point_light(glm::vec3(1.2f, 1.0f, 2.0f));
+        lighting_system-&gt;addPointLight(point_light);
+    }
+
+    void processInput() {
+        if (keys[GLFW_KEY_W]) camera-&gt;processKeyboard(Camera::FORWARD, delta_time);
+        if (keys[GLFW_KEY_S]) camera-&gt;processKeyboard(Camera::BACKWARD, delta_time);
+        if (keys[GLFW_KEY_A]) camera-&gt;processKeyboard(Camera::LEFT, delta_time);
+        if (keys[GLFW_KEY_D]) camera-&gt;processKeyboard(Camera::RIGHT, delta_time);
+        if (keys[GLFW_KEY_SPACE]) camera-&gt;processKeyboard(Camera::UP, delta_time);
+        if (keys[GLFW_KEY_LEFT_CONTROL]) camera-&gt;processKeyboard(Camera::DOWN, delta_time);
+    }
+
+    void update(float delta_time) {
+        // 更新逻辑
+    }
+
+    void render() {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // 使用光照着色器
+        shader_manager-&gt;useProgram("lighting");
+
+        // 设置矩阵
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = camera-&gt;getViewMatrix();
+        glm::mat4 projection = camera-&gt;getProjectionMatrix(
+            static_cast&lt;float&gt;(context-&gt;getWidth()) / context-&gt;getHeight());
+
+        shader_manager-&gt;setUniform("lighting", "model", model);
+        shader_manager-&gt;setUniform("lighting", "view", view);
+        shader_manager-&gt;setUniform("lighting", "projection", projection);
+        shader_manager-&gt;setUniform("lighting", "view_pos", camera-&gt;getPosition());
+
+        // 应用光照
+        lighting_system-&gt;applyLighting(*shader_manager, "lighting");
+
+        // 绑定纹理并渲染物体
+        texture_manager-&gt;bindTexture("container", GL_TEXTURE0);
+
+        // 这里渲染你的场景...
+    }
+
+    // 静态回调函数
+    static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        OpenGLApplication* app = static_cast&lt;OpenGLApplication*&gt;(glfwGetWindowUserPointer(window));
+
+        if (action == GLFW_PRESS) {
+            app-&gt;keys[key] = true;
+        } else if (action == GLFW_RELEASE) {
+            app-&gt;keys[key] = false;
+        }
+
+        if (key == GLFW_KEY_ESCAPE &amp;&amp; action == GLFW_PRESS) {
+            glfwSetWindowShouldClose(window, true);
+        }
+    }
+
+    static void mouseCallback(GLFWwindow* window, double x_pos, double y_pos) {
+        OpenGLApplication* app = static_cast&lt;OpenGLApplication*&gt;(glfwGetWindowUserPointer(window));
+
+        if (app-&gt;first_mouse) {
+            app-&gt;last_x = x_pos;
+            app-&gt;last_y = y_pos;
+            app-&gt;first_mouse = false;
+        }
+
+        float x_offset = x_pos - app-&gt;last_x;
+        float y_offset = app-&gt;last_y - y_pos; // 翻转Y轴
+
+        app-&gt;last_x = x_pos;
+        app-&gt;last_y = y_pos;
+
+        app-&gt;camera-&gt;processMouseMovement(x_offset, y_offset);
+    }
+
+    static void scrollCallback(GLFWwindow* window, double x_offset, double y_offset) {
+        OpenGLApplication* app = static_cast&lt;OpenGLApplication*&gt;(glfwGetWindowUserPointer(window));
+        app-&gt;camera-&gt;processMouseScroll(y_offset);
+    }
+};
+
+int main() {
+    try {
+        OpenGLApplication app;
+        app.run();
+    } catch (const std::exception&amp; e) {
+        std::cerr &lt;&lt; "Application error: " &lt;&lt; e.what() &lt;&lt; std::endl;
+        return -1;
+    }
+
+    return 0;
+}
+</code></pre>
+<h2 id="技术要点总结"><a class="header" href="#技术要点总结">技术要点总结</a></h2>
+<ol>
+<li><strong>硬件加速</strong>：直接与GPU交互，提供最高性能的图形渲染</li>
+<li><strong>可编程管线</strong>：灵活的着色器系统，支持自定义渲染效果</li>
+<li><strong>跨平台兼容</strong>：统一的API接口，支持多种操作系统</li>
+<li><strong>先进技术支持</strong>：阴影、延迟渲染、后处理等现代渲染技术</li>
+<li><strong>丰富生态系统</strong>：大量的工具库和学习资源</li>
+<li><strong>持续发展</strong>：定期更新，支持最新的图形技术</li>
+</ol>
+<p>OpenGL是现代图形编程的基石，其强大的功能和灵活的设计使其成为从游戏开发到科学可视化等各种图形应用的理想选择。通过深入理解其渲染管线和核心概念，开发者可以创建出令人印象深刻的视觉效果。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/opencv.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/openmp.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/opencv.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/openmp.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

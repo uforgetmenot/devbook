@@ -1,0 +1,2227 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Android开发学习笔记 - 基础篇 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="android开发学习笔记---基础篇"><a class="header" href="#android开发学习笔记---基础篇">Android开发学习笔记 - 基础篇</a></h1>
+<blockquote>
+<p>适用人群：0-2年Android开发经验者、Android入门学习者
+学习目标：掌握Android开发基础知识，能够独立完成简单的Android应用开发</p>
+</blockquote>
+<h2 id="一android系统架构与开发环境"><a class="header" href="#一android系统架构与开发环境">一、Android系统架构与开发环境</a></h2>
+<h3 id="11-android系统架构"><a class="header" href="#11-android系统架构">1.1 Android系统架构</a></h3>
+<p>Android系统采用分层架构设计，从下到上分为5层：</p>
+<pre><code>┌─────────────────────────────────┐
+│      应用程序层 (Applications)      │  系统应用、第三方应用
+├─────────────────────────────────┤
+│   应用框架层 (Application Framework) │  Activity Manager、Window Manager等
+├─────────────────────────────────┤
+│   系统运行库层 (Libraries &amp; Runtime) │  ART虚拟机、系统库
+├─────────────────────────────────┤
+│    硬件抽象层 (HAL)                │  硬件驱动抽象
+├─────────────────────────────────┤
+│      Linux内核层 (Linux Kernel)    │  进程管理、内存管理、驱动程序
+└─────────────────────────────────┘
+</code></pre>
+<p><strong>各层职责说明：</strong></p>
+<ol>
+<li><strong>Linux内核层</strong>：提供核心系统服务（进程、内存、驱动等）</li>
+<li><strong>硬件抽象层（HAL）</strong>：统一硬件接口，便于上层调用</li>
+<li><strong>系统运行库</strong>：
+<ul>
+<li>ART（Android Runtime）：应用运行时环境</li>
+<li>Native C/C++库：如OpenGL、SQLite、WebKit等</li>
+</ul>
+</li>
+<li><strong>应用框架层</strong>：提供开发API（Activity Manager、Content Provider等）</li>
+<li><strong>应用程序层</strong>：用户直接交互的应用程序</li>
+</ol>
+<h3 id="12-开发环境搭建"><a class="header" href="#12-开发环境搭建">1.2 开发环境搭建</a></h3>
+<h4 id="121-安装android-studio"><a class="header" href="#121-安装android-studio">1.2.1 安装Android Studio</a></h4>
+<p><strong>系统要求：</strong></p>
+<ul>
+<li>Windows: 64位Windows 10/11，至少8GB内存</li>
+<li>macOS: macOS 10.14+，至少8GB内存</li>
+<li>Linux: 64位发行版，至少8GB内存</li>
+</ul>
+<p><strong>安装步骤：</strong></p>
+<pre><code class="language-bash"># 1. 下载Android Studio
+# 官网: https://developer.android.com/studio
+
+# 2. 安装JDK（Android Studio已内置，无需单独安装）
+
+# 3. 配置环境变量（可选）
+# Windows示例：
+ANDROID_HOME=C:\Users\YourName\AppData\Local\Android\Sdk
+Path=%Path%;%ANDROID_HOME%\platform-tools;%ANDROID_HOME%\tools
+
+# Linux/macOS示例：
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/tools
+</code></pre>
+<h4 id="122-sdk管理"><a class="header" href="#122-sdk管理">1.2.2 SDK管理</a></h4>
+<p>在Android Studio中配置SDK：</p>
+<pre><code>Tools -&gt; SDK Manager
+
+必备组件：
+☑ Android SDK Platform (最新版本和目标版本)
+☑ Android SDK Build-Tools
+☑ Android SDK Platform-Tools
+☑ Android Emulator
+☑ Google Play Services (可选)
+</code></pre>
+<h4 id="123-创建第一个项目"><a class="header" href="#123-创建第一个项目">1.2.3 创建第一个项目</a></h4>
+<p><strong>实战案例：创建Hello World应用</strong></p>
+<pre><code class="language-kotlin">// 1. File -&gt; New -&gt; New Project
+// 2. 选择 "Empty Activity"
+// 3. 配置项目：
+//    Name: HelloWorld
+//    Package name: com.example.helloworld
+//    Language: Kotlin
+//    Minimum SDK: API 21 (Android 5.0)
+
+// MainActivity.kt
+package com.example.helloworld
+
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.TextView
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // 方式1：直接设置文本
+        val textView = findViewById&lt;TextView&gt;(R.id.textView)
+        textView.text = "Hello Android!"
+    }
+}
+</code></pre>
+<pre><code class="language-xml">&lt;!-- activity_main.xml --&gt;
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"&gt;
+
+    &lt;TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello World!"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" /&gt;
+
+&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;
+</code></pre>
+<h3 id="13-项目结构详解"><a class="header" href="#13-项目结构详解">1.3 项目结构详解</a></h3>
+<pre><code>MyApplication/
+├── app/                          # 应用模块
+│   ├── build/                    # 编译输出目录
+│   ├── src/
+│   │   ├── main/
+│   │   │   ├── java/            # Java/Kotlin源代码
+│   │   │   │   └── com/example/myapp/
+│   │   │   │       └── MainActivity.kt
+│   │   │   ├── res/             # 资源文件
+│   │   │   │   ├── layout/      # 布局文件
+│   │   │   │   ├── drawable/    # 图片资源
+│   │   │   │   ├── values/      # 值资源（字符串、颜色等）
+│   │   │   │   └── mipmap/      # 应用图标
+│   │   │   └── AndroidManifest.xml  # 清单文件
+│   │   ├── test/                # 单元测试
+│   │   └── androidTest/         # UI测试
+│   ├── build.gradle.kts         # 模块级构建配置
+│   └── proguard-rules.pro       # 混淆规则
+├── gradle/                      # Gradle包装器
+├── build.gradle.kts             # 项目级构建配置
+└── settings.gradle.kts          # 项目设置
+</code></pre>
+<h4 id="131-gradle构建系统"><a class="header" href="#131-gradle构建系统">1.3.1 Gradle构建系统</a></h4>
+<p><strong>项目级 build.gradle.kts：</strong></p>
+<pre><code class="language-kotlin">// 项目级配置
+plugins {
+    id("com.android.application") version "8.2.0" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.20" apply false
+}
+</code></pre>
+<p><strong>模块级 build.gradle.kts：</strong></p>
+<pre><code class="language-kotlin">plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
+android {
+    namespace = "com.example.myapp"
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "com.example.myapp"
+        minSdk = 21        // 最低支持版本
+        targetSdk = 34     // 目标版本
+        versionCode = 1    // 版本号（数字）
+        versionName = "1.0" // 版本名（字符串）
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = true  // 启用代码混淆
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        debug {
+            isMinifyEnabled = false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+}
+</code></pre>
+<h4 id="132-androidmanifestxml详解"><a class="header" href="#132-androidmanifestxml详解">1.3.2 AndroidManifest.xml详解</a></h4>
+<pre><code class="language-xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.myapp"&gt;
+
+    &lt;!-- 权限声明 --&gt;
+    &lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+    &lt;uses-permission android:name="android.permission.CAMERA" /&gt;
+
+    &lt;!-- 应用配置 --&gt;
+    &lt;application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyApp"&gt;
+
+        &lt;!-- 声明Activity --&gt;
+        &lt;activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name="android.intent.action.MAIN" /&gt;
+                &lt;category android:name="android.intent.category.LAUNCHER" /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/activity&gt;
+
+        &lt;!-- 声明Service --&gt;
+        &lt;service android:name=".MyService" /&gt;
+
+        &lt;!-- 声明BroadcastReceiver --&gt;
+        &lt;receiver android:name=".MyReceiver" /&gt;
+
+        &lt;!-- 声明ContentProvider --&gt;
+        &lt;provider
+            android:name=".MyProvider"
+            android:authorities="com.example.myapp.provider"
+            android:exported="false" /&gt;
+
+    &lt;/application&gt;
+&lt;/manifest&gt;
+</code></pre>
+<h2 id="二android四大组件"><a class="header" href="#二android四大组件">二、Android四大组件</a></h2>
+<h3 id="21-activity组件"><a class="header" href="#21-activity组件">2.1 Activity组件</a></h3>
+<p>Activity是用户可见的界面组件，负责用户交互。</p>
+<h4 id="211-activity生命周期"><a class="header" href="#211-activity生命周期">2.1.1 Activity生命周期</a></h4>
+<pre><code>        ┌──────────┐
+        │  Created  │
+        └─────┬────┘
+              │ onCreate()
+        ┌─────▼────┐
+        │  Started  │◄───┐
+        └─────┬────┘    │
+              │ onStart()  │ onRestart()
+        ┌─────▼────┐    │
+        │  Resumed  │    │
+        └─────┬────┘    │
+              │ onResume()  │
+        ┌─────▼────┐    │
+        │  Running  │    │
+        └─────┬────┘    │
+              │ onPause()   │
+        ┌─────▼────┐    │
+        │  Paused   │    │
+        └─────┬────┘    │
+              │ onStop()    │
+        ┌─────▼────┐────┘
+        │  Stopped  │
+        └─────┬────┘
+              │ onDestroy()
+        ┌─────▼────┐
+        │ Destroyed │
+        └──────────┘
+</code></pre>
+<p><strong>生命周期方法详解：</strong></p>
+<pre><code class="language-kotlin">class LifecycleActivity : AppCompatActivity() {
+
+    private val TAG = "LifecycleActivity"
+
+    // 1. Activity创建时调用（只调用一次）
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        Log.d(TAG, "onCreate: Activity创建")
+
+        // 初始化操作：
+        // - 设置布局
+        // - 初始化视图
+        // - 恢复保存的状态
+        savedInstanceState?.let {
+            val savedData = it.getString("key")
+            Log.d(TAG, "恢复数据: $savedData")
+        }
+    }
+
+    // 2. Activity即将可见
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart: Activity即将可见")
+        // 开始UI相关操作
+    }
+
+    // 3. Activity获得焦点，可交互
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume: Activity获得焦点")
+        // 开始动画、注册监听器
+    }
+
+    // 4. Activity失去焦点，不可交互
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: Activity失去焦点")
+        // 暂停动画、保存数据
+        // 注意：此方法要快速执行完毕
+    }
+
+    // 5. Activity不可见
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop: Activity不可见")
+        // 释放资源、停止后台任务
+    }
+
+    // 6. Activity销毁前调用
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: Activity即将销毁")
+        // 最终清理工作
+    }
+
+    // 7. Activity从停止状态重新启动
+    override fun onRestart() {
+        super.onRestart()
+        Log.d(TAG, "onRestart: Activity重新启动")
+    }
+
+    // 保存临时状态（屏幕旋转、内存不足时）
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("key", "临时数据")
+        Log.d(TAG, "保存状态")
+    }
+}
+</code></pre>
+<h4 id="212-activity启动模式"><a class="header" href="#212-activity启动模式">2.1.2 Activity启动模式</a></h4>
+<p><strong>在AndroidManifest.xml中配置：</strong></p>
+<pre><code class="language-xml">&lt;activity
+    android:name=".MainActivity"
+    android:launchMode="singleTop" /&gt;
+</code></pre>
+<p><strong>四种启动模式：</strong></p>
+<pre><code class="language-kotlin">/**
+ * 1. standard（标准模式）
+ * - 默认模式，每次启动都创建新实例
+ * - 栈结构：A -&gt; A -&gt; A（多个实例）
+ */
+
+/**
+ * 2. singleTop（栈顶复用模式）
+ * - 如果Activity在栈顶，则复用，调用onNewIntent()
+ * - 栈结构：A -&gt; B -&gt; A（创建新A） vs A -&gt; A（复用）
+ */
+class SingleTopActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate")
+    }
+
+    // 复用时调用此方法而不是onCreate
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Log.d(TAG, "onNewIntent: 复用Activity")
+        setIntent(intent) // 更新Intent
+    }
+}
+
+/**
+ * 3. singleTask（栈内复用模式）
+ * - 栈内只有一个实例，启动时会清除其上的Activity
+ * - 适用：应用主页
+ */
+
+/**
+ * 4. singleInstance（单实例模式）
+ * - 独占一个任务栈，系统中只有一个实例
+ * - 适用：来电界面、闹钟提醒
+ */
+</code></pre>
+<p><strong>代码方式设置启动模式：</strong></p>
+<pre><code class="language-kotlin">// 使用Intent Flags
+val intent = Intent(this, SecondActivity::class.java)
+intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+startActivity(intent)
+</code></pre>
+<h4 id="213-intent传值"><a class="header" href="#213-intent传值">2.1.3 Intent传值</a></h4>
+<p><strong>实战案例：用户登录信息传递</strong></p>
+<pre><code class="language-kotlin">// 发送Activity（MainActivity）
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        findViewById&lt;Button&gt;(R.id.btnLogin).setOnClickListener {
+            val intent = Intent(this, UserDetailActivity::class.java)
+
+            // 方式1：传递基本数据类型
+            intent.putExtra("username", "张三")
+            intent.putExtra("age", 25)
+            intent.putExtra("isVip", true)
+
+            // 方式2：传递Bundle
+            val bundle = Bundle().apply {
+                putString("email", "zhangsan@example.com")
+                putStringArray("hobbies", arrayOf("编程", "阅读"))
+            }
+            intent.putExtras(bundle)
+
+            // 方式3：传递序列化对象
+            val user = User("张三", 25, "zhangsan@example.com")
+            intent.putExtra("user", user)
+
+            startActivity(intent)
+        }
+    }
+}
+
+// 接收Activity（UserDetailActivity）
+class UserDetailActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_user_detail)
+
+        // 方式1：获取基本数据
+        val username = intent.getStringExtra("username")
+        val age = intent.getIntExtra("age", 0)
+        val isVip = intent.getBooleanExtra("isVip", false)
+
+        // 方式2：获取Bundle
+        val bundle = intent.extras
+        val email = bundle?.getString("email")
+        val hobbies = bundle?.getStringArray("hobbies")
+
+        // 方式3：获取序列化对象
+        val user = intent.getParcelableExtra&lt;User&gt;("user")
+
+        // 显示数据
+        findViewById&lt;TextView&gt;(R.id.tvUserInfo).text = """
+            姓名：$username
+            年龄：$age
+            VIP：${if (isVip) "是" else "否"}
+            邮箱：$email
+            爱好：${hobbies?.joinToString(", ")}
+            用户对象：${user?.toString()}
+        """.trimIndent()
+    }
+}
+
+// User数据类（使用Parcelable序列化）
+@Parcelize
+data class User(
+    val name: String,
+    val age: Int,
+    val email: String
+) : Parcelable
+</code></pre>
+<p><strong>startActivityForResult（已弃用，使用Activity Result API）：</strong></p>
+<pre><code class="language-kotlin">// 新版Activity Result API
+class MainActivity : AppCompatActivity() {
+
+    // 注册Activity Result
+    private val selectUserLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result -&gt;
+        if (result.resultCode == RESULT_OK) {
+            val selectedUser = result.data?.getStringExtra("selectedUser")
+            Toast.makeText(this, "选择了：$selectedUser", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // 启动Activity并等待结果
+        findViewById&lt;Button&gt;(R.id.btnSelectUser).setOnClickListener {
+            val intent = Intent(this, SelectUserActivity::class.java)
+            selectUserLauncher.launch(intent)
+        }
+    }
+}
+
+// SelectUserActivity - 返回结果
+class SelectUserActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_select_user)
+
+        findViewById&lt;Button&gt;(R.id.btnConfirm).setOnClickListener {
+            val resultIntent = Intent()
+            resultIntent.putExtra("selectedUser", "李四")
+            setResult(RESULT_OK, resultIntent)
+            finish() // 关闭当前Activity
+        }
+    }
+}
+</code></pre>
+<h3 id="22-service组件"><a class="header" href="#22-service组件">2.2 Service组件</a></h3>
+<p>Service用于在后台执行长时间运行的操作，没有用户界面。</p>
+<h4 id="221-service基础"><a class="header" href="#221-service基础">2.2.1 Service基础</a></h4>
+<p><strong>创建Service：</strong></p>
+<pre><code class="language-kotlin">// MyService.kt
+class MyService : Service() {
+
+    private val TAG = "MyService"
+
+    // 必须实现的方法
+    override fun onBind(intent: Intent?): IBinder? {
+        return null // 不提供绑定则返回null
+    }
+
+    // Service创建时调用
+    override fun onCreate() {
+        super.onCreate()
+        Log.d(TAG, "Service创建")
+    }
+
+    // 每次启动Service时调用
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "Service启动")
+
+        val action = intent?.getStringExtra("action")
+        when (action) {
+            "download" -&gt; {
+                val url = intent.getStringExtra("url")
+                startDownload(url)
+            }
+        }
+
+        // 返回值说明：
+        // START_STICKY: Service被杀死后自动重启
+        // START_NOT_STICKY: 不自动重启
+        // START_REDELIVER_INTENT: 重启并重新传递Intent
+        return START_STICKY
+    }
+
+    private fun startDownload(url: String?) {
+        Thread {
+            // 模拟下载
+            for (i in 1..10) {
+                Thread.sleep(1000)
+                Log.d(TAG, "下载进度: ${i * 10}%")
+            }
+            // 下载完成后停止Service
+            stopSelf()
+        }.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "Service销毁")
+    }
+}
+</code></pre>
+<p><strong>在Activity中启动Service：</strong></p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // 启动Service
+        findViewById&lt;Button&gt;(R.id.btnStartService).setOnClickListener {
+            val intent = Intent(this, MyService::class.java)
+            intent.putExtra("action", "download")
+            intent.putExtra("url", "https://example.com/file.zip")
+            startService(intent)
+        }
+
+        // 停止Service
+        findViewById&lt;Button&gt;(R.id.btnStopService).setOnClickListener {
+            val intent = Intent(this, MyService::class.java)
+            stopService(intent)
+        }
+    }
+}
+</code></pre>
+<h4 id="222-前台service"><a class="header" href="#222-前台service">2.2.2 前台Service</a></h4>
+<p>Android 8.0+后台限制，长时间运行需使用前台Service：</p>
+<pre><code class="language-kotlin">class ForegroundService : Service() {
+
+    private val CHANNEL_ID = "ForegroundServiceChannel"
+    private val NOTIFICATION_ID = 1
+
+    override fun onCreate() {
+        super.onCreate()
+        createNotificationChannel()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // 创建通知
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("下载服务")
+            .setContentText("正在下载文件...")
+            .setSmallIcon(R.drawable.ic_download)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+
+        // 启动前台Service
+        startForeground(NOTIFICATION_ID, notification)
+
+        // 执行后台任务
+        performDownload()
+
+        return START_STICKY
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                "前台Service通知",
+                NotificationManager.IMPORTANCE_LOW
+            )
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun performDownload() {
+        Thread {
+            // 下载逻辑
+            for (i in 1..100) {
+                Thread.sleep(100)
+                updateNotification(i)
+            }
+            stopSelf()
+        }.start()
+    }
+
+    private fun updateNotification(progress: Int) {
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("下载服务")
+            .setContentText("下载进度: $progress%")
+            .setSmallIcon(R.drawable.ic_download)
+            .setProgress(100, progress, false)
+            .build()
+
+        val manager = getSystemService(NotificationManager::class.java)
+        manager.notify(NOTIFICATION_ID, notification)
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null
+}
+</code></pre>
+<h4 id="223-绑定service"><a class="header" href="#223-绑定service">2.2.3 绑定Service</a></h4>
+<p>实现Activity与Service的双向通信：</p>
+<pre><code class="language-kotlin">// BindService.kt
+class BindService : Service() {
+
+    private val binder = LocalBinder()
+    private var count = 0
+
+    inner class LocalBinder : Binder() {
+        fun getService(): BindService = this@BindService
+    }
+
+    override fun onBind(intent: Intent?): IBinder {
+        return binder
+    }
+
+    // 提供给Activity调用的方法
+    fun getCount(): Int = count
+
+    fun incrementCount() {
+        count++
+    }
+}
+
+// MainActivity.kt
+class MainActivity : AppCompatActivity() {
+
+    private var boundService: BindService? = null
+    private var isBound = false
+
+    // ServiceConnection回调
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as BindService.LocalBinder
+            boundService = binder.getService()
+            isBound = true
+            Log.d(TAG, "Service已连接")
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            boundService = null
+            isBound = false
+            Log.d(TAG, "Service已断开")
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // 绑定Service
+        findViewById&lt;Button&gt;(R.id.btnBindService).setOnClickListener {
+            val intent = Intent(this, BindService::class.java)
+            bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        }
+
+        // 调用Service方法
+        findViewById&lt;Button&gt;(R.id.btnCallService).setOnClickListener {
+            if (isBound) {
+                boundService?.incrementCount()
+                val count = boundService?.getCount()
+                Toast.makeText(this, "计数: $count", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 解绑Service
+        findViewById&lt;Button&gt;(R.id.btnUnbindService).setOnClickListener {
+            if (isBound) {
+                unbindService(connection)
+                isBound = false
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isBound) {
+            unbindService(connection)
+        }
+    }
+}
+</code></pre>
+<h3 id="23-broadcastreceiver组件"><a class="header" href="#23-broadcastreceiver组件">2.3 BroadcastReceiver组件</a></h3>
+<p>BroadcastReceiver用于接收系统或应用发出的广播消息。</p>
+<h4 id="231-静态注册清单文件注册"><a class="header" href="#231-静态注册清单文件注册">2.3.1 静态注册（清单文件注册）</a></h4>
+<pre><code class="language-xml">&lt;!-- AndroidManifest.xml --&gt;
+&lt;receiver
+    android:name=".BootReceiver"
+    android:enabled="true"
+    android:exported="true"&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name="android.intent.action.BOOT_COMPLETED" /&gt;
+    &lt;/intent-filter&gt;
+&lt;/receiver&gt;
+</code></pre>
+<pre><code class="language-kotlin">class BootReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
+            Toast.makeText(context, "系统启动完成", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+</code></pre>
+<h4 id="232-动态注册"><a class="header" href="#232-动态注册">2.3.2 动态注册</a></h4>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+
+    private lateinit var networkReceiver: NetworkReceiver
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // 创建Receiver
+        networkReceiver = NetworkReceiver()
+
+        // 注册Receiver
+        val filter = IntentFilter().apply {
+            addAction("android.net.conn.CONNECTIVITY_CHANGE")
+        }
+        registerReceiver(networkReceiver, filter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // 注销Receiver
+        unregisterReceiver(networkReceiver)
+    }
+
+    inner class NetworkReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d(TAG, "网络状态改变")
+            // 检查网络连接
+            val cm = context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val networkInfo = cm.activeNetworkInfo
+            val isConnected = networkInfo?.isConnected == true
+            Toast.makeText(context,
+                if (isConnected) "网络已连接" else "网络已断开",
+                Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+</code></pre>
+<h4 id="233-发送广播"><a class="header" href="#233-发送广播">2.3.3 发送广播</a></h4>
+<pre><code class="language-kotlin">// 发送标准广播
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        // 发送自定义广播
+        findViewById&lt;Button&gt;(R.id.btnSendBroadcast).setOnClickListener {
+            val intent = Intent("com.example.MY_CUSTOM_ACTION")
+            intent.putExtra("message", "Hello Broadcast")
+            sendBroadcast(intent)
+        }
+
+        // 发送有序广播（可被拦截）
+        findViewById&lt;Button&gt;(R.id.btnSendOrderedBroadcast).setOnClickListener {
+            val intent = Intent("com.example.ORDERED_ACTION")
+            sendOrderedBroadcast(intent, null)
+        }
+    }
+}
+
+// 接收自定义广播
+class CustomReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        val message = intent?.getStringExtra("message")
+        Log.d(TAG, "收到广播: $message")
+    }
+}
+</code></pre>
+<h4 id="234-本地广播localbroadcastmanager"><a class="header" href="#234-本地广播localbroadcastmanager">2.3.4 本地广播（LocalBroadcastManager）</a></h4>
+<p>更安全、高效的应用内广播：</p>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+
+    private lateinit var localReceiver: BroadcastReceiver
+    private lateinit var localBroadcastManager: LocalBroadcastManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(this)
+
+        // 注册本地Receiver
+        localReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val data = intent?.getStringExtra("data")
+                Toast.makeText(context, "收到: $data", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        val filter = IntentFilter("com.example.LOCAL_ACTION")
+        localBroadcastManager.registerReceiver(localReceiver, filter)
+
+        // 发送本地广播
+        findViewById&lt;Button&gt;(R.id.btnSendLocal).setOnClickListener {
+            val intent = Intent("com.example.LOCAL_ACTION")
+            intent.putExtra("data", "本地消息")
+            localBroadcastManager.sendBroadcast(intent)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        localBroadcastManager.unregisterReceiver(localReceiver)
+    }
+}
+</code></pre>
+<h3 id="24-contentprovider组件"><a class="header" href="#24-contentprovider组件">2.4 ContentProvider组件</a></h3>
+<p>ContentProvider用于应用间数据共享。</p>
+<h4 id="241-创建contentprovider"><a class="header" href="#241-创建contentprovider">2.4.1 创建ContentProvider</a></h4>
+<pre><code class="language-kotlin">class UserProvider : ContentProvider() {
+
+    companion object {
+        private const val AUTHORITY = "com.example.provider"
+        private const val TABLE_USER = "user"
+
+        // URI匹配码
+        private const val USER_LIST = 1
+        private const val USER_ITEM = 2
+
+        // URI
+        val CONTENT_URI: Uri = Uri.parse("content://$AUTHORITY/$TABLE_USER")
+    }
+
+    private lateinit var dbHelper: UserDatabaseHelper
+    private val uriMatcher = UriMatcher(UriMatcher.NO_MATCH).apply {
+        addURI(AUTHORITY, TABLE_USER, USER_LIST)
+        addURI(AUTHORITY, "$TABLE_USER/#", USER_ITEM)
+    }
+
+    override fun onCreate(): Boolean {
+        dbHelper = UserDatabaseHelper(context!!)
+        return true
+    }
+
+    override fun query(
+        uri: Uri,
+        projection: Array&lt;out String&gt;?,
+        selection: String?,
+        selectionArgs: Array&lt;out String&gt;?,
+        sortOrder: String?
+    ): Cursor? {
+        val db = dbHelper.readableDatabase
+        return when (uriMatcher.match(uri)) {
+            USER_LIST -&gt; db.query(TABLE_USER, projection, selection, selectionArgs, null, null, sortOrder)
+            USER_ITEM -&gt; {
+                val id = uri.lastPathSegment
+                db.query(TABLE_USER, projection, "id=?", arrayOf(id), null, null, sortOrder)
+            }
+            else -&gt; null
+        }
+    }
+
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+        val db = dbHelper.writableDatabase
+        val id = db.insert(TABLE_USER, null, values)
+        context?.contentResolver?.notifyChange(uri, null)
+        return Uri.parse("$CONTENT_URI/$id")
+    }
+
+    override fun update(
+        uri: Uri,
+        values: ContentValues?,
+        selection: String?,
+        selectionArgs: Array&lt;out String&gt;?
+    ): Int {
+        val db = dbHelper.writableDatabase
+        val count = db.update(TABLE_USER, values, selection, selectionArgs)
+        context?.contentResolver?.notifyChange(uri, null)
+        return count
+    }
+
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array&lt;out String&gt;?): Int {
+        val db = dbHelper.writableDatabase
+        val count = db.delete(TABLE_USER, selection, selectionArgs)
+        context?.contentResolver?.notifyChange(uri, null)
+        return count
+    }
+
+    override fun getType(uri: Uri): String? {
+        return when (uriMatcher.match(uri)) {
+            USER_LIST -&gt; "vnd.android.cursor.dir/vnd.$AUTHORITY.$TABLE_USER"
+            USER_ITEM -&gt; "vnd.android.cursor.item/vnd.$AUTHORITY.$TABLE_USER"
+            else -&gt; null
+        }
+    }
+}
+</code></pre>
+<h4 id="242-访问contentprovider"><a class="header" href="#242-访问contentprovider">2.4.2 访问ContentProvider</a></h4>
+<pre><code class="language-kotlin">class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val uri = UserProvider.CONTENT_URI
+
+        // 插入数据
+        findViewById&lt;Button&gt;(R.id.btnInsert).setOnClickListener {
+            val values = ContentValues().apply {
+                put("name", "张三")
+                put("age", 25)
+            }
+            val newUri = contentResolver.insert(uri, values)
+            Toast.makeText(this, "插入成功: $newUri", Toast.LENGTH_SHORT).show()
+        }
+
+        // 查询数据
+        findViewById&lt;Button&gt;(R.id.btnQuery).setOnClickListener {
+            val cursor = contentResolver.query(uri, null, null, null, null)
+            cursor?.use {
+                while (it.moveToNext()) {
+                    val name = it.getString(it.getColumnIndexOrThrow("name"))
+                    val age = it.getInt(it.getColumnIndexOrThrow("age"))
+                    Log.d(TAG, "用户: $name, 年龄: $age")
+                }
+            }
+        }
+
+        // 更新数据
+        findViewById&lt;Button&gt;(R.id.btnUpdate).setOnClickListener {
+            val values = ContentValues().apply {
+                put("age", 26)
+            }
+            val count = contentResolver.update(uri, values, "name=?", arrayOf("张三"))
+            Toast.makeText(this, "更新了 $count 条数据", Toast.LENGTH_SHORT).show()
+        }
+
+        // 删除数据
+        findViewById&lt;Button&gt;(R.id.btnDelete).setOnClickListener {
+            val count = contentResolver.delete(uri, "name=?", arrayOf("张三"))
+            Toast.makeText(this, "删除了 $count 条数据", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+</code></pre>
+<h2 id="三用户界面开发"><a class="header" href="#三用户界面开发">三、用户界面开发</a></h2>
+<h3 id="31-布局管理器"><a class="header" href="#31-布局管理器">3.1 布局管理器</a></h3>
+<h4 id="311-linearlayout线性布局"><a class="header" href="#311-linearlayout线性布局">3.1.1 LinearLayout（线性布局）</a></h4>
+<pre><code class="language-xml">&lt;!-- 垂直线性布局示例 --&gt;
+&lt;LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"&gt;
+
+    &lt;TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="用户登录"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" /&gt;
+
+    &lt;EditText
+        android:id="@+id/etUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入用户名"
+        android:layout_marginBottom="16dp" /&gt;
+
+    &lt;EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入密码"
+        android:inputType="textPassword"
+        android:layout_marginBottom="24dp" /&gt;
+
+    &lt;!-- 水平线性布局嵌套 --&gt;
+    &lt;LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"&gt;
+
+        &lt;Button
+            android:id="@+id/btnLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="登录"
+            android:layout_marginEnd="8dp" /&gt;
+
+        &lt;Button
+            android:id="@+id/btnRegister"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="注册"
+            android:layout_marginStart="8dp" /&gt;
+    &lt;/LinearLayout&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p><strong>LinearLayout权重分配：</strong></p>
+<pre><code class="language-xml">&lt;!-- 按比例分配空间 --&gt;
+&lt;LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"&gt;
+
+    &lt;!-- 占1/3 --&gt;
+    &lt;TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="33%" /&gt;
+
+    &lt;!-- 占2/3 --&gt;
+    &lt;TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="67%" /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<h4 id="312-relativelayout相对布局"><a class="header" href="#312-relativelayout相对布局">3.1.2 RelativeLayout（相对布局）</a></h4>
+<pre><code class="language-xml">&lt;RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"&gt;
+
+    &lt;!-- 标题：顶部居中 --&gt;
+    &lt;TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="相对布局示例"
+        android:textSize="20sp" /&gt;
+
+    &lt;!-- 内容：在标题下方，居中 --&gt;
+    &lt;TextView
+        android:id="@+id/tvContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvTitle"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"
+        android:text="这是内容区域" /&gt;
+
+    &lt;!-- 左下角按钮 --&gt;
+    &lt;Button
+        android:id="@+id/btnLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:text="左侧" /&gt;
+
+    &lt;!-- 右下角按钮 --&gt;
+    &lt;Button
+        android:id="@+id/btnRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:text="右侧" /&gt;
+
+    &lt;!-- 两按钮之间的按钮 --&gt;
+    &lt;Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@id/btnLeft"
+        android:layout_toStartOf="@id/btnRight"
+        android:layout_centerHorizontal="true"
+        android:text="中间" /&gt;
+&lt;/RelativeLayout&gt;
+</code></pre>
+<h4 id="313-constraintlayout约束布局"><a class="header" href="#313-constraintlayout约束布局">3.1.3 ConstraintLayout（约束布局）</a></h4>
+<pre><code class="language-xml">&lt;androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"&gt;
+
+    &lt;!-- 头像：左上角 --&gt;
+    &lt;ImageView
+        android:id="@+id/ivAvatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp" /&gt;
+
+    &lt;!-- 用户名：头像右侧，顶部对齐 --&gt;
+    &lt;TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="张三"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/ivAvatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ivAvatar"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="16dp" /&gt;
+
+    &lt;!-- 简介：用户名下方 --&gt;
+    &lt;TextView
+        android:id="@+id/tvBio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="这是一段个人简介"
+        app:layout_constraintStart_toStartOf="@id/tvUsername"
+        app:layout_constraintEnd_toEndOf="@id/tvUsername"
+        app:layout_constraintTop_toBottomOf="@id/tvUsername"
+        android:layout_marginTop="4dp" /&gt;
+
+    &lt;!-- 按钮：底部居中 --&gt;
+    &lt;Button
+        android:id="@+id/btnAction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="关注"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp" /&gt;
+
+    &lt;!-- Guideline：辅助线，50%位置 --&gt;
+    &lt;androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" /&gt;
+
+    &lt;!-- 左侧文本：guideline左侧 --&gt;
+    &lt;TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="左侧内容"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/ivAvatar"
+        android:layout_marginTop="24dp" /&gt;
+
+    &lt;!-- 右侧文本：guideline右侧 --&gt;
+    &lt;TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="右侧内容"
+        android:gravity="center"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivAvatar"
+        android:layout_marginTop="24dp" /&gt;
+&lt;/androidx.constraintLayout&gt;
+</code></pre>
+<p><strong>ConstraintLayout高级特性：</strong></p>
+<pre><code class="language-xml">&lt;!-- 宽高比约束 --&gt;
+&lt;ImageView
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintDimensionRatio="16:9"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent" /&gt;
+
+&lt;!-- 链式布局 --&gt;
+&lt;TextView
+    android:id="@+id/tv1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="按钮1"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/tv2"
+    app:layout_constraintHorizontal_chainStyle="spread" /&gt;
+
+&lt;TextView
+    android:id="@+id/tv2"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="按钮2"
+    app:layout_constraintStart_toEndOf="@id/tv1"
+    app:layout_constraintEnd_toStartOf="@id/tv3" /&gt;
+
+&lt;TextView
+    android:id="@+id/tv3"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="按钮3"
+    app:layout_constraintStart_toEndOf="@id/tv2"
+    app:layout_constraintEnd_toEndOf="parent" /&gt;
+</code></pre>
+<h3 id="32-常用控件"><a class="header" href="#32-常用控件">3.2 常用控件</a></h3>
+<h4 id="321-textview高级用法"><a class="header" href="#321-textview高级用法">3.2.1 TextView高级用法</a></h4>
+<pre><code class="language-kotlin">class TextViewActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_textview)
+
+        val textView = findViewById&lt;TextView&gt;(R.id.tvDemo)
+
+        // 1. 富文本显示
+        val spannableString = SpannableString("这是一段富文本内容")
+
+        // 加粗
+        spannableString.setSpan(
+            StyleSpan(Typeface.BOLD),
+            0, 2,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        // 改变颜色
+        spannableString.setSpan(
+            ForegroundColorSpan(Color.RED),
+            3, 5,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        // 改变大小
+        spannableString.setSpan(
+            AbsoluteSizeSpan(24, true),
+            6, 8,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        // 添加点击事件
+        spannableString.setSpan(
+            object : ClickableSpan() {
+                override fun onClick(widget: View) {
+                    Toast.makeText(this@TextViewActivity, "点击了", Toast.LENGTH_SHORT).show()
+                }
+            },
+            9, 11,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
+        textView.text = spannableString
+        textView.movementMethod = LinkMovementMethod.getInstance()
+
+        // 2. 文本跑马灯效果
+        val marqueeTextView = findViewById&lt;TextView&gt;(R.id.tvMarquee)
+        marqueeTextView.isSelected = true // 必须设置为true才能滚动
+    }
+}
+</code></pre>
+<pre><code class="language-xml">&lt;!-- 跑马灯TextView --&gt;
+&lt;TextView
+    android:id="@+id/tvMarquee"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="这是一段很长的文本，需要滚动显示"
+    android:singleLine="true"
+    android:ellipsize="marquee"
+    android:marqueeRepeatLimit="marquee_forever"
+    android:focusable="true"
+    android:focusableInTouchMode="true" /&gt;
+</code></pre>
+<h4 id="322-recyclerview完整实战"><a class="header" href="#322-recyclerview完整实战">3.2.2 RecyclerView完整实战</a></h4>
+<p><strong>实战案例：新闻列表展示</strong></p>
+<pre><code class="language-kotlin">// 1. 数据类
+data class NewsItem(
+    val id: Int,
+    val title: String,
+    val summary: String,
+    val imageUrl: String,
+    val publishTime: String
+)
+
+// 2. ViewHolder
+class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val ivCover: ImageView = itemView.findViewById(R.id.ivCover)
+    private val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
+    private val tvSummary: TextView = itemView.findViewById(R.id.tvSummary)
+    private val tvTime: TextView = itemView.findViewById(R.id.tvTime)
+
+    fun bind(news: NewsItem, onItemClick: (NewsItem) -&gt; Unit) {
+        tvTitle.text = news.title
+        tvSummary.text = news.summary
+        tvTime.text = news.publishTime
+
+        // 使用Glide加载图片（需添加依赖）
+        Glide.with(itemView.context)
+            .load(news.imageUrl)
+            .placeholder(R.drawable.placeholder)
+            .into(ivCover)
+
+        itemView.setOnClickListener {
+            onItemClick(news)
+        }
+    }
+}
+
+// 3. Adapter
+class NewsAdapter(
+    private val newsList: List&lt;NewsItem&gt;,
+    private val onItemClick: (NewsItem) -&gt; Unit
+) : RecyclerView.Adapter&lt;NewsViewHolder&gt;() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_news, parent, false)
+        return NewsViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
+        holder.bind(newsList[position], onItemClick)
+    }
+
+    override fun getItemCount(): Int = newsList.size
+}
+
+// 4. Activity中使用
+class NewsListActivity : AppCompatActivity() {
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: NewsAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_news_list)
+
+        recyclerView = findViewById(R.id.recyclerView)
+
+        // 设置布局管理器
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        // 设置分隔线
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
+        )
+
+        // 准备数据
+        val newsList = listOf(
+            NewsItem(1, "新闻标题1", "新闻摘要1", "url1", "2024-01-01"),
+            NewsItem(2, "新闻标题2", "新闻摘要2", "url2", "2024-01-02"),
+            // ... 更多数据
+        )
+
+        // 设置Adapter
+        adapter = NewsAdapter(newsList) { news -&gt;
+            Toast.makeText(this, "点击了: ${news.title}", Toast.LENGTH_SHORT).show()
+            // 跳转到详情页
+            val intent = Intent(this, NewsDetailActivity::class.java)
+            intent.putExtra("newsId", news.id)
+            startActivity(intent)
+        }
+        recyclerView.adapter = adapter
+    }
+}
+</code></pre>
+<pre><code class="language-xml">&lt;!-- item_news.xml - 列表项布局 --&gt;
+&lt;androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"&gt;
+
+    &lt;LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"&gt;
+
+        &lt;ImageView
+            android:id="@+id/ivCover"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/placeholder" /&gt;
+
+        &lt;LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical"&gt;
+
+            &lt;TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="新闻标题"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:ellipsize="end" /&gt;
+
+            &lt;TextView
+                android:id="@+id/tvSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="新闻摘要"
+                android:textSize="14sp"
+                android:textColor="#666"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:layout_marginTop="4dp" /&gt;
+
+            &lt;TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2024-01-01"
+                android:textSize="12sp"
+                android:textColor="#999"
+                android:layout_marginTop="4dp" /&gt;
+        &lt;/LinearLayout&gt;
+    &lt;/LinearLayout&gt;
+&lt;/androidx.cardview.widget.CardView&gt;
+</code></pre>
+<h2 id="四数据存储"><a class="header" href="#四数据存储">四、数据存储</a></h2>
+<h3 id="41-sharedpreferences"><a class="header" href="#41-sharedpreferences">4.1 SharedPreferences</a></h3>
+<p>轻量级键值对存储，适合保存配置信息。</p>
+<pre><code class="language-kotlin">class PreferencesActivity : AppCompatActivity() {
+
+    private lateinit var sharedPreferences: SharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_preferences)
+
+        // 获取SharedPreferences实例
+        sharedPreferences = getSharedPreferences("app_config", Context.MODE_PRIVATE)
+
+        // 保存数据
+        findViewById&lt;Button&gt;(R.id.btnSave).setOnClickListener {
+            val editor = sharedPreferences.edit()
+            editor.putString("username", "张三")
+            editor.putInt("age", 25)
+            editor.putBoolean("isLogin", true)
+            editor.putFloat("score", 95.5f)
+            editor.putLong("timestamp", System.currentTimeMillis())
+
+            // 提交方式1：apply()异步保存，无返回值
+            editor.apply()
+
+            // 提交方式2：commit()同步保存，返回boolean
+            // val success = editor.commit()
+
+            Toast.makeText(this, "保存成功", Toast.LENGTH_SHORT).show()
+        }
+
+        // 读取数据
+        findViewById&lt;Button&gt;(R.id.btnLoad).setOnClickListener {
+            val username = sharedPreferences.getString("username", "默认值")
+            val age = sharedPreferences.getInt("age", 0)
+            val isLogin = sharedPreferences.getBoolean("isLogin", false)
+            val score = sharedPreferences.getFloat("score", 0f)
+            val timestamp = sharedPreferences.getLong("timestamp", 0L)
+
+            val info = """
+                用户名: $username
+                年龄: $age
+                登录状态: $isLogin
+                分数: $score
+                时间戳: $timestamp
+            """.trimIndent()
+
+            findViewById&lt;TextView&gt;(R.id.tvInfo).text = info
+        }
+
+        // 删除数据
+        findViewById&lt;Button&gt;(R.id.btnDelete).setOnClickListener {
+            sharedPreferences.edit().remove("username").apply()
+            Toast.makeText(this, "已删除username", Toast.LENGTH_SHORT).show()
+        }
+
+        // 清空所有数据
+        findViewById&lt;Button&gt;(R.id.btnClear).setOnClickListener {
+            sharedPreferences.edit().clear().apply()
+            Toast.makeText(this, "已清空所有数据", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+
+// 封装SharedPreferences工具类
+object PrefsUtil {
+
+    private lateinit var prefs: SharedPreferences
+
+    fun init(context: Context) {
+        prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    }
+
+    fun putString(key: String, value: String) {
+        prefs.edit().putString(key, value).apply()
+    }
+
+    fun getString(key: String, default: String = ""): String {
+        return prefs.getString(key, default) ?: default
+    }
+
+    fun putInt(key: String, value: Int) {
+        prefs.edit().putInt(key, value).apply()
+    }
+
+    fun getInt(key: String, default: Int = 0): Int {
+        return prefs.getInt(key, default)
+    }
+
+    fun putBoolean(key: String, value: Boolean) {
+        prefs.edit().putBoolean(key, value).apply()
+    }
+
+    fun getBoolean(key: String, default: Boolean = false): Boolean {
+        return prefs.getBoolean(key, default)
+    }
+
+    fun remove(key: String) {
+        prefs.edit().remove(key).apply()
+    }
+
+    fun clear() {
+        prefs.edit().clear().apply()
+    }
+}
+</code></pre>
+<h3 id="42-文件存储"><a class="header" href="#42-文件存储">4.2 文件存储</a></h3>
+<pre><code class="language-kotlin">class FileStorageActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_file_storage)
+
+        // 写入内部存储
+        findViewById&lt;Button&gt;(R.id.btnWriteInternal).setOnClickListener {
+            val content = "这是写入内部存储的内容"
+            val file = File(filesDir, "internal_file.txt")
+            file.writeText(content)
+            Toast.makeText(this, "写入成功: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+        }
+
+        // 读取内部存储
+        findViewById&lt;Button&gt;(R.id.btnReadInternal).setOnClickListener {
+            val file = File(filesDir, "internal_file.txt")
+            if (file.exists()) {
+                val content = file.readText()
+                findViewById&lt;TextView&gt;(R.id.tvContent).text = content
+            }
+        }
+
+        // 写入外部存储（需要权限）
+        findViewById&lt;Button&gt;(R.id.btnWriteExternal).setOnClickListener {
+            if (checkExternalStoragePermission()) {
+                val content = "这是写入外部存储的内容"
+                val file = File(getExternalFilesDir(null), "external_file.txt")
+                file.writeText(content)
+                Toast.makeText(this, "写入成功", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 缓存文件
+        findViewById&lt;Button&gt;(R.id.btnWriteCache).setOnClickListener {
+            val content = "这是缓存文件"
+            val file = File(cacheDir, "cache_file.txt")
+            file.writeText(content)
+        }
+    }
+
+    private fun checkExternalStoragePermission(): Boolean {
+        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                    arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    100
+                )
+                return false
+            }
+        }
+        return true
+    }
+}
+</code></pre>
+<h3 id="43-sqlite数据库"><a class="header" href="#43-sqlite数据库">4.3 SQLite数据库</a></h3>
+<pre><code class="language-kotlin">// 1. 数据库帮助类
+class UserDatabaseHelper(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    companion object {
+        private const val DATABASE_NAME = "user.db"
+        private const val DATABASE_VERSION = 1
+        private const val TABLE_USER = "user"
+    }
+
+    override fun onCreate(db: SQLiteDatabase?) {
+        val createTable = """
+            CREATE TABLE $TABLE_USER (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                age INTEGER,
+                email TEXT,
+                created_at TEXT
+            )
+        """.trimIndent()
+        db?.execSQL(createTable)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        if (oldVersion &lt; 2) {
+            db?.execSQL("ALTER TABLE $TABLE_USER ADD COLUMN phone TEXT")
+        }
+    }
+}
+
+// 2. DAO（数据访问对象）
+class UserDao(context: Context) {
+
+    private val dbHelper = UserDatabaseHelper(context)
+
+    // 插入
+    fun insert(name: String, age: Int, email: String): Long {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("name", name)
+            put("age", age)
+            put("email", email)
+            put("created_at", System.currentTimeMillis().toString())
+        }
+        return db.insert("user", null, values)
+    }
+
+    // 查询所有
+    fun queryAll(): List&lt;User&gt; {
+        val db = dbHelper.readableDatabase
+        val cursor = db.query("user", null, null, null, null, null, "id DESC")
+        val users = mutableListOf&lt;User&gt;()
+
+        cursor.use {
+            while (it.moveToNext()) {
+                val user = User(
+                    id = it.getInt(it.getColumnIndexOrThrow("id")),
+                    name = it.getString(it.getColumnIndexOrThrow("name")),
+                    age = it.getInt(it.getColumnIndexOrThrow("age")),
+                    email = it.getString(it.getColumnIndexOrThrow("email"))
+                )
+                users.add(user)
+            }
+        }
+        return users
+    }
+
+    // 根据ID查询
+    fun queryById(id: Int): User? {
+        val db = dbHelper.readableDatabase
+        val cursor = db.query("user", null, "id=?", arrayOf(id.toString()),
+            null, null, null)
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                return User(
+                    id = it.getInt(it.getColumnIndexOrThrow("id")),
+                    name = it.getString(it.getColumnIndexOrThrow("name")),
+                    age = it.getInt(it.getColumnIndexOrThrow("age")),
+                    email = it.getString(it.getColumnIndexOrThrow("email"))
+                )
+            }
+        }
+        return null
+    }
+
+    // 更新
+    fun update(id: Int, name: String, age: Int, email: String): Int {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put("name", name)
+            put("age", age)
+            put("email", email)
+        }
+        return db.update("user", values, "id=?", arrayOf(id.toString()))
+    }
+
+    // 删除
+    fun delete(id: Int): Int {
+        val db = dbHelper.writableDatabase
+        return db.delete("user", "id=?", arrayOf(id.toString()))
+    }
+
+    // 事务操作
+    fun batchInsert(users: List&lt;User&gt;) {
+        val db = dbHelper.writableDatabase
+        db.beginTransaction()
+        try {
+            users.forEach { user -&gt;
+                val values = ContentValues().apply {
+                    put("name", user.name)
+                    put("age", user.age)
+                    put("email", user.email)
+                }
+                db.insert("user", null, values)
+            }
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+}
+
+data class User(
+    val id: Int = 0,
+    val name: String,
+    val age: Int,
+    val email: String
+)
+</code></pre>
+<h3 id="44-room数据库推荐"><a class="header" href="#44-room数据库推荐">4.4 Room数据库（推荐）</a></h3>
+<p>Room是Android官方推荐的数据库框架，基于SQLite封装。</p>
+<p><strong>添加依赖：</strong></p>
+<pre><code class="language-kotlin">// build.gradle.kts
+dependencies {
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+}
+
+plugins {
+    id("com.google.devtools.ksp") version "1.9.20-1.0.14"
+}
+</code></pre>
+<p><strong>实战案例：笔记应用数据库</strong></p>
+<pre><code class="language-kotlin">// 1. Entity（实体类）
+@Entity(tableName = "notes")
+data class Note(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+
+    @ColumnInfo(name = "title")
+    val title: String,
+
+    @ColumnInfo(name = "content")
+    val content: String,
+
+    @ColumnInfo(name = "created_at")
+    val createdAt: Long = System.currentTimeMillis(),
+
+    @ColumnInfo(name = "is_favorite")
+    val isFavorite: Boolean = false
+)
+
+// 2. DAO（数据访问对象）
+@Dao
+interface NoteDao {
+
+    @Insert
+    suspend fun insert(note: Note): Long
+
+    @Update
+    suspend fun update(note: Note)
+
+    @Delete
+    suspend fun delete(note: Note)
+
+    @Query("SELECT * FROM notes ORDER BY created_at DESC")
+    fun getAllNotes(): Flow&lt;List&lt;Note&gt;&gt;
+
+    @Query("SELECT * FROM notes WHERE id = :noteId")
+    suspend fun getNoteById(noteId: Int): Note?
+
+    @Query("SELECT * FROM notes WHERE is_favorite = 1")
+    fun getFavoriteNotes(): Flow&lt;List&lt;Note&gt;&gt;
+
+    @Query("SELECT * FROM notes WHERE title LIKE '%' || :keyword || '%' OR content LIKE '%' || :keyword || '%'")
+    fun searchNotes(keyword: String): Flow&lt;List&lt;Note&gt;&gt;
+
+    @Query("DELETE FROM notes")
+    suspend fun deleteAll()
+}
+
+// 3. Database类
+@Database(entities = [Note::class], version = 1, exportSchema = false)
+abstract class NoteDatabase : RoomDatabase() {
+
+    abstract fun noteDao(): NoteDao
+
+    companion object {
+        @Volatile
+        private var INSTANCE: NoteDatabase? = null
+
+        fun getDatabase(context: Context): NoteDatabase {
+            return INSTANCE ?: synchronized(this) {
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    NoteDatabase::class.java,
+                    "note_database"
+                )
+                .fallbackToDestructiveMigration() // 开发时使用
+                .build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}
+
+// 4. Repository（仓库层）
+class NoteRepository(private val noteDao: NoteDao) {
+
+    val allNotes: Flow&lt;List&lt;Note&gt;&gt; = noteDao.getAllNotes()
+    val favoriteNotes: Flow&lt;List&lt;Note&gt;&gt; = noteDao.getFavoriteNotes()
+
+    suspend fun insert(note: Note) {
+        noteDao.insert(note)
+    }
+
+    suspend fun update(note: Note) {
+        noteDao.update(note)
+    }
+
+    suspend fun delete(note: Note) {
+        noteDao.delete(note)
+    }
+
+    suspend fun getNoteById(id: Int): Note? {
+        return noteDao.getNoteById(id)
+    }
+
+    fun searchNotes(keyword: String): Flow&lt;List&lt;Note&gt;&gt; {
+        return noteDao.searchNotes(keyword)
+    }
+}
+
+// 5. ViewModel
+class NoteViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val repository: NoteRepository
+    val allNotes: LiveData&lt;List&lt;Note&gt;&gt;
+
+    init {
+        val noteDao = NoteDatabase.getDatabase(application).noteDao()
+        repository = NoteRepository(noteDao)
+        allNotes = repository.allNotes.asLiveData()
+    }
+
+    fun insert(note: Note) = viewModelScope.launch {
+        repository.insert(note)
+    }
+
+    fun update(note: Note) = viewModelScope.launch {
+        repository.update(note)
+    }
+
+    fun delete(note: Note) = viewModelScope.launch {
+        repository.delete(note)
+    }
+}
+
+// 6. Activity中使用
+class NoteListActivity : AppCompatActivity() {
+
+    private val viewModel: NoteViewModel by viewModels()
+    private lateinit var adapter: NoteAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_note_list)
+
+        setupRecyclerView()
+
+        // 观察数据变化
+        viewModel.allNotes.observe(this) { notes -&gt;
+            adapter.submitList(notes)
+        }
+
+        // 添加笔记
+        findViewById&lt;FloatingActionButton&gt;(R.id.fabAdd).setOnClickListener {
+            val note = Note(
+                title = "新笔记",
+                content = "笔记内容"
+            )
+            viewModel.insert(note)
+        }
+    }
+
+    private fun setupRecyclerView() {
+        adapter = NoteAdapter(
+            onItemClick = { note -&gt;
+                // 编辑笔记
+            },
+            onDeleteClick = { note -&gt;
+                viewModel.delete(note)
+            }
+        )
+
+        findViewById&lt;RecyclerView&gt;(R.id.recyclerView).apply {
+            layoutManager = LinearLayoutManager(this@NoteListActivity)
+            adapter = this@NoteListActivity.adapter
+        }
+    }
+}
+</code></pre>
+<h2 id="五学习验证标准"><a class="header" href="#五学习验证标准">五、学习验证标准</a></h2>
+<p>完成基础篇学习后，你应该能够：</p>
+<ol>
+<li><strong>环境搭建</strong>：独立完成Android Studio安装和项目创建</li>
+<li><strong>四大组件</strong>：理解Activity生命周期，能够实现Service、BroadcastReceiver、ContentProvider</li>
+<li><strong>界面开发</strong>：熟练使用LinearLayout、RelativeLayout、ConstraintLayout，掌握RecyclerView</li>
+<li><strong>数据存储</strong>：掌握SharedPreferences、文件存储、SQLite、Room数据库</li>
+<li><strong>综合应用</strong>：能够开发一个包含登录、列表展示、数据CRUD的完整应用</li>
+</ol>
+<h2 id="六实战项目笔记应用"><a class="header" href="#六实战项目笔记应用">六、实战项目：笔记应用</a></h2>
+<p>综合运用以上知识，开发一个完整的笔记应用：</p>
+<p><strong>功能需求：</strong></p>
+<ol>
+<li>用户登录（SharedPreferences保存登录状态）</li>
+<li>笔记列表（RecyclerView + Room）</li>
+<li>添加/编辑笔记</li>
+<li>删除笔记</li>
+<li>搜索笔记</li>
+<li>收藏笔记</li>
+</ol>
+<p><strong>技术栈：</strong></p>
+<ul>
+<li>Activity：页面管理</li>
+<li>Room：数据持久化</li>
+<li>RecyclerView：列表展示</li>
+<li>ViewModel + LiveData：数据驱动UI</li>
+<li>SharedPreferences：用户配置</li>
+</ul>
+<h2 id="七扩展学习资源"><a class="header" href="#七扩展学习资源">七、扩展学习资源</a></h2>
+<ol>
+<li><strong>官方文档</strong>：https://developer.android.com</li>
+<li><strong>推荐书籍</strong>：《第一行代码 Android》</li>
+<li><strong>视频教程</strong>：Android官方Codelabs</li>
+<li><strong>开源项目</strong>：GitHub搜索Android Sample Projects</li>
+</ol>
+<hr />
+<p><strong>下一步学习</strong>：完成基础篇后，继续学习《Android开发学习笔记-进阶篇》，深入学习网络编程、多线程、Fragment等进阶内容。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/3d/ThreeJS.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/android/Android-进阶篇.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/3d/ThreeJS.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/android/Android-进阶篇.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

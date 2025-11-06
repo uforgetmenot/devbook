@@ -1,0 +1,1375 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>BIOS固件完整学习指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="bios固件完整学习指南"><a class="header" href="#bios固件完整学习指南">BIOS固件完整学习指南</a></h1>
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<ul>
+<li><a href="#%E7%AC%AC1%E7%AB%A0-bios%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8">第1章 BIOS基础入门</a></li>
+<li><a href="#%E7%AC%AC2%E7%AB%A0-bios%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B">第2章 BIOS启动流程</a></li>
+<li><a href="#%E7%AC%AC3%E7%AB%A0-uefi%E5%BC%80%E5%8F%91">第3章 UEFI开发</a></li>
+<li><a href="#%E7%AC%AC4%E7%AB%A0-bios%E6%9C%8D%E5%8A%A1">第4章 BIOS服务</a></li>
+<li><a href="#%E7%AC%AC5%E7%AB%A0-%E7%A1%AC%E4%BB%B6%E5%88%9D%E5%A7%8B%E5%8C%96">第5章 硬件初始化</a></li>
+<li><a href="#%E7%AC%AC6%E7%AB%A0-acpi%E4%B8%8Esmbios">第6章 ACPI与SMBIOS</a></li>
+<li><a href="#%E7%AC%AC7%E7%AB%A0-bios%E8%B0%83%E8%AF%95">第7章 BIOS调试</a></li>
+<li><a href="#%E7%AC%AC8%E7%AB%A0-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE">第8章 实战项目</a></li>
+</ul>
+<hr />
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<h3 id="学习目标"><a class="header" href="#学习目标">学习目标</a></h3>
+<ul>
+<li>理解BIOS/UEFI固件的启动流程</li>
+<li>掌握BIOS服务和中断调用</li>
+<li>熟练使用EDK II框架</li>
+<li>掌握硬件初始化配置</li>
+<li>完成完整BIOS项目</li>
+</ul>
+<h3 id="环境准备"><a class="header" href="#环境准备">环境准备</a></h3>
+<ul>
+<li>开发环境: Windows/Linux + Visual Studio/GCC</li>
+<li>工具: EDK II、ACPI工具、UEFI Shell</li>
+<li>硬件: x86系统 或 JTAG调试器</li>
+<li>文档: UEFI规范、ACPI规范、PC/AT架构文档</li>
+</ul>
+<hr />
+<h2 id="第1章-bios基础入门"><a class="header" href="#第1章-bios基础入门">第1章 BIOS基础入门</a></h2>
+<h3 id="11-bios简介"><a class="header" href="#11-bios简介">1.1 BIOS简介</a></h3>
+<h4 id="111-bios的作用"><a class="header" href="#111-bios的作用">1.1.1 BIOS的作用</a></h4>
+<p>BIOS (Basic Input/Output System) 是计算机系统的固件，负责启动前的硬件初始化，它是操作系统与硬件之间的桥梁。</p>
+<p><strong>核心功能:</strong></p>
+<ul>
+<li>POST (Power-On Self Test) 上电自检</li>
+<li>硬件初始化配置</li>
+<li>加载操作系统启动器</li>
+<li>提供硬件服务</li>
+<li>设备配置界面</li>
+</ul>
+<p><strong>BIOS发展历史:</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>Legacy BIOS</th><th>UEFI BIOS</th></tr></thead><tbody>
+<tr><td>诞生年代</td><td>1975年</td><td>2005年</td></tr>
+<tr><td>架构</td><td>16位实模式</td><td>32/64位保护模式</td></tr>
+<tr><td>启动方式</td><td>MBR分区</td><td>GPT分区</td></tr>
+<tr><td>启动速度</td><td>慢</td><td>快</td></tr>
+<tr><td>扩展性</td><td>差</td><td>好</td></tr>
+<tr><td>安全启动</td><td>不支持</td><td>支持Secure Boot</td></tr>
+<tr><td>图形界面</td><td>文本界面</td><td>图形界面</td></tr>
+</tbody></table>
+</div>
+<h4 id="112-bios内存布局"><a class="header" href="#112-bios内存布局">1.1.2 BIOS内存布局</a></h4>
+<pre><code class="language-c">// bios_memory.h - BIOS内存布局
+// x86系统BIOS内存映射 (Legacy BIOS)
+
+#define BIOS_ROM_BASE      0xF0000    // BIOS ROM物理地址
+#define BIOS_ROM_SIZE      0x10000    // 64KB
+#define RESET_VECTOR       0xFFFF0    // 复位地址
+
+#define IVT_BASE           0x00000    // 中断向量表
+#define IVT_SIZE           0x00400    // 1KB (256个中断向量 x 4字节)
+
+#define BDA_BASE           0x00400    // BIOS数据区
+#define BDA_SIZE           0x00100    // 256 bytes
+
+#define EBDA_BASE          0x9FC00    // 扩展BIOS数据区
+#define EBDA_SIZE          0x00400    // 1KB
+
+// BDA数据结构
+typedef struct {
+    uint16_t com_ports[4];      // 串口地址
+    uint16_t lpt_ports[3];      // 并口地址
+    uint16_t equipment;         // 设备标志
+    uint8_t  memory_size[2];    // 内存大小(KB)
+    uint16_t keyboard_flags;    // 键盘标志
+    uint8_t  video_mode;        // 视频模式
+    uint16_t video_cols;        // 视频列数
+    // ... 更多字段
+} __attribute__((packed)) BDA_t;
+</code></pre>
+<h3 id="13-bios-vs-uefi"><a class="header" href="#13-bios-vs-uefi">1.3 BIOS vs UEFI</a></h3>
+<pre><code class="language-c">// comparison.c - BIOS与UEFI对比
+
+/*
+Legacy BIOS特点:
+- 16位实模式运行
+- MBR分区表(最大2TB磁盘)
+- INT中断服务
+- 启动速度慢
+- 安全性差
+
+UEFI特点:
+- 32/64位保护模式
+- GPT分区表(支持9.4ZB磁盘)
+- Protocol/Service接口
+- 启动速度快
+- 支持Secure Boot
+- 模块化设计
+- 图形化配置界面
+
+启动流程对比:
+
+Legacy BIOS:
+Power On → POST → MBR → Bootloader → OS
+
+UEFI:
+Power On → SEC → PEI → DXE → BDS → OS
+*/
+</code></pre>
+<hr />
+<h2 id="第2章-bios启动流程"><a class="header" href="#第2章-bios启动流程">第2章 BIOS启动流程</a></h2>
+<h3 id="21-legacy-bios启动"><a class="header" href="#21-legacy-bios启动">2.1 Legacy BIOS启动</a></h3>
+<h4 id="211-启动序列"><a class="header" href="#211-启动序列">2.1.1 启动序列</a></h4>
+<pre><code class="language-nasm">; reset_vector.asm - BIOS复位向量
+; 在复位时执行, CPU跳转到此处
+
+org 0xFFF0              ; 复位地址
+bits 16
+
+reset_entry:
+    cli                 ; 关闭中断
+    cld                 ; 清方向标志
+
+    ; 初始化段寄存器
+    mov ax, 0xF000
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov sp, 0x7C00
+
+    ; 跳转到BIOS初始化代码
+    jmp far [bios_entry]
+
+bios_entry:
+    dw bios_init        ; 偏移
+    dw 0xF000           ; 段
+</code></pre>
+<h4 id="212-post自检流程"><a class="header" href="#212-post自检流程">2.1.2 POST自检流程</a></h4>
+<pre><code class="language-c">// post.c - POST上电自检流程
+#include &lt;stdint.h&gt;
+
+// POST代码定义
+#define POST_START           0x01
+#define POST_CPU_TEST        0x03
+#define POST_CHIPSET_INIT    0x05
+#define POST_MEMORY_DETECT   0x10
+#define POST_MEMORY_TEST     0x15
+#define POST_PCI_ENUM        0x30
+#define POST_VIDEO_INIT      0x40
+#define POST_KEYBOARD_INIT   0x50
+#define POST_DISK_INIT       0x60
+#define POST_BOOT_PREP       0xE0
+#define POST_COMPLETE        0xFF
+
+// 输出POST代码到端口80h
+void post_code(uint8_t code) {
+    outb(0x80, code);  // 诊断卡显示
+}
+
+// POST主流程
+int post_main(void) {
+    post_code(POST_START);
+
+    // 1. CPU自检
+    post_code(POST_CPU_TEST);
+    if (cpu_self_test() != 0) {
+        return -1;  // CPU错误
+    }
+
+    // 2. 芯片组初始化
+    post_code(POST_CHIPSET_INIT);
+    chipset_early_init();
+
+    // 3. 内存检测
+    post_code(POST_MEMORY_DETECT);
+    uint32_t memory_size = detect_memory();
+
+    // 4. 内存测试
+    post_code(POST_MEMORY_TEST);
+    if (memory_test(0, memory_size) != 0) {
+        return -2;  // 内存错误
+    }
+
+    // 5. PCI枚举
+    post_code(POST_PCI_ENUM);
+    pci_enumerate();
+
+    // 6. 显卡初始化
+    post_code(POST_VIDEO_INIT);
+    video_init();
+
+    // 7. 外设初始化
+    post_code(POST_KEYBOARD_INIT);
+    keyboard_init();
+
+    post_code(POST_DISK_INIT);
+    disk_init();
+
+    // 8. 准备启动
+    post_code(POST_BOOT_PREP);
+    setup_boot_vector();
+
+    post_code(POST_COMPLETE);
+    return 0;
+}
+
+// CPU自检
+int cpu_self_test(void) {
+    uint32_t eax, ebx, ecx, edx;
+
+    // CPUID检测
+    __asm__ volatile (
+        "cpuid"
+        : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx)
+        : "a"(0)
+    );
+
+    // 获取CPU厂商
+    char vendor[13];
+    *(uint32_t*)(vendor + 0) = ebx;
+    *(uint32_t*)(vendor + 4) = edx;
+    *(uint32_t*)(vendor + 8) = ecx;
+    vendor[12] = '\0';
+
+    // 输出厂商信息
+    printf("CPU Vendor: %s\n", vendor);
+
+    return 0;
+}
+
+// 内存检测
+uint32_t detect_memory(void) {
+    uint32_t memory_kb = 0;
+
+    // 使用INT 15h, E820h检测
+    // ... 内存检测代码
+
+    return memory_kb;
+}
+
+// 内存测试
+int memory_test(uint32_t start, uint32_t size) {
+    uint32_t *ptr = (uint32_t*)start;
+    uint32_t end = start + size;
+
+    // 简单读写测试
+    for (uint32_t addr = start; addr &lt; end; addr += 4096) {
+        *ptr = 0x5A5A5A5A;
+        if (*ptr != 0x5A5A5A5A) {
+            return -1;
+        }
+        *ptr = 0xA5A5A5A5;
+        if (*ptr != 0xA5A5A5A5) {
+            return -1;
+        }
+        ptr += 1024;  // 每4KB测试
+    }
+
+    return 0;
+}
+</code></pre>
+<h3 id="22-uefi启动流程"><a class="header" href="#22-uefi启动流程">2.2 UEFI启动流程</a></h3>
+<h4 id="221-启动阶段"><a class="header" href="#221-启动阶段">2.2.1 启动阶段</a></h4>
+<pre><code>UEFI启动阶段:
+
+1. SEC (Security Phase)
+   - 在复位后立即执行
+   - 初始化临时RAM (Cache-as-RAM)
+   - 验证PEI固件
+
+2. PEI (Pre-EFI Initialization)
+   - 初始化内存控制器
+   - 内存检测和初始化
+   - 为DXE准备执行环境
+
+3. DXE (Driver Execution Environment)
+   - 执行驱动程序
+   - 枚举和初始化硬件
+   - 提供Boot Services
+
+4. BDS (Boot Device Selection)
+   - 选择启动设备
+   - 执行Boot Manager
+   - 加载OS Loader
+
+5. TSL (Transient System Load)
+   - 执行操作系统加载器
+
+6. RT (Runtime)
+   - 操作系统运行
+   - 提供Runtime Services
+</code></pre>
+<h4 id="222-uefi应用程序"><a class="header" href="#222-uefi应用程序">2.2.2 UEFI应用程序</a></h4>
+<pre><code class="language-c">// hello_uefi.c - UEFI应用程序示例
+#include &lt;Uefi.h&gt;
+#include &lt;Library/UefiLib.h&gt;
+#include &lt;Library/UefiApplicationEntryPoint.h&gt;
+#include &lt;Library/UefiBootServicesTableLib.h&gt;
+
+EFI_STATUS
+EFIAPI
+UefiMain (
+    IN EFI_HANDLE        ImageHandle,
+    IN EFI_SYSTEM_TABLE  *SystemTable
+    )
+{
+    EFI_STATUS Status;
+
+    // 清屏
+    SystemTable-&gt;ConOut-&gt;ClearScreen(SystemTable-&gt;ConOut);
+
+    // 输出字符串
+    SystemTable-&gt;ConOut-&gt;OutputString(
+        SystemTable-&gt;ConOut,
+        L"Hello UEFI World!\r\n"
+    );
+
+    // 获取内存映射
+    UINTN MapSize = 0;
+    EFI_MEMORY_DESCRIPTOR *MemoryMap = NULL;
+    UINTN MapKey;
+    UINTN DescriptorSize;
+    UINT32 DescriptorVersion;
+
+    Status = SystemTable-&gt;BootServices-&gt;GetMemoryMap(
+        &amp;MapSize,
+        MemoryMap,
+        &amp;MapKey,
+        &amp;DescriptorSize,
+        &amp;DescriptorVersion
+    );
+
+    // 分配内存
+    MemoryMap = AllocatePool(MapSize);
+
+    Status = SystemTable-&gt;BootServices-&gt;GetMemoryMap(
+        &amp;MapSize,
+        MemoryMap,
+        &amp;MapKey,
+        &amp;DescriptorSize,
+        &amp;DescriptorVersion
+    );
+
+    // 显示内存信息
+    Print(L"Memory Map Size: %d bytes\r\n", MapSize);
+    Print(L"Descriptor Size: %d bytes\r\n", DescriptorSize);
+
+    // 等待按键
+    SystemTable-&gt;ConIn-&gt;Reset(SystemTable-&gt;ConIn, FALSE);
+    EFI_INPUT_KEY Key;
+    SystemTable-&gt;BootServices-&gt;WaitForEvent(
+        1,
+        &amp;(SystemTable-&gt;ConIn-&gt;WaitForKey),
+        &amp;MapKey
+    );
+    SystemTable-&gt;ConIn-&gt;ReadKeyStroke(SystemTable-&gt;ConIn, &amp;Key);
+
+    FreePool(MemoryMap);
+
+    return EFI_SUCCESS;
+}
+</code></pre>
+<hr />
+<h2 id="第3章-uefi开发"><a class="header" href="#第3章-uefi开发">第3章 UEFI开发</a></h2>
+<h3 id="31-edk-ii开发环境"><a class="header" href="#31-edk-ii开发环境">3.1 EDK II开发环境</a></h3>
+<h4 id="311-安装配置"><a class="header" href="#311-安装配置">3.1.1 安装配置</a></h4>
+<pre><code class="language-bash"># Linux下EDK II开发环境
+
+# 1. 安装依赖工具
+sudo apt-get install build-essential uuid-dev iasl git nasm python3
+
+# 2. 获取EDK II源码
+git clone https://github.com/tianocore/edk2.git
+cd edk2
+git submodule update --init
+
+# 3. 编译BaseTools
+make -C BaseTools
+
+# 4. 设置环境变量
+source edksetup.sh
+
+# 5. 编译OVMF (虚拟机固件)
+build -a X64 -t GCC5 -p OvmfPkg/OvmfPkgX64.dsc
+
+# 6. 使用QEMU测试
+qemu-system-x86_64 -bios Build/OvmfX64/DEBUG_GCC5/FV/OVMF.fd
+</code></pre>
+<h4 id="312-创建uefi应用"><a class="header" href="#312-创建uefi应用">3.1.2 创建UEFI应用</a></h4>
+<pre><code class="language-inf"># HelloWorld.inf - 应用程序描述文件
+[Defines]
+  INF_VERSION                = 0x00010005
+  BASE_NAME                  = HelloWorld
+  FILE_GUID                  = 6987936E-ED34-44db-AE97-1FA5E4ED2116
+  MODULE_TYPE                = UEFI_APPLICATION
+  VERSION_STRING             = 1.0
+  ENTRY_POINT                = UefiMain
+
+[Sources]
+  HelloWorld.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  UefiApplicationEntryPoint
+  UefiLib
+
+[Protocols]
+  gEfiSimpleTextOutProtocolGuid
+
+[BuildOptions]
+  *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
+</code></pre>
+<h3 id="32-uefi-protocol开发"><a class="header" href="#32-uefi-protocol开发">3.2 UEFI Protocol开发</a></h3>
+<pre><code class="language-c">// simple_driver.c - 简单UEFI驱动
+#include &lt;Uefi.h&gt;
+#include &lt;Protocol/DriverBinding.h&gt;
+#include &lt;Protocol/ComponentName2.h&gt;
+#include &lt;Library/UefiBootServicesTableLib.h&gt;
+#include &lt;Library/UefiLib.h&gt;
+
+// 驱动绑定协议
+EFI_STATUS
+EFIAPI
+SimpleDriverSupported (
+    IN EFI_DRIVER_BINDING_PROTOCOL  *This,
+    IN EFI_HANDLE                   ControllerHandle,
+    IN EFI_DEVICE_PATH_PROTOCOL     *RemainingDevicePath
+    )
+{
+    // 检查设备是否支持
+    return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+SimpleDriverStart (
+    IN EFI_DRIVER_BINDING_PROTOCOL  *This,
+    IN EFI_HANDLE                   ControllerHandle,
+    IN EFI_DEVICE_PATH_PROTOCOL     *RemainingDevicePath
+    )
+{
+    // 启动驱动
+    Print(L"Driver Started\r\n");
+    return EFI_SUCCESS;
+}
+
+EFI_STATUS
+EFIAPI
+SimpleDriverStop (
+    IN EFI_DRIVER_BINDING_PROTOCOL  *This,
+    IN EFI_HANDLE                   ControllerHandle,
+    IN UINTN                        NumberOfChildren,
+    IN EFI_HANDLE                   *ChildHandleBuffer
+    )
+{
+    // 停止驱动
+    Print(L"Driver Stopped\r\n");
+    return EFI_SUCCESS;
+}
+
+EFI_DRIVER_BINDING_PROTOCOL gSimpleDriverBinding = {
+    SimpleDriverSupported,
+    SimpleDriverStart,
+    SimpleDriverStop,
+    0x10,
+    NULL,
+    NULL
+};
+
+// 驱动入口
+EFI_STATUS
+EFIAPI
+SimpleDriverInitialize (
+    IN EFI_HANDLE        ImageHandle,
+    IN EFI_SYSTEM_TABLE  *SystemTable
+    )
+{
+    EFI_STATUS Status;
+
+    // 安装驱动绑定协议
+    Status = gBS-&gt;InstallMultipleProtocolInterfaces(
+        &amp;ImageHandle,
+        &amp;gEfiDriverBindingProtocolGuid,
+        &amp;gSimpleDriverBinding,
+        NULL
+    );
+
+    return Status;
+}
+</code></pre>
+<h3 id="33-uefi-shell命令"><a class="header" href="#33-uefi-shell命令">3.3 UEFI Shell命令</a></h3>
+<pre><code class="language-c">// shell_cmd.c - 自定义Shell命令
+#include &lt;Uefi.h&gt;
+#include &lt;Library/UefiLib.h&gt;
+#include &lt;Library/ShellLib.h&gt;
+#include &lt;Library/UefiApplicationEntryPoint.h&gt;
+
+EFI_STATUS
+EFIAPI
+UefiMain (
+    IN EFI_HANDLE        ImageHandle,
+    IN EFI_SYSTEM_TABLE  *SystemTable
+    )
+{
+    EFI_STATUS Status;
+    UINTN Argc;
+    CHAR16 **Argv;
+
+    // 获取命令行参数
+    Status = ShellCommandLineParseEx(NULL, &amp;Argc, &amp;Argv, TRUE, FALSE);
+
+    if (Argc &lt; 2) {
+        Print(L"Usage: mycmd &lt;arg&gt;\r\n");
+        return EFI_INVALID_PARAMETER;
+    }
+
+    // 处理命令
+    Print(L"Argument: %s\r\n", Argv[1]);
+
+    return EFI_SUCCESS;
+}
+</code></pre>
+<hr />
+<h2 id="第4章-bios服务"><a class="header" href="#第4章-bios服务">第4章 BIOS服务</a></h2>
+<h3 id="41-视频服务"><a class="header" href="#41-视频服务">4.1 视频服务</a></h3>
+<h4 id="411-16位中断"><a class="header" href="#411-16位中断">4.1.1 16位中断</a></h4>
+<pre><code class="language-nasm">; bios_video.asm - BIOS视频服务示例
+bits 16
+org 0x7C00
+
+start:
+    ; 清屏 (INT 10h, AH=00h)
+    mov ah, 0x00
+    mov al, 0x03        ; 80x25文本模式
+    int 0x10
+
+    ; 设置光标位置 (INT 10h, AH=02h)
+    mov ah, 0x02
+    mov bh, 0           ; 页面
+    mov dh, 10          ; 行
+    mov dl, 20          ; 列
+    int 0x10
+
+    ; 显示文本串 (INT 10h, AH=13h)
+    mov ah, 0x13
+    mov al, 0x01        ; 更新光标
+    mov bh, 0           ; 页面
+    mov bl, 0x0F        ; 属性
+    mov cx, msg_len     ; 文本串长度
+    mov dx, 0x0A14      ; 位置
+    push cs
+    pop es
+    mov bp, message
+    int 0x10
+
+    ; 等待按键 (INT 16h, AH=00h)
+    mov ah, 0x00
+    int 0x16
+
+    ; 重启计算机 (INT 19h)
+    int 0x19
+
+message: db 'Hello BIOS!', 0
+msg_len equ $ - message
+
+times 510-($-$$) db 0   ; 填充到510字节
+dw 0xAA55               # 启动签名
+</code></pre>
+<h3 id="42-保护模式"><a class="header" href="#42-保护模式">4.2 保护模式</a></h3>
+<pre><code class="language-nasm">; protected_mode.asm - 进入保护模式
+bits 16
+
+; GDT表定义
+gdt_start:
+gdt_null:               ; 空描述符
+    dd 0x0
+    dd 0x0
+
+gdt_code:               ; 代码段描述符
+    dw 0xFFFF           ; 段限15:0
+    dw 0x0000           ; 基地址15:0
+    db 0x00             ; 基地址23:16
+    db 10011010b        ; 标志: 存在,特权0,代码,可执行
+    db 11001111b        ; 标志: 粒度4KB,32位
+    db 0x00             ; 基地址31:24
+
+gdt_data:               ; 数据段描述符
+    dw 0xFFFF
+    dw 0x0000
+    db 0x00
+    db 10010010b        ; 标志: 存在,特权0,数据,可写
+    db 11001111b
+    db 0x00
+
+gdt_end:
+
+gdt_descriptor:
+    dw gdt_end - gdt_start - 1  ; GDT大小
+    dd gdt_start                ; GDT地址
+
+CODE_SEG equ gdt_code - gdt_start
+DATA_SEG equ gdt_data - gdt_start
+
+switch_to_pm:
+    cli                     ; 关闭中断
+    lgdt [gdt_descriptor]   # 加载GDT
+
+    mov eax, cr0
+    or eax, 0x1             ; 设置PE位
+    mov cr0, eax
+
+    jmp CODE_SEG:init_pm    ; 远跳转刷新CS
+
+[bits 32]
+init_pm:
+    mov ax, DATA_SEG        ; 设置所有段寄存器
+    mov ds, ax
+    mov ss, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+
+    mov ebp, 0x90000        ; 设置栈
+    mov esp, ebp
+
+    call BEGIN_PM           ; 调用32位代码
+
+BEGIN_PM:
+    ; 32位保护模式代码
+    mov ebx, 0xB8000        ; 显存地址
+    mov byte [ebx], 'P'
+    mov byte [ebx+1], 0x0F
+
+    jmp $                   ; 循环
+</code></pre>
+<h3 id="43-磁盘服务"><a class="header" href="#43-磁盘服务">4.3 磁盘服务</a></h3>
+<pre><code class="language-nasm">; disk_service.asm - BIOS磁盘服务
+bits 16
+
+; 读取扇区 (INT 13h, AH=02h)
+read_sectors:
+    mov ah, 0x02        ; 读扇区功能
+    mov al, 10          ; 扇区数
+    mov ch, 0           ; 柱面号
+    mov cl, 2           ; 扇区号(从1开始)
+    mov dh, 0           ; 磁头号
+    mov dl, 0x80        ; 驱动器号(0x80=第一硬盘)
+    mov bx, 0x1000      ; 缓冲区ES:BX
+    int 0x13
+
+    jc disk_error       ; 错误处理
+
+    ret
+
+disk_error:
+    ; 显示错误信息
+    mov si, error_msg
+    call print_string
+    ret
+</code></pre>
+<hr />
+<h2 id="第5章-硬件初始化"><a class="header" href="#第5章-硬件初始化">第5章 硬件初始化</a></h2>
+<h3 id="51-pci设备枚举"><a class="header" href="#51-pci设备枚举">5.1 PCI设备枚举</a></h3>
+<pre><code class="language-c">// pci_enum.c - PCI设备枚举
+#include &lt;stdint.h&gt;
+
+#define PCI_CONFIG_ADDRESS  0xCF8
+#define PCI_CONFIG_DATA     0xCFC
+
+// PCI配置空间读
+uint32_t pci_config_read(uint8_t bus, uint8_t device, uint8_t function, uint8_t offset) {
+    uint32_t address = (1 &lt;&lt; 31) |           // Enable bit
+                      ((uint32_t)bus &lt;&lt; 16) |
+                      ((uint32_t)device &lt;&lt; 11) |
+                      ((uint32_t)function &lt;&lt; 8) |
+                      (offset &amp; 0xFC);
+
+    outl(PCI_CONFIG_ADDRESS, address);
+    return inl(PCI_CONFIG_DATA);
+}
+
+// PCI配置空间写
+void pci_config_write(uint8_t bus, uint8_t device, uint8_t function,
+                     uint8_t offset, uint32_t value) {
+    uint32_t address = (1 &lt;&lt; 31) |
+                      ((uint32_t)bus &lt;&lt; 16) |
+                      ((uint32_t)device &lt;&lt; 11) |
+                      ((uint32_t)function &lt;&lt; 8) |
+                      (offset &amp; 0xFC);
+
+    outl(PCI_CONFIG_ADDRESS, address);
+    outl(PCI_CONFIG_DATA, value);
+}
+
+// PCI设备信息
+typedef struct {
+    uint16_t vendor_id;
+    uint16_t device_id;
+    uint8_t  class_code;
+    uint8_t  subclass;
+    uint8_t  prog_if;
+    uint8_t  revision;
+    uint32_t bar[6];
+} pci_device_t;
+
+// 枚举PCI设备
+void pci_enumerate(void) {
+    for (uint16_t bus = 0; bus &lt; 256; bus++) {
+        for (uint8_t device = 0; device &lt; 32; device++) {
+            for (uint8_t function = 0; function &lt; 8; function++) {
+                uint32_t vendor_device = pci_config_read(bus, device, function, 0);
+
+                if ((vendor_device &amp; 0xFFFF) == 0xFFFF)
+                    continue;  # 设备不存在
+
+                uint16_t vendor_id = vendor_device &amp; 0xFFFF;
+                uint16_t device_id = (vendor_device &gt;&gt; 16) &amp; 0xFFFF;
+
+                uint32_t class_rev = pci_config_read(bus, device, function, 0x08);
+                uint8_t class_code = (class_rev &gt;&gt; 24) &amp; 0xFF;
+                uint8_t subclass = (class_rev &gt;&gt; 16) &amp; 0xFF;
+
+                printf("PCI %02x:%02x.%x - Vendor:%04x Device:%04x Class:%02x.%02x\n",
+                       bus, device, function, vendor_id, device_id, class_code, subclass);
+
+                // 多功能设备检测
+                if (function == 0) {
+                    uint8_t header_type = pci_config_read(bus, device, 0, 0x0C) &gt;&gt; 16;
+                    if ((header_type &amp; 0x80) == 0) {
+                        break;  // 单功能设备
+                    }
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="52-内存控制器"><a class="header" href="#52-内存控制器">5.2 内存控制器</a></h3>
+<pre><code class="language-c">// memory_controller.c - 内存控制器初始化
+#include &lt;stdint.h&gt;
+
+// DDR配置寄存器
+#define MCH_BASE        0xFED10000
+#define MAD_DIMM_CH0    (MCH_BASE + 0x500C)
+#define MAD_DIMM_CH1    (MCH_BASE + 0x5010)
+
+// SPD (Serial Presence Detect) 读取
+uint8_t read_spd(uint8_t dimm_addr, uint8_t offset) {
+    // 通过SMBus读取SPD
+    // ... SMBus操作代码
+    return 0;
+}
+
+// 内存初始化
+int memory_init(void) {
+    // 1. 读取SPD信息
+    uint8_t spd_size = read_spd(0xA0, 0);
+    uint8_t mem_type = read_spd(0xA0, 2);
+
+    // 2. 配置内存控制器
+    // ... 配置代码
+
+    // 3. 训练内存
+    // ... 训练代码
+
+    return 0;
+}
+</code></pre>
+<hr />
+<h2 id="第6章-acpi与smbios"><a class="header" href="#第6章-acpi与smbios">第6章 ACPI与SMBIOS</a></h2>
+<h3 id="61-acpi表"><a class="header" href="#61-acpi表">6.1 ACPI表</a></h3>
+<pre><code class="language-c">// acpi_tables.h - ACPI表结构定义
+#include &lt;stdint.h&gt;
+
+// ACPI表头
+typedef struct {
+    char     signature[4];      // 表签名
+    uint32_t length;            // 表长度
+    uint8_t  revision;          // 版本
+    uint8_t  checksum;          // 校验和
+    char     oem_id[6];         // OEM ID
+    char     oem_table_id[8];   // OEM表ID
+    uint32_t oem_revision;      // OEM版本
+    uint32_t creator_id;        // 创建者ID
+    uint32_t creator_revision;  // 创建者版本
+} __attribute__((packed)) acpi_header_t;
+
+// RSDP根系统描述指针
+typedef struct {
+    char     signature[8];      // "RSD PTR "
+    uint8_t  checksum;
+    char     oem_id[6];
+    uint8_t  revision;
+    uint32_t rsdt_address;      // RSDT物理地址
+} __attribute__((packed)) acpi_rsdp_t;
+
+// RSDT根系统描述表
+typedef struct {
+    acpi_header_t header;
+    uint32_t      tables[];     // 其他表的物理地址数组
+} __attribute__((packed)) acpi_rsdt_t;
+
+// MADT多APIC描述表
+typedef struct {
+    acpi_header_t header;
+    uint32_t      local_apic_address;
+    uint32_t      flags;
+    uint8_t       entries[];
+} __attribute__((packed)) acpi_madt_t;
+
+// FADT固定ACPI描述表
+typedef struct {
+    acpi_header_t header;
+    uint32_t      firmware_ctrl;
+    uint32_t      dsdt;
+    // ... 更多字段
+} __attribute__((packed)) acpi_fadt_t;
+</code></pre>
+<h3 id="62-smbios表"><a class="header" href="#62-smbios表">6.2 SMBIOS表</a></h3>
+<pre><code class="language-c">// smbios_tables.h - SMBIOS表结构
+#include &lt;stdint.h&gt;
+
+// SMBIOS入口点
+typedef struct {
+    char     anchor[4];         // "_SM_"
+    uint8_t  checksum;
+    uint8_t  length;
+    uint8_t  major_version;
+    uint8_t  minor_version;
+    uint16_t max_structure_size;
+    uint8_t  entry_point_revision;
+    uint8_t  formatted_area[5];
+    char     intermediate_anchor[5]; // "_DMI_"
+    uint8_t  intermediate_checksum;
+    uint16_t structure_table_length;
+    uint32_t structure_table_address;
+    uint16_t number_of_structures;
+    uint8_t  bcd_revision;
+} __attribute__((packed)) smbios_entry_t;
+
+// SMBIOS结构头
+typedef struct {
+    uint8_t  type;
+    uint8_t  length;
+    uint16_t handle;
+} __attribute__((packed)) smbios_header_t;
+
+// BIOS信息(Type 0)
+typedef struct {
+    smbios_header_t header;
+    uint8_t  vendor;            // 字符串索引
+    uint8_t  version;           // 字符串索引
+    uint16_t starting_address_segment;
+    uint8_t  release_date;      // 字符串索引
+    uint8_t  rom_size;
+    uint64_t characteristics;
+} __attribute__((packed)) smbios_type0_t;
+
+// 系统信息(Type 1)
+typedef struct {
+    smbios_header_t header;
+    uint8_t  manufacturer;      // 字符串索引
+    uint8_t  product_name;      // 字符串索引
+    uint8_t  version;           // 字符串索引
+    uint8_t  serial_number;     // 字符串索引
+    uint8_t  uuid[16];
+} __attribute__((packed)) smbios_type1_t;
+</code></pre>
+<hr />
+<h2 id="第7章-bios调试"><a class="header" href="#第7章-bios调试">第7章 BIOS调试</a></h2>
+<h3 id="71-串口调试"><a class="header" href="#71-串口调试">7.1 串口调试</a></h3>
+<pre><code class="language-c">// serial_debug.c - 串口调试
+#define COM1_PORT 0x3F8
+
+void serial_init(void) {
+    outb(COM1_PORT + 1, 0x00);  // 关闭中断
+    outb(COM1_PORT + 3, 0x80);  // 启用DLAB
+    outb(COM1_PORT + 0, 0x03);  // 波特率115200 (低字节)
+    outb(COM1_PORT + 1, 0x00);  // 波特率115200 (高字节)
+    outb(COM1_PORT + 3, 0x03);  // 8位,无校验,1停止位
+    outb(COM1_PORT + 2, 0xC7);  // 启用FIFO
+    outb(COM1_PORT + 4, 0x0B);  // RTS/DSR设置
+}
+
+void serial_putc(char c) {
+    while ((inb(COM1_PORT + 5) &amp; 0x20) == 0);  // 等待发送空
+    outb(COM1_PORT, c);
+}
+
+void serial_puts(const char *str) {
+    while (*str) {
+        if (*str == '\n')
+            serial_putc('\r');
+        serial_putc(*str++);
+    }
+}
+
+void debug_printf(const char *fmt, ...) {
+    char buffer[256];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    va_end(args);
+    serial_puts(buffer);
+}
+</code></pre>
+<h3 id="72-post卡调试"><a class="header" href="#72-post卡调试">7.2 POST卡调试</a></h3>
+<pre><code class="language-c">// post_card.c - POST卡调试
+#include &lt;stdint.h&gt;
+
+#define POST_CODE_PORT 0x80
+
+// POST代码定义
+typedef enum {
+    POST_INIT              = 0x01,
+    POST_CPU_TEST          = 0x03,
+    POST_MEMORY_DETECT     = 0x10,
+    POST_MEMORY_TEST       = 0x15,
+    POST_VIDEO_INIT        = 0x40,
+    POST_BOOT              = 0xE0,
+    POST_COMPLETE          = 0xFF,
+
+    // 错误代码
+    POST_ERROR_CPU         = 0xC0,
+    POST_ERROR_MEMORY      = 0xC1,
+    POST_ERROR_VIDEO       = 0xC2,
+} post_code_t;
+
+// 输出POST代码
+void post_code(uint8_t code) {
+    outb(POST_CODE_PORT, code);
+    // 延时确保POST卡显示
+    for (volatile int i = 0; i &lt; 1000; i++);
+}
+</code></pre>
+<h3 id="73-jtag调试"><a class="header" href="#73-jtag调试">7.3 JTAG调试</a></h3>
+<pre><code class="language-c">// jtag_debug.h - JTAG调试接口
+/*
+JTAG调试流程:
+
+1. 连接JTAG调试器到目标板
+2. 配置GDB或其他调试器
+3. 设置断点
+4. 单步执行
+5. 查看寄存器和内存
+
+常用JTAG操作:
+- 读写CPU寄存器
+- 读写内存
+- 设置断点
+- 单步执行
+- 复位系统
+
+示例GDB命令:
+target remote :1234
+break bios_init
+continue
+info registers
+x/10x 0xF0000
+*/
+</code></pre>
+<hr />
+<h2 id="第8章-实战项目"><a class="header" href="#第8章-实战项目">第8章 实战项目</a></h2>
+<h3 id="81-简单bootloader"><a class="header" href="#81-简单bootloader">8.1 简单Bootloader</a></h3>
+<pre><code class="language-nasm">; bootloader.asm - 简单启动引导器
+org 0x7C00
+bits 16
+
+start:
+    ; 设置所有段寄存器
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov sp, 0x7C00
+
+    ; 显示启动信息
+    mov si, msg_boot
+    call print_string
+
+    ; 读取磁盘的第2扇区
+    mov ah, 0x02        ; 读扇区功能
+    mov al, 10          # 扇区数
+    mov ch, 0           ; 柱面0
+    mov cl, 2           ; 扇区2(扇区1是boot)
+    mov dh, 0           ; 磁头0
+    mov bx, 0x1000      ; 缓冲区地址ES:BX
+    int 0x13
+
+    jc disk_error       ; 读取错误
+
+    ; 跳转到加载的代码
+    jmp 0x0000:0x1000
+
+disk_error:
+    mov si, msg_error
+    call print_string
+    jmp $
+
+print_string:
+    lodsb
+    or al, al
+    jz .done
+    mov ah, 0x0E
+    int 0x10
+    jmp print_string
+.done:
+    ret
+
+msg_boot: db 'Booting...', 13, 10, 0
+msg_error: db 'Disk Error!', 13, 10, 0
+
+times 510-($-$$) db 0
+dw 0xAA55
+</code></pre>
+<h3 id="82-mbr分区表"><a class="header" href="#82-mbr分区表">8.2 MBR分区表</a></h3>
+<pre><code class="language-c">// mbr.h - MBR分区表结构
+#include &lt;stdint.h&gt;
+
+// 分区表项
+typedef struct {
+    uint8_t  boot_flag;         // 0x80=可启动, 0x00=不可启动
+    uint8_t  start_head;
+    uint16_t start_sector_cylinder;
+    uint8_t  partition_type;
+    uint8_t  end_head;
+    uint16_t end_sector_cylinder;
+    uint32_t lba_start;         // 起始LBA
+    uint32_t sector_count;      // 扇区数
+} __attribute__((packed)) partition_entry_t;
+
+// MBR结构
+typedef struct {
+    uint8_t            boot_code[446];   // 引导代码
+    partition_entry_t  partitions[4];    // 4个分区表项
+    uint16_t           signature;        // 0xAA55
+} __attribute__((packed)) mbr_t;
+
+// 读取MBR
+int read_mbr(mbr_t *mbr) {
+    // 使用BIOS INT 13h读取扇区0
+    // ... 读取代码
+    return 0;
+}
+</code></pre>
+<h3 id="83-学习效果验证"><a class="header" href="#83-学习效果验证">8.3 学习效果验证</a></h3>
+<p><strong>验证标准:</strong></p>
+<ol>
+<li>
+<p><strong>基础知识(25分)</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+理解BIOS/UEFI启动流程</li>
+<li><input disabled="" type="checkbox"/>
+掌握POST自检流程</li>
+<li><input disabled="" type="checkbox"/>
+理解实模式和保护模式</li>
+</ul>
+</li>
+<li>
+<p><strong>开发能力(25分)</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+编写简单16位中断</li>
+<li><input disabled="" type="checkbox"/>
+开发UEFI应用程序</li>
+<li><input disabled="" type="checkbox"/>
+实现PCI设备枚举</li>
+</ul>
+</li>
+<li>
+<p><strong>调试技术(25分)</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用串口调试</li>
+<li><input disabled="" type="checkbox"/>
+使用POST卡调试</li>
+<li><input disabled="" type="checkbox"/>
+理解BIOS错误码</li>
+</ul>
+</li>
+<li>
+<p><strong>实战项目(25分)</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现简单Bootloader</li>
+<li><input disabled="" type="checkbox"/>
+读取MBR分区表</li>
+<li><input disabled="" type="checkbox"/>
+加载操作系统内核</li>
+</ul>
+</li>
+</ol>
+<h3 id="84-进阶学习资源"><a class="header" href="#84-进阶学习资源">8.4 进阶学习资源</a></h3>
+<p><strong>官方文档:</strong></p>
+<ul>
+<li>UEFI规范: https://uefi.org/specifications</li>
+<li>ACPI规范: https://uefi.org/specs/ACPI</li>
+<li>EDK II文档: https://github.com/tianocore/tianocore.github.io/wiki</li>
+</ul>
+<p><strong>推荐书籍:</strong></p>
+<ul>
+<li>《UEFI原理与编程》</li>
+<li>《深入理解UEFI》</li>
+<li>《BIOS中断调用详解》</li>
+</ul>
+<p><strong>进阶方向:</strong></p>
+<ul>
+<li>Coreboot开源BIOS</li>
+<li>UEFI Secure Boot安全启动</li>
+<li>固件更新方案</li>
+<li>BMC固件开发</li>
+</ul>
+<hr />
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>通过本指南学习，您已掌握:</p>
+<ol>
+<li>BIOS/UEFI的基本原理和启动流程</li>
+<li>Legacy BIOS和UEFI的启动</li>
+<li>硬件初始化方法</li>
+<li>ACPI/SMBIOS表结构</li>
+<li>BIOS调试技术</li>
+<li>完整启动引导器开发</li>
+</ol>
+<p><strong>进阶方向建议:</strong></p>
+<ul>
+<li>深入学习UEFI驱动开发</li>
+<li>掌握Secure Boot实现</li>
+<li>了解固件更新机制</li>
+<li>参与开源BIOS项目</li>
+</ul>
+<p>祝学习愉快!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/database/07-PostgreSQL.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/embbed/busybox.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/database/07-PostgreSQL.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/embbed/busybox.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

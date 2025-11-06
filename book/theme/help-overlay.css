@@ -1,0 +1,27 @@
+/* Ensure mdbook help overlay is hidden until triggered, and properly styled */
+#mdbook-help-container {
+  display: none; /* hidden until opened via '?' */
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1000; /* above page content */
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+#mdbook-help-popup {
+  max-width: 880px;
+  width: min(92vw, 880px);
+  max-height: 80vh;
+  overflow: auto;
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  padding: 16px 20px;
+}
+
+.mdbook-help-title {
+  margin-top: 0;
+}
+

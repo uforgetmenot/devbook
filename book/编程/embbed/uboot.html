@@ -1,0 +1,1248 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>U-Boot完整学习指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="u-boot完整学习指南"><a class="header" href="#u-boot完整学习指南">U-Boot完整学习指南</a></h1>
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<ul>
+<li><a href="#%E7%AC%AC1%E7%AB%A0-u-boot%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8">第1章 U-Boot基础入门</a></li>
+<li><a href="#%E7%AC%AC2%E7%AB%A0-%E7%BC%96%E8%AF%91%E6%9E%84%E5%BB%BA">第2章 编译构建</a></li>
+<li><a href="#%E7%AC%AC3%E7%AB%A0-%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B">第3章 启动流程</a></li>
+<li><a href="#%E7%AC%AC4%E7%AB%A0-%E5%91%BD%E4%BB%A4%E7%B3%BB%E7%BB%9F">第4章 命令系统</a></li>
+<li><a href="#%E7%AC%AC5%E7%AB%A0-%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91">第5章 驱动开发</a></li>
+<li><a href="#%E7%AC%AC6%E7%AB%A0-%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">第6章 环境变量</a></li>
+<li><a href="#%E7%AC%AC7%E7%AB%A0-%E5%86%85%E6%A0%B8%E5%BC%95%E5%AF%BC">第7章 内核引导</a></li>
+<li><a href="#%E7%AC%AC8%E7%AB%A0-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE">第8章 实战项目</a></li>
+</ul>
+<hr />
+<h2 id="前言"><a class="header" href="#前言">前言</a></h2>
+<h3 id="学习目标"><a class="header" href="#学习目标">学习目标</a></h3>
+<ul>
+<li>理解U-Boot的作用和启动流程</li>
+<li>掌握U-Boot的编译和配置</li>
+<li>熟练使用U-Boot命令系统</li>
+<li>掌握驱动开发和移植</li>
+<li>完成内核引导配置</li>
+</ul>
+<h3 id="环境准备"><a class="header" href="#环境准备">环境准备</a></h3>
+<ul>
+<li>开发环境: Linux系统(Ubuntu 20.04+)</li>
+<li>交叉编译工具: arm-linux-gnueabihf-gcc</li>
+<li>硬件平台: ARM开发板(树莓派/i.MX6等)</li>
+<li>工具: minicom、tftp服务器</li>
+</ul>
+<hr />
+<h2 id="第1章-u-boot基础入门"><a class="header" href="#第1章-u-boot基础入门">第1章 U-Boot基础入门</a></h2>
+<h3 id="11-u-boot简介"><a class="header" href="#11-u-boot简介">1.1 U-Boot简介</a></h3>
+<p><strong>U-Boot (Universal Boot Loader)</strong> 是通用引导加载程序，嵌入式系统的bootloader。</p>
+<p><strong>主要功能:</strong></p>
+<ul>
+<li>硬件初始化(CPU、内存等)</li>
+<li>加载操作系统映像</li>
+<li>启动内核(从Flash、SD卡等)</li>
+<li>提供命令行界面</li>
+<li>支持网络功能</li>
+<li>设备树传递</li>
+</ul>
+<p><strong>支持架构:</strong></p>
+<ul>
+<li>ARM (Cortex-A/R/M)</li>
+<li>x86/x86_64</li>
+<li>MIPS</li>
+<li>PowerPC</li>
+<li>RISC-V</li>
+</ul>
+<h3 id="12-u-boot目录结构"><a class="header" href="#12-u-boot目录结构">1.2 U-Boot目录结构</a></h3>
+<pre><code class="language-bash">u-boot/
+├── arch/              # 架构相关代码
+│   ├── arm/          # ARM架构
+│   ├── x86/          # x86架构
+│   └── ...
+├── board/            # 开发板相关
+│   ├── freescale/   # 飞思卡尔芯片
+│   ├── ti/          # TI芯片
+│   └── ...
+├── cmd/              # 命令实现
+│   ├── bootm.c      # bootm命令
+│   ├── nand.c       # nand命令
+│   └── ...
+├── common/           # 公共代码
+│   ├── main.c       # 主程序
+│   ├── board_f.c    # 启动前期
+│   ├── board_r.c    # 启动后期
+│   └── ...
+├── drivers/          # 驱动程序
+│   ├── mmc/         # MMC/SD卡驱动
+│   ├── mtd/         # Flash驱动
+│   ├── net/         # 网络驱动
+│   └── serial/      # 串口驱动
+├── fs/               # 文件系统
+│   ├── ext4/        # ext4文件系统
+│   ├── fat/         # FAT文件系统
+│   └── ...
+├── include/          # 头文件
+│   ├── configs/     # 配置文件
+│   └── ...
+├── net/              # 网络协议栈
+├── tools/            # 工具程序
+│   ├── mkimage      # 制作镜像工具
+│   └── ...
+├── Makefile
+└── README
+</code></pre>
+<h3 id="13-u-boot工作原理"><a class="header" href="#13-u-boot工作原理">1.3 U-Boot工作原理</a></h3>
+<pre><code>启动阶段:
+
+1. 上电复位
+   ↓
+2. start.S (arch/arm/cpu/armv7/start.S)
+   - 设置CPU模式
+   - 关闭中断
+   - 禁用MMU和Cache
+   ↓
+3. lowlevel_init.S
+   - 初始化时钟
+   - 配置DDR
+   ↓
+4. board_init_f (common/board_f.c)
+   - 初始化串口
+   - 初始化定时器
+   - 初始化DRAM
+   - 重定位准备
+   ↓
+5. relocate_code
+   - 将U-Boot代码从Flash复制到RAM
+   - 更新重定位表
+   ↓
+6. board_init_r (common/board_r.c)
+   - 初始化驱动
+   - 初始化文件系统
+   - 初始化网络
+   ↓
+7. main_loop
+   - 等待用户输入命令
+   - 或自动启动内核
+</code></pre>
+<hr />
+<h2 id="第2章-编译构建"><a class="header" href="#第2章-编译构建">第2章 编译构建</a></h2>
+<h3 id="21-下载编译"><a class="header" href="#21-下载编译">2.1 下载编译</a></h3>
+<pre><code class="language-bash"># 1. 下载U-Boot源代码
+git clone https://github.com/u-boot/u-boot.git
+cd u-boot
+
+# 2. 查看支持的开发板
+make list
+
+# 3. 配置目标板(以树莓派3为例)
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- rpi_3_defconfig
+
+# 4. 可选配置(menuconfig界面)
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
+
+# 5. 编译
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j$(nproc)
+
+# 编译结果:
+# u-boot          # ELF格式
+# u-boot.bin      # 二进制格式
+# u-boot.img      # 带头部镜像
+# u-boot.srec     # S-Record格式
+</code></pre>
+<h3 id="22-配置选项"><a class="header" href="#22-配置选项">2.2 配置选项</a></h3>
+<pre><code class="language-bash"># .config配置文件包含所有选项
+
+# 架构配置
+CONFIG_ARM=y
+CONFIG_TARGET_RPI_3=y
+
+# 内存配置
+CONFIG_SYS_SDRAM_BASE=0x00000000
+CONFIG_SYS_SDRAM_SIZE=0x40000000  # 1GB
+
+# Flash配置
+CONFIG_SYS_FLASH_BASE=0x08000000
+CONFIG_SYS_MAX_FLASH_BANKS=1
+
+# 串口配置
+CONFIG_BAUDRATE=115200
+CONFIG_SYS_NS16550=y
+
+# 网络配置
+CONFIG_CMD_NET=y
+CONFIG_CMD_DHCP=y
+CONFIG_CMD_PING=y
+
+# 文件系统支持
+CONFIG_CMD_EXT4=y
+CONFIG_CMD_FAT=y
+
+# MMC/SD卡支持
+CONFIG_CMD_MMC=y
+CONFIG_MMC=y
+</code></pre>
+<h3 id="23-定制开发板"><a class="header" href="#23-定制开发板">2.3 定制开发板</a></h3>
+<pre><code class="language-c">// board/mycompany/myboard/myboard.c
+#include &lt;common.h&gt;
+#include &lt;asm/io.h&gt;
+#include &lt;asm/arch/clock.h&gt;
+#include &lt;asm/arch/gpio.h&gt;
+
+DECLARE_GLOBAL_DATA_PTR;
+
+// 板级初始化
+int board_init(void)
+{
+    // 设置机器ID
+    gd-&gt;bd-&gt;bi_arch_number = MACH_TYPE_MYBOARD;
+
+    // 设置启动参数地址
+    gd-&gt;bd-&gt;bi_boot_params = (PHYS_SDRAM_1 + 0x100);
+
+    printf("Board: My Custom Board\n");
+
+    return 0;
+}
+
+// DRAM初始化
+int dram_init(void)
+{
+    gd-&gt;ram_size = PHYS_SDRAM_1_SIZE;
+    return 0;
+}
+
+// 后期初始化
+int board_late_init(void)
+{
+    // LED初始化
+    gpio_request(LED_GPIO, "led");
+    gpio_direction_output(LED_GPIO, 1);
+
+    // 设置环境变量
+    env_set("board_name", "myboard");
+
+    return 0;
+}
+
+// MAC地址设置
+int board_eth_init(bd_t *bis)
+{
+    // 设置以太网MAC地址
+    return 0;
+}
+</code></pre>
+<h3 id="24-设备树配置"><a class="header" href="#24-设备树配置">2.4 设备树配置</a></h3>
+<pre><code class="language-dts">// arch/arm/dts/myboard.dts
+/dts-v1/;
+
+#include "imx6q.dtsi"
+
+/ {
+    model = "My Custom Board";
+    compatible = "mycompany,myboard", "fsl,imx6q";
+
+    memory@10000000 {
+        device_type = "memory";
+        reg = &lt;0x10000000 0x40000000&gt;; // 1GB
+    };
+
+    chosen {
+        stdout-path = &amp;uart1;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+
+        led1 {
+            label = "myboard:green:user";
+            gpios = &lt;&amp;gpio1 1 GPIO_ACTIVE_HIGH&gt;;
+            default-state = "on";
+        };
+    };
+};
+
+&amp;uart1 {
+    status = "okay";
+};
+
+&amp;usdhc2 {
+    status = "okay";
+    pinctrl-names = "default";
+    pinctrl-0 = &lt;&amp;pinctrl_usdhc2&gt;;
+    bus-width = &lt;4&gt;;
+    cd-gpios = &lt;&amp;gpio1 4 GPIO_ACTIVE_LOW&gt;;
+};
+</code></pre>
+<hr />
+<h2 id="第3章-启动流程"><a class="header" href="#第3章-启动流程">第3章 启动流程</a></h2>
+<h3 id="31-启动阶段详解"><a class="header" href="#31-启动阶段详解">3.1 启动阶段详解</a></h3>
+<pre><code class="language-c">// arch/arm/cpu/armv7/start.S - 第一阶段
+ENTRY(reset)
+    /* 设置CPU为SVC模式 */
+    mrs    r0, cpsr
+    bic    r0, r0, #0x1f
+    orr    r0, r0, #0xd3
+    msr    cpsr,r0
+
+    /* 关闭中断 */
+    cpsid  if
+
+    /* 禁用MMU和Cache */
+    mrc    p15, 0, r0, c1, c0, 0
+    bic    r0, r0, #0x00002000  /* 关闭I-Cache */
+    bic    r0, r0, #0x00000007  /* 关闭MMU和D-Cache */
+    mcr    p15, 0, r0, c1, c0, 0
+
+    /* 跳转到lowlevel_init */
+    bl     lowlevel_init
+
+    /* 跳转到_main */
+    b      _main
+END(reset)
+</code></pre>
+<pre><code class="language-c">// arch/arm/lib/crt0.S - 设置C运行环境
+ENTRY(_main)
+    /* 设置栈指针 */
+    ldr    sp, =CONFIG_SYS_INIT_SP_ADDR
+    bic    sp, sp, #7
+
+    /* 清零BSS段 */
+    ldr    r0, =__bss_start
+    ldr    r1, =__bss_end
+    mov    r2, #0
+clear_loop:
+    cmp    r0, r1
+    strlo  r2, [r0], #4
+    blo    clear_loop
+
+    /* 调用board_init_f */
+    mov    r0, #0
+    bl     board_init_f
+
+    /* 代码重定位 */
+    bl     relocate_code
+
+    /* 调用board_init_r */
+    bl     board_init_r
+END(_main)
+</code></pre>
+<h3 id="32-启动初始化序列"><a class="header" href="#32-启动初始化序列">3.2 启动初始化序列</a></h3>
+<pre><code class="language-c">// common/board_f.c - 启动前期初始化
+static init_fnc_t init_sequence_f[] = {
+    setup_mon_len,
+    initf_malloc,
+    initf_console_record,
+    arch_cpu_init,           // CPU初始化
+    mark_bootstage,
+    initf_dm,
+    arch_cpu_init_dm,
+    board_early_init_f,      // 板级早期初始化
+    timer_init,              // 定时器初始化
+    env_init,                // 环境变量初始化
+    init_baud_rate,          // 波特率初始化
+    serial_init,             // 串口初始化
+    console_init_f,          // 控制台初始化
+    dram_init,               // DRAM初始化
+    setup_dest_addr,
+    reserve_round_4k,
+    reserve_mmu,
+    reserve_video,
+    reserve_uboot,
+    reserve_malloc,
+    reserve_board,
+    setup_machine,
+    reserve_global_data,
+    reserve_fdt,
+    reserve_bootstage,
+    reserve_stacks,
+    dram_init_banksize,
+    show_dram_config,
+    display_new_sp,
+    reloc_fdt,
+    setup_reloc,
+    NULL,
+};
+
+// common/board_r.c - 启动后期初始化
+static init_fnc_t init_sequence_r[] = {
+    initr_trace,
+    initr_reloc,
+    initr_caches,
+    initr_reloc_global_data,
+    initr_barrier,
+    initr_malloc,
+    log_init,
+    initr_bootstage,
+    initr_of_live,
+    initr_dm,
+    board_init,              // 板级初始化
+    stdio_add_devices,
+    jumptable_init,
+    console_init_r,
+    interrupt_init,
+    board_late_init,         // 板级后期初始化
+    env_relocate,
+    pci_init,
+    stdio_init_tables,
+    serial_initialize,
+    initr_announce,
+    initr_net,               // 网络初始化
+    run_main_loop,           // 进入主循环
+};
+</code></pre>
+<hr />
+<h2 id="第4章-命令系统"><a class="header" href="#第4章-命令系统">第4章 命令系统</a></h2>
+<h3 id="41-常用命令"><a class="header" href="#41-常用命令">4.1 常用命令</a></h3>
+<pre><code class="language-bash"># 环境变量操作
+printenv            # 显示所有环境变量
+setenv name value   # 设置环境变量
+saveenv             # 保存环境变量
+run varname         # 执行环境变量中的命令
+
+# 内存操作
+md[.b,.w,.l] addr   # 查看内存内容
+mm[.b,.w,.l] addr   # 修改内存
+mw[.b,.w,.l] addr val # 写内存
+cp.b src dst cnt    # 复制内存
+
+# Flash操作
+flinfo              # 查看Flash信息
+erase start end     # 擦除Flash
+cp.b src dst cnt    # 复制到Flash
+
+# MMC/SD卡操作
+mmc list            # 列出MMC设备
+mmc dev 0           # 选择MMC设备0
+mmc info            # 查看MMC信息
+mmc read addr blk# cnt  # 读扇区
+mmc write addr blk# cnt # 写扇区
+
+# 文件系统操作
+fatls mmc 0:1       # 列出FAT分区文件
+fatload mmc 0:1 addr file  # 加载文件
+ext4ls mmc 0:2 /    # 列出ext4分区
+ext4load mmc 0:2 addr file # 加载文件
+
+# 网络操作
+dhcp                # 获取IP地址
+setenv serverip 192.168.1.100
+setenv ipaddr 192.168.1.200
+ping 192.168.1.100  # ping测试
+tftp addr filename  # TFTP下载文件
+
+# 启动命令
+bootm addr          # 启动内核镜像
+bootz addr - fdt    # 启动zImage
+booti addr - fdt    # 启动Image
+
+# 设备树操作
+fdt addr dtb_addr   # 设置设备树地址
+fdt print /         # 显示设备树
+fdt set /chosen bootargs "console=ttyS0,115200"
+</code></pre>
+<h3 id="42-自定义命令"><a class="header" href="#42-自定义命令">4.2 自定义命令</a></h3>
+<pre><code class="language-c">// cmd/mycmd.c - 自定义命令示例
+#include &lt;common.h&gt;
+#include &lt;command.h&gt;
+
+static int do_mycmd(cmd_tbl_t *cmdtp, int flag,
+                   int argc, char * const argv[])
+{
+    printf("Hello from my command!\n");
+
+    if (argc &gt; 1) {
+        printf("Argument: %s\n", argv[1]);
+    }
+
+    // 访问参数
+    for (int i = 1; i &lt; argc; i++) {
+        printf("argv[%d] = %s\n", i, argv[i]);
+    }
+
+    return 0;  // 返回0表示成功
+}
+
+U_BOOT_CMD(
+    mycmd,      // 命令名
+    5,          // 最大参数个数
+    1,          // 可重复
+    do_mycmd,   // 处理函数
+    "my custom command",  // 简短描述
+    "mycmd [arg1] [arg2] ...\n"       // 详细描述
+    "    - prints hello message with arguments\n"
+);
+</code></pre>
+<h3 id="43-命令执行流程"><a class="header" href="#43-命令执行流程">4.3 命令执行流程</a></h3>
+<pre><code class="language-c">// common/main.c - 主循环
+void main_loop(void)
+{
+    const char *s;
+
+    // 读取bootdelay环境变量
+    s = env_get("bootdelay");
+    int bootdelay = s ? simple_strtol(s, NULL, 10) : CONFIG_BOOTDELAY;
+
+    // 自动启动或等待用户输入
+    if (bootdelay &gt;= 0) {
+        autoboot_command(s);
+    }
+
+    // 命令行循环
+    cli_loop();
+}
+
+// common/cli.c - 命令行接口
+void cli_loop(void)
+{
+    char *lastcommand = NULL;
+    int len;
+    int flag;
+    int rc = 1;
+
+    for (;;) {
+        len = cli_readline(CONFIG_SYS_PROMPT);
+
+        if (len &gt; 0)
+            rc = run_command_list(console_buffer, len, 0);
+        else if (len == 0)
+            rc = run_command_list(lastcommand, strlen(lastcommand), 0);
+
+        if (rc &lt;= 0) {
+            lastcommand = console_buffer;
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2 id="第5章-驱动开发"><a class="header" href="#第5章-驱动开发">第5章 驱动开发</a></h2>
+<h3 id="51-gpio驱动"><a class="header" href="#51-gpio驱动">5.1 GPIO驱动</a></h3>
+<pre><code class="language-c">// drivers/gpio/mygpio.c
+#include &lt;common.h&gt;
+#include &lt;dm.h&gt;
+#include &lt;asm/gpio.h&gt;
+#include &lt;asm/io.h&gt;
+
+#define GPIO_BASE  0x20200000
+
+struct mygpio_regs {
+    uint32_t gpfsel[6];    // 功能选择
+    uint32_t reserved1;
+    uint32_t gpset[2];     // 置位
+    uint32_t reserved2;
+    uint32_t gpclr[2];     // 清零
+    uint32_t reserved3;
+    uint32_t gplev[2];     // 电平
+};
+
+struct mygpio_platdata {
+    struct mygpio_regs *regs;
+};
+
+static int mygpio_direction_input(struct udevice *dev, unsigned offset)
+{
+    struct mygpio_platdata *plat = dev_get_platdata(dev);
+    struct mygpio_regs *regs = plat-&gt;regs;
+    uint32_t reg = offset / 10;
+    uint32_t shift = (offset % 10) * 3;
+
+    // 设置为输入(000)
+    clrsetbits_le32(&amp;regs-&gt;gpfsel[reg], 0x7 &lt;&lt; shift, 0x0 &lt;&lt; shift);
+    return 0;
+}
+
+static int mygpio_direction_output(struct udevice *dev,
+                                  unsigned offset, int value)
+{
+    struct mygpio_platdata *plat = dev_get_platdata(dev);
+    struct mygpio_regs *regs = plat-&gt;regs;
+    uint32_t reg = offset / 10;
+    uint32_t shift = (offset % 10) * 3;
+
+    // 设置为输出(001)
+    clrsetbits_le32(&amp;regs-&gt;gpfsel[reg], 0x7 &lt;&lt; shift, 0x1 &lt;&lt; shift);
+
+    // 设置输出值
+    if (value)
+        writel(1 &lt;&lt; offset, &amp;regs-&gt;gpset[offset / 32]);
+    else
+        writel(1 &lt;&lt; offset, &amp;regs-&gt;gpclr[offset / 32]);
+
+    return 0;
+}
+
+static int mygpio_get_value(struct udevice *dev, unsigned offset)
+{
+    struct mygpio_platdata *plat = dev_get_platdata(dev);
+    struct mygpio_regs *regs = plat-&gt;regs;
+    return (readl(&amp;regs-&gt;gplev[offset / 32]) &gt;&gt; (offset % 32)) &amp; 1;
+}
+
+static int mygpio_set_value(struct udevice *dev, unsigned offset, int value)
+{
+    struct mygpio_platdata *plat = dev_get_platdata(dev);
+    struct mygpio_regs *regs = plat-&gt;regs;
+
+    if (value)
+        writel(1 &lt;&lt; offset, &amp;regs-&gt;gpset[offset / 32]);
+    else
+        writel(1 &lt;&lt; offset, &amp;regs-&gt;gpclr[offset / 32]);
+
+    return 0;
+}
+
+static const struct dm_gpio_ops mygpio_ops = {
+    .direction_input  = mygpio_direction_input,
+    .direction_output = mygpio_direction_output,
+    .get_value        = mygpio_get_value,
+    .set_value        = mygpio_set_value,
+};
+
+static int mygpio_probe(struct udevice *dev)
+{
+    struct mygpio_platdata *plat = dev_get_platdata(dev);
+    struct gpio_dev_priv *uc_priv = dev_get_uclass_priv(dev);
+
+    plat-&gt;regs = (struct mygpio_regs *)GPIO_BASE;
+    uc_priv-&gt;bank_name = "GPIO";
+    uc_priv-&gt;gpio_count = 54;
+
+    return 0;
+}
+
+U_BOOT_DRIVER(mygpio) = {
+    .name   = "mygpio",
+    .id     = UCLASS_GPIO,
+    .probe  = mygpio_probe,
+    .ops    = &amp;mygpio_ops,
+    .platdata_auto_alloc_size = sizeof(struct mygpio_platdata),
+};
+</code></pre>
+<h3 id="52-网络驱动"><a class="header" href="#52-网络驱动">5.2 网络驱动</a></h3>
+<pre><code class="language-c">// drivers/net/mynet.c
+#include &lt;common.h&gt;
+#include &lt;dm.h&gt;
+#include &lt;net.h&gt;
+#include &lt;asm/io.h&gt;
+#include &lt;malloc.h&gt;
+
+struct mynet_priv {
+    void __iomem *iobase;
+    struct mii_dev *bus;
+    struct phy_device *phydev;
+};
+
+static int mynet_start(struct udevice *dev)
+{
+    struct mynet_priv *priv = dev_get_priv(dev);
+
+    // 启动MAC
+    // 启动PHY
+    phy_startup(priv-&gt;phydev);
+
+    return 0;
+}
+
+static void mynet_stop(struct udevice *dev)
+{
+    struct mynet_priv *priv = dev_get_priv(dev);
+
+    // 停止MAC
+    // 停止PHY
+    phy_shutdown(priv-&gt;phydev);
+}
+
+static int mynet_send(struct udevice *dev, void *packet, int length)
+{
+    struct mynet_priv *priv = dev_get_priv(dev);
+
+    // 发送数据包
+    // 1. 检查发送缓冲区
+    // 2. 复制数据
+    // 3. 启动发送
+    // 4. 等待完成
+
+    return 0;
+}
+
+static int mynet_recv(struct udevice *dev, int flags, uchar **packetp)
+{
+    struct mynet_priv *priv = dev_get_priv(dev);
+
+    // 接收数据包
+    // 1. 检查接收状态
+    // 2. 读取数据
+    // 3. 返回数据指针
+
+    return 0;
+}
+
+static int mynet_free_pkt(struct udevice *dev, uchar *packet, int length)
+{
+    // 释放接收缓冲区
+    return 0;
+}
+
+static int mynet_write_hwaddr(struct udevice *dev)
+{
+    struct eth_pdata *pdata = dev_get_platdata(dev);
+
+    // 写入MAC地址
+    // writel(mac_addr, MAC_ADDR_REG);
+
+    return 0;
+}
+
+static int mynet_probe(struct udevice *dev)
+{
+    struct mynet_priv *priv = dev_get_priv(dev);
+    struct eth_pdata *pdata = dev_get_platdata(dev);
+
+    // 初始化硬件
+    priv-&gt;iobase = (void __iomem *)pdata-&gt;iobase;
+
+    // 初始化PHY
+    priv-&gt;bus = mdio_alloc();
+    if (!priv-&gt;bus)
+        return -ENOMEM;
+
+    priv-&gt;phydev = phy_connect(priv-&gt;bus, pdata-&gt;phy_interface, dev, pdata-&gt;phy_interface);
+    if (!priv-&gt;phydev)
+        return -ENODEV;
+
+    phy_config(priv-&gt;phydev);
+
+    return 0;
+}
+
+static const struct eth_ops mynet_ops = {
+    .start       = mynet_start,
+    .stop        = mynet_stop,
+    .send        = mynet_send,
+    .recv        = mynet_recv,
+    .free_pkt    = mynet_free_pkt,
+    .write_hwaddr = mynet_write_hwaddr,
+};
+
+U_BOOT_DRIVER(mynet) = {
+    .name   = "mynet",
+    .id     = UCLASS_ETH,
+    .probe  = mynet_probe,
+    .ops    = &amp;mynet_ops,
+    .priv_auto_alloc_size = sizeof(struct mynet_priv),
+};
+</code></pre>
+<hr />
+<h2 id="第6章-环境变量"><a class="header" href="#第6章-环境变量">第6章 环境变量</a></h2>
+<h3 id="61-环境变量配置"><a class="header" href="#61-环境变量配置">6.1 环境变量配置</a></h3>
+<pre><code class="language-c">// include/configs/myboard.h - 默认环境变量配置
+
+#define CONFIG_EXTRA_ENV_SETTINGS \
+    "console=ttyS0,115200\0" \
+    "baudrate=115200\0" \
+    "bootdelay=3\0" \
+    "serverip=192.168.1.100\0" \
+    "ipaddr=192.168.1.200\0" \
+    "netmask=255.255.255.0\0" \
+    "gatewayip=192.168.1.1\0" \
+    "ethaddr=00:11:22:33:44:55\0" \
+    "bootfile=zImage\0" \
+    "fdtfile=myboard.dtb\0" \
+    "loadaddr=0x80000000\0" \
+    "fdtaddr=0x83000000\0" \
+    "mmcdev=0\0" \
+    "mmcpart=1\0" \
+    "mmcroot=/dev/mmcblk0p2 rw\0" \
+    "mmcargs=setenv bootargs console=${console} " \
+        "root=${mmcroot} rootfstype=ext4 rootwait\0" \
+    "loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bootfile}\0" \
+    "loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdtaddr} ${fdtfile}\0" \
+    "mmcboot=echo Booting from mmc ...; " \
+        "run mmcargs; " \
+        "run loadimage; " \
+        "run loadfdt; " \
+        "bootz ${loadaddr} - ${fdtaddr}\0" \
+    "netargs=setenv bootargs console=${console} " \
+        "root=/dev/nfs ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
+    "netboot=echo Booting from network ...; " \
+        "dhcp; " \
+        "tftp ${loadaddr} ${bootfile}; " \
+        "tftp ${fdtaddr} ${fdtfile}; " \
+        "run netargs; " \
+        "bootz ${loadaddr} - ${fdtaddr}\0"
+
+#define CONFIG_BOOTCOMMAND "run mmcboot"
+</code></pre>
+<h3 id="62-环境变量存储"><a class="header" href="#62-环境变量存储">6.2 环境变量存储</a></h3>
+<pre><code class="language-c">// env/mmc.c - MMC环境变量存储
+#include &lt;common.h&gt;
+#include &lt;command.h&gt;
+#include &lt;environment.h&gt;
+#include &lt;mmc.h&gt;
+
+#define ENV_MMC_OFFSET  0x100000  // 环境变量偏移1MB
+
+int saveenv(void)
+{
+    struct mmc *mmc = find_mmc_device(CONFIG_SYS_MMC_ENV_DEV);
+    u32 offset = ENV_MMC_OFFSET / mmc-&gt;read_bl_len;
+
+    // 写入环境变量
+    if (mmc_write(mmc, offset, (void *)&amp;env_ptr, ENV_SIZE / mmc-&gt;write_bl_len) != 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
+void env_relocate_spec(void)
+{
+    struct mmc *mmc = find_mmc_device(CONFIG_SYS_MMC_ENV_DEV);
+    u32 offset = ENV_MMC_OFFSET / mmc-&gt;read_bl_len;
+
+    // 读取环境变量
+    if (mmc_read(mmc, offset, (void *)&amp;env_ptr, ENV_SIZE / mmc-&gt;read_bl_len) != 0) {
+        set_default_env(NULL);
+    }
+}
+</code></pre>
+<hr />
+<h2 id="第7章-内核引导"><a class="header" href="#第7章-内核引导">第7章 内核引导</a></h2>
+<h3 id="71-从sd卡启动linux"><a class="header" href="#71-从sd卡启动linux">7.1 从SD卡启动Linux</a></h3>
+<pre><code class="language-bash"># 设置启动参数
+setenv bootargs console=ttyS0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rw
+
+# 加载内核
+fatload mmc 0:1 0x80000000 zImage
+
+# 加载设备树
+fatload mmc 0:1 0x83000000 myboard.dtb
+
+# 启动内核
+bootz 0x80000000 - 0x83000000
+</code></pre>
+<h3 id="72-从网络启动linux"><a class="header" href="#72-从网络启动linux">7.2 从网络启动Linux</a></h3>
+<pre><code class="language-bash"># 设置网络参数
+setenv serverip 192.168.1.100
+setenv ipaddr 192.168.1.200
+
+# TFTP下载内核
+tftp 0x80000000 zImage
+
+# TFTP下载设备树
+tftp 0x83000000 myboard.dtb
+
+# 设置启动参数
+setenv bootargs console=ttyS0,115200 root=/dev/nfs ip=dhcp nfsroot=192.168.1.100:/nfs/rootfs,v3,tcp
+
+# 启动内核
+bootz 0x80000000 - 0x83000000
+</code></pre>
+<h3 id="73-从nand-flash启动"><a class="header" href="#73-从nand-flash启动">7.3 从NAND Flash启动</a></h3>
+<pre><code class="language-bash"># 从NAND读取内核
+nand read 0x80000000 0x200000 0x400000  # 读取内核(4MB)
+
+# 从NAND读取设备树
+nand read 0x83000000 0x600000 0x20000   # 读取设备树(128KB)
+
+# 设置启动参数
+setenv bootargs console=ttyS0,115200 root=/dev/mtdblock3 rootfstype=ubifs
+
+# 启动内核
+bootz 0x80000000 - 0x83000000
+</code></pre>
+<h3 id="74-制作uimage"><a class="header" href="#74-制作uimage">7.4 制作uImage</a></h3>
+<pre><code class="language-bash"># 使用mkimage制作uImage
+mkimage -A arm -O linux -T kernel -C none \
+        -a 0x80000000 -e 0x80000000 \
+        -n "Linux Kernel" -d zImage uImage
+
+# bootm启动uImage
+fatload mmc 0:1 0x80000000 uImage
+setenv bootargs console=ttyS0,115200 root=/dev/mmcblk0p2
+bootm 0x80000000
+</code></pre>
+<hr />
+<h2 id="第8章-实战项目"><a class="header" href="#第8章-实战项目">第8章 实战项目</a></h2>
+<h3 id="81-自动启动脚本"><a class="header" href="#81-自动启动脚本">8.1 自动启动脚本</a></h3>
+<pre><code class="language-bash"># boot.cmd - 自动启动脚本
+setenv bootdelay 3
+setenv baudrate 115200
+
+echo "==================================="
+echo "U-Boot Auto Boot Script"
+echo "==================================="
+
+# 检测SD卡
+if mmc dev 0; then
+    echo "SD Card detected"
+
+    # 加载内核
+    if fatload mmc 0:1 ${loadaddr} zImage; then
+        echo "Kernel loaded"
+
+        # 加载设备树
+        if fatload mmc 0:1 ${fdtaddr} myboard.dtb; then
+            echo "Device tree loaded"
+
+            # 设置启动参数
+            setenv bootargs console=ttyS0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rw
+
+            # 启动内核
+            echo "Booting Linux..."
+            bootz ${loadaddr} - ${fdtaddr}
+        else
+            echo "Failed to load device tree"
+        fi
+    else
+        echo "Failed to load kernel"
+    fi
+else
+    echo "No SD Card found"
+    echo "Try network boot..."
+
+    # 网络启动
+    if dhcp; then
+        tftp ${loadaddr} zImage
+        tftp ${fdtaddr} myboard.dtb
+        setenv bootargs console=ttyS0,115200 root=/dev/nfs ip=dhcp nfsroot=${serverip}:/nfs/rootfs,v3,tcp
+        bootz ${loadaddr} - ${fdtaddr}
+    fi
+fi
+
+# 脚本转换命令:
+# mkimage -C none -A arm -T script -d boot.cmd boot.scr
+</code></pre>
+<h3 id="82-多系统启动菜单"><a class="header" href="#82-多系统启动菜单">8.2 多系统启动菜单</a></h3>
+<pre><code class="language-bash"># bootmenu.cmd - 启动菜单
+setenv bootmenu_0 'Boot from SD Card=run mmcboot'
+setenv bootmenu_1 'Boot from Network=run netboot'
+setenv bootmenu_2 'Boot from NAND=run nandboot'
+setenv bootmenu_3 'Enter U-Boot console=true'
+setenv bootmenu_delay 10
+
+bootmenu
+</code></pre>
+<h3 id="83-学习效果验证"><a class="header" href="#83-学习效果验证">8.3 学习效果验证</a></h3>
+<p><strong>验证标准:</strong></p>
+<ol>
+<li>
+<p><strong>基础知识(25分)</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+理解U-Boot作用</li>
+<li><input disabled="" type="checkbox"/>
+掌握配置编译</li>
+<li><input disabled="" type="checkbox"/>
+理解启动流程</li>
+</ul>
+</li>
+<li>
+<p><strong>命令使用(25分)</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+熟练使用基本命令</li>
+<li><input disabled="" type="checkbox"/>
+掌握内存和Flash操作</li>
+<li><input disabled="" type="checkbox"/>
+掌握网络和文件系统命令</li>
+</ul>
+</li>
+<li>
+<p><strong>驱动开发(25分)</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+理解驱动框架</li>
+<li><input disabled="" type="checkbox"/>
+实现GPIO驱动</li>
+<li><input disabled="" type="checkbox"/>
+实现网络驱动</li>
+</ul>
+</li>
+<li>
+<p><strong>实战应用(25分)</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+完成编译移植</li>
+<li><input disabled="" type="checkbox"/>
+实现内核引导</li>
+<li><input disabled="" type="checkbox"/>
+编写启动脚本</li>
+</ul>
+</li>
+</ol>
+<h3 id="84-进阶学习资源"><a class="header" href="#84-进阶学习资源">8.4 进阶学习资源</a></h3>
+<p><strong>官方资源:</strong></p>
+<ul>
+<li>U-Boot官网: https://www.denx.de/wiki/U-Boot</li>
+<li>源代码: https://github.com/u-boot/u-boot</li>
+<li>邮件列表: u-boot@lists.denx.de</li>
+</ul>
+<p><strong>推荐文档:</strong></p>
+<ul>
+<li>U-Boot README</li>
+<li>doc/README.* 系列文档</li>
+<li>芯片厂商文档</li>
+</ul>
+<p><strong>进阶方向:</strong></p>
+<ul>
+<li>Falcon Mode快速启动</li>
+<li>SPL/TPL两阶段加载</li>
+<li>安全启动(Secure Boot)</li>
+<li>UEFI支持</li>
+<li>Verified Boot</li>
+</ul>
+<hr />
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>通过本指南学习，您已掌握:</p>
+<ol>
+<li>U-Boot的基本工作原理和目录结构</li>
+<li>编译配置和移植方法</li>
+<li>启动流程详细分析</li>
+<li>命令系统的使用</li>
+<li>驱动开发方法</li>
+<li>环境变量配置</li>
+<li>内核引导技术</li>
+</ol>
+<p><strong>进阶方向建议:</strong></p>
+<ul>
+<li>深入学习SPL/TPL机制</li>
+<li>掌握安全启动技术</li>
+<li>了解UEFI和ACPI</li>
+<li>研究快速启动优化</li>
+<li>参与U-Boot社区开发</li>
+</ul>
+<p>祝学习愉快！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/embbed/stm32.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/embbed/vxworks.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/embbed/stm32.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/embbed/vxworks.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,1158 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Live555 技术笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="live555-技术笔记"><a class="header" href="#live555-技术笔记">Live555 技术笔记</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>Live555是一个开源的C++库，专门用于流媒体传输，特别是基于RTP/RTCP协议的实时流媒体。它是一个完整的流媒体框架，支持多种音视频格式的实时传输，广泛应用于RTSP服务器、客户端以及媒体代理的开发。Live555以其高效的事件驱动架构和对标准协议的完整支持而著称。</p>
+<h3 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h3>
+<ul>
+<li>完整的RTSP/RTP/RTCP协议栈实现</li>
+<li>支持多种音视频编解码格式（H.264/H.265、AAC、MPEG等）</li>
+<li>事件驱动的异步I/O架构</li>
+<li>跨平台支持（Windows、Linux、macOS）</li>
+<li>模块化设计，易于扩展和集成</li>
+<li>内建RTSP服务器和客户端功能</li>
+<li>支持组播和单播传输</li>
+<li>SDP（Session Description Protocol）支持</li>
+</ul>
+<h2 id="系统架构"><a class="header" href="#系统架构">系统架构</a></h2>
+<h3 id="核心框架架构"><a class="header" href="#核心框架架构">核心框架架构</a></h3>
+<pre><code>应用程序层
+    |
++------------------------+
+|    UsageEnvironment    |  用法环境（事件循环）
++------------------------+
+    |
++------------------------+
+|      TaskScheduler     |  任务调度器
++------------------------+
+    |
++------------------------+
+| Media Sources &amp; Sinks |  媒体源和目标
++------------------------+
+    |
++------------------------+
+|  RTP/RTCP Components   |  RTP/RTCP组件
++------------------------+
+    |
++------------------------+
+|   Network Components   |  网络组件
++------------------------+
+</code></pre>
+<h3 id="关键组件说明"><a class="header" href="#关键组件说明">关键组件说明</a></h3>
+<ol>
+<li>
+<p><strong>UsageEnvironment</strong></p>
+<ul>
+<li>提供事件循环和任务调度环境</li>
+<li>管理内存分配和错误处理</li>
+<li>抽象化平台差异</li>
+</ul>
+</li>
+<li>
+<p><strong>TaskScheduler</strong></p>
+<ul>
+<li>异步事件调度</li>
+<li>定时器管理</li>
+<li>网络事件处理</li>
+</ul>
+</li>
+<li>
+<p><strong>MediaSource/MediaSink</strong></p>
+<ul>
+<li>媒体数据的抽象源和目标</li>
+<li>支持文件、网络流、设备等</li>
+<li>可扩展的媒体格式支持</li>
+</ul>
+</li>
+</ol>
+<h2 id="关键组件详解"><a class="header" href="#关键组件详解">关键组件详解</a></h2>
+<h3 id="1-基础环境设置"><a class="header" href="#1-基础环境设置">1. 基础环境设置</a></h3>
+<pre><code class="language-cpp">#include "liveMedia.hh"
+#include "BasicUsageEnvironment.hh"
+
+class Live555Environment {
+private:
+    TaskScheduler* scheduler;
+    UsageEnvironment* env;
+    char eventLoopWatchVariable;
+
+public:
+    Live555Environment() : eventLoopWatchVariable(0) {
+        // 创建任务调度器
+        scheduler = BasicTaskScheduler::createNew();
+
+        // 创建使用环境
+        env = BasicUsageEnvironment::createNew(*scheduler);
+    }
+
+    ~Live555Environment() {
+        // 清理资源
+        if (env) {
+            env-&gt;reclaim();
+            env = nullptr;
+        }
+
+        if (scheduler) {
+            delete scheduler;
+            scheduler = nullptr;
+        }
+    }
+
+    UsageEnvironment&amp; getEnvironment() { return *env; }
+    TaskScheduler&amp; getScheduler() { return *scheduler; }
+
+    void startEventLoop() {
+        env-&gt;taskScheduler().doEventLoop(&amp;eventLoopWatchVariable);
+    }
+
+    void stopEventLoop() {
+        eventLoopWatchVariable = 1;
+    }
+};
+</code></pre>
+<h3 id="2-rtsp服务器实现"><a class="header" href="#2-rtsp服务器实现">2. RTSP服务器实现</a></h3>
+<pre><code class="language-cpp">#include "RTSPServer.hh"
+#include "ServerMediaSession.hh"
+#include "PassiveServerMediaSubsession.hh"
+
+class Live555RTSPServer {
+private:
+    Live555Environment environment;
+    RTSPServer* rtspServer;
+    portNumBits rtspServerPortNum;
+
+public:
+    Live555RTSPServer(portNumBits port = 8554) : rtspServerPortNum(port) {
+        // 创建RTSP服务器
+        rtspServer = RTSPServer::createNew(environment.getEnvironment(),
+                                          rtspServerPortNum, nullptr);
+
+        if (rtspServer == nullptr) {
+            environment.getEnvironment() &lt;&lt; "Failed to create RTSP server: "
+                                       &lt;&lt; environment.getEnvironment().getResultMsg() &lt;&lt; "\n";
+            return;
+        }
+
+        environment.getEnvironment() &lt;&lt; "RTSP server listening on port "
+                                   &lt;&lt; rtspServerPortNum &lt;&lt; "\n";
+    }
+
+    ~Live555RTSPServer() {
+        if (rtspServer) {
+            Medium::close(rtspServer);
+        }
+    }
+
+    bool addH264StreamFromFile(const char* streamName, const char* fileName) {
+        // 创建服务器媒体会话
+        ServerMediaSession* sms = ServerMediaSession::createNew(
+            environment.getEnvironment(), streamName, streamName,
+            "Session streamed by \"Live555 RTSP Server\"");
+
+        // 创建H.264视频子会话
+        sms-&gt;addSubsession(
+            H264VideoFileServerMediaSubsession::createNew(
+                environment.getEnvironment(), fileName, True));
+
+        // 将会话添加到RTSP服务器
+        rtspServer-&gt;addServerMediaSession(sms);
+
+        // 生成RTSP URL
+        char* url = rtspServer-&gt;rtspURL(sms);
+        environment.getEnvironment() &lt;&lt; "Play this stream using the URL \""
+                                   &lt;&lt; url &lt;&lt; "\"\n";
+        delete[] url;
+
+        return true;
+    }
+
+    bool addH264StreamFromSource(const char* streamName, FramedSource* source) {
+        if (!source) return false;
+
+        ServerMediaSession* sms = ServerMediaSession::createNew(
+            environment.getEnvironment(), streamName, streamName,
+            "Session streamed by \"Live555 RTSP Server\"");
+
+        // 创建H.264视频RTP sink
+        RTPSink* videoSink = H264VideoRTPSink::createNew(
+            environment.getEnvironment(),
+            groupsock, 96); // payload type 96
+
+        // 创建媒体子会话
+        PassiveServerMediaSubsession* subsession =
+            PassiveServerMediaSubsession::createNew(*videoSink, source);
+
+        sms-&gt;addSubsession(subsession);
+        rtspServer-&gt;addServerMediaSession(sms);
+
+        return true;
+    }
+
+    void run() {
+        environment.startEventLoop();
+    }
+
+    void stop() {
+        environment.stopEventLoop();
+    }
+};
+</code></pre>
+<h3 id="3-rtsp客户端实现"><a class="header" href="#3-rtsp客户端实现">3. RTSP客户端实现</a></h3>
+<pre><code class="language-cpp">#include "RTSPClient.hh"
+#include "MediaSession.hh"
+
+class Live555RTSPClient : public RTSPClient {
+private:
+    MediaSession* session;
+    MediaSubsessionIterator* iter;
+
+    // 回调函数声明
+    static void continueAfterDESCRIBE(RTSPClient* rtspClient,
+                                     int resultCode, char* resultString);
+    static void continueAfterSETUP(RTSPClient* rtspClient,
+                                  int resultCode, char* resultString);
+    static void continueAfterPLAY(RTSPClient* rtspClient,
+                                 int resultCode, char* resultString);
+    static void subsessionAfterPlaying(void* clientData);
+    static void sessionAfterPlaying(void* clientData);
+
+public:
+    Live555RTSPClient(UsageEnvironment&amp; env, char const* rtspURL,
+                      int verbosityLevel = 0, char const* applicationName = nullptr)
+        : RTSPClient(env, rtspURL, verbosityLevel, applicationName, 0, -1),
+          session(nullptr), iter(nullptr) {
+    }
+
+    virtual ~Live555RTSPClient() {
+        if (iter) delete iter;
+        Medium::close(session);
+    }
+
+    void startPlaying() {
+        // 发送DESCRIBE命令
+        sendDescribeCommand(continueAfterDESCRIBE);
+    }
+
+    void shutdown() {
+        if (session) {
+            // 发送TEARDOWN命令
+            sendTeardownCommand(*session, nullptr);
+        }
+    }
+
+    // 静态工厂方法
+    static Live555RTSPClient* createNew(UsageEnvironment&amp; env,
+                                       char const* rtspURL,
+                                       int verbosityLevel = 0,
+                                       char const* applicationName = nullptr) {
+        return new Live555RTSPClient(env, rtspURL, verbosityLevel, applicationName);
+    }
+
+private:
+    void setupStreams() {
+        // 创建媒体会话
+        if (session == nullptr) return;
+
+        iter = new MediaSubsessionIterator(*session);
+        MediaSubsession* subsession;
+
+        while ((subsession = iter-&gt;next()) != nullptr) {
+            if (subsession-&gt;clientPortNum() == 0) continue;
+
+            // 设置接收缓冲区大小
+            unsigned const receiveBufferSize = 2000000;
+            int socketNum = subsession-&gt;rtpSource()-&gt;RTPgs()-&gt;socketNum();
+            increaseReceiveBufferTo(envir(), socketNum, receiveBufferSize);
+
+            // 发送SETUP命令
+            sendSetupCommand(*subsession, continueAfterSETUP);
+        }
+    }
+};
+
+// 回调函数实现
+void Live555RTSPClient::continueAfterDESCRIBE(RTSPClient* rtspClient,
+                                              int resultCode, char* resultString) {
+    Live555RTSPClient* client = (Live555RTSPClient*)rtspClient;
+
+    if (resultCode != 0) {
+        client-&gt;envir() &lt;&lt; "Failed to get a SDP description: " &lt;&lt; resultString &lt;&lt; "\n";
+        delete[] resultString;
+        return;
+    }
+
+    // 解析SDP描述
+    client-&gt;session = MediaSession::createNew(client-&gt;envir(), resultString);
+    delete[] resultString;
+
+    if (client-&gt;session == nullptr) {
+        client-&gt;envir() &lt;&lt; "Failed to create MediaSession\n";
+        return;
+    }
+
+    // 设置媒体流
+    client-&gt;setupStreams();
+}
+
+void Live555RTSPClient::continueAfterSETUP(RTSPClient* rtspClient,
+                                           int resultCode, char* resultString) {
+    Live555RTSPClient* client = (Live555RTSPClient*)rtspClient;
+
+    if (resultCode != 0) {
+        client-&gt;envir() &lt;&lt; "Failed to set up subsession: " &lt;&lt; resultString &lt;&lt; "\n";
+        delete[] resultString;
+        return;
+    }
+
+    delete[] resultString;
+
+    // 发送PLAY命令
+    client-&gt;sendPlayCommand(*client-&gt;session, continueAfterPLAY);
+}
+
+void Live555RTSPClient::continueAfterPLAY(RTSPClient* rtspClient,
+                                          int resultCode, char* resultString) {
+    Live555RTSPClient* client = (Live555RTSPClient*)rtspClient;
+
+    if (resultCode != 0) {
+        client-&gt;envir() &lt;&lt; "Failed to start playing: " &lt;&lt; resultString &lt;&lt; "\n";
+        delete[] resultString;
+        return;
+    }
+
+    delete[] resultString;
+    client-&gt;envir() &lt;&lt; "Started playing session\n";
+}
+</code></pre>
+<h3 id="4-自定义媒体源"><a class="header" href="#4-自定义媒体源">4. 自定义媒体源</a></h3>
+<pre><code class="language-cpp">#include "FramedSource.hh"
+#include "JPEGVideoSource.hh"
+
+class CustomH264Source : public FramedSource {
+private:
+    FILE* fid;
+    unsigned char* buffer;
+    unsigned bufferSize;
+
+    // H.264 NALU分隔符
+    static const unsigned char startCode[4];
+
+public:
+    CustomH264Source(UsageEnvironment&amp; env, const char* fileName)
+        : FramedSource(env), fid(nullptr), buffer(nullptr), bufferSize(1000000) {
+
+        fid = fopen(fileName, "rb");
+        if (fid == nullptr) {
+            env &lt;&lt; "Unable to open file \"" &lt;&lt; fileName &lt;&lt; "\"\n";
+            return;
+        }
+
+        buffer = new unsigned char[bufferSize];
+    }
+
+    virtual ~CustomH264Source() {
+        if (fid) {
+            fclose(fid);
+            fid = nullptr;
+        }
+        delete[] buffer;
+    }
+
+    static CustomH264Source* createNew(UsageEnvironment&amp; env,
+                                       const char* fileName) {
+        CustomH264Source* source = new CustomH264Source(env, fileName);
+        if (source &amp;&amp; source-&gt;fid == nullptr) {
+            Medium::close(source);
+            return nullptr;
+        }
+        return source;
+    }
+
+protected:
+    virtual void doGetNextFrame() {
+        if (fid == nullptr) {
+            handleClosure();
+            return;
+        }
+
+        // 读取下一个NALU
+        if (readNextNALU() &gt; 0) {
+            // 异步传递帧数据
+            nextTask() = envir().taskScheduler().scheduleDelayedTask(0,
+                (TaskFunc*)FramedSource::afterGetting, this);
+        } else {
+            handleClosure();
+        }
+    }
+
+private:
+    unsigned readNextNALU() {
+        if (fid == nullptr) return 0;
+
+        // 寻找起始码
+        unsigned char byte;
+        unsigned startCodeLength = 0;
+
+        // 跳过前面的起始码
+        while (fread(&amp;byte, 1, 1, fid) == 1) {
+            if (byte == 0x00) {
+                startCodeLength++;
+            } else if (byte == 0x01 &amp;&amp; startCodeLength &gt;= 2) {
+                break;
+            } else {
+                startCodeLength = 0;
+            }
+        }
+
+        if (feof(fid)) return 0;
+
+        // 读取NALU数据直到下一个起始码
+        unsigned naluSize = 0;
+        startCodeLength = 0;
+
+        while (naluSize &lt; fMaxSize &amp;&amp; fread(&amp;byte, 1, 1, fid) == 1) {
+            if (byte == 0x00) {
+                buffer[naluSize++] = byte;
+                startCodeLength++;
+            } else if (byte == 0x01 &amp;&amp; startCodeLength &gt;= 2) {
+                // 找到下一个起始码，回退文件指针
+                fseek(fid, -(startCodeLength + 1), SEEK_CUR);
+                naluSize -= startCodeLength;
+                break;
+            } else {
+                buffer[naluSize++] = byte;
+                startCodeLength = 0;
+            }
+        }
+
+        // 复制数据到输出缓冲区
+        if (naluSize &gt; 0) {
+            if (naluSize &gt; fMaxSize) naluSize = fMaxSize;
+            memcpy(fTo, buffer, naluSize);
+            fFrameSize = naluSize;
+
+            // 设置时间戳
+            gettimeofday(&amp;fPresentationTime, nullptr);
+        }
+
+        return naluSize;
+    }
+};
+
+const unsigned char CustomH264Source::startCode[4] = {0x00, 0x00, 0x00, 0x01};
+</code></pre>
+<h3 id="5-rtp传输处理"><a class="header" href="#5-rtp传输处理">5. RTP传输处理</a></h3>
+<pre><code class="language-cpp">#include "RTPInterface.hh"
+#include "RTPSink.hh"
+#include "H264VideoRTPSink.hh"
+
+class RTPTransmitter {
+private:
+    Live555Environment environment;
+    Groupsock* rtpGroupsock;
+    Groupsock* rtcpGroupsock;
+    RTPSink* videoSink;
+    RTCPInstance* rtcp;
+
+public:
+    RTPTransmitter(char const* destinationAddress,
+                   portNumBits rtpPortNum,
+                   portNumBits rtcpPortNum,
+                   unsigned char ttl = 1) {
+
+        // 创建目标地址
+        struct sockaddr_storage destinationAddr;
+        our_inet_pton(AF_INET, destinationAddress,
+                     &amp;((struct sockaddr_in&amp;)destinationAddr).sin_addr);
+
+        // 创建RTP socket
+        rtpGroupsock = new Groupsock(environment.getEnvironment(),
+                                   destinationAddr, rtpPortNum, ttl);
+
+        // 创建RTCP socket
+        rtcpGroupsock = new Groupsock(environment.getEnvironment(),
+                                    destinationAddr, rtcpPortNum, ttl);
+
+        // 创建H.264 RTP sink
+        videoSink = H264VideoRTPSink::createNew(environment.getEnvironment(),
+                                              rtpGroupsock, 96);
+
+        // 创建RTCP实例
+        const unsigned estimatedSessionBandwidth = 5000; // kbps
+        rtcp = RTCPInstance::createNew(environment.getEnvironment(),
+                                     rtcpGroupsock,
+                                     estimatedSessionBandwidth,
+                                     (unsigned char const*)"RTSP Server",
+                                     videoSink, nullptr, True);
+    }
+
+    ~RTPTransmitter() {
+        Medium::close(rtcp);
+        Medium::close(videoSink);
+        delete rtpGroupsock;
+        delete rtcpGroupsock;
+    }
+
+    bool startTransmission(FramedSource* source) {
+        if (!source || !videoSink) return false;
+
+        // 开始播放
+        videoSink-&gt;startPlaying(*source, nullptr, nullptr);
+        return true;
+    }
+
+    void stopTransmission() {
+        if (videoSink) {
+            videoSink-&gt;stopPlaying();
+        }
+    }
+
+    RTPSink* getRTPSink() { return videoSink; }
+};
+</code></pre>
+<h3 id="6-sdp处理"><a class="header" href="#6-sdp处理">6. SDP处理</a></h3>
+<pre><code class="language-cpp">#include "MediaSession.hh"
+
+class SDPProcessor {
+private:
+    Live555Environment environment;
+
+public:
+    SDPProcessor() {}
+
+    MediaSession* parseSDPDescription(const char* sdpDescription) {
+        MediaSession* session = MediaSession::createNew(environment.getEnvironment(),
+                                                       sdpDescription);
+        if (session == nullptr) {
+            environment.getEnvironment() &lt;&lt; "Failed to create session from SDP: "
+                                       &lt;&lt; environment.getEnvironment().getResultMsg() &lt;&lt; "\n";
+            return nullptr;
+        }
+
+        // 遍历子会话
+        MediaSubsessionIterator iter(*session);
+        MediaSubsession* subsession;
+
+        while ((subsession = iter.next()) != nullptr) {
+            environment.getEnvironment() &lt;&lt; "Found subsession: "
+                                       &lt;&lt; subsession-&gt;mediumName()
+                                       &lt;&lt; "/" &lt;&lt; subsession-&gt;codecName() &lt;&lt; "\n";
+
+            // 初始化子会话
+            if (!subsession-&gt;initiate()) {
+                environment.getEnvironment() &lt;&lt; "Failed to initiate subsession: "
+                                           &lt;&lt; environment.getEnvironment().getResultMsg() &lt;&lt; "\n";
+                continue;
+            }
+
+            environment.getEnvironment() &lt;&lt; "Initiated subsession (client ports "
+                                       &lt;&lt; subsession-&gt;clientPortNum() &lt;&lt; "-"
+                                       &lt;&lt; subsession-&gt;clientPortNum() + 1 &lt;&lt; ")\n";
+        }
+
+        return session;
+    }
+
+    std::string generateSDPForSession(const char* sessionName,
+                                     const char* sessionDescription,
+                                     const std::vector&lt;MediaStreamInfo&gt;&amp; streams) {
+        std::stringstream sdp;
+
+        // SDP会话描述
+        sdp &lt;&lt; "v=0\r\n";  // 版本
+        sdp &lt;&lt; "o=- 0 0 IN IP4 127.0.0.1\r\n";  // 发起者
+        sdp &lt;&lt; "s=" &lt;&lt; sessionName &lt;&lt; "\r\n";  // 会话名称
+        sdp &lt;&lt; "i=" &lt;&lt; sessionDescription &lt;&lt; "\r\n";  // 会话信息
+        sdp &lt;&lt; "t=0 0\r\n";  // 时间
+        sdp &lt;&lt; "a=tool:Live555 Streaming Media\r\n";
+
+        // 媒体描述
+        for (const auto&amp; stream : streams) {
+            if (stream.mediaType == "video") {
+                sdp &lt;&lt; "m=video " &lt;&lt; stream.port &lt;&lt; " RTP/AVP " &lt;&lt; stream.payloadType &lt;&lt; "\r\n";
+                sdp &lt;&lt; "c=IN IP4 " &lt;&lt; stream.address &lt;&lt; "\r\n";
+                sdp &lt;&lt; "a=rtpmap:" &lt;&lt; stream.payloadType &lt;&lt; " " &lt;&lt; stream.codec &lt;&lt; "/" &lt;&lt; stream.clockRate &lt;&lt; "\r\n";
+
+                if (stream.codec == "H264") {
+                    sdp &lt;&lt; "a=fmtp:" &lt;&lt; stream.payloadType &lt;&lt; " packetization-mode=1;sprop-parameter-sets="
+                        &lt;&lt; stream.sps &lt;&lt; "," &lt;&lt; stream.pps &lt;&lt; "\r\n";
+                }
+            } else if (stream.mediaType == "audio") {
+                sdp &lt;&lt; "m=audio " &lt;&lt; stream.port &lt;&lt; " RTP/AVP " &lt;&lt; stream.payloadType &lt;&lt; "\r\n";
+                sdp &lt;&lt; "c=IN IP4 " &lt;&lt; stream.address &lt;&lt; "\r\n";
+                sdp &lt;&lt; "a=rtpmap:" &lt;&lt; stream.payloadType &lt;&lt; " " &lt;&lt; stream.codec &lt;&lt; "/" &lt;&lt; stream.clockRate;
+                if (stream.channels &gt; 1) {
+                    sdp &lt;&lt; "/" &lt;&lt; stream.channels;
+                }
+                sdp &lt;&lt; "\r\n";
+            }
+        }
+
+        return sdp.str();
+    }
+
+private:
+    struct MediaStreamInfo {
+        std::string mediaType;  // "video" or "audio"
+        std::string address;
+        int port;
+        int payloadType;
+        std::string codec;
+        int clockRate;
+        int channels;  // 音频通道数
+        std::string sps;  // H.264 SPS
+        std::string pps;  // H.264 PPS
+    };
+};
+</code></pre>
+<h2 id="实际应用示例"><a class="header" href="#实际应用示例">实际应用示例</a></h2>
+<h3 id="1-简单的rtsp服务器"><a class="header" href="#1-简单的rtsp服务器">1. 简单的RTSP服务器</a></h3>
+<pre><code class="language-cpp">#include "liveMedia.hh"
+#include "BasicUsageEnvironment.hh"
+
+int main(int argc, char** argv) {
+    // 创建使用环境
+    TaskScheduler* scheduler = BasicTaskScheduler::createNew();
+    UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
+
+    // 创建RTSP服务器
+    RTSPServer* rtspServer = RTSPServer::createNew(*env, 8554, nullptr);
+    if (rtspServer == nullptr) {
+        *env &lt;&lt; "Failed to create RTSP server: " &lt;&lt; env-&gt;getResultMsg() &lt;&lt; "\n";
+        exit(1);
+    }
+
+    char const* descriptionString = "Session streamed by \"testOnDemandRTSPServer\"";
+
+    // 添加H.264文件流
+    {
+        char const* streamName = "h264ESVideoTest";
+        char const* inputFileName = "test.264";
+
+        ServerMediaSession* sms = ServerMediaSession::createNew(*env, streamName,
+                                                              streamName, descriptionString);
+
+        sms-&gt;addSubsession(H264VideoFileServerMediaSubsession::createNew(*env,
+                                                                        inputFileName, True));
+        rtspServer-&gt;addServerMediaSession(sms);
+
+        char* url = rtspServer-&gt;rtspURL(sms);
+        *env &lt;&lt; "Play this stream using the URL \"" &lt;&lt; url &lt;&lt; "\"\n";
+        delete[] url;
+    }
+
+    // 启动事件循环
+    env-&gt;taskScheduler().doEventLoop(); // 永不返回
+
+    return 0; // 永不到达
+}
+</code></pre>
+<h3 id="2-rtsp客户端应用"><a class="header" href="#2-rtsp客户端应用">2. RTSP客户端应用</a></h3>
+<pre><code class="language-cpp">int main(int argc, char** argv) {
+    if (argc != 2) {
+        printf("Usage: %s &lt;rtsp-url&gt;\n", argv[0]);
+        return 1;
+    }
+
+    // 创建使用环境
+    TaskScheduler* scheduler = BasicTaskScheduler::createNew();
+    UsageEnvironment* env = BasicUsageEnvironment::createNew(*scheduler);
+
+    // 创建RTSP客户端
+    Live555RTSPClient* client = Live555RTSPClient::createNew(*env, argv[1], 1);
+    if (client == nullptr) {
+        *env &lt;&lt; "Failed to create RTSP client for URL \"" &lt;&lt; argv[1] &lt;&lt; "\": "
+             &lt;&lt; env-&gt;getResultMsg() &lt;&lt; "\n";
+        return 1;
+    }
+
+    // 开始播放
+    client-&gt;startPlaying();
+
+    // 设置退出条件
+    char exitFlag = 0;
+
+    // 10秒后退出（示例）
+    env-&gt;taskScheduler().scheduleDelayedTask(10*1000000,
+                                           [](void* flag) { *(char*)flag = 1; },
+                                           &amp;exitFlag);
+
+    // 事件循环
+    env-&gt;taskScheduler().doEventLoop(&amp;exitFlag);
+
+    // 清理
+    Medium::close(client);
+    env-&gt;reclaim();
+    delete scheduler;
+
+    return 0;
+}
+</code></pre>
+<h3 id="3-实时摄像头流服务器"><a class="header" href="#3-实时摄像头流服务器">3. 实时摄像头流服务器</a></h3>
+<pre><code class="language-cpp">class CameraRTSPServer {
+private:
+    Live555Environment environment;
+    RTSPServer* rtspServer;
+    CustomH264Source* cameraSource;
+    RTPTransmitter* transmitter;
+
+public:
+    CameraRTSPServer(int cameraIndex, int rtspPort = 8554) {
+        // 创建RTSP服务器
+        rtspServer = RTSPServer::createNew(environment.getEnvironment(),
+                                          rtspPort, nullptr);
+
+        // 创建摄像头源
+        cameraSource = CameraH264Source::createNew(environment.getEnvironment(),
+                                                  cameraIndex);
+
+        // 设置流
+        setupCameraStream();
+    }
+
+    ~CameraRTSPServer() {
+        Medium::close(cameraSource);
+        Medium::close(rtspServer);
+    }
+
+    void run() {
+        environment.startEventLoop();
+    }
+
+private:
+    void setupCameraStream() {
+        if (!rtspServer || !cameraSource) return;
+
+        ServerMediaSession* sms = ServerMediaSession::createNew(
+            environment.getEnvironment(),
+            "live", "live", "Live camera stream");
+
+        sms-&gt;addSubsession(
+            PassiveServerMediaSubsession::createNew(
+                *H264VideoRTPSink::createNew(environment.getEnvironment(),
+                                           new Groupsock(environment.getEnvironment(),
+                                                       our_inet_addr("127.0.0.1"),
+                                                       18888, 1),
+                                           96),
+                cameraSource));
+
+        rtspServer-&gt;addServerMediaSession(sms);
+
+        char* url = rtspServer-&gt;rtspURL(sms);
+        environment.getEnvironment() &lt;&lt; "Camera stream URL: " &lt;&lt; url &lt;&lt; "\n";
+        delete[] url;
+    }
+};
+</code></pre>
+<h2 id="性能优化和最佳实践"><a class="header" href="#性能优化和最佳实践">性能优化和最佳实践</a></h2>
+<h3 id="1-内存管理"><a class="header" href="#1-内存管理">1. 内存管理</a></h3>
+<pre><code class="language-cpp">class Live555MemoryManager {
+private:
+    UsageEnvironment* env;
+    std::vector&lt;FramedSource*&gt; sources;
+    std::vector&lt;RTPSink*&gt; sinks;
+
+public:
+    Live555MemoryManager(UsageEnvironment&amp; environment) : env(&amp;environment) {}
+
+    ~Live555MemoryManager() {
+        // 确保所有资源被正确清理
+        for (auto sink : sinks) {
+            Medium::close(sink);
+        }
+        for (auto source : sources) {
+            Medium::close(source);
+        }
+    }
+
+    void registerSource(FramedSource* source) {
+        if (source) sources.push_back(source);
+    }
+
+    void registerSink(RTPSink* sink) {
+        if (sink) sinks.push_back(sink);
+    }
+
+    void setSocketBufferSize(int socketNum, unsigned bufferSize) {
+        increaseReceiveBufferTo(*env, socketNum, bufferSize);
+    }
+};
+</code></pre>
+<h3 id="2-错误处理和日志"><a class="header" href="#2-错误处理和日志">2. 错误处理和日志</a></h3>
+<pre><code class="language-cpp">class Live555ErrorHandler {
+private:
+    UsageEnvironment&amp; env;
+    std::ofstream logFile;
+
+public:
+    Live555ErrorHandler(UsageEnvironment&amp; environment, const std::string&amp; logPath)
+        : env(environment), logFile(logPath) {
+    }
+
+    void handleError(const std::string&amp; operation, int resultCode) {
+        std::string errorMsg = operation + " failed: " + env.getResultMsg();
+
+        // 输出到控制台
+        env &lt;&lt; errorMsg &lt;&lt; "\n";
+
+        // 写入日志文件
+        if (logFile.is_open()) {
+            auto now = std::chrono::system_clock::now();
+            auto time_t = std::chrono::system_clock::to_time_t(now);
+
+            logFile &lt;&lt; "[" &lt;&lt; std::put_time(std::localtime(&amp;time_t), "%Y-%m-%d %H:%M:%S")
+                   &lt;&lt; "] ERROR: " &lt;&lt; errorMsg &lt;&lt; std::endl;
+            logFile.flush();
+        }
+    }
+
+    void logInfo(const std::string&amp; message) {
+        env &lt;&lt; message &lt;&lt; "\n";
+
+        if (logFile.is_open()) {
+            auto now = std::chrono::system_clock::now();
+            auto time_t = std::chrono::system_clock::to_time_t(now);
+
+            logFile &lt;&lt; "[" &lt;&lt; std::put_time(std::localtime(&amp;time_t), "%Y-%m-%d %H:%M:%S")
+                   &lt;&lt; "] INFO: " &lt;&lt; message &lt;&lt; std::endl;
+            logFile.flush();
+        }
+    }
+};
+</code></pre>
+<h2 id="编译和部署"><a class="header" href="#编译和部署">编译和部署</a></h2>
+<h3 id="1-makefile配置"><a class="header" href="#1-makefile配置">1. Makefile配置</a></h3>
+<pre><code class="language-makefile"># Live555库路径
+LIVE555_ROOT = /usr/local/live555
+
+# 包含目录
+INCLUDES = -I$(LIVE555_ROOT)/liveMedia/include \
+           -I$(LIVE555_ROOT)/groupsock/include \
+           -I$(LIVE555_ROOT)/UsageEnvironment/include \
+           -I$(LIVE555_ROOT)/BasicUsageEnvironment/include
+
+# 库文件
+LIBS = -L$(LIVE555_ROOT)/liveMedia -lliveMedia \
+       -L$(LIVE555_ROOT)/groupsock -lgroupsock \
+       -L$(LIVE555_ROOT)/UsageEnvironment -lUsageEnvironment \
+       -L$(LIVE555_ROOT)/BasicUsageEnvironment -lBasicUsageEnvironment \
+       -lpthread
+
+# 编译选项
+CXXFLAGS = -Wall -O2 -DSOCKLEN_T=socklen_t -DNO_SSTREAM=1 -D_LARGEFILE_SOURCE=1 -D_FILE_OFFSET_BITS=64
+
+# 目标
+TARGET = rtsp_server
+SOURCES = main.cpp
+
+$(TARGET): $(SOURCES)
+	g++ $(CXXFLAGS) $(INCLUDES) -o $(TARGET) $(SOURCES) $(LIBS)
+
+clean:
+	rm -f $(TARGET)
+</code></pre>
+<h3 id="2-cmake配置"><a class="header" href="#2-cmake配置">2. CMake配置</a></h3>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.10)
+project(Live555App)
+
+set(CMAKE_CXX_STANDARD 11)
+
+# 查找Live555库
+find_path(LIVE555_INCLUDE_DIR liveMedia.hh
+    PATHS /usr/local/live555/liveMedia/include
+          /usr/include/liveMedia
+)
+
+find_library(LIVEMEDIA_LIBRARY liveMedia
+    PATHS /usr/local/live555/liveMedia
+          /usr/lib
+)
+
+find_library(GROUPSOCK_LIBRARY groupsock
+    PATHS /usr/local/live555/groupsock
+          /usr/lib
+)
+
+find_library(USAGE_ENVIRONMENT_LIBRARY UsageEnvironment
+    PATHS /usr/local/live555/UsageEnvironment
+          /usr/lib
+)
+
+find_library(BASIC_USAGE_ENVIRONMENT_LIBRARY BasicUsageEnvironment
+    PATHS /usr/local/live555/BasicUsageEnvironment
+          /usr/lib
+)
+
+# 设置包含目录
+include_directories(${LIVE555_INCLUDE_DIR}
+                   /usr/local/live555/groupsock/include
+                   /usr/local/live555/UsageEnvironment/include
+                   /usr/local/live555/BasicUsageEnvironment/include)
+
+# 创建可执行文件
+add_executable(${PROJECT_NAME} main.cpp)
+
+# 链接库
+target_link_libraries(${PROJECT_NAME}
+    ${LIVEMEDIA_LIBRARY}
+    ${GROUPSOCK_LIBRARY}
+    ${USAGE_ENVIRONMENT_LIBRARY}
+    ${BASIC_USAGE_ENVIRONMENT_LIBRARY}
+    pthread
+)
+
+# 编译定义
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    SOCKLEN_T=socklen_t
+    NO_SSTREAM=1
+    _LARGEFILE_SOURCE=1
+    _FILE_OFFSET_BITS=64
+)
+</code></pre>
+<h2 id="技术要点总结"><a class="header" href="#技术要点总结">技术要点总结</a></h2>
+<ol>
+<li><strong>事件驱动架构</strong>：高效的异步I/O处理机制</li>
+<li><strong>协议完整性</strong>：全面的RTSP/RTP/RTCP协议支持</li>
+<li><strong>模块化设计</strong>：清晰的组件分离和接口设计</li>
+<li><strong>扩展性强</strong>：支持自定义媒体源和处理逻辑</li>
+<li><strong>跨平台兼容</strong>：良好的平台抽象和移植性</li>
+<li><strong>内存安全</strong>：严格的资源管理和清理机制</li>
+</ol>
+<p>Live555是流媒体开发的强大工具，其完整的协议支持和灵活的架构使其成为实时流媒体应用开发的理想选择。通过深入理解其事件驱动模型和组件架构，开发者可以构建高性能、稳定的流媒体解决方案。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/libcurl.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/onnxruntime.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/libcurl.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/onnxruntime.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

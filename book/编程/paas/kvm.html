@@ -1,0 +1,1953 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>KVM 虚拟化技术学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="kvm-虚拟化技术学习笔记"><a class="header" href="#kvm-虚拟化技术学习笔记">KVM 虚拟化技术学习笔记</a></h1>
+<blockquote>
+<p><strong>学习目标</strong>: 掌握KVM虚拟化平台的核心概念、虚拟机管理、性能优化，能够在生产环境中部署和运维虚拟化基础设施</p>
+<p><strong>适用人群</strong>: 系统管理员、云平台运维工程师、虚拟化工程师</p>
+<p><strong>前置知识</strong>: Linux系统管理、网络基础、存储基础</p>
+</blockquote>
+<hr />
+<h2 id="1-kvm-基础概念"><a class="header" href="#1-kvm-基础概念">1. KVM 基础概念</a></h2>
+<h3 id="11-虚拟化技术概述"><a class="header" href="#11-虚拟化技术概述">1.1 虚拟化技术概述</a></h3>
+<p><strong>什么是虚拟化?</strong></p>
+<p>虚拟化是将物理硬件资源抽象化，创建多个独立的虚拟环境，每个环境都认为自己独占硬件资源。</p>
+<p><strong>虚拟化分类</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>说明</th><th>示例</th></tr></thead><tbody>
+<tr><td>全虚拟化</td><td>Guest OS无需修改，完全模拟硬件</td><td>VMware Workstation, VirtualBox</td></tr>
+<tr><td>半虚拟化</td><td>Guest OS需要修改，性能更好</td><td>Xen PV</td></tr>
+<tr><td>硬件辅助虚拟化</td><td>依赖CPU虚拟化扩展</td><td>KVM, Xen HVM</td></tr>
+<tr><td>容器虚拟化</td><td>OS级虚拟化，共享内核</td><td>Docker, LXC</td></tr>
+</tbody></table>
+</div>
+<p><strong>Hypervisor类型对比</strong>:</p>
+<pre><code>Type 1 (裸机型):
+Hardware → Hypervisor → VMs
+示例: VMware ESXi, Xen, KVM
+
+Type 2 (寄居型):
+Hardware → Host OS → Hypervisor → VMs
+示例: VMware Workstation, VirtualBox
+</code></pre>
+<p><strong>KVM的定位</strong>:</p>
+<ul>
+<li>KVM (Kernel-based Virtual Machine) 是Linux内核的虚拟化模块</li>
+<li>将Linux转变为Type 1 Hypervisor</li>
+<li>利用CPU硬件虚拟化扩展 (Intel VT-x / AMD-V)</li>
+<li>每个虚拟机是Linux进程，易于管理</li>
+</ul>
+<h3 id="12-kvm-架构原理"><a class="header" href="#12-kvm-架构原理">1.2 KVM 架构原理</a></h3>
+<p><strong>KVM架构图</strong>:</p>
+<pre><code>┌─────────────────────────────────────────────────┐
+│               Guest VMs                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐     │
+│  │ Guest OS │  │ Guest OS │  │ Guest OS │     │
+│  │   App    │  │   App    │  │   App    │     │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘     │
+├───────┼─────────────┼─────────────┼───────────┤
+│       │             │             │            │
+│  ┌────▼─────┐  ┌───▼──────┐  ┌──▼───────┐    │
+│  │  QEMU    │  │  QEMU    │  │  QEMU    │    │
+│  │ (User)   │  │ (User)   │  │ (User)   │    │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘    │
+├───────┼─────────────┼─────────────┼───────────┤
+│       └─────────────┴─────────────┘            │
+│                     │                           │
+│              ┌──────▼──────┐                   │
+│              │  KVM Module │                   │
+│              │ (Kernel)    │                   │
+│              └──────┬──────┘                   │
+├─────────────────────┼─────────────────────────┤
+│               Linux Kernel                      │
+└───────────────────────┬─────────────────────────┘
+                        │
+                   ┌────▼─────┐
+                   │ Hardware │
+                   └──────────┘
+</code></pre>
+<p><strong>核心组件说明</strong>:</p>
+<p><strong>1. KVM内核模块</strong></p>
+<ul>
+<li>kvm.ko: 核心模块，提供虚拟化基础设施</li>
+<li>kvm-intel.ko / kvm-amd.ko: CPU厂商特定模块</li>
+<li>功能: vCPU调度、内存管理、中断处理</li>
+</ul>
+<p><strong>2. QEMU (Quick Emulator)</strong></p>
+<ul>
+<li>用户空间进程，每个VM一个QEMU进程</li>
+<li>模拟硬件设备 (网卡、磁盘、显卡等)</li>
+<li>通过 /dev/kvm 与KVM内核模块交互</li>
+</ul>
+<p><strong>3. libvirt</strong></p>
+<ul>
+<li>虚拟化管理层API</li>
+<li>统一管理接口，支持多种Hypervisor</li>
+<li>提供virsh命令行工具</li>
+</ul>
+<h3 id="13-kvm-vs-其他虚拟化技术"><a class="header" href="#13-kvm-vs-其他虚拟化技术">1.3 KVM vs 其他虚拟化技术</a></h3>
+<p><strong>性能对比</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>KVM</th><th>VMware ESXi</th><th>Xen</th><th>VirtualBox</th></tr></thead><tbody>
+<tr><td>类型</td><td>Type 1</td><td>Type 1</td><td>Type 1</td><td>Type 2</td></tr>
+<tr><td>开源</td><td>是</td><td>否</td><td>是</td><td>是(部分)</td></tr>
+<tr><td>性能</td><td>优秀</td><td>优秀</td><td>优秀</td><td>良好</td></tr>
+<tr><td>管理工具</td><td>libvirt/virt-manager</td><td>vSphere</td><td>XenCenter</td><td>GUI</td></tr>
+<tr><td>生产环境</td><td>适合</td><td>适合</td><td>适合</td><td>不适合</td></tr>
+</tbody></table>
+</div>
+<p><strong>使用场景</strong>:</p>
+<pre><code>KVM: 适合Linux环境、开源云平台 (OpenStack)
+VMware: 企业级应用、需要商业支持
+Xen: 云服务商 (AWS早期使用)
+VirtualBox: 桌面虚拟化、开发测试
+</code></pre>
+<hr />
+<h2 id="2-环境准备与安装"><a class="header" href="#2-环境准备与安装">2. 环境准备与安装</a></h2>
+<h3 id="21-硬件要求检查"><a class="header" href="#21-硬件要求检查">2.1 硬件要求检查</a></h3>
+<p><strong>CPU虚拟化支持</strong>:</p>
+<pre><code class="language-bash"># 检查CPU是否支持虚拟化
+egrep -c '(vmx|svm)' /proc/cpuinfo
+
+# 输出大于0表示支持
+# vmx: Intel VT-x
+# svm: AMD-V
+
+# 查看详细信息
+lscpu | grep Virtualization
+
+# 预期输出:
+# Virtualization:      VT-x (Intel)
+# 或
+# Virtualization:      AMD-V (AMD)
+
+# 确认KVM模块是否加载
+lsmod | grep kvm
+
+# 输出示例:
+# kvm_intel         282624  0
+# kvm               663552  1 kvm_intel
+</code></pre>
+<p><strong>BIOS设置</strong>:</p>
+<pre><code>如果上述命令无输出,需要进入BIOS启用虚拟化:
+Intel: Intel VT-x / Intel Virtualization Technology
+AMD: AMD-V / SVM Mode
+</code></pre>
+<p><strong>最小硬件配置</strong>:</p>
+<pre><code class="language-yaml">开发环境:
+  CPU: 4核 (支持VT-x/AMD-V)
+  内存: 8GB
+  磁盘: 100GB
+
+生产环境:
+  CPU: 16核+ (支持VT-x/AMD-V)
+  内存: 64GB+
+  磁盘: 500GB+ (SSD推荐)
+  网络: 10Gbps+
+</code></pre>
+<h3 id="22-centosrhel-安装"><a class="header" href="#22-centosrhel-安装">2.2 CentOS/RHEL 安装</a></h3>
+<p><strong>步骤1: 安装软件包</strong></p>
+<pre><code class="language-bash"># CentOS 7/8
+sudo yum install -y qemu-kvm libvirt libvirt-python \
+    libguestfs-tools virt-install virt-manager
+
+# CentOS 9 / RHEL 9
+sudo dnf install -y qemu-kvm libvirt virt-install \
+    virt-manager libvirt-client
+
+# 安装网络工具
+sudo yum install -y bridge-utils net-tools
+</code></pre>
+<p><strong>步骤2: 启动服务</strong></p>
+<pre><code class="language-bash"># 启动libvirtd服务
+sudo systemctl start libvirtd
+sudo systemctl enable libvirtd
+
+# 验证服务状态
+sudo systemctl status libvirtd
+
+# 预期输出:
+# ● libvirtd.service - Virtualization daemon
+#    Loaded: loaded
+#    Active: active (running)
+</code></pre>
+<p><strong>步骤3: 配置用户权限</strong></p>
+<pre><code class="language-bash"># 将用户添加到libvirt组
+sudo usermod -aG libvirt $USER
+sudo usermod -aG kvm $USER
+
+# 重新登录生效
+newgrp libvirt
+</code></pre>
+<p><strong>步骤4: 配置网络</strong></p>
+<pre><code class="language-bash"># 确认默认网络已启动
+virsh net-list --all
+
+# 预期输出:
+#  名称     状态   自动开始  持久
+# ----------------------------------
+#  default  活动   是        是
+
+# 如果未启动,手动启动
+virsh net-start default
+virsh net-autostart default
+</code></pre>
+<h3 id="23-ubuntudebian-安装"><a class="header" href="#23-ubuntudebian-安装">2.3 Ubuntu/Debian 安装</a></h3>
+<p><strong>步骤1: 更新系统并安装</strong></p>
+<pre><code class="language-bash"># 更新软件源
+sudo apt update
+
+# 安装KVM和相关工具
+sudo apt install -y qemu-kvm libvirt-daemon-system \
+    libvirt-clients bridge-utils virt-manager
+
+# Ubuntu 22.04+
+sudo apt install -y qemu-system libvirt-daemon \
+    virtinst libvirt-clients
+</code></pre>
+<p><strong>步骤2: 配置用户</strong></p>
+<pre><code class="language-bash"># 添加用户到libvirt和kvm组
+sudo adduser $USER libvirt
+sudo adduser $USER kvm
+
+# 重新登录
+newgrp libvirt
+</code></pre>
+<p><strong>步骤3: 验证安装</strong></p>
+<pre><code class="language-bash"># 检查KVM模块
+sudo kvm-ok
+
+# 预期输出:
+# INFO: /dev/kvm exists
+# KVM acceleration can be used
+
+# 验证libvirt连接
+virsh list --all
+</code></pre>
+<h3 id="24-验证安装"><a class="header" href="#24-验证安装">2.4 验证安装</a></h3>
+<p><strong>完整验证流程</strong>:</p>
+<pre><code class="language-bash"># 1. 验证KVM模块
+lsmod | grep kvm
+
+# 2. 验证QEMU版本
+qemu-system-x86_64 --version
+
+# 3. 验证libvirt版本
+virsh --version
+
+# 4. 检查默认网络
+virsh net-list
+
+# 5. 检查存储池
+virsh pool-list --all
+
+# 6. 测试连接
+virsh uri
+# 输出: qemu:///system
+</code></pre>
+<hr />
+<h2 id="3-libvirt-管理"><a class="header" href="#3-libvirt-管理">3. libvirt 管理</a></h2>
+<h3 id="31-libvirt-架构"><a class="header" href="#31-libvirt-架构">3.1 libvirt 架构</a></h3>
+<p><strong>libvirt组件架构</strong>:</p>
+<pre><code>┌─────────────────────────────────────────┐
+│         Management Tools                 │
+│  virsh  virt-manager  virt-install       │
+└──────────────┬──────────────────────────┘
+               │
+┌──────────────▼──────────────────────────┐
+│          libvirt API                     │
+│  (Python, C, Java, Go bindings)         │
+└──────────────┬──────────────────────────┘
+               │
+┌──────────────▼──────────────────────────┐
+│         libvirtd daemon                  │
+│  认证 | 授权 | 驱动管理                  │
+└──────┬───────┬───────┬──────────────────┘
+       │       │       │
+   ┌───▼──┐ ┌──▼───┐ ┌▼────────┐
+   │ KVM  │ │ Xen  │ │ QEMU    │
+   │Driver│ │Driver│ │ Driver  │
+   └───┬──┘ └──┬───┘ └┬────────┘
+       │       │       │
+   ┌───▼───────▼───────▼─────┐
+   │      Hypervisors         │
+   └─────────────────────────┘
+</code></pre>
+<p><strong>配置文件位置</strong>:</p>
+<pre><code class="language-bash"># libvirtd配置
+/etc/libvirt/libvirtd.conf          # 守护进程配置
+/etc/libvirt/qemu.conf              # QEMU驱动配置
+/etc/libvirt/qemu/networks/         # 网络配置
+/etc/libvirt/storage/               # 存储池配置
+
+# 虚拟机定义
+/etc/libvirt/qemu/                  # VM XML定义
+/var/lib/libvirt/images/            # 默认镜像目录
+</code></pre>
+<h3 id="32-virsh-命令行工具"><a class="header" href="#32-virsh-命令行工具">3.2 virsh 命令行工具</a></h3>
+<p><strong>基础命令</strong>:</p>
+<pre><code class="language-bash"># 连接管理
+virsh uri                           # 显示连接URI
+virsh connect qemu:///system        # 连接到本地系统
+
+# 虚拟机列表
+virsh list                          # 运行中的VM
+virsh list --all                    # 所有VM
+virsh list --inactive               # 停止的VM
+
+# 虚拟机信息
+virsh dominfo &lt;vm-name&gt;             # VM详细信息
+virsh domstate &lt;vm-name&gt;            # VM状态
+virsh vcpuinfo &lt;vm-name&gt;            # vCPU信息
+</code></pre>
+<p><strong>虚拟机控制</strong>:</p>
+<pre><code class="language-bash"># 启动和停止
+virsh start &lt;vm-name&gt;               # 启动VM
+virsh shutdown &lt;vm-name&gt;            # 正常关机
+virsh destroy &lt;vm-name&gt;             # 强制关机
+virsh reboot &lt;vm-name&gt;              # 重启VM
+
+# 暂停和恢复
+virsh suspend &lt;vm-name&gt;             # 暂停VM
+virsh resume &lt;vm-name&gt;              # 恢复VM
+
+# 自动启动
+virsh autostart &lt;vm-name&gt;           # 设置开机自启
+virsh autostart --disable &lt;vm-name&gt; # 取消自启
+</code></pre>
+<p><strong>虚拟机定义管理</strong>:</p>
+<pre><code class="language-bash"># 定义和取消定义
+virsh define vm.xml                 # 从XML定义VM
+virsh undefine &lt;vm-name&gt;            # 删除VM定义
+
+# 导出和修改
+virsh dumpxml &lt;vm-name&gt;             # 导出XML
+virsh dumpxml &lt;vm-name&gt; &gt; vm.xml    # 导出到文件
+virsh edit &lt;vm-name&gt;                # 编辑VM配置
+</code></pre>
+<h3 id="33-远程管理"><a class="header" href="#33-远程管理">3.3 远程管理</a></h3>
+<p><strong>SSH连接方式</strong>:</p>
+<pre><code class="language-bash"># 通过SSH连接远程主机
+virsh -c qemu+ssh://user@remote-host/system list
+
+# 持久化连接
+export LIBVIRT_DEFAULT_URI=qemu+ssh://user@remote-host/system
+virsh list
+
+# 配置SSH免密登录
+ssh-keygen -t rsa
+ssh-copy-id user@remote-host
+</code></pre>
+<p><strong>TCP连接方式</strong>:</p>
+<pre><code class="language-bash"># 服务端配置 /etc/libvirt/libvirtd.conf
+listen_tls = 0
+listen_tcp = 1
+tcp_port = "16509"
+auth_tcp = "none"  # 生产环境建议使用SASL认证
+
+# 修改systemd配置
+sudo systemctl edit libvirtd
+# 添加:
+# [Service]
+# ExecStart=
+# ExecStart=/usr/sbin/libvirtd --listen
+
+# 重启服务
+sudo systemctl restart libvirtd
+
+# 客户端连接
+virsh -c qemu+tcp://remote-host/system list
+</code></pre>
+<p><strong>TLS安全连接</strong>:</p>
+<pre><code class="language-bash"># 生成证书 (详细步骤省略)
+# 服务端: /etc/pki/libvirt/servercert.pem
+# 客户端: /etc/pki/libvirt/clientcert.pem
+# CA证书: /etc/pki/CA/cacert.pem
+
+# 配置libvirtd
+listen_tls = 1
+listen_tcp = 0
+
+# 连接
+virsh -c qemu+tls://remote-host/system list
+</code></pre>
+<hr />
+<h2 id="4-虚拟机生命周期管理"><a class="header" href="#4-虚拟机生命周期管理">4. 虚拟机生命周期管理</a></h2>
+<h3 id="41-创建虚拟机"><a class="header" href="#41-创建虚拟机">4.1 创建虚拟机</a></h3>
+<h4 id="411-使用-virt-install"><a class="header" href="#411-使用-virt-install">4.1.1 使用 virt-install</a></h4>
+<p><strong>基本创建命令</strong>:</p>
+<pre><code class="language-bash"># 从ISO创建VM
+virt-install \
+  --name=centos7 \
+  --ram=2048 \
+  --vcpus=2 \
+  --disk path=/var/lib/libvirt/images/centos7.qcow2,size=20 \
+  --os-type=linux \
+  --os-variant=centos7.0 \
+  --network bridge=virbr0 \
+  --graphics vnc,listen=0.0.0.0 \
+  --cdrom=/path/to/CentOS-7-x86_64-Minimal.iso
+
+# 从网络安装
+virt-install \
+  --name=ubuntu20 \
+  --ram=4096 \
+  --vcpus=2 \
+  --disk path=/var/lib/libvirt/images/ubuntu20.qcow2,size=30,format=qcow2 \
+  --os-type=linux \
+  --os-variant=ubuntu20.04 \
+  --network network=default \
+  --graphics none \
+  --console pty,target_type=serial \
+  --location='http://archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/' \
+  --extra-args='console=ttyS0,115200n8 serial'
+</code></pre>
+<p><strong>完整参数说明</strong>:</p>
+<pre><code class="language-bash">virt-install \
+  --name=myvm \                      # VM名称
+  --memory=4096 \                    # 内存 (MB)
+  --vcpus=4 \                        # vCPU数量
+  --cpu host-passthrough \           # CPU模式
+  --disk path=/var/lib/libvirt/images/myvm.qcow2,size=50,format=qcow2,bus=virtio \
+  --network network=default,model=virtio \  # 网络配置
+  --os-type=linux \
+  --os-variant=rhel8.0 \
+  --graphics vnc,listen=0.0.0.0,port=5900 \
+  --cdrom=/path/to/rhel8.iso \
+  --boot uefi \                      # UEFI启动
+  --autostart \                      # 开机自启
+  --noautoconsole                    # 不自动打开控制台
+</code></pre>
+<p><strong>从云镜像创建 (快速部署)</strong>:</p>
+<pre><code class="language-bash"># 下载云镜像
+wget https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+
+# 创建cloud-init配置
+cat &gt; user-data &lt;&lt;EOF
+#cloud-config
+password: password
+chpasswd: { expire: False }
+ssh_pwauth: True
+EOF
+
+# 生成cloud-init ISO
+cloud-localds user-data.iso user-data
+
+# 创建VM
+virt-install \
+  --name=centos-cloud \
+  --ram=2048 \
+  --vcpus=2 \
+  --disk path=CentOS-7-x86_64-GenericCloud.qcow2,bus=virtio \
+  --disk path=user-data.iso,device=cdrom \
+  --network network=default,model=virtio \
+  --os-type=linux \
+  --os-variant=centos7.0 \
+  --graphics none \
+  --import
+</code></pre>
+<h4 id="412-xml定义文件"><a class="header" href="#412-xml定义文件">4.1.2 XML定义文件</a></h4>
+<p><strong>完整VM XML示例</strong>:</p>
+<pre><code class="language-xml">&lt;domain type='kvm'&gt;
+  &lt;name&gt;example-vm&lt;/name&gt;
+  &lt;uuid&gt;12345678-1234-1234-1234-123456789abc&lt;/uuid&gt;
+  &lt;memory unit='KiB'&gt;4194304&lt;/memory&gt;  &lt;!-- 4GB --&gt;
+  &lt;currentMemory unit='KiB'&gt;4194304&lt;/currentMemory&gt;
+  &lt;vcpu placement='static'&gt;4&lt;/vcpu&gt;
+
+  &lt;!-- CPU配置 --&gt;
+  &lt;cpu mode='host-passthrough' check='none'&gt;
+    &lt;topology sockets='1' cores='4' threads='1'/&gt;
+  &lt;/cpu&gt;
+
+  &lt;os&gt;
+    &lt;type arch='x86_64' machine='pc-q35-5.2'&gt;hvm&lt;/type&gt;
+    &lt;boot dev='hd'/&gt;
+  &lt;/os&gt;
+
+  &lt;features&gt;
+    &lt;acpi/&gt;
+    &lt;apic/&gt;
+    &lt;pae/&gt;
+  &lt;/features&gt;
+
+  &lt;clock offset='utc'&gt;
+    &lt;timer name='rtc' tickpolicy='catchup'/&gt;
+    &lt;timer name='pit' tickpolicy='delay'/&gt;
+    &lt;timer name='hpet' present='no'/&gt;
+  &lt;/clock&gt;
+
+  &lt;on_poweroff&gt;destroy&lt;/on_poweroff&gt;
+  &lt;on_reboot&gt;restart&lt;/on_reboot&gt;
+  &lt;on_crash&gt;destroy&lt;/on_crash&gt;
+
+  &lt;devices&gt;
+    &lt;emulator&gt;/usr/bin/qemu-system-x86_64&lt;/emulator&gt;
+
+    &lt;!-- 磁盘 --&gt;
+    &lt;disk type='file' device='disk'&gt;
+      &lt;driver name='qemu' type='qcow2' cache='writeback'/&gt;
+      &lt;source file='/var/lib/libvirt/images/example-vm.qcow2'/&gt;
+      &lt;target dev='vda' bus='virtio'/&gt;
+    &lt;/disk&gt;
+
+    &lt;!-- CD-ROM --&gt;
+    &lt;disk type='file' device='cdrom'&gt;
+      &lt;driver name='qemu' type='raw'/&gt;
+      &lt;source file='/path/to/install.iso'/&gt;
+      &lt;target dev='sda' bus='sata'/&gt;
+      &lt;readonly/&gt;
+    &lt;/disk&gt;
+
+    &lt;!-- 网络 --&gt;
+    &lt;interface type='network'&gt;
+      &lt;mac address='52:54:00:12:34:56'/&gt;
+      &lt;source network='default'/&gt;
+      &lt;model type='virtio'/&gt;
+    &lt;/interface&gt;
+
+    &lt;!-- VNC图形 --&gt;
+    &lt;graphics type='vnc' port='5900' autoport='yes' listen='0.0.0.0'&gt;
+      &lt;listen type='address' address='0.0.0.0'/&gt;
+    &lt;/graphics&gt;
+
+    &lt;!-- 控制台 --&gt;
+    &lt;console type='pty'&gt;
+      &lt;target type='serial' port='0'/&gt;
+    &lt;/console&gt;
+  &lt;/devices&gt;
+&lt;/domain&gt;
+</code></pre>
+<p><strong>从XML创建VM</strong>:</p>
+<pre><code class="language-bash"># 定义VM (不启动)
+virsh define example-vm.xml
+
+# 定义并启动
+virsh create example-vm.xml
+
+# 查看VM状态
+virsh list --all
+</code></pre>
+<h3 id="42-虚拟机操作"><a class="header" href="#42-虚拟机操作">4.2 虚拟机操作</a></h3>
+<p><strong>日常操作命令</strong>:</p>
+<pre><code class="language-bash"># 启动VM
+virsh start centos7
+
+# 查看控制台
+virsh console centos7
+# Ctrl+] 退出控制台
+
+# 通过VNC连接
+virt-viewer centos7
+# 或使用VNC客户端连接 host:5900
+
+# 发送键盘命令
+virsh send-key centos7 KEY_ENTER
+
+# 重置VM
+virsh reset centos7
+
+# 强制重启
+virsh destroy centos7 &amp;&amp; virsh start centos7
+</code></pre>
+<p><strong>资源调整</strong>:</p>
+<pre><code class="language-bash"># 调整内存 (需要停机)
+virsh setmem centos7 2048M --config
+virsh setmaxmem centos7 4096M --config
+
+# 调整vCPU (热调整)
+virsh setvcpus centos7 4 --live
+virsh setvcpus centos7 4 --config  # 下次启动生效
+
+# 查看当前配置
+virsh dominfo centos7
+</code></pre>
+<h3 id="43-快照管理"><a class="header" href="#43-快照管理">4.3 快照管理</a></h3>
+<p><strong>创建快照</strong>:</p>
+<pre><code class="language-bash"># 创建内部快照 (qcow2格式)
+virsh snapshot-create-as centos7 \
+  --name "snapshot1" \
+  --description "Before upgrade"
+
+# 创建外部快照
+virsh snapshot-create-as centos7 \
+  --name "snapshot2" \
+  --disk-only \
+  --diskspec vda,file=/var/lib/libvirt/images/centos7-snap2.qcow2 \
+  --atomic
+</code></pre>
+<p><strong>快照操作</strong>:</p>
+<pre><code class="language-bash"># 列出快照
+virsh snapshot-list centos7
+
+# 查看快照信息
+virsh snapshot-info centos7 snapshot1
+
+# 恢复快照
+virsh snapshot-revert centos7 snapshot1
+
+# 删除快照
+virsh snapshot-delete centos7 snapshot1
+
+# 查看当前快照
+virsh snapshot-current centos7
+</code></pre>
+<h3 id="44-克隆虚拟机"><a class="header" href="#44-克隆虚拟机">4.4 克隆虚拟机</a></h3>
+<p><strong>完整克隆</strong>:</p>
+<pre><code class="language-bash"># 克隆VM (VM必须关机)
+virt-clone \
+  --original=centos7 \
+  --name=centos7-clone \
+  --file=/var/lib/libvirt/images/centos7-clone.qcow2
+
+# 克隆多个磁盘的VM
+virt-clone \
+  --original=myvm \
+  --name=myvm-clone \
+  --file=/var/lib/libvirt/images/disk1-clone.qcow2 \
+  --file=/var/lib/libvirt/images/disk2-clone.qcow2
+</code></pre>
+<p><strong>链接克隆 (基于快照)</strong>:</p>
+<pre><code class="language-bash"># 创建backing文件
+qemu-img create -f qcow2 \
+  -b /var/lib/libvirt/images/centos7.qcow2 \
+  /var/lib/libvirt/images/centos7-linked.qcow2
+
+# 修改XML并定义新VM
+virsh dumpxml centos7 &gt; centos7-linked.xml
+# 编辑XML: 修改name, uuid, disk路径
+virsh define centos7-linked.xml
+</code></pre>
+<h3 id="45-删除虚拟机"><a class="header" href="#45-删除虚拟机">4.5 删除虚拟机</a></h3>
+<p><strong>完整删除流程</strong>:</p>
+<pre><code class="language-bash"># 1. 停止VM
+virsh destroy centos7
+
+# 2. 取消定义
+virsh undefine centos7
+
+# 3. 删除磁盘 (可选)
+virsh undefine centos7 --remove-all-storage
+
+# 或手动删除
+rm -f /var/lib/libvirt/images/centos7.qcow2
+
+# 4. 清理快照 (如果有)
+virsh snapshot-list centos7
+virsh snapshot-delete centos7 &lt;snapshot-name&gt;
+</code></pre>
+<hr />
+<h2 id="5-存储管理"><a class="header" href="#5-存储管理">5. 存储管理</a></h2>
+<h3 id="51-存储池类型"><a class="header" href="#51-存储池类型">5.1 存储池类型</a></h3>
+<p><strong>存储池概念</strong>:
+存储池 (Storage Pool) 是一个存储资源的逻辑容器，可以包含多个存储卷 (Volume)。</p>
+<p><strong>支持的存储池类型</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>说明</th><th>适用场景</th></tr></thead><tbody>
+<tr><td>dir</td><td>目录型</td><td>开发测试</td></tr>
+<tr><td>fs</td><td>文件系统</td><td>本地挂载</td></tr>
+<tr><td>netfs</td><td>网络文件系统</td><td>NFS共享</td></tr>
+<tr><td>logical</td><td>LVM逻辑卷</td><td>生产环境</td></tr>
+<tr><td>iscsi</td><td>iSCSI</td><td>SAN存储</td></tr>
+<tr><td>disk</td><td>物理磁盘分区</td><td>直接访问</td></tr>
+<tr><td>rbd</td><td>Ceph RBD</td><td>分布式存储</td></tr>
+</tbody></table>
+</div>
+<h3 id="52-目录存储池"><a class="header" href="#52-目录存储池">5.2 目录存储池</a></h3>
+<p><strong>创建目录存储池</strong>:</p>
+<pre><code class="language-bash"># 创建目录
+mkdir -p /data/kvm-images
+
+# 定义存储池
+virsh pool-define-as \
+  --name data-pool \
+  --type dir \
+  --target /data/kvm-images
+
+# 构建存储池
+virsh pool-build data-pool
+
+# 启动存储池
+virsh pool-start data-pool
+
+# 设置自动启动
+virsh pool-autostart data-pool
+
+# 查看存储池
+virsh pool-list --all
+virsh pool-info data-pool
+</code></pre>
+<p><strong>使用XML定义</strong>:</p>
+<pre><code class="language-xml">&lt;!-- dir-pool.xml --&gt;
+&lt;pool type='dir'&gt;
+  &lt;name&gt;data-pool&lt;/name&gt;
+  &lt;target&gt;
+    &lt;path&gt;/data/kvm-images&lt;/path&gt;
+    &lt;permissions&gt;
+      &lt;mode&gt;0755&lt;/mode&gt;
+      &lt;owner&gt;0&lt;/owner&gt;
+      &lt;group&gt;0&lt;/group&gt;
+    &lt;/permissions&gt;
+  &lt;/target&gt;
+&lt;/pool&gt;
+</code></pre>
+<pre><code class="language-bash">virsh pool-define dir-pool.xml
+virsh pool-start data-pool
+</code></pre>
+<h3 id="53-lvm-存储池"><a class="header" href="#53-lvm-存储池">5.3 LVM 存储池</a></h3>
+<p><strong>创建LVM存储池</strong>:</p>
+<pre><code class="language-bash"># 假设有物理卷 /dev/sdb
+# 1. 创建物理卷
+pvcreate /dev/sdb
+
+# 2. 创建卷组
+vgcreate vg_kvm /dev/sdb
+
+# 3. 定义libvirt存储池
+virsh pool-define-as \
+  --name lvm-pool \
+  --type logical \
+  --source-name vg_kvm \
+  --target /dev/vg_kvm
+
+# 4. 启动存储池
+virsh pool-start lvm-pool
+virsh pool-autostart lvm-pool
+
+# 5. 查看
+virsh pool-info lvm-pool
+vgdisplay vg_kvm
+</code></pre>
+<p><strong>创建LVM卷</strong>:</p>
+<pre><code class="language-bash"># 通过virsh创建
+virsh vol-create-as lvm-pool vm1-disk 20G
+
+# 查看卷
+virsh vol-list lvm-pool
+lvdisplay /dev/vg_kvm/vm1-disk
+
+# 在VM中使用
+# XML中添加:
+# &lt;disk type='block' device='disk'&gt;
+#   &lt;source dev='/dev/vg_kvm/vm1-disk'/&gt;
+#   &lt;target dev='vda' bus='virtio'/&gt;
+# &lt;/disk&gt;
+</code></pre>
+<h3 id="54-nfs-存储池"><a class="header" href="#54-nfs-存储池">5.4 NFS 存储池</a></h3>
+<p><strong>配置NFS存储池</strong>:</p>
+<pre><code class="language-bash"># NFS服务器配置 (假设服务器IP: 192.168.1.100)
+# /etc/exports
+# /data/nfs-kvm 192.168.1.0/24(rw,sync,no_root_squash)
+
+# KVM主机创建NFS存储池
+virsh pool-define-as \
+  --name nfs-pool \
+  --type netfs \
+  --source-host 192.168.1.100 \
+  --source-path /data/nfs-kvm \
+  --target /mnt/nfs-pool
+
+virsh pool-build nfs-pool
+virsh pool-start nfs-pool
+virsh pool-autostart nfs-pool
+
+# 验证挂载
+mount | grep nfs-pool
+</code></pre>
+<h3 id="55-存储卷管理"><a class="header" href="#55-存储卷管理">5.5 存储卷管理</a></h3>
+<p><strong>创建存储卷</strong>:</p>
+<pre><code class="language-bash"># 创建qcow2卷
+virsh vol-create-as data-pool vm2-disk.qcow2 30G --format qcow2
+
+# 创建raw卷
+virsh vol-create-as data-pool vm3-disk.raw 20G --format raw
+
+# 查看卷
+virsh vol-list data-pool
+virsh vol-info data-pool/vm2-disk.qcow2
+</code></pre>
+<p><strong>卷操作</strong>:</p>
+<pre><code class="language-bash"># 克隆卷
+virsh vol-clone \
+  --pool data-pool \
+  vm2-disk.qcow2 \
+  vm2-disk-clone.qcow2
+
+# 删除卷
+virsh vol-delete vm3-disk.raw --pool data-pool
+
+# 调整卷大小
+virsh vol-resize vm2-disk.qcow2 40G --pool data-pool
+
+# 查看卷路径
+virsh vol-path vm2-disk.qcow2 --pool data-pool
+</code></pre>
+<h3 id="56-磁盘镜像格式"><a class="header" href="#56-磁盘镜像格式">5.6 磁盘镜像格式</a></h3>
+<p><strong>raw vs qcow2 对比</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>raw</th><th>qcow2</th></tr></thead><tbody>
+<tr><td>性能</td><td>最高</td><td>稍低</td></tr>
+<tr><td>空间效率</td><td>差 (预分配)</td><td>好 (精简配置)</td></tr>
+<tr><td>快照支持</td><td>否</td><td>是</td></tr>
+<tr><td>压缩</td><td>否</td><td>是</td></tr>
+<tr><td>加密</td><td>否</td><td>是</td></tr>
+<tr><td>建议用途</td><td>高性能场景</td><td>一般场景</td></tr>
+</tbody></table>
+</div>
+<p><strong>格式转换</strong>:</p>
+<pre><code class="language-bash"># qcow2 → raw
+qemu-img convert -f qcow2 -O raw source.qcow2 target.raw
+
+# raw → qcow2
+qemu-img convert -f raw -O qcow2 source.raw target.qcow2
+
+# 压缩qcow2
+qemu-img convert -f qcow2 -O qcow2 -c source.qcow2 target-compressed.qcow2
+</code></pre>
+<p><strong>查看镜像信息</strong>:</p>
+<pre><code class="language-bash"># 查看镜像详情
+qemu-img info /var/lib/libvirt/images/centos7.qcow2
+
+# 输出示例:
+# image: centos7.qcow2
+# file format: qcow2
+# virtual size: 20 GiB (21474836480 bytes)
+# disk size: 1.5 GiB
+# cluster_size: 65536
+
+# 检查镜像完整性
+qemu-img check /var/lib/libvirt/images/centos7.qcow2
+</code></pre>
+<hr />
+<h2 id="6-网络管理"><a class="header" href="#6-网络管理">6. 网络管理</a></h2>
+<h3 id="61-网络模式"><a class="header" href="#61-网络模式">6.1 网络模式</a></h3>
+<p><strong>NAT网络 (默认)</strong>:</p>
+<pre><code class="language-bash"># 查看默认网络配置
+virsh net-dumpxml default
+
+# 输出示例:
+# &lt;network&gt;
+#   &lt;name&gt;default&lt;/name&gt;
+#   &lt;bridge name='virbr0'/&gt;
+#   &lt;forward mode='nat'/&gt;
+#   &lt;ip address='192.168.122.1' netmask='255.255.255.0'&gt;
+#     &lt;dhcp&gt;
+#       &lt;range start='192.168.122.2' end='192.168.122.254'/&gt;
+#     &lt;/dhcp&gt;
+#   &lt;/ip&gt;
+# &lt;/network&gt;
+
+# 特点:
+# - VM可以访问外网
+# - 外网无法直接访问VM
+# - 需要端口转发才能从外部访问
+</code></pre>
+<p><strong>桥接网络</strong>:</p>
+<pre><code class="language-bash"># 1. 创建网桥 (物理网卡 eth0)
+# /etc/sysconfig/network-scripts/ifcfg-br0 (CentOS)
+TYPE=Bridge
+BOOTPROTO=static
+NAME=br0
+DEVICE=br0
+ONBOOT=yes
+IPADDR=192.168.1.10
+NETMASK=255.255.255.0
+GATEWAY=192.168.1.1
+
+# /etc/sysconfig/network-scripts/ifcfg-eth0
+TYPE=Ethernet
+NAME=eth0
+DEVICE=eth0
+ONBOOT=yes
+BRIDGE=br0
+
+# 2. 重启网络
+systemctl restart network
+
+# 3. 定义libvirt桥接网络
+cat &gt; br0-network.xml &lt;&lt;EOF
+&lt;network&gt;
+  &lt;name&gt;br0&lt;/name&gt;
+  &lt;forward mode="bridge"/&gt;
+  &lt;bridge name="br0"/&gt;
+&lt;/network&gt;
+EOF
+
+virsh net-define br0-network.xml
+virsh net-start br0
+virsh net-autostart br0
+
+# 4. VM使用桥接网络
+# XML配置:
+# &lt;interface type='bridge'&gt;
+#   &lt;source bridge='br0'/&gt;
+#   &lt;model type='virtio'/&gt;
+# &lt;/interface&gt;
+</code></pre>
+<p><strong>使用nmcli创建桥接 (推荐)</strong>:</p>
+<pre><code class="language-bash"># 创建网桥
+nmcli con add type bridge ifname br0 con-name br0
+
+# 配置IP
+nmcli con modify br0 ipv4.addresses '192.168.1.10/24'
+nmcli con modify br0 ipv4.gateway '192.168.1.1'
+nmcli con modify br0 ipv4.dns '8.8.8.8'
+nmcli con modify br0 ipv4.method manual
+
+# 添加物理网卡到网桥
+nmcli con add type bridge-slave ifname eth0 master br0
+
+# 启用连接
+nmcli con up br0
+nmcli con up bridge-slave-eth0
+
+# 验证
+bridge link show br0
+</code></pre>
+<p><strong>隔离网络</strong>:</p>
+<pre><code class="language-xml">&lt;!-- isolated-network.xml --&gt;
+&lt;network&gt;
+  &lt;name&gt;isolated&lt;/name&gt;
+  &lt;bridge name='virbr1'/&gt;
+  &lt;ip address='10.10.10.1' netmask='255.255.255.0'&gt;
+    &lt;dhcp&gt;
+      &lt;range start='10.10.10.2' end='10.10.10.254'/&gt;
+    &lt;/dhcp&gt;
+  &lt;/ip&gt;
+&lt;/network&gt;
+</code></pre>
+<pre><code class="language-bash">virsh net-define isolated-network.xml
+virsh net-start isolated
+virsh net-autostart isolated
+</code></pre>
+<h3 id="62-虚拟网络配置"><a class="header" href="#62-虚拟网络配置">6.2 虚拟网络配置</a></h3>
+<p><strong>创建自定义网络</strong>:</p>
+<pre><code class="language-xml">&lt;!-- custom-network.xml --&gt;
+&lt;network&gt;
+  &lt;name&gt;custom-net&lt;/name&gt;
+  &lt;bridge name='virbr2'/&gt;
+  &lt;forward mode='nat'&gt;
+    &lt;nat&gt;
+      &lt;port start='1024' end='65535'/&gt;
+    &lt;/nat&gt;
+  &lt;/forward&gt;
+  &lt;domain name='custom.local'/&gt;
+  &lt;ip address='192.168.100.1' netmask='255.255.255.0'&gt;
+    &lt;dhcp&gt;
+      &lt;range start='192.168.100.100' end='192.168.100.200'/&gt;
+      &lt;!-- 静态分配 --&gt;
+      &lt;host mac='52:54:00:11:22:33' ip='192.168.100.10' name='server1'/&gt;
+      &lt;host mac='52:54:00:44:55:66' ip='192.168.100.20' name='server2'/&gt;
+    &lt;/dhcp&gt;
+  &lt;/ip&gt;
+&lt;/network&gt;
+</code></pre>
+<p><strong>端口转发 (NAT网络)</strong>:</p>
+<pre><code class="language-bash"># 添加iptables规则
+# 将主机8080端口转发到VM 192.168.122.10的80端口
+iptables -t nat -A PREROUTING -p tcp --dport 8080 \
+  -j DNAT --to-destination 192.168.122.10:80
+
+iptables -A FORWARD -p tcp -d 192.168.122.10 --dport 80 \
+  -j ACCEPT
+
+# 保存规则
+service iptables save
+</code></pre>
+<h3 id="63-网络性能优化"><a class="header" href="#63-网络性能优化">6.3 网络性能优化</a></h3>
+<p><strong>启用virtio驱动</strong>:</p>
+<pre><code class="language-xml">&lt;!-- VM XML配置 --&gt;
+&lt;interface type='network'&gt;
+  &lt;source network='default'/&gt;
+  &lt;model type='virtio'/&gt;  &lt;!-- 使用virtio --&gt;
+&lt;/interface&gt;
+</code></pre>
+<p><strong>多队列网络</strong>:</p>
+<pre><code class="language-xml">&lt;interface type='network'&gt;
+  &lt;source network='default'/&gt;
+  &lt;model type='virtio'/&gt;
+  &lt;driver name='vhost' queues='4'/&gt;  &lt;!-- 4个队列 --&gt;
+&lt;/interface&gt;
+</code></pre>
+<p><strong>在Guest中启用多队列</strong>:</p>
+<pre><code class="language-bash"># 查看当前队列数
+ethtool -l eth0
+
+# 设置队列数
+ethtool -L eth0 combined 4
+</code></pre>
+<p><strong>SR-IOV网络直通</strong> (高性能场景):</p>
+<pre><code class="language-bash"># 1. 确认网卡支持SR-IOV
+lspci | grep Ethernet
+
+# 2. 启用VF (Virtual Function)
+echo 4 &gt; /sys/class/net/eth0/device/sriov_numvfs
+
+# 3. 查看VF
+ip link show eth0
+lspci | grep Virtual
+
+# 4. VM XML配置
+cat &gt; sriov-interface.xml &lt;&lt;EOF
+&lt;interface type='hostdev' managed='yes'&gt;
+  &lt;source&gt;
+    &lt;address type='pci' domain='0x0000' bus='0x03' slot='0x10' function='0x0'/&gt;
+  &lt;/source&gt;
+&lt;/interface&gt;
+EOF
+
+# 5. 附加到VM
+virsh attach-device centos7 sriov-interface.xml --config
+</code></pre>
+<hr />
+<h2 id="7-资源管理与性能优化"><a class="header" href="#7-资源管理与性能优化">7. 资源管理与性能优化</a></h2>
+<h3 id="71-cpu-管理"><a class="header" href="#71-cpu-管理">7.1 CPU 管理</a></h3>
+<p><strong>vCPU分配策略</strong>:</p>
+<pre><code class="language-xml">&lt;domain type='kvm'&gt;
+  &lt;vcpu placement='static'&gt;4&lt;/vcpu&gt;  &lt;!-- 总vCPU数 --&gt;
+
+  &lt;!-- vCPU拓扑 --&gt;
+  &lt;cpu mode='host-passthrough'&gt;
+    &lt;topology sockets='1' cores='4' threads='1'/&gt;
+  &lt;/cpu&gt;
+&lt;/domain&gt;
+</code></pre>
+<p><strong>CPU模式对比</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>模式</th><th>说明</th><th>性能</th><th>迁移性</th></tr></thead><tbody>
+<tr><td>host-passthrough</td><td>完全透传物理CPU</td><td>最高</td><td>低</td></tr>
+<tr><td>host-model</td><td>最接近物理CPU的虚拟CPU</td><td>高</td><td>中</td></tr>
+<tr><td>custom</td><td>自定义CPU型号</td><td>中</td><td>高</td></tr>
+</tbody></table>
+</div>
+<p><strong>CPU绑定 (CPU Pinning)</strong>:</p>
+<pre><code class="language-xml">&lt;!-- 将vCPU绑定到物理CPU --&gt;
+&lt;cputune&gt;
+  &lt;vcpupin vcpu='0' cpuset='0'/&gt;
+  &lt;vcpupin vcpu='1' cpuset='1'/&gt;
+  &lt;vcpupin vcpu='2' cpuset='2'/&gt;
+  &lt;vcpupin vcpu='3' cpuset='3'/&gt;
+&lt;/cputune&gt;
+</code></pre>
+<p><strong>动态调整vCPU</strong>:</p>
+<pre><code class="language-bash"># 热添加vCPU (运行中)
+virsh setvcpus centos7 8 --live
+
+# 配置文件修改 (重启生效)
+virsh setvcpus centos7 8 --config
+
+# 同时修改
+virsh setvcpus centos7 8 --live --config
+
+# 查看vCPU信息
+virsh vcpuinfo centos7
+</code></pre>
+<h3 id="72-numa-优化"><a class="header" href="#72-numa-优化">7.2 NUMA 优化</a></h3>
+<p><strong>查看NUMA拓扑</strong>:</p>
+<pre><code class="language-bash"># 查看主机NUMA
+numactl --hardware
+
+# 输出示例:
+# available: 2 nodes (0-1)
+# node 0 cpus: 0 1 2 3
+# node 0 size: 32GB
+# node 1 cpus: 4 5 6 7
+# node 1 size: 32GB
+</code></pre>
+<p><strong>配置VM NUMA</strong>:</p>
+<pre><code class="language-xml">&lt;cpu mode='host-passthrough'&gt;
+  &lt;numa&gt;
+    &lt;cell id='0' cpus='0-3' memory='16' unit='GiB'/&gt;
+    &lt;cell id='1' cpus='4-7' memory='16' unit='GiB'/&gt;
+  &lt;/numa&gt;
+&lt;/cpu&gt;
+
+&lt;numatune&gt;
+  &lt;memory mode='strict' nodeset='0-1'/&gt;
+  &lt;memnode cellid='0' mode='strict' nodeset='0'/&gt;
+  &lt;memnode cellid='1' mode='strict' nodeset='1'/&gt;
+&lt;/numatune&gt;
+</code></pre>
+<h3 id="73-内存管理"><a class="header" href="#73-内存管理">7.3 内存管理</a></h3>
+<p><strong>内存分配</strong>:</p>
+<pre><code class="language-xml">&lt;domain&gt;
+  &lt;memory unit='GiB'&gt;8&lt;/memory&gt;        &lt;!-- 最大内存 --&gt;
+  &lt;currentMemory unit='GiB'&gt;4&lt;/currentMemory&gt;  &lt;!-- 当前内存 --&gt;
+&lt;/domain&gt;
+</code></pre>
+<p><strong>内存气球 (Memory Ballooning)</strong>:</p>
+<pre><code class="language-xml">&lt;!-- 启用内存气球 --&gt;
+&lt;devices&gt;
+  &lt;memballoon model='virtio'&gt;
+    &lt;stats period='10'/&gt;
+  &lt;/memballoon&gt;
+&lt;/devices&gt;
+</code></pre>
+<pre><code class="language-bash"># 动态调整内存
+virsh setmem centos7 2048M --live
+
+# 查看内存统计
+virsh dommemstat centos7
+</code></pre>
+<p><strong>大页内存 (Huge Pages)</strong>:</p>
+<pre><code class="language-bash"># 1. 配置主机大页
+# /etc/sysctl.conf
+vm.nr_hugepages = 1024  # 1024个2MB大页 = 2GB
+
+sysctl -p
+
+# 查看大页
+cat /proc/meminfo | grep Huge
+
+# 2. VM使用大页
+virsh edit centos7
+# 添加:
+# &lt;memoryBacking&gt;
+#   &lt;hugepages/&gt;
+# &lt;/memoryBacking&gt;
+</code></pre>
+<h3 id="74-io-优化"><a class="header" href="#74-io-优化">7.4 I/O 优化</a></h3>
+<p><strong>virtio存储驱动</strong>:</p>
+<pre><code class="language-xml">&lt;disk type='file' device='disk'&gt;
+  &lt;driver name='qemu' type='qcow2' cache='writeback' io='threads'/&gt;
+  &lt;source file='/var/lib/libvirt/images/centos7.qcow2'/&gt;
+  &lt;target dev='vda' bus='virtio'/&gt;  &lt;!-- virtio总线 --&gt;
+&lt;/disk&gt;
+</code></pre>
+<p><strong>缓存策略</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>策略</th><th>说明</th><th>性能</th><th>安全性</th></tr></thead><tbody>
+<tr><td>none</td><td>无缓存,直接I/O</td><td>低</td><td>最高</td></tr>
+<tr><td>writethrough</td><td>写穿透</td><td>中</td><td>高</td></tr>
+<tr><td>writeback</td><td>写回</td><td>高</td><td>低</td></tr>
+<tr><td>directsync</td><td>直接同步</td><td>最低</td><td>最高</td></tr>
+</tbody></table>
+</div>
+<p><strong>I/O调度器</strong>:</p>
+<pre><code class="language-bash"># 查看当前调度器
+cat /sys/block/sda/queue/scheduler
+
+# 修改为deadline (适合虚拟化)
+echo deadline &gt; /sys/block/sda/queue/scheduler
+
+# 持久化修改
+# /etc/default/grub
+# GRUB_CMDLINE_LINUX="elevator=deadline"
+grub2-mkconfig -o /boot/grub2/grub.cfg
+</code></pre>
+<p><strong>I/O限流</strong>:</p>
+<pre><code class="language-xml">&lt;disk type='file' device='disk'&gt;
+  &lt;source file='/var/lib/libvirt/images/centos7.qcow2'/&gt;
+  &lt;target dev='vda' bus='virtio'/&gt;
+  &lt;iotune&gt;
+    &lt;total_bytes_sec&gt;104857600&lt;/total_bytes_sec&gt;  &lt;!-- 100MB/s --&gt;
+    &lt;total_iops_sec&gt;1000&lt;/total_iops_sec&gt;  &lt;!-- 1000 IOPS --&gt;
+  &lt;/iotune&gt;
+&lt;/disk&gt;
+</code></pre>
+<hr />
+<h2 id="8-高级特性"><a class="header" href="#8-高级特性">8. 高级特性</a></h2>
+<h3 id="81-热插拔"><a class="header" href="#81-热插拔">8.1 热插拔</a></h3>
+<p><strong>CPU热插拔</strong>:</p>
+<pre><code class="language-bash"># 在线增加vCPU
+virsh setvcpus centos7 8 --live
+
+# Guest内启用CPU
+echo 1 &gt; /sys/devices/system/cpu/cpu7/online
+</code></pre>
+<p><strong>内存热插拔</strong>:</p>
+<pre><code class="language-bash"># 在线增加内存
+virsh setmem centos7 8G --live
+
+# 注意: 内存热删除不支持
+</code></pre>
+<p><strong>磁盘热插拔</strong>:</p>
+<pre><code class="language-bash"># 创建磁盘
+qemu-img create -f qcow2 /var/lib/libvirt/images/data.qcow2 10G
+
+# 热添加
+virsh attach-disk centos7 \
+  /var/lib/libvirt/images/data.qcow2 \
+  vdb --subdriver qcow2 --live
+
+# 热移除
+virsh detach-disk centos7 vdb --live
+</code></pre>
+<p><strong>网卡热插拔</strong>:</p>
+<pre><code class="language-bash"># 创建网卡XML
+cat &gt; nic.xml &lt;&lt;EOF
+&lt;interface type='network'&gt;
+  &lt;source network='default'/&gt;
+  &lt;model type='virtio'/&gt;
+&lt;/interface&gt;
+EOF
+
+# 热添加
+virsh attach-device centos7 nic.xml --live
+
+# 热移除
+virsh detach-interface centos7 network --live
+</code></pre>
+<h3 id="82-虚拟机迁移"><a class="header" href="#82-虚拟机迁移">8.2 虚拟机迁移</a></h3>
+<p><strong>冷迁移</strong>:</p>
+<pre><code class="language-bash"># 1. 停止VM
+virsh shutdown centos7
+
+# 2. 导出XML
+virsh dumpxml centos7 &gt; centos7.xml
+
+# 3. 复制磁盘到目标主机
+scp /var/lib/libvirt/images/centos7.qcow2 \
+    root@target-host:/var/lib/libvirt/images/
+
+# 4. 在目标主机定义VM
+scp centos7.xml root@target-host:/tmp/
+ssh root@target-host "virsh define /tmp/centos7.xml"
+
+# 5. 启动VM
+ssh root@target-host "virsh start centos7"
+</code></pre>
+<p><strong>热迁移 (Live Migration)</strong>:</p>
+<pre><code class="language-bash"># 前提条件:
+# 1. 共享存储 (NFS/iSCSI/Ceph)
+# 2. 相同的libvirt版本
+# 3. 网络互通
+
+# 迁移命令
+virsh migrate --live centos7 \
+  qemu+ssh://target-host/system \
+  --persistent \
+  --undefinesource \
+  --verbose
+
+# 带宽限制 (MB/s)
+virsh migrate --live centos7 \
+  qemu+ssh://target-host/system \
+  --bandwidth 100
+
+# 迁移状态监控
+virsh domjobinfo centos7
+</code></pre>
+<p><strong>存储迁移</strong>:</p>
+<pre><code class="language-bash"># 在线存储迁移
+virsh migrate centos7 \
+  qemu+ssh://target-host/system \
+  --live \
+  --copy-storage-all \
+  --persistent
+
+# 离线存储迁移
+virsh migrate centos7 \
+  qemu+ssh://target-host/system \
+  --offline \
+  --copy-storage-all
+</code></pre>
+<h3 id="83-pci-设备直通"><a class="header" href="#83-pci-设备直通">8.3 PCI 设备直通</a></h3>
+<p><strong>GPU直通示例</strong>:</p>
+<pre><code class="language-bash"># 1. 查看PCI设备
+lspci -nn | grep VGA
+
+# 输出示例:
+# 01:00.0 VGA compatible controller [0300]: NVIDIA Corporation ...
+
+# 2. 启用IOMMU
+# /etc/default/grub
+# Intel: intel_iommu=on
+# AMD: amd_iommu=on
+# GRUB_CMDLINE_LINUX="intel_iommu=on"
+
+grub2-mkconfig -o /boot/grub2/grub.cfg
+reboot
+
+# 3. 绑定vfio-pci驱动
+echo "vfio-pci" &gt; /etc/modules-load.d/vfio-pci.conf
+
+# /etc/modprobe.d/vfio.conf
+options vfio-pci ids=10de:1b80  # NVIDIA GPU ID
+
+# 更新initramfs
+dracut -f
+
+# 4. VM XML配置
+cat &gt; gpu-passthrough.xml &lt;&lt;EOF
+&lt;hostdev mode='subsystem' type='pci' managed='yes'&gt;
+  &lt;source&gt;
+    &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;
+  &lt;/source&gt;
+&lt;/hostdev&gt;
+EOF
+
+virsh attach-device centos7 gpu-passthrough.xml --config
+</code></pre>
+<hr />
+<h2 id="9-监控与故障排除"><a class="header" href="#9-监控与故障排除">9. 监控与故障排除</a></h2>
+<h3 id="91-性能监控"><a class="header" href="#91-性能监控">9.1 性能监控</a></h3>
+<p><strong>virsh监控命令</strong>:</p>
+<pre><code class="language-bash"># 实时CPU使用率
+virt-top
+
+# VM资源使用
+virsh domstats centos7
+
+# CPU使用率
+virsh cpu-stats centos7
+
+# 内存统计
+virsh dommemstat centos7
+
+# 块设备I/O统计
+virsh domblkstat centos7 vda
+
+# 网络接口统计
+virsh domifstat centos7 vnet0
+</code></pre>
+<p><strong>libvirt性能事件</strong>:</p>
+<pre><code class="language-bash"># 监听VM事件
+virsh event --all --loop
+
+# 监听特定VM的事件
+virsh event centos7 --loop
+</code></pre>
+<p><strong>集成Prometheus监控</strong>:</p>
+<pre><code class="language-bash"># 安装libvirt_exporter
+wget https://github.com/kumina/libvirt_exporter/releases/download/v1.0.0/libvirt_exporter
+chmod +x libvirt_exporter
+
+# 启动exporter
+./libvirt_exporter &amp;
+
+# Prometheus配置
+# scrape_configs:
+#   - job_name: 'libvirt'
+#     static_configs:
+#       - targets: ['localhost:9177']
+
+# 访问指标
+curl http://localhost:9177/metrics
+</code></pre>
+<h3 id="92-日志管理"><a class="header" href="#92-日志管理">9.2 日志管理</a></h3>
+<p><strong>libvirt日志</strong>:</p>
+<pre><code class="language-bash"># 查看libvirtd日志
+journalctl -u libvirtd -f
+
+# 或
+tail -f /var/log/libvirt/libvirtd.log
+
+# 调整日志级别
+# /etc/libvirt/libvirtd.conf
+log_level = 1  # 1=debug, 2=info, 3=warning, 4=error
+
+systemctl restart libvirtd
+</code></pre>
+<p><strong>QEMU日志</strong>:</p>
+<pre><code class="language-bash"># VM日志位置
+ls /var/log/libvirt/qemu/
+
+# 查看VM日志
+tail -f /var/log/libvirt/qemu/centos7.log
+</code></pre>
+<p><strong>审计日志</strong>:</p>
+<pre><code class="language-bash"># 启用审计
+# /etc/libvirt/libvirtd.conf
+audit_level = 2
+
+# 查看审计日志
+ausearch -m VIRT_CONTROL -ts recent
+</code></pre>
+<h3 id="93-常见问题排查"><a class="header" href="#93-常见问题排查">9.3 常见问题排查</a></h3>
+<p><strong>问题1: VM无法启动</strong></p>
+<pre><code class="language-bash"># 1. 查看详细错误
+virsh start centos7 --console
+
+# 2. 检查配置文件
+virsh dumpxml centos7 | less
+
+# 3. 验证镜像
+qemu-img check /var/lib/libvirt/images/centos7.qcow2
+
+# 4. 检查权限
+ls -l /var/lib/libvirt/images/centos7.qcow2
+# 应该是 qemu:qemu 或 root:root
+
+# 5. 查看SELinux日志
+ausearch -m AVC -ts recent
+</code></pre>
+<p><strong>问题2: 网络连接问题</strong></p>
+<pre><code class="language-bash"># 1. 检查网络是否启动
+virsh net-list --all
+
+# 2. 检查网桥
+brctl show
+ip link show virbr0
+
+# 3. 检查iptables
+iptables -L -n -v | grep virbr0
+
+# 4. 检查VM网卡
+virsh domiflist centos7
+
+# 5. 在VM内检查
+# 进入VM
+virsh console centos7
+ip addr show
+</code></pre>
+<p><strong>问题3: 性能问题</strong></p>
+<pre><code class="language-bash"># 1. 检查vCPU是否超售
+virsh nodecpustats
+virsh vcpucount centos7
+
+# 2. 检查内存是否超售
+free -h
+virsh dommemstat centos7
+
+# 3. 检查I/O性能
+virsh domblkstat centos7 vda
+iostat -x 1
+
+# 4. 检查网络性能
+virsh domifstat centos7 vnet0
+iftop -i virbr0
+
+# 5. 优化建议
+# - 启用virtio驱动
+# - 使用CPU绑定
+# - 配置大页内存
+# - 调整I/O调度器
+</code></pre>
+<hr />
+<h2 id="10-安全管理"><a class="header" href="#10-安全管理">10. 安全管理</a></h2>
+<h3 id="101-访问控制"><a class="header" href="#101-访问控制">10.1 访问控制</a></h3>
+<p><strong>用户权限配置</strong>:</p>
+<pre><code class="language-bash"># 添加用户到libvirt组
+usermod -aG libvirt alice
+
+# libvirt访问策略
+# /etc/libvirt/libvirtd.conf
+unix_sock_group = "libvirt"
+unix_sock_ro_perms = "0777"
+unix_sock_rw_perms = "0770"
+auth_unix_ro = "none"
+auth_unix_rw = "none"
+</code></pre>
+<p><strong>SASL认证 (远程访问)</strong>:</p>
+<pre><code class="language-bash"># 1. 安装cyrus-sasl
+yum install cyrus-sasl-md5
+
+# 2. 配置libvirtd
+# /etc/libvirt/libvirtd.conf
+listen_tls = 0
+listen_tcp = 1
+auth_tcp = "sasl"
+
+# 3. 创建用户
+saslpasswd2 -a libvirt alice
+
+# 4. 重启服务
+systemctl restart libvirtd
+
+# 5. 客户端连接
+virsh -c qemu+tcp://server/system --username alice
+</code></pre>
+<h3 id="102-selinux-配置"><a class="header" href="#102-selinux-配置">10.2 SELinux 配置</a></h3>
+<p><strong>SELinux上下文</strong>:</p>
+<pre><code class="language-bash"># 查看镜像文件上下文
+ls -Z /var/lib/libvirt/images/
+
+# 修复上下文
+restorecon -Rv /var/lib/libvirt/images/
+
+# 自定义镜像目录
+# 1. 设置上下文
+semanage fcontext -a -t virt_image_t "/data/kvm-images(/.*)?"
+
+# 2. 应用上下文
+restorecon -Rv /data/kvm-images/
+
+# 3. 验证
+ls -Z /data/kvm-images/
+</code></pre>
+<p><strong>SELinux布尔值</strong>:</p>
+<pre><code class="language-bash"># 允许VM使用NFS
+setsebool -P virt_use_nfs on
+
+# 允许VM使用CIFS
+setsebool -P virt_use_samba on
+
+# 允许VM使用USB设备
+setsebool -P virt_use_usb on
+</code></pre>
+<h3 id="103-防火墙配置"><a class="header" href="#103-防火墙配置">10.3 防火墙配置</a></h3>
+<p><strong>firewalld配置</strong>:</p>
+<pre><code class="language-bash"># 添加libvirt服务
+firewall-cmd --permanent --add-service=libvirt
+firewall-cmd --reload
+
+# 允许VNC访问
+firewall-cmd --permanent --add-port=5900-5920/tcp
+firewall-cmd --reload
+
+# 允许迁移端口
+firewall-cmd --permanent --add-port=49152-49215/tcp
+firewall-cmd --reload
+</code></pre>
+<h3 id="104-备份与恢复"><a class="header" href="#104-备份与恢复">10.4 备份与恢复</a></h3>
+<p><strong>完整备份脚本</strong>:</p>
+<pre><code class="language-bash">#!/bin/bash
+# vm-backup.sh
+
+VM_NAME=$1
+BACKUP_DIR="/backup/kvm"
+DATE=$(date +%Y%m%d-%H%M%S)
+
+# 创建备份目录
+mkdir -p $BACKUP_DIR/$VM_NAME
+
+# 导出XML
+virsh dumpxml $VM_NAME &gt; $BACKUP_DIR/$VM_NAME/${VM_NAME}-${DATE}.xml
+
+# 创建快照
+virsh snapshot-create-as $VM_NAME backup-${DATE}
+
+# 备份磁盘
+DISK=$(virsh domblklist $VM_NAME | grep vda | awk '{print $2}')
+cp $DISK $BACKUP_DIR/$VM_NAME/${VM_NAME}-${DATE}.qcow2
+
+# 删除快照
+virsh snapshot-delete $VM_NAME backup-${DATE}
+
+echo "Backup completed: $BACKUP_DIR/$VM_NAME/"
+</code></pre>
+<p><strong>恢复虚拟机</strong>:</p>
+<pre><code class="language-bash"># 1. 恢复磁盘
+cp /backup/kvm/centos7/centos7-20231201.qcow2 \
+   /var/lib/libvirt/images/centos7.qcow2
+
+# 2. 定义VM
+virsh define /backup/kvm/centos7/centos7-20231201.xml
+
+# 3. 启动VM
+virsh start centos7
+</code></pre>
+<hr />
+<h2 id="11-生产环境最佳实践"><a class="header" href="#11-生产环境最佳实践">11. 生产环境最佳实践</a></h2>
+<h3 id="111-配置检查清单"><a class="header" href="#111-配置检查清单">11.1 配置检查清单</a></h3>
+<p><strong>主机层面</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+CPU虚拟化已启用 (VT-x/AMD-V)</li>
+<li><input disabled="" type="checkbox"/>
+IOMMU已启用 (用于设备直通)</li>
+<li><input disabled="" type="checkbox"/>
+配置大页内存</li>
+<li><input disabled="" type="checkbox"/>
+调整I/O调度器为deadline</li>
+<li><input disabled="" type="checkbox"/>
+配置网络桥接或SR-IOV</li>
+<li><input disabled="" type="checkbox"/>
+SELinux/AppArmor正确配置</li>
+<li><input disabled="" type="checkbox"/>
+防火墙规则已设置</li>
+</ul>
+<p><strong>虚拟机层面</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用virtio驱动 (网络、存储)</li>
+<li><input disabled="" type="checkbox"/>
+合理分配vCPU (避免超售)</li>
+<li><input disabled="" type="checkbox"/>
+启用CPU绑定 (关键业务)</li>
+<li><input disabled="" type="checkbox"/>
+配置NUMA亲和性</li>
+<li><input disabled="" type="checkbox"/>
+设置资源限制 (CPU、内存、I/O)</li>
+<li><input disabled="" type="checkbox"/>
+启用内存气球</li>
+<li><input disabled="" type="checkbox"/>
+配置自动启动策略</li>
+</ul>
+<p><strong>存储层面</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用LVM或Ceph等企业级存储</li>
+<li><input disabled="" type="checkbox"/>
+qcow2格式用于测试,raw用于生产</li>
+<li><input disabled="" type="checkbox"/>
+定期备份虚拟机</li>
+<li><input disabled="" type="checkbox"/>
+监控磁盘空间</li>
+<li><input disabled="" type="checkbox"/>
+配置快照策略</li>
+</ul>
+<h3 id="112-性能优化建议"><a class="header" href="#112-性能优化建议">11.2 性能优化建议</a></h3>
+<p><strong>CPU优化</strong>:</p>
+<pre><code class="language-xml">&lt;domain&gt;
+  &lt;cpu mode='host-passthrough' check='none'&gt;
+    &lt;topology sockets='1' cores='4' threads='2'/&gt;
+    &lt;cache mode='passthrough'/&gt;
+  &lt;/cpu&gt;
+
+  &lt;cputune&gt;
+    &lt;vcpupin vcpu='0' cpuset='0'/&gt;
+    &lt;vcpupin vcpu='1' cpuset='1'/&gt;
+    &lt;emulatorpin cpuset='0-1'/&gt;
+  &lt;/cputune&gt;
+&lt;/domain&gt;
+</code></pre>
+<p><strong>内存优化</strong>:</p>
+<pre><code class="language-xml">&lt;memoryBacking&gt;
+  &lt;hugepages/&gt;
+  &lt;nosharepages/&gt;
+  &lt;locked/&gt;
+&lt;/memoryBacking&gt;
+</code></pre>
+<p><strong>存储优化</strong>:</p>
+<pre><code class="language-xml">&lt;disk type='file' device='disk'&gt;
+  &lt;driver name='qemu' type='raw' cache='none' io='native' discard='unmap'/&gt;
+  &lt;source file='/dev/vg_kvm/vm-disk'/&gt;
+  &lt;target dev='vda' bus='virtio'/&gt;
+&lt;/disk&gt;
+</code></pre>
+<p><strong>网络优化</strong>:</p>
+<pre><code class="language-xml">&lt;interface type='bridge'&gt;
+  &lt;source bridge='br0'/&gt;
+  &lt;model type='virtio'/&gt;
+  &lt;driver name='vhost' queues='4'&gt;
+    &lt;host mrg_rxbuf='on'/&gt;
+    &lt;guest tso4='on' tso6='on'/&gt;
+  &lt;/driver&gt;
+&lt;/interface&gt;
+</code></pre>
+<h3 id="113-故障恢复预案"><a class="header" href="#113-故障恢复预案">11.3 故障恢复预案</a></h3>
+<p><strong>主机故障</strong>:</p>
+<pre><code>1. 监控系统检测到主机宕机
+2. 自动触发HA切换 (Pacemaker/Corosync)
+3. 在备用主机启动VM
+4. 更新DNS/负载均衡指向新主机
+5. 通知运维人员
+</code></pre>
+<p><strong>虚拟机故障</strong>:</p>
+<pre><code>1. libvirt自动重启VM (on_crash=restart)
+2. 如果持续失败,从快照恢复
+3. 如果快照也失败,从备份恢复
+4. 记录故障日志供分析
+</code></pre>
+<hr />
+<h2 id="12-学习验证"><a class="header" href="#12-学习验证">12. 学习验证</a></h2>
+<h3 id="验证任务1-基础操作"><a class="header" href="#验证任务1-基础操作">验证任务1: 基础操作</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+成功安装KVM和libvirt</li>
+<li><input disabled="" type="checkbox"/>
+创建一个CentOS虚拟机</li>
+<li><input disabled="" type="checkbox"/>
+配置NAT网络并验证外网访问</li>
+<li><input disabled="" type="checkbox"/>
+连接VNC并完成系统安装</li>
+</ul>
+<h3 id="验证任务2-存储管理"><a class="header" href="#验证任务2-存储管理">验证任务2: 存储管理</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+创建目录存储池</li>
+<li><input disabled="" type="checkbox"/>
+创建LVM存储池</li>
+<li><input disabled="" type="checkbox"/>
+创建qcow2和raw格式的存储卷</li>
+<li><input disabled="" type="checkbox"/>
+实现磁盘格式转换</li>
+</ul>
+<h3 id="验证任务3-网络配置"><a class="header" href="#验证任务3-网络配置">验证任务3: 网络配置</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+创建桥接网络</li>
+<li><input disabled="" type="checkbox"/>
+配置NAT端口转发</li>
+<li><input disabled="" type="checkbox"/>
+测试VM间通信</li>
+<li><input disabled="" type="checkbox"/>
+验证virtio网卡性能</li>
+</ul>
+<h3 id="验证任务4-高级特性"><a class="header" href="#验证任务4-高级特性">验证任务4: 高级特性</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+创建VM快照并恢复</li>
+<li><input disabled="" type="checkbox"/>
+克隆虚拟机</li>
+<li><input disabled="" type="checkbox"/>
+实现热迁移 (需要共享存储)</li>
+<li><input disabled="" type="checkbox"/>
+配置CPU和内存热插拔</li>
+</ul>
+<h3 id="验证任务5-生产部署"><a class="header" href="#验证任务5-生产部署">验证任务5: 生产部署</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置大页内存</li>
+<li><input disabled="" type="checkbox"/>
+实现CPU绑定和NUMA优化</li>
+<li><input disabled="" type="checkbox"/>
+配置监控和告警</li>
+<li><input disabled="" type="checkbox"/>
+编写自动化备份脚本</li>
+</ul>
+<hr />
+<h2 id="13-扩展资源"><a class="header" href="#13-扩展资源">13. 扩展资源</a></h2>
+<h3 id="官方文档"><a class="header" href="#官方文档">官方文档</a></h3>
+<ul>
+<li>libvirt官方文档: https://libvirt.org/docs.html</li>
+<li>KVM官方文档: https://www.linux-kvm.org/page/Documents</li>
+<li>QEMU文档: https://www.qemu.org/documentation/</li>
+</ul>
+<h3 id="学习资源"><a class="header" href="#学习资源">学习资源</a></h3>
+<ul>
+<li>Red Hat虚拟化指南: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/configuring_and_managing_virtualization/</li>
+<li>Ubuntu KVM指南: https://ubuntu.com/server/docs/virtualization-libvirt</li>
+</ul>
+<h3 id="工具推荐"><a class="header" href="#工具推荐">工具推荐</a></h3>
+<ul>
+<li>virt-manager: 图形化管理工具</li>
+<li>Kimchi: Web管理界面</li>
+<li>oVirt: 企业级虚拟化管理平台</li>
+<li>OpenStack: 云平台 (基于KVM)</li>
+</ul>
+<h3 id="常见问题faq"><a class="header" href="#常见问题faq">常见问题FAQ</a></h3>
+<p><strong>Q1: KVM与VMware的选择?</strong>
+A: KVM开源免费、性能优秀,适合Linux环境和云平台;VMware功能完善、商业支持好,适合企业生产环境。</p>
+<p><strong>Q2: 如何提升VM性能?</strong>
+A: 使用virtio驱动、启用CPU绑定、配置大页内存、优化I/O调度器、使用raw格式磁盘。</p>
+<p><strong>Q3: 为什么推荐使用共享存储?</strong>
+A: 共享存储支持热迁移、高可用、集中备份,是生产环境必备。</p>
+<p><strong>Q4: CPU超售比例如何设置?</strong>
+A: 一般业务4:1,关键业务1:1或2:1,具体根据实际负载调整。</p>
+<p><strong>Q5: 如何监控KVM环境?</strong>
+A: 使用virt-top实时监控、集成Prometheus+Grafana、配置告警系统。</p>
+<hr />
+<p><strong>学习建议</strong>: KVM是强大的企业级虚拟化解决方案,建议从基础命令开始,逐步掌握存储、网络、性能优化。实践是最好的学习方式,搭建测试环境动手操作。生产环境务必关注高可用、备份和监控。祝学习愉快!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/paas/k8s.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/paas/OpenFunction.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/paas/k8s.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/paas/OpenFunction.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

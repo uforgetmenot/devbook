@@ -1,0 +1,415 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>SpringBoot 知识点整理 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="springboot-知识点整理"><a class="header" href="#springboot-知识点整理">SpringBoot 知识点整理</a></h1>
+<h2 id="1-springboot-基础"><a class="header" href="#1-springboot-基础">1. SpringBoot 基础</a></h2>
+<h3 id="11-springboot-简介"><a class="header" href="#11-springboot-简介">1.1 SpringBoot 简介</a></h3>
+<ul>
+<li>什么是SpringBoot</li>
+<li>SpringBoot的优势</li>
+<li>SpringBoot与Spring的关系</li>
+</ul>
+<h3 id="12-快速入门"><a class="header" href="#12-快速入门">1.2 快速入门</a></h3>
+<ul>
+<li>创建SpringBoot项目</li>
+<li>项目结构解析</li>
+<li>第一个HelloWorld应用</li>
+</ul>
+<h3 id="13-核心注解"><a class="header" href="#13-核心注解">1.3 核心注解</a></h3>
+<ul>
+<li>@SpringBootApplication</li>
+<li>@RestController</li>
+<li>@RequestMapping</li>
+<li>@Autowired</li>
+</ul>
+<h2 id="2-配置管理"><a class="header" href="#2-配置管理">2. 配置管理</a></h2>
+<h3 id="21-配置文件"><a class="header" href="#21-配置文件">2.1 配置文件</a></h3>
+<ul>
+<li>application.properties</li>
+<li>application.yml</li>
+<li>配置文件优先级</li>
+</ul>
+<h3 id="22-配置绑定"><a class="header" href="#22-配置绑定">2.2 配置绑定</a></h3>
+<ul>
+<li>@Value注解</li>
+<li>@ConfigurationProperties</li>
+<li>Environment对象</li>
+</ul>
+<h3 id="23-多环境配置"><a class="header" href="#23-多环境配置">2.3 多环境配置</a></h3>
+<ul>
+<li>Profile配置</li>
+<li>激活Profile的方式</li>
+<li>条件化配置</li>
+</ul>
+<h2 id="3-web开发"><a class="header" href="#3-web开发">3. Web开发</a></h2>
+<h3 id="31-springmvc集成"><a class="header" href="#31-springmvc集成">3.1 SpringMVC集成</a></h3>
+<ul>
+<li>自动配置原理</li>
+<li>静态资源处理</li>
+<li>视图解析器</li>
+</ul>
+<h3 id="32-restful-api"><a class="header" href="#32-restful-api">3.2 RESTful API</a></h3>
+<ul>
+<li>REST风格设计</li>
+<li>请求映射</li>
+<li>参数绑定</li>
+<li>响应处理</li>
+</ul>
+<h3 id="33-异常处理"><a class="header" href="#33-异常处理">3.3 异常处理</a></h3>
+<ul>
+<li>全局异常处理</li>
+<li>@ExceptionHandler</li>
+<li>自定义错误页面</li>
+</ul>
+<h2 id="4-数据访问"><a class="header" href="#4-数据访问">4. 数据访问</a></h2>
+<h3 id="41-jdbc支持"><a class="header" href="#41-jdbc支持">4.1 JDBC支持</a></h3>
+<ul>
+<li>数据源配置</li>
+<li>JdbcTemplate</li>
+<li>事务管理</li>
+</ul>
+<h3 id="42-jpa集成"><a class="header" href="#42-jpa集成">4.2 JPA集成</a></h3>
+<ul>
+<li>Spring Data JPA</li>
+<li>实体类映射</li>
+<li>仓库接口</li>
+</ul>
+<h3 id="43-mybatis集成"><a class="header" href="#43-mybatis集成">4.3 MyBatis集成</a></h3>
+<ul>
+<li>MyBatis配置</li>
+<li>Mapper接口</li>
+<li>SQL映射文件</li>
+</ul>
+<h2 id="5-安全框架"><a class="header" href="#5-安全框架">5. 安全框架</a></h2>
+<h3 id="51-spring-security"><a class="header" href="#51-spring-security">5.1 Spring Security</a></h3>
+<ul>
+<li>安全配置</li>
+<li>认证与授权</li>
+<li>密码加密</li>
+</ul>
+<h3 id="52-jwt集成"><a class="header" href="#52-jwt集成">5.2 JWT集成</a></h3>
+<ul>
+<li>Token生成</li>
+<li>Token验证</li>
+<li>无状态认证</li>
+</ul>
+<h2 id="6-缓存支持"><a class="header" href="#6-缓存支持">6. 缓存支持</a></h2>
+<h3 id="61-缓存抽象"><a class="header" href="#61-缓存抽象">6.1 缓存抽象</a></h3>
+<ul>
+<li>@Cacheable</li>
+<li>@CachePut</li>
+<li>@CacheEvict</li>
+</ul>
+<h3 id="62-redis集成"><a class="header" href="#62-redis集成">6.2 Redis集成</a></h3>
+<ul>
+<li>Redis配置</li>
+<li>RedisTemplate</li>
+<li>分布式缓存</li>
+</ul>
+<h2 id="7-消息队列"><a class="header" href="#7-消息队列">7. 消息队列</a></h2>
+<h3 id="71-rabbitmq"><a class="header" href="#71-rabbitmq">7.1 RabbitMQ</a></h3>
+<ul>
+<li>消息发送</li>
+<li>消息接收</li>
+<li>队列配置</li>
+</ul>
+<h3 id="72-kafka集成"><a class="header" href="#72-kafka集成">7.2 Kafka集成</a></h3>
+<ul>
+<li>生产者配置</li>
+<li>消费者配置</li>
+<li>消息序列化</li>
+</ul>
+<h2 id="8-监控与管理"><a class="header" href="#8-监控与管理">8. 监控与管理</a></h2>
+<h3 id="81-actuator"><a class="header" href="#81-actuator">8.1 Actuator</a></h3>
+<ul>
+<li>健康检查</li>
+<li>指标监控</li>
+<li>端点配置</li>
+</ul>
+<h3 id="82-日志管理"><a class="header" href="#82-日志管理">8.2 日志管理</a></h3>
+<ul>
+<li>日志配置</li>
+<li>日志级别</li>
+<li>日志输出</li>
+</ul>
+<h2 id="9-测试"><a class="header" href="#9-测试">9. 测试</a></h2>
+<h3 id="91-单元测试"><a class="header" href="#91-单元测试">9.1 单元测试</a></h3>
+<ul>
+<li>@SpringBootTest</li>
+<li>MockMvc测试</li>
+<li>数据库测试</li>
+</ul>
+<h3 id="92-集成测试"><a class="header" href="#92-集成测试">9.2 集成测试</a></h3>
+<ul>
+<li>测试切片</li>
+<li>测试配置</li>
+<li>测试数据准备</li>
+</ul>
+<h2 id="10-部署与打包"><a class="header" href="#10-部署与打包">10. 部署与打包</a></h2>
+<h3 id="101-jar包部署"><a class="header" href="#101-jar包部署">10.1 JAR包部署</a></h3>
+<ul>
+<li>可执行JAR</li>
+<li>启动脚本</li>
+<li>配置外部化</li>
+</ul>
+<h3 id="102-docker部署"><a class="header" href="#102-docker部署">10.2 Docker部署</a></h3>
+<ul>
+<li>Dockerfile编写</li>
+<li>镜像构建</li>
+<li>容器运行</li>
+</ul>
+<h2 id="11-高级特性"><a class="header" href="#11-高级特性">11. 高级特性</a></h2>
+<h3 id="111-自动配置原理"><a class="header" href="#111-自动配置原理">11.1 自动配置原理</a></h3>
+<ul>
+<li>@EnableAutoConfiguration</li>
+<li>条件注解</li>
+<li>自定义自动配置</li>
+</ul>
+<h3 id="112-事件机制"><a class="header" href="#112-事件机制">11.2 事件机制</a></h3>
+<ul>
+<li>应用事件</li>
+<li>事件监听器</li>
+<li>异步事件处理</li>
+</ul>
+<h3 id="113-定时任务"><a class="header" href="#113-定时任务">11.3 定时任务</a></h3>
+<ul>
+<li>@Scheduled注解</li>
+<li>Cron表达式</li>
+<li>异步任务执行</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/springcloud/seata.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/springcloud/springcloud.dubbo.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/springcloud/seata.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/springcloud/springcloud.dubbo.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

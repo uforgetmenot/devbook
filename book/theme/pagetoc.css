@@ -1,0 +1,68 @@
+/* src: https://github.com/JorelAli/mdBook-pagetoc */
+
+.sidetoc {
+    margin: 1.5rem 0;
+    display: block;
+}
+
+.pagetoc {
+    font-size: var(--pagetoc-fontsize);
+    border-left: 1px solid var(--sidebar-bg);
+    padding-left: 12px;
+    box-sizing: border-box;
+}
+
+.pagetoc a {
+    color: var(--fg);
+    display: block;
+    padding: 5px 0;
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.pagetoc a:hover,
+.pagetoc a.active {
+    background: var(--sidebar-bg);
+    color: var(--sidebar-active);
+    font-weight: bold;
+}
+
+.pagetoc .active {
+    background: var(--sidebar-bg);
+    color: var(--sidebar-fg);
+}
+
+@media only screen and (min-width: 1200px) {
+    .content {
+        position: relative;
+        padding-right: clamp(180px, var(--pagetoc-width), 320px);
+    }
+    .content main {
+        max-width: none;
+    }
+    .chapter-body {
+        margin-right: auto;
+        margin-left: auto;
+        max-width: var(--content-max-width);
+    }
+    .sidetoc {
+        position: fixed;
+        top: calc(var(--menu-bar-height, 0px) + 20px);
+        right: max(20px, calc((100vw - var(--content-max-width, 82%)) / 2 - clamp(180px, var(--pagetoc-width), 320px)));
+        width: clamp(180px, var(--pagetoc-width), 320px);
+        margin: 0;
+    }
+    .pagetoc {
+        max-height: calc(100vh - var(--menu-bar-height, 0px) - 40px);
+        overflow-y: auto;
+        padding-right: 6px;
+    }
+    .pagetoc::-webkit-scrollbar {
+        width: 6px;
+    }
+    .pagetoc::-webkit-scrollbar-thumb {
+        background: var(--scrollbar, rgba(0, 0, 0, 0.2));
+        border-radius: 3px;
+    }
+}

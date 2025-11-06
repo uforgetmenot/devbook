@@ -1,0 +1,2300 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>PowerShell 脚本编程完整学习指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="powershell-脚本编程完整学习指南"><a class="header" href="#powershell-脚本编程完整学习指南">PowerShell 脚本编程完整学习指南</a></h1>
+<h2 id="-学习路线图"><a class="header" href="#-学习路线图">📋 学习路线图</a></h2>
+<pre><code>环境准备 → 基础语法 → 核心Cmdlet → 管道对象 → 脚本编程 → 远程管理 → 模块开发 → 高级特性 → 生产实战
+  (1天)     (3天)      (3天)      (2天)      (3天)      (2天)      (2天)      (2天)      (持续)
+</code></pre>
+<p><strong>目标群体</strong>: Windows系统管理员、运维工程师、自动化开发者
+<strong>前置要求</strong>: 了解基本的Windows操作系统和命令行
+<strong>学习周期</strong>: 2-3周（每天2-3小时）</p>
+<hr />
+<h2 id="第一章环境准备与快速入门"><a class="header" href="#第一章环境准备与快速入门">第一章：环境准备与快速入门</a></h2>
+<h3 id="11-powershell简介"><a class="header" href="#11-powershell简介">1.1 PowerShell简介</a></h3>
+<p><strong>什么是PowerShell</strong>
+PowerShell是Microsoft开发的任务自动化和配置管理框架，由命令行Shell和脚本语言组成。它基于.NET Framework构建，提供对系统的全面访问和管理能力。</p>
+<p><strong>PowerShell的优势</strong></p>
+<ul>
+<li>✅ 面向对象：管道传递对象而非文本</li>
+<li>✅ .NET集成：直接访问.NET类库</li>
+<li>✅ 一致性：统一的Cmdlet命名规范</li>
+<li>✅ 可扩展：模块化设计，易于扩展</li>
+<li>✅ 跨平台：PowerShell Core支持Windows/Linux/macOS</li>
+<li>✅ 远程管理：内置强大的远程管理能力</li>
+</ul>
+<p><strong>PowerShell版本演进</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>版本</th><th>发布时间</th><th>主要特性</th></tr></thead><tbody>
+<tr><td>Windows PowerShell 1.0</td><td>2006</td><td>基础Shell和脚本能力</td></tr>
+<tr><td>Windows PowerShell 2.0</td><td>2009</td><td>远程管理、后台作业</td></tr>
+<tr><td>Windows PowerShell 3.0</td><td>2012</td><td>工作流、会话配置</td></tr>
+<tr><td>Windows PowerShell 5.1</td><td>2016</td><td>类定义、PackageManagement</td></tr>
+<tr><td>PowerShell Core 6.0</td><td>2018</td><td>跨平台、开源</td></tr>
+<tr><td>PowerShell 7.0+</td><td>2020+</td><td>并行处理、管道链操作</td></tr>
+</tbody></table>
+</div>
+<h3 id="12-安装与配置"><a class="header" href="#12-安装与配置">1.2 安装与配置</a></h3>
+<p><strong>Windows系统</strong></p>
+<pre><code class="language-powershell"># 查看当前PowerShell版本
+$PSVersionTable.PSVersion
+
+# Windows 10/11自带PowerShell 5.1
+# 位置: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+
+# 安装PowerShell 7+（推荐）
+# 方法1: 使用winget
+winget install --id Microsoft.Powershell --source winget
+
+# 方法2: 使用MSI安装包
+# 访问 https://github.com/PowerShell/PowerShell/releases
+# 下载并安装 PowerShell-7.x.x-win-x64.msi
+
+# 方法3: 使用Chocolatey
+choco install powershell-core
+
+# 验证安装
+pwsh --version
+</code></pre>
+<p><strong>Linux系统</strong></p>
+<pre><code class="language-bash"># Ubuntu/Debian
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get install -y powershell
+
+# CentOS/RHEL
+curl https://packages.microsoft.com/config/rhel/7/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
+sudo yum install -y powershell
+
+# 启动PowerShell
+pwsh
+</code></pre>
+<p><strong>macOS系统</strong></p>
+<pre><code class="language-bash"># 使用Homebrew
+brew install --cask powershell
+
+# 启动PowerShell
+pwsh
+</code></pre>
+<p><strong>执行策略配置</strong></p>
+<pre><code class="language-powershell"># 查看当前执行策略
+Get-ExecutionPolicy
+
+# 执行策略说明
+# Restricted    - 不允许运行脚本（默认）
+# AllSigned     - 只能运行签名脚本
+# RemoteSigned  - 本地脚本可运行，下载的脚本需签名（推荐）
+# Unrestricted  - 允许所有脚本运行
+# Bypass        - 不阻止任何脚本
+
+# 设置执行策略（需要管理员权限）
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# 临时绕过执行策略
+powershell.exe -ExecutionPolicy Bypass -File script.ps1
+</code></pre>
+<p><strong>配置文件（Profile）</strong></p>
+<pre><code class="language-powershell"># 查看配置文件路径
+$PROFILE | Format-List -Force
+
+# 四个配置文件位置
+# AllUsersAllHosts       - 所有用户所有主机
+# AllUsersCurrentHost    - 所有用户当前主机
+# CurrentUserAllHosts    - 当前用户所有主机
+# CurrentUserCurrentHost - 当前用户当前主机（默认）
+
+# 创建配置文件
+if (!(Test-Path -Path $PROFILE)) {
+    New-Item -ItemType File -Path $PROFILE -Force
+}
+
+# 编辑配置文件
+notepad $PROFILE
+
+# 配置文件示例内容
+# 设置默认编码
+$PSDefaultParameterValues['*:Encoding'] = 'utf8'
+
+# 自定义提示符
+function prompt {
+    "PS $(Get-Location)&gt; "
+}
+
+# 定义别名
+Set-Alias -Name np -Value notepad
+Set-Alias -Name ll -Value Get-ChildItem
+
+# 导入常用模块
+Import-Module PSReadLine
+
+# 设置PSReadLine选项
+Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -HistorySearchCursorMovesToEnd
+</code></pre>
+<h3 id="13-第一个powershell脚本"><a class="header" href="#13-第一个powershell脚本">1.3 第一个PowerShell脚本</a></h3>
+<p><strong>Hello World脚本</strong></p>
+<pre><code class="language-powershell"># hello.ps1 - 第一个PowerShell脚本
+
+# 输出文本
+Write-Host "Hello, PowerShell World!" -ForegroundColor Green
+
+# 显示系统信息
+Write-Host "`n=== 系统信息 ===" -ForegroundColor Cyan
+Write-Host "计算机名: $env:COMPUTERNAME"
+Write-Host "用户名: $env:USERNAME"
+Write-Host "当前时间: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
+Write-Host "PowerShell版本: $($PSVersionTable.PSVersion)"
+Write-Host "当前目录: $PWD"
+
+# 暂停（等待用户按键）
+Read-Host "`n按回车键退出"
+</code></pre>
+<p><strong>运行脚本</strong></p>
+<pre><code class="language-powershell"># 方法1: 相对路径
+.\hello.ps1
+
+# 方法2: 绝对路径
+C:\Scripts\hello.ps1
+
+# 方法3: 使用&amp;调用运算符
+&amp; "C:\Scripts\hello.ps1"
+
+# 方法4: 使用点源操作（在当前作用域执行）
+. .\hello.ps1
+</code></pre>
+<hr />
+<h2 id="第二章基础语法"><a class="header" href="#第二章基础语法">第二章：基础语法</a></h2>
+<h3 id="21-变量"><a class="header" href="#21-变量">2.1 变量</a></h3>
+<p><strong>变量定义与使用</strong></p>
+<pre><code class="language-powershell"># 基本变量定义
+$name = "张三"
+$age = 25
+$salary = 8000.50
+$isActive = $true
+
+# PowerShell变量不需要声明类型
+# 但可以指定类型
+[string]$city = "北京"
+[int]$count = 100
+[datetime]$today = Get-Date
+
+# 查看变量值
+$name
+Write-Host "姓名: $name"
+
+# 变量拼接
+$fullInfo = "姓名: $name, 年龄: $age, 城市: $city"
+Write-Host $fullInfo
+
+# 变量作用域
+$globalVar = "全局变量"          # 脚本作用域
+function Test {
+    $localVar = "局部变量"       # 函数作用域
+    $global:globalVar = "修改全局"
+}
+</code></pre>
+<p><strong>特殊变量</strong></p>
+<pre><code class="language-powershell"># 自动变量
+$PSVersionTable    # PowerShell版本信息
+$HOME              # 用户主目录
+$PWD               # 当前工作目录
+$PROFILE           # 配置文件路径
+$_                 # 当前管道对象
+$?                 # 上一个命令执行状态
+$LASTEXITCODE      # 上一个程序退出代码
+$args              # 函数参数数组
+$Error             # 错误对象数组
+
+# 环境变量
+$env:PATH          # 系统PATH
+$env:COMPUTERNAME  # 计算机名
+$env:USERNAME      # 用户名
+$env:TEMP          # 临时目录
+
+# 偏好变量
+$ErrorActionPreference = "Stop"     # 错误时停止
+$VerbosePreference = "Continue"     # 显示详细信息
+$DebugPreference = "Continue"       # 显示调试信息
+</code></pre>
+<h3 id="22-数据类型"><a class="header" href="#22-数据类型">2.2 数据类型</a></h3>
+<p><strong>字符串</strong></p>
+<pre><code class="language-powershell"># 单引号字符串（字面值）
+$str1 = 'Hello, World!'
+$str1 = 'Price: $100'  # 不会解析变量
+
+# 双引号字符串（可解析变量）
+$name = "PowerShell"
+$str2 = "Hello, $name!"
+
+# Here-String（多行字符串）
+$multiline = @"
+这是第一行
+这是第二行
+变量值: $name
+"@
+
+# 字符串操作
+$text = "PowerShell"
+$text.Length                    # 长度: 10
+$text.ToUpper()                 # 大写: POWERSHELL
+$text.ToLower()                 # 小写: powershell
+$text.Substring(0, 5)           # 截取: Power
+$text.Replace("Shell", "Core")  # 替换: PowerCore
+$text.Contains("Shell")         # 包含: True
+$text.StartsWith("Power")       # 开头: True
+$text.EndsWith("Shell")         # 结尾: True
+$text.Split("e")                # 分割: Pow rSh ll
+
+# 字符串格式化
+$name = "张三"
+$age = 25
+"姓名: {0}, 年龄: {1}" -f $name, $age
+"姓名: $name, 年龄: $age"
+
+# 字符串比较（不区分大小写）
+"abc" -eq "ABC"                 # True
+"abc" -ceq "ABC"                # False (区分大小写)
+"abc" -like "a*"                # True (通配符)
+"abc" -match "^a"               # True (正则)
+</code></pre>
+<p><strong>数组</strong></p>
+<pre><code class="language-powershell"># 创建数组
+$array1 = @(1, 2, 3, 4, 5)
+$array2 = 1..10                 # 范围操作符
+$array3 = @("apple", "banana", "orange")
+$empty = @()                    # 空数组
+
+# 访问元素
+$array1[0]                      # 第一个元素: 1
+$array1[-1]                     # 最后一个元素: 5
+$array1[0..2]                   # 范围: 1, 2, 3
+$array1[0,2,4]                  # 指定索引: 1, 3, 5
+
+# 数组操作
+$array1.Length                  # 长度: 5
+$array1 += 6                    # 追加元素
+$array1 = $array1 + $array2     # 合并数组
+$array1 -contains 3             # 包含判断: True
+$array1 -join ", "              # 连接: "1, 2, 3, 4, 5"
+
+# 遍历数组
+foreach ($item in $array3) {
+    Write-Host "水果: $item"
+}
+
+# 数组过滤
+$numbers = 1..10
+$evens = $numbers | Where-Object { $_ % 2 -eq 0 }
+
+# 数组排序
+$sorted = $array1 | Sort-Object
+$descending = $array1 | Sort-Object -Descending
+</code></pre>
+<p><strong>哈希表（字典）</strong></p>
+<pre><code class="language-powershell"># 创建哈希表
+$user = @{
+    Name = "张三"
+    Age = 25
+    City = "北京"
+    Email = "zhangsan@example.com"
+}
+
+# 访问值
+$user.Name
+$user["Name"]
+$user.Age
+
+# 添加/修改键值对
+$user.Phone = "13800138000"
+$user["Department"] = "IT"
+$user.Age = 26
+
+# 删除键
+$user.Remove("Phone")
+
+# 遍历哈希表
+foreach ($key in $user.Keys) {
+    Write-Host "$key : $($user[$key])"
+}
+
+# 有序哈希表
+$ordered = [ordered]@{
+    First = 1
+    Second = 2
+    Third = 3
+}
+</code></pre>
+<p><strong>自定义对象</strong></p>
+<pre><code class="language-powershell"># 使用PSCustomObject
+$employee = [PSCustomObject]@{
+    Name = "李四"
+    Age = 30
+    Department = "Sales"
+    Salary = 8000
+}
+
+# 访问属性
+$employee.Name
+$employee.Department
+
+# 添加方法
+$employee | Add-Member -MemberType ScriptMethod -Name GetInfo -Value {
+    return "姓名: $($this.Name), 部门: $($this.Department)"
+}
+
+$employee.GetInfo()
+
+# 创建对象数组
+$employees = @(
+    [PSCustomObject]@{Name="张三"; Age=25; Dept="IT"}
+    [PSCustomObject]@{Name="李四"; Age=30; Dept="Sales"}
+    [PSCustomObject]@{Name="王五"; Age=28; Dept="HR"}
+)
+
+# 筛选和排序
+$employees | Where-Object Age -gt 26
+$employees | Sort-Object Age
+$employees | Select-Object Name, Dept
+</code></pre>
+<h3 id="23-运算符"><a class="header" href="#23-运算符">2.3 运算符</a></h3>
+<p><strong>算术运算符</strong></p>
+<pre><code class="language-powershell"># 基本运算
+10 + 5          # 加法: 15
+10 - 5          # 减法: 5
+10 * 5          # 乘法: 50
+10 / 5          # 除法: 2
+10 % 3          # 取模: 1
+
+# 赋值运算
+$x = 10
+$x += 5         # $x = 15
+$x -= 3         # $x = 12
+$x *= 2         # $x = 24
+$x /= 4         # $x = 6
+$x++            # $x = 7
+$x--            # $x = 6
+</code></pre>
+<p><strong>比较运算符</strong></p>
+<pre><code class="language-powershell"># 数值比较
+5 -eq 5         # 等于: True
+5 -ne 6         # 不等于: True
+5 -gt 3         # 大于: True
+5 -ge 5         # 大于等于: True
+5 -lt 10        # 小于: True
+5 -le 5         # 小于等于: True
+
+# 字符串比较（不区分大小写）
+"abc" -eq "ABC"             # True
+"abc" -ne "xyz"             # True
+"abc" -ceq "ABC"            # False (区分大小写)
+
+# 匹配运算符
+"PowerShell" -like "Power*"         # True
+"PowerShell" -notlike "Bash*"       # True
+"PowerShell" -match "^Power"        # True (正则)
+"test@email.com" -match '\w+@\w+'  # True
+</code></pre>
+<p><strong>逻辑运算符</strong></p>
+<pre><code class="language-powershell"># 逻辑与或非
+($true -and $true)          # True
+($true -or $false)          # True
+(-not $false)               # True
+!$false                     # True
+
+# 组合条件
+($age -gt 18) -and ($age -lt 65)
+($role -eq "Admin") -or ($role -eq "Manager")
+</code></pre>
+<hr />
+<h2 id="第三章核心cmdlet"><a class="header" href="#第三章核心cmdlet">第三章：核心Cmdlet</a></h2>
+<h3 id="31-文件系统操作"><a class="header" href="#31-文件系统操作">3.1 文件系统操作</a></h3>
+<p><strong>Get-ChildItem（列出文件）</strong></p>
+<pre><code class="language-powershell"># 基本用法（别名: ls, dir, gci）
+Get-ChildItem
+Get-ChildItem C:\Users
+
+# 递归列出
+Get-ChildItem -Path C:\Scripts -Recurse
+
+# 筛选文件
+Get-ChildItem -Path C:\Scripts -Filter *.ps1
+Get-ChildItem -Path C:\Scripts -Include *.ps1, *.psm1 -Recurse
+Get-ChildItem -Path C:\Scripts -Exclude *.txt
+
+# 只显示目录
+Get-ChildItem -Directory
+
+# 只显示文件
+Get-ChildItem -File
+
+# 包含隐藏文件
+Get-ChildItem -Force
+
+# 实战示例：查找大文件
+Get-ChildItem -Path C:\ -Recurse -File |
+    Where-Object Length -gt 100MB |
+    Sort-Object Length -Descending |
+    Select-Object -First 10 FullName, @{Name="Size(MB)"; Expression={[math]::Round($_.Length/1MB, 2)}}
+</code></pre>
+<p><strong>New-Item（创建项）</strong></p>
+<pre><code class="language-powershell"># 创建目录
+New-Item -Path "C:\Scripts\NewFolder" -ItemType Directory
+
+# 创建文件
+New-Item -Path "C:\Scripts\test.txt" -ItemType File
+
+# 创建并写入内容
+New-Item -Path "C:\Scripts\config.txt" -ItemType File -Value "Config content"
+
+# 强制创建（覆盖）
+New-Item -Path "C:\Scripts\test.txt" -ItemType File -Force
+
+# 创建多级目录
+New-Item -Path "C:\Scripts\Level1\Level2\Level3" -ItemType Directory -Force
+</code></pre>
+<p><strong>Copy-Item（复制）</strong></p>
+<pre><code class="language-powershell"># 复制文件
+Copy-Item -Path "source.txt" -Destination "dest.txt"
+
+# 复制目录
+Copy-Item -Path "C:\Source" -Destination "C:\Dest" -Recurse
+
+# 复制多个文件
+Copy-Item -Path "C:\Scripts\*.ps1" -Destination "D:\Backup\"
+
+# 强制覆盖
+Copy-Item -Path "source.txt" -Destination "dest.txt" -Force
+</code></pre>
+<p><strong>Move-Item（移动）</strong></p>
+<pre><code class="language-powershell"># 移动文件
+Move-Item -Path "old.txt" -Destination "new.txt"
+
+# 移动目录
+Move-Item -Path "C:\OldFolder" -Destination "C:\NewFolder"
+
+# 重命名（移动到相同目录）
+Move-Item -Path "old_name.txt" -Destination "new_name.txt"
+</code></pre>
+<p><strong>Remove-Item（删除）</strong></p>
+<pre><code class="language-powershell"># 删除文件
+Remove-Item -Path "file.txt"
+
+# 删除目录（递归）
+Remove-Item -Path "C:\Folder" -Recurse
+
+# 强制删除
+Remove-Item -Path "C:\Folder" -Recurse -Force
+
+# 删除前确认
+Remove-Item -Path "important.txt" -Confirm
+
+# 删除匹配的文件
+Remove-Item -Path "C:\Temp\*.tmp"
+</code></pre>
+<p><strong>Test-Path（测试路径）</strong></p>
+<pre><code class="language-powershell"># 测试文件是否存在
+if (Test-Path -Path "C:\file.txt") {
+    Write-Host "文件存在"
+}
+
+# 测试目录是否存在
+Test-Path -Path "C:\Folder" -PathType Container
+
+# 测试文件类型
+Test-Path -Path "C:\file.txt" -PathType Leaf
+</code></pre>
+<h3 id="32-进程管理"><a class="header" href="#32-进程管理">3.2 进程管理</a></h3>
+<p><strong>Get-Process（获取进程）</strong></p>
+<pre><code class="language-powershell"># 列出所有进程
+Get-Process
+
+# 按名称查找
+Get-Process -Name "chrome"
+Get-Process chrome  # 简写
+
+# 按ID查找
+Get-Process -Id 1234
+
+# 查找多个进程
+Get-Process -Name chrome, firefox, notepad
+
+# 显示详细信息
+Get-Process | Select-Object Name, Id, CPU, WorkingSet
+
+# 实战示例：查找占用内存最多的进程
+Get-Process |
+    Sort-Object WorkingSet -Descending |
+    Select-Object -First 10 Name, Id,
+        @{Name="Memory(MB)"; Expression={[math]::Round($_.WorkingSet/1MB, 2)}}
+</code></pre>
+<p><strong>Stop-Process（停止进程）</strong></p>
+<pre><code class="language-powershell"># 按名称停止
+Stop-Process -Name "notepad"
+
+# 按ID停止
+Stop-Process -Id 1234
+
+# 强制停止
+Stop-Process -Name "chrome" -Force
+
+# 停止多个进程
+Get-Process -Name "chrome" | Stop-Process
+</code></pre>
+<p><strong>Start-Process（启动进程）</strong></p>
+<pre><code class="language-powershell"># 启动程序
+Start-Process "notepad.exe"
+
+# 启动并指定参数
+Start-Process "notepad.exe" -ArgumentList "C:\file.txt"
+
+# 以管理员身份运行
+Start-Process "powershell.exe" -Verb RunAs
+
+# 等待进程结束
+Start-Process "notepad.exe" -Wait
+
+# 启动并隐藏窗口
+Start-Process "cmd.exe" -WindowStyle Hidden
+</code></pre>
+<h3 id="33-服务管理"><a class="header" href="#33-服务管理">3.3 服务管理</a></h3>
+<p><strong>Get-Service（获取服务）</strong></p>
+<pre><code class="language-powershell"># 列出所有服务
+Get-Service
+
+# 按名称查找
+Get-Service -Name "wuauserv"
+
+# 使用通配符
+Get-Service -Name "win*"
+
+# 按状态筛选
+Get-Service | Where-Object Status -eq "Running"
+Get-Service | Where-Object Status -eq "Stopped"
+
+# 显示详细信息
+Get-Service | Select-Object Name, DisplayName, Status, StartType
+</code></pre>
+<p><strong>Start-Service / Stop-Service（启动/停止服务）</strong></p>
+<pre><code class="language-powershell"># 启动服务
+Start-Service -Name "wuauserv"
+
+# 停止服务
+Stop-Service -Name "wuauserv"
+
+# 重启服务
+Restart-Service -Name "wuauserv"
+
+# 设置服务启动类型
+Set-Service -Name "wuauserv" -StartupType Automatic
+# 启动类型: Automatic, Manual, Disabled
+</code></pre>
+<h3 id="34-网络操作"><a class="header" href="#34-网络操作">3.4 网络操作</a></h3>
+<p><strong>Test-Connection（Ping）</strong></p>
+<pre><code class="language-powershell"># 基本ping
+Test-Connection -ComputerName "www.baidu.com"
+
+# 指定次数
+Test-Connection -ComputerName "192.168.1.1" -Count 4
+
+# 静默模式（仅返回布尔值）
+Test-Connection -ComputerName "8.8.8.8" -Quiet
+
+# Ping多台主机
+"www.baidu.com", "www.bing.com" | Test-Connection -Count 2
+</code></pre>
+<p><strong>Invoke-WebRequest（HTTP请求）</strong></p>
+<pre><code class="language-powershell"># GET请求
+$response = Invoke-WebRequest -Uri "https://api.github.com"
+$response.StatusCode
+$response.Content
+
+# POST请求
+$body = @{
+    name = "test"
+    value = "123"
+} | ConvertTo-Json
+
+Invoke-WebRequest -Uri "https://api.example.com/data" -Method POST -Body $body -ContentType "application/json"
+
+# 下载文件
+Invoke-WebRequest -Uri "https://example.com/file.zip" -OutFile "C:\Downloads\file.zip"
+
+# 使用代理
+Invoke-WebRequest -Uri "https://example.com" -Proxy "http://proxy:8080"
+</code></pre>
+<hr />
+<h2 id="第四章管道与对象"><a class="header" href="#第四章管道与对象">第四章：管道与对象</a></h2>
+<h3 id="41-管道基础"><a class="header" href="#41-管道基础">4.1 管道基础</a></h3>
+<p><strong>理解PowerShell管道</strong></p>
+<pre><code class="language-powershell"># Bash管道（传递文本）
+# ls -l | grep ".txt"
+
+# PowerShell管道（传递对象）
+Get-ChildItem | Where-Object Extension -eq ".txt"
+
+# 查看管道对象类型
+Get-Process | Get-Member
+
+# 对象属性和方法
+$proc = Get-Process -Name "powershell" | Select-Object -First 1
+$proc.Name          # 属性
+$proc.Kill()        # 方法
+</code></pre>
+<p><strong>常用管道Cmdlet</strong></p>
+<pre><code class="language-powershell"># Where-Object（筛选）
+Get-Process | Where-Object CPU -gt 100
+Get-Service | Where-Object {$_.Status -eq "Running" -and $_.StartType -eq "Automatic"}
+
+# Select-Object（选择属性）
+Get-Process | Select-Object Name, Id, CPU
+Get-Process | Select-Object -First 5
+Get-Process | Select-Object -Last 3
+Get-Process | Select-Object -Unique Name
+
+# Sort-Object（排序）
+Get-Process | Sort-Object CPU
+Get-Process | Sort-Object CPU -Descending
+Get-Process | Sort-Object CPU, WorkingSet
+
+# ForEach-Object（循环处理）
+Get-ChildItem | ForEach-Object {
+    Write-Host "文件: $($_.Name), 大小: $($_.Length)"
+}
+
+# 简写形式
+Get-Process | ForEach-Object Name
+Get-Process | % { $_.Name }  # % 是 ForEach-Object 的别名
+
+# Group-Object（分组）
+Get-Service | Group-Object Status
+Get-Process | Group-Object Company
+
+# Measure-Object（统计）
+Get-ChildItem | Measure-Object -Property Length -Sum -Average -Maximum -Minimum
+</code></pre>
+<h3 id="42-对象操作"><a class="header" href="#42-对象操作">4.2 对象操作</a></h3>
+<p><strong>创建和操作自定义对象</strong></p>
+<pre><code class="language-powershell"># 创建对象
+$server = [PSCustomObject]@{
+    Name = "Server01"
+    IP = "192.168.1.100"
+    Status = "Online"
+    LastChecked = Get-Date
+}
+
+# 访问属性
+$server.Name
+$server.IP
+
+# 修改属性
+$server.Status = "Offline"
+
+# 添加属性
+$server | Add-Member -MemberType NoteProperty -Name "Location" -Value "北京"
+
+# 添加方法
+$server | Add-Member -MemberType ScriptMethod -Name "GetInfo" -Value {
+    return "服务器: $($this.Name), IP: $($this.IP), 状态: $($this.Status)"
+}
+
+$server.GetInfo()
+</code></pre>
+<p><strong>对象转换</strong></p>
+<pre><code class="language-powershell"># 对象转JSON
+$data = @{
+    Name = "Test"
+    Value = 123
+    Items = @("A", "B", "C")
+}
+
+$json = $data | ConvertTo-Json
+Write-Host $json
+
+# JSON转对象
+$jsonString = '{"Name":"Test","Value":123}'
+$obj = $jsonString | ConvertFrom-Json
+$obj.Name
+
+# 对象转CSV
+$processes = Get-Process | Select-Object -First 5 Name, Id, CPU
+$processes | Export-Csv -Path "processes.csv" -NoTypeInformation
+
+# CSV转对象
+$data = Import-Csv -Path "processes.csv"
+
+# 对象转HTML
+$services = Get-Service | Select-Object -First 10
+$services | ConvertTo-Html | Out-File "services.html"
+
+# 对象转XML
+$data | Export-Clixml -Path "data.xml"
+$imported = Import-Clixml -Path "data.xml"
+</code></pre>
+<p><strong>实战案例：系统信息收集</strong></p>
+<pre><code class="language-powershell"># system_info.ps1 - 收集系统信息并生成报告
+
+# 收集各类信息
+$computerInfo = [PSCustomObject]@{
+    ComputerName = $env:COMPUTERNAME
+    OSVersion = (Get-CimInstance Win32_OperatingSystem).Caption
+    Manufacturer = (Get-CimInstance Win32_ComputerSystem).Manufacturer
+    Model = (Get-CimInstance Win32_ComputerSystem).Model
+    Processor = (Get-CimInstance Win32_Processor).Name
+    TotalRAM = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory/1GB, 2)
+    FreeRAM = [math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB, 2)
+    DiskInfo = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" |
+        Select-Object DeviceID,
+            @{Name="Size(GB)"; Expression={[math]::Round($_.Size/1GB, 2)}},
+            @{Name="Free(GB)"; Expression={[math]::Round($_.FreeSpace/1GB, 2)}},
+            @{Name="UsedPercent"; Expression={[math]::Round(($_.Size - $_.FreeSpace)/$_.Size * 100, 2)}}
+    Services = (Get-Service | Where-Object Status -eq "Running").Count
+    Processes = (Get-Process).Count
+    CollectionTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+}
+
+# 输出为JSON
+$computerInfo | ConvertTo-Json -Depth 3 | Out-File "system_info.json"
+
+# 输出为HTML报告
+$html = $computerInfo | ConvertTo-Html -Title "系统信息报告" -PreContent "&lt;h1&gt;系统信息报告&lt;/h1&gt;"
+$html | Out-File "system_info.html"
+
+Write-Host "系统信息已收集完成" -ForegroundColor Green
+</code></pre>
+<hr />
+<h2 id="第五章脚本编程"><a class="header" href="#第五章脚本编程">第五章：脚本编程</a></h2>
+<h3 id="51-控制结构"><a class="header" href="#51-控制结构">5.1 控制结构</a></h3>
+<p><strong>If-Else条件语句</strong></p>
+<pre><code class="language-powershell"># 基本if语句
+$age = 20
+
+if ($age -ge 18) {
+    Write-Host "成年人"
+}
+
+# if-else
+if ($age -ge 18) {
+    Write-Host "成年人"
+} else {
+    Write-Host "未成年"
+}
+
+# if-elseif-else
+if ($age -ge 60) {
+    Write-Host "老年人"
+} elseif ($age -ge 18) {
+    Write-Host "成年人"
+} elseif ($age -ge 13) {
+    Write-Host "青少年"
+} else {
+    Write-Host "儿童"
+}
+
+# 复杂条件
+$role = "Admin"
+$isActive = $true
+
+if (($role -eq "Admin") -and $isActive) {
+    Write-Host "管理员已激活"
+}
+
+# 使用-not或!
+if (-not (Test-Path "C:\file.txt")) {
+    Write-Host "文件不存在"
+}
+</code></pre>
+<p><strong>Switch语句</strong></p>
+<pre><code class="language-powershell"># 基本switch
+$day = "Monday"
+
+switch ($day) {
+    "Monday"    { Write-Host "星期一" }
+    "Tuesday"   { Write-Host "星期二" }
+    "Wednesday" { Write-Host "星期三" }
+    default     { Write-Host "其他" }
+}
+
+# Switch with 多个条件
+$number = 5
+
+switch ($number) {
+    {$_ -lt 0}       { Write-Host "负数" }
+    {$_ -eq 0}       { Write-Host "零" }
+    {$_ -gt 0}       { Write-Host "正数" }
+    {$_ % 2 -eq 0}   { Write-Host "偶数" }
+    {$_ % 2 -ne 0}   { Write-Host "奇数" }
+}
+
+# Switch with 正则表达式
+$email = "test@example.com"
+
+switch -Regex ($email) {
+    '@gmail\.com$'   { Write-Host "Gmail用户" }
+    '@.*\.com$'      { Write-Host "com域名" }
+    '^\w+@\w+\.\w+$' { Write-Host "有效邮箱格式" }
+}
+
+# Switch with 文件
+switch -File "C:\config.txt" {
+    {$_ -match "^#"}     { continue }  # 跳过注释
+    {$_ -match "^$"}     { continue }  # 跳过空行
+    {$_ -match "^\w+="}  { Write-Host "配置: $_" }
+}
+</code></pre>
+<h3 id="52-循环结构"><a class="header" href="#52-循环结构">5.2 循环结构</a></h3>
+<p><strong>For循环</strong></p>
+<pre><code class="language-powershell"># 基本for循环
+for ($i = 0; $i -lt 10; $i++) {
+    Write-Host "计数: $i"
+}
+
+# 步长循环
+for ($i = 0; $i -le 100; $i += 10) {
+    Write-Host $i
+}
+
+# 倒序循环
+for ($i = 10; $i -ge 0; $i--) {
+    Write-Host $i
+}
+</code></pre>
+<p><strong>ForEach循环</strong></p>
+<pre><code class="language-powershell"># 遍历数组
+$fruits = @("apple", "banana", "orange")
+
+foreach ($fruit in $fruits) {
+    Write-Host "水果: $fruit"
+}
+
+# 遍历文件
+foreach ($file in Get-ChildItem "C:\Scripts" -Filter "*.ps1") {
+    Write-Host "脚本: $($file.Name)"
+}
+
+# 遍历哈希表
+$user = @{
+    Name = "张三"
+    Age = 25
+    City = "北京"
+}
+
+foreach ($key in $user.Keys) {
+    Write-Host "$key = $($user[$key])"
+}
+</code></pre>
+<p><strong>While循环</strong></p>
+<pre><code class="language-powershell"># 基本while
+$count = 0
+
+while ($count -lt 5) {
+    Write-Host "计数: $count"
+    $count++
+}
+
+# 无限循环（需要break退出）
+while ($true) {
+    $input = Read-Host "输入命令 (q退出)"
+    if ($input -eq "q") {
+        break
+    }
+    Write-Host "您输入了: $input"
+}
+</code></pre>
+<p><strong>Do-While / Do-Until循环</strong></p>
+<pre><code class="language-powershell"># Do-While（至少执行一次）
+$i = 0
+do {
+    Write-Host "i = $i"
+    $i++
+} while ($i -lt 5)
+
+# Do-Until（条件为假时继续）
+$i = 0
+do {
+    Write-Host "i = $i"
+    $i++
+} until ($i -ge 5)
+</code></pre>
+<p><strong>Break和Continue</strong></p>
+<pre><code class="language-powershell"># Break - 跳出循环
+for ($i = 0; $i -lt 10; $i++) {
+    if ($i -eq 5) {
+        break
+    }
+    Write-Host $i
+}
+
+# Continue - 跳过当前迭代
+for ($i = 0; $i -lt 10; $i++) {
+    if ($i % 2 -eq 0) {
+        continue
+    }
+    Write-Host "奇数: $i"
+}
+</code></pre>
+<h3 id="53-函数"><a class="header" href="#53-函数">5.3 函数</a></h3>
+<p><strong>函数定义</strong></p>
+<pre><code class="language-powershell"># 基本函数
+function Say-Hello {
+    Write-Host "Hello, World!"
+}
+
+Say-Hello
+
+# 带参数的函数
+function Greet {
+    param(
+        [string]$Name
+    )
+    Write-Host "Hello, $Name!"
+}
+
+Greet -Name "张三"
+
+# 带返回值的函数
+function Add-Numbers {
+    param(
+        [int]$Num1,
+        [int]$Num2
+    )
+    return $Num1 + $Num2
+}
+
+$result = Add-Numbers -Num1 10 -Num2 20
+Write-Host "结果: $result"
+</code></pre>
+<p><strong>高级函数</strong></p>
+<pre><code class="language-powershell"># 带完整参数定义的高级函数
+function Get-UserInfo {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Username,
+
+        [Parameter(Mandatory=$false)]
+        [int]$Age = 0,
+
+        [Parameter()]
+        [ValidateSet("IT", "HR", "Sales")]
+        [string]$Department = "IT",
+
+        [switch]$Detailed
+    )
+
+    $info = [PSCustomObject]@{
+        Username = $Username
+        Age = $Age
+        Department = $Department
+    }
+
+    if ($Detailed) {
+        $info | Add-Member -NotePropertyName "CreatedDate" -NotePropertyValue (Get-Date)
+    }
+
+    return $info
+}
+
+# 使用示例
+Get-UserInfo -Username "zhangsan" -Age 25 -Department "IT" -Detailed
+</code></pre>
+<p><strong>参数验证</strong></p>
+<pre><code class="language-powershell">function Test-Parameters {
+    param(
+        # 必需参数
+        [Parameter(Mandatory=$true)]
+        [string]$Name,
+
+        # 范围验证
+        [ValidateRange(18, 65)]
+        [int]$Age,
+
+        # 长度验证
+        [ValidateLength(6, 20)]
+        [string]$Password,
+
+        # 模式验证
+        [ValidatePattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')]
+        [string]$Email,
+
+        # 集合验证
+        [ValidateSet("Red", "Green", "Blue")]
+        [string]$Color,
+
+        # 脚本验证
+        [ValidateScript({Test-Path $_})]
+        [string]$FilePath
+    )
+
+    Write-Host "参数验证通过"
+}
+</code></pre>
+<p><strong>管道支持</strong></p>
+<pre><code class="language-powershell">function Process-Item {
+    [CmdletBinding()]
+    param(
+        [Parameter(ValueFromPipeline=$true)]
+        [string]$InputObject
+    )
+
+    begin {
+        Write-Host "开始处理"
+    }
+
+    process {
+        Write-Host "处理: $InputObject"
+    }
+
+    end {
+        Write-Host "处理完成"
+    }
+}
+
+# 使用管道
+"Item1", "Item2", "Item3" | Process-Item
+</code></pre>
+<h3 id="54-错误处理"><a class="header" href="#54-错误处理">5.4 错误处理</a></h3>
+<p><strong>Try-Catch-Finally</strong></p>
+<pre><code class="language-powershell"># 基本错误处理
+try {
+    Get-Content "C:\nonexistent.txt" -ErrorAction Stop
+} catch {
+    Write-Host "发生错误: $($_.Exception.Message)" -ForegroundColor Red
+}
+
+# 捕获特定异常
+try {
+    $result = 1 / 0
+} catch [System.DivideByZeroException] {
+    Write-Host "除数不能为零"
+} catch {
+    Write-Host "其他错误: $_"
+}
+
+# Finally块（总是执行）
+try {
+    $file = [System.IO.File]::OpenRead("C:\file.txt")
+    # 处理文件
+} catch {
+    Write-Host "文件处理错误: $_"
+} finally {
+    if ($file) {
+        $file.Close()
+        Write-Host "文件已关闭"
+    }
+}
+</code></pre>
+<p><strong>错误处理首选项</strong></p>
+<pre><code class="language-powershell"># ErrorActionPreference 变量
+$ErrorActionPreference = "Stop"      # 遇错即停
+$ErrorActionPreference = "Continue"  # 显示错误但继续（默认）
+$ErrorActionPreference = "SilentlyContinue"  # 静默忽略错误
+$ErrorActionPreference = "Inquire"   # 询问用户
+
+# 单个Cmdlet的ErrorAction
+Get-Content "nonexistent.txt" -ErrorAction SilentlyContinue
+Get-Content "nonexistent.txt" -ErrorAction Stop
+
+# 错误变量
+Get-Content "nonexistent.txt" -ErrorAction SilentlyContinue -ErrorVariable err
+if ($err) {
+    Write-Host "捕获到错误: $err"
+}
+
+# 访问错误对象
+$Error[0]                    # 最近的错误
+$Error.Count                 # 错误数量
+$Error.Clear()               # 清空错误
+</code></pre>
+<p><strong>实战案例：健壮的文件处理函数</strong></p>
+<pre><code class="language-powershell">function Copy-FileSafe {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateScript({Test-Path $_})]
+        [string]$Source,
+
+        [Parameter(Mandatory=$true)]
+        [string]$Destination,
+
+        [switch]$Force
+    )
+
+    try {
+        # 验证源文件
+        if (-not (Test-Path $Source)) {
+            throw "源文件不存在: $Source"
+        }
+
+        # 检查目标目录
+        $destDir = Split-Path $Destination -Parent
+        if (-not (Test-Path $destDir)) {
+            New-Item -Path $destDir -ItemType Directory -Force | Out-Null
+            Write-Verbose "已创建目标目录: $destDir"
+        }
+
+        # 检查目标文件是否存在
+        if ((Test-Path $Destination) -and -not $Force) {
+            $response = Read-Host "目标文件已存在，是否覆盖? (Y/N)"
+            if ($response -ne "Y") {
+                Write-Host "操作已取消"
+                return
+            }
+        }
+
+        # 执行复制
+        Copy-Item -Path $Source -Destination $Destination -Force
+        Write-Host "文件已成功复制到: $Destination" -ForegroundColor Green
+
+        # 验证复制结果
+        $sourceHash = (Get-FileHash $Source).Hash
+        $destHash = (Get-FileHash $Destination).Hash
+
+        if ($sourceHash -eq $destHash) {
+            Write-Verbose "文件完整性验证通过"
+        } else {
+            throw "文件复制后哈希值不匹配"
+        }
+
+    } catch {
+        Write-Error "复制文件时发生错误: $($_.Exception.Message)"
+        throw
+    }
+}
+
+# 使用示例
+Copy-FileSafe -Source "C:\source.txt" -Destination "D:\backup\source.txt" -Verbose
+</code></pre>
+<hr />
+<h2 id="第六章远程管理"><a class="header" href="#第六章远程管理">第六章：远程管理</a></h2>
+<h3 id="61-powershell-remoting配置"><a class="header" href="#61-powershell-remoting配置">6.1 PowerShell Remoting配置</a></h3>
+<p><strong>启用远程管理</strong></p>
+<pre><code class="language-powershell"># 在目标计算机上启用远程管理（需要管理员权限）
+Enable-PSRemoting -Force
+
+# 配置说明
+# 1. 启动WinRM服务
+# 2. 将WinRM服务设为自动启动
+# 3. 创建HTTP监听器
+# 4. 配置防火墙规则
+
+# 验证配置
+Test-WSMan -ComputerName localhost
+
+# 查看WinRM配置
+Get-Item WSMan:\localhost\Client\TrustedHosts
+
+# 添加信任的主机（非域环境）
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value "192.168.1.100" -Force
+# 或添加所有主机（不推荐）
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value "*" -Force
+</code></pre>
+<h3 id="62-远程会话"><a class="header" href="#62-远程会话">6.2 远程会话</a></h3>
+<p><strong>一对一远程会话</strong></p>
+<pre><code class="language-powershell"># 进入交互式远程会话
+Enter-PSSession -ComputerName "Server01"
+
+# 使用凭据
+$cred = Get-Credential
+Enter-PSSession -ComputerName "Server01" -Credential $cred
+
+# 执行命令后退出
+Exit-PSSession
+
+# 或按 Ctrl+C 退出
+</code></pre>
+<p><strong>一对多远程执行</strong></p>
+<pre><code class="language-powershell"># 在单台计算机上执行命令
+Invoke-Command -ComputerName "Server01" -ScriptBlock {
+    Get-Service | Where-Object Status -eq "Running"
+}
+
+# 在多台计算机上执行
+$servers = "Server01", "Server02", "Server03"
+Invoke-Command -ComputerName $servers -ScriptBlock {
+    Get-Process | Where-Object CPU -gt 100
+}
+
+# 传递参数
+Invoke-Command -ComputerName "Server01" -ScriptBlock {
+    param($ServiceName)
+    Get-Service -Name $ServiceName
+} -ArgumentList "wuauserv"
+
+# 执行本地脚本
+Invoke-Command -ComputerName "Server01" -FilePath "C:\Scripts\Check-System.ps1"
+
+# 使用凭据
+$cred = Get-Credential
+Invoke-Command -ComputerName "Server01" -Credential $cred -ScriptBlock {
+    Get-EventLog -LogName System -Newest 10
+}
+</code></pre>
+<p><strong>持久会话</strong></p>
+<pre><code class="language-powershell"># 创建持久会话
+$session = New-PSSession -ComputerName "Server01"
+
+# 在会话中执行多个命令
+Invoke-Command -Session $session -ScriptBlock {
+    $env:COMPUTERNAME
+}
+
+Invoke-Command -Session $session -ScriptBlock {
+    Get-Service
+}
+
+# 复制文件到远程
+Copy-Item -Path "C:\local\file.txt" -Destination "C:\remote\" -ToSession $session
+
+# 从远程复制文件
+Copy-Item -Path "C:\remote\file.txt" -Destination "C:\local\" -FromSession $session
+
+# 断开会话（但不关闭）
+Disconnect-PSSession -Session $session
+
+# 重新连接
+$session = Get-PSSession -ComputerName "Server01"
+Connect-PSSession -Session $session
+
+# 关闭会话
+Remove-PSSession -Session $session
+</code></pre>
+<h3 id="63-实战案例批量服务器管理"><a class="header" href="#63-实战案例批量服务器管理">6.3 实战案例：批量服务器管理</a></h3>
+<p><strong>批量检查服务器状态</strong></p>
+<pre><code class="language-powershell"># server_health_check.ps1
+
+param(
+    [Parameter(Mandatory=$true)]
+    [string[]]$Servers,
+
+    [PSCredential]$Credential
+)
+
+$results = @()
+
+foreach ($server in $Servers) {
+    Write-Host "检查服务器: $server" -ForegroundColor Cyan
+
+    try {
+        $info = Invoke-Command -ComputerName $server -Credential $Credential -ScriptBlock {
+            # CPU使用率
+            $cpu = (Get-CimInstance Win32_Processor).LoadPercentage
+
+            # 内存使用率
+            $os = Get-CimInstance Win32_OperatingSystem
+            $memPercent = [math]::Round(($os.TotalVisibleMemorySize - $os.FreePhysicalMemory) / $os.TotalVisibleMemorySize * 100, 2)
+
+            # 磁盘使用率
+            $disks = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | ForEach-Object {
+                [PSCustomObject]@{
+                    Drive = $_.DeviceID
+                    UsedPercent = [math]::Round(($_.Size - $_.FreeSpace) / $_.Size * 100, 2)
+                }
+            }
+
+            # 运行服务数
+            $services = (Get-Service | Where-Object Status -eq "Running").Count
+
+            [PSCustomObject]@{
+                ComputerName = $env:COMPUTERNAME
+                CPU = $cpu
+                MemoryPercent = $memPercent
+                Disks = $disks
+                RunningServices = $services
+                CheckTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+                Status = "Online"
+            }
+        } -ErrorAction Stop
+
+        $results += $info
+
+        # 告警检查
+        if ($info.CPU -gt 80) {
+            Write-Warning "$server - CPU使用率过高: $($info.CPU)%"
+        }
+        if ($info.MemoryPercent -gt 90) {
+            Write-Warning "$server - 内存使用率过高: $($info.MemoryPercent)%"
+        }
+
+    } catch {
+        Write-Error "无法连接到 $server : $_"
+        $results += [PSCustomObject]@{
+            ComputerName = $server
+            Status = "Offline"
+            CheckTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+            Error = $_.Exception.Message
+        }
+    }
+}
+
+# 生成报告
+$results | Export-Csv -Path "ServerHealthReport_$(Get-Date -Format 'yyyyMMdd_HHmmss').csv" -NoTypeInformation
+$results | Format-Table -AutoSize
+
+Write-Host "`n检查完成！报告已保存。" -ForegroundColor Green
+</code></pre>
+<p><strong>批量部署配置</strong></p>
+<pre><code class="language-powershell"># deploy_config.ps1
+
+param(
+    [string[]]$Servers,
+    [string]$ConfigFile,
+    [PSCredential]$Credential
+)
+
+# 读取配置文件
+$configContent = Get-Content $ConfigFile -Raw
+
+# 创建会话
+$sessions = New-PSSession -ComputerName $Servers -Credential $Credential
+
+try {
+    # 批量执行部署
+    Invoke-Command -Session $sessions -ScriptBlock {
+        param($Config)
+
+        # 创建目标目录
+        $targetDir = "C:\AppConfig"
+        if (-not (Test-Path $targetDir)) {
+            New-Item -Path $targetDir -ItemType Directory -Force
+        }
+
+        # 写入配置文件
+        $Config | Out-File -FilePath "$targetDir\app.config" -Force
+
+        # 重启相关服务
+        Restart-Service -Name "MyAppService" -Force
+
+        Write-Output "$env:COMPUTERNAME - 配置部署完成"
+
+    } -ArgumentList $configContent
+
+    Write-Host "所有服务器部署完成" -ForegroundColor Green
+
+} finally {
+    # 清理会话
+    Remove-PSSession -Session $sessions
+}
+</code></pre>
+<hr />
+<h2 id="第七章模块与包管理"><a class="header" href="#第七章模块与包管理">第七章：模块与包管理</a></h2>
+<h3 id="71-模块基础"><a class="header" href="#71-模块基础">7.1 模块基础</a></h3>
+<p><strong>查找和导入模块</strong></p>
+<pre><code class="language-powershell"># 列出可用模块
+Get-Module -ListAvailable
+
+# 查看已导入的模块
+Get-Module
+
+# 导入模块
+Import-Module ActiveDirectory
+Import-Module -Name "C:\MyModule\MyModule.psm1"
+
+# 查看模块中的命令
+Get-Command -Module ActiveDirectory
+
+# 移除模块
+Remove-Module ActiveDirectory
+</code></pre>
+<p><strong>创建简单模块</strong></p>
+<pre><code class="language-powershell"># MyTools.psm1
+
+function Get-SystemInfo {
+    [PSCustomObject]@{
+        ComputerName = $env:COMPUTERNAME
+        OSVersion = (Get-CimInstance Win32_OperatingSystem).Caption
+        PowerShellVersion = $PSVersionTable.PSVersion
+        Uptime = (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+    }
+}
+
+function Test-IsAdmin {
+    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+    $currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+# 导出函数
+Export-ModuleMember -Function Get-SystemInfo, Test-IsAdmin
+</code></pre>
+<p><strong>模块清单</strong></p>
+<pre><code class="language-powershell"># 创建模块清单
+New-ModuleManifest -Path "MyTools.psd1" `
+    -RootModule "MyTools.psm1" `
+    -ModuleVersion "1.0.0" `
+    -Author "Your Name" `
+    -Description "My PowerShell Tools" `
+    -PowerShellVersion "5.1" `
+    -FunctionsToExport @("Get-SystemInfo", "Test-IsAdmin")
+</code></pre>
+<h3 id="72-powershell-gallery"><a class="header" href="#72-powershell-gallery">7.2 PowerShell Gallery</a></h3>
+<p><strong>使用PowerShell Gallery</strong></p>
+<pre><code class="language-powershell"># 查找模块
+Find-Module -Name "PSReadLine"
+Find-Module -Tag "Active Directory"
+
+# 安装模块
+Install-Module -Name PSReadLine -Scope CurrentUser
+
+# 以管理员身份安装（全局）
+Install-Module -Name PSReadLine -Scope AllUsers
+
+# 更新模块
+Update-Module -Name PSReadLine
+
+# 卸载模块
+Uninstall-Module -Name PSReadLine
+
+# 查看已安装模块
+Get-InstalledModule
+</code></pre>
+<p><strong>常用模块推荐</strong></p>
+<pre><code class="language-powershell"># PSReadLine - 增强命令行编辑
+Install-Module -Name PSReadLine -Force
+
+# Posh-Git - Git集成
+Install-Module -Name posh-git -Force
+
+# PowerShellGet - 模块管理（内置）
+
+# Az - Azure管理
+Install-Module -Name Az -AllowClobber -Scope CurrentUser
+
+# SqlServer - SQL Server管理
+Install-Module -Name SqlServer
+</code></pre>
+<hr />
+<h2 id="第八章高级特性"><a class="header" href="#第八章高级特性">第八章：高级特性</a></h2>
+<h3 id="81-正则表达式"><a class="header" href="#81-正则表达式">8.1 正则表达式</a></h3>
+<p><strong>正则表达式基础</strong></p>
+<pre><code class="language-powershell"># -match 操作符
+"Hello123" -match "^\w+\d+$"  # True
+
+# 捕获组
+$text = "Email: test@example.com"
+if ($text -match "(\w+)@(\w+\.\w+)") {
+    $Matches[0]  # 完整匹配: test@example.com
+    $Matches[1]  # 第一组: test
+    $Matches[2]  # 第二组: example.com
+}
+
+# Select-String（类似grep）
+Get-Content "log.txt" | Select-String -Pattern "error" -CaseSensitive
+
+# 替换
+"Hello World" -replace "World", "PowerShell"
+
+# 正则替换
+$text = "Phone: 123-456-7890"
+$text -replace "(\d{3})-(\d{3})-(\d{4})", "($1) $2-$3"
+# 结果: Phone: (123) 456-7890
+</code></pre>
+<p><strong>实战案例：日志分析</strong></p>
+<pre><code class="language-powershell"># analyze_log.ps1
+
+param(
+    [string]$LogFile
+)
+
+# 匹配模式
+$errorPattern = '\[ERROR\].*'
+$warningPattern = '\[WARNING\].*'
+$ipPattern = '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
+
+# 读取日志
+$content = Get-Content $LogFile
+
+# 统计错误和警告
+$errors = $content | Select-String -Pattern $errorPattern -AllMatches
+$warnings = $content | Select-String -Pattern $warningPattern -AllMatches
+
+Write-Host "错误数量: $($errors.Count)" -ForegroundColor Red
+Write-Host "警告数量: $($warnings.Count)" -ForegroundColor Yellow
+
+# 提取所有IP地址
+$ips = $content | Select-String -Pattern $ipPattern -AllMatches |
+    ForEach-Object { $_.Matches.Value } |
+    Group-Object |
+    Sort-Object Count -Descending
+
+Write-Host "`nTOP 10 IP地址:" -ForegroundColor Cyan
+$ips | Select-Object -First 10 Count, Name | Format-Table -AutoSize
+</code></pre>
+<h3 id="82-并行处理"><a class="header" href="#82-并行处理">8.2 并行处理</a></h3>
+<p><strong>ForEach-Object -Parallel（PowerShell 7+）</strong></p>
+<pre><code class="language-powershell"># 串行处理
+$servers = 1..10 | ForEach-Object { "Server$_" }
+
+$results = $servers | ForEach-Object {
+    Start-Sleep -Seconds 2
+    Test-Connection -ComputerName $_ -Count 1 -Quiet
+}
+
+# 并行处理
+$results = $servers | ForEach-Object -Parallel {
+    Start-Sleep -Seconds 2
+    Test-Connection -ComputerName $_ -Count 1 -Quiet
+} -ThrottleLimit 5
+
+# 并行处理时使用外部变量
+$timeout = 5
+
+$results = $servers | ForEach-Object -Parallel {
+    Test-Connection -ComputerName $_ -Count 1 -Quiet -TimeoutSeconds $using:timeout
+}
+</code></pre>
+<p><strong>后台作业</strong></p>
+<pre><code class="language-powershell"># 启动后台作业
+$job = Start-Job -ScriptBlock {
+    Get-Process | Where-Object CPU -gt 100
+}
+
+# 查看作业状态
+Get-Job
+
+# 等待作业完成
+Wait-Job -Job $job
+
+# 获取作业结果
+$result = Receive-Job -Job $job
+
+# 删除作业
+Remove-Job -Job $job
+
+# 批量作业
+$servers = "Server01", "Server02", "Server03"
+
+$jobs = $servers | ForEach-Object {
+    Start-Job -ScriptBlock {
+        param($Server)
+        Test-Connection -ComputerName $Server -Count 4
+    } -ArgumentList $_
+}
+
+# 等待所有作业完成
+Wait-Job -Job $jobs
+
+# 收集结果
+$results = $jobs | Receive-Job
+
+# 清理
+$jobs | Remove-Job
+</code></pre>
+<h3 id="83-net集成"><a class="header" href="#83-net集成">8.3 .NET集成</a></h3>
+<p><strong>调用.NET类</strong></p>
+<pre><code class="language-powershell"># 使用 [类型] 语法
+[System.DateTime]::Now
+[System.Math]::Pi
+[System.Math]::Round(3.14159, 2)
+
+# 创建.NET对象
+$uri = New-Object System.Uri("https://www.example.com")
+$uri.Host
+$uri.Scheme
+
+# 使用类型加速器
+[datetime]::Now
+[math]::Sqrt(16)
+[string]::IsNullOrEmpty($var)
+
+# 调用静态方法
+[System.IO.Path]::GetFileName("C:\Folder\file.txt")
+[System.IO.Path]::GetExtension("file.txt")
+[System.IO.Directory]::Exists("C:\Folder")
+
+# 文件操作
+$content = [System.IO.File]::ReadAllText("C:\file.txt")
+[System.IO.File]::WriteAllText("C:\output.txt", "Content")
+
+# 正则表达式
+$regex = [regex]::new("^\d+$")
+$regex.IsMatch("12345")
+</code></pre>
+<p><strong>Windows Forms</strong></p>
+<pre><code class="language-powershell"># 加载程序集
+Add-Type -AssemblyName System.Windows.Forms
+
+# 创建窗体
+$form = New-Object System.Windows.Forms.Form
+$form.Text = "PowerShell GUI"
+$form.Size = New-Object System.Drawing.Size(300, 200)
+$form.StartPosition = "CenterScreen"
+
+# 添加按钮
+$button = New-Object System.Windows.Forms.Button
+$button.Location = New-Object System.Drawing.Point(75, 70)
+$button.Size = New-Object System.Drawing.Size(150, 30)
+$button.Text = "点击我"
+$button.Add_Click({
+    [System.Windows.Forms.MessageBox]::Show("你点击了按钮！")
+})
+
+$form.Controls.Add($button)
+
+# 显示窗体
+$form.ShowDialog()
+</code></pre>
+<hr />
+<h2 id="第九章实际应用"><a class="header" href="#第九章实际应用">第九章：实际应用</a></h2>
+<h3 id="91-文件管理工具"><a class="header" href="#91-文件管理工具">9.1 文件管理工具</a></h3>
+<p><strong>批量文件重命名</strong></p>
+<pre><code class="language-powershell"># rename_files.ps1
+
+param(
+    [string]$Path = ".",
+    [string]$Pattern,
+    [string]$Replacement,
+    [switch]$WhatIf
+)
+
+Get-ChildItem -Path $Path -Filter $Pattern | ForEach-Object {
+    $newName = $_.Name -replace $Pattern, $Replacement
+
+    if ($WhatIf) {
+        Write-Host "模拟: $($_.Name) -&gt; $newName"
+    } else {
+        Rename-Item -Path $_.FullName -NewName $newName
+        Write-Host "已重命名: $($_.Name) -&gt; $newName" -ForegroundColor Green
+    }
+}
+</code></pre>
+<p><strong>文件整理工具</strong></p>
+<pre><code class="language-powershell"># organize_files.ps1
+
+param(
+    [string]$SourcePath = ".",
+    [string]$DestinationPath = ".\Organized"
+)
+
+# 创建目标目录
+$categories = @{
+    "Images" = @("*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp")
+    "Documents" = @("*.doc", "*.docx", "*.pdf", "*.txt", "*.xlsx")
+    "Videos" = @("*.mp4", "*.avi", "*.mkv", "*.mov")
+    "Archives" = @("*.zip", "*.rar", "*.7z", "*.tar", "*.gz")
+    "Scripts" = @("*.ps1", "*.bat", "*.cmd", "*.sh")
+}
+
+foreach ($category in $categories.Keys) {
+    $targetDir = Join-Path $DestinationPath $category
+    New-Item -Path $targetDir -ItemType Directory -Force | Out-Null
+}
+
+# 整理文件
+foreach ($category in $categories.Keys) {
+    $targetDir = Join-Path $DestinationPath $category
+
+    foreach ($pattern in $categories[$category]) {
+        Get-ChildItem -Path $SourcePath -Filter $pattern -File | ForEach-Object {
+            $destination = Join-Path $targetDir $_.Name
+
+            Move-Item -Path $_.FullName -Destination $destination
+            Write-Host "已移动: $($_.Name) -&gt; $category" -ForegroundColor Cyan
+        }
+    }
+}
+
+Write-Host "`n文件整理完成！" -ForegroundColor Green
+</code></pre>
+<h3 id="92-系统监控脚本"><a class="header" href="#92-系统监控脚本">9.2 系统监控脚本</a></h3>
+<p><strong>进程监控</strong></p>
+<pre><code class="language-powershell"># process_monitor.ps1
+
+param(
+    [string]$ProcessName,
+    [int]$CheckInterval = 10,
+    [string]$LogFile = "process_monitor.log"
+)
+
+function Write-Log {
+    param([string]$Message)
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    "$timestamp - $Message" | Out-File -FilePath $LogFile -Append
+    Write-Host "[$timestamp] $Message"
+}
+
+Write-Log "开始监控进程: $ProcessName"
+
+while ($true) {
+    $process = Get-Process -Name $ProcessName -ErrorAction SilentlyContinue
+
+    if ($process) {
+        Write-Log "进程运行中 - CPU: $([math]::Round($process.CPU, 2))s, 内存: $([math]::Round($process.WorkingSet/1MB, 2))MB"
+    } else {
+        Write-Log "警告: 进程未运行，尝试重启..."
+
+        try {
+            Start-Process -FilePath "$ProcessName.exe"
+            Write-Log "进程已重启"
+        } catch {
+            Write-Log "错误: 无法重启进程 - $_"
+        }
+    }
+
+    Start-Sleep -Seconds $CheckInterval
+}
+</code></pre>
+<p><strong>磁盘空间监控</strong></p>
+<pre><code class="language-powershell"># disk_monitor.ps1
+
+param(
+    [int]$ThresholdPercent = 90,
+    [string]$EmailTo,
+    [string]$SmtpServer
+)
+
+function Send-Alert {
+    param(
+        [string]$Subject,
+        [string]$Body
+    )
+
+    if ($EmailTo -and $SmtpServer) {
+        Send-MailMessage -To $EmailTo `
+            -From "diskmonitor@company.com" `
+            -Subject $Subject `
+            -Body $Body `
+            -SmtpServer $SmtpServer
+    }
+}
+
+# 检查所有磁盘
+$disks = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3"
+
+foreach ($disk in $disks) {
+    $usedPercent = [math]::Round(($disk.Size - $disk.FreeSpace) / $disk.Size * 100, 2)
+
+    Write-Host "$($disk.DeviceID) - 已使用: $usedPercent%" -ForegroundColor $(
+        if ($usedPercent -gt $ThresholdPercent) { "Red" }
+        elseif ($usedPercent -gt 80) { "Yellow" }
+        else { "Green" }
+    )
+
+    if ($usedPercent -gt $ThresholdPercent) {
+        $message = @"
+警告：磁盘空间不足
+
+驱动器: $($disk.DeviceID)
+总容量: $([math]::Round($disk.Size/1GB, 2)) GB
+剩余空间: $([math]::Round($disk.FreeSpace/1GB, 2)) GB
+使用率: $usedPercent%
+
+请及时清理磁盘空间！
+"@
+
+        Write-Warning $message
+        Send-Alert -Subject "磁盘空间告警 - $($disk.DeviceID)" -Body $message
+    }
+}
+</code></pre>
+<h3 id="93-active-directory管理"><a class="header" href="#93-active-directory管理">9.3 Active Directory管理</a></h3>
+<p><strong>批量创建用户</strong></p>
+<pre><code class="language-powershell"># create_users.ps1
+
+Import-Module ActiveDirectory
+
+$users = Import-Csv -Path "users.csv"
+
+foreach ($user in $users) {
+    $params = @{
+        Name = $user.Name
+        GivenName = $user.FirstName
+        Surname = $user.LastName
+        SamAccountName = $user.Username
+        UserPrincipalName = "$($user.Username)@domain.com"
+        Path = "OU=Users,DC=domain,DC=com"
+        AccountPassword = (ConvertTo-SecureString "P@ssw0rd123" -AsPlainText -Force)
+        Enabled = $true
+        ChangePasswordAtLogon = $true
+    }
+
+    try {
+        New-ADUser @params
+        Write-Host "已创建用户: $($user.Name)" -ForegroundColor Green
+
+        # 添加到组
+        if ($user.Group) {
+            Add-ADGroupMember -Identity $user.Group -Members $user.Username
+            Write-Host "  已添加到组: $($user.Group)"
+        }
+    } catch {
+        Write-Error "创建用户失败: $($user.Name) - $_"
+    }
+}
+</code></pre>
+<p><strong>用户报告</strong></p>
+<pre><code class="language-powershell"># user_report.ps1
+
+Import-Module ActiveDirectory
+
+# 获取所有用户
+$users = Get-ADUser -Filter * -Properties *
+
+# 生成报告
+$report = $users | ForEach-Object {
+    [PSCustomObject]@{
+        用户名 = $_.SamAccountName
+        姓名 = $_.Name
+        邮箱 = $_.EmailAddress
+        部门 = $_.Department
+        职位 = $_.Title
+        创建日期 = $_.Created
+        最后登录 = $_.LastLogonDate
+        密码过期 = $_.PasswordExpired
+        账户状态 = if ($_.Enabled) { "启用" } else { "禁用" }
+    }
+}
+
+# 导出报告
+$report | Export-Csv -Path "AD_Users_Report_$(Get-Date -Format 'yyyyMMdd').csv" -NoTypeInformation -Encoding UTF8
+$report | Out-GridView -Title "Active Directory 用户报告"
+
+Write-Host "报告已生成" -ForegroundColor Green
+</code></pre>
+<h3 id="94-自动化备份"><a class="header" href="#94-自动化备份">9.4 自动化备份</a></h3>
+<p><strong>数据库备份</strong></p>
+<pre><code class="language-powershell"># backup_database.ps1
+
+param(
+    [string]$ServerInstance = "localhost",
+    [string]$Database,
+    [string]$BackupPath = "C:\Backups",
+    [int]$RetentionDays = 7
+)
+
+Import-Module SqlServer
+
+# 创建备份目录
+if (-not (Test-Path $BackupPath)) {
+    New-Item -Path $BackupPath -ItemType Directory -Force
+}
+
+# 生成备份文件名
+$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+$backupFile = Join-Path $BackupPath "${Database}_${timestamp}.bak"
+
+try {
+    # 执行备份
+    Backup-SqlDatabase -ServerInstance $ServerInstance `
+        -Database $Database `
+        -BackupFile $backupFile `
+        -CompressionOption On
+
+    Write-Host "数据库备份成功: $backupFile" -ForegroundColor Green
+
+    # 清理旧备份
+    Get-ChildItem -Path $BackupPath -Filter "*.bak" |
+        Where-Object LastWriteTime -lt (Get-Date).AddDays(-$RetentionDays) |
+        ForEach-Object {
+            Remove-Item $_.FullName -Force
+            Write-Host "已删除旧备份: $($_.Name)"
+        }
+
+} catch {
+    Write-Error "备份失败: $_"
+    exit 1
+}
+</code></pre>
+<hr />
+<h2 id="第十章学习验证与进阶"><a class="header" href="#第十章学习验证与进阶">第十章：学习验证与进阶</a></h2>
+<h3 id="学习成果验证标准"><a class="header" href="#学习成果验证标准">学习成果验证标准</a></h3>
+<p>完成本课程学习后，你应该能够独立完成以下任务：</p>
+<ol>
+<li>
+<p><strong>基础脚本编写</strong>（必须掌握）</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+编写包含变量、条件、循环的脚本</li>
+<li><input disabled="" type="checkbox"/>
+正确使用管道和对象</li>
+<li><input disabled="" type="checkbox"/>
+实现基本的错误处理</li>
+</ul>
+</li>
+<li>
+<p><strong>文件和系统操作</strong>（必须掌握）</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用Cmdlet进行文件系统操作</li>
+<li><input disabled="" type="checkbox"/>
+管理进程和服务</li>
+<li><input disabled="" type="checkbox"/>
+实现系统监控脚本</li>
+</ul>
+</li>
+<li>
+<p><strong>远程管理</strong>（重要）</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置和使用PowerShell Remoting</li>
+<li><input disabled="" type="checkbox"/>
+批量管理远程服务器</li>
+<li><input disabled="" type="checkbox"/>
+使用会话进行复杂任务</li>
+</ul>
+</li>
+<li>
+<p><strong>生产级脚本</strong>（进阶）</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+编写带参数验证的高级函数</li>
+<li><input disabled="" type="checkbox"/>
+实现完善的错误处理机制</li>
+<li><input disabled="" type="checkbox"/>
+创建可复用的模块</li>
+</ul>
+</li>
+<li>
+<p><strong>综合实战项目</strong>（验证）</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+编写一个完整的系统管理工具</li>
+<li><input disabled="" type="checkbox"/>
+实现自动化运维脚本</li>
+<li><input disabled="" type="checkbox"/>
+开发Active Directory管理工具</li>
+</ul>
+</li>
+</ol>
+<h3 id="常见错误与解决方案"><a class="header" href="#常见错误与解决方案">常见错误与解决方案</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>错误类型</th><th>常见原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>执行策略阻止</td><td>默认策略为Restricted</td><td><code>Set-ExecutionPolicy RemoteSigned</code></td></tr>
+<tr><td>权限不足</td><td>需要管理员权限</td><td>以管理员身份运行PowerShell</td></tr>
+<tr><td>远程连接失败</td><td>未启用PSRemoting</td><td><code>Enable-PSRemoting -Force</code></td></tr>
+<tr><td>模块未找到</td><td>模块未安装或未导入</td><td><code>Install-Module</code>或<code>Import-Module</code></td></tr>
+<tr><td>对象属性访问错误</td><td>对象为null</td><td>使用<code>?.</code>安全导航（PS7+）</td></tr>
+<tr><td>编码问题</td><td>默认编码不是UTF-8</td><td>指定<code>-Encoding UTF8</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="最佳实践清单"><a class="header" href="#最佳实践清单">最佳实践清单</a></h3>
+<ul>
+<li>✅ 使用<code>[CmdletBinding()]</code>创建高级函数</li>
+<li>✅ 为参数添加验证属性</li>
+<li>✅ 使用<code>Try-Catch-Finally</code>处理错误</li>
+<li>✅ 使用<code>Write-Verbose</code>和<code>Write-Debug</code>提供诊断信息</li>
+<li>✅ 遵循动词-名词命名约定</li>
+<li>✅ 使用<code>PSCustomObject</code>而不是哈希表返回数据</li>
+<li>✅ 为脚本添加详细的注释和帮助文档</li>
+<li>✅ 使用<code>$PSCmdlet.ShouldProcess()</code>支持<code>-WhatIf</code></li>
+<li>✅ 导出模块时明确指定要导出的函数</li>
+<li>✅ 使用版本控制管理脚本代码</li>
+</ul>
+<h3 id="powershell-vs-bash对比"><a class="header" href="#powershell-vs-bash对比">PowerShell vs Bash对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>PowerShell</th><th>Bash</th></tr></thead><tbody>
+<tr><td>管道传递</td><td>对象</td><td>文本</td></tr>
+<tr><td>跨平台</td><td>Windows/Linux/macOS</td><td>主要是Unix/Linux</td></tr>
+<tr><td>集成能力</td><td>.NET Framework</td><td>Unix工具</td></tr>
+<tr><td>远程管理</td><td>内置PSRemoting</td><td>SSH</td></tr>
+<tr><td>学习曲线</td><td>中等</td><td>相对平缓</td></tr>
+<tr><td>面向对象</td><td>是</td><td>否</td></tr>
+<tr><td>性能</td><td>良好</td><td>优秀</td></tr>
+<tr><td>IDE支持</td><td>VS Code, PowerShell ISE</td><td>VS Code, Vim</td></tr>
+</tbody></table>
+</div>
+<h3 id="进阶学习资源"><a class="header" href="#进阶学习资源">进阶学习资源</a></h3>
+<p><strong>官方文档</strong></p>
+<ul>
+<li><a href="https://docs.microsoft.com/powershell/">PowerShell Documentation</a></li>
+<li><a href="https://www.powershellgallery.com/">PowerShell Gallery</a></li>
+</ul>
+<p><strong>推荐书籍</strong></p>
+<ul>
+<li>《PowerShell实战指南》</li>
+<li>《Windows PowerShell Cookbook》</li>
+<li>《Learn PowerShell Scripting in a Month of Lunches》</li>
+</ul>
+<p><strong>在线资源</strong></p>
+<ul>
+<li><a href="https://powershell.org/">PowerShell.org</a></li>
+<li><a href="https://www.reddit.com/r/PowerShell/">Reddit r/PowerShell</a></li>
+<li><a href="https://ss64.com/ps/">SS64 PowerShell</a></li>
+</ul>
+<p><strong>工具推荐</strong></p>
+<ul>
+<li>Visual Studio Code + PowerShell扩展</li>
+<li>PowerShell ISE（Windows）</li>
+<li>PSScriptAnalyzer（代码分析）</li>
+<li>Pester（测试框架）</li>
+</ul>
+<h3 id="下一步学习建议"><a class="header" href="#下一步学习建议">下一步学习建议</a></h3>
+<ol>
+<li>
+<p><strong>深入Windows管理</strong></p>
+<ul>
+<li>学习Desired State Configuration (DSC)</li>
+<li>掌握Windows Management Instrumentation (WMI)</li>
+<li>了解Windows性能计数器</li>
+</ul>
+</li>
+<li>
+<p><strong>云平台管理</strong></p>
+<ul>
+<li>Azure PowerShell (Az模块)</li>
+<li>AWS Tools for PowerShell</li>
+<li>Google Cloud PowerShell</li>
+</ul>
+</li>
+<li>
+<p><strong>DevOps集成</strong></p>
+<ul>
+<li>Azure DevOps集成</li>
+<li>Git集成和自动化</li>
+<li>CI/CD管道脚本</li>
+</ul>
+</li>
+<li>
+<p><strong>安全强化</strong></p>
+<ul>
+<li>PowerShell Constrained Language Mode</li>
+<li>Just Enough Administration (JEA)</li>
+<li>AppLocker策略</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>PowerShell是Windows系统管理和自动化的强大工具，也是跨平台管理的重要选择。通过本教程的学习，你应该已经掌握了：</p>
+<ul>
+<li>✅ PowerShell的基础语法和核心概念</li>
+<li>✅ 面向对象的管道和对象操作</li>
+<li>✅ 脚本编程和函数开发</li>
+<li>✅ 远程管理和批量操作</li>
+<li>✅ 模块开发和代码复用</li>
+<li>✅ 生产环境脚本开发实践</li>
+</ul>
+<p><strong>记住</strong>：PowerShell的强大在于其面向对象的设计和与.NET的深度集成。掌握了PowerShell，你将能够高效地自动化几乎所有Windows管理任务，并逐步扩展到跨平台环境。</p>
+<p><strong>祝你学习顺利！</strong> 🚀</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/script/makefile.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/script/xmake.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/script/makefile.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/script/xmake.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

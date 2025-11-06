@@ -1,0 +1,515 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>XMake 技术笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="xmake-技术笔记"><a class="header" href="#xmake-技术笔记">XMake 技术笔记</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>XMake是一个基于Lua的轻量级现代化C/C++构建工具，使用xmake.lua维护项目构建，相比makefile/CMakeLists.txt，配置语法更加简洁直观，对新手非常友好，短时间内就能快速入门，能够让用户把更多的精力集中在实际的项目开发上。</p>
+<h3 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h3>
+<ul>
+<li>简洁直观的配置语法</li>
+<li>跨平台支持（Windows、macOS、Linux）</li>
+<li>包管理器集成</li>
+<li>多语言支持（C/C++、Objective-C、Swift、Go、Rust等）</li>
+<li>插件系统</li>
+<li>分布式编译支持</li>
+<li>自动依赖检测</li>
+</ul>
+<h2 id="基本用法"><a class="header" href="#基本用法">基本用法</a></h2>
+<h3 id="1-简单的c项目"><a class="header" href="#1-简单的c项目">1. 简单的C++项目</a></h3>
+<pre><code class="language-lua">-- xmake.lua
+add_rules("mode.debug", "mode.release")
+
+target("hello")
+    set_kind("binary")
+    set_languages("c++17")
+    add_files("src/*.cpp")
+    add_headerfiles("include/*.h")
+    add_includedirs("include")
+</code></pre>
+<h3 id="2-库项目配置"><a class="header" href="#2-库项目配置">2. 库项目配置</a></h3>
+<pre><code class="language-lua">-- 静态库
+target("mylib")
+    set_kind("static")
+    set_languages("c++17")
+    add_files("src/lib/*.cpp")
+    add_headerfiles("include/(*.h)")
+
+-- 动态库
+target("mydll")
+    set_kind("shared")
+    set_languages("c++17")
+    add_files("src/dll/*.cpp")
+    add_headerfiles("include/(*.h)")
+
+-- 可执行文件，链接库
+target("app")
+    set_kind("binary")
+    set_languages("c++17")
+    add_files("src/app/*.cpp")
+    add_deps("mylib")
+    add_links("mydll")
+</code></pre>
+<h2 id="高级配置"><a class="header" href="#高级配置">高级配置</a></h2>
+<h3 id="1-包管理"><a class="header" href="#1-包管理">1. 包管理</a></h3>
+<pre><code class="language-lua">add_requires("openssl", "zlib", "mysql")
+
+target("myapp")
+    set_kind("binary")
+    set_languages("c++17")
+    add_files("src/*.cpp")
+    add_packages("openssl", "zlib", "mysql")
+</code></pre>
+<h3 id="2-编译器配置"><a class="header" href="#2-编译器配置">2. 编译器配置</a></h3>
+<pre><code class="language-lua">-- 设置编译器
+set_toolchains("gcc", "clang", "msvc")
+
+-- 编译选项
+target("myapp")
+    set_kind("binary")
+    set_languages("c++17")
+    add_files("src/*.cpp")
+
+    -- 添加编译标志
+    add_cxxflags("-O2", "-Wall")
+    add_defines("DEBUG", "VERSION=1.0")
+
+    -- 条件编译
+    if is_mode("debug") then
+        add_defines("DEBUG")
+        set_optimize("none")
+        set_symbols("debug")
+    elseif is_mode("release") then
+        set_optimize("fastest")
+        set_strip("all")
+    end
+</code></pre>
+<h3 id="3-平台特定配置"><a class="header" href="#3-平台特定配置">3. 平台特定配置</a></h3>
+<pre><code class="language-lua">target("myapp")
+    set_kind("binary")
+    set_languages("c++17")
+    add_files("src/*.cpp")
+
+    -- Windows特定配置
+    if is_plat("windows") then
+        add_files("src/platform/windows/*.cpp")
+        add_links("user32", "kernel32")
+    end
+
+    -- Linux特定配置
+    if is_plat("linux") then
+        add_files("src/platform/linux/*.cpp")
+        add_links("pthread")
+    end
+
+    -- macOS特定配置
+    if is_plat("macosx") then
+        add_files("src/platform/macos/*.cpp")
+        add_frameworks("Foundation", "CoreFoundation")
+    end
+</code></pre>
+<h2 id="构建命令"><a class="header" href="#构建命令">构建命令</a></h2>
+<h3 id="基本命令"><a class="header" href="#基本命令">基本命令</a></h3>
+<pre><code class="language-bash"># 配置项目
+xmake config
+
+# 编译项目
+xmake build
+
+# 运行程序
+xmake run
+
+# 清理编译
+xmake clean
+
+# 安装
+xmake install
+
+# 打包
+xmake package
+</code></pre>
+<h3 id="高级命令"><a class="header" href="#高级命令">高级命令</a></h3>
+<pre><code class="language-bash"># 配置编译模式
+xmake config -m debug
+xmake config -m release
+
+# 指定编译器
+xmake config --cc=gcc --cxx=g++
+xmake config --cc=clang --cxx=clang++
+
+# 交叉编译
+xmake config -p android --ndk=/path/to/ndk
+xmake config -p iphoneos
+
+# 分布式编译
+xmake config --ccache=y
+xmake config --distcc=y
+</code></pre>
+<h2 id="插件和工具"><a class="header" href="#插件和工具">插件和工具</a></h2>
+<h3 id="1-vs-code集成"><a class="header" href="#1-vs-code集成">1. VS Code集成</a></h3>
+<pre><code class="language-lua">-- 生成VS Code配置
+add_rules("plugin.compile_commands.autoupdate", {outputdir = ".vscode"})
+
+target("myapp")
+    set_kind("binary")
+    add_files("src/*.cpp")
+</code></pre>
+<h3 id="2-测试支持"><a class="header" href="#2-测试支持">2. 测试支持</a></h3>
+<pre><code class="language-lua">-- 测试目标
+target("test")
+    set_kind("binary")
+    set_languages("c++17")
+    add_files("test/*.cpp")
+    add_deps("mylib")
+
+    -- 集成测试框架
+    add_packages("gtest")
+
+    -- 运行测试
+    on_run(function (target)
+        os.exec(target:targetfile())
+    end)
+</code></pre>
+<h3 id="3-自定义规则"><a class="header" href="#3-自定义规则">3. 自定义规则</a></h3>
+<pre><code class="language-lua">-- 定义自定义规则
+rule("protobuf")
+    set_extensions(".proto")
+    on_build_file(function (target, sourcefile)
+        local outputdir = path.join(target:autogendir(), "rules", "protobuf")
+        local basename = path.basename(sourcefile)
+        local cppfile = path.join(outputdir, basename .. ".pb.cc")
+        local headerfile = path.join(outputdir, basename .. ".pb.h")
+
+        -- 执行protoc编译
+        os.vrun("protoc --cpp_out=%s %s", outputdir, sourcefile)
+
+        -- 添加生成的文件到目标
+        target:add("files", cppfile)
+        target:add("includedirs", outputdir)
+    end)
+
+-- 使用自定义规则
+target("myapp")
+    set_kind("binary")
+    add_rules("protobuf")
+    add_files("proto/*.proto")
+    add_files("src/*.cpp")
+</code></pre>
+<h2 id="完整项目示例"><a class="header" href="#完整项目示例">完整项目示例</a></h2>
+<pre><code class="language-lua">-- xmake.lua
+set_version("1.0.0")
+set_xmakever("2.7.1")
+
+-- 添加构建模式
+add_rules("mode.debug", "mode.release", "mode.coverage")
+
+-- 添加包依赖
+add_requires("fmt", "spdlog", "nlohmann_json")
+add_requires("gtest", {optional = true})
+
+-- 设置语言标准
+set_languages("c++17")
+
+-- 公共配置
+if is_mode("debug") then
+    add_defines("DEBUG")
+    set_symbols("debug")
+    set_optimize("none")
+elseif is_mode("release") then
+    set_symbols("hidden")
+    set_optimize("fastest")
+    set_strip("all")
+end
+
+-- 核心库
+target("mycore")
+    set_kind("static")
+    add_files("src/core/*.cpp")
+    add_headerfiles("include/core/(*.h)")
+    add_includedirs("include", {public = true})
+    add_packages("fmt", "spdlog", {public = true})
+
+-- 主应用程序
+target("myapp")
+    set_kind("binary")
+    add_files("src/main.cpp", "src/app/*.cpp")
+    add_deps("mycore")
+    add_packages("nlohmann_json")
+
+    -- 设置安装目录
+    on_install(function (target)
+        os.cp(target:targetfile(), path.join(target:installdir(), "bin"))
+    end)
+
+-- 测试程序（可选）
+if has_package("gtest") then
+    target("test")
+        set_kind("binary")
+        add_files("test/*.cpp")
+        add_deps("mycore")
+        add_packages("gtest")
+        set_default(false)
+
+        -- 运行测试
+        after_build(function (target)
+            os.run(target:targetfile())
+        end)
+end
+
+-- 示例程序
+target("examples")
+    set_kind("binary")
+    add_files("examples/*.cpp")
+    add_deps("mycore")
+    set_default(false)
+
+-- 安装头文件
+on_install(function (target)
+    os.cp("include", target:installdir())
+end)
+</code></pre>
+<h2 id="技术要点总结"><a class="header" href="#技术要点总结">技术要点总结</a></h2>
+<ol>
+<li><strong>简洁配置</strong>：Lua语法，配置直观易懂</li>
+<li><strong>跨平台</strong>：一套配置，多平台编译</li>
+<li><strong>包管理</strong>：内置包管理器，依赖管理简单</li>
+<li><strong>自动化</strong>：自动检测编译器和依赖</li>
+<li><strong>可扩展</strong>：丰富的插件和规则系统</li>
+<li><strong>现代化</strong>：支持最新的构建需求和工具链</li>
+</ol>
+<p>XMake是新一代的构建工具，特别适合C++项目的快速构建和部署，其简洁的配置语法和强大的功能使其成为现代C++开发的优秀选择。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/webrtc.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/zeromq.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/webrtc.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/zeromq.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

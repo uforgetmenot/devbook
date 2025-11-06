@@ -1,0 +1,1418 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Three.js 实战学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="threejs-实战学习笔记"><a class="header" href="#threejs-实战学习笔记">Three.js 实战学习笔记</a></h1>
+<h2 id="-学习指南"><a class="header" href="#-学习指南">📚 学习指南</a></h2>
+<h3 id="角色定位"><a class="header" href="#角色定位">角色定位</a></h3>
+<ul>
+<li><strong>目标学习者</strong>: Web前端开发者、3D可视化开发者、交互设计师</li>
+<li><strong>前置知识</strong>: HTML/CSS/JavaScript基础、ES6语法、基础数学知识（向量、矩阵）</li>
+<li><strong>学习目标</strong>: 掌握Three.js核心概念，能够独立开发3D Web应用</li>
+</ul>
+<h3 id="学习路径"><a class="header" href="#学习路径">学习路径</a></h3>
+<pre><code>第一阶段（1-2周）: 基础入门
+├── Three.js核心概念（场景、相机、渲染器）
+├── 基础几何体和材质
+├── 简单动画和交互
+└── 第一个3D项目
+
+第二阶段（2-3周）: 进阶应用
+├── 光照和阴影系统
+├── 纹理和材质系统
+├── 模型加载和处理
+└── 相机控制和交互
+
+第三阶段（3-4周）: 高级特性
+├── 着色器编程
+├── 后处理效果
+├── 性能优化技术
+└── 物理引擎集成
+
+第四阶段（持续）: 实战项目
+├── 产品3D展示系统
+├── 数据可视化大屏
+├── 3D游戏开发
+└── VR/AR应用
+</code></pre>
+<h3 id="学习效果验证标准"><a class="header" href="#学习效果验证标准">学习效果验证标准</a></h3>
+<ul>
+<li>✅ <strong>基础验证</strong>: 能够创建包含基础几何体、光照和交互的3D场景</li>
+<li>✅ <strong>进阶验证</strong>: 能够加载外部模型，实现复杂动画和材质效果</li>
+<li>✅ <strong>高级验证</strong>: 能够编写自定义着色器，实现性能优化</li>
+<li>✅ <strong>实战验证</strong>: 能够独立完成一个完整的3D Web项目</li>
+<li>✅ <strong>综合验证</strong>: 理解Three.js架构，能够解决实际开发中的问题</li>
+</ul>
+<hr />
+<h2 id="1-基础概念"><a class="header" href="#1-基础概念">1. 基础概念</a></h2>
+<h3 id="11-threejs简介"><a class="header" href="#11-threejs简介">1.1 Three.js简介</a></h3>
+<p><strong>什么是Three.js</strong>
+Three.js是一个基于WebGL的JavaScript 3D图形库，它封装了WebGL的复杂API，让开发者可以用更简单的方式创建3D图形。</p>
+<p><strong>WebGL与Three.js的关系</strong></p>
+<ul>
+<li>WebGL: 底层图形API，直接操作GPU，学习曲线陡峭</li>
+<li>Three.js: 高级封装库，提供面向对象的API，大幅降低开发难度</li>
+</ul>
+<p><strong>应用场景和优势</strong></p>
+<pre><code class="language-javascript">// 应用场景
+- 产品3D展示（电商、房地产）
+- 数据可视化（地理信息、科学数据）
+- 游戏开发（浏览器游戏）
+- VR/AR应用
+- 创意交互（艺术装置、品牌宣传）
+
+// 优势
+- 跨平台：运行在所有支持WebGL的浏览器
+- 高性能：充分利用GPU加速
+- 易用性：封装良好的API
+- 生态丰富：大量插件和社区支持
+</code></pre>
+<h3 id="12-核心概念---三要素"><a class="header" href="#12-核心概念---三要素">1.2 核心概念 - 三要素</a></h3>
+<p>Three.js的核心是<strong>场景(Scene)</strong>、<strong>相机(Camera)</strong>、**渲染器(Renderer)**三要素。</p>
+<p><strong>关系图示</strong></p>
+<pre><code>┌─────────────────────────────────────┐
+│            Scene (场景)              │
+│  ┌──────────┐  ┌──────────┐        │
+│  │  Mesh    │  │  Light   │        │
+│  └──────────┘  └──────────┘        │
+│         ↓                            │
+│    ┌─────────┐                      │
+│    │ Camera  │ ← 观察场景           │
+│    └─────────┘                      │
+└─────────────────────────────────────┘
+         ↓
+   ┌──────────┐
+   │ Renderer │ ← 渲染到画布
+   └──────────┘
+</code></pre>
+<hr />
+<h2 id="2-开发环境搭建"><a class="header" href="#2-开发环境搭建">2. 开发环境搭建</a></h2>
+<h3 id="21-安装方式"><a class="header" href="#21-安装方式">2.1 安装方式</a></h3>
+<p><strong>方式1: CDN引入（快速开始）</strong></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Three.js 入门&lt;/title&gt;
+    &lt;style&gt;
+        body { margin: 0; }
+        canvas { display: block; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- 引入Three.js --&gt;
+    &lt;script src="https://cdn.jsdelivr.net/npm/three@0.150.0/build/three.min.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        // 你的Three.js代码
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>方式2: npm安装（推荐用于项目开发）</strong></p>
+<pre><code class="language-bash"># 创建项目
+mkdir threejs-project &amp;&amp; cd threejs-project
+npm init -y
+
+# 安装Three.js
+npm install three
+
+# 安装开发工具
+npm install vite -D
+</code></pre>
+<p><strong>方式3: 模块化导入（现代化开发）</strong></p>
+<pre><code class="language-javascript">// main.js
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+// 创建场景
+const scene = new THREE.Scene();
+</code></pre>
+<h3 id="22-第一个threejs程序"><a class="header" href="#22-第一个threejs程序">2.2 第一个Three.js程序</a></h3>
+<p><strong>完整示例：旋转的立方体</strong></p>
+<pre><code class="language-javascript">// 1. 创建场景
+const scene = new THREE.Scene();
+
+// 2. 创建相机（视野角度, 宽高比, 近裁剪面, 远裁剪面）
+const camera = new THREE.PerspectiveCamera(
+    75,                                    // fov
+    window.innerWidth / window.innerHeight, // aspect
+    0.1,                                   // near
+    1000                                   // far
+);
+camera.position.z = 5;
+
+// 3. 创建渲染器
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// 4. 创建几何体
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+// 5. 创建材质
+const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+
+// 6. 创建网格（几何体 + 材质）
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+
+// 7. 动画循环
+function animate() {
+    requestAnimationFrame(animate);
+
+    // 旋转立方体
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+
+    // 渲染场景
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// 8. 响应式处理
+window.addEventListener('resize', () =&gt; {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</code></pre>
+<p><strong>代码解析</strong></p>
+<ol>
+<li><strong>Scene</strong>: 容器，存放所有3D对象</li>
+<li><strong>Camera</strong>: 定义观察视角</li>
+<li><strong>Renderer</strong>: 将场景渲染到canvas</li>
+<li><strong>Geometry</strong>: 定义形状</li>
+<li><strong>Material</strong>: 定义外观</li>
+<li><strong>Mesh</strong>: 几何体+材质的组合</li>
+<li><strong>animate</strong>: 动画循环更新</li>
+</ol>
+<hr />
+<h2 id="3-几何体系统"><a class="header" href="#3-几何体系统">3. 几何体系统</a></h2>
+<h3 id="31-基础几何体"><a class="header" href="#31-基础几何体">3.1 基础几何体</a></h3>
+<p><strong>BoxGeometry - 立方体</strong></p>
+<pre><code class="language-javascript">// 参数: 宽度, 高度, 深度, 宽度分段, 高度分段, 深度分段
+const geometry = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
+const material = new THREE.MeshBasicMaterial({
+    color: 0xff0000,
+    wireframe: true  // 线框模式
+});
+const cube = new THREE.Mesh(geometry, material);
+scene.add(cube);
+</code></pre>
+<p><strong>SphereGeometry - 球体</strong></p>
+<pre><code class="language-javascript">// 参数: 半径, 水平分段, 垂直分段
+const geometry = new THREE.SphereGeometry(
+    1,      // radius
+    32,     // widthSegments
+    32      // heightSegments
+);
+const material = new THREE.MeshStandardMaterial({
+    color: 0x0077ff,
+    metalness: 0.5,
+    roughness: 0.5
+});
+const sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+</code></pre>
+<p><strong>PlaneGeometry - 平面</strong></p>
+<pre><code class="language-javascript">// 参数: 宽度, 高度, 宽度分段, 高度分段
+const geometry = new THREE.PlaneGeometry(10, 10, 10, 10);
+const material = new THREE.MeshStandardMaterial({
+    color: 0xcccccc,
+    side: THREE.DoubleSide  // 双面显示
+});
+const plane = new THREE.Mesh(geometry, material);
+plane.rotation.x = -Math.PI / 2;  // 旋转90度使其水平
+scene.add(plane);
+</code></pre>
+<h3 id="32-复杂几何体"><a class="header" href="#32-复杂几何体">3.2 复杂几何体</a></h3>
+<p><strong>TorusGeometry - 圆环</strong></p>
+<pre><code class="language-javascript">// 参数: 半径, 管道半径, 径向分段, 管道分段
+const geometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
+const material = new THREE.MeshNormalMaterial();
+const torus = new THREE.Mesh(geometry, material);
+scene.add(torus);
+</code></pre>
+<p><strong>TextGeometry - 3D文字</strong></p>
+<pre><code class="language-javascript">import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+
+const loader = new FontLoader();
+loader.load('fonts/helvetiker_regular.typeface.json', (font) =&gt; {
+    const geometry = new TextGeometry('Hello Three.js!', {
+        font: font,
+        size: 0.5,
+        height: 0.2,
+        curveSegments: 12,
+        bevelEnabled: true,
+        bevelThickness: 0.03,
+        bevelSize: 0.02,
+        bevelOffset: 0,
+        bevelSegments: 5
+    });
+    const material = new THREE.MeshPhongMaterial({ color: 0xff6347 });
+    const text = new THREE.Mesh(geometry, material);
+    scene.add(text);
+});
+</code></pre>
+<h3 id="33-自定义几何体"><a class="header" href="#33-自定义几何体">3.3 自定义几何体</a></h3>
+<p><strong>使用BufferGeometry创建自定义几何体</strong></p>
+<pre><code class="language-javascript">// 创建一个三角形
+const geometry = new THREE.BufferGeometry();
+
+// 定义顶点
+const vertices = new Float32Array([
+    -1.0, -1.0,  0.0,  // 顶点1
+     1.0, -1.0,  0.0,  // 顶点2
+     0.0,  1.0,  0.0   // 顶点3
+]);
+
+// 设置顶点属性
+geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+
+// 定义顶点颜色
+const colors = new Float32Array([
+    1.0, 0.0, 0.0,  // 红色
+    0.0, 1.0, 0.0,  // 绿色
+    0.0, 0.0, 1.0   // 蓝色
+]);
+geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+// 创建材质
+const material = new THREE.MeshBasicMaterial({
+    vertexColors: true,
+    side: THREE.DoubleSide
+});
+
+const triangle = new THREE.Mesh(geometry, material);
+scene.add(triangle);
+</code></pre>
+<hr />
+<h2 id="4-材质系统"><a class="header" href="#4-材质系统">4. 材质系统</a></h2>
+<h3 id="41-基础材质对比"><a class="header" href="#41-基础材质对比">4.1 基础材质对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>材质类型</th><th>是否受光照影响</th><th>性能</th><th>适用场景</th></tr></thead><tbody>
+<tr><td>MeshBasicMaterial</td><td>❌</td><td>最高</td><td>UI元素、线框、调试</td></tr>
+<tr><td>MeshLambertMaterial</td><td>✅</td><td>高</td><td>非光滑表面、低端设备</td></tr>
+<tr><td>MeshPhongMaterial</td><td>✅</td><td>中</td><td>光滑表面、高光效果</td></tr>
+<tr><td>MeshStandardMaterial</td><td>✅</td><td>低</td><td>PBR材质、真实渲染</td></tr>
+</tbody></table>
+</div>
+<p><strong>MeshBasicMaterial - 基础材质</strong></p>
+<pre><code class="language-javascript">const material = new THREE.MeshBasicMaterial({
+    color: 0xff0000,        // 颜色
+    wireframe: false,       // 线框模式
+    transparent: true,      // 透明
+    opacity: 0.5,          // 不透明度
+    side: THREE.DoubleSide, // 渲染面
+    visible: true          // 可见性
+});
+</code></pre>
+<p><strong>MeshStandardMaterial - 标准材质（PBR）</strong></p>
+<pre><code class="language-javascript">const material = new THREE.MeshStandardMaterial({
+    color: 0x049ef4,       // 基础颜色
+    metalness: 0.5,        // 金属度 (0-1)
+    roughness: 0.5,        // 粗糙度 (0-1)
+    emissive: 0x000000,    // 发光颜色
+    emissiveIntensity: 0,  // 发光强度
+    envMapIntensity: 1     // 环境贴图强度
+});
+</code></pre>
+<h3 id="42-纹理贴图"><a class="header" href="#42-纹理贴图">4.2 纹理贴图</a></h3>
+<p><strong>基础纹理加载</strong></p>
+<pre><code class="language-javascript">const textureLoader = new THREE.TextureLoader();
+
+// 加载单个纹理
+const texture = textureLoader.load('textures/brick.jpg');
+
+// 加载多个纹理（带回调）
+textureLoader.load(
+    'textures/brick.jpg',
+    // 成功回调
+    (texture) =&gt; {
+        const material = new THREE.MeshBasicMaterial({ map: texture });
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+    },
+    // 进度回调
+    (progress) =&gt; {
+        console.log((progress.loaded / progress.total * 100) + '% loaded');
+    },
+    // 错误回调
+    (error) =&gt; {
+        console.error('纹理加载失败', error);
+    }
+);
+</code></pre>
+<p><strong>多类型贴图组合</strong></p>
+<pre><code class="language-javascript">const material = new THREE.MeshStandardMaterial({
+    map: textureLoader.load('textures/brick_diffuse.jpg'),        // 颜色贴图
+    normalMap: textureLoader.load('textures/brick_normal.jpg'),   // 法线贴图
+    roughnessMap: textureLoader.load('textures/brick_rough.jpg'), // 粗糙度贴图
+    aoMap: textureLoader.load('textures/brick_ao.jpg'),           // 环境遮蔽贴图
+    displacementMap: textureLoader.load('textures/brick_disp.jpg'), // 置换贴图
+    displacementScale: 0.1
+});
+
+// 注意：aoMap需要第二套UV
+geometry.setAttribute('uv2', geometry.attributes.uv);
+</code></pre>
+<p><strong>纹理设置</strong></p>
+<pre><code class="language-javascript">const texture = textureLoader.load('textures/floor.jpg');
+
+// 重复设置
+texture.wrapS = THREE.RepeatWrapping;  // 水平重复
+texture.wrapT = THREE.RepeatWrapping;  // 垂直重复
+texture.repeat.set(4, 4);              // 重复次数
+
+// 过滤设置
+texture.minFilter = THREE.LinearMipmapLinearFilter;  // 缩小过滤
+texture.magFilter = THREE.LinearFilter;              // 放大过滤
+
+// 偏移和旋转
+texture.offset.set(0.5, 0.5);   // 偏移
+texture.rotation = Math.PI / 4; // 旋转45度
+texture.center.set(0.5, 0.5);   // 旋转中心
+</code></pre>
+<hr />
+<h2 id="5-光照系统"><a class="header" href="#5-光照系统">5. 光照系统</a></h2>
+<h3 id="51-光源类型详解"><a class="header" href="#51-光源类型详解">5.1 光源类型详解</a></h3>
+<p><strong>AmbientLight - 环境光</strong></p>
+<pre><code class="language-javascript">// 环境光均匀照亮场景中的所有物体，没有方向
+const ambientLight = new THREE.AmbientLight(
+    0x404040,  // 颜色
+    0.5        // 强度
+);
+scene.add(ambientLight);
+</code></pre>
+<p><strong>DirectionalLight - 平行光（模拟太阳光）</strong></p>
+<pre><code class="language-javascript">const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(5, 10, 7.5);
+directionalLight.castShadow = true;  // 开启阴影
+
+// 阴影配置
+directionalLight.shadow.mapSize.width = 2048;
+directionalLight.shadow.mapSize.height = 2048;
+directionalLight.shadow.camera.near = 0.5;
+directionalLight.shadow.camera.far = 500;
+directionalLight.shadow.camera.left = -10;
+directionalLight.shadow.camera.right = 10;
+directionalLight.shadow.camera.top = 10;
+directionalLight.shadow.camera.bottom = -10;
+
+scene.add(directionalLight);
+
+// 可视化光源辅助器
+const helper = new THREE.DirectionalLightHelper(directionalLight, 5);
+scene.add(helper);
+</code></pre>
+<p><strong>PointLight - 点光源</strong></p>
+<pre><code class="language-javascript">const pointLight = new THREE.PointLight(
+    0xff0000,  // 颜色
+    1,         // 强度
+    100,       // 距离（0表示无限远）
+    2          // 衰减系数
+);
+pointLight.position.set(0, 3, 0);
+pointLight.castShadow = true;
+scene.add(pointLight);
+
+// 点光源辅助器
+const sphereSize = 0.2;
+const pointLightHelper = new THREE.PointLightHelper(pointLight, sphereSize);
+scene.add(pointLightHelper);
+</code></pre>
+<p><strong>SpotLight - 聚光灯</strong></p>
+<pre><code class="language-javascript">const spotLight = new THREE.SpotLight(
+    0xffffff,         // 颜色
+    1,                // 强度
+    100,              // 距离
+    Math.PI / 6,      // 角度
+    0.5,              // 半影衰减
+    2                 // 衰减系数
+);
+spotLight.position.set(0, 10, 0);
+spotLight.target.position.set(0, 0, 0);  // 照射目标
+spotLight.castShadow = true;
+
+scene.add(spotLight);
+scene.add(spotLight.target);
+
+// 聚光灯辅助器
+const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+scene.add(spotLightHelper);
+</code></pre>
+<h3 id="52-阴影系统"><a class="header" href="#52-阴影系统">5.2 阴影系统</a></h3>
+<p><strong>完整的阴影设置流程</strong></p>
+<pre><code class="language-javascript">// 1. 渲染器开启阴影
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;  // 阴影类型
+
+// 2. 光源开启阴影投射
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.castShadow = true;
+light.shadow.mapSize.width = 2048;   // 阴影贴图分辨率
+light.shadow.mapSize.height = 2048;
+scene.add(light);
+
+// 3. 物体开启投射阴影
+const cube = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshStandardMaterial({ color: 0x00ff00 })
+);
+cube.castShadow = true;     // 投射阴影
+scene.add(cube);
+
+// 4. 物体开启接收阴影
+const plane = new THREE.Mesh(
+    new THREE.PlaneGeometry(10, 10),
+    new THREE.MeshStandardMaterial({ color: 0xcccccc })
+);
+plane.receiveShadow = true;  // 接收阴影
+plane.rotation.x = -Math.PI / 2;
+scene.add(plane);
+</code></pre>
+<hr />
+<h2 id="6-相机与控制器"><a class="header" href="#6-相机与控制器">6. 相机与控制器</a></h2>
+<h3 id="61-透视相机详解"><a class="header" href="#61-透视相机详解">6.1 透视相机详解</a></h3>
+<p><strong>PerspectiveCamera参数详解</strong></p>
+<pre><code class="language-javascript">const camera = new THREE.PerspectiveCamera(
+    75,                                    // fov: 视野角度（度）
+    window.innerWidth / window.innerHeight, // aspect: 宽高比
+    0.1,                                   // near: 近裁剪面
+    1000                                   // far: 远裁剪面
+);
+
+// 相机位置
+camera.position.set(0, 5, 10);
+
+// 相机朝向
+camera.lookAt(0, 0, 0);  // 看向原点
+
+// 更新投影矩阵（修改参数后必须调用）
+camera.updateProjectionMatrix();
+</code></pre>
+<p><strong>正交相机 - OrthographicCamera</strong></p>
+<pre><code class="language-javascript">const frustumSize = 10;
+const aspect = window.innerWidth / window.innerHeight;
+
+const camera = new THREE.OrthographicCamera(
+    frustumSize * aspect / -2,  // left
+    frustumSize * aspect / 2,   // right
+    frustumSize / 2,            // top
+    frustumSize / -2,           // bottom
+    0.1,                        // near
+    1000                        // far
+);
+camera.position.set(5, 5, 5);
+camera.lookAt(0, 0, 0);
+</code></pre>
+<h3 id="62-轨道控制器"><a class="header" href="#62-轨道控制器">6.2 轨道控制器</a></h3>
+<p><strong>OrbitControls - 最常用的控制器</strong></p>
+<pre><code class="language-javascript">import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+const controls = new OrbitControls(camera, renderer.domElement);
+
+// 基础配置
+controls.enableDamping = true;      // 启用阻尼（惯性）
+controls.dampingFactor = 0.05;      // 阻尼系数
+controls.screenSpacePanning = false; // 屏幕空间平移
+controls.minDistance = 1;           // 最小距离
+controls.maxDistance = 500;         // 最大距离
+controls.maxPolarAngle = Math.PI / 2; // 最大垂直旋转角度
+
+// 自动旋转
+controls.autoRotate = true;
+controls.autoRotateSpeed = 2.0;
+
+// 在动画循环中更新
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update();  // 必须调用
+    renderer.render(scene, camera);
+}
+</code></pre>
+<hr />
+<h2 id="7-模型加载"><a class="header" href="#7-模型加载">7. 模型加载</a></h2>
+<h3 id="71-gltfloader---推荐格式"><a class="header" href="#71-gltfloader---推荐格式">7.1 GLTFLoader - 推荐格式</a></h3>
+<p><strong>基础加载</strong></p>
+<pre><code class="language-javascript">import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+const loader = new GLTFLoader();
+
+loader.load(
+    'models/scene.gltf',
+    (gltf) =&gt; {
+        const model = gltf.scene;
+
+        // 设置模型属性
+        model.scale.set(0.5, 0.5, 0.5);
+        model.position.set(0, 0, 0);
+
+        // 遍历模型开启阴影
+        model.traverse((child) =&gt; {
+            if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
+        });
+
+        scene.add(model);
+
+        // 如果模型包含动画
+        if (gltf.animations.length &gt; 0) {
+            const mixer = new THREE.AnimationMixer(model);
+            const action = mixer.clipAction(gltf.animations[0]);
+            action.play();
+
+            // 在动画循环中更新
+            function animate() {
+                requestAnimationFrame(animate);
+                const delta = clock.getDelta();
+                mixer.update(delta);
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
+    },
+    (progress) =&gt; {
+        console.log((progress.loaded / progress.total * 100) + '% loaded');
+    },
+    (error) =&gt; {
+        console.error('模型加载失败', error);
+    }
+);
+</code></pre>
+<h3 id="72-loadingmanager---加载管理"><a class="header" href="#72-loadingmanager---加载管理">7.2 LoadingManager - 加载管理</a></h3>
+<p><strong>统一管理多个资源加载</strong></p>
+<pre><code class="language-javascript">const loadingManager = new THREE.LoadingManager();
+
+// 开始加载
+loadingManager.onStart = (url, itemsLoaded, itemsTotal) =&gt; {
+    console.log(`开始加载: ${url}`);
+};
+
+// 加载进度
+loadingManager.onProgress = (url, itemsLoaded, itemsTotal) =&gt; {
+    const progress = itemsLoaded / itemsTotal * 100;
+    console.log(`加载进度: ${progress}%`);
+
+    // 更新进度条UI
+    document.getElementById('progressBar').style.width = progress + '%';
+};
+
+// 加载完成
+loadingManager.onLoad = () =&gt; {
+    console.log('所有资源加载完成');
+    document.getElementById('loadingScreen').style.display = 'none';
+};
+
+// 加载错误
+loadingManager.onError = (url) =&gt; {
+    console.error(`加载失败: ${url}`);
+};
+
+// 使用LoadingManager
+const textureLoader = new THREE.TextureLoader(loadingManager);
+const gltfLoader = new GLTFLoader(loadingManager);
+
+textureLoader.load('textures/texture1.jpg');
+textureLoader.load('textures/texture2.jpg');
+gltfLoader.load('models/model1.gltf');
+</code></pre>
+<hr />
+<h2 id="8-动画系统"><a class="header" href="#8-动画系统">8. 动画系统</a></h2>
+<h3 id="81-基础动画循环"><a class="header" href="#81-基础动画循环">8.1 基础动画循环</a></h3>
+<p><strong>requestAnimationFrame基础动画</strong></p>
+<pre><code class="language-javascript">const clock = new THREE.Clock();
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    const elapsedTime = clock.getElapsedTime();
+    const deltaTime = clock.getDelta();
+
+    // 方式1: 使用经过的时间
+    cube.rotation.y = elapsedTime;
+    cube.position.y = Math.sin(elapsedTime);
+
+    // 方式2: 使用增量时间
+    cube.rotation.x += deltaTime;
+
+    renderer.render(scene, camera);
+}
+animate();
+</code></pre>
+<h3 id="82-关键帧动画"><a class="header" href="#82-关键帧动画">8.2 关键帧动画</a></h3>
+<p><strong>使用AnimationMixer</strong></p>
+<pre><code class="language-javascript">// 创建关键帧轨道
+const times = [0, 1, 2];  // 时间点（秒）
+const values = [0, 1, 0]; // 对应值
+
+// 位置动画
+const positionKF = new THREE.VectorKeyframeTrack(
+    '.position[y]',  // 属性路径
+    times,
+    [0, 0, 0,  1, 0, 0,  0, 0, 0]  // 3个vec3值
+);
+
+// 旋转动画
+const rotationKF = new THREE.QuaternionKeyframeTrack(
+    '.quaternion',
+    times,
+    [
+        0, 0, 0, 1,  // 初始旋转
+        0, 1, 0, 0,  // 旋转180度
+        0, 0, 0, 1   // 回到初始
+    ]
+);
+
+// 创建动画剪辑
+const clip = new THREE.AnimationClip('Action', 2, [positionKF, rotationKF]);
+
+// 创建动画混合器
+const mixer = new THREE.AnimationMixer(cube);
+const action = mixer.clipAction(clip);
+action.play();
+
+// 动画循环
+function animate() {
+    requestAnimationFrame(animate);
+    const delta = clock.getDelta();
+    mixer.update(delta);
+    renderer.render(scene, camera);
+}
+animate();
+</code></pre>
+<hr />
+<h2 id="9-交互系统"><a class="header" href="#9-交互系统">9. 交互系统</a></h2>
+<h3 id="91-raycaster射线检测"><a class="header" href="#91-raycaster射线检测">9.1 Raycaster射线检测</a></h3>
+<p><strong>鼠标拾取物体</strong></p>
+<pre><code class="language-javascript">const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const selectableObjects = [];  // 可选择的物体数组
+
+// 鼠标移动事件
+window.addEventListener('mousemove', (event) =&gt; {
+    // 转换鼠标坐标到标准化设备坐标 (-1 to +1)
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+});
+
+// 鼠标点击事件
+window.addEventListener('click', () =&gt; {
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(selectableObjects);
+
+    if (intersects.length &gt; 0) {
+        const object = intersects[0].object;
+        console.log('选中物体:', object.name);
+
+        // 改变颜色
+        object.material.color.set(0xff0000);
+
+        // 获取交点信息
+        const point = intersects[0].point;      // 交点坐标
+        const distance = intersects[0].distance; // 距离
+        const face = intersects[0].face;        // 相交的面
+    }
+});
+
+// 实时高亮
+function animate() {
+    requestAnimationFrame(animate);
+
+    // 更新射线
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(selectableObjects);
+
+    // 重置所有物体颜色
+    selectableObjects.forEach(obj =&gt; {
+        obj.material.color.set(0xffffff);
+    });
+
+    // 高亮悬停物体
+    if (intersects.length &gt; 0) {
+        intersects[0].object.material.color.set(0x00ff00);
+        document.body.style.cursor = 'pointer';
+    } else {
+        document.body.style.cursor = 'default';
+    }
+
+    renderer.render(scene, camera);
+}
+</code></pre>
+<h3 id="92-拖拽控制"><a class="header" href="#92-拖拽控制">9.2 拖拽控制</a></h3>
+<p><strong>DragControls实现物体拖拽</strong></p>
+<pre><code class="language-javascript">import { DragControls } from 'three/examples/jsm/controls/DragControls';
+
+const objects = [cube, sphere, cone];  // 可拖拽的物体
+
+const dragControls = new DragControls(objects, camera, renderer.domElement);
+
+// 拖拽开始
+dragControls.addEventListener('dragstart', (event) =&gt; {
+    console.log('开始拖拽:', event.object.name);
+    event.object.material.opacity = 0.5;
+    orbitControls.enabled = false;  // 禁用轨道控制
+});
+
+// 拖拽中
+dragControls.addEventListener('drag', (event) =&gt; {
+    console.log('拖拽位置:', event.object.position);
+});
+
+// 拖拽结束
+dragControls.addEventListener('dragend', (event) =&gt; {
+    console.log('拖拽结束:', event.object.name);
+    event.object.material.opacity = 1;
+    orbitControls.enabled = true;  // 恢复轨道控制
+});
+</code></pre>
+<hr />
+<h2 id="10-性能优化"><a class="header" href="#10-性能优化">10. 性能优化</a></h2>
+<h3 id="101-实例化渲染"><a class="header" href="#101-实例化渲染">10.1 实例化渲染</a></h3>
+<p><strong>InstancedMesh - 渲染大量相同物体</strong></p>
+<pre><code class="language-javascript">const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+
+const count = 10000;  // 实例数量
+const mesh = new THREE.InstancedMesh(geometry, material, count);
+
+// 设置每个实例的变换矩阵
+const matrix = new THREE.Matrix4();
+const color = new THREE.Color();
+
+for (let i = 0; i &lt; count; i++) {
+    // 随机位置
+    const x = Math.random() * 100 - 50;
+    const y = Math.random() * 100 - 50;
+    const z = Math.random() * 100 - 50;
+
+    matrix.setPosition(x, y, z);
+    mesh.setMatrixAt(i, matrix);
+
+    // 随机颜色
+    mesh.setColorAt(i, color.setHex(Math.random() * 0xffffff));
+}
+
+scene.add(mesh);
+</code></pre>
+<h3 id="102-lod层级细节"><a class="header" href="#102-lod层级细节">10.2 LOD层级细节</a></h3>
+<p><strong>根据距离自动切换模型精度</strong></p>
+<pre><code class="language-javascript">const lod = new THREE.LOD();
+
+// 高精度模型（近距离）
+const geometry1 = new THREE.SphereGeometry(1, 32, 32);
+const mesh1 = new THREE.Mesh(geometry1, material);
+lod.addLevel(mesh1, 0);
+
+// 中精度模型（中距离）
+const geometry2 = new THREE.SphereGeometry(1, 16, 16);
+const mesh2 = new THREE.Mesh(geometry2, material);
+lod.addLevel(mesh2, 10);
+
+// 低精度模型（远距离）
+const geometry3 = new THREE.SphereGeometry(1, 8, 8);
+const mesh3 = new THREE.Mesh(geometry3, material);
+lod.addLevel(mesh3, 20);
+
+scene.add(lod);
+
+// 在动画循环中更新
+function animate() {
+    requestAnimationFrame(animate);
+    lod.update(camera);  // 根据相机距离切换模型
+    renderer.render(scene, camera);
+}
+</code></pre>
+<h3 id="103-性能监控"><a class="header" href="#103-性能监控">10.3 性能监控</a></h3>
+<p><strong>使用Stats.js监控性能</strong></p>
+<pre><code class="language-javascript">import Stats from 'three/examples/jsm/libs/stats.module';
+
+const stats = new Stats();
+stats.showPanel(0);  // 0: fps, 1: ms, 2: mb
+document.body.appendChild(stats.dom);
+
+function animate() {
+    stats.begin();  // 开始监控
+
+    // 渲染代码
+    renderer.render(scene, camera);
+
+    stats.end();  // 结束监控
+    requestAnimationFrame(animate);
+}
+</code></pre>
+<p><strong>性能优化检查清单</strong></p>
+<pre><code class="language-javascript">// ✅ 1. 减少绘制调用
+- 合并几何体
+- 使用InstancedMesh
+- 使用LOD
+
+// ✅ 2. 优化材质
+- 减少ShaderMaterial使用
+- 共享材质
+- 禁用不必要的特性
+
+// ✅ 3. 优化纹理
+- 压缩纹理
+- 使用mipmap
+- 合理设置纹理尺寸（2的幂次方）
+
+// ✅ 4. 优化几何体
+- 减少多边形数量
+- 使用BufferGeometry
+- 及时释放资源
+
+// ✅ 5. 优化阴影
+- 降低阴影贴图分辨率
+- 减少投射阴影的物体
+- 使用阴影LOD
+
+// ✅ 6. 使用视锥剔除
+renderer.render(scene, camera);  // 自动剔除视野外的物体
+</code></pre>
+<hr />
+<h2 id="11-实战项目"><a class="header" href="#11-实战项目">11. 实战项目</a></h2>
+<h3 id="111-项目1-3d产品展示"><a class="header" href="#111-项目1-3d产品展示">11.1 项目1: 3D产品展示</a></h3>
+<p><strong>完整代码示例</strong></p>
+<pre><code class="language-javascript">import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+class ProductViewer {
+    constructor() {
+        this.init();
+        this.addLights();
+        this.loadModel();
+        this.addControls();
+        this.animate();
+    }
+
+    init() {
+        // 场景
+        this.scene = new THREE.Scene();
+        this.scene.background = new THREE.Color(0xf0f0f0);
+
+        // 相机
+        this.camera = new THREE.PerspectiveCamera(
+            45,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        this.camera.position.set(5, 3, 8);
+
+        // 渲染器
+        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.shadowMap.enabled = true;
+        document.body.appendChild(this.renderer.domElement);
+
+        // 添加地面
+        const geometry = new THREE.PlaneGeometry(20, 20);
+        const material = new THREE.ShadowMaterial({ opacity: 0.3 });
+        this.ground = new THREE.Mesh(geometry, material);
+        this.ground.rotation.x = -Math.PI / 2;
+        this.ground.receiveShadow = true;
+        this.scene.add(this.ground);
+    }
+
+    addLights() {
+        // 环境光
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        this.scene.add(ambientLight);
+
+        // 主光源
+        const mainLight = new THREE.DirectionalLight(0xffffff, 1);
+        mainLight.position.set(5, 10, 5);
+        mainLight.castShadow = true;
+        mainLight.shadow.mapSize.set(2048, 2048);
+        this.scene.add(mainLight);
+
+        // 补光
+        const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        fillLight.position.set(-5, 0, -5);
+        this.scene.add(fillLight);
+    }
+
+    loadModel() {
+        const loader = new GLTFLoader();
+
+        loader.load(
+            'models/product.gltf',
+            (gltf) =&gt; {
+                this.model = gltf.scene;
+                this.model.traverse((child) =&gt; {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                    }
+                });
+                this.scene.add(this.model);
+            },
+            (progress) =&gt; {
+                const percent = (progress.loaded / progress.total) * 100;
+                console.log(`Loading: ${percent}%`);
+            }
+        );
+    }
+
+    addControls() {
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.minDistance = 3;
+        this.controls.maxDistance = 15;
+        this.controls.maxPolarAngle = Math.PI / 2;
+    }
+
+    animate() {
+        requestAnimationFrame(() =&gt; this.animate());
+        this.controls.update();
+        this.renderer.render(this.scene, this.camera);
+    }
+}
+
+// 启动应用
+new ProductViewer();
+</code></pre>
+<h3 id="112-项目2-粒子星空"><a class="header" href="#112-项目2-粒子星空">11.2 项目2: 粒子星空</a></h3>
+<pre><code class="language-javascript">class ParticleStarfield {
+    constructor() {
+        this.init();
+        this.createStars();
+        this.animate();
+    }
+
+    init() {
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(
+            75,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        this.camera.position.z = 5;
+
+        this.renderer = new THREE.WebGLRenderer();
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(this.renderer.domElement);
+    }
+
+    createStars() {
+        const geometry = new THREE.BufferGeometry();
+        const count = 10000;
+        const positions = new Float32Array(count * 3);
+        const colors = new Float32Array(count * 3);
+
+        for (let i = 0; i &lt; count * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 100;
+            colors[i] = Math.random();
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: 0.1,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        this.particles = new THREE.Points(geometry, material);
+        this.scene.add(this.particles);
+    }
+
+    animate() {
+        requestAnimationFrame(() =&gt; this.animate());
+
+        this.particles.rotation.x += 0.0001;
+        this.particles.rotation.y += 0.0002;
+
+        this.renderer.render(this.scene, this.camera);
+    }
+}
+
+new ParticleStarfield();
+</code></pre>
+<hr />
+<h2 id="12-常见问题与解决方案"><a class="header" href="#12-常见问题与解决方案">12. 常见问题与解决方案</a></h2>
+<h3 id="121-性能问题"><a class="header" href="#121-性能问题">12.1 性能问题</a></h3>
+<p><strong>问题: 帧率低</strong></p>
+<pre><code class="language-javascript">// ❌ 不好的做法
+scene.add(new THREE.Mesh(geometry, material.clone()));  // 每次都克隆材质
+
+// ✅ 好的做法
+const sharedMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+for (let i = 0; i &lt; 100; i++) {
+    scene.add(new THREE.Mesh(geometry, sharedMaterial));  // 共享材质
+}
+</code></pre>
+<p><strong>问题: 内存泄漏</strong></p>
+<pre><code class="language-javascript">// 正确释放资源
+function disposeObject(object) {
+    if (object.geometry) {
+        object.geometry.dispose();
+    }
+    if (object.material) {
+        if (Array.isArray(object.material)) {
+            object.material.forEach(material =&gt; material.dispose());
+        } else {
+            object.material.dispose();
+        }
+    }
+    if (object.texture) {
+        object.texture.dispose();
+    }
+}
+
+// 移除物体时调用
+scene.remove(mesh);
+disposeObject(mesh);
+</code></pre>
+<h3 id="122-渲染问题"><a class="header" href="#122-渲染问题">12.2 渲染问题</a></h3>
+<p><strong>问题: 物体闪烁（Z-fighting）</strong></p>
+<pre><code class="language-javascript">// 原因: 两个面距离太近
+// 解决方案1: 调整物体位置
+plane1.position.z = 0.001;
+
+// 解决方案2: 调整相机裁剪面
+camera.near = 0.1;  // 不要设置太小
+camera.far = 100;   // 不要设置太大
+</code></pre>
+<p><strong>问题: 纹理模糊</strong></p>
+<pre><code class="language-javascript">// 解决方案: 设置正确的过滤器和各向异性
+texture.minFilter = THREE.LinearMipmapLinearFilter;
+texture.magFilter = THREE.LinearFilter;
+texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+</code></pre>
+<hr />
+<h2 id="13-扩展资源"><a class="header" href="#13-扩展资源">13. 扩展资源</a></h2>
+<h3 id="131-官方资源"><a class="header" href="#131-官方资源">13.1 官方资源</a></h3>
+<ul>
+<li>官方文档: https://threejs.org/docs/</li>
+<li>官方示例: https://threejs.org/examples/</li>
+<li>GitHub仓库: https://github.com/mrdoob/three.js/</li>
+</ul>
+<h3 id="132-学习资源"><a class="header" href="#132-学习资源">13.2 学习资源</a></h3>
+<ul>
+<li>Three.js Journey: https://threejs-journey.com/</li>
+<li>Three.js Fundamentals: https://threejsfundamentals.org/</li>
+<li>Discover Three.js: https://discoverthreejs.com/</li>
+</ul>
+<h3 id="133-工具库"><a class="header" href="#133-工具库">13.3 工具库</a></h3>
+<ul>
+<li>Cannon.js: 物理引擎</li>
+<li>GSAP: 动画库</li>
+<li>Lil-GUI: 调试面板</li>
+<li>Stats.js: 性能监控</li>
+</ul>
+<h3 id="134-模型资源"><a class="header" href="#134-模型资源">13.4 模型资源</a></h3>
+<ul>
+<li>Sketchfab: https://sketchfab.com/</li>
+<li>Poly Haven: https://polyhaven.com/</li>
+<li>Free3D: https://free3d.com/</li>
+</ul>
+<hr />
+<h2 id="14-学习检查点"><a class="header" href="#14-学习检查点">14. 学习检查点</a></h2>
+<h3 id="第一阶段检查基础"><a class="header" href="#第一阶段检查基础">第一阶段检查（基础）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够创建场景、相机、渲染器</li>
+<li><input disabled="" type="checkbox"/>
+掌握基础几何体的创建和材质应用</li>
+<li><input disabled="" type="checkbox"/>
+实现简单的旋转动画</li>
+<li><input disabled="" type="checkbox"/>
+理解Three.js的坐标系统</li>
+</ul>
+<h3 id="第二阶段检查进阶"><a class="header" href="#第二阶段检查进阶">第二阶段检查（进阶）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+熟练使用各种光源和阴影</li>
+<li><input disabled="" type="checkbox"/>
+能够加载和操作外部模型</li>
+<li><input disabled="" type="checkbox"/>
+实现鼠标交互和相机控制</li>
+<li><input disabled="" type="checkbox"/>
+掌握纹理贴图的使用</li>
+</ul>
+<h3 id="第三阶段检查高级"><a class="header" href="#第三阶段检查高级">第三阶段检查（高级）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够编写简单的自定义着色器</li>
+<li><input disabled="" type="checkbox"/>
+理解并应用性能优化技术</li>
+<li><input disabled="" type="checkbox"/>
+熟悉后处理效果</li>
+<li><input disabled="" type="checkbox"/>
+能够集成物理引擎</li>
+</ul>
+<h3 id="第四阶段检查实战"><a class="header" href="#第四阶段检查实战">第四阶段检查（实战）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+独立完成产品3D展示项目</li>
+<li><input disabled="" type="checkbox"/>
+能够调试和解决常见问题</li>
+<li><input disabled="" type="checkbox"/>
+理解Three.js架构和最佳实践</li>
+<li><input disabled="" type="checkbox"/>
+能够优化项目性能到60fps</li>
+</ul>
+<hr />
+<h2 id="15-下一步学习建议"><a class="header" href="#15-下一步学习建议">15. 下一步学习建议</a></h2>
+<ol>
+<li><strong>深入着色器编程</strong>: 学习GLSL，创建自定义视觉效果</li>
+<li><strong>物理引擎集成</strong>: 掌握Cannon.js或Ammo.js</li>
+<li><strong>WebXR开发</strong>: 学习VR/AR应用开发</li>
+<li><strong>高级动画</strong>: 研究骨骼动画和变形动画</li>
+<li><strong>性能优化</strong>: 深入学习渲染优化技术</li>
+</ol>
+<p><strong>推荐项目实战方向</strong>:</p>
+<ul>
+<li>3D产品配置器</li>
+<li>数据可视化大屏</li>
+<li>3D地图应用</li>
+<li>浏览器游戏</li>
+<li>虚拟展厅</li>
+</ul>
+<hr />
+<p><em>最后更新: 2024</em>
+<em>适用版本: Three.js r150+</em></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/3d/CesiumJS.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/android/Android-基础篇.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/3d/CesiumJS.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/android/Android-基础篇.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

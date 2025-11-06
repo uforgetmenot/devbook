@@ -1,0 +1,896 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>NUMA（非一致内存访问）学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="numa非一致内存访问学习笔记"><a class="header" href="#numa非一致内存访问学习笔记">NUMA（非一致内存访问）学习笔记</a></h1>
+<blockquote>
+<p>面向 0-5 年经验的虚拟化、数据库、NFV、高性能计算场景的工程师，系统掌握 NUMA 架构原理、Linux 与虚拟化中的 NUMA 配置、性能调优与最佳实践。</p>
+</blockquote>
+<hr />
+<h2 id="学习定位与总体目标"><a class="header" href="#学习定位与总体目标">学习定位与总体目标</a></h2>
+<ul>
+<li><strong>学习者画像</strong>：具备 Linux 基础、了解 CPU/内存管理与虚拟化技术，需要在虚拟机、容器、数据库、网络加速场景中优化性能、降低延迟。</li>
+<li><strong>技术定位</strong>：NUMA（Non-Uniform Memory Access）结构下，不同 CPU 节点访问本地内存具有较低延迟，访问非本地内存（跨节点）成本更高。针对 NUMA 的优化可以提高缓存命中率、减少内存访问延迟、提升吞吐，是大型 SMP、多 socket 服务器、虚拟化平台、高负载应用的核心调优手段。</li>
+<li><strong>学习目标</strong>：
+<ol>
+<li>理解 NUMA 架构基础、内存拓扑、CPU/内存亲和性与跨节点访问影响；</li>
+<li>熟悉 Linux 工具（numactl、lscpu、numastat）、内核参数、调度策略；</li>
+<li>掌握 KVM/libvirt、Docker/Kubernetes、数据库、DPDK 等场景的 NUMA 配置；</li>
+<li>能够进行性能测量、调优与故障排查；</li>
+<li>构建最佳实践、自动化脚本、监控指标、培训材料；</li>
+<li>输出成果（性能报告、操作手册、验证标准）并通过团队评审。</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="核心模块结构"><a class="header" href="#核心模块结构">核心模块结构</a></h2>
+<ol>
+<li><strong>模块一：NUMA 原理与系统架构</strong> —— 硬件拓扑、缓存、内存访问特性。</li>
+<li><strong>模块二：Linux 环境中的 NUMA 工具与配置</strong> —— numactl, numad, kernel 参数。</li>
+<li><strong>模块三：虚拟化平台（KVM/libvirt）NUMA 优化</strong> —— vCPU/内存绑定、HugePages。</li>
+<li><strong>模块四：容器、数据库、网络与 HPC 场景实战</strong> —— Docker/K8s、DBMS、DPDK、AI。</li>
+<li><strong>模块五：性能评估、监控与自动化调优</strong> —— 指标、测试流程、脚本化。</li>
+<li><strong>模块六：故障诊断、最佳实践与学习路径</strong> —— 常见问题、排查模板、案例、资源。</li>
+</ol>
+<hr />
+<h2 id="模块一numa-原理与系统架构"><a class="header" href="#模块一numa-原理与系统架构">模块一：NUMA 原理与系统架构</a></h2>
+<h3 id="11-uma-vs-numa"><a class="header" href="#11-uma-vs-numa">1.1 UMA vs NUMA</a></h3>
+<ul>
+<li><strong>UMA（一致内存访问）</strong>：所有 CPU 访问内存延迟相同，常见于小型 SMP 系统。</li>
+<li><strong>NUMA</strong>：系统中存在多个节点，每个节点包含 CPU(s) + 本地内存，通过高速互连 (QPI, Infinity Fabric) 连接；</li>
+<li><strong>访问模式</strong>：
+<ul>
+<li>本地访问（Local Access）延迟低；</li>
+<li>远端访问（Remote Access）延迟高；</li>
+<li>影响缓存、内存吞吐。</li>
+</ul>
+</li>
+</ul>
+<h3 id="12-numa-节点结构"><a class="header" href="#12-numa-节点结构">1.2 NUMA 节点结构</a></h3>
+<ul>
+<li>Node = One or more CPU sockets + local memory bank；</li>
+<li>Node 拓扑：如 2 socket × each with 8 cores × 2 threads (HT)；</li>
+<li><code>lscpu</code> 显示 NUMA node ID；</li>
+<li><code>numactl --hardware</code> 查看节点 + 内存；</li>
+<li>Cache 层次：L1/L2 per core, L3 per socket；</li>
+<li>互连：Intel QPI/UPI、AMD Infinity Fabric。</li>
+</ul>
+<h3 id="13-numa-对性能的影响"><a class="header" href="#13-numa-对性能的影响">1.3 NUMA 对性能的影响</a></h3>
+<ul>
+<li>延迟：远程访问 1.3-2x；</li>
+<li>带宽：跨节点共享互连带宽；</li>
+<li>Cache 亲和：跨节点导致 cache miss；</li>
+<li>应用组织线程/内存需按照 NUMA；</li>
+<li><code>numastat</code> 观察跨节点访问；</li>
+<li><code>numactl -m</code> <code>-C</code> 绑定内存/CPU。</li>
+</ul>
+<h3 id="14-现代系统中的-numa"><a class="header" href="#14-现代系统中的-numa">1.4 现代系统中的 NUMA</a></h3>
+<ul>
+<li>多 socket 服务器、AMD EPYC（多 CCD/CCX）、Intel Xeon；</li>
+<li>SMT/HT: 对 NUMA 影响（逻辑核心共享物理核心资源）；</li>
+<li>GPU/PCIe 设备：挂载到特定 NUMA 节点；</li>
+<li>SR-IOV VF =&gt; NUMA aware placement；</li>
+<li>内存通道=NUMA memory bank。</li>
+</ul>
+<h3 id="15-numa-与虚拟化"><a class="header" href="#15-numa-与虚拟化">1.5 NUMA 与虚拟化</a></h3>
+<ul>
+<li>虚拟机 vCPU ↔ pCPU mapping；</li>
+<li>内存分配（numatune, hugepages）；</li>
+<li>Live migration + NUMA 兼容；</li>
+<li>NUMA node pinning reduce remote access；</li>
+<li>CPU Pinning + NUMA synergy。</li>
+</ul>
+<h3 id="16-学习重点与易错点"><a class="header" href="#16-学习重点与易错点">1.6 学习重点与易错点</a></h3>
+<ul>
+<li><strong>重点</strong>：NUMA 结构、内存访问特性、工具；</li>
+<li><strong>易错点</strong>：
+<ol>
+<li>忽视 NUMA 拓扑 → 性能下降；</li>
+<li>线程与内存跨 NUMA （<code>numastat</code> 表现）；</li>
+<li>虚拟机 vCPU 绑定 CPU 但内存未绑定；</li>
+<li>容器/DB 运行在跨节点 CPU；</li>
+<li>HugePages 分配不均匀；</li>
+<li>Live migration 目标节点 NUMA 结构不同；</li>
+<li>在 NUMA 上使用 <code>numactl --interleave=all</code> 误解影响。</li>
+</ol>
+</li>
+</ul>
+<h3 id="17-相关概念"><a class="header" href="#17-相关概念">1.7 相关概念</a></h3>
+<ul>
+<li><strong>NUMA node</strong>：<code>node0</code>, <code>node1</code>;</li>
+<li><strong>meminfo</strong>: <code>/sys/devices/system/node/node*/meminfo</code>；</li>
+<li><strong>cpuset</strong>：控制 CPU/内存；</li>
+<li><strong>numad</strong>：自动 NUMA 调优守护进程；</li>
+<li><strong>memory locality</strong>：内存位置；</li>
+<li><strong>sched_setaffinity</strong>, <code>taskset</code>；</li>
+<li><strong>interleaving</strong>：交错内存分配；</li>
+<li><strong>page migration</strong>：跨节点迁移页；</li>
+<li><strong>slub allocator</strong>：per-node slab caches。</li>
+</ul>
+<hr />
+<h2 id="模块二linux-环境中的-numa-工具与配置"><a class="header" href="#模块二linux-环境中的-numa-工具与配置">模块二：Linux 环境中的 NUMA 工具与配置</a></h2>
+<h3 id="21-工具速览"><a class="header" href="#21-工具速览">2.1 工具速览</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>工具</th><th>功能</th></tr></thead><tbody>
+<tr><td><code>lscpu</code></td><td>显示 CPU/NUMA 拓扑、缓存</td></tr>
+<tr><td><code>numactl</code></td><td>运行程序时设置 CPU/内存亲和</td></tr>
+<tr><td><code>numastat</code></td><td>NUMA 内存统计</td></tr>
+<tr><td><code>hwloc-ls</code>, <code>lstopo</code></td><td>图形化拓扑展示</td></tr>
+<tr><td><code>taskset</code></td><td>设置 CPU 亲和性</td></tr>
+<tr><td><code>cset shield</code></td><td>隔离 CPU/NUMA</td></tr>
+<tr><td><code>/sys/devices/system/node/</code></td><td>NUMA sysfs 信息</td></tr>
+<tr><td><code>perf numa</code></td><td>NUMA miss 分析</td></tr>
+<tr><td><code>numad</code></td><td>自动 NUMA 调优守护进程</td></tr>
+<tr><td><code>sar -R</code>, <code>vmstat -n</code></td><td>内存及 NUMA 指标</td></tr>
+</tbody></table>
+</div>
+<h3 id="22-numactl-使用"><a class="header" href="#22-numactl-使用">2.2 numactl 使用</a></h3>
+<ul>
+<li><code>numactl --hardware</code>：查看节点；</li>
+<li><code>numactl --cpubind=0 --membind=0 ./app</code>：绑定 CPU + 内存；</li>
+<li><code>numactl --interleave=all ./app</code>：交错分配；</li>
+<li><code>numactl --preferred=1</code>：首选节点；</li>
+<li><code>numactl --show</code>：显示当前进程绑定；</li>
+<li>结合 <code>taskset</code>：<code>taskset -c 0-3 numactl --membind=0 ./app</code>。</li>
+</ul>
+<h3 id="23-numastat-工具"><a class="header" href="#23-numastat-工具">2.3 numastat 工具</a></h3>
+<ul>
+<li><code>numastat</code>: 显示 <code>node0</code>, <code>node1</code> -&gt; <code>numa_hit</code>, <code>numa_miss</code>, <code>numa_foreign</code>；</li>
+<li>解释：
+<ul>
+<li><code>numa_hit</code>: 本节点访问。</li>
+<li><code>numa_miss</code>: 在本节点请求但使用远端。</li>
+<li><code>numa_foreign</code>: 来自其他节点的访问。</li>
+</ul>
+</li>
+<li><code>numastat -p PID</code>: per-process 统计。</li>
+</ul>
+<h3 id="24-sys-接口"><a class="header" href="#24-sys-接口">2.4 /sys 接口</a></h3>
+<ul>
+<li><code>/sys/devices/system/node/node*/cpulist</code>；</li>
+<li><code>/sys/devices/system/node/node*/distance</code> (节点距离矩阵)；</li>
+<li><code>/sys/devices/system/node/node*/hugepages/</code>；</li>
+<li><code>/sys/devices/system/node/node*/meminfo</code>；</li>
+<li><code>/sys/devices/system/node/node*/cpumap</code>；</li>
+<li><code>echo 0 &gt; /sys/devices/system/node/node1/memory*/online</code>（online/offline memory）。</li>
+</ul>
+<h3 id="25-numad-守护进程"><a class="header" href="#25-numad-守护进程">2.5 numad 守护进程</a></h3>
+<ul>
+<li><code>numad</code> 自动将进程分配到合适 NUMA 节点；</li>
+<li><code>/etc/numad.conf</code>；</li>
+<li><code>numad -d</code> debug；</li>
+<li>适用：应用不具备 NUMA 感知；</li>
+<li>Caution：与手动绑定冲突。</li>
+</ul>
+<h3 id="26-内核参数与调度"><a class="header" href="#26-内核参数与调度">2.6 内核参数与调度</a></h3>
+<ul>
+<li><code>kernel.numa_balancing</code>：自动平衡（1 启用，默认）；</li>
+<li><code>numa_balancing_migrate_deferred_cnt</code>, <code>numa_balancing_scan_delay_ms</code>;</li>
+<li><code>sched_enable_numa</code>（旧）；</li>
+<li><code>vm.zone_reclaim_mode</code>: 控制访问策略（1：本地回收）；</li>
+<li><code>vm.min_free_kbytes</code> 与 NUMA 相关；</li>
+<li><code>numa_balancing_settle_count</code>；</li>
+<li>监控 <code>/proc/sys/kernel/numa_balancing</code>。</li>
+</ul>
+<h3 id="27-cpuset-与-cgroup"><a class="header" href="#27-cpuset-与-cgroup">2.7 cpuset 与 cgroup</a></h3>
+<ul>
+<li><code>/sys/fs/cgroup/cpuset</code>：设置 CPU &amp; memory nodes；</li>
+<li><code>echo 0-3 &gt; cpuset.cpus</code>；</li>
+<li><code>echo 0 &gt; cpuset.mems</code>；</li>
+<li><code>systemd</code> <code>CPUAffinity</code>, <code>NUMAMask</code>;</li>
+<li>Cgroup v2: <code>cpuset.cpus</code>, <code>cpuset.mems</code>;</li>
+<li>结合 <code>systemd</code> 服务：<code>NUMAPolicy=preferred</code>, <code>NUMAMask=node0</code>。</li>
+</ul>
+<h3 id="28-监控命令"><a class="header" href="#28-监控命令">2.8 监控命令</a></h3>
+<ul>
+<li><code>hwloc-ps</code> 查看 process/NUMA；</li>
+<li><code>perf mem</code> 采样；</li>
+<li><code>sar -R</code> per-node；</li>
+<li><code>turbostat</code>, <code>pcm.x</code> (Intel)；</li>
+<li><code>ksm/transparent hugepages</code> interplay。</li>
+</ul>
+<h3 id="29-实践练习"><a class="header" href="#29-实践练习">2.9 实践练习</a></h3>
+<ul>
+<li>使用 <code>numactl</code> 在指定节点运行 <code>stress-ng</code>;</li>
+<li>观察 <code>numastat</code> before/after；</li>
+<li>修改 <code>cpuset</code> 控制某服务 CPU/内存；</li>
+<li>使用 <code>hwloc-ls</code> 生成拓扑图；</li>
+<li>调整 <code>kernel.numa_balancing</code> &amp; 观察；</li>
+<li>记录 <code>numa_miss</code> 变化。</li>
+</ul>
+<hr />
+<h2 id="模块三虚拟化平台kvmlibvirtnuma-优化"><a class="header" href="#模块三虚拟化平台kvmlibvirtnuma-优化">模块三：虚拟化平台（KVM/libvirt）NUMA 优化</a></h2>
+<h3 id="31-虚拟机-cpu内存拓扑"><a class="header" href="#31-虚拟机-cpu内存拓扑">3.1 虚拟机 CPU/内存拓扑</a></h3>
+<ul>
+<li>Domain XML：
+<pre><code class="language-xml">&lt;cpu mode='host-passthrough'&gt;
+  &lt;topology sockets='1' cores='4' threads='2'/&gt;
+  &lt;numa&gt;
+    &lt;cell id='0' cpus='0-7' memory='8388608'/&gt;
+  &lt;/numa&gt;
+&lt;/cpu&gt;
+&lt;numatune&gt;
+  &lt;memory mode='strict' nodeset='0'/&gt;
+  &lt;memnode cellid='0' mode='strict' nodeset='0'/&gt;
+&lt;/numatune&gt;
+&lt;cputune&gt;
+  &lt;vcpupin vcpu='0' cpuset='0'/&gt;
+  &lt;vcpupin vcpu='1' cpuset='8'/&gt;
+  &lt;emulatorpin cpuset='0-1'/&gt;
+&lt;/cputune&gt;
+</code></pre>
+</li>
+<li><code>&lt;cpu numacells&gt;</code>, <code>&lt;numatune&gt;</code>, <code>&lt;cputune&gt;</code> 组合；</li>
+<li><code>&lt;memoryBacking&gt;&lt;hugepages/&gt;&lt;/memoryBacking&gt;</code> per node；</li>
+<li><code>virsh vcpupin</code>, <code>emulatorpin</code>, <code>iothreadpin</code>；</li>
+<li><code>&lt;memnode&gt;</code> 绑定 NUMA 节点；</li>
+<li><code>&lt;memory mode='preferred'&gt;</code> fallback。</li>
+</ul>
+<h3 id="32-hugepages-感知"><a class="header" href="#32-hugepages-感知">3.2 HugePages 感知</a></h3>
+<ul>
+<li>NUMA node hugepages：<code>/sys/devices/system/node/node0/hugepages/...</code>；</li>
+<li>VM 使用 <code>&lt;memoryBacking&gt;</code> 指定 per-node hugepages；</li>
+<li>预留 thousands of 2MB pages per node；</li>
+<li><code>numastat</code> 监控 hugepages usage；</li>
+<li>HugePages + NUMA synergy.</li>
+</ul>
+<h3 id="33-cpu-pinning--numa"><a class="header" href="#33-cpu-pinning--numa">3.3 CPU Pinning + NUMA</a></h3>
+<ul>
+<li>kvm/libvirt allow vCPU pinned to physical CPU;</li>
+<li>Align vCPU + memory on same node;</li>
+<li>Example: assign vCPU 0-7 (node0), memory nodeset=0;</li>
+<li><code>virsh emulatorpin</code> ensure QEMU threads on same node.</li>
+</ul>
+<h3 id="34-live-migration-考虑"><a class="header" href="#34-live-migration-考虑">3.4 Live Migration 考虑</a></h3>
+<ul>
+<li>Target node NUMA topology must match;</li>
+<li><code>&lt;numatune&gt;</code> strict nodes may cause failure;</li>
+<li>Possibly need <code>preferred</code> mode;</li>
+<li>Watch hugepages availability on target;</li>
+<li><code>auto NUMA balancing</code> on dest.</li>
+</ul>
+<h3 id="35-numa-aware-scheduling"><a class="header" href="#35-numa-aware-scheduling">3.5 NUMA-aware scheduling</a></h3>
+<ul>
+<li>OpenStack Nova: <code>cpu_topology</code>, <code>hw:cpu_policy=dedicated</code>, <code>hw:numa_nodes</code> ;</li>
+<li><code>hw:numa_cpus.0=0-3</code> ;</li>
+<li><code>hw:numa_mem.0=8192</code> ;</li>
+<li><code>hw:cpu_thread_policy=isolate</code> ;</li>
+<li><code>hw:mem_page_size=large</code> ;</li>
+<li>Nova scheduler <code>NUMATopologyFilter</code> ;</li>
+<li>KubeVirt: <code>spec.domain.cpu.numa</code> ;</li>
+<li>oVirt: “NUMA pinning” UI.</li>
+</ul>
+<h3 id="36-虚拟化常见问题"><a class="header" href="#36-虚拟化常见问题">3.6 虚拟化常见问题</a></h3>
+<ul>
+<li><code>guest</code> not NUMA aware -&gt; remote memory ;</li>
+<li><code>transparent hugepages</code> interfering;</li>
+<li>QEMU memory balloon not pinned;</li>
+<li>emulator thread not pinned causing cross node I/O;</li>
+<li>MIG/live migration to node without hugepages;</li>
+<li>CPU hotplug break pinning.</li>
+</ul>
+<h3 id="37-libvirt-调优-checklist"><a class="header" href="#37-libvirt-调优-checklist">3.7 libvirt 调优 checklist</a></h3>
+<ul>
+<li>Align vCPU and memory;</li>
+<li>Pin emulator and IO threads;</li>
+<li>Use hugepages;</li>
+<li>Disable automatic NUMA balancing inside guest? (Tune case by case);</li>
+<li>Monitor per VM NUMA stats;</li>
+<li>Document topology in XML templates.</li>
+</ul>
+<h3 id="38-实践练习"><a class="header" href="#38-实践练习">3.8 实践练习</a></h3>
+<ul>
+<li>在 2-node NUMA 主机创建 VM pinned on node0;</li>
+<li>运行 benchmark (sysbench) and compare cross-node;</li>
+<li>Use <code>virsh dommemstat</code> vs <code>numastat -p</code>;</li>
+<li>Setup Nova flavor with NUMA topology, launch instance;</li>
+<li>Evaluate jitter difference;</li>
+<li>Document results.</li>
+</ul>
+<hr />
+<h2 id="模块四容器数据库网络与-hpc-场景实战"><a class="header" href="#模块四容器数据库网络与-hpc-场景实战">模块四：容器、数据库、网络与 HPC 场景实战</a></h2>
+<h3 id="41-容器与-kubernetes"><a class="header" href="#41-容器与-kubernetes">4.1 容器与 Kubernetes</a></h3>
+<ul>
+<li>Docker: <code>--cpuset-cpus</code>, <code>--cpuset-mems</code> ;</li>
+<li><code>--memory</code> doesn’t guarantee NUMA binding;</li>
+<li>cgroup v2: <code>cpuset.cpus</code>, <code>cpuset.mems</code> under <code>/sys/fs/cgroup/&lt;pod&gt;</code>;</li>
+<li>Kubernetes:
+<ul>
+<li><code>cpuManagerPolicy=static</code> (Guaranteed pods pinned);</li>
+<li><code>TopologyManager</code> orchestrates CPU + device + memory;</li>
+<li><code>pod spec</code> <code>resources.requests/limits</code> (guaranteed) -&gt; CPU pinned;</li>
+<li><code>numactl</code> inside pod -&gt; use host features;</li>
+<li><code>CRI-O</code>/<code>containerd</code> support;</li>
+<li><code>Performance Addon Operator</code> (OpenShift) -&gt; set <code>chconfig</code>, <code>HugePages</code>, <code>NUMA</code> policies;</li>
+<li><code>RuntimeClass</code> with CPU/NUMA settings.</li>
+</ul>
+</li>
+</ul>
+<h3 id="42-数据库场景"><a class="header" href="#42-数据库场景">4.2 数据库场景</a></h3>
+<ul>
+<li>Oracle: Use <code>numactl</code> or <code>init.ora</code> <code>USE_LARGE_PAGES</code>;</li>
+<li>PostgreSQL: <code>numactl --cpubind=0 --membind=0</code> ;</li>
+<li>MySQL: configure <code>innodb_buffer_pool</code> on local memory;</li>
+<li>SAP HANA: requires NUMA alignment;</li>
+<li>Observing <code>numastat</code> to detect memory distribution;</li>
+<li>Tuning OS: <code>numa_balancing=0</code> for DB in some cases.</li>
+</ul>
+<h3 id="43-dpdknfv"><a class="header" href="#43-dpdknfv">4.3 DPDK/NFV</a></h3>
+<ul>
+<li>DPDK EAL: <code>-l 0-3 --socket-mem 1024,1024</code>;</li>
+<li><code>--legacy-mem</code> vs <code>--in-memory</code>;</li>
+<li><code>--socket-mem</code> ensures hugepage per node;</li>
+<li><code>--numa</code> for NIC;</li>
+<li>Align NIC to CPU Node: check <code>ethtool -S</code> or <code>lspci -vv</code>;</li>
+<li>SR-IOV VF attach to same NUMA;</li>
+<li>OVS-DPDK <code>dpdk-lcore-mask</code>, <code>pmd-cpu-mask</code> pinned per node;</li>
+<li>NFV orchestrations (Tacker, ONAP) specify CPU + memory.</li>
+</ul>
+<h3 id="44-aiml--hpc"><a class="header" href="#44-aiml--hpc">4.4 AI/ML &amp; HPC</a></h3>
+<ul>
+<li>TensorFlow: <code>numactl --cpunodebind</code> for CPU inference;</li>
+<li>GPU: <code>nvidia-smi topo -m</code> to view GPU-CPU/NUMA connection;</li>
+<li>Multi-GPU training: assign GPU per NUMA aware;</li>
+<li>OpenMP/MPI: <code>numactl</code>, <code>mpirun --map-by ppr</code>;</li>
+<li>HPC libs: <code>hwloc</code>, <code>numa_alloc_onnode</code>;</li>
+<li>Slurm: <code>SelectType=select/cons_tres</code>, <code>SelectTypeParameters=CR_Core_Memory</code> ;</li>
+<li>Sensitive to cross node access.</li>
+</ul>
+<h3 id="45-edge--固定功能设备"><a class="header" href="#45-edge--固定功能设备">4.5 Edge &amp; 固定功能设备</a></h3>
+<ul>
+<li>低延迟系统: real-time kernel + NUMA isolation;</li>
+<li>Audio processing, high frequency trading;</li>
+<li>Use <code>isolcpus</code>, <code>nohz_full</code>, <code>rcu_nocbs</code>;</li>
+<li><code>cset shield</code> to isolate node;</li>
+<li>Fast path threads pinned to core+mem.</li>
+</ul>
+<h3 id="46-windowshyper-v-numa"><a class="header" href="#46-windowshyper-v-numa">4.6 Windows/Hyper-V NUMA</a></h3>
+<ul>
+<li>Windows Server: <code>System Information</code> shows NUMA;</li>
+<li>Hyper-V: configure <code>NUMA topology</code> for VM;</li>
+<li>SQL Server NUMA aware;</li>
+<li><code>soft-NUMA</code> groups;</li>
+<li>Learning for cross-platform difference.</li>
+</ul>
+<h3 id="47-实践练习"><a class="header" href="#47-实践练习">4.7 实践练习</a></h3>
+<ul>
+<li>在 Kubernetes 部署 Guaranteed Pod, verify cpuset &amp; mems;</li>
+<li>DPDK <code>testpmd</code> with <code>--socket-mem</code> ;</li>
+<li>Database: run <code>pgbench</code> with vs without NUMA binding;</li>
+<li>GPU: map GPU to CPU node using <code>nvidia-smi topo</code>;</li>
+<li>HPC job: use <code>hwloc</code> to plan affinity;</li>
+<li>Record performance delta.</li>
+</ul>
+<hr />
+<h2 id="模块五性能评估监控与自动化调优"><a class="header" href="#模块五性能评估监控与自动化调优">模块五：性能评估、监控与自动化调优</a></h2>
+<h3 id="51-性能指标"><a class="header" href="#51-性能指标">5.1 性能指标</a></h3>
+<ul>
+<li><code>numastat</code>: hits/misses;</li>
+<li><code>perf mem</code>, <code>perf numa</code> metrics;</li>
+<li><code>sar -R</code>, <code>vmstat -n</code> ;</li>
+<li>CPU metrics: <code>cycles</code>, <code>cache-misses</code>;</li>
+<li>Application metrics: throughput, latency, jitter;</li>
+<li><code>hwloc-ps</code> for per-process binding;</li>
+<li><code>pmu</code> events (Intel) <code>MEM_LOAD_RETIRED.LOCAL_DRAM</code>;</li>
+<li><code>numa_pages_migrated</code> (procfs).</li>
+</ul>
+<h3 id="52-测试工具"><a class="header" href="#52-测试工具">5.2 测试工具</a></h3>
+<ul>
+<li><code>numactl --membind=0 --cpubind=0 stress-ng --stream</code> ;</li>
+<li><code>stream</code> benchmark (memory bandwidth);</li>
+<li><code>lat_mem_rd</code> (lmbench) ;</li>
+<li><code>fio</code> for IO vs NUMA;</li>
+<li><code>sysbench</code> ;</li>
+<li><code>hackbench</code>, <code>netperf</code> ;</li>
+<li>DPDK <code>testpmd</code>;</li>
+<li>Database: <code>pgbench</code>, <code>sysbench oltp</code>.</li>
+</ul>
+<h3 id="53-测试流程"><a class="header" href="#53-测试流程">5.3 测试流程</a></h3>
+<ol>
+<li>Baseline (no binding);</li>
+<li>Pin CPU + memory, run tests;</li>
+<li>Collect metrics (numastat, perf);</li>
+<li>Adjust configuration (HugePages, CPU pinning);</li>
+<li>Evaluate impact on throughput/latency;</li>
+<li>Document results (graphs, tables);</li>
+<li>Repeat per application scenario.</li>
+</ol>
+<h3 id="54-监控集成"><a class="header" href="#54-监控集成">5.4 监控集成</a></h3>
+<ul>
+<li>Prometheus Node Exporter (requires <code>node_scrape_collector</code> for numastat);</li>
+<li><code>numa_exporter</code> (third-party);</li>
+<li>Grafana dashboards: per node memory usage, miss rates;</li>
+<li>Alert thresholds: high <code>numa_miss</code>, low free memory per node;</li>
+<li>Logging to ELK;</li>
+<li><code>collectd</code> plugin <code>numa</code> ;</li>
+<li>Kubernetes: <code>Kube-state-metrics</code> (for pod resource), custom exporters.</li>
+</ul>
+<h3 id="55-自动调优"><a class="header" href="#55-自动调优">5.5 自动调优</a></h3>
+<ul>
+<li>Scripts: detect high <code>numa_miss</code> -&gt; move process (using <code>numactl --migrate-pages</code>);</li>
+<li><code>numad</code>;</li>
+<li>Integration with orchestrators (OpenStack scheduler, Kubernetes Topology Manager);</li>
+<li><code>Ansible</code> or <code>Terraform</code> to configure CPU pinning;</li>
+<li><code>tuned</code> profiles: <code>throughput-performance</code>, <code>realtime</code> (set <code>isolcpus</code>, <code>numa_balancing</code>) ;</li>
+<li><code>Performance Co-Pilot</code> to analyze;</li>
+<li>AI-based scheduling (custom).</li>
+</ul>
+<h3 id="56-数据可视化"><a class="header" href="#56-数据可视化">5.6 数据可视化</a></h3>
+<ul>
+<li>Use Grafana: heatmap of cross-node traffic;</li>
+<li><code>numa_miss / (numa_hit + numa_miss)</code> ratio;</li>
+<li>Display per application;</li>
+<li>track improvements over time.</li>
+</ul>
+<h3 id="57-自动化脚本示例"><a class="header" href="#57-自动化脚本示例">5.7 自动化脚本示例</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+threshold=1000
+for pid in $(ps -e -o pid=); do
+  miss=$(numastat -p $pid | awk '/numa_miss/{print $2}')
+  if [[ $miss -gt $threshold ]]; then
+    echo "PID $pid has high NUMA miss: $miss" | tee -a /var/log/numa_miss.log
+    # Optional: migrate pages
+    # numactl --migrate-pages=$pid:$pid 0
+  fi
+ done
+</code></pre>
+<h3 id="58-成本与收益分析"><a class="header" href="#58-成本与收益分析">5.8 成本与收益分析</a></h3>
+<ul>
+<li>Performance vs management complexity;</li>
+<li>Document improvements (25% throughput, 40% latency reduction);</li>
+<li>Evaluate resource utilization;</li>
+<li>ROI for CPU pinning &amp; NUMA optimization.</li>
+</ul>
+<h3 id="59-实践练习"><a class="header" href="#59-实践练习">5.9 实践练习</a></h3>
+<ul>
+<li>Run <code>stream</code> benchmark cross vs single node;</li>
+<li>Use Prometheus to collect numastat metrics;</li>
+<li>Implement script to adjust CPU/memory binding;</li>
+<li>Analyze real workload logs;</li>
+<li>Create report summarizing findings.</li>
+</ul>
+<hr />
+<h2 id="模块六故障诊断最佳实践与学习路径"><a class="header" href="#模块六故障诊断最佳实践与学习路径">模块六：故障诊断、最佳实践与学习路径</a></h2>
+<h3 id="61-常见问题"><a class="header" href="#61-常见问题">6.1 常见问题</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>现象</th><th>排查</th><th>解决</th></tr></thead><tbody>
+<tr><td>高延迟</td><td>应用响应慢</td><td><code>numastat</code>, <code>perf</code></td><td>绑定 CPU/内存，减少跨节点</td></tr>
+<tr><td>NUMA miss 增多</td><td>远程访问率高</td><td>检查进程绑定</td><td>调整 numactl, cgroup</td></tr>
+<tr><td>VM 不启动</td><td><code>cannot allocate memory</code></td><td>目标节点缺少 hugepages</td><td>预留 per node hugepages</td></tr>
+<tr><td>迁移后性能下降</td><td>VM 运行慢</td><td>目标节点 NUMA 拓扑不同</td><td>调整 pinning, migrate back</td></tr>
+<tr><td>DPDK PPS 下降</td><td>packet loss</td><td>NIC/PMD 线程不在同节点</td><td>重新绑定 PMD CPU</td></tr>
+<tr><td>K8s pod 不可调度</td><td>scheduler pending</td><td>Topology Manager mismatch</td><td>调整 resource request</td></tr>
+<tr><td>numad 与手动冲突</td><td>binding 被重置</td><td><code>systemctl stop numad</code></td><td>关闭 numad 或单独管理</td></tr>
+<tr><td>memory imbalance</td><td>节点内存耗尽</td><td><code>numactl --show</code>, <code>numastat</code></td><td>重新平衡, set zone_reclaim</td></tr>
+<tr><td>HugePages 分配失败</td><td><code>No space left</code></td><td><code>/sys/devices/system/node/node*/hugepages</code></td><td>减少 per node hugepage usage</td></tr>
+<tr><td>CPU 热点</td><td>负载集中</td><td><code>hwloc</code></td><td>重新分配</td></tr>
+</tbody></table>
+</div>
+<h3 id="62-排查流程"><a class="header" href="#62-排查流程">6.2 排查流程</a></h3>
+<ol>
+<li>收集拓扑 (<code>lscpu</code>, <code>hwloc-ls</code>);</li>
+<li><code>numastat -p &lt;PID&gt;</code>;</li>
+<li>检查 process CPU binding (<code>taskset -p</code>);</li>
+<li>Observe hugepages per node;</li>
+<li>Use <code>perf mem --no-phys-data</code> to find hot threads;</li>
+<li>Analyze cgroup cpuset;</li>
+<li>Review VM XML / container spec;</li>
+<li>Evaluate load, traffic (DB queries, CPU usage);</li>
+<li>Document &amp; produce RCA.</li>
+</ol>
+<h3 id="63-最佳实践清单"><a class="header" href="#63-最佳实践清单">6.3 最佳实践清单</a></h3>
+<ul>
+<li>了解硬件 NUMA 拓扑，制作文档；</li>
+<li>对关键应用进行 CPU + memory 绑定；</li>
+<li>使用 HugePages + NUMA align；</li>
+<li>使用 <code>cgroup cpuset</code> 管理资源；</li>
+<li>监控 <code>numastat</code> &amp; exports metrics；</li>
+<li>OpenStack/K8s flavors/RuntimeClass specify NUMA;</li>
+<li>定期进行性能测试 &amp; 记录基线；</li>
+<li>迁移/升级前验证目标节点拓扑；</li>
+<li>结合 CPU Pinning, IRQ affinity, GPU/FPGA placement；</li>
+<li>编写 SOP、培训资料；</li>
+<li>参与社区，关注内核/Libvirt updates；</li>
+<li>自动化配置，避免手动步骤出错。</li>
+</ul>
+<h3 id="64-学习路径"><a class="header" href="#64-学习路径">6.4 学习路径</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>时间</th><th>目标</th><th>行动</th><th>产出</th></tr></thead><tbody>
+<tr><td>阶段 0：准备</td><td>1 天</td><td>了解 NUMA 基础</td><td>阅读本文、查看硬件拓扑</td><td>拓扑文档</td></tr>
+<tr><td>阶段 1：基础实践</td><td>3 天</td><td>使用 numactl/numastat, cpuset</td><td>执行绑定实验、监控</td><td>操作手册</td></tr>
+<tr><td>阶段 2：虚拟化/容器场景</td><td>4-5 天</td><td>配置 VM、K8s、DPDK NUMA</td><td>完成案例，记录结果</td><td>案例报告</td></tr>
+<tr><td>阶段 3：性能调优</td><td>4 天</td><td>测试、调优、监控</td><td>运行基准测试、搭建监控</td><td>调优报告、仪表板</td></tr>
+<tr><td>阶段 4：运维沉淀</td><td>5 天</td><td>故障排查、最佳实践</td><td>编写 SOP、故障演练</td><td>知识库、培训材料</td></tr>
+<tr><td>阶段 5：持续改进</td><td>持续</td><td>自动化、评估、分享</td><td>自动化脚本、评审</td><td>迭代计划</td></tr>
+</tbody></table>
+</div>
+<h3 id="65-实战案例"><a class="header" href="#65-实战案例">6.5 实战案例</a></h3>
+<h4 id="案例一数据库延迟优化"><a class="header" href="#案例一数据库延迟优化">案例一：数据库延迟优化</a></h4>
+<ul>
+<li>背景：PostgreSQL 在 2-socket 服务器上延迟高。</li>
+<li>措施：
+<ol>
+<li><code>numactl -H</code> 查看；</li>
+<li>将 DB 进程绑定 node0；</li>
+<li>调整 shared_buffers 在 node0 memory；</li>
+<li>监控 <code>numastat</code>；</li>
+</ol>
+</li>
+<li>结果：延迟降低 30%。</li>
+</ul>
+<h4 id="案例二kvm-虚拟化集群优化"><a class="header" href="#案例二kvm-虚拟化集群优化">案例二：KVM 虚拟化集群优化</a></h4>
+<ul>
+<li>目标：为 NFV VM 提供严格 NUMA 绑定。</li>
+<li>行动：
+<ol>
+<li>Domain XML 设置 <code>&lt;numatune&gt;</code>；</li>
+<li>CPU pinning + HugePages per node；</li>
+<li>设置 <code>hw:cpu_policy=dedicated</code>, <code>hw:numa_nodes=1</code> flavor；</li>
+<li>监控 pmd 线程 CPU；</li>
+</ol>
+</li>
+<li>结果：PPS 提升 20%，稳定性改善。</li>
+</ul>
+<h4 id="案例三kubernetes-边缘节点性能问题"><a class="header" href="#案例三kubernetes-边缘节点性能问题">案例三：Kubernetes 边缘节点性能问题</a></h4>
+<ul>
+<li>背景：Pod Latency high in multi-socket server.</li>
+<li>Solution:
+<ol>
+<li>Enable CPU Manager static;</li>
+<li>Deploy PerformanceProfile (OpenShift) with <code>NUMA</code> options;</li>
+<li>Use <code>guaranteed</code> pods;</li>
+<li>Observed improved tail latency.</li>
+</ol>
+</li>
+</ul>
+<h4 id="案例四dpdk-vrouter-调优"><a class="header" href="#案例四dpdk-vrouter-调优">案例四：DPDK vRouter 调优</a></h4>
+<ul>
+<li>
+<ol>
+<li>Identify NIC NUMA node;</li>
+<li>Bind pmd threads to same node;</li>
+<li>Use <code>--socket-mem</code>;</li>
+<li>Validate throughput via <code>testpmd</code>.</li>
+</ol>
+</li>
+</ul>
+<h4 id="案例五ai-推理集群部署"><a class="header" href="#案例五ai-推理集群部署">案例五：AI 推理集群部署</a></h4>
+<ul>
+<li>
+<ol>
+<li>GPU NUMA mapping;</li>
+<li>Place pods with GPU near matching CPU;</li>
+<li>Use <code>TopologyManager</code> policy <code>single-numa-node</code>;</li>
+<li>Achieved improved inference latency.</li>
+</ol>
+</li>
+</ul>
+<h3 id="66-学习成果验证标准"><a class="header" href="#66-学习成果验证标准">6.6 学习成果验证标准</a></h3>
+<ol>
+<li><strong>基础能力</strong>：能够使用 <code>numactl</code>, <code>numastat</code>, <code>hwloc</code> 查看拓扑并配置绑定；</li>
+<li><strong>场景实践</strong>：完成虚拟化/容器/DPDK/数据库至少两种场景的 NUMA 优化案例；</li>
+<li><strong>性能报告</strong>：提供前后对比数据（延迟、吞吐、命中率）；</li>
+<li><strong>监控体系</strong>：搭建 numastat 指标监控与告警；</li>
+<li><strong>自动化工具</strong>：编写脚本或配置管理实现批量设置；</li>
+<li><strong>故障演练</strong>：模拟至少两种 NUMA 问题并输出 RCA；</li>
+<li><strong>文档沉淀</strong>：完成操作手册、最佳实践、常见问题；</li>
+<li><strong>持续改进</strong>：建立定期回顾与优化计划。</li>
+</ol>
+<h3 id="67-扩展资源与进阶建议"><a class="header" href="#67-扩展资源与进阶建议">6.7 扩展资源与进阶建议</a></h3>
+<ul>
+<li><strong>官方/参考文档</strong>：
+<ul>
+<li>Linux kernel documentation: Documentation/admin-guide/mm/numa_balancing.rst</li>
+<li>Red Hat Performance Tuning Guide</li>
+<li>Intel/AMD NUMA optimization whitepapers</li>
+<li>KubeVirt, OpenStack, DPDK NUMA docs</li>
+</ul>
+</li>
+<li><strong>工具</strong>：<code>hwloc</code>, <code>numaplot</code>, <code>likwid</code>, <code>pcm</code>, <code>perf</code>；</li>
+<li><strong>社区</strong>：LKML, perf mailing list, DPDK, OpenStack, Kubernetes SIG Node；</li>
+<li><strong>进阶建议</strong>：
+<ol>
+<li>学习高阶内核 NUMA 机制、page migration；</li>
+<li>开发 NUMA-aware scheduler/Operator；</li>
+<li>探索 CXL/NUMA hybrid memory 器件；</li>
+<li>参与社区贡献与案例分享；</li>
+<li>构建 NUMA 优化自助工具；</li>
+<li>研究未来 NUMA 架构（chiplet, disaggregated memory）。</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="附录"><a class="header" href="#附录">附录</a></h2>
+<h3 id="a-常用命令速查"><a class="header" href="#a-常用命令速查">A. 常用命令速查</a></h3>
+<pre><code class="language-bash">lscpu
+numactl --hardware
+numactl --cpubind=0 --membind=0 ./app
+numastat
+numastat -p &lt;PID&gt;
+ hwloc-ls --ps
+ taskset -cp &lt;PID&gt;
+ cat /sys/devices/system/node/node0/meminfo
+ cset shield --cpu=0-3 --kthread=on
+</code></pre>
+<h3 id="b-监控指标prometheus"><a class="header" href="#b-监控指标prometheus">B. 监控指标（Prometheus）</a></h3>
+<ul>
+<li><code>node_memory_numa_MemTotal_bytes{node="0"}</code></li>
+<li><code>node_memory_numa_MemFree_bytes</code></li>
+<li><code>numastat_numa_miss_total{pid="..."}</code> (custom)</li>
+<li><code>process_cpu_seconds_total</code> per cpuset</li>
+<li><code>numa_balancing_migrate_success</code> (bpf exporter)</li>
+</ul>
+<h3 id="c-配置文件模板"><a class="header" href="#c-配置文件模板">C. 配置文件模板</a></h3>
+<ul>
+<li><code>systemd</code>：
+<pre><code>[Service]
+CPUAffinity=0 1 2 3
+NUMAPolicy=preferred
+NUMAMask=0
+</code></pre>
+</li>
+<li><code>Kubernetes PerformanceProfile</code>:
+<pre><code class="language-yaml">spec:
+  cpu:
+    isolated: "2-15"
+    reserved: "0-1"
+  hugepages:
+    defaultHugepagesSize: 1G
+    pages:
+      - size: 1G
+        count: 16
+        node: 0
+  numa:
+    topologyPolicy: single-numa-node
+</code></pre>
+</li>
+</ul>
+<h3 id="d-故障记录模板"><a class="header" href="#d-故障记录模板">D. 故障记录模板</a></h3>
+<pre><code>事件编号：NUMA-2024-04
+时间：2024-08-21 14:10
+系统：NFV Host (24 cores, 2 NUMA nodes)
+现象：PPS 大幅下降，latency spike
+排查：
+1. numastat -&gt; node1 high numa_miss
+2. DPDK pmd thread on node0, NIC on node1
+解决：
+1. Rebind NIC to node0 or move threads
+2. Update OVS PMD mask
+结果：PPS 恢复，延迟正常
+预防：编写脚本检查 NIC NUMA mismatch
+</code></pre>
+<blockquote>
+<p>NUMA 优化是构建高性能虚拟化和应用平台的关键环节。通过深入理解硬件拓扑、利用 Linux 与虚拟化平台提供的工具和接口，结合监控与自动化，可以显著提升关键业务的性能和稳定性。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/云计算/live-migration.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/云计算/qemu-img.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/云计算/live-migration.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/云计算/qemu-img.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,647 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>AMD SEV / SNP 虚拟化安全学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="amd-sev--snp-虚拟化安全学习笔记"><a class="header" href="#amd-sev--snp-虚拟化安全学习笔记">AMD SEV / SNP 虚拟化安全学习笔记</a></h1>
+<blockquote>
+<p>面向 0-5 年经验的虚拟化、云平台、安全工程师，系统掌握 AMD Secure Encrypted Virtualization (SEV) 及 SEV-ES/SEV-SNP 技术原理、平台配置、虚拟化集成、密钥管理、安全运维与故障排查。</p>
+</blockquote>
+<hr />
+<h2 id="学习定位与总体目标"><a class="header" href="#学习定位与总体目标">学习定位与总体目标</a></h2>
+<ul>
+<li><strong>学习者画像</strong>：负责 KVM/OpenStack/KubeVirt 等虚拟化平台，需提升多租户或敏感工作负载安全隔离能力。</li>
+<li><strong>技术定位</strong>：AMD SEV 系列技术通过对虚拟机内存加密和完整性保护，防止宿主机或恶意管理员访问客户数据。SEV-ES 提供寄存器加密，SEV-SNP 提供内存完整性、页表保护。是实现机密计算、合规、安全托管的重要基础。</li>
+<li><strong>学习目标</strong>：
+<ol>
+<li>理解 SEV/SEV-ES/SEV-SNP 的硬件机制、密钥体系、启动和证书流程；</li>
+<li>熟悉 BIOS/固件、Linux 内核、KVM/QEMU/libvirt 中的配置步骤；</li>
+<li>能够在 OpenStack、KubeVirt、Azure Confidential Computing 等平台启用和验证 SEV；</li>
+<li>建立密钥管理、guest 启动、证书验证、固件更新的自动化流程；</li>
+<li>编写故障排查、风险评估、合规文档，并形成最佳实践。</li>
+</ol>
+</li>
+<li><strong>成果要求</strong>：
+<ul>
+<li>完成 SEV/SEV-SNP 实验环境部署与 VM 启动验证；</li>
+<li>交付密钥请求（PDH/OCA）与证书管理脚本；</li>
+<li>输出安全策略、性能评估、故障排查案例；</li>
+<li>形成团队培训材料与技术手册。</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="核心模块结构"><a class="header" href="#核心模块结构">核心模块结构</a></h2>
+<ol>
+<li><strong>模块一：AMD SEV 技术原理与演进</strong> —— SEV、SEV-ES、SEV-SNP 架构与比较。</li>
+<li><strong>模块二：平台支持与 BIOS/固件配置</strong> —— 硬件要求、固件设置、PSP 固件、微码。</li>
+<li><strong>模块三：Linux/KVM/QEMU/libvirt 配置实践</strong> —— 内核、驱动、qemu 参数、libvirt XML。</li>
+<li><strong>模块四：云平台与生态集成</strong> —— OpenStack、KubeVirt、Azure、Google Confidential VM。</li>
+<li><strong>模块五：密钥管理、安全治理与故障诊断</strong> —— 证书、密钥链、性能调优、排查流程。</li>
+<li><strong>模块六：学习路径、实战案例与验证标准</strong> —— 计划、案例、成果评估、扩展资源。</li>
+</ol>
+<hr />
+<h2 id="模块一amd-sev-技术原理与演进"><a class="header" href="#模块一amd-sev-技术原理与演进">模块一：AMD SEV 技术原理与演进</a></h2>
+<h3 id="11-sev-核心概念"><a class="header" href="#11-sev-核心概念">1.1 SEV 核心概念</a></h3>
+<ul>
+<li>SEV（Secure Encrypted Virtualization）对每个虚拟机内存使用不同密钥 AES 加密；</li>
+<li>密钥由 AMD 安全处理器（PSP）管理，宿主无法直接访问；</li>
+<li>保护目标：防止恶意宿主或侧信道读取客户内存；</li>
+<li>初始版本（SEV）只加密内存，不保护寄存器。</li>
+</ul>
+<h3 id="12-sev-esencrypted-state"><a class="header" href="#12-sev-esencrypted-state">1.2 SEV-ES（Encrypted State）</a></h3>
+<ul>
+<li>在 SEV 的基础上加密 vCPU 寄存器状态；</li>
+<li>防止 hypervisor 通过寄存器窃取数据；</li>
+<li>引入 <code>GHCB</code> （Guest-Hypervisor Communication Block）标准化通信；</li>
+<li>要求客体 OS 或固件支持（GHCB driver）。</li>
+</ul>
+<h3 id="13-sev-snpsecure-nested-paging"><a class="header" href="#13-sev-snpsecure-nested-paging">1.3 SEV-SNP（Secure Nested Paging）</a></h3>
+<ul>
+<li>增强内存完整性和页表保护，防止内存重映射攻击；</li>
+<li>使用 RMP（Reverse Map Table）维护页状态；</li>
+<li>提供 Guest Attestation、VMPL 权限级别；</li>
+<li>支持 <code>Guest Request</code> 服务，guest 可请求证书验证；</li>
+<li>需要较新硬件（Milan+）和固件。</li>
+</ul>
+<h3 id="14-信任链与证书"><a class="header" href="#14-信任链与证书">1.4 信任链与证书</a></h3>
+<ul>
+<li>身份链：AMD RoT → 设备认证公钥（ASK、ARK）→ 平台证书（PEK）→ OCA 签署 → Guest 证书；</li>
+<li><code>sev-tool</code> 用于生成证书请求、导入证书、查看状态；</li>
+<li>远程证明：Guest 请求 attestation 报文 -&gt; PSP 返回带签名度量 -&gt; 客户端验证。</li>
+</ul>
+<h3 id="15-支持矩阵"><a class="header" href="#15-支持矩阵">1.5 支持矩阵</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>技术</th><th>CPU 代号</th><th>内核版本</th><th>QEMU 版本</th><th>libvirt</th><th>特性</th></tr></thead><tbody>
+<tr><td>SEV</td><td>Naples/Rome</td><td>4.16+</td><td>2.12+</td><td>4.5+</td><td>内存加密</td></tr>
+<tr><td>SEV-ES</td><td>Rome</td><td>5.10+</td><td>5.1+</td><td>6.0+</td><td>寄存器加密</td></tr>
+<tr><td>SEV-SNP</td><td>Milan/Genoa</td><td>5.19+/6.0+</td><td>6.2+</td><td>8.0+</td><td>内存完整性、测量</td></tr>
+</tbody></table>
+</div>
+<h3 id="16-安全能力与限制"><a class="header" href="#16-安全能力与限制">1.6 安全能力与限制</a></h3>
+<ul>
+<li>能力：内存加密、寄存器保护、完整性校验、远程测量；</li>
+<li>限制：不防范guest内部攻击、侧信道（需补充措施）、I/O 设备安全仍需 VFIO + IOMMU；</li>
+<li>需要最新固件/微码，升级不可忽视；</li>
+<li>性能开销：加密带来的延迟（约 1-6%），SNP 提升 integrity 可能导致更多开销。</li>
+</ul>
+<h3 id="17-学习重点与易错点"><a class="header" href="#17-学习重点与易错点">1.7 学习重点与易错点</a></h3>
+<ul>
+<li><strong>重点</strong>：PSP、证书链、Guest 启动流程、GHCB；</li>
+<li><strong>易错点</strong>：
+<ol>
+<li>未更新 BIOS/PSP 固件导致 SEV 不可用；</li>
+<li>libvirt 未开启 <code>&lt;launchSecurity&gt;</code>；</li>
+<li>Guest OS 缺乏 GHCB 驱动导致 SEV-ES/SNP 启动失败；</li>
+<li>证书链不完整 -&gt; 远程证明失败；</li>
+<li>混淆 SEV、SEV-ES、SEV-SNP 的功能差异；</li>
+<li>IOMMU 未启用导致 DMA 攻击窗口。</li>
+</ol>
+</li>
+</ul>
+<h3 id="18-参考资料"><a class="header" href="#18-参考资料">1.8 参考资料</a></h3>
+<ul>
+<li>AMD SEV-SNP 规范与 API 文档；</li>
+<li>Linux Kernel Documentation <code>AMD_SEV</code>；</li>
+<li>QEMU / libvirt release notes；</li>
+<li>AMD 开发者博客、Google/Azure Confidential VM 白皮书。</li>
+</ul>
+<hr />
+<h2 id="模块二平台支持与-bios固件配置"><a class="header" href="#模块二平台支持与-bios固件配置">模块二：平台支持与 BIOS/固件配置</a></h2>
+<h3 id="21-硬件要求"><a class="header" href="#21-硬件要求">2.1 硬件要求</a></h3>
+<ul>
+<li>支持 SEV 的 AMD EPYC / Ryzen PRO 处理器；</li>
+<li>主板 BIOS 支持 PSP、SVM、SMT、安全启动；</li>
+<li>IOMMU（AMD-Vi）启用；</li>
+<li>足够的内存和固件版本（PSP FW 版本参考 AMD 公告）。</li>
+</ul>
+<h3 id="22-biosuefi-设置"><a class="header" href="#22-biosuefi-设置">2.2 BIOS/UEFI 设置</a></h3>
+<ul>
+<li>启用 SVM Mode、SEV、SMT、IOMMU；</li>
+<li>对 SEV-ES/SNP：在 BIOS 中启用 <code>Secure Encrypted Virtualization</code>, <code>Secure Nested Paging</code>；</li>
+<li>更新 BIOS/PSP 固件至最新版本；</li>
+<li>记录固件版本、设置快照。</li>
+</ul>
+<h3 id="23-固件与驱动"><a class="header" href="#23-固件与驱动">2.3 固件与驱动</a></h3>
+<ul>
+<li>Linux 内核需包含 <code>CONFIG_AMD_MEM_ENCRYPT</code>、<code>CONFIG_KVM_AMD_SEV</code>；</li>
+<li><code>amd_pstate</code>, <code>kvm_amd</code> 模块支持；</li>
+<li><code>sevctl</code> (sev-tool) 需安装在宿主；</li>
+<li><code>fwupd</code>/<code>vendor tools</code> 进行 PSP 更新。</li>
+</ul>
+<h3 id="24-sev-工具"><a class="header" href="#24-sev-工具">2.4 SEV 工具</a></h3>
+<ul>
+<li><code>sevctl</code> 或 <code>sev-tool</code>：
+<pre><code class="language-bash">sudo sevctl status
+sudo sevctl pdh_gen
+sudo sevctl pdh_cert_export pdh.pem
+</code></pre>
+</li>
+<li><code>dmesg | grep SEV</code> 查看内核日志；</li>
+<li><code>/sys/module/kvm_amd/parameters/sev</code>；</li>
+<li><code>cat /sys/kernel/sev</code> (SNP 报告)。</li>
+</ul>
+<h3 id="25-证书链准备"><a class="header" href="#25-证书链准备">2.5 证书链准备</a></h3>
+<ul>
+<li>获取 AMD ARK/ASK（官方发布）；</li>
+<li>生成平台密钥（PEK/PDH）；</li>
+<li>通过 OCA 签署 PEK（平台 owner CA）；</li>
+<li>下载 OCA 证书，<code>sevctl pek_csr</code> -&gt; send to OCA -&gt; import；</li>
+<li>远程证明：持有 PDH 证书 -&gt; 客户端验证。</li>
+</ul>
+<h3 id="26-实践练习"><a class="header" href="#26-实践练习">2.6 实践练习</a></h3>
+<ul>
+<li>安装最新 BIOS/PSP：记录版本；</li>
+<li>使用 <code>sevctl status</code> 确认启用；</li>
+<li>生成 PDH/PEK，导出证书；</li>
+<li>编写文档描述 BIOS 设置、证书流程。</li>
+</ul>
+<hr />
+<h2 id="模块三linuxkvmqemulibvirt-配置实践"><a class="header" href="#模块三linuxkvmqemulibvirt-配置实践">模块三：Linux/KVM/QEMU/libvirt 配置实践</a></h2>
+<h3 id="31-内核与模块"><a class="header" href="#31-内核与模块">3.1 内核与模块</a></h3>
+<ul>
+<li>确认内核版本 ≥ 5.19（SNP）；</li>
+<li><code>modprobe kvm_amd sev=1 sev_es=1 sev_snp=1</code>；</li>
+<li><code>/sys/module/kvm_amd/parameters/sev_es</code> 等参数；</li>
+<li>开启 IOMMU：<code>amd_iommu=on iommu=pt</code>。</li>
+</ul>
+<h3 id="32-qemu-命令行示例"><a class="header" href="#32-qemu-命令行示例">3.2 QEMU 命令行示例</a></h3>
+<ul>
+<li>启动 SEV VM：
+<pre><code class="language-bash">qemu-system-x86_64 -enable-kvm \
+  -cpu EPYC-v4 \
+  -machine q35,confidential-guest-support=sev0,memory-encryption=sev0 \
+  -object secret,id=sev0,format=raw,file=/sys/kernel/secrets/coco/guest \
+  -drive file=vm.qcow2,if=virtio
+</code></pre>
+</li>
+<li>SEV-SNP：
+<pre><code class="language-bash">-object sev-snp-guest,id=sev0,measurement=on,cbitpos=51,reduced-phys-bits=1
+</code></pre>
+</li>
+<li>需提供 GHCB blob (<code>-fw_cfg</code>)，容器内 QEMU 版本≥6.2。</li>
+</ul>
+<h3 id="33-libvirt-配置"><a class="header" href="#33-libvirt-配置">3.3 libvirt 配置</a></h3>
+<ul>
+<li>Domain XML：
+<pre><code class="language-xml">&lt;launchSecurity type='sev'&gt;
+  &lt;policy&gt;0x0001&lt;/policy&gt;
+  &lt;cbitpos&gt;51&lt;/cbitpos&gt;
+  &lt;reducedPhysBits&gt;1&lt;/reducedPhysBits&gt;
+  &lt;dhCert&gt;/etc/sev/guest.pem&lt;/dhCert&gt;
+  &lt;session&gt; /etc/sev/session.blob &lt;/session&gt;
+&lt;/launchSecurity&gt;
+</code></pre>
+</li>
+<li>对于 SNP：<code>type='sev-snp'</code>、<code>report-data</code>, <code>guestPolicy</code>;</li>
+<li><code>&lt;cpu mode='host-passthrough'&gt;</code>；</li>
+<li><code>&lt;memoryBacking&gt;&lt;source type='anonymous'/&gt;&lt;access mode='shared'/&gt;&lt;/memoryBacking&gt;</code>；</li>
+<li>需要 libvirt 8.0+。</li>
+</ul>
+<h3 id="34-guest-os-要求"><a class="header" href="#34-guest-os-要求">3.4 Guest OS 要求</a></h3>
+<ul>
+<li>Linux：内核 5.10+（SEV-ES GHCB driver），5.19+（SNP）；</li>
+<li><code>CONFIG_AMD_MEM_ENCRYPT=y</code>；</li>
+<li><code>dracut --add drivers</code>；</li>
+<li>Windows Server 2019/2022 支持 SEV-SNP（Azure Confidential VM）；</li>
+<li>使用 shim/grub 支持 Secure Boot + SEV。</li>
+</ul>
+<h3 id="35-ghcb-与-paravisor"><a class="header" href="#35-ghcb-与-paravisor">3.5 GHCB 与 paravisor</a></h3>
+<ul>
+<li>Guest 与 hypervisor 通过 GHCB 通信；</li>
+<li>SNP 上 hypervisor 只提供最小接口；</li>
+<li>需要 ghcb.bin 或 paravisor（在某些平台）；</li>
+<li>在 Linux guest 中 <code>/sys/kernel/debug/ghcb</code> 开启调试。</li>
+</ul>
+<h3 id="36-性能与调试"><a class="header" href="#36-性能与调试">3.6 性能与调试</a></h3>
+<ul>
+<li>监控：<code>perf</code>, <code>top</code>, <code>virtio</code> 统计；</li>
+<li><code>dmesg</code> 可能显示 <code>GHCB: protocol version mismatch</code>；</li>
+<li>关注 <code>mem_encrypt_active()</code>；</li>
+<li>使用 <code>virtiofs</code>, <code>virtio-net</code> 兼容性测试。</li>
+</ul>
+<h3 id="37-实践练习"><a class="header" href="#37-实践练习">3.7 实践练习</a></h3>
+<ul>
+<li>使用 libvirt 创建 SEV VM 并验证 <code>dmesg</code>；</li>
+<li>启动 SEV-SNP VM，获取 attestation 报告；</li>
+<li>模拟不同 policy（debug=on/off）；</li>
+<li>记录命令、XML 与日志。</li>
+</ul>
+<hr />
+<h2 id="模块四云平台与自动化集成"><a class="header" href="#模块四云平台与自动化集成">模块四：云平台与自动化集成</a></h2>
+<h3 id="41-openstack"><a class="header" href="#41-openstack">4.1 OpenStack</a></h3>
+<ul>
+<li>Keystone 认证 + Nova flavor：<code>hw:mem_encryption=required</code>, <code>hw:confidential_compute=amd-sev</code>；</li>
+<li>Glance 镜像属性：<code>hw_machine_type=q35</code>, <code>os_secure_boot=required</code>, <code>hw_firmware_type=uefi</code>;</li>
+<li>Nova compute 节点安装 <code>qemu-kvm</code> 支持 SEV；</li>
+<li>Placement 确保调度到 SEV capable 节点；</li>
+<li>Attestation 服务集成（北向 API）。</li>
+</ul>
+<h3 id="42-kubevirt--harvester"><a class="header" href="#42-kubevirt--harvester">4.2 KubeVirt / Harvester</a></h3>
+<ul>
+<li>虚拟机 YAML：
+<pre><code class="language-yaml">spec:
+  template:
+    spec:
+      domain:
+        launchSecurity:
+          sev:
+            policy: 0x0001
+</code></pre>
+</li>
+<li>需要 KubeVirt 0.43+ 支持 SEV；</li>
+<li>Node Feature Discovery 标注 <code>sevcapable</code>;</li>
+<li>CSI 存储提供 VARS 与证书；</li>
+<li>结合 cert-manager 管理 OCA。</li>
+</ul>
+<h3 id="43-azure--google-confidential-vm"><a class="header" href="#43-azure--google-confidential-vm">4.3 Azure / Google Confidential VM</a></h3>
+<ul>
+<li>Azure Confidential VMs (DCasv5/ECasv5)：基于 AMD SEV-SNP；</li>
+<li>使用 Azure CLI <code>az vm create --security-type ConfidentialVM --enable-vtpm true --enable-secure-boot true</code>;</li>
+<li>GCP Confidential VM：<code>gcloud compute instances create --confidential-compute</code>;</li>
+<li>需要特定 OS 镜像，默认 attestation 已集成。</li>
+</ul>
+<h3 id="44-自动化与-cicd"><a class="header" href="#44-自动化与-cicd">4.4 自动化与 CI/CD</a></h3>
+<ul>
+<li>签发证书、导入服务器脚本；</li>
+<li>Terraform/OpenStack Heat 模板插入 <code>&lt;launchSecurity&gt;</code>；</li>
+<li>CI 自动检查 <code>sevctl status</code>, <code>libvirt capabilities</code>;</li>
+<li>Attestation 服务 API 定期验证 VM 状态。</li>
+</ul>
+<h3 id="45-安全合规"><a class="header" href="#45-安全合规">4.5 安全/合规</a></h3>
+<ul>
+<li>整合 attestation 结果到 SIEM；</li>
+<li>记录证书、policy、报告；</li>
+<li>符合机密计算要求（客户可验证环境）；</li>
+<li>与零信任架构结合。</li>
+</ul>
+<h3 id="46-实践练习"><a class="header" href="#46-实践练习">4.6 实践练习</a></h3>
+<ul>
+<li>在 OpenStack/KubeVirt 启用 SEV 并部署镜像；</li>
+<li>调用 attestation API 验证；</li>
+<li>自动化脚本生成证书请求；</li>
+<li>记录流程、问题与解决方案。</li>
+</ul>
+<hr />
+<h2 id="模块五密钥管理安全治理与故障诊断"><a class="header" href="#模块五密钥管理安全治理与故障诊断">模块五：密钥管理、安全治理与故障诊断</a></h2>
+<h3 id="51-证书与密钥链"><a class="header" href="#51-证书与密钥链">5.1 证书与密钥链</a></h3>
+<ul>
+<li>AMD 官方提供 ARK/ASK；</li>
+<li>平台生成 PEK/PDH -&gt; 由 OCA 签署；</li>
+<li>Guest 通过 PDH 证明；</li>
+<li>定期更新 OCA/PEK，处理吊销；</li>
+<li>使用 <code>sevctl</code> 管理。</li>
+</ul>
+<h3 id="52-attestation-远程证明"><a class="header" href="#52-attestation-远程证明">5.2 Attestation 远程证明</a></h3>
+<ul>
+<li>Guest 请求 attestation report，包含 measurement 和 host data；</li>
+<li>报告由 PSP 使用 PDH 签名；</li>
+<li>客户端验证 ARK/ASK/PDH 链；</li>
+<li>SEV-SNP 允许包含 <code>report_data</code>（可嵌入 nonce）；</li>
+<li>集成 attestation 服务与策略引擎。</li>
+</ul>
+<h3 id="53-常见问题"><a class="header" href="#53-常见问题">5.3 常见问题</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>现象</th><th>排查</th><th>解决</th></tr></thead><tbody>
+<tr><td><code>SEV feature not supported</code></td><td><code>sevctl status</code> 显示禁用</td><td>BIOS 设置、PSP 版本</td><td>更新固件、启用 SVM</td></tr>
+<tr><td><code>guest doesn't boot</code></td><td>黑屏或 GHCB 错误</td><td>Guest OS 支持情况</td><td>更新内核/GHCB 驱动</td></tr>
+<tr><td><code>secure-boot failure</code></td><td>QEMU 报错 policy 不匹配</td><td>检查 <code>&lt;launchSecurity&gt;</code> 参数</td><td>调整 policy 选项</td></tr>
+<tr><td>Attestation 失败</td><td>report 验证失败</td><td>证书链/nonce</td><td>更新 ARK/ASK、确认 report_data</td></tr>
+<tr><td>性能下降</td><td>延迟高</td><td>测试 I/O/CPU</td><td>调整 hugepages、vhost、NUMA</td></tr>
+<tr><td>Migration 失败</td><td><code>Cannot migrate encrypted VM</code></td><td>SEV 不支持 live migrate</td><td>使用 cold migrate 或 SNP live migration（未来）</td></tr>
+<tr><td><code>ghcb protocol mismatch</code></td><td>kernel 日志</td><td>Guest/host 版本不匹配</td><td>升级内核/QEMU</td></tr>
+</tbody></table>
+</div>
+<h3 id="54-调优与监控"><a class="header" href="#54-调优与监控">5.4 调优与监控</a></h3>
+<ul>
+<li>监控 CPU、内存带宽（perf, sar）；</li>
+<li>HugePages、NUMA 绑定；</li>
+<li>virtio、vhost 优化；</li>
+<li>SSE/AES 指令加速；</li>
+<li>记录性能基线，比较 SEV on/off。</li>
+</ul>
+<h3 id="55-安全治理"><a class="header" href="#55-安全治理">5.5 安全治理</a></h3>
+<ul>
+<li>证书生命周期管理；</li>
+<li>分离职责（平台运维 vs 密钥管理员）；</li>
+<li>定期审计 attestation 结果；</li>
+<li>联合 SIEM 监控异常；</li>
+<li>备份/恢复策略（VARS、证书、配置）。</li>
+</ul>
+<h3 id="56-实践练习"><a class="header" href="#56-实践练习">5.6 实践练习</a></h3>
+<ul>
+<li>生成 attestation 报告并验证；</li>
+<li>模拟证书吊销，更新 DB；</li>
+<li>记录性能评估；</li>
+<li>编写 SOP（证书更新、客体部署、故障排查）。</li>
+</ul>
+<hr />
+<h2 id="模块六学习路径实战案例与验证标准"><a class="header" href="#模块六学习路径实战案例与验证标准">模块六：学习路径、实战案例与验证标准</a></h2>
+<h3 id="61-学习路径"><a class="header" href="#61-学习路径">6.1 学习路径</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>时间</th><th>目标</th><th>行动</th><th>产出</th></tr></thead><tbody>
+<tr><td>阶段 0：准备</td><td>1 天</td><td>确认硬件支持</td><td>阅读文档、升级 BIOS/PSP</td><td>环境记录</td></tr>
+<tr><td>阶段 1：基础实践</td><td>3 天</td><td>启用 SEV/SEV-ES，运行 guest</td><td>完成模块二、三练习</td><td>操作手册</td></tr>
+<tr><td>阶段 2：高级能力</td><td>4 天</td><td>部署 SEV-SNP、获取 attest</td><td>实验报告、脚本</td><td>高级指南</td></tr>
+<tr><td>阶段 3：云平台集成</td><td>5 天</td><td>OpenStack/KubeVirt/公有云</td><td>自动化模板、验证日志</td><td>平台方案</td></tr>
+<tr><td>阶段 4：安全治理</td><td>5 天</td><td>证书管理、故障演练</td><td>SOP、RCA、审计记录</td><td>安全策略</td></tr>
+<tr><td>阶段 5：推广沉淀</td><td>持续</td><td>培训、知识库、迭代</td><td>分享材料、路线图</td><td>知识库</td></tr>
+</tbody></table>
+</div>
+<h3 id="62-实战案例"><a class="header" href="#62-实战案例">6.2 实战案例</a></h3>
+<ul>
+<li><strong>案例一：OpenStack 机密计算项目</strong>：部署 SEV-SNP 节点、构建 attestation 服务、实现客户镜像签名；</li>
+<li><strong>案例二：KubeVirt 机密容器</strong>：使用 SEV 保护虚拟机工作负载，结合 Istio/ZTA；</li>
+<li><strong>案例三：证书生命周期管理</strong>：实现自动化生成 PEK/PDH，定期更新 OCA；</li>
+<li><strong>案例四：性能评估</strong>：对数据库/网络应用测量 SEV 影响，调整 NUMA/HugePages；</li>
+<li><strong>案例五：故障演练</strong>：模拟 GHCB mismatch、证书过期、attestation 失败，输出 RCA。</li>
+</ul>
+<h3 id="63-学习成果验证标准"><a class="header" href="#63-学习成果验证标准">6.3 学习成果验证标准</a></h3>
+<ol>
+<li>完成 SEV/SEV-SNP 环境部署与 guest 启动；</li>
+<li>交付密钥管理脚本与文档；</li>
+<li>输出性能评估/安全策略报告；</li>
+<li>完成至少 2 种故障演练并归档；</li>
+<li>自动化实现 attestation 验证；</li>
+<li>编写操作手册、FAQ、培训材料；</li>
+<li>团队评审通过，纳入安全标准；</li>
+<li>制定升级与改进计划。</li>
+</ol>
+<h3 id="64-扩展资源与建议"><a class="header" href="#64-扩展资源与建议">6.4 扩展资源与建议</a></h3>
+<ul>
+<li>AMD SEV-SNP specification、Linux kernel docs、QEMU/libvirt 文档；</li>
+<li>参加机密计算联盟（CCC）讨论；</li>
+<li>关注 AMD PSP 固件更新公告；</li>
+<li>探索与 SGX/TDX 等技术的对比；</li>
+<li>构建多云机密计算策略；</li>
+<li>参与社区测试、提交 bug/patch。</li>
+</ul>
+<hr />
+<h2 id="附录"><a class="header" href="#附录">附录</a></h2>
+<h3 id="a-常用命令速查"><a class="header" href="#a-常用命令速查">A. 常用命令速查</a></h3>
+<pre><code class="language-bash">sevctl status
+sevctl pdh_gen
+sevctl pdh_cert_export pdh.pem
+sevctl pek_csr pek.csr
+qemu-system-x86_64 -machine ...,confidential-guest-support=sev0 ...
+virsh dumpxml vm | grep launchSecurity -n
+</code></pre>
+<h3 id="b-关键文件路径"><a class="header" href="#b-关键文件路径">B. 关键文件路径</a></h3>
+<ul>
+<li><code>/sys/module/kvm_amd/parameters/sev</code>、<code>sev_es</code>、<code>sev_snp</code></li>
+<li><code>/sys/kernel/sev</code>（SNP 状态）</li>
+<li><code>/var/lib/libvirt/qemu/nvram/*_VARS.fd</code></li>
+<li><code>/etc/sev/</code>（证书存储建议路径）</li>
+</ul>
+<h3 id="c-审计与监控建议"><a class="header" href="#c-审计与监控建议">C. 审计与监控建议</a></h3>
+<ul>
+<li>记录 BIOS 更新、证书操作；</li>
+<li>监控 attestation 请求结果；</li>
+<li>使用 Prometheus 自定义指标报告 SEV VM 数量；</li>
+<li>结合 ELK 收集 QEMU/libvirt 日志。</li>
+</ul>
+<h3 id="d-故障记录模板"><a class="header" href="#d-故障记录模板">D. 故障记录模板</a></h3>
+<pre><code>事件编号：SEV-2024-05
+时间：2024-09-02 18:40
+现象：SEV-SNP 虚拟机启动失败，QEMU 报错 "SNP guest request failed"
+排查：
+1. sevctl status 显示 SNP inactive
+2. 检查 BIOS，SNP 选项未启用
+3. 更新 BIOS 并启用 Secure Nested Paging
+结果：重新启动成功
+预防：纳入 BIOS 配置检查脚本
+</code></pre>
+<blockquote>
+<p>通过掌握 AMD SEV/SEV-SNP 的部署、密钥管理与运维策略，可为机密计算与多租户安全提供坚实基础，满足合规与业务安全需求。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/云计算/secureboot.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/云计算/spice.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/云计算/secureboot.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/云计算/spice.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

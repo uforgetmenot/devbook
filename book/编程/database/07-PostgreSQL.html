@@ -1,0 +1,834 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>PostgreSQL 知识点大纲（细化版） - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="postgresql-知识点大纲细化版"><a class="header" href="#postgresql-知识点大纲细化版">PostgreSQL 知识点大纲（细化版）</a></h1>
+<p>提示</p>
+<ul>
+<li>适用版本：PostgreSQL 12+（大多数内容在 10+ 可用）</li>
+<li>示例默认 schema 为 <code>public</code>，默认用户具备足够权限</li>
+<li>工具：<code>psql</code> 命令行、<code>pg_dump/pg_restore</code>、<code>pg_basebackup</code></li>
+</ul>
+<h2 id="0-psql-使用详解"><a class="header" href="#0-psql-使用详解">0. psql 使用详解</a></h2>
+<h3 id="01-启动与连接"><a class="header" href="#01-启动与连接">0.1 启动与连接</a></h3>
+<ul>
+<li>连接 URI：<code>psql "postgresql://user:pass@host:5432/db?sslmode=require"</code></li>
+<li>环境变量：<code>PGHOST/PGPORT/PGUSER/PGDATABASE/PGPASSWORD</code></li>
+<li>会话内切库与信息
+<pre><code>\c dbname [user]        -- 切换数据库/用户
+\conninfo               -- 当前连接信息
+\password [user]        -- 修改密码
+</code></pre>
+</li>
+</ul>
+<h3 id="02-元命令速查常用浏览"><a class="header" href="#02-元命令速查常用浏览">0.2 元命令速查（常用浏览）</a></h3>
+<ul>
+<li>数据库/用户/扩展：
+<pre><code>\l[+]                   -- 列库
+\du[+]                  -- 列角色
+\dx[+]                  -- 列扩展
+</code></pre>
+</li>
+<li>模式与对象：
+<pre><code>\dn[+]                  -- 列 schema
+\dt[S+] [schema.]pat    -- 列表
+\dv[+]                  -- 视图
+\dm[+]                  -- 物化视图
+\di[+]                  -- 索引
+\df[+] [pat]            -- 函数
+\dE[+]                  -- 外部表
+\d+ name                -- 对象带存储参数/描述
+\h [SQL]                -- SQL 语法帮助，如 \h create table
+\?                      -- psql 帮助
+</code></pre>
+</li>
+</ul>
+<h3 id="03-显示与格式"><a class="header" href="#03-显示与格式">0.3 显示与格式</a></h3>
+<pre><code>\timing on               -- 显示执行耗时
+\x [on|off|auto]         -- 扩展显示（纵向）
+\pset format aligned|unaligned|csv|html|json|latex
+\pset border 0|1|2       -- 边框
+\pset pager off          -- 关闭分页器
+\H                       -- 切换 HTML 输出（配合 \o 导出）
+</code></pre>
+<h3 id="04-查询缓冲区与编辑"><a class="header" href="#04-查询缓冲区与编辑">0.4 查询缓冲区与编辑</a></h3>
+<pre><code>\p                       -- 打印当前查询缓冲区
+\r                       -- 清空缓冲区
+\e [file]                -- 用编辑器编辑当前/指定 SQL
+\ef [func [sig]]         -- 编辑函数定义
+\ev view                 -- 编辑视图定义
+\i file.sql              -- 执行脚本
+</code></pre>
+<h3 id="05-变量与脚本化"><a class="header" href="#05-变量与脚本化">0.5 变量与脚本化</a></h3>
+<pre><code>\set name value          -- 设置变量；SQL 中用 :'name'
+\unset name
+\set ON_ERROR_STOP on    -- 出错即退出（CI 常用）
+\echo :var               -- 打印变量
+\g [file|program]        -- 将结果重定向或管道
+\gexec                   -- 将结果第一列作为命令执行
+\gdesc                   -- 仅显示结果列结构
+\watch 2                 -- 每 2 秒重复执行上个命令
+</code></pre>
+<p>示例（变量与参数化）</p>
+<pre><code class="language-sql">\set tgt 'reporting'
+CREATE SCHEMA IF NOT EXISTS :"tgt";
+SELECT current_schema();
+</code></pre>
+<h3 id="06-导入与导出"><a class="header" href="#06-导入与导出">0.6 导入与导出</a></h3>
+<ul>
+<li>psql 客户端侧拷贝（无需服务器文件权限）
+<pre><code>\copy t(col1,col2) FROM 'in.csv' WITH (FORMAT csv, HEADER true)
+\copy (SELECT * FROM t ORDER BY id) TO 'out.csv' WITH (FORMAT csv, HEADER true)
+</code></pre>
+</li>
+<li>服务器侧拷贝（需要服务端路径权限）
+<pre><code class="language-sql">COPY t FROM '/var/lib/pg/in.csv' WITH (FORMAT csv, HEADER true);
+</code></pre>
+</li>
+</ul>
+<h3 id="07-输出与会话配置"><a class="header" href="#07-输出与会话配置">0.7 输出与会话配置</a></h3>
+<pre><code>\o out.txt               -- 将后续输出写文件（再次 \o 关闭）
+SET search_path TO app, public;
+SET ROLE app_readonly;
+</code></pre>
+<h3 id="08-推荐-psqlrc-片段"><a class="header" href="#08-推荐-psqlrc-片段">0.8 推荐 .psqlrc 片段</a></h3>
+<pre><code class="language-psql">\set COMP_KEYWORD_CASE upper
+\set HISTCONTROL ignorespace,ignoredups
+\set ON_ERROR_STOP on
+\timing on
+\pset pager off
+\pset null '[NULL]'
+\set QUIET 1
+\echo 'psql ready'
+\unset QUIET
+</code></pre>
+<h2 id="1-基础概念"><a class="header" href="#1-基础概念">1. 基础概念</a></h2>
+<h3 id="11-postgresql简介"><a class="header" href="#11-postgresql简介">1.1 PostgreSQL简介</a></h3>
+<ul>
+<li>历史与发展：Ingres → Postgres → PostgreSQL；强调标准兼容与可扩展性</li>
+<li>特性与优势：MVCC、扩展（FDW/扩展）、强一致性、丰富索引、强大查询优化器、可编程性</li>
+<li>版本差异：每年一大版；重要特性如原生分区、并行查询、逻辑复制、存储过程、JIT、增量排序等</li>
+</ul>
+<h3 id="12-安装与配置"><a class="header" href="#12-安装与配置">1.2 安装与配置</a></h3>
+<ul>
+<li>系统要求：Linux 首选（x86_64）；至少 2C4G；磁盘建议 SSD；文件系统 ext4/xfs</li>
+<li>安装方法：
+- Linux：<code>apt/yum</code>、官方 repo、<code>pgdg</code>、容器镜像
+- Windows：EDB 安装器；macOS：<code>brew install postgresql</code></li>
+<li>基本配置：<code>postgresql.conf</code>/<code>pg_hba.conf</code>/<code>pg_ident.conf</code>
+- 初始化：<code>initdb -D /data/pgdata -E UTF8 --locale=C</code>
+- 启动：<code>pg_ctl -D /data/pgdata -l logfile start</code></li>
+<li>服务管理：systemd（<code>systemctl enable --now postgresql</code>）；端口与数据目录安全权限（0700）</li>
+</ul>
+<h2 id="2-数据库基础"><a class="header" href="#2-数据库基础">2. 数据库基础</a></h2>
+<h3 id="21-数据库操作"><a class="header" href="#21-数据库操作">2.1 数据库操作</a></h3>
+<ul>
+<li>创建/删除：<code>CREATE DATABASE dbname TEMPLATE template0 ENCODING 'UTF8';</code>、<code>DROP DATABASE dbname;</code></li>
+<li>连接：<code>psql -h host -p 5432 -U user -d dbname</code>；<code>psql</code> 内部：<code>\c dbname</code></li>
+<li>属性：表空间、LC_COLLATE/LC_CTYPE、<code>ALTER DATABASE ... SET search_path = ...;</code></li>
+<li>模板库：<code>template0/template1</code> 用于克隆；避免污染 template1</li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE DATABASE appdb OWNER app TEMPLATE template0 ENCODING 'UTF8';
+ALTER DATABASE appdb SET search_path = app, public;
+COMMENT ON DATABASE appdb IS '应用库';
+</code></pre>
+<h3 id="22-模式schema"><a class="header" href="#22-模式schema">2.2 模式(Schema)</a></h3>
+<ul>
+<li>概念：命名空间；同名对象在不同 schema 共存；<code>public</code> 为默认</li>
+<li>创建：<code>CREATE SCHEMA reporting AUTHORIZATION app;</code></li>
+<li>权限：<code>GRANT USAGE ON SCHEMA reporting TO role;</code>、<code>GRANT CREATE ON SCHEMA reporting TO role;</code></li>
+<li>搜索路径：<code>SHOW search_path;</code>、<code>SET search_path TO app, public;</code>、角色/库级别默认值</li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE SCHEMA IF NOT EXISTS app AUTHORIZATION app;
+GRANT USAGE ON SCHEMA app TO app_read;
+GRANT CREATE ON SCHEMA app TO app_write;
+ALTER ROLE app SET search_path = app, public;
+</code></pre>
+<h2 id="3-数据类型"><a class="header" href="#3-数据类型">3. 数据类型</a></h2>
+<h3 id="31-基本数据类型"><a class="header" href="#31-基本数据类型">3.1 基本数据类型</a></h3>
+<ul>
+<li>数值：<code>smallint</code>/<code>integer</code>/<code>bigint</code>、<code>numeric(p,s)</code>、<code>real/double precision</code>、自增：<code>GENERATED {ALWAYS|BY DEFAULT} AS IDENTITY</code></li>
+<li>字符：<code>text</code>（推荐）、<code>varchar(n)</code>、<code>char(n)</code>；避免盲目限制长度</li>
+<li>日期时间：<code>timestamp[tz]</code>、<code>date</code>、<code>time[tz]</code>、<code>interval</code>；时区推荐使用 <code>timestamptz</code></li>
+<li>布尔：<code>boolean</code>，字面量 <code>true/false</code></li>
+<li>范围类型：<code>int4range</code>、<code>numrange</code>、<code>tsrange/tstzrange</code>、<code>daterange</code></li>
+</ul>
+<h3 id="32-高级数据类型"><a class="header" href="#32-高级数据类型">3.2 高级数据类型</a></h3>
+<ul>
+<li>数组：<code>integer[]</code>，操作符：<code>@&gt;</code>、<code>&amp;&amp;</code>、<code>||</code>；函数：<code>unnest()</code></li>
+<li>JSON/JSONB：<code>jsonb</code> 推荐；操作符：<code>-&gt;</code>、<code>-&gt;&gt;</code>、<code>@&gt;</code>、<code>?</code>；索引用 GIN</li>
+<li>几何：<code>point/line/polygon/circle</code></li>
+<li>网络：<code>inet/cidr/macaddr</code>；范围与包含操作</li>
+<li>UUID：<code>uuid</code>；生成可用扩展 <code>uuid-ossp</code> 或应用端生成</li>
+<li>自定义：<code>ENUM</code>、<code>DOMAIN</code>、复合类型 <code>CREATE TYPE t AS (...)</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE TYPE status AS ENUM ('pending','paid','canceled');
+CREATE TABLE orders (
+    id bigserial PRIMARY KEY,
+    user_id bigint NOT NULL,
+    amount numeric(12,2) NOT NULL CHECK (amount &gt;= 0),
+    tags text[] DEFAULT '{}',
+    meta jsonb NOT NULL DEFAULT '{}',
+    status status NOT NULL DEFAULT 'pending',
+    created_at timestamptz NOT NULL DEFAULT now()
+);
+</code></pre>
+<h2 id="4-表操作"><a class="header" href="#4-表操作">4. 表操作</a></h2>
+<h3 id="41-表的创建与管理"><a class="header" href="#41-表的创建与管理">4.1 表的创建与管理</a></h3>
+<ul>
+<li>创建：<code>CREATE TABLE ... (col type [constraints], ...);</code></li>
+<li>约束：<code>PRIMARY KEY</code>、<code>UNIQUE</code>、<code>CHECK</code>、<code>FOREIGN KEY ... ON DELETE/UPDATE</code>
+- 可延迟：<code>DEFERRABLE INITIALLY DEFERRED</code></li>
+<li>修改/删除：<code>ALTER TABLE ...</code>、<code>DROP TABLE ... [CASCADE]</code></li>
+<li>列默认值/计算列：<code>DEFAULT now()</code>；生成列：<code>GENERATED ALWAYS AS (expr) STORED</code></li>
+<li>表类型：<code>UNLOGGED</code>（更快，崩溃不恢复）、<code>TEMPORARY</code></li>
+<li>存储参数：<code>WITH (fillfactor=90, autovacuum_vacuum_scale_factor=0.1)</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE TABLE IF NOT EXISTS users (
+    id bigint GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
+    email citext UNIQUE NOT NULL,
+    name text,
+    deleted_at timestamptz,
+    active boolean NOT NULL DEFAULT true,
+    name_len int GENERATED ALWAYS AS (length(name)) STORED
+);
+ALTER TABLE users ADD CONSTRAINT email_chk CHECK (position('@' in email) &gt; 1) NOT VALID;
+ALTER TABLE users VALIDATE CONSTRAINT email_chk;
+</code></pre>
+<h3 id="42-索引"><a class="header" href="#42-索引">4.2 索引</a></h3>
+<ul>
+<li>类型：<code>btree</code>（默认）、<code>hash</code>、<code>GIN</code>、<code>GiST</code>、<code>SP-GiST</code>、<code>BRIN</code></li>
+<li>创建：<code>CREATE INDEX CONCURRENTLY idx ON t (col);</code>（在线建索引）</li>
+<li>复合/包含列：<code>CREATE INDEX ON t (a,b) INCLUDE (c);</code></li>
+<li>部分：<code>CREATE INDEX ON t (a) WHERE deleted = false;</code></li>
+<li>表达式：<code>CREATE INDEX ON t ((lower(email)));</code></li>
+<li>维护：<code>REINDEX [CONCURRENTLY]</code>、<code>CLUSTER</code>、<code>VACUUM</code> 不会重建索引</li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE INDEX CONCURRENTLY idx_users_email_lower ON users ((lower(email)));
+CREATE INDEX idx_orders_status_created ON orders (status, created_at DESC) INCLUDE (amount);
+CREATE INDEX idx_orders_not_deleted ON orders (created_at) WHERE status &lt;&gt; 'canceled';
+</code></pre>
+<h2 id="5-sql查询"><a class="header" href="#5-sql查询">5. SQL查询</a></h2>
+<h3 id="51-基础查询"><a class="header" href="#51-基础查询">5.1 基础查询</a></h3>
+<ul>
+<li>选择与过滤：<code>SELECT col AS alias FROM t WHERE cond;</code></li>
+<li>排序：<code>ORDER BY col [ASC|DESC] NULLS LAST</code></li>
+<li>分页：<code>LIMIT ... OFFSET ...</code>（大偏移慢，建议键集分页：<code>WHERE (k, id) &gt; (...) ORDER BY k, id LIMIT n</code>）</li>
+<li>去重：<code>DISTINCT</code>、<code>DISTINCT ON (col) ORDER BY ...</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">-- 键集分页
+SELECT id, created_at FROM orders
+WHERE (created_at, id) &lt; ('2024-01-01'::timestamptz, 100000)
+ORDER BY created_at DESC, id DESC
+LIMIT 50;
+</code></pre>
+<h3 id="52-高级查询"><a class="header" href="#52-高级查询">5.2 高级查询</a></h3>
+<ul>
+<li>JOIN：<code>INNER/LEFT/RIGHT/FULL</code>、<code>CROSS</code>、<code>LATERAL</code></li>
+<li>子查询：标量/表子查询；相关子查询注意性能</li>
+<li>聚合：<code>GROUP BY</code>、<code>FILTER (WHERE ...)</code>、<code>GROUPING SETS/ROLLUP/CUBE</code></li>
+<li>窗口函数：<code>OVER (PARTITION BY ... ORDER BY ... ROWS/RANGE ...)</code>；常用：<code>row_number()/rank()/sum()/avg()/lag()/lead()</code></li>
+<li>CTE：<code>WITH c AS (...) SELECT ... FROM c;</code>；递归：<code>WITH RECURSIVE ...</code>；注意 12+ CTE 可被内联</li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">-- 窗口统计
+SELECT user_id, created_at, amount,
+             sum(amount) OVER (PARTITION BY user_id ORDER BY created_at
+                                                 ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_sum
+FROM orders;
+
+-- 递归层级
+WITH RECURSIVE t(n) AS (
+    SELECT 1 UNION ALL SELECT n+1 FROM t WHERE n &lt; 5
+) SELECT * FROM t;
+</code></pre>
+<h3 id="53-数据操作"><a class="header" href="#53-数据操作">5.3 数据操作</a></h3>
+<ul>
+<li>插入：<code>INSERT INTO t (...) VALUES (...) RETURNING id;</code></li>
+<li>批量：<code>COPY t(col,...) FROM STDIN WITH (FORMAT csv, HEADER true);</code></li>
+<li>更新：<code>UPDATE t SET col=... FROM other WHERE ... RETURNING *;</code></li>
+<li>删除：<code>DELETE FROM t WHERE ... RETURNING *;</code></li>
+<li>UPSERT：<code>INSERT ... ON CONFLICT (key) DO UPDATE SET ... = EXCLUDED....</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">INSERT INTO users(email,name) VALUES ('a@ex.com','Alice') RETURNING id;
+INSERT INTO orders(user_id, amount) VALUES (1, 9.99)
+ON CONFLICT DO NOTHING;
+
+INSERT INTO orders(id, user_id, amount, status)
+VALUES (100, 1, 20.00, 'pending')
+ON CONFLICT (id) DO UPDATE
+SET amount = EXCLUDED.amount, status = EXCLUDED.status;
+</code></pre>
+<h2 id="6-函数与存储过程"><a class="header" href="#6-函数与存储过程">6. 函数与存储过程</a></h2>
+<h3 id="61-内置函数"><a class="header" href="#61-内置函数">6.1 内置函数</a></h3>
+<ul>
+<li>字符串：<code>lower/upper/substring/regexp_replace/concat_ws</code></li>
+<li>数学：<code>abs/pow/round/random</code>；统计：<code>percentile_cont</code>（窗口/聚合）</li>
+<li>时间：<code>now()/clock_timestamp()/age/date_trunc</code>；<code>generate_series</code></li>
+<li>聚合：<code>sum/count/avg/jsonb_agg/string_agg</code></li>
+</ul>
+<h3 id="62-自定义函数"><a class="header" href="#62-自定义函数">6.2 自定义函数</a></h3>
+<ul>
+<li>语言：<code>PL/pgSQL</code> 默认；可启用 <code>plpython3u</code> 等</li>
+<li>模板：<code>CREATE FUNCTION f(p type) RETURNS ret LANGUAGE plpgsql AS $$ DECLARE ... BEGIN ... RETURN ...; END $$;</code></li>
+<li>特性：<code>IMMUTABLE/STABLE/VOLATILE</code>、<code>STRICT</code>、<code>RETURNS SETOF</code>、<code>SECURITY DEFINER</code></li>
+<li>异常：<code>BEGIN ... EXCEPTION WHEN unique_violation THEN ... END;</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE OR REPLACE FUNCTION current_user_id() RETURNS bigint
+LANGUAGE sql STABLE AS $$ SELECT nullif(current_setting('app.user_id', true), '')::bigint $$;
+
+CREATE OR REPLACE FUNCTION trg_set_deleted_at()
+RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+    IF NEW.active = false AND OLD.active = true THEN
+        NEW.deleted_at := now();
+    END IF;
+    RETURN NEW;
+END $$;
+</code></pre>
+<h3 id="63-存储过程"><a class="header" href="#63-存储过程">6.3 存储过程</a></h3>
+<ul>
+<li><code>CREATE PROCEDURE p(...) LANGUAGE plpgsql AS $$ ... CALL p(...);</code></li>
+<li>事务控制：过程内支持 <code>START/COMMIT/ROLLBACK</code> 子事务；函数不允许</li>
+<li>参数：IN/OUT/INOUT；<code>CALL p(IN =&gt; ...)</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE OR REPLACE PROCEDURE bulk_insert_orders(n int)
+LANGUAGE plpgsql AS $$
+BEGIN
+    FOR i IN 1..n LOOP
+        INSERT INTO orders(user_id, amount) VALUES (1, random()*100);
+        IF i % 1000 = 0 THEN COMMIT; BEGIN; END IF;
+    END LOOP;
+END $$;
+
+CALL bulk_insert_orders(5000);
+</code></pre>
+<h2 id="7-触发器"><a class="header" href="#7-触发器">7. 触发器</a></h2>
+<h3 id="71-触发器基础"><a class="header" href="#71-触发器基础">7.1 触发器基础</a></h3>
+<ul>
+<li>时机：<code>BEFORE/AFTER/INSTEAD OF</code>（视图）</li>
+<li>粒度：<code>ROW</code>/<code>STATEMENT</code></li>
+<li>事件：<code>INSERT/UPDATE/DELETE/TRUNCATE</code></li>
+<li>约束触发器：<code>INITIALLY DEFERRED</code>，参照完整性场景</li>
+</ul>
+<h3 id="72-触发器函数"><a class="header" href="#72-触发器函数">7.2 触发器函数</a></h3>
+<ul>
+<li>定义：<code>CREATE FUNCTION trg() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN ... RETURN NEW; END $$;</code></li>
+<li>特殊变量：<code>NEW/OLD</code>、<code>TG_OP</code>、<code>TG_TABLE_NAME</code>、<code>TG_ARGV[]</code></li>
+<li>常见用途：审计日志、软删除（<code>deleted_at</code>）、派生列维护、RLS 辅助</li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE TRIGGER users_bu_deleted
+BEFORE UPDATE OF active ON users
+FOR EACH ROW
+WHEN (OLD.active IS DISTINCT FROM NEW.active)
+EXECUTE FUNCTION trg_set_deleted_at();
+</code></pre>
+<h2 id="8-视图"><a class="header" href="#8-视图">8. 视图</a></h2>
+<h3 id="81-普通视图"><a class="header" href="#81-普通视图">8.1 普通视图</a></h3>
+<ul>
+<li>创建/替换：<code>CREATE OR REPLACE VIEW v AS SELECT ...;</code></li>
+<li>可更新视图：满足可更新条件或使用 INSTEAD OF 触发器</li>
+<li>安全：<code>SECURITY_BARRIER</code> 视图用于隔离；权限通过 <code>GRANT SELECT ON v</code></li>
+</ul>
+<h3 id="82-物化视图"><a class="header" href="#82-物化视图">8.2 物化视图</a></h3>
+<ul>
+<li>创建：<code>CREATE MATERIALIZED VIEW mv AS SELECT ... WITH NO DATA;</code></li>
+<li>刷新：<code>REFRESH MATERIALIZED VIEW [CONCURRENTLY] mv;</code>（需唯一索引）</li>
+<li>性能：对 MV 建索引；选择增量可替代方案（如触发器维护表）</li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE OR REPLACE VIEW v_user_orders AS
+SELECT u.id, u.email, count(o.*) AS order_cnt
+FROM users u LEFT JOIN orders o ON o.user_id = u.id
+GROUP BY u.id, u.email;
+
+CREATE MATERIALIZED VIEW mv_daily AS
+SELECT date_trunc('day', created_at) AS d, sum(amount) AS amt
+FROM orders GROUP BY 1 WITH NO DATA;
+CREATE UNIQUE INDEX ON mv_daily(d);
+REFRESH MATERIALIZED VIEW CONCURRENTLY mv_daily;
+</code></pre>
+<h2 id="9-事务与并发"><a class="header" href="#9-事务与并发">9. 事务与并发</a></h2>
+<h3 id="91-事务控制"><a class="header" href="#91-事务控制">9.1 事务控制</a></h3>
+<ul>
+<li>基本：<code>BEGIN; ... COMMIT;</code>、<code>ROLLBACK;</code></li>
+<li>保存点：<code>SAVEPOINT s; ... ROLLBACK TO SAVEPOINT s;</code></li>
+<li>隔离级别：<code>READ COMMITTED</code>（默认）、<code>REPEATABLE READ</code>、<code>SERIALIZABLE</code>
+- 设置：<code>SET TRANSACTION ISOLATION LEVEL ...;</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">BEGIN;
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+-- 查询/更新...
+COMMIT;
+</code></pre>
+<h3 id="92-锁机制"><a class="header" href="#92-锁机制">9.2 锁机制</a></h3>
+<ul>
+<li>行锁：<code>SELECT ... FOR UPDATE/SHARE/KEY SHARE/SKIP LOCKED/NOWAIT</code></li>
+<li>表锁：<code>LOCK TABLE t IN EXCLUSIVE MODE;</code></li>
+<li>锁冲突：理解各模式矩阵，尽量缩短持锁时间，避免长事务</li>
+<li>死锁：服务器自动检测；良好顺序获取资源；日志定位 <code>deadlock detected</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">-- 任务队列
+WITH cte AS (
+    SELECT id FROM jobs WHERE taken_at IS NULL
+    ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 10
+)
+UPDATE jobs j SET taken_at = now()
+FROM cte WHERE j.id = cte.id
+RETURNING j.*;
+</code></pre>
+<h3 id="93-mvcc"><a class="header" href="#93-mvcc">9.3 MVCC</a></h3>
+<ul>
+<li>原理：每次写入生成新版本（tuple）；快照读取不阻塞写入</li>
+<li>真空：<code>VACUUM (VERBOSE, ANALYZE)</code>、自动清理 <code>autovacuum</code></li>
+<li>冻结：<code>VACUUM FREEZE</code>；避免 xid wraparound；监控 <code>age(datfrozenxid)</code></li>
+</ul>
+<h2 id="10-安全与权限"><a class="header" href="#10-安全与权限">10. 安全与权限</a></h2>
+<h3 id="101-用户管理"><a class="header" href="#101-用户管理">10.1 用户管理</a></h3>
+<ul>
+<li>角色：<code>LOGIN</code> 与组角色；<code>CREATE ROLE app LOGIN PASSWORD '...' INHERIT;</code></li>
+<li>角色层级：<code>GRANT role_parent TO role_child;</code></li>
+<li>密码策略：<code>PASSWORD VALID UNTIL '2026-01-01'</code>；推荐 <code>SCRAM-SHA-256</code></li>
+</ul>
+<h3 id="102-权限控制"><a class="header" href="#102-权限控制">10.2 权限控制</a></h3>
+<ul>
+<li>对象权限：<code>GRANT SELECT/INSERT/UPDATE/DELETE ON table TO role;</code></li>
+<li>行级安全（RLS）：<code>ALTER TABLE t ENABLE ROW LEVEL SECURITY; CREATE POLICY p ON t USING (owner_id = current_user_id());</code></li>
+<li>列级权限：<code>GRANT SELECT(col1) ON t TO role;</code></li>
+<li>默认权限：<code>ALTER DEFAULT PRIVILEGES IN SCHEMA s GRANT SELECT ON TABLES TO role;</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE ROLE app_read NOINHERIT;
+CREATE ROLE app_write NOINHERIT;
+GRANT USAGE ON SCHEMA app TO app_read, app_write;
+GRANT SELECT ON ALL TABLES IN SCHEMA app TO app_read;
+ALTER DEFAULT PRIVILEGES IN SCHEMA app GRANT SELECT ON TABLES TO app_read;
+
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+CREATE POLICY orders_owner
+ON orders FOR ALL
+USING (user_id = current_setting('app.user_id')::bigint);
+</code></pre>
+<h3 id="103-认证与加密"><a class="header" href="#103-认证与加密">10.3 认证与加密</a></h3>
+<ul>
+<li>认证：<code>pg_hba.conf</code> 配置 <code>host ... scram-sha-256</code>、<code>md5</code>、<code>peer</code>、<code>cert</code></li>
+<li>SSL/TLS：<code>ssl=on</code>，配置证书 <code>server.crt/server.key</code>；客户端 <code>sslmode=require/verify-full</code></li>
+<li>加密：磁盘层加密（LUKS）、备份加密；字段级用 <code>pgcrypto</code>（如 <code>pgp_sym_encrypt</code>）</li>
+</ul>
+<h2 id="11-性能优化"><a class="header" href="#11-性能优化">11. 性能优化</a></h2>
+<h3 id="111-查询优化"><a class="header" href="#111-查询优化">11.1 查询优化</a></h3>
+<ul>
+<li>计划分析：<code>EXPLAIN (ANALYZE, BUFFERS, VERBOSE, TIMING)</code>；关注行估算、连接顺序、I/O</li>
+<li>统计信息：<code>ANALYZE</code>、扩展统计 <code>CREATE STATISTICS s (ndistinct, dependencies) ON (a,b) FROM t;</code></li>
+<li>重写：避免反模式（<code>SELECT *</code>、函数滥用）；尽量 SARGable；用窗口/CTE/聚合恰当表达</li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">EXPLAIN (ANALYZE, BUFFERS)
+SELECT * FROM orders WHERE user_id = 1 AND created_at &gt;= now() - interval '7 days';
+
+CREATE STATISTICS s_orders ON (user_id, status) FROM orders;
+ANALYZE orders;
+</code></pre>
+<h3 id="112-配置优化"><a class="header" href="#112-配置优化">11.2 配置优化</a></h3>
+<ul>
+<li>核心：<code>shared_buffers</code>（25% 内存上限）、<code>work_mem</code>（每算子）、<code>maintenance_work_mem</code></li>
+<li>I/O：<code>effective_io_concurrency</code>、<code>random_page_cost</code>、<code>seq_page_cost</code></li>
+<li>WAL/检查点：<code>wal_level</code>、<code>max_wal_size</code>、<code>checkpoint_timeout</code>、<code>checkpoint_completion_target</code></li>
+<li>并行：<code>max_parallel_workers_per_gather</code>、<code>parallel_leader_participation</code></li>
+</ul>
+<h3 id="113-监控与诊断"><a class="header" href="#113-监控与诊断">11.3 监控与诊断</a></h3>
+<ul>
+<li>统计视图：<code>pg_stat_activity/pg_stat_user_tables/pg_stat_io/pg_stat_statements</code></li>
+<li>日志：<code>log_min_duration_statement</code>、<code>auto_explain</code> 扩展</li>
+<li>工具：<code>pg_stat_statements</code>、<code>pgBadger</code>、<code>pg_profile</code>、<code>EXPLAIN.depesz.com</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+SELECT * FROM pg_stat_statements ORDER BY total_exec_time DESC LIMIT 20;
+</code></pre>
+<h2 id="12-备份与恢复"><a class="header" href="#12-备份与恢复">12. 备份与恢复</a></h2>
+<h3 id="121-逻辑备份"><a class="header" href="#121-逻辑备份">12.1 逻辑备份</a></h3>
+<ul>
+<li><code>pg_dump -Fc -j 4 -f db.dump dbname</code></li>
+<li>还原：<code>pg_restore -j 4 -d dbname db.dump</code></li>
+<li>策略：全量 + 增量（基于对象/时间）；一致性用 <code>--snapshot</code>（配合可重复读）</li>
+</ul>
+<h3 id="122-物理备份"><a class="header" href="#122-物理备份">12.2 物理备份</a></h3>
+<ul>
+<li>基础备份：<code>pg_basebackup -D /data/standby -X stream -C -S slot_name</code></li>
+<li>WAL 归档：<code>archive_mode=on</code>、<code>archive_command='...'</code></li>
+<li>时间点恢复（PITR）：设置 <code>restore_command</code>，选择 <code>recovery_target_time/lsn/xid</code>，放置 <code>standby.signal</code></li>
+</ul>
+<h3 id="123-高可用"><a class="header" href="#123-高可用">12.3 高可用</a></h3>
+<ul>
+<li>流复制：主从（异步/同步）；<code>synchronous_standby_names='FIRST 1 (rep1, rep2)'</code></li>
+<li>热备：只读查询；<code>hot_standby=on</code></li>
+<li>故障转移：自动化工具（Patroni/repmgr）；虚拟 IP/代理（HAProxy/Keepalived）</li>
+</ul>
+<h2 id="13-扩展功能"><a class="header" href="#13-扩展功能">13. 扩展功能</a></h2>
+<h3 id="131-扩展管理"><a class="header" href="#131-扩展管理">13.1 扩展管理</a></h3>
+<ul>
+<li>查看/安装：<code>\dx</code>、<code>CREATE EXTENSION IF NOT EXISTS pg_stat_statements;</code></li>
+<li>常用：<code>pg_stat_statements</code>、<code>citext</code>、<code>hstore</code>、<code>uuid-ossp</code>、<code>pg_trgm</code>、<code>postgres_fdw</code>、<code>pgcrypto</code></li>
+<li>自定义扩展：<code>CREATE EXTENSION ... FROM unpackaged</code>、控制脚本 <code>-- script.sql</code></li>
+</ul>
+<h3 id="132-分区表"><a class="header" href="#132-分区表">13.2 分区表</a></h3>
+<ul>
+<li>策略：<code>RANGE/LIST/HASH</code>；示例：<code>CREATE TABLE t (...) PARTITION BY RANGE (created_at);</code></li>
+<li>管理：<code>ATTACH/DETACH PARTITION</code>、默认分区 <code>DEFAULT</code></li>
+<li>剪枝：规划器基于约束排除；必要时声明不可为空、合理边界</li>
+<li>注意：本地索引；外键限制；维护独立 <code>VACUUM/ANALYZE</code>；批量操作走分区键</li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE TABLE events (
+    id bigserial,
+    created_at timestamptz NOT NULL,
+    payload jsonb,
+    PRIMARY KEY (id, created_at)
+) PARTITION BY RANGE (created_at);
+
+CREATE TABLE events_2024m01 PARTITION OF events
+    FOR VALUES FROM ('2024-01-01') TO ('2024-02-01');
+CREATE TABLE events_default PARTITION OF events DEFAULT;
+</code></pre>
+<h3 id="133-外部数据"><a class="header" href="#133-外部数据">13.3 外部数据</a></h3>
+<ul>
+<li>外部表/FDW：<code>CREATE EXTENSION postgres_fdw; CREATE SERVER ...; CREATE USER MAPPING ...; CREATE FOREIGN TABLE ...;</code></li>
+<li>推下（pushdown）：过滤/投影/聚合部分可下推</li>
+<li>联邦查询：跨库/跨实例；注意事务语义与性能</li>
+<li>常见 FDW：<code>postgres_fdw</code>、<code>file_fdw</code>（CSV/文本）、第三方如 <code>oracle_fdw</code></li>
+</ul>
+<p>示例</p>
+<pre><code class="language-sql">CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+CREATE SERVER remsrv FOREIGN DATA WRAPPER postgres_fdw OPTIONS (host '10.0.0.2', dbname 'remdb');
+CREATE USER MAPPING FOR app SERVER remsrv OPTIONS (user 'rem', password '***');
+CREATE FOREIGN TABLE rem.public.users_rem (id bigint, email text)
+SERVER remsrv OPTIONS (schema_name 'public', table_name 'users');
+</code></pre>
+<h2 id="14-开发集成"><a class="header" href="#14-开发集成">14. 开发集成</a></h2>
+<h3 id="141-连接池"><a class="header" href="#141-连接池">14.1 连接池</a></h3>
+<ul>
+<li>PgBouncer：轻量连接池；模式：<code>session</code>/<code>transaction</code>/<code>statement</code>（功能权衡）</li>
+<li>pgpool-II：负载均衡/读写分离/分片（更重）</li>
+<li>参数：最大连接数、预热、超时；防止数据库 <code>max_connections</code> 撑爆</li>
+</ul>
+<h3 id="142-编程接口"><a class="header" href="#142-编程接口">14.2 编程接口</a></h3>
+<ul>
+<li>libpq（C）：连接串例 <code>postgresql://user:pass@host:5432/db?sslmode=require</code></li>
+<li>JDBC：<code>jdbc:postgresql://host:5432/db?user=u&amp;password=p</code>；使用 <code>PreparedStatement</code></li>
+<li>Python psycopg2：<code>conn = psycopg2.connect(dsn); cur.execute("... %s", (param,))</code></li>
+<li>Node.js pg：<code>const pool = new Pool({ connectionString }); await pool.query('SELECT $1::int',[v]);</code></li>
+</ul>
+<h3 id="143-orm框架"><a class="header" href="#143-orm框架">14.3 ORM框架</a></h3>
+<ul>
+<li>SQLAlchemy（Python）：声明式模型、会话、显式事务；谨慎 N+1</li>
+<li>Django ORM：<code>DATABASES</code> 配置、迁移、<code>select_related/prefetch_related</code></li>
+<li>TypeORM（Node.js）：实体映射、迁移工具、查询构建器；注意惰性关系加载</li>
+</ul>
+<p>附录：SQL 指令示例速查</p>
+<pre><code class="language-sql">-- DDL
+CREATE TABLE demo(id bigserial PRIMARY KEY, v text NOT NULL);
+ALTER TABLE demo ADD COLUMN created_at timestamptz DEFAULT now();
+DROP TABLE IF EXISTS demo;
+
+-- DML
+INSERT INTO demo(v) VALUES ('a'), ('b') RETURNING id;
+UPDATE demo SET v = upper(v) WHERE id = 1 RETURNING *;
+DELETE FROM demo WHERE id &gt; 10 RETURNING id;
+
+-- 查询
+SELECT DISTINCT ON (user_id) user_id, created_at FROM orders ORDER BY user_id, created_at DESC;
+WITH c AS (SELECT user_id, sum(amount) amt FROM orders GROUP BY user_id)
+SELECT * FROM c WHERE amt &gt; 100;
+
+-- 索引
+CREATE INDEX ON demo ((left(v,2)));
+REINDEX TABLE CONCURRENTLY demo;
+
+-- 事务与锁
+BEGIN;
+SAVEPOINT s1;
+UPDATE orders SET status = 'paid' WHERE id = 1;
+ROLLBACK TO SAVEPOINT s1;
+COMMIT;
+
+-- RLS
+ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+CREATE POLICY p_read ON orders FOR SELECT USING (user_id = current_setting('app.user_id')::bigint);
+
+-- 分区
+CREATE TABLE p (id int, d date) PARTITION BY RANGE (d);
+CREATE TABLE p_2024q1 PARTITION OF p FOR VALUES FROM ('2024-01-01') TO ('2024-04-01');
+
+-- 视图/MV
+CREATE OR REPLACE VIEW v_demo AS SELECT id, v FROM demo WHERE v IS NOT NULL;
+CREATE MATERIALIZED VIEW mv_demo AS SELECT count(*) FROM demo WITH NO DATA;
+REFRESH MATERIALIZED VIEW mv_demo;
+
+-- 统计/优化
+CREATE STATISTICS st ON (user_id, created_at) FROM orders;
+ANALYZE orders;
+EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM orders WHERE user_id=1;
+
+-- 复制/备份（命令行）
+-- pg_dump -Fc -j 4 -f db.dump dbname
+-- pg_restore -j 4 -d dbname db.dump
+</code></pre>
+<p>附录：实践清单</p>
+<ul>
+<li>启用 <code>pg_stat_statements</code>，定位慢 SQL</li>
+<li>规范索引：只建必要索引，关注写入成本</li>
+<li>监控 autovacuum、膨胀与 xid age</li>
+<li>使用 <code>EXPLAIN (ANALYZE, BUFFERS)</code> 指导优化</li>
+<li>合理使用分区、RLS、物化视图与 FDW</li>
+<li>建立合适的备份与演练恢复流程</li>
+<li>在应用侧采用连接池，控制并发与事务边界</li>
+<li>命名/Schema/权限/默认设置标准化，便于运维与审计</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/database/06-Neo4j.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/embbed/bios.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/database/06-Neo4j.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/embbed/bios.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

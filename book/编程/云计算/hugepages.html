@@ -1,0 +1,963 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>HugePages（大页内存）学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="hugepages大页内存学习笔记"><a class="header" href="#hugepages大页内存学习笔记">HugePages（大页内存）学习笔记</a></h1>
+<blockquote>
+<p>面向从事虚拟化、数据库、网络功能虚拟化（NFV）、高性能计算（HPC）、内核调优的工程师（0-5 年经验），系统掌握 Linux HugePages 技术原理、配置方法、性能调优与运维实践，推动内存敏感型应用性能优化与稳定性提升。</p>
+</blockquote>
+<hr />
+<h2 id="学习定位与总体目标"><a class="header" href="#学习定位与总体目标">学习定位与总体目标</a></h2>
+<ul>
+<li><strong>学习者画像</strong>：熟悉 Linux 基本操作，对内存管理、NUMA、性能调优有初步了解，正在优化数据库（Oracle, PostgreSQL, MySQL）、中间件（Redis, Kafka）、虚拟化（KVM）、网络（DPDK）、AI 推理等场景，希望降低 TLB miss、减少内核开销、提升缓存命中率。</li>
+<li><strong>技术定位</strong>：HugePages 提供比默认 4KB 页更大的内存页（典型 2MB、1GB），减少页表项数量与 TLB 命中开销。HugeTLB 机制 + Transparent HugePages（THP）二者适用场景不同，结合适当配置可显著提升性能。</li>
+<li><strong>学习目标</strong>：
+<ol>
+<li>理解 Linux 内存分页原理、TLB、HugeTLBFS、THP 的工作机制与差异；</li>
+<li>能够为特定应用规划 HugePages 配额、NUMA 绑定与持久化配置；</li>
+<li>熟悉在数据库、KVM、DPDK、容器等场景的典型实践与调优；</li>
+<li>掌握性能测试、监控指标、故障排查与回滚方案；</li>
+<li>输出企业级操作指南、自动化脚本与知识库。</li>
+</ol>
+</li>
+<li><strong>成果要求</strong>：
+<ul>
+<li>完成至少两个场景的 HugePages 实验并验证性能收益；</li>
+<li>制定标准化配置模板（sysctl/sysfs/systemd/Ansible）；</li>
+<li>构建自动化检测与告警（剩余页数、分配失败）；</li>
+<li>形成故障排查流程、FAQ 与培训材料；</li>
+<li>规划持续优化方案，与团队评审通过。</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="核心模块结构"><a class="header" href="#核心模块结构">核心模块结构</a></h2>
+<ol>
+<li><strong>模块一：Linux 内存分页与 HugePages 原理</strong> —— 重点理解 TLB、页表、HugeTLB 与 THP。</li>
+<li><strong>模块二：HugePages 配置与管理基础</strong> —— sysfs、sysctl、HugeTLBFS、持久化配置。</li>
+<li><strong>模块三：典型场景实践（数据库、KVM、DPDK、容器）</strong> —— 结合实际案例配置与验证。</li>
+<li><strong>模块四：性能评估、调优与监控</strong> —— 指标收集、基准测试、NUMA 策略。</li>
+<li><strong>模块五：故障诊断、安全治理与最佳实践</strong> —— 常见问题排查、风险防控、标准化运维。</li>
+<li><strong>模块六：学习路径、实战项目与资源扩展</strong> —— 路径规划、练习、案例、资源。</li>
+</ol>
+<hr />
+<h2 id="模块一linux-内存分页与-hugepages-原理"><a class="header" href="#模块一linux-内存分页与-hugepages-原理">模块一：Linux 内存分页与 HugePages 原理</a></h2>
+<h3 id="11-内存分页复习"><a class="header" href="#11-内存分页复习">1.1 内存分页复习</a></h3>
+<ul>
+<li>Linux 默认页大小：4KB（x86_64）；</li>
+<li>三级/四级页表结构（PGD, PUD, PMD, PTE）；</li>
+<li>TLB（Translation Lookaside Buffer）缓存页表转换，TLB miss 代价较高；</li>
+<li>大页（HugePages）减少页表项数量，降低 TLB miss 与页表遍历开销。</li>
+</ul>
+<h3 id="12-hugepages-类型"><a class="header" href="#12-hugepages-类型">1.2 HugePages 类型</a></h3>
+<ul>
+<li><strong>静态 HugePages（HugeTLB）</strong>：需要显式预留；<code>/proc/sys/vm/nr_hugepages</code> 或内核参数；</li>
+<li><strong>Transparent HugePages（THP）</strong>：内核自动启用 2MB 页，透明对应用；</li>
+<li><strong>1GB HugePages</strong>：在支持的硬件/内核上可使用；</li>
+<li><strong>用户级别</strong>：<code>libhugetlbfs</code>、<code>memfd_create(MFD_HUGE_* )</code>；</li>
+<li><strong>HugeTLBFS</strong>：挂载 <code>hugetlbfs</code> 提供文件接口。</li>
+</ul>
+<h3 id="13-hugepages-工作原理"><a class="header" href="#13-hugepages-工作原理">1.3 HugePages 工作原理</a></h3>
+<ul>
+<li>HugeTLB：预先保留物理内存，减少内核伙伴系统碎片化影响；</li>
+<li>内核不能换出 HugePages 到 swap；</li>
+<li>TLB entry：使用大页可覆盖更多内存，减少 TLB miss；</li>
+<li>CPU 支持：x86_64 支持 2MB（huge page）、1GB（gigantic page）；</li>
+<li>NUMA 影响：HugePages 分布在 NUMA 节点上，需合理分配。</li>
+</ul>
+<h3 id="14-transparent-hugepagesthp机制"><a class="header" href="#14-transparent-hugepagesthp机制">1.4 Transparent HugePages（THP）机制</a></h3>
+<ul>
+<li><code>always</code>：尽可能使用 THP；</li>
+<li><code>madvise</code>：应用使用 <code>madvise(MADV_HUGEPAGE)</code> 请求；</li>
+<li><code>never</code>：禁用 THP；</li>
+<li>优势：无需手动配置；</li>
+<li>缺点：对延迟敏感应用有负面影响（折叠成本、OOM）；</li>
+<li>内核后台 <code>khugepaged</code> 线程负责折叠小页。</li>
+</ul>
+<h3 id="15-hugetlb-与-thp-对比"><a class="header" href="#15-hugetlb-与-thp-对比">1.5 HugeTLB 与 THP 对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>HugeTLB</th><th>Transparent HugePages</th></tr></thead><tbody>
+<tr><td>管理</td><td>静态预留、需要手动配置</td><td>内核自动管理</td></tr>
+<tr><td>页大小</td><td>可选 2MB, 1GB</td><td>主要 2MB</td></tr>
+<tr><td>稳定性</td><td>更可控，适合实时、数据库</td><td>折叠开销、可能导致延迟飙升</td></tr>
+<tr><td>适用场景</td><td>数据库、KVM、DPDK</td><td>通用应用，但需评估</td></tr>
+<tr><td>NUMA 控制</td><td>细粒度</td><td>较难控制</td></tr>
+<tr><td>内存回收</td><td>不能 swap，需手动释放</td><td>内核自动管理</td></tr>
+</tbody></table>
+</div>
+<h3 id="16-学习重点与易错点"><a class="header" href="#16-学习重点与易错点">1.6 学习重点与易错点</a></h3>
+<ul>
+<li><strong>重点</strong>：理解 TLB、HugeTLB、THP 差异；掌握页预留机制；</li>
+<li><strong>易错点</strong>：
+<ol>
+<li>仅启用 THP，没有评估对延迟敏感应用的影响；</li>
+<li>未考虑 NUMA，导致跨节点访问；</li>
+<li>HugeTLB 页面不足导致应用无法启动；</li>
+<li>未开启 <code>vm.nr_hugepages</code> 的持久配置；</li>
+<li>忽略 <code>/proc/meminfo</code> 中 <code>HugePages_Free</code> 指标；</li>
+<li>不理解 <code>HugeTLB</code> 的内核补丁差异（旧内核 bug）。</li>
+</ol>
+</li>
+</ul>
+<h3 id="17-实验准备"><a class="header" href="#17-实验准备">1.7 实验准备</a></h3>
+<ul>
+<li>Linux 内核版本 ≥ 4.18（RHEL 8+，Ubuntu 20.04+）；</li>
+<li>安装 <code>hugeadm</code>（<code>libhugetlbfs-utils</code>）；</li>
+<li>确认 CPU 支持 1GB page：<code>grep pdpe1gb /proc/cpuinfo</code>；</li>
+<li>启用 NUMA：<code>numactl --hardware</code>；</li>
+<li>规划要预留的大页数。</li>
+</ul>
+<hr />
+<h2 id="模块二hugepages-配置与管理基础"><a class="header" href="#模块二hugepages-配置与管理基础">模块二：HugePages 配置与管理基础</a></h2>
+<h3 id="21-查看当前-hugepages-状态"><a class="header" href="#21-查看当前-hugepages-状态">2.1 查看当前 HugePages 状态</a></h3>
+<ul>
+<li><code>/proc/meminfo</code> 中：<code>HugePages_Total</code>, <code>HugePages_Free</code>, <code>Hugepagesize</code>；</li>
+<li><code>/sys/kernel/mm/hugepages</code>：每种大小的状态；</li>
+<li><code>cat /sys/kernel/mm/transparent_hugepage/enabled</code> 查看 THP 状态；</li>
+<li><code>hugeadm --pool-list</code>（需安装工具）。</li>
+</ul>
+<h3 id="22-静态-hugepages-配置"><a class="header" href="#22-静态-hugepages-配置">2.2 静态 HugePages 配置</a></h3>
+<ul>
+<li>临时设置（立即生效，但重启失效）：
+<pre><code class="language-bash">echo 1024 | sudo tee /proc/sys/vm/nr_hugepages
+</code></pre>
+</li>
+<li>持久化：
+<ul>
+<li><code>/etc/sysctl.conf</code>：<code>vm.nr_hugepages=1024</code>；</li>
+<li>或 <code>/etc/sysctl.d/99-hugepages.conf</code>；</li>
+<li><code>sysctl -p</code> 生效。</li>
+</ul>
+</li>
+<li>1GB HugePages：<code>/proc/sys/vm/nr_hugepages</code> 常用于 2MB；1GB 需 <code>vm.nr_hugepages</code> + <code>vm.nr_hugepages_mempolicy</code>；</li>
+<li>NUMA 特定配置：<code>/sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages</code>。</li>
+</ul>
+<h3 id="23-使用-hugeadm"><a class="header" href="#23-使用-hugeadm">2.3 使用 hugeadm</a></h3>
+<ul>
+<li>安装：<code>sudo apt install hugepages libhugetlbfs-dev</code>（发行版不同）；</li>
+<li>命令示例：
+<pre><code class="language-bash">hugeadm --explain
+hugeadm --pool-list
+hugeadm --create-global-mounts
+hugeadm --create-mounts /mnt/huge_1GB/pagesize-1GB
+hugeadm --set-recommended-min-free-kbytes
+</code></pre>
+</li>
+<li><code>hugeadm --thp-state</code> 调整 THP。</li>
+</ul>
+<h3 id="24-挂载-hugetlbfs"><a class="header" href="#24-挂载-hugetlbfs">2.4 挂载 HugeTLBFS</a></h3>
+<pre><code class="language-bash">sudo mkdir -p /mnt/huge
+sudo mount -t hugetlbfs nodev /mnt/huge -o pagesize=2M
+</code></pre>
+<ul>
+<li><code>/etc/fstab</code>：<code>nodev /mnt/huge hugetlbfs defaults,pagesize=1G 0 0</code>；</li>
+<li>应用可通过映射文件 <code>/mnt/huge</code> 使用大页。</li>
+</ul>
+<h3 id="25-transparent-hugepages-管理"><a class="header" href="#25-transparent-hugepages-管理">2.5 Transparent HugePages 管理</a></h3>
+<ul>
+<li>配置 <code>/sys/kernel/mm/transparent_hugepage/enabled</code>；</li>
+<li>永久配置：
+<ul>
+<li><code>/etc/default/grub</code>: <code>transparent_hugepage=never</code>；</li>
+<li>或在 systemd：<code>ExecStartPre=/bin/echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled</code>；</li>
+</ul>
+</li>
+<li><code>madvise</code> 模式：应用使用 <code>madvise(MADV_HUGEPAGE)</code>；</li>
+<li>监控 <code>khugepaged</code> 概况。</li>
+</ul>
+<h3 id="26-memory-policy-与-numa"><a class="header" href="#26-memory-policy-与-numa">2.6 Memory Policy 与 NUMA</a></h3>
+<ul>
+<li><code>numactl --hardware</code> 查看节点；</li>
+<li><code>numactl --membind=0 --cpunodebind=0</code> 运行应用；</li>
+<li><code>echo 1024 &gt; /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages</code>；</li>
+<li><code>hugeadm --set-recommended-min_free_kbytes</code> 避免内存碎片；</li>
+<li>同步 <code>zone_reclaim_mode</code>。</li>
+</ul>
+<h3 id="27-大页分配策略"><a class="header" href="#27-大页分配策略">2.7 大页分配策略</a></h3>
+<ul>
+<li>计算所需大页数：应用内存（MB）/ 页大小（MB）；</li>
+<li>预留 buffer，避免不足；</li>
+<li>结合 <code>shmget</code>/<code>MAP_HUGETLB</code>；</li>
+<li>使用 <code>libhugetlbfs</code> API；</li>
+<li>1GB 大页（适合数据库 SGA）；</li>
+<li>2MB 大页（适用于 DPDK、KVM）。</li>
+</ul>
+<h3 id="28-自动化配置示例ansible"><a class="header" href="#28-自动化配置示例ansible">2.8 自动化配置示例（Ansible）</a></h3>
+<pre><code class="language-yaml">- name: 配置 HugePages
+  sysctl:
+    name: vm.nr_hugepages
+    value: 2048
+    state: present
+
+- name: 挂载 hugetlbfs
+  mount:
+    path: /mnt/huge
+    src: nodev
+    fstype: hugetlbfs
+    opts: "pagesize=2M"
+    state: mounted
+</code></pre>
+<h3 id="29-验证清单"><a class="header" href="#29-验证清单">2.9 验证清单</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>项目</th><th>方法</th><th>预期</th></tr></thead><tbody>
+<tr><td>预留页数</td><td><code>grep HugePages /proc/meminfo</code></td><td>Total/Free 与配置一致</td></tr>
+<tr><td>NUMA 分配</td><td><code>numastat -m</code></td><td>对应节点分配成功</td></tr>
+<tr><td>THP 状态</td><td><code>cat /sys/kernel/mm/transparent_hugepage/enabled</code></td><td>正确模式</td></tr>
+<tr><td>Mount</td><td>`mount</td><td>grep hugetlbfs`</td></tr>
+<tr><td>应用分配</td><td>运行测试应用</td><td>TLB miss 降低、性能提升</td></tr>
+</tbody></table>
+</div>
+<h3 id="210-实践练习"><a class="header" href="#210-实践练习">2.10 实践练习</a></h3>
+<ul>
+<li>同时配置 2MB 与 1GB 大页并分别挂载；</li>
+<li>使用 <code>libhugetlbfs</code> 示例程序分配内存；</li>
+<li>设置 THP 为 <code>madvise</code> 并验证行为；</li>
+<li>配置 NUMA 特定节点的大页数，运行应用测试。</li>
+</ul>
+<hr />
+<h2 id="模块三典型场景实践"><a class="header" href="#模块三典型场景实践">模块三：典型场景实践</a></h2>
+<h3 id="31-数据库oracle-postgresql-mysql"><a class="header" href="#31-数据库oracle-postgresql-mysql">3.1 数据库（Oracle, PostgreSQL, MySQL）</a></h3>
+<ul>
+<li>Oracle SGA 要求 HugePages 提升性能并避免内存浪费；
+<ul>
+<li>计算 SGA（GB）/ 2MB = 页数；</li>
+<li>配置 <code>/etc/sysctl.conf</code>, <code>/etc/security/limits.conf</code>；</li>
+<li><code>cat /proc/meminfo | grep HugePages</code>;</li>
+<li><code>vm.nr_hugepages</code>, <code>vm.hugetlb_shm_group</code>；</li>
+</ul>
+</li>
+<li>PostgreSQL：
+<ul>
+<li><code>shared_buffers</code>, <code>work_mem</code> → HugePages；</li>
+<li><code>postgresql.conf</code>: <code>huge_pages = try/on</code>；</li>
+<li>查看 <code>pg_controldata</code>；</li>
+</ul>
+</li>
+<li>MySQL（InnoDB Buffer Pool）：
+<ul>
+<li>使用 <code>innodb_use_native_aio = 0</code>? 视版本；</li>
+<li><code>innodb_buffer_pool_size</code>；</li>
+</ul>
+</li>
+<li>MongoDB, Redis：<code>numactl</code> + 大页；</li>
+<li>Benchmark：<code>pgbench</code>, <code>sysbench</code>；</li>
+<li>注意：数据库重启需要先设置 HugePages，防止 OOM。</li>
+</ul>
+<h3 id="32-kvmlibvirt"><a class="header" href="#32-kvmlibvirt">3.2 KVM/libvirt</a></h3>
+<ul>
+<li>KVM 支持将虚拟机内存分配到 HugePages：
+<ul>
+<li>libvirt XML：
+<pre><code class="language-xml">&lt;memoryBacking&gt;
+  &lt;hugepages&gt;
+    &lt;page size='1' unit='GiB'/&gt;
+  &lt;/hugepages&gt;
+&lt;/memoryBacking&gt;
+</code></pre>
+</li>
+<li>或 <code>size='2048' unit='KiB'</code>；</li>
+<li>NUMA：<code>&lt;numatune&gt;</code>；</li>
+<li>QEMU 参数：<code>-mem-prealloc -mem-path /dev/hugepages</code>;</li>
+</ul>
+</li>
+<li>配合 CPU Pinning、HugePage pool；</li>
+<li>降低页表开销，提升虚拟化性能；</li>
+<li>virt-install: <code>--memorybacking hugepages=yes</code>；</li>
+<li>注意：HugePages 不足会导致 VM 启动失败。</li>
+</ul>
+<h3 id="33-dpdk--网络功能虚拟化"><a class="header" href="#33-dpdk--网络功能虚拟化">3.3 DPDK / 网络功能虚拟化</a></h3>
+<ul>
+<li>DPDK 强依赖 HugePages（默认 2MB/1GB）；</li>
+<li>配置：
+<pre><code class="language-bash">sudo mkdir -p /dev/hugepages
+sudo mount -t hugetlbfs nodev /dev/hugepages -o pagesize=1G
+sudo dpdk-hugepages.py --setup 16G
+</code></pre>
+</li>
+<li><code>dpdk-devbind.py --status</code>；</li>
+<li><code>EAL</code> 参数：<code>--huge-dir</code>, <code>--socket-mem</code>, <code>--file-prefix</code>；</li>
+<li>NUMA aware 分配；</li>
+<li>监控 <code>HugePages_Free</code> 避免不足；</li>
+<li>快速调试：<code>rte_eal_get_configuration()</code>；</li>
+<li>SR-IOV + HugePages 配套。</li>
+</ul>
+<h3 id="34-容器与-kubernetes"><a class="header" href="#34-容器与-kubernetes">3.4 容器与 Kubernetes</a></h3>
+<ul>
+<li>Docker: <code>--mount type=hugetlb,source=hugepages,target=/mnt/huge</code>；</li>
+<li><code>--tmpfs /dev/hugepages:rw,huge=on,size=4G</code>；</li>
+<li>Kubernetes：
+<ul>
+<li><code>apiVersion: v1 kind: Pod</code>；</li>
+<li><code>resources.requests</code> + <code>limits</code> 中 <code>hugepages-2Mi: 512Mi</code>；</li>
+<li><code>emptyDir</code>：<code>medium: HugePages-2Mi</code>；</li>
+<li>需 kubelet 开启 HugePages；</li>
+<li>NUMA 管控：Topology Manager, CPU Manager；</li>
+</ul>
+</li>
+<li>容器内 <code>cat /proc/meminfo</code> 可见 <code>HugePages</code>;</li>
+<li>兼容 DPDK, SR-IOV CNI；</li>
+<li>注意 cgroup v1/v2 差异。</li>
+</ul>
+<h3 id="35-内核与实时场景"><a class="header" href="#35-内核与实时场景">3.5 内核与实时场景</a></h3>
+<ul>
+<li>实时 Linux：HugePages 减少页失效延迟；</li>
+<li><code>PREEMPT_RT</code> + <code>isolcpus</code> + HugePages；</li>
+<li>用于音频处理、控制系统；</li>
+<li>需验证内存锁定（<code>mlockall</code>）。</li>
+</ul>
+<h3 id="36-机器学习与高性能计算"><a class="header" href="#36-机器学习与高性能计算">3.6 机器学习与高性能计算</a></h3>
+<ul>
+<li>TensorFlow/ PyTorch 使用 HugePages 减少内存碎片；</li>
+<li>HPC：OpenMP, MPI 应用；</li>
+<li>NUMA + HugePages 组合；</li>
+<li>结合 <code>memkind</code>, <code>hbwmalloc</code>。</li>
+</ul>
+<h3 id="37-java-应用"><a class="header" href="#37-java-应用">3.7 Java 应用</a></h3>
+<ul>
+<li>JVM <code>-XX:+UseLargePages</code>；</li>
+<li><code>-XX:LargePageSizeInBytes=2m</code>；</li>
+<li>注意权限：JVM 需要 <code>CAP_IPC_LOCK</code>；</li>
+<li>LargePageCommandLineFlag；</li>
+<li>EDA, Spark, Kafka 实践。</li>
+</ul>
+<h3 id="38-虚拟桌面与图形"><a class="header" href="#38-虚拟桌面与图形">3.8 虚拟桌面与图形</a></h3>
+<ul>
+<li>VDI 场景：配合 GPU Passthrough；</li>
+<li>QEMU <code>-mem-prealloc</code> + HugePages；</li>
+<li>结果：启动速度提升、内存稳定。</li>
+</ul>
+<h3 id="39-实践案例汇总"><a class="header" href="#39-实践案例汇总">3.9 实践案例汇总</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>场景</th><th>HugePages 类型</th><th>页大小</th><th>收益</th></tr></thead><tbody>
+<tr><td>Oracle SGA</td><td>HugeTLB</td><td>1GB</td><td>SGA 更高效，避免 Swap</td></tr>
+<tr><td>PostgreSQL</td><td>THP (madvise) + HugeTLB</td><td>2MB</td><td>TPS 提升，延迟下降</td></tr>
+<tr><td>KVM</td><td>HugeTLB</td><td>2MB/1GB</td><td>VM 启动更快，减少宿主内核负担</td></tr>
+<tr><td>DPDK</td><td>HugeTLB</td><td>1GB</td><td>吞吐提升，减少内存碎片</td></tr>
+<tr><td>Kubernetes</td><td>HugeTLB + 容器</td><td>2MB</td><td>网元 Pod 性能稳定</td></tr>
+<tr><td>JVM</td><td>Large Pages</td><td>2MB</td><td>GC 稳定性提升</td></tr>
+</tbody></table>
+</div>
+<h3 id="310-练习"><a class="header" href="#310-练习">3.10 练习</a></h3>
+<ul>
+<li>为 PostgreSQL 配置 <code>huge_pages = on</code> 并验证；</li>
+<li>使用 DPDK 示例 <code>l2fwd</code> 验证大页分配；</li>
+<li>部署 Kubernetes Pod 使用 <code>hugepages-1Gi</code>；</li>
+<li>将 KVM 虚拟机内存配置为 1GB HugePages 并运行性能测试；</li>
+<li>编写脚本验证 <code>HugePages_Free</code> 与 <code>HugePages_Rsvd</code>，输出报警。</li>
+</ul>
+<hr />
+<h2 id="模块四性能评估调优与监控"><a class="header" href="#模块四性能评估调优与监控">模块四：性能评估、调优与监控</a></h2>
+<h3 id="41-关键指标"><a class="header" href="#41-关键指标">4.1 关键指标</a></h3>
+<ul>
+<li><code>HugePages_Total</code>, <code>HugePages_Free</code>, <code>HugePages_Rsvd</code>, <code>HugePages_Surp</code>;</li>
+<li><code>AnonHugePages</code>, <code>ShmemHugePages</code>；</li>
+<li>TLB miss 指标：<code>perf stat -e dTLB-load-misses</code>；</li>
+<li>延迟/吞吐；</li>
+<li>应用特定指标（TPS、QPS、Frame Rate）；</li>
+<li>NUMA 指标：<code>numastat</code>；</li>
+<li><code>khugepaged</code> 统计：<code>/sys/kernel/mm/transparent_hugepage/khugepaged</code>。</li>
+</ul>
+<h3 id="42-基准测试流程"><a class="header" href="#42-基准测试流程">4.2 基准测试流程</a></h3>
+<ol>
+<li>确定 baseline（无大页/默认设置）；</li>
+<li>启用 HugePages/THP，设置并重启应用；</li>
+<li>运行负载（数据库基准、dpdk-test, sysbench, stress-ng）；</li>
+<li>收集 TLB miss、缓存命中、CPU 利用率；</li>
+<li>对比性能指标（吞吐、延迟、资源占用）；</li>
+<li>记录配置文件、时间点；</li>
+<li>分析并形成报告。</li>
+</ol>
+<h3 id="43-性能工具"><a class="header" href="#43-性能工具">4.3 性能工具</a></h3>
+<ul>
+<li><code>perf</code>：<code>perf stat -e instructions,cycles,dTLB-loads,dTLB-load-misses</code>;</li>
+<li><code>pmcstat</code>（FreeBSD）; <code>oprofile</code>;</li>
+<li><code>sar</code>, <code>vmstat</code>, <code>mpstat</code>;</li>
+<li><code>numactl --show</code>;</li>
+<li><code>turbostat</code>;</li>
+<li><code>pg_stat_statements</code>, <code>Oracle AWR</code>;</li>
+<li><code>dpdk-procinfo</code>;</li>
+<li>Prometheus Exporter（node_exporter hugepages 指标）；</li>
+<li>Grafana Dashboard。</li>
+</ul>
+<h3 id="44-调优策略"><a class="header" href="#44-调优策略">4.4 调优策略</a></h3>
+<ul>
+<li>根据应用需求调整页数，预留 buffer；</li>
+<li>搭配 CPU Pinning、NUMA 亲和；</li>
+<li>对 THP 使用 <code>madvise</code>，避免 <code>always</code>；</li>
+<li>监控 <code>HugePages_Surp</code> 防止资源浪费；</li>
+<li>定期执行 <code>echo 0 &gt; .../free_hugepages</code> 释放？谨慎；</li>
+<li>使用 <code>tuned-profiles</code>（RHEL：<code>throughput-performance</code>, <code>virtual-host</code>）;</li>
+<li>处理内存碎片：<code>echo 1 &gt; /proc/sys/vm/compact_memory</code>；</li>
+<li><code>vm.nr_hugepages</code> 设置 1GB 大页时需齐平 1GB 边界；</li>
+<li><code>vm.hugetlb_shm_group</code> 控制共享内存权限。</li>
+</ul>
+<h3 id="45-监控与告警"><a class="header" href="#45-监控与告警">4.5 监控与告警</a></h3>
+<ul>
+<li>node_exporter: <code>node_memory_HugePages_Total</code>, <code>node_memory_HugePages_Free</code>;</li>
+<li>Alert：剩余大页 &lt; 阈值；</li>
+<li><code>PromQL</code>：<code>(node_memory_HugePages_Total - node_memory_HugePages_Free)/node_memory_HugePages_Total</code>；</li>
+<li>Grafana 分面：NUMA 节点分布；</li>
+<li>日志：<code>/var/log/messages</code> 中 <code>HugeTLB</code> 相关；</li>
+<li><code>kube-state-metrics</code> + Kubernetes HugePages；</li>
+<li>Elastic Stack：自定义指标；</li>
+<li>结合 Alertmanager/钉钉/Slack 通知。</li>
+</ul>
+<h3 id="46-成本与容量规划"><a class="header" href="#46-成本与容量规划">4.6 成本与容量规划</a></h3>
+<ul>
+<li>HugePages 预留后不可用于常规内存；</li>
+<li>需根据业务峰值规划；</li>
+<li>监控 <code>HugePages_Surp</code>（多余）；</li>
+<li>定期评估 <code>HugePages_Rsvd</code>（保留）;</li>
+<li>结合容量管理工具；</li>
+<li>业务上线前进行容量预估与压测。</li>
+</ul>
+<h3 id="47-典型性能案例"><a class="header" href="#47-典型性能案例">4.7 典型性能案例</a></h3>
+<ul>
+<li>PostgreSQL TPS 提升 10-20%；</li>
+<li>Oracle SGA 系统性减少 page fault；</li>
+<li>DPDK PPS 提升 15-30%；</li>
+<li>KVM VM 密度提升（更少 TLB flush）；</li>
+<li>Nginx/Redis Latency 降低（特定场景）。</li>
+</ul>
+<h3 id="48-自动化性能测试"><a class="header" href="#48-自动化性能测试">4.8 自动化性能测试</a></h3>
+<ul>
+<li>Jenkins Pipeline：部署 → 配置 → 压测 → 收集 → 报告；</li>
+<li>Ansible + <code>bench.sh</code>；</li>
+<li>Grafana 使用 <code>Grafana Reporter</code> 输出 PDF；</li>
+<li>Jupyter Notebook 分析性能数据；</li>
+<li>基准数据库：<code>InfluxDB</code>, <code>TimescaleDB</code>。</li>
+</ul>
+<h3 id="49-性能回退与风险控制"><a class="header" href="#49-性能回退与风险控制">4.9 性能回退与风险控制</a></h3>
+<ul>
+<li>建立回滚方案：禁用 HugePages/THP；</li>
+<li>监控 OOM、内存不足；</li>
+<li>记录配置变更；</li>
+<li>预演回滚脚本；</li>
+<li>评估对 cgroup/容器的影响。</li>
+</ul>
+<h3 id="410-练习"><a class="header" href="#410-练习">4.10 练习</a></h3>
+<ul>
+<li>使用 <code>perf</code> 记录启用/禁用大页的 TLB miss；</li>
+<li>构建 Prometheus + Grafana 监控大页指标；</li>
+<li>编写脚本自动生成性能报告；</li>
+<li>调整 NUMA 分配并测量差异；</li>
+<li>制作性能数据可视化。</li>
+</ul>
+<hr />
+<h2 id="模块五故障诊断安全治理与最佳实践"><a class="header" href="#模块五故障诊断安全治理与最佳实践">模块五：故障诊断、安全治理与最佳实践</a></h2>
+<h3 id="51-常见问题与排查"><a class="header" href="#51-常见问题与排查">5.1 常见问题与排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>症状</th><th>排查步骤</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>HugePages 分配失败</td><td><code>dmesg</code> 显示 <code>HugeTLB: allocating</code> 失败</td><td>检查 <code>HugePages_Free</code>, 内存碎片</td><td>提前预留、增加 <code>nr_hugepages</code>、重启</td></tr>
+<tr><td>OOM</td><td>系统内存不足</td><td><code>dmesg</code>, <code>oom_score</code></td><td>降低大页数、释放资源</td></tr>
+<tr><td>NUMA 失衡</td><td>应用跨节点访问</td><td><code>numastat</code></td><td>调整 <code>membind</code>, 重新预留</td></tr>
+<tr><td>THP 导致延迟</td><td>延迟抖动</td><td><code>perf</code>, <code>khugepaged</code> 日志</td><td>将 THP 设置为 <code>never</code> 或 <code>madvise</code></td></tr>
+<tr><td>容器无法使用</td><td>Pod 启动失败</td><td>检查 kubelet 日志</td><td>开启 HugePages feature gate, 设置 cgroup</td></tr>
+<tr><td>DPDK 报错</td><td><code>Cannot initialize memory</code></td><td><code>dpdk-hugepages.py --dump</code></td><td>检查大页挂载、权限</td></tr>
+<tr><td>Oracle 报警</td><td><code>ORA-27102: out of memory</code></td><td><code>dmesg</code>, <code>/proc/meminfo</code></td><td>调整 <code>projid</code>, <code>limits.conf</code></td></tr>
+<tr><td>1GB HugePages 不可用</td><td><code>Invalid argument</code></td><td><code>grep pdpe1gb /proc/cpuinfo</code></td><td>确认 CPU 支持，使用内核参数</td></tr>
+</tbody></table>
+</div>
+<h3 id="52-排查流程模板"><a class="header" href="#52-排查流程模板">5.2 排查流程模板</a></h3>
+<ol>
+<li>收集系统信息：内核版本、HugePages 配置、NUMA 状态；</li>
+<li>查看 <code>/proc/meminfo</code>、<code>numactl --hardware</code>；</li>
+<li><code>dmesg</code> 搜索 HugeTLB；</li>
+<li>检查应用日志（数据库、DPDK）；</li>
+<li>验证 mount 与权限；</li>
+<li>测试 small allocations；</li>
+<li>分析 <code>khugepaged</code> 状态；</li>
+<li>复现问题，记录步骤；</li>
+<li>制定修复方案与预防措施。</li>
+</ol>
+<h3 id="53-安全与合规考量"><a class="header" href="#53-安全与合规考量">5.3 安全与合规考量</a></h3>
+<ul>
+<li>HugePages 不可 swap → 必须确保权限控制 (# CAP_IPC_LOCK, limits)；</li>
+<li>避免普通用户滥用 <code>hugetlbfs</code>；</li>
+<li>多租户场景：按 namespace/cgroup 配额；</li>
+<li>记录 <code>hugetlb</code> cgroup 配置（<code>/sys/fs/cgroup/hugetlb</code>）；</li>
+<li>内核漏洞：关注 <code>hugetlbfs</code> 相关 CVE；</li>
+<li>安全审计：记录大页分配日志；</li>
+<li>DPDK + HugePages：确保隔离和访问控制。</li>
+</ul>
+<h3 id="54-最佳实践清单"><a class="header" href="#54-最佳实践清单">5.4 最佳实践清单</a></h3>
+<ul>
+<li>评估应用需求，选择 HugeTLB 或 THP；</li>
+<li>启用 <code>madvise</code> 与 HugeTLB 联合使用；</li>
+<li>预留足够 buffer，应对峰值；</li>
+<li>避免过量预留导致内存浪费；</li>
+<li>配置 NUMA aware 的 HugePages；</li>
+<li>使用自动化工具（Ansible, Terraform）确保一致性；</li>
+<li>建立监控与报警；</li>
+<li>记录版本组合，进行回归测试；</li>
+<li>与 CPU Pinning、IRQ 绑核、HugePages 结合；</li>
+<li>维护操作手册与故障文档；</li>
+<li>定期复盘性能指标与配置。</li>
+</ul>
+<h3 id="55-知识沉淀与团队协作"><a class="header" href="#55-知识沉淀与团队协作">5.5 知识沉淀与团队协作</a></h3>
+<ul>
+<li>建立内网 Wiki：基础原理、配置模板、案例；</li>
+<li>定期培训，分享性能优化成果；</li>
+<li>故障复盘机制：RCA + 预防措施；</li>
+<li>社区跟进：内核更新、发行版文档；</li>
+<li>参与开源讨论（LKML, DPDK, PostgreSQL mailing list）。</li>
+</ul>
+<h3 id="56-faq"><a class="header" href="#56-faq">5.6 FAQ</a></h3>
+<ol>
+<li><strong>HugePages 与 THP 可同时使用吗？</strong> 可同时存在，但需避免冲突；</li>
+<li><strong>如何释放 HugePages？</strong> <code>echo 0 &gt; /proc/sys/vm/nr_hugepages</code>（需谨慎，确保无应用使用）；</li>
+<li><strong>HugePages 会影响快照/迁移吗？</strong> KVM 使用 HugePages 时需特定支持，实时迁移需评估；</li>
+<li><strong>容器内如何使用 HugePages？</strong> 通过 kubelet/cgroup 申请 <code>hugepages-2Mi</code>；</li>
+<li><strong>是否必须使用 1GB 页？</strong> 视硬件支持与应用需求，1GB 更适合大内存应用；</li>
+<li><strong>THP 对数据库有风险吗？</strong> <code>always</code> 模式可能导致延迟抖动，建议 <code>madvise</code>；</li>
+<li><strong>HugePages 会降低内存使用效率吗？</strong> 可能存在内部碎片，评估应用实际使用情况；</li>
+<li><strong>如何跨 NUMA 配置？</strong> 使用 node-specific <code>nr_hugepages</code>；</li>
+<li><strong>HugeTLB 与 cgroup 兼容吗？</strong> 需要设置 <code>hugetlb</code> cgroup 控制；</li>
+<li><strong>Windows 是否支持 HugePages？</strong> Windows 有 Large Pages 概念，类似但配置不同。</li>
+</ol>
+<h3 id="57-实战演练清单"><a class="header" href="#57-实战演练清单">5.7 实战演练清单</a></h3>
+<ul>
+<li>回滚 THP 设置（<code>always</code>→<code>never</code>），观察影响；</li>
+<li>模拟 HugePages 耗尽导致应用启动失败，记录应对；</li>
+<li>使用 cgroup <code>hugetlb</code> 限制一个容器大页使用；</li>
+<li>设计一次 NUMA 重分配演练；</li>
+<li>构建 HugePages 配置差异对比表。</li>
+</ul>
+<hr />
+<h2 id="模块六学习路径实战项目与资源扩展"><a class="header" href="#模块六学习路径实战项目与资源扩展">模块六：学习路径、实战项目与资源扩展</a></h2>
+<h3 id="61-学习路径设计"><a class="header" href="#61-学习路径设计">6.1 学习路径设计</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>时间</th><th>学习目标</th><th>关键行动</th><th>产出</th></tr></thead><tbody>
+<tr><td>阶段 0：准备</td><td>1 天</td><td>了解基础概念、确认硬件支持</td><td>阅读本文、检查 <code>HugePages</code> 状态</td><td>环境评估报告</td></tr>
+<tr><td>阶段 1：基础实践</td><td>3 天</td><td>掌握 HugeTLB/THP 配置</td><td>配置 2MB/1GB 大页，验证</td><td>配置脚本、验证记录</td></tr>
+<tr><td>阶段 2：场景落地</td><td>4-5 天</td><td>针对数据库、KVM、DPDK 场景实践</td><td>完成两种场景部署与性能测试</td><td>场景方案文档、性能报告</td></tr>
+<tr><td>阶段 3：自动化与监控</td><td>4 天</td><td>构建监控、自动化交付</td><td>实现 Ansible/Prometheus 集成</td><td>自动化剧本、Grafana Dashboard</td></tr>
+<tr><td>阶段 4：运维优化</td><td>5-7 天</td><td>故障演练、安全控制、团队培训</td><td>编写 SOP、RCA 模板、培训材料</td><td>运维手册、知识库</td></tr>
+<tr><td>阶段 5：持续迭代</td><td>持续</td><td>跟踪内核更新、迭代方案</td><td>参与社区、定期复盘</td><td>优化计划、版本记录</td></tr>
+</tbody></table>
+</div>
+<h3 id="62-实战案例"><a class="header" href="#62-实战案例">6.2 实战案例</a></h3>
+<h4 id="案例一oracle-数据库性能优化"><a class="header" href="#案例一oracle-数据库性能优化">案例一：Oracle 数据库性能优化</a></h4>
+<ul>
+<li><strong>背景</strong>：SGA 512GB，需提升性能并避免 swap。</li>
+<li><strong>实施</strong>：
+<ol>
+<li>配置 1GB HugePages：<code>vm.nr_hugepages=512</code>；</li>
+<li><code>vm.hugetlb_shm_group</code> 设置 Oracle 用户组 ID；</li>
+<li>调整 <code>limits.conf</code> → <code>memlock unlimited</code>；</li>
+<li>重启数据库，验证 <code>HugePages_Free</code>；</li>
+<li>运行 AWR 报告对比；</li>
+</ol>
+</li>
+<li><strong>结果</strong>：响应时间降低 15%，CPU 占用稳定。</li>
+</ul>
+<h4 id="案例二kvm-虚拟机密集部署"><a class="header" href="#案例二kvm-虚拟机密集部署">案例二：KVM 虚拟机密集部署</a></h4>
+<ul>
+<li><strong>背景</strong>：大规模 VDI，需要减少宿主机内存开销。</li>
+<li><strong>实施</strong>：
+<ol>
+<li>预留 5120 x 2MB = 10GB HugePages；</li>
+<li>VM XML 配置 <code>&lt;memoryBacking&gt;&lt;hugepages /&gt;&lt;/memoryBacking&gt;</code>；</li>
+<li>使用 <code>virt-install</code> 自动化创建；</li>
+<li>结合 CPU Pinning；</li>
+<li>监控 HugePages 使用情况；</li>
+</ol>
+</li>
+<li><strong>结果</strong>：VM 启动速度提升，宿主机 TLB miss 降低 40%。</li>
+</ul>
+<h4 id="案例三dpdk-高吞吐网元"><a class="header" href="#案例三dpdk-高吞吐网元">案例三：DPDK 高吞吐网元</a></h4>
+<ul>
+<li><strong>背景</strong>：NFV 项目，DPDK 应用 PPS 不稳定。</li>
+<li><strong>实施</strong>：
+<ol>
+<li>配置 1GB HugePages 每个 NUMA 节点 16GB；</li>
+<li><code>dpdk-hugepages.py --setup</code>；</li>
+<li>调整 <code>--socket-mem</code>；</li>
+<li>监控 <code>HugePages_Free</code>；</li>
+<li>压测 <code>testpmd</code>;</li>
+</ol>
+</li>
+<li><strong>结果</strong>：吞吐提升 25%，延迟收敛。</li>
+</ul>
+<h4 id="案例四kubernetes-网元-pod"><a class="header" href="#案例四kubernetes-网元-pod">案例四：Kubernetes 网元 Pod</a></h4>
+<ul>
+<li><strong>背景</strong>：边缘云需部署 SR-IOV + DPDK Pod。</li>
+<li><strong>实施</strong>：
+<ol>
+<li>Kubelet 启用 HugePages；</li>
+<li>Pod YAML 请求 <code>hugepages-1Gi: 2Gi</code>；</li>
+<li>结合 <code>cpuManagerPolicy=static</code>;</li>
+<li>Prometheus 监控 hugepages 指标；</li>
+<li>通过 GitOps 管理配置；</li>
+</ol>
+</li>
+<li><strong>结果</strong>：Pod 性能提升、资源可视化。</li>
+</ul>
+<h4 id="案例五java-服务-gc-优化"><a class="header" href="#案例五java-服务-gc-优化">案例五：Java 服务 GC 优化</a></h4>
+<ul>
+<li><strong>背景</strong>：电商系统，GC 频繁导致延迟波动。</li>
+<li><strong>实施</strong>：
+<ol>
+<li><code>vm.nr_hugepages=2048</code>；</li>
+<li>JVM 参数：<code>-XX:+UseLargePages -XX:LargePageSizeInBytes=2m</code>；</li>
+<li>调整 <code>memlock</code>；</li>
+<li>GC 日志分析；</li>
+</ol>
+</li>
+<li><strong>结果</strong>：GC Pause 降低 20%，系统吞吐提升。</li>
+</ul>
+<h3 id="63-学习成果验证标准"><a class="header" href="#63-学习成果验证标准">6.3 学习成果验证标准</a></h3>
+<ol>
+<li><strong>配置准确性</strong>：<code>HugePages_Total</code>, <code>Free</code>, <code>Rsvd</code> 与计划值一致；</li>
+<li><strong>性能收益</strong>：完成至少一次基准测试，记录改善数据（例如延迟下降 ≥ 10%）；</li>
+<li><strong>监控上线</strong>：Grafana Dashboard 展示大页指标，并设置告警；</li>
+<li><strong>自动化能力</strong>：Ansible/Terraform 等工具完成配置交付；</li>
+<li><strong>故障处理</strong>：模拟 2+ 故障场景，输出 RCA；</li>
+<li><strong>安全合规</strong>：定义权限、限额、审计策略；</li>
+<li><strong>文档沉淀</strong>：交付操作手册、FAQ、培训材料；</li>
+<li><strong>持续改进</strong>：制定版本升级与回归测试计划。</li>
+</ol>
+<h3 id="64-扩展资源与建议"><a class="header" href="#64-扩展资源与建议">6.4 扩展资源与建议</a></h3>
+<ul>
+<li><strong>官方文档</strong>：
+<ul>
+<li>Linux Documentation: HugeTLB Pages</li>
+<li>RHEL Performance Tuning Guide</li>
+<li>PostgreSQL Documentation: Huge Pages</li>
+<li>Oracle Docs: Configuring HugePages</li>
+<li>Kubernetes Docs: Managing HugePages</li>
+</ul>
+</li>
+<li><strong>工具</strong>：
+<ul>
+<li><code>hugeadm</code>, <code>dpdk-hugepages.py</code>, <code>tuned</code>, <code>perf</code>;</li>
+<li>Prometheus Node Exporter（hugepages metrics）；</li>
+</ul>
+</li>
+<li><strong>社区</strong>：
+<ul>
+<li>LKML, DPDK mailing list, PostgreSQL mailing list；</li>
+<li>Red Hat Customer Portal；</li>
+</ul>
+</li>
+<li><strong>进阶建议</strong>：
+<ol>
+<li>深入阅读内核 HugeTLB 代码，理解分配路径；</li>
+<li>关注 kernel patch（如 <code>hugetlb_cgroup</code> 改进）；</li>
+<li>探索 <code>memkind</code>, <code>hmalloc</code>, <code>libhugetlbfs</code>；</li>
+<li>在云原生环境（KubeVirt, OpenShift）推广大页实践；</li>
+<li>跟踪硬件（ARM64, PowerPC）的大页实现差异；</li>
+<li>建立年度性能回归计划。</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="附录"><a class="header" href="#附录">附录</a></h2>
+<h3 id="a-常用命令"><a class="header" href="#a-常用命令">A. 常用命令</a></h3>
+<pre><code class="language-bash"># 查看大页状态
+cat /proc/meminfo | grep -i huge
+
+# 设置 2048 个 2MB 大页
+echo 2048 | sudo tee /proc/sys/vm/nr_hugepages
+
+# 设置特定 NUMA 节点的大页
+echo 1024 | sudo tee /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
+
+# 挂载 hugetlbfs
+sudo mount -t hugetlbfs nodev /mnt/huge -o pagesize=2M
+
+# 调整 THP
+echo madvise | sudo tee /sys/kernel/mm/transparent_hugepage/enabled
+
+# 使用 hugeadm
+sudo hugeadm --pool-list
+
+# 检查 dTLB miss
+perf stat -e dTLB-loads,dTLB-load-misses ./benchmark
+
+# Kubernetes Pod 中查看大页
+kubectl exec pod -- cat /proc/meminfo | grep Huge
+</code></pre>
+<h3 id="b-配置文件示例"><a class="header" href="#b-配置文件示例">B. 配置文件示例</a></h3>
+<ul>
+<li><code>/etc/sysctl.d/99-hugepages.conf</code>
+<pre><code>vm.nr_hugepages=2048
+vm.hugetlb_shm_group=1001
+vm.min_free_kbytes=262144
+</code></pre>
+</li>
+<li><code>/etc/fstab</code>
+<pre><code>nodev /mnt/huge hugetlbfs defaults,pagesize=1G 0 0
+</code></pre>
+</li>
+<li><code>limits.conf</code>
+<pre><code>oracle soft memlock 8388608
+oracle hard memlock 8388608
+</code></pre>
+</li>
+</ul>
+<h3 id="c-ansible-role-结构"><a class="header" href="#c-ansible-role-结构">C. Ansible Role 结构</a></h3>
+<pre><code>roles/hugepages/
+├── defaults/main.yml
+├── tasks/main.yml
+├── templates/etc-sysctl.d-hugepages.conf.j2
+├── templates/etc-fstab-hugetlbfs.j2
+└── handlers/main.yml
+</code></pre>
+<h3 id="d-监控仪表板指标"><a class="header" href="#d-监控仪表板指标">D. 监控仪表板指标</a></h3>
+<ul>
+<li><code>node_memory_HugePages_Total</code></li>
+<li><code>node_memory_HugePages_Free</code></li>
+<li><code>node_memory_Hugepagesize</code></li>
+<li><code>node_memory_ShmemHugePages</code></li>
+<li><code>node_memory_AnonHugePages</code></li>
+<li>自定义 <code>application_hugepages_in_use</code> 指标</li>
+</ul>
+<h3 id="e-故障记录模板"><a class="header" href="#e-故障记录模板">E. 故障记录模板</a></h3>
+<pre><code>事件编号：HP-2024-03
+时间：2024-07-10 09:15
+场景：DPDK 网元启动失败
+现象：启动日志显示 "Cannot allocate memory"，HugePages 不足
+排查：
+1. /proc/meminfo 显示 HugePages_Free=0
+2. /dev/hugepages 未挂载
+处理：
+1. 重新挂载 hugetlbfs 并预留 4096 页
+2. 重启服务
+预防：
+- 在部署脚本中增加挂载检查
+- 监控 HugePages_Free 告警阈值
+</code></pre>
+<blockquote>
+<p>HugePages 是高性能场景中不可或缺的基础能力。通过掌握其原理、配置、监控与治理策略，并与 NUMA、CPU Pinning、I/O 优化等手段协同，工程团队能够显著提升系统吞吐与稳定性，为数据库、虚拟化、网络、AI 等业务构建坚实的性能基线。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/云计算/gpu-passthrough.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/云计算/kvm.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/云计算/gpu-passthrough.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/云计算/kvm.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

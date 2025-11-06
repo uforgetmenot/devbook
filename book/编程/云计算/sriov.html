@@ -1,0 +1,612 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>SR-IOV 网络虚拟化学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="sr-iov-网络虚拟化学习笔记"><a class="header" href="#sr-iov-网络虚拟化学习笔记">SR-IOV 网络虚拟化学习笔记</a></h1>
+<blockquote>
+<p>面向 0-5 年经验的虚拟化、云平台、网络工程师，系统掌握 SR-IOV (Single Root I/O Virtualization) 技术原理、硬件配置、驱动管理、KVM/容器/云平台集成与运维实践。</p>
+</blockquote>
+<hr />
+<h2 id="学习定位与总体目标"><a class="header" href="#学习定位与总体目标">学习定位与总体目标</a></h2>
+<ul>
+<li><strong>学习者画像</strong>：运营 NFV、云平台或高性能网络的工程师，需要降低 I/O 开销并提供接近裸机的网络吞吐。</li>
+<li><strong>技术定位</strong>：SR-IOV 允许物理设备（PF）虚拟出多个虚拟功能（VF），实现多个虚拟机/容器共享同一网卡，同时保留硬件直通性能。广泛应用于电信、金融、AI、云原生网络。</li>
+<li><strong>学习目标</strong>：
+<ol>
+<li>理解 SR-IOV 原理、PCIe扩展、PF/VF 架构、驱动模型；</li>
+<li>掌握 BIOS、内核、驱动配置，VF 创建与绑定流程；</li>
+<li>在 KVM/libvirt、OpenStack、Kubernetes（SR-IOV Network Operator）中部署；</li>
+<li>进行性能调优、资源隔离、监控和安全管理；</li>
+<li>构建自动化脚本、故障排查 SOP 和最佳实践。</li>
+</ol>
+</li>
+<li><strong>成果要求</strong>：
+<ul>
+<li>完成 SR-IOV 实验环境部署，创建并绑定 VF；</li>
+<li>在虚拟机/容器中成功使用 VF；</li>
+<li>输出性能测试、监控指标、故障排查文档；</li>
+<li>提供自动化脚本与配置模板。</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="核心模块结构"><a class="header" href="#核心模块结构">核心模块结构</a></h2>
+<ol>
+<li><strong>模块一：SR-IOV 原理与硬件基础</strong> —— PCIe 虚拟化、PF/VF、资源分配。</li>
+<li><strong>模块二：宿主机配置与 VF 管理</strong> —— BIOS、内核参数、驱动、vfio、网络绑定。</li>
+<li><strong>模块三：虚拟化平台集成（KVM/libvirt/OpenStack）</strong> —— VF 映射、libvirt XML、Nova 配置。</li>
+<li><strong>模块四：容器与云原生场景（Kubernetes、DPDK）</strong> —— SR-IOV CNI、Operator、调度策略。</li>
+<li><strong>模块五：性能调优、安全治理与故障诊断</strong> —— QoS、监控、隔离、排错。</li>
+<li><strong>模块六：学习路径、实战案例与验证标准</strong> —— 计划、项目案例、成果评估、资源。</li>
+</ol>
+<hr />
+<h2 id="模块一sr-iov-原理与硬件基础"><a class="header" href="#模块一sr-iov-原理与硬件基础">模块一：SR-IOV 原理与硬件基础</a></h2>
+<h3 id="11-pcie-虚拟化概览"><a class="header" href="#11-pcie-虚拟化概览">1.1 PCIe 虚拟化概览</a></h3>
+<ul>
+<li>SR-IOV 将单个物理功能（PF）虚拟成多个虚拟功能（VF）；</li>
+<li>VF 拥有独立的 PCI 配置空间、MAC 地址、队列；</li>
+<li>PF 控制 VF 的生命周期、资源分配；</li>
+<li>需要硬件支持 (PCIe 2.0+)、BIOS 启用。</li>
+</ul>
+<h3 id="12-pf-与-vf"><a class="header" href="#12-pf-与-vf">1.2 PF 与 VF</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>说明</th></tr></thead><tbody>
+<tr><td>PF (Physical Function)</td><td>完整功能、可配置 VF、管理员使用</td></tr>
+<tr><td>VF (Virtual Function)</td><td>精简版，提供数据通路，分配给 VM/容器</td></tr>
+</tbody></table>
+</div>
+<ul>
+<li>VF 无法修改高级设置（VLAN、MTU 由 PF 控制）；</li>
+<li>VF 数量受硬件限制。</li>
+</ul>
+<h3 id="13-支持的网卡"><a class="header" href="#13-支持的网卡">1.3 支持的网卡</a></h3>
+<ul>
+<li>Intel 82599/XL710/E810；</li>
+<li>Mellanox ConnectX-3/4/5/6；</li>
+<li>Broadcom NetXtreme；</li>
+<li>GPU/NVMe 也提供 SR-IOV；</li>
+<li>需查询厂商文档确认最大 VF 数。</li>
+</ul>
+<h3 id="14-驱动与虚拟化"><a class="header" href="#14-驱动与虚拟化">1.4 驱动与虚拟化</a></h3>
+<ul>
+<li>PF 驱动 (ixgbe, i40e, ice, mlx5_core) 支持 SR-IOV；</li>
+<li>VF 驱动 (ixgbevf, iavf, mlx5vf) 在 guest 内加载；</li>
+<li>vfio-pci 可直通 VF；</li>
+<li>IOMMU 必须启用，隔离 DMA。</li>
+</ul>
+<h3 id="15-安全与隔离"><a class="header" href="#15-安全与隔离">1.5 安全与隔离</a></h3>
+<ul>
+<li>IOMMU 分配 VF 到独立 IOMMU group；</li>
+<li>SR-IOV + VLAN/Trust 配置防止冒充；</li>
+<li>注意共享硬件资源（PF 仍可影响 VF）；</li>
+<li>与 DPDK、OVS SR-IOV 配合。</li>
+</ul>
+<h3 id="16-学习重点与易错点"><a class="header" href="#16-学习重点与易错点">1.6 学习重点与易错点</a></h3>
+<ul>
+<li><strong>重点</strong>：PF/VF 区别、驱动绑定、IOMMU、虚拟化集成；</li>
+<li><strong>易错点</strong>：
+<ol>
+<li>BIOS 未启用 SR-IOV/IOMMU，无法创建 VF；</li>
+<li>VF 驱动未安装，guest 无法识别；</li>
+<li>VF 绑定错误造成网络中断；</li>
+<li>VLAN/Trust 配置不当导致安全隐患；</li>
+<li>热迁移限制（VF 无法 live migrate）。</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="模块二宿主机配置与-vf-管理"><a class="header" href="#模块二宿主机配置与-vf-管理">模块二：宿主机配置与 VF 管理</a></h2>
+<h3 id="21-bios固件设置"><a class="header" href="#21-bios固件设置">2.1 BIOS/固件设置</a></h3>
+<ul>
+<li>启用 SR-IOV、Intel VT-d/AMD-Vi、VT-x/SVM；</li>
+<li>对 Mellanox 网卡需在固件中启用 SR-IOV；</li>
+<li>更新 NIC firmware 至最新版本。</li>
+</ul>
+<h3 id="22-内核参数"><a class="header" href="#22-内核参数">2.2 内核参数</a></h3>
+<ul>
+<li><code>/etc/default/grub</code>: <code>intel_iommu=on iommu=pt</code> 或 <code>amd_iommu=on</code>;</li>
+<li>重新生成 grub：<code>grub2-mkconfig</code>；</li>
+<li>确认 <code>dmesg | grep -i iommu</code>。</li>
+</ul>
+<h3 id="23-创建-vf"><a class="header" href="#23-创建-vf">2.3 创建 VF</a></h3>
+<ul>
+<li>Intel：<code>echo 4 &gt; /sys/class/net/eno1/device/sriov_numvfs</code>；</li>
+<li>查看 VF：<code>ip link show eno1</code>、<code>lspci -nn | grep Virtual</code>；</li>
+<li>Mellanox：<code>mlxconfig -d &lt;pci&gt; set SRIOV_EN=1 NUM_OF_VFS=8</code> + 重启；</li>
+<li>避免在配置文件中重复写入（需先 echo 0）。</li>
+</ul>
+<h3 id="24-vf-驱动绑定"><a class="header" href="#24-vf-驱动绑定">2.4 VF 驱动绑定</a></h3>
+<ul>
+<li>默认 VF 使用内核 VF 驱动（ixgbevf 等）；</li>
+<li>要直通给 VM：
+<pre><code class="language-bash">echo 0000:af:00.3 &gt; /sys/bus/pci/devices/0000:af:00.3/driver/unbind
+echo vfio-pci &gt; /sys/bus/pci/devices/0000:af:00.3/driver_override
+modprobe vfio-pci
+echo 0000:af:00.3 &gt; /sys/bus/pci/drivers/vfio-pci/bind
+</code></pre>
+</li>
+<li>使用 <code>driverctl</code> 管理持久绑定。</li>
+</ul>
+<h3 id="25-网络配置"><a class="header" href="#25-网络配置">2.5 网络配置</a></h3>
+<ul>
+<li>PF 配置在宿主：<code>ip link set eno1 vf 0 mac 52:54:00:xx:xx:01 vlan 100 spoofchk on</code>；</li>
+<li><code>trust on</code> 允许 VF 修改 VLAN；</li>
+<li>QoS：<code>min_tx_rate</code>, <code>max_tx_rate</code>；</li>
+<li>结合 Open vSwitch：SR-IOV VF 接入到 OVS Bridge。</li>
+</ul>
+<h3 id="26-vf-监控"><a class="header" href="#26-vf-监控">2.6 VF 监控</a></h3>
+<ul>
+<li><code>ethtool -S</code>；</li>
+<li><code>ip -s link show</code>；</li>
+<li><code>lspci -vvv</code> 查看状态；</li>
+<li>Prometheus Node Exporter + textfile 脚本。</li>
+</ul>
+<h3 id="27-实践练习"><a class="header" href="#27-实践练习">2.7 实践练习</a></h3>
+<ul>
+<li>创建/删除 VF；</li>
+<li>绑定 vfio-pci 并记录 IOMMU group；</li>
+<li>配置 VLAN、MAC；</li>
+<li>编写脚本自动化 <code>sriov_numvfs</code> 配置。</li>
+</ul>
+<hr />
+<h2 id="模块三虚拟化平台集成"><a class="header" href="#模块三虚拟化平台集成">模块三：虚拟化平台集成</a></h2>
+<h3 id="31-kvmlibvirt"><a class="header" href="#31-kvmlibvirt">3.1 KVM/libvirt</a></h3>
+<ul>
+<li>libvirt XML：
+<pre><code class="language-xml">&lt;interface type='hostdev'&gt;
+  &lt;source&gt;
+    &lt;address type='pci' domain='0x0000' bus='0xaf' slot='0x00' function='0x3'/&gt;
+  &lt;/source&gt;
+  &lt;mac address='52:54:00:aa:bb:01'/&gt;
+  &lt;driver name='vfio'/&gt;
+&lt;/interface&gt;
+</code></pre>
+</li>
+<li><code>virsh nodedev-list | grep net</code> 确认设备；</li>
+<li><code>virsh nodedev-dumpxml pci_0000_af_00_3</code>；</li>
+<li>需要 <code>driver name='vfio'</code>；</li>
+<li><code>&lt;virtualport type='openvswitch'&gt;</code> 与 OVS 集成。</li>
+</ul>
+<h3 id="32-openstack"><a class="header" href="#32-openstack">3.2 OpenStack</a></h3>
+<ul>
+<li>Neutron ML2 SR-IOV 机制驱动：
+<pre><code class="language-ini">[ml2]
+mechanism_drivers = openvswitch,sriovnicswitch
+[sriov_nic]
+physical_device_mappings = physnet1:eno1
+</code></pre>
+</li>
+<li>Nova 配置：<code>[neutron] physnets = physnet1</code>; <code>pci_passthrough_whitelist</code>;</li>
+<li>Flavor extra specs：<code>pci_passthrough:alias=type-SRIOV:1</code>；</li>
+<li>通过 Neutron port <code>--binding:vnic-type direct</code>；</li>
+<li>需使用 SR-IOV agent 或 OVS；</li>
+<li>live migration 不支持，需 evacuate。</li>
+</ul>
+<h3 id="33-ovirtproxmox"><a class="header" href="#33-ovirtproxmox">3.3 oVirt/Proxmox</a></h3>
+<ul>
+<li>oVirt：在虚拟机 NIC 中选择 “Direct Attach (SR-IOV)”；</li>
+<li>Proxmox：<code>qm set &lt;vmid&gt; -hostpci0 0000:af:00.3,pcie=1</code>。</li>
+</ul>
+<h3 id="34-dpdk-与-ovs-dpdk"><a class="header" href="#34-dpdk-与-ovs-dpdk">3.4 DPDK 与 OVS-DPDK</a></h3>
+<ul>
+<li>将 VF 绑定到 <code>vfio-pci</code>，由 DPDK 应用直接访问；</li>
+<li>SR-IOV VF + DPDK vSwitch（OVS-DPDK/vPP）；</li>
+<li>HugePages + CPU pinning；</li>
+<li>配置 <code>dpdk-devbind.py</code>。</li>
+</ul>
+<h3 id="35-实践练习"><a class="header" href="#35-实践练习">3.5 实践练习</a></h3>
+<ul>
+<li>在 libvirt 中直通 VF 并验证带宽；</li>
+<li>在 OpenStack 创建 SR-IOV 网络；</li>
+<li>使用 DPDK testpmd 测试；</li>
+<li>记录 XML/配置与测试结果。</li>
+</ul>
+<hr />
+<h2 id="模块四容器与云原生场景"><a class="header" href="#模块四容器与云原生场景">模块四：容器与云原生场景</a></h2>
+<h3 id="41-kubernetes-sr-iov-operator"><a class="header" href="#41-kubernetes-sr-iov-operator">4.1 Kubernetes SR-IOV Operator</a></h3>
+<ul>
+<li>组件：Node Feature Discovery (NFD) + SR-IOV Network Operator；</li>
+<li>收集 NIC 能力，自动创建 NetDevice CR；</li>
+<li>通过 NetworkAttachmentDefinition (Multus) 分配 VF；</li>
+<li>示例 CR：
+<pre><code class="language-yaml">apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+spec:
+  resourceName: sriov_net
+  nicSelector:
+    pfNames: ["eno1"]
+  numVfs: 8
+  deviceType: netdevice
+</code></pre>
+</li>
+<li>Pod 使用：
+<pre><code class="language-yaml">annotations:
+  k8s.v1.cni.cncf.io/networks: sriov-net
+</code></pre>
+</li>
+</ul>
+<h3 id="42-cni-与多网卡"><a class="header" href="#42-cni-与多网卡">4.2 CNI 与多网卡</a></h3>
+<ul>
+<li>Multus CNI + SR-IOV CNI；</li>
+<li>VF 直通到容器，通过 VF 驱动（iavf）加载；</li>
+<li>DPUs/SmartNIC 组合。</li>
+</ul>
+<h3 id="43-安全与隔离"><a class="header" href="#43-安全与隔离">4.3 安全与隔离</a></h3>
+<ul>
+<li>配置 <code>spoofchk</code>、<code>trust</code>；</li>
+<li>禁止改变 MAC/VLAN；</li>
+<li>使用 Pod SecurityPolicy 限制 privileged；</li>
+<li>监控 VF 使用量。</li>
+</ul>
+<h3 id="44-自动化与-ci"><a class="header" href="#44-自动化与-ci">4.4 自动化与 CI</a></h3>
+<ul>
+<li>脚本化生成 <code>sriov_numvfs</code>；</li>
+<li>Ansible 角色管理 PF/VF；</li>
+<li>Terraform/OpenShift Operators；</li>
+<li>CI 验证网络吞吐。</li>
+</ul>
+<h3 id="45-实践练习"><a class="header" href="#45-实践练习">4.5 实践练习</a></h3>
+<ul>
+<li>在 Kubernetes 集群部署 SR-IOV Operator；</li>
+<li>创建策略与网卡资源，部署 Pod；</li>
+<li>使用 <code>ib_read_bw</code> / <code>iperf3</code> 测试；</li>
+<li>记录 YAML 与测试数据。</li>
+</ul>
+<hr />
+<h2 id="模块五性能调优安全治理与故障诊断"><a class="header" href="#模块五性能调优安全治理与故障诊断">模块五：性能调优、安全治理与故障诊断</a></h2>
+<h3 id="51-性能优化"><a class="header" href="#51-性能优化">5.1 性能优化</a></h3>
+<ul>
+<li>CPU Pinning + NUMA matching；</li>
+<li>使用 HugePages 减少 TLB；</li>
+<li>设置 MTU (jumbo frame)；</li>
+<li>QoS：<code>ip link set dev eno1 vf 0 max_tx_rate 5000</code>；</li>
+<li>监控流量与丢包；</li>
+<li>DPDK + RSS 多队列。</li>
+</ul>
+<h3 id="52-监控"><a class="header" href="#52-监控">5.2 监控</a></h3>
+<ul>
+<li><code>ethtool -S</code>；</li>
+<li>Prometheus Node Exporter (<code>node_network_*</code>)；</li>
+<li>自定义脚本输出 VF 状态；</li>
+<li>ELK 收集 <code>dmesg</code>、<code>syslog</code> 错误。</li>
+</ul>
+<h3 id="53-安全治理"><a class="header" href="#53-安全治理">5.3 安全治理</a></h3>
+<ul>
+<li>限制 VF 可修改属性（spoofchk）；</li>
+<li>VLAN 与 ACL 控制；</li>
+<li>定期更新 NIC 固件；</li>
+<li>记录 VF 分配（CMDB）；</li>
+<li>监控异常流量。</li>
+</ul>
+<h3 id="54-故障排查"><a class="header" href="#54-故障排查">5.4 故障排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>现象</th><th>排查</th><th>解决</th></tr></thead><tbody>
+<tr><td>VF 未出现</td><td>检查 BIO/IOMMU</td><td>启用 SR-IOV、加载驱动</td></tr>
+<tr><td>Guest 无网卡</td><td>VF 未绑定或驱动缺失</td><td>绑定 vfio-pci，安装 ixgbevf</td></tr>
+<tr><td>无法通信</td><td>VLAN/Trust 配置错误</td><td><code>ip link set vf</code> 修正</td></tr>
+<tr><td>性能低</td><td>CPU/NUMA 不匹配</td><td>pinning、HugePages</td></tr>
+<tr><td>迁移失败</td><td>VF 不支持 live migrate</td><td>使用 cold migrate</td></tr>
+<tr><td>VF 数过多导致 PF down</td><td>硬件限制</td><td>减少 VF，升级固件</td></tr>
+</tbody></table>
+</div>
+<h3 id="55-自动化脚本示例"><a class="header" href="#55-自动化脚本示例">5.5 自动化脚本示例</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+PF=&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.6833em;"&gt;&lt;/span&gt;&lt;span class="mord"&gt;1&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.22222em;"&gt;V&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.05764em;"&gt;FS&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;span class="mrel"&gt;=&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;2
+if [[ -z "&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:1em;vertical-align:-0.25em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.13889em;"&gt;PF&lt;/span&gt;&lt;span class="mord"&gt;&amp;quot;∣∣&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;span class="mbin"&gt;−&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.6944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.04398em;"&gt;z&lt;/span&gt;&lt;span class="mord"&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;VFS" ]]; then
+  echo "Usage: &lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.6835em;vertical-align:-0.0391em;"&gt;&lt;/span&gt;&lt;span class="mord"&gt;0&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;span class="mrel"&gt;&amp;lt;&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;p&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;f&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;span class="mrel"&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;n&lt;/span&gt;&lt;span class="mord mathnormal"&gt;u&lt;/span&gt;&lt;span class="mord mathnormal"&gt;m&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;v&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;f&lt;/span&gt;&lt;span class="mord mathnormal"&gt;s&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;span class="mrel"&gt;&amp;gt;&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:1em;vertical-align:-0.25em;"&gt;&lt;/span&gt;&lt;span class="mord"&gt;&amp;quot;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;x&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord"&gt;1&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;f&lt;/span&gt;&lt;span class="mord mathnormal"&gt;ii&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;f&lt;/span&gt;&lt;span class="mopen"&gt;[[&lt;/span&gt;&lt;span class="mord"&gt;−&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;f&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal"&gt;sys&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal"&gt;c&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;ss&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal"&gt;n&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;PF/device/sriov_numvfs ]]; then
+  echo 0 &gt; /sys/class/net/&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:1em;vertical-align:-0.25em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.13889em;"&gt;PF&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;v&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;ce&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;sr&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;v&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;n&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;u&lt;/span&gt;&lt;span class="mord mathnormal"&gt;m&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;v&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;f&lt;/span&gt;&lt;span class="mord mathnormal"&gt;sec&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;VFS &gt; /sys/class/net/&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:1em;vertical-align:-0.25em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.13889em;"&gt;PF&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;v&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;ce&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;sr&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;v&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;n&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;u&lt;/span&gt;&lt;span class="mord mathnormal"&gt;m&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;v&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;f&lt;/span&gt;&lt;span class="mord mathnormal"&gt;s&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;pl&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03148em;"&gt;ink&lt;/span&gt;&lt;span class="mord mathnormal"&gt;s&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02691em;"&gt;w&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;PF
+else
+  echo "PF $PF not SR-IOV capable"
+fi
+</code></pre>
+<h3 id="56-实践练习"><a class="header" href="#56-实践练习">5.6 实践练习</a></h3>
+<ul>
+<li>模拟 VF 绑定错误并修复；</li>
+<li>调整 QoS 限速；</li>
+<li>建立监控与告警；</li>
+<li>撰写安全基线。</li>
+</ul>
+<hr />
+<h2 id="模块六学习路径实战案例与验证标准"><a class="header" href="#模块六学习路径实战案例与验证标准">模块六：学习路径、实战案例与验证标准</a></h2>
+<h3 id="61-学习路径"><a class="header" href="#61-学习路径">6.1 学习路径</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>时间</th><th>目标</th><th>行动</th><th>产出</th></tr></thead><tbody>
+<tr><td>阶段 0：准备</td><td>1 天</td><td>确认硬件、更新固件</td><td>阅读文档、启用 BIOS</td><td>环境记录</td></tr>
+<tr><td>阶段 1：基础实践</td><td>3 天</td><td>创建 VF、直通至 VM</td><td>操作手册、脚本</td><td></td></tr>
+<tr><td>阶段 2：平台集成</td><td>4 天</td><td>OpenStack/KVM/K8s 实践</td><td>配置模板、验证报告</td><td></td></tr>
+<tr><td>阶段 3：性能与安全</td><td>4 天</td><td>调优、监控、安全策略</td><td>调优报告、SOP</td><td></td></tr>
+<tr><td>阶段 4：推广沉淀</td><td>持续</td><td>知识库、培训</td><td>文档、培训材料</td><td></td></tr>
+</tbody></table>
+</div>
+<h3 id="62-实战案例"><a class="header" href="#62-实战案例">6.2 实战案例</a></h3>
+<ul>
+<li><strong>案例一：NFV 平台部署</strong>：SR-IOV + DPDK 提升 vRouter 性能；</li>
+<li><strong>案例二：云平台多租户</strong>：OpenStack SR-IOV 网络 + RBAC；</li>
+<li><strong>案例三：K8s SR-IOV CNI</strong>：Operator + Multus 支撑 5G UPF；</li>
+<li><strong>案例四：性能评估</strong>：对比 virtio-net vs SR-IOV；</li>
+<li><strong>案例五：安全审计</strong>：记录 VF 分配、spoofchk 策略。</li>
+</ul>
+<h3 id="63-学习成果验证标准"><a class="header" href="#63-学习成果验证标准">6.3 学习成果验证标准</a></h3>
+<ol>
+<li>完成 VF 创建、绑定、直通；</li>
+<li>在 VM/Pod 中达到预期带宽；</li>
+<li>输出性能与安全报告；</li>
+<li>完成故障演练（≥2 种）并记录；</li>
+<li>交付脚本与配置模板；</li>
+<li>编写知识库与培训材料；</li>
+<li>制定持续改进计划。</li>
+</ol>
+<h3 id="64-扩展资源与建议"><a class="header" href="#64-扩展资源与建议">6.4 扩展资源与建议</a></h3>
+<ul>
+<li>Intel、Mellanox SR-IOV 文档；</li>
+<li>Linux 内核 <code>Documentation/PCI/pci-iov-howto.rst</code>；</li>
+<li>OpenStack/Kubernetes SR-IOV 指南；</li>
+<li>关注社区（ODP、DPDK）和厂商固件更新；</li>
+<li>探索 SmartNIC/DPU 的 SR-IOV 方案。</li>
+</ul>
+<hr />
+<h2 id="附录"><a class="header" href="#附录">附录</a></h2>
+<h3 id="a-常用命令"><a class="header" href="#a-常用命令">A. 常用命令</a></h3>
+<pre><code class="language-bash">lspci -nn | grep -i ether
+cat /sys/class/net/eno1/device/sriov_numvfs
+ip link set eno1 vf 0 mac 52:54:00:aa:bb:01 vlan 100
+virsh nodedev-list | grep net
+kubectl get sriovnetworknodestates -n sriov-network-operator
+</code></pre>
+<h3 id="b-配置文件"><a class="header" href="#b-配置文件">B. 配置文件</a></h3>
+<ul>
+<li><code>/etc/default/grub</code>（IOMMU 参数）</li>
+<li><code>/sys/class/net/&lt;pf&gt;/device/sriov_numvfs</code></li>
+<li><code>/etc/modprobe.d/vfio.conf</code></li>
+<li><code>/etc/neutron/plugins/ml2/ml2_conf.ini</code></li>
+<li><code>/etc/pcidp/config.json</code>（K8s SR-IOV）</li>
+</ul>
+<h3 id="c-故障记录模板"><a class="header" href="#c-故障记录模板">C. 故障记录模板</a></h3>
+<pre><code>事件编号：SRIOV-2024-06
+时间：2024-09-03 11:10
+现象：VM 内 VF 无法获取 IP
+排查：
+1. lspci 显示 VF 存在但驱动未加载
+2. dmesg 提示 ixgbevf module missing
+处理：
+1. 在镜像中安装 ixgbevf
+2. 重新加载网络服务后恢复
+预防：
+- 模板镜像预装 VF 驱动
+- 编写驱动检查脚本
+</code></pre>
+<blockquote>
+<p>SR-IOV 通过硬件级虚拟化提供近乎裸机的网络性能，是 NFV 与云平台高性能网络的关键技术。掌握硬件配置、驱动管理、平台集成与运维治理，可以显著提升网络吞吐并保障多租户隔离。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/云计算/spice.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/云计算/storage-pools.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/云计算/spice.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/云计算/storage-pools.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

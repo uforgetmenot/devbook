@@ -1,0 +1,1360 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>OpenCV 技术笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="opencv-技术笔记"><a class="header" href="#opencv-技术笔记">OpenCV 技术笔记</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>OpenCV（Open Source Computer Vision Library）是一个开源的计算机视觉和机器学习库，由Intel公司最初开发。它提供了超过2500个优化算法，涵盖经典和最新的计算机视觉和机器学习算法。OpenCV支持多种编程语言（C++、Python、Java等），被广泛应用于图像处理、计算机视觉、机器学习和机器人技术等领域。</p>
+<h3 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h3>
+<ul>
+<li>丰富的图像处理和计算机视觉算法</li>
+<li>高性能的优化实现（支持多核和GPU加速）</li>
+<li>跨平台支持（Windows、Linux、macOS、Android、iOS）</li>
+<li>多语言绑定（C++、Python、Java、MATLAB等）</li>
+<li>机器学习模块集成</li>
+<li>实时图像和视频处理能力</li>
+<li>活跃的开发社区和丰富的文档</li>
+</ul>
+<h2 id="系统架构"><a class="header" href="#系统架构">系统架构</a></h2>
+<h3 id="核心模块架构"><a class="header" href="#核心模块架构">核心模块架构</a></h3>
+<pre><code>OpenCV Library Architecture
+    |
++----------------------------+
+|        Applications        |  用户应用程序
++----------------------------+
+    |
++----------------------------+
+|     Language Bindings      |  语言绑定层
++----------------------------+
+    |
++----------------------------+
+|      High-Level APIs       |  高级API接口
++----------------------------+
+    |
++----------------------------+
+| Core | ImgProc | Features  |  核心模块
+| Video| ML     | ObjDetect |
++----------------------------+
+    |
++----------------------------+
+|      Core Operations       |  基础操作
++----------------------------+
+    |
++----------------------------+
+|     Platform Layer         |  平台抽象层
++----------------------------+
+</code></pre>
+<h3 id="主要模块"><a class="header" href="#主要模块">主要模块</a></h3>
+<ol>
+<li><strong>core</strong> - 核心功能模块</li>
+<li><strong>imgproc</strong> - 图像处理模块</li>
+<li><strong>imgcodecs</strong> - 图像编解码模块</li>
+<li><strong>videoio</strong> - 视频I/O模块</li>
+<li><strong>highgui</strong> - 高级GUI模块</li>
+<li><strong>video</strong> - 视频分析模块</li>
+<li><strong>calib3d</strong> - 相机标定和3D重建</li>
+<li><strong>features2d</strong> - 2D特征框架</li>
+<li><strong>objdetect</strong> - 目标检测模块</li>
+<li><strong>dnn</strong> - 深度神经网络模块</li>
+<li><strong>ml</strong> - 机器学习模块</li>
+</ol>
+<h2 id="关键组件详解"><a class="header" href="#关键组件详解">关键组件详解</a></h2>
+<h3 id="1-核心数据结构"><a class="header" href="#1-核心数据结构">1. 核心数据结构</a></h3>
+<pre><code class="language-cpp">#include &lt;opencv2/opencv.hpp&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+class OpenCVBasics {
+public:
+    // Mat类基础操作
+    static void matOperations() {
+        // 创建不同类型的Mat对象
+        cv::Mat img1 = cv::Mat::zeros(480, 640, CV_8UC3);  // 3通道8位图像
+        cv::Mat img2 = cv::Mat::ones(480, 640, CV_32F);    // 单通道32位浮点
+        cv::Mat img3(480, 640, CV_8UC1, cv::Scalar(128));  // 灰度图像
+
+        // 从数据创建Mat
+        std::vector&lt;float&gt; data = {1.0, 2.0, 3.0, 4.0};
+        cv::Mat mat_from_vector(2, 2, CV_32F, data.data());
+
+        // Mat属性查询
+        std::cout &lt;&lt; "Image dimensions: " &lt;&lt; img1.rows &lt;&lt; "x" &lt;&lt; img1.cols &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Channels: " &lt;&lt; img1.channels() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Depth: " &lt;&lt; img1.depth() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Type: " &lt;&lt; img1.type() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Element size: " &lt;&lt; img1.elemSize() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Total elements: " &lt;&lt; img1.total() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Is continuous: " &lt;&lt; img1.isContinuous() &lt;&lt; std::endl;
+
+        // 数据访问方式
+        demonstrateDataAccess(img1);
+    }
+
+private:
+    static void demonstrateDataAccess(cv::Mat&amp; img) {
+        // 方法1: at()函数访问
+        img.at&lt;cv::Vec3b&gt;(100, 200) = cv::Vec3b(255, 0, 0);  // BGR格式
+
+        // 方法2: 指针访问（更高效）
+        for (int y = 0; y &lt; img.rows; ++y) {
+            cv::Vec3b* row_ptr = img.ptr&lt;cv::Vec3b&gt;(y);
+            for (int x = 0; x &lt; img.cols; ++x) {
+                row_ptr[x] = cv::Vec3b(0, 255, 0);  // 绿色
+            }
+        }
+
+        // 方法3: 迭代器访问
+        cv::MatIterator_&lt;cv::Vec3b&gt; it, end;
+        for (it = img.begin&lt;cv::Vec3b&gt;(), end = img.end&lt;cv::Vec3b&gt;(); it != end; ++it) {
+            *it = cv::Vec3b(0, 0, 255);  // 红色
+        }
+
+        // 方法4: 连续内存访问（最高效）
+        if (img.isContinuous()) {
+            cv::Vec3b* data_ptr = reinterpret_cast&lt;cv::Vec3b*&gt;(img.data);
+            size_t total_pixels = img.total();
+            for (size_t i = 0; i &lt; total_pixels; ++i) {
+                data_ptr[i] = cv::Vec3b(128, 128, 128);  // 灰色
+            }
+        }
+    }
+};
+</code></pre>
+<h3 id="2-图像io和基本操作"><a class="header" href="#2-图像io和基本操作">2. 图像I/O和基本操作</a></h3>
+<pre><code class="language-cpp">class ImageOperations {
+public:
+    // 图像读取和保存
+    static bool loadAndSaveImages() {
+        // 读取图像
+        cv::Mat image = cv::imread("input.jpg", cv::IMREAD_COLOR);
+        if (image.empty()) {
+            std::cerr &lt;&lt; "Could not read image: input.jpg" &lt;&lt; std::endl;
+            return false;
+        }
+
+        // 创建不同格式的副本
+        cv::Mat gray_image, hsv_image, lab_image;
+
+        // 颜色空间转换
+        cv::cvtColor(image, gray_image, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(image, hsv_image, cv::COLOR_BGR2HSV);
+        cv::cvtColor(image, lab_image, cv::COLOR_BGR2Lab);
+
+        // 保存图像
+        cv::imwrite("output_gray.jpg", gray_image);
+        cv::imwrite("output_hsv.jpg", hsv_image);
+        cv::imwrite("output_lab.jpg", lab_image);
+
+        // 高质量保存
+        std::vector&lt;int&gt; compression_params;
+        compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
+        compression_params.push_back(95);
+        cv::imwrite("output_high_quality.jpg", image, compression_params);
+
+        return true;
+    }
+
+    // 图像基本变换
+    static void basicTransformations(const cv::Mat&amp; src) {
+        cv::Mat dst;
+
+        // 缩放
+        cv::resize(src, dst, cv::Size(640, 480), 0, 0, cv::INTER_LINEAR);
+        cv::imwrite("resized.jpg", dst);
+
+        // 旋转
+        cv::Point2f center(src.cols / 2.0, src.rows / 2.0);
+        cv::Mat rotation_matrix = cv::getRotationMatrix2D(center, 45.0, 1.0);
+        cv::warpAffine(src, dst, rotation_matrix, src.size());
+        cv::imwrite("rotated.jpg", dst);
+
+        // 翻转
+        cv::flip(src, dst, 1);  // 水平翻转
+        cv::imwrite("flipped_horizontal.jpg", dst);
+
+        cv::flip(src, dst, 0);  // 垂直翻转
+        cv::imwrite("flipped_vertical.jpg", dst);
+
+        cv::flip(src, dst, -1); // 水平+垂直翻转
+        cv::imwrite("flipped_both.jpg", dst);
+
+        // 裁剪
+        cv::Rect roi(100, 100, 300, 200);
+        dst = src(roi);
+        cv::imwrite("cropped.jpg", dst);
+    }
+
+    // 图像融合和混合
+    static void imageBlending() {
+        cv::Mat img1 = cv::imread("image1.jpg");
+        cv::Mat img2 = cv::imread("image2.jpg");
+
+        if (img1.empty() || img2.empty()) {
+            std::cerr &lt;&lt; "Could not load images for blending" &lt;&lt; std::endl;
+            return;
+        }
+
+        // 确保尺寸相同
+        cv::resize(img2, img2, img1.size());
+
+        cv::Mat blended;
+
+        // 线性混合
+        double alpha = 0.7;
+        cv::addWeighted(img1, alpha, img2, 1.0 - alpha, 0, blended);
+        cv::imwrite("blended_linear.jpg", blended);
+
+        // 位运算混合
+        cv::Mat mask = cv::Mat::zeros(img1.size(), CV_8UC1);
+        cv::circle(mask, cv::Point(img1.cols/2, img1.rows/2), 200, cv::Scalar(255), -1);
+
+        cv::Mat result;
+        img1.copyTo(result);
+        img2.copyTo(result, mask);
+        cv::imwrite("blended_mask.jpg", result);
+    }
+};
+</code></pre>
+<h3 id="3-图像处理算法"><a class="header" href="#3-图像处理算法">3. 图像处理算法</a></h3>
+<pre><code class="language-cpp">class ImageProcessing {
+public:
+    // 滤波和降噪
+    static void filteringOperations(const cv::Mat&amp; src) {
+        cv::Mat dst;
+
+        // 高斯滤波
+        cv::GaussianBlur(src, dst, cv::Size(15, 15), 0, 0);
+        cv::imwrite("gaussian_blur.jpg", dst);
+
+        // 中值滤波
+        cv::medianBlur(src, dst, 5);
+        cv::imwrite("median_blur.jpg", dst);
+
+        // 双边滤波（保边降噪）
+        cv::bilateralFilter(src, dst, 9, 75, 75);
+        cv::imwrite("bilateral_filter.jpg", dst);
+
+        // 形态学操作
+        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 5));
+
+        cv::morphologyEx(src, dst, cv::MORPH_OPEN, kernel);
+        cv::imwrite("morphology_open.jpg", dst);
+
+        cv::morphologyEx(src, dst, cv::MORPH_CLOSE, kernel);
+        cv::imwrite("morphology_close.jpg", dst);
+
+        cv::morphologyEx(src, dst, cv::MORPH_GRADIENT, kernel);
+        cv::imwrite("morphology_gradient.jpg", dst);
+    }
+
+    // 边缘检测
+    static void edgeDetection(const cv::Mat&amp; src) {
+        cv::Mat gray, edges;
+
+        // 转换为灰度图
+        if (src.channels() == 3) {
+            cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+        } else {
+            gray = src.clone();
+        }
+
+        // Canny边缘检测
+        cv::Canny(gray, edges, 100, 200, 3);
+        cv::imwrite("canny_edges.jpg", edges);
+
+        // Sobel边缘检测
+        cv::Mat grad_x, grad_y, abs_grad_x, abs_grad_y, sobel_edges;
+
+        cv::Sobel(gray, grad_x, CV_16S, 1, 0, 3);
+        cv::Sobel(gray, grad_y, CV_16S, 0, 1, 3);
+
+        cv::convertScaleAbs(grad_x, abs_grad_x);
+        cv::convertScaleAbs(grad_y, abs_grad_y);
+
+        cv::addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0, sobel_edges);
+        cv::imwrite("sobel_edges.jpg", sobel_edges);
+
+        // Laplacian边缘检测
+        cv::Mat laplacian_edges;
+        cv::Laplacian(gray, laplacian_edges, CV_16S, 3);
+        cv::convertScaleAbs(laplacian_edges, laplacian_edges);
+        cv::imwrite("laplacian_edges.jpg", laplacian_edges);
+    }
+
+    // 轮廓检测和分析
+    static void contourAnalysis(const cv::Mat&amp; src) {
+        cv::Mat gray, binary;
+
+        // 预处理
+        cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+        cv::threshold(gray, binary, 127, 255, cv::THRESH_BINARY);
+
+        // 查找轮廓
+        std::vector&lt;std::vector&lt;cv::Point&gt;&gt; contours;
+        std::vector&lt;cv::Vec4i&gt; hierarchy;
+        cv::findContours(binary, contours, hierarchy, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+        // 绘制轮廓
+        cv::Mat contour_image = src.clone();
+        for (size_t i = 0; i &lt; contours.size(); i++) {
+            cv::Scalar color = cv::Scalar(0, 255, 0);
+            cv::drawContours(contour_image, contours, static_cast&lt;int&gt;(i), color, 2);
+
+            // 计算轮廓属性
+            double area = cv::contourArea(contours[i]);
+            double perimeter = cv::arcLength(contours[i], true);
+            cv::Rect bounding_rect = cv::boundingRect(contours[i]);
+
+            // 绘制边界矩形
+            cv::rectangle(contour_image, bounding_rect, cv::Scalar(255, 0, 0), 2);
+
+            // 计算最小外接圆
+            cv::Point2f center;
+            float radius;
+            cv::minEnclosingCircle(contours[i], center, radius);
+            cv::circle(contour_image, center, static_cast&lt;int&gt;(radius), cv::Scalar(0, 0, 255), 2);
+
+            std::cout &lt;&lt; "Contour " &lt;&lt; i &lt;&lt; ": Area=" &lt;&lt; area
+                     &lt;&lt; ", Perimeter=" &lt;&lt; perimeter &lt;&lt; std::endl;
+        }
+
+        cv::imwrite("contours_analysis.jpg", contour_image);
+    }
+
+    // 直方图计算和均衡化
+    static void histogramOperations(const cv::Mat&amp; src) {
+        // 计算直方图
+        std::vector&lt;cv::Mat&gt; bgr_planes;
+        cv::split(src, bgr_planes);
+
+        int histSize = 256;
+        float range[] = {0, 256};
+        const float* histRange = {range};
+
+        cv::Mat b_hist, g_hist, r_hist;
+        cv::calcHist(&amp;bgr_planes[0], 1, 0, cv::Mat(), b_hist, 1, &amp;histSize, &amp;histRange);
+        cv::calcHist(&amp;bgr_planes[1], 1, 0, cv::Mat(), g_hist, 1, &amp;histSize, &amp;histRange);
+        cv::calcHist(&amp;bgr_planes[2], 1, 0, cv::Mat(), r_hist, 1, &amp;histSize, &amp;histRange);
+
+        // 绘制直方图
+        int hist_w = 512, hist_h = 400;
+        int bin_w = cvRound(static_cast&lt;double&gt;(hist_w) / histSize);
+
+        cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0, 0, 0));
+
+        cv::normalize(b_hist, b_hist, 0, histImage.rows, cv::NORM_MINMAX, -1, cv::Mat());
+        cv::normalize(g_hist, g_hist, 0, histImage.rows, cv::NORM_MINMAX, -1, cv::Mat());
+        cv::normalize(r_hist, r_hist, 0, histImage.rows, cv::NORM_MINMAX, -1, cv::Mat());
+
+        for (int i = 1; i &lt; histSize; i++) {
+            cv::line(histImage,
+                    cv::Point(bin_w * (i - 1), hist_h - cvRound(b_hist.at&lt;float&gt;(i - 1))),
+                    cv::Point(bin_w * i, hist_h - cvRound(b_hist.at&lt;float&gt;(i))),
+                    cv::Scalar(255, 0, 0), 2, 8, 0);
+
+            cv::line(histImage,
+                    cv::Point(bin_w * (i - 1), hist_h - cvRound(g_hist.at&lt;float&gt;(i - 1))),
+                    cv::Point(bin_w * i, hist_h - cvRound(g_hist.at&lt;float&gt;(i))),
+                    cv::Scalar(0, 255, 0), 2, 8, 0);
+
+            cv::line(histImage,
+                    cv::Point(bin_w * (i - 1), hist_h - cvRound(r_hist.at&lt;float&gt;(i - 1))),
+                    cv::Point(bin_w * i, hist_h - cvRound(r_hist.at&lt;float&gt;(i))),
+                    cv::Scalar(0, 0, 255), 2, 8, 0);
+        }
+
+        cv::imwrite("histogram.jpg", histImage);
+
+        // 直方图均衡化
+        cv::Mat gray, equalized;
+        cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+        cv::equalizeHist(gray, equalized);
+        cv::imwrite("histogram_equalized.jpg", equalized);
+
+        // 自适应直方图均衡化（CLAHE）
+        cv::Ptr&lt;cv::CLAHE&gt; clahe = cv::createCLAHE(2.0, cv::Size(8, 8));
+        cv::Mat clahe_result;
+        clahe-&gt;apply(gray, clahe_result);
+        cv::imwrite("clahe_equalized.jpg", clahe_result);
+    }
+};
+</code></pre>
+<h3 id="4-特征检测和匹配"><a class="header" href="#4-特征检测和匹配">4. 特征检测和匹配</a></h3>
+<pre><code class="language-cpp">class FeatureDetection {
+public:
+    // SIFT特征检测
+    static void siftFeatureDetection(const cv::Mat&amp; src) {
+        cv::Mat gray;
+        cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+
+        // 创建SIFT检测器
+        cv::Ptr&lt;cv::SIFT&gt; sift = cv::SIFT::create();
+
+        // 检测关键点
+        std::vector&lt;cv::KeyPoint&gt; keypoints;
+        cv::Mat descriptors;
+        sift-&gt;detectAndCompute(gray, cv::Mat(), keypoints, descriptors);
+
+        // 绘制关键点
+        cv::Mat img_keypoints;
+        cv::drawKeypoints(src, keypoints, img_keypoints, cv::Scalar::all(-1),
+                         cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
+
+        cv::imwrite("sift_keypoints.jpg", img_keypoints);
+
+        std::cout &lt;&lt; "SIFT detected " &lt;&lt; keypoints.size() &lt;&lt; " keypoints" &lt;&lt; std::endl;
+    }
+
+    // ORB特征检测
+    static void orbFeatureDetection(const cv::Mat&amp; src) {
+        cv::Mat gray;
+        cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+
+        // 创建ORB检测器
+        cv::Ptr&lt;cv::ORB&gt; orb = cv::ORB::create(500);  // 最多500个特征点
+
+        // 检测关键点和计算描述符
+        std::vector&lt;cv::KeyPoint&gt; keypoints;
+        cv::Mat descriptors;
+        orb-&gt;detectAndCompute(gray, cv::Mat(), keypoints, descriptors);
+
+        // 绘制关键点
+        cv::Mat img_keypoints;
+        cv::drawKeypoints(src, keypoints, img_keypoints, cv::Scalar(0, 255, 0),
+                         cv::DrawMatchesFlags::DEFAULT);
+
+        cv::imwrite("orb_keypoints.jpg", img_keypoints);
+
+        std::cout &lt;&lt; "ORB detected " &lt;&lt; keypoints.size() &lt;&lt; " keypoints" &lt;&lt; std::endl;
+    }
+
+    // 特征匹配
+    static void featureMatching(const cv::Mat&amp; img1, const cv::Mat&amp; img2) {
+        cv::Mat gray1, gray2;
+        cv::cvtColor(img1, gray1, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(img2, gray2, cv::COLOR_BGR2GRAY);
+
+        // 使用ORB检测器
+        cv::Ptr&lt;cv::ORB&gt; orb = cv::ORB::create();
+
+        // 检测关键点和描述符
+        std::vector&lt;cv::KeyPoint&gt; keypoints1, keypoints2;
+        cv::Mat descriptors1, descriptors2;
+
+        orb-&gt;detectAndCompute(gray1, cv::Mat(), keypoints1, descriptors1);
+        orb-&gt;detectAndCompute(gray2, cv::Mat(), keypoints2, descriptors2);
+
+        // 创建匹配器
+        cv::BFMatcher matcher(cv::NORM_HAMMING, true);
+
+        // 进行匹配
+        std::vector&lt;cv::DMatch&gt; matches;
+        matcher.match(descriptors1, descriptors2, matches);
+
+        // 排序匹配结果
+        std::sort(matches.begin(), matches.end());
+
+        // 保留最好的匹配
+        const int numGoodMatches = static_cast&lt;int&gt;(matches.size() * 0.15);
+        matches.erase(matches.begin() + numGoodMatches, matches.end());
+
+        // 绘制匹配结果
+        cv::Mat img_matches;
+        cv::drawMatches(img1, keypoints1, img2, keypoints2, matches, img_matches,
+                       cv::Scalar::all(-1), cv::Scalar::all(-1),
+                       std::vector&lt;char&gt;(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+
+        cv::imwrite("feature_matches.jpg", img_matches);
+
+        std::cout &lt;&lt; "Found " &lt;&lt; matches.size() &lt;&lt; " good matches" &lt;&lt; std::endl;
+    }
+
+    // Harris角点检测
+    static void harrisCornerDetection(const cv::Mat&amp; src) {
+        cv::Mat gray, corners, normalized_corners, scaled_corners;
+
+        cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+
+        // Harris角点检测
+        cv::cornerHarris(gray, corners, 2, 3, 0.04);
+
+        // 归一化结果
+        cv::normalize(corners, normalized_corners, 0, 255, cv::NORM_MINMAX, CV_32FC1, cv::Mat());
+        cv::convertScaleAbs(normalized_corners, scaled_corners);
+
+        // 标记角点
+        cv::Mat result = src.clone();
+        for (int i = 0; i &lt; normalized_corners.rows; i++) {
+            for (int j = 0; j &lt; normalized_corners.cols; j++) {
+                if (static_cast&lt;int&gt;(normalized_corners.at&lt;float&gt;(i, j)) &gt; 200) {
+                    cv::circle(result, cv::Point(j, i), 5, cv::Scalar(0, 0, 255), 2);
+                }
+            }
+        }
+
+        cv::imwrite("harris_corners.jpg", result);
+    }
+};
+</code></pre>
+<h3 id="5-视频处理"><a class="header" href="#5-视频处理">5. 视频处理</a></h3>
+<pre><code class="language-cpp">class VideoProcessing {
+public:
+    // 视频读取和处理
+    static void processVideo(const std::string&amp; video_path) {
+        cv::VideoCapture cap(video_path);
+
+        if (!cap.isOpened()) {
+            std::cerr &lt;&lt; "Error opening video file: " &lt;&lt; video_path &lt;&lt; std::endl;
+            return;
+        }
+
+        // 获取视频属性
+        double fps = cap.get(cv::CAP_PROP_FPS);
+        int frame_width = static_cast&lt;int&gt;(cap.get(cv::CAP_PROP_FRAME_WIDTH));
+        int frame_height = static_cast&lt;int&gt;(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
+        int total_frames = static_cast&lt;int&gt;(cap.get(cv::CAP_PROP_FRAME_COUNT));
+
+        std::cout &lt;&lt; "Video properties:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  FPS: " &lt;&lt; fps &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  Resolution: " &lt;&lt; frame_width &lt;&lt; "x" &lt;&lt; frame_height &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  Total frames: " &lt;&lt; total_frames &lt;&lt; std::endl;
+
+        // 创建输出视频写入器
+        cv::VideoWriter writer("output_processed.mp4",
+                              cv::VideoWriter::fourcc('M', 'P', '4', 'V'),
+                              fps,
+                              cv::Size(frame_width, frame_height));
+
+        if (!writer.isOpened()) {
+            std::cerr &lt;&lt; "Error opening video writer" &lt;&lt; std::endl;
+            return;
+        }
+
+        cv::Mat frame, processed_frame;
+        int frame_count = 0;
+
+        while (cap.read(frame)) {
+            // 处理帧（这里添加高斯模糊作为示例）
+            cv::GaussianBlur(frame, processed_frame, cv::Size(15, 15), 0);
+
+            // 添加帧计数器
+            std::string frame_text = "Frame: " + std::to_string(frame_count);
+            cv::putText(processed_frame, frame_text, cv::Point(30, 30),
+                       cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(0, 255, 0), 2);
+
+            // 写入处理后的帧
+            writer.write(processed_frame);
+
+            frame_count++;
+
+            // 显示进度
+            if (frame_count % 30 == 0) {
+                std::cout &lt;&lt; "Processed " &lt;&lt; frame_count &lt;&lt; " / " &lt;&lt; total_frames
+                         &lt;&lt; " frames" &lt;&lt; std::endl;
+            }
+        }
+
+        cap.release();
+        writer.release();
+
+        std::cout &lt;&lt; "Video processing completed!" &lt;&lt; std::endl;
+    }
+
+    // 实时摄像头处理
+    static void realTimeCameraProcessing() {
+        cv::VideoCapture cap(0);  // 打开默认摄像头
+
+        if (!cap.isOpened()) {
+            std::cerr &lt;&lt; "Error opening camera" &lt;&lt; std::endl;
+            return;
+        }
+
+        // 设置摄像头属性
+        cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);
+        cap.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+        cap.set(cv::CAP_PROP_FPS, 30);
+
+        cv::Mat frame, processed_frame;
+        cv::Mat background;
+        bool background_captured = false;
+
+        std::cout &lt;&lt; "Press 'b' to capture background, 'q' to quit" &lt;&lt; std::endl;
+
+        while (true) {
+            cap &gt;&gt; frame;
+            if (frame.empty()) break;
+
+            if (background_captured) {
+                // 背景减除
+                cv::Mat diff;
+                cv::absdiff(frame, background, diff);
+                cv::cvtColor(diff, diff, cv::COLOR_BGR2GRAY);
+                cv::threshold(diff, diff, 30, 255, cv::THRESH_BINARY);
+
+                // 形态学操作去噪
+                cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5));
+                cv::morphologyEx(diff, diff, cv::MORPH_OPEN, kernel);
+
+                // 转换回彩色以便显示
+                cv::cvtColor(diff, processed_frame, cv::COLOR_GRAY2BGR);
+            } else {
+                processed_frame = frame.clone();
+            }
+
+            cv::imshow("Camera Feed", frame);
+            cv::imshow("Processed", processed_frame);
+
+            char key = cv::waitKey(1) &amp; 0xFF;
+            if (key == 'q') {
+                break;
+            } else if (key == 'b') {
+                background = frame.clone();
+                background_captured = true;
+                std::cout &lt;&lt; "Background captured!" &lt;&lt; std::endl;
+            }
+        }
+
+        cap.release();
+        cv::destroyAllWindows();
+    }
+
+    // 运动检测
+    static void motionDetection(const std::string&amp; video_path) {
+        cv::VideoCapture cap(video_path);
+        if (!cap.isOpened()) {
+            std::cerr &lt;&lt; "Error opening video" &lt;&lt; std::endl;
+            return;
+        }
+
+        cv::Mat frame, gray, prev_gray, diff, thresh;
+        bool first_frame = true;
+
+        while (cap.read(frame)) {
+            cv::cvtColor(frame, gray, cv::COLOR_BGR2GRAY);
+            cv::GaussianBlur(gray, gray, cv::Size(21, 21), 0);
+
+            if (first_frame) {
+                prev_gray = gray.clone();
+                first_frame = false;
+                continue;
+            }
+
+            // 计算帧差
+            cv::absdiff(prev_gray, gray, diff);
+            cv::threshold(diff, thresh, 25, 255, cv::THRESH_BINARY);
+
+            // 形态学操作
+            cv::Mat kernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5));
+            cv::morphologyEx(thresh, thresh, cv::MORPH_OPEN, kernel);
+            cv::morphologyEx(thresh, thresh, cv::MORPH_CLOSE, kernel);
+
+            // 查找轮廓
+            std::vector&lt;std::vector&lt;cv::Point&gt;&gt; contours;
+            cv::findContours(thresh, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+
+            // 绘制运动区域
+            for (const auto&amp; contour : contours) {
+                double area = cv::contourArea(contour);
+                if (area &gt; 500) {  // 过滤小的运动区域
+                    cv::Rect bounding_rect = cv::boundingRect(contour);
+                    cv::rectangle(frame, bounding_rect, cv::Scalar(0, 255, 0), 2);
+                }
+            }
+
+            cv::imshow("Motion Detection", frame);
+            cv::imshow("Threshold", thresh);
+
+            if (cv::waitKey(30) &gt;= 0) break;
+
+            prev_gray = gray.clone();
+        }
+
+        cap.release();
+        cv::destroyAllWindows();
+    }
+};
+</code></pre>
+<h3 id="6-机器学习集成"><a class="header" href="#6-机器学习集成">6. 机器学习集成</a></h3>
+<pre><code class="language-cpp">class MachineLearning {
+public:
+    // 深度神经网络推理
+    static void dnnInference(const cv::Mat&amp; src) {
+        // 加载预训练模型（以YOLOv4为例）
+        std::string model_config = "yolov4.cfg";
+        std::string model_weights = "yolov4.weights";
+        std::string class_names_file = "coco.names";
+
+        cv::dnn::Net net = cv::dnn::readNetFromDarknet(model_config, model_weights);
+
+        if (net.empty()) {
+            std::cerr &lt;&lt; "Could not load neural network" &lt;&lt; std::endl;
+            return;
+        }
+
+        // 设置计算后端
+        net.setPreferableBackend(cv::dnn::DNN_BACKEND_OPENCV);
+        net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
+
+        // 加载类别名称
+        std::vector&lt;std::string&gt; class_names;
+        std::ifstream ifs(class_names_file);
+        std::string line;
+        while (std::getline(ifs, line)) {
+            class_names.push_back(line);
+        }
+
+        // 创建输入blob
+        cv::Mat blob;
+        cv::dnn::blobFromImage(src, blob, 1/255.0, cv::Size(608, 608), cv::Scalar(0,0,0), true, false);
+        net.setInput(blob);
+
+        // 前向传播
+        std::vector&lt;cv::Mat&gt; outputs;
+        net.forward(outputs, net.getUnconnectedOutLayersNames());
+
+        // 后处理
+        float confidence_threshold = 0.5;
+        float nms_threshold = 0.4;
+
+        std::vector&lt;int&gt; class_ids;
+        std::vector&lt;float&gt; confidences;
+        std::vector&lt;cv::Rect&gt; boxes;
+
+        for (size_t i = 0; i &lt; outputs.size(); ++i) {
+            float* data = (float*)outputs[i].data;
+            for (int j = 0; j &lt; outputs[i].rows; ++j, data += outputs[i].cols) {
+                cv::Mat scores = outputs[i].row(j).colRange(5, outputs[i].cols);
+                cv::Point class_id_point;
+                double confidence;
+                cv::minMaxLoc(scores, 0, &amp;confidence, 0, &amp;class_id_point);
+
+                if (confidence &gt; confidence_threshold) {
+                    int center_x = (int)(data[0] * src.cols);
+                    int center_y = (int)(data[1] * src.rows);
+                    int width = (int)(data[2] * src.cols);
+                    int height = (int)(data[3] * src.rows);
+                    int left = center_x - width / 2;
+                    int top = center_y - height / 2;
+
+                    class_ids.push_back(class_id_point.x);
+                    confidences.push_back((float)confidence);
+                    boxes.push_back(cv::Rect(left, top, width, height));
+                }
+            }
+        }
+
+        // 非最大值抑制
+        std::vector&lt;int&gt; indices;
+        cv::dnn::NMSBoxes(boxes, confidences, confidence_threshold, nms_threshold, indices);
+
+        // 绘制检测结果
+        cv::Mat result = src.clone();
+        for (size_t i = 0; i &lt; indices.size(); ++i) {
+            int idx = indices[i];
+            cv::Rect box = boxes[idx];
+
+            cv::rectangle(result, box, cv::Scalar(0, 255, 0), 2);
+
+            std::string label = class_names[class_ids[idx]] +
+                               cv::format(": %.2f", confidences[idx]);
+
+            int baseline;
+            cv::Size label_size = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &amp;baseline);
+
+            cv::rectangle(result,
+                         cv::Point(box.x, box.y - label_size.height - baseline),
+                         cv::Point(box.x + label_size.width, box.y),
+                         cv::Scalar(0, 255, 0), cv::FILLED);
+
+            cv::putText(result, label, cv::Point(box.x, box.y - baseline),
+                       cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+        }
+
+        cv::imwrite("dnn_detection_result.jpg", result);
+    }
+
+    // 图像分类
+    static void imageClassification(const cv::Mat&amp; src) {
+        // 加载预训练的分类模型
+        std::string model_file = "mobilenet_v2.caffemodel";
+        std::string config_file = "mobilenet_v2.prototxt";
+        std::string labels_file = "imagenet_labels.txt";
+
+        cv::dnn::Net net = cv::dnn::readNetFromCaffe(config_file, model_file);
+
+        if (net.empty()) {
+            std::cerr &lt;&lt; "Could not load classification network" &lt;&lt; std::endl;
+            return;
+        }
+
+        // 加载标签
+        std::vector&lt;std::string&gt; labels;
+        std::ifstream ifs(labels_file);
+        std::string line;
+        while (std::getline(ifs, line)) {
+            labels.push_back(line);
+        }
+
+        // 预处理图像
+        cv::Mat blob;
+        cv::dnn::blobFromImage(src, blob, 1.0, cv::Size(224, 224),
+                              cv::Scalar(103.94, 116.78, 123.68), false, false);
+
+        net.setInput(blob);
+
+        // 前向传播
+        cv::Mat prediction = net.forward();
+
+        // 获取Top-5预测结果
+        cv::Mat prob_mat = prediction.reshape(1, 1);
+        cv::Point class_id_point;
+        double confidence;
+        cv::minMaxLoc(prob_mat, nullptr, &amp;confidence, nullptr, &amp;class_id_point);
+
+        std::cout &lt;&lt; "Top prediction:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Class: " &lt;&lt; labels[class_id_point.x] &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Confidence: " &lt;&lt; confidence &lt;&lt; std::endl;
+
+        // 获取Top-5结果
+        std::vector&lt;std::pair&lt;float, int&gt;&gt; prob_pairs;
+        for (int i = 0; i &lt; prob_mat.cols; ++i) {
+            prob_pairs.push_back(std::make_pair(prob_mat.at&lt;float&gt;(0, i), i));
+        }
+
+        std::sort(prob_pairs.begin(), prob_pairs.end(), std::greater&lt;std::pair&lt;float, int&gt;&gt;());
+
+        std::cout &lt;&lt; "\nTop-5 predictions:" &lt;&lt; std::endl;
+        for (int i = 0; i &lt; 5; ++i) {
+            std::cout &lt;&lt; i+1 &lt;&lt; ". " &lt;&lt; labels[prob_pairs[i].second]
+                     &lt;&lt; " - " &lt;&lt; prob_pairs[i].first &lt;&lt; std::endl;
+        }
+    }
+};
+</code></pre>
+<h2 id="性能优化策略"><a class="header" href="#性能优化策略">性能优化策略</a></h2>
+<h3 id="1-内存管理优化"><a class="header" href="#1-内存管理优化">1. 内存管理优化</a></h3>
+<pre><code class="language-cpp">class PerformanceOptimization {
+public:
+    // 内存高效的图像处理
+    static void memoryEfficientProcessing(cv::Mat&amp; src) {
+        // 使用in-place操作减少内存分配
+        cv::GaussianBlur(src, src, cv::Size(15, 15), 0);  // in-place操作
+
+        // 预分配内存
+        cv::Mat dst(src.size(), src.type());
+        cv::Canny(src, dst, 100, 200);
+
+        // 使用ROI减少处理区域
+        cv::Rect roi(100, 100, 300, 200);
+        cv::Mat roi_src = src(roi);
+        cv::Mat roi_processed;
+        cv::bilateralFilter(roi_src, roi_processed, 9, 75, 75);
+        roi_processed.copyTo(src(roi));
+    }
+
+    // 多线程处理
+    static void parallelProcessing(const cv::Mat&amp; src) {
+        cv::Mat dst;
+
+        // 启用OpenCV的并行处理
+        cv::setNumThreads(cv::getNumberOfCPUs());
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+        // 并行处理多个操作
+        std::vector&lt;cv::Mat&gt; channels;
+        cv::split(src, channels);
+
+        // 使用并行循环处理每个通道
+        cv::parallel_for_(cv::Range(0, static_cast&lt;int&gt;(channels.size())),
+                         [&amp;](const cv::Range&amp; range) {
+            for (int i = range.start; i &lt; range.end; ++i) {
+                cv::GaussianBlur(channels[i], channels[i], cv::Size(15, 15), 0);
+            }
+        });
+
+        cv::merge(channels, dst);
+
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - start);
+
+        std::cout &lt;&lt; "Parallel processing time: " &lt;&lt; duration.count() &lt;&lt; " ms" &lt;&lt; std::endl;
+        cv::imwrite("parallel_processed.jpg", dst);
+    }
+
+    // GPU加速处理
+    static void gpuAcceleratedProcessing(const cv::Mat&amp; src) {
+        try {
+            // 上传到GPU
+            cv::cuda::GpuMat gpu_src, gpu_dst;
+            gpu_src.upload(src);
+
+            // GPU上的图像处理
+            cv::cuda::bilateralFilter(gpu_src, gpu_dst, -1, 50, 50);
+
+            // 下载回CPU
+            cv::Mat result;
+            gpu_dst.download(result);
+
+            cv::imwrite("gpu_processed.jpg", result);
+            std::cout &lt;&lt; "GPU processing completed" &lt;&lt; std::endl;
+
+        } catch (const cv::Exception&amp; e) {
+            std::cerr &lt;&lt; "GPU processing failed: " &lt;&lt; e.what() &lt;&lt; std::endl;
+            std::cerr &lt;&lt; "Falling back to CPU processing" &lt;&lt; std::endl;
+
+            cv::Mat result;
+            cv::bilateralFilter(src, result, -1, 50, 50);
+            cv::imwrite("cpu_fallback_processed.jpg", result);
+        }
+    }
+
+    // 性能基准测试
+    static void performanceBenchmark(const cv::Mat&amp; src) {
+        std::cout &lt;&lt; "\n=== Performance Benchmark ===" &lt;&lt; std::endl;
+
+        // 测试不同算法的性能
+        auto testAlgorithm = [&amp;](const std::string&amp; name, std::function&lt;void()&gt; algorithm) {
+            auto start = std::chrono::high_resolution_clock::now();
+            algorithm();
+            auto end = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(end - start);
+            std::cout &lt;&lt; name &lt;&lt; ": " &lt;&lt; duration.count() &lt;&lt; " μs" &lt;&lt; std::endl;
+        };
+
+        cv::Mat dst;
+
+        testAlgorithm("Gaussian Blur", [&amp;]() {
+            cv::GaussianBlur(src, dst, cv::Size(15, 15), 0);
+        });
+
+        testAlgorithm("Bilateral Filter", [&amp;]() {
+            cv::bilateralFilter(src, dst, 9, 75, 75);
+        });
+
+        testAlgorithm("Canny Edge Detection", [&amp;]() {
+            cv::Mat gray;
+            cv::cvtColor(src, gray, cv::COLOR_BGR2GRAY);
+            cv::Canny(gray, dst, 100, 200);
+        });
+
+        testAlgorithm("Resize", [&amp;]() {
+            cv::resize(src, dst, cv::Size(640, 480));
+        });
+
+        std::cout &lt;&lt; "============================\n" &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h2 id="编译和部署"><a class="header" href="#编译和部署">编译和部署</a></h2>
+<h3 id="1-cmake配置"><a class="header" href="#1-cmake配置">1. CMake配置</a></h3>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.12)
+project(OpenCVApp)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 查找OpenCV
+find_package(OpenCV REQUIRED)
+
+# 打印OpenCV信息
+message(STATUS "OpenCV version: ${OpenCV_VERSION}")
+message(STATUS "OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
+message(STATUS "OpenCV libraries: ${OpenCV_LIBS}")
+
+# 创建可执行文件
+add_executable(${PROJECT_NAME}
+    main.cpp
+    # 其他源文件...
+)
+
+# 包含OpenCV头文件
+target_include_directories(${PROJECT_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
+
+# 链接OpenCV库
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS})
+
+# 编译器优化选项
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(${PROJECT_NAME} PRIVATE
+        $&lt;$&lt;CXX_COMPILER_ID:GNU&gt;:-O3 -march=native&gt;
+        $&lt;$&lt;CXX_COMPILER_ID:Clang&gt;:-O3 -march=native&gt;
+        $&lt;$&lt;CXX_COMPILER_ID:MSVC&gt;:/O2&gt;
+    )
+endif()
+
+# 启用并行编译
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /MP)
+endif()
+
+# 可选的模块支持
+option(USE_OPENCV_CONTRIB "Use OpenCV contrib modules" OFF)
+if(USE_OPENCV_CONTRIB)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE USE_OPENCV_CONTRIB)
+endif()
+
+option(USE_CUDA "Enable CUDA support" OFF)
+if(USE_CUDA AND OpenCV_CUDA_FOUND)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE USE_CUDA)
+endif()
+</code></pre>
+<h3 id="2-应用示例集成"><a class="header" href="#2-应用示例集成">2. 应用示例集成</a></h3>
+<pre><code class="language-cpp">class OpenCVApplication {
+private:
+    cv::Mat current_image;
+    std::string window_name;
+
+public:
+    OpenCVApplication(const std::string&amp; app_name) : window_name(app_name) {
+        cv::namedWindow(window_name, cv::WINDOW_AUTOSIZE);
+    }
+
+    ~OpenCVApplication() {
+        cv::destroyWindow(window_name);
+    }
+
+    bool loadImage(const std::string&amp; image_path) {
+        current_image = cv::imread(image_path, cv::IMREAD_COLOR);
+        if (current_image.empty()) {
+            std::cerr &lt;&lt; "Could not load image: " &lt;&lt; image_path &lt;&lt; std::endl;
+            return false;
+        }
+        return true;
+    }
+
+    void showImage() {
+        if (!current_image.empty()) {
+            cv::imshow(window_name, current_image);
+        }
+    }
+
+    void processAndDisplay() {
+        if (current_image.empty()) {
+            std::cerr &lt;&lt; "No image loaded" &lt;&lt; std::endl;
+            return;
+        }
+
+        std::cout &lt;&lt; "Press keys to apply different effects:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  'g' - Gaussian blur" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  'e' - Edge detection" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  'h' - Harris corners" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  'o' - ORB features" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  'r' - Reset to original" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  'q' - Quit" &lt;&lt; std::endl;
+
+        cv::Mat original = current_image.clone();
+        cv::Mat processed = current_image.clone();
+
+        while (true) {
+            cv::imshow(window_name, processed);
+            char key = cv::waitKey(0) &amp; 0xFF;
+
+            switch (key) {
+                case 'g': {
+                    cv::GaussianBlur(original, processed, cv::Size(15, 15), 0);
+                    std::cout &lt;&lt; "Applied Gaussian blur" &lt;&lt; std::endl;
+                    break;
+                }
+                case 'e': {
+                    cv::Mat gray;
+                    cv::cvtColor(original, gray, cv::COLOR_BGR2GRAY);
+                    cv::Canny(gray, gray, 100, 200);
+                    cv::cvtColor(gray, processed, cv::COLOR_GRAY2BGR);
+                    std::cout &lt;&lt; "Applied edge detection" &lt;&lt; std::endl;
+                    break;
+                }
+                case 'h': {
+                    FeatureDetection::harrisCornerDetection(original);
+                    processed = cv::imread("harris_corners.jpg");
+                    std::cout &lt;&lt; "Applied Harris corner detection" &lt;&lt; std::endl;
+                    break;
+                }
+                case 'o': {
+                    FeatureDetection::orbFeatureDetection(original);
+                    processed = cv::imread("orb_keypoints.jpg");
+                    std::cout &lt;&lt; "Applied ORB feature detection" &lt;&lt; std::endl;
+                    break;
+                }
+                case 'r': {
+                    processed = original.clone();
+                    std::cout &lt;&lt; "Reset to original image" &lt;&lt; std::endl;
+                    break;
+                }
+                case 'q': {
+                    std::cout &lt;&lt; "Exiting..." &lt;&lt; std::endl;
+                    return;
+                }
+                default:
+                    break;
+            }
+        }
+    }
+};
+
+// 主程序入口
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        std::cout &lt;&lt; "Usage: " &lt;&lt; argv[0] &lt;&lt; " &lt;image_path&gt;" &lt;&lt; std::endl;
+        return -1;
+    }
+
+    // 检查OpenCV版本
+    std::cout &lt;&lt; "OpenCV version: " &lt;&lt; CV_VERSION &lt;&lt; std::endl;
+
+    OpenCVApplication app("OpenCV Demo");
+
+    if (!app.loadImage(argv[1])) {
+        return -1;
+    }
+
+    app.processAndDisplay();
+
+    return 0;
+}
+</code></pre>
+<h2 id="技术要点总结"><a class="header" href="#技术要点总结">技术要点总结</a></h2>
+<ol>
+<li><strong>丰富的算法库</strong>：超过2500个优化算法，涵盖图像处理的各个方面</li>
+<li><strong>高性能实现</strong>：底层优化和多核支持，充分利用硬件性能</li>
+<li><strong>跨平台兼容</strong>：统一的API接口，支持多种操作系统和硬件平台</li>
+<li><strong>易于集成</strong>：简洁的C++ API设计，方便集成到现有项目中</li>
+<li><strong>活跃的生态系统</strong>：丰富的文档、教程和社区支持</li>
+<li><strong>机器学习集成</strong>：内置DNN模块，支持主流深度学习框架</li>
+</ol>
+<p>OpenCV是计算机视觉开发的核心工具，其全面的功能覆盖和高性能实现使其成为从研究到生产部署的理想选择。通过深入理解其模块架构和API设计，开发者可以构建强大的计算机视觉应用程序。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/onnxruntime.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/opengl.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/onnxruntime.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/opengl.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

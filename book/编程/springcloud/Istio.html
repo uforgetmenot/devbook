@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Istio 知识点大纲 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="istio-知识点大纲"><a class="header" href="#istio-知识点大纲">Istio 知识点大纲</a></h1>
+<h2 id="1-istio-基础概念"><a class="header" href="#1-istio-基础概念">1. Istio 基础概念</a></h2>
+<h3 id="11-什么是-istio"><a class="header" href="#11-什么是-istio">1.1 什么是 Istio</a></h3>
+<h3 id="12-服务网格架构"><a class="header" href="#12-服务网格架构">1.2 服务网格架构</a></h3>
+<h3 id="13-istio-核心功能"><a class="header" href="#13-istio-核心功能">1.3 Istio 核心功能</a></h3>
+<h3 id="14-istio-vs-其他服务网格"><a class="header" href="#14-istio-vs-其他服务网格">1.4 Istio vs 其他服务网格</a></h3>
+<h2 id="2-istio-架构组件"><a class="header" href="#2-istio-架构组件">2. Istio 架构组件</a></h2>
+<h3 id="21-控制平面-control-plane"><a class="header" href="#21-控制平面-control-plane">2.1 控制平面 (Control Plane)</a></h3>
+<h4 id="211-pilot"><a class="header" href="#211-pilot">2.1.1 Pilot</a></h4>
+<h4 id="212-citadel"><a class="header" href="#212-citadel">2.1.2 Citadel</a></h4>
+<h4 id="213-galley"><a class="header" href="#213-galley">2.1.3 Galley</a></h4>
+<h3 id="22-数据平面-data-plane"><a class="header" href="#22-数据平面-data-plane">2.2 数据平面 (Data Plane)</a></h3>
+<h4 id="221-envoy-proxy"><a class="header" href="#221-envoy-proxy">2.2.1 Envoy Proxy</a></h4>
+<h4 id="222-sidecar-模式"><a class="header" href="#222-sidecar-模式">2.2.2 Sidecar 模式</a></h4>
+<h2 id="3-istio-安装与配置"><a class="header" href="#3-istio-安装与配置">3. Istio 安装与配置</a></h2>
+<h3 id="31-环境要求"><a class="header" href="#31-环境要求">3.1 环境要求</a></h3>
+<h3 id="32-安装方式"><a class="header" href="#32-安装方式">3.2 安装方式</a></h3>
+<h4 id="321-istioctl-安装"><a class="header" href="#321-istioctl-安装">3.2.1 istioctl 安装</a></h4>
+<h4 id="322-helm-安装"><a class="header" href="#322-helm-安装">3.2.2 Helm 安装</a></h4>
+<h4 id="323-operator-安装"><a class="header" href="#323-operator-安装">3.2.3 Operator 安装</a></h4>
+<h3 id="33-配置文件详解"><a class="header" href="#33-配置文件详解">3.3 配置文件详解</a></h3>
+<h3 id="34-验证安装"><a class="header" href="#34-验证安装">3.4 验证安装</a></h3>
+<h2 id="4-流量管理-traffic-management"><a class="header" href="#4-流量管理-traffic-management">4. 流量管理 (Traffic Management)</a></h2>
+<h3 id="41-virtual-service"><a class="header" href="#41-virtual-service">4.1 Virtual Service</a></h3>
+<h3 id="42-destination-rule"><a class="header" href="#42-destination-rule">4.2 Destination Rule</a></h3>
+<h3 id="43-gateway"><a class="header" href="#43-gateway">4.3 Gateway</a></h3>
+<h3 id="44-service-entry"><a class="header" href="#44-service-entry">4.4 Service Entry</a></h3>
+<h3 id="45-流量路由策略"><a class="header" href="#45-流量路由策略">4.5 流量路由策略</a></h3>
+<h4 id="451-基于权重的路由"><a class="header" href="#451-基于权重的路由">4.5.1 基于权重的路由</a></h4>
+<h4 id="452-基于内容的路由"><a class="header" href="#452-基于内容的路由">4.5.2 基于内容的路由</a></h4>
+<h4 id="453-故障注入"><a class="header" href="#453-故障注入">4.5.3 故障注入</a></h4>
+<h4 id="454-超时和重试"><a class="header" href="#454-超时和重试">4.5.4 超时和重试</a></h4>
+<h2 id="5-安全管理-security"><a class="header" href="#5-安全管理-security">5. 安全管理 (Security)</a></h2>
+<h3 id="51-认证-authentication"><a class="header" href="#51-认证-authentication">5.1 认证 (Authentication)</a></h3>
+<h4 id="511-双向-tls-mtls"><a class="header" href="#511-双向-tls-mtls">5.1.1 双向 TLS (mTLS)</a></h4>
+<h4 id="512-jwt-认证"><a class="header" href="#512-jwt-认证">5.1.2 JWT 认证</a></h4>
+<h3 id="52-授权-authorization"><a class="header" href="#52-授权-authorization">5.2 授权 (Authorization)</a></h3>
+<h4 id="521-rbac-策略"><a class="header" href="#521-rbac-策略">5.2.1 RBAC 策略</a></h4>
+<h4 id="522-authorization-policy"><a class="header" href="#522-authorization-policy">5.2.2 Authorization Policy</a></h4>
+<h3 id="53-安全策略配置"><a class="header" href="#53-安全策略配置">5.3 安全策略配置</a></h3>
+<h2 id="6-可观测性-observability"><a class="header" href="#6-可观测性-observability">6. 可观测性 (Observability)</a></h2>
+<h3 id="61-指标监控"><a class="header" href="#61-指标监控">6.1 指标监控</a></h3>
+<h4 id="611-prometheus-集成"><a class="header" href="#611-prometheus-集成">6.1.1 Prometheus 集成</a></h4>
+<h4 id="612-grafana-仪表板"><a class="header" href="#612-grafana-仪表板">6.1.2 Grafana 仪表板</a></h4>
+<h3 id="62-分布式追踪"><a class="header" href="#62-分布式追踪">6.2 分布式追踪</a></h3>
+<h4 id="621-jaeger-集成"><a class="header" href="#621-jaeger-集成">6.2.1 Jaeger 集成</a></h4>
+<h4 id="622-zipkin-集成"><a class="header" href="#622-zipkin-集成">6.2.2 Zipkin 集成</a></h4>
+<h3 id="63-日志管理"><a class="header" href="#63-日志管理">6.3 日志管理</a></h3>
+<h4 id="631-访问日志"><a class="header" href="#631-访问日志">6.3.1 访问日志</a></h4>
+<h4 id="632-应用日志"><a class="header" href="#632-应用日志">6.3.2 应用日志</a></h4>
+<h3 id="64-kiali-服务拓扑"><a class="header" href="#64-kiali-服务拓扑">6.4 Kiali 服务拓扑</a></h3>
+<h2 id="7-策略与遥测-policy-and-telemetry"><a class="header" href="#7-策略与遥测-policy-and-telemetry">7. 策略与遥测 (Policy and Telemetry)</a></h2>
+<h3 id="71-mixer-组件"><a class="header" href="#71-mixer-组件">7.1 Mixer 组件</a></h3>
+<h3 id="72-适配器-adapters"><a class="header" href="#72-适配器-adapters">7.2 适配器 (Adapters)</a></h3>
+<h3 id="73-模板-templates"><a class="header" href="#73-模板-templates">7.3 模板 (Templates)</a></h3>
+<h3 id="74-策略执行"><a class="header" href="#74-策略执行">7.4 策略执行</a></h3>
+<h2 id="8-多集群管理"><a class="header" href="#8-多集群管理">8. 多集群管理</a></h2>
+<h3 id="81-多集群部署"><a class="header" href="#81-多集群部署">8.1 多集群部署</a></h3>
+<h3 id="82-跨集群服务发现"><a class="header" href="#82-跨集群服务发现">8.2 跨集群服务发现</a></h3>
+<h3 id="83-多集群网络配置"><a class="header" href="#83-多集群网络配置">8.3 多集群网络配置</a></h3>
+<h2 id="9-istio-实践案例"><a class="header" href="#9-istio-实践案例">9. Istio 实践案例</a></h2>
+<h3 id="91-微服务治理"><a class="header" href="#91-微服务治理">9.1 微服务治理</a></h3>
+<h3 id="92-灰度发布"><a class="header" href="#92-灰度发布">9.2 灰度发布</a></h3>
+<h3 id="93-蓝绿部署"><a class="header" href="#93-蓝绿部署">9.3 蓝绿部署</a></h3>
+<h3 id="94-服务限流"><a class="header" href="#94-服务限流">9.4 服务限流</a></h3>
+<h3 id="95-熔断降级"><a class="header" href="#95-熔断降级">9.5 熔断降级</a></h3>
+<h2 id="10-故障排查与调优"><a class="header" href="#10-故障排查与调优">10. 故障排查与调优</a></h2>
+<h3 id="101-常见问题诊断"><a class="header" href="#101-常见问题诊断">10.1 常见问题诊断</a></h3>
+<h3 id="102-性能优化"><a class="header" href="#102-性能优化">10.2 性能优化</a></h3>
+<h3 id="103-配置验证"><a class="header" href="#103-配置验证">10.3 配置验证</a></h3>
+<h3 id="104-调试工具"><a class="header" href="#104-调试工具">10.4 调试工具</a></h3>
+<h2 id="11-istio-最佳实践"><a class="header" href="#11-istio-最佳实践">11. Istio 最佳实践</a></h2>
+<h3 id="111-生产环境部署建议"><a class="header" href="#111-生产环境部署建议">11.1 生产环境部署建议</a></h3>
+<h3 id="112-配置管理策略"><a class="header" href="#112-配置管理策略">11.2 配置管理策略</a></h3>
+<h3 id="113-升级和维护"><a class="header" href="#113-升级和维护">11.3 升级和维护</a></h3>
+<h3 id="114-安全加固"><a class="header" href="#114-安全加固">11.4 安全加固</a></h3>
+<h2 id="12-istio-生态系统"><a class="header" href="#12-istio-生态系统">12. Istio 生态系统</a></h2>
+<h3 id="121-与-kubernetes-集成"><a class="header" href="#121-与-kubernetes-集成">12.1 与 Kubernetes 集成</a></h3>
+<h3 id="122-与-cicd-集成"><a class="header" href="#122-与-cicd-集成">12.2 与 CI/CD 集成</a></h3>
+<h3 id="123-第三方插件"><a class="header" href="#123-第三方插件">12.3 第三方插件</a></h3>
+<h3 id="124-社区工具"><a class="header" href="#124-社区工具">12.4 社区工具</a></h3>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/security/网络攻击.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/springcloud/seata.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/security/网络攻击.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/springcloud/seata.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

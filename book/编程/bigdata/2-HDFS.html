@@ -1,0 +1,1127 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>HDFS 学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="hdfs-学习笔记"><a class="header" href="#hdfs-学习笔记">HDFS 学习笔记</a></h1>
+<h2 id="-学习目标"><a class="header" href="#-学习目标">📋 学习目标</a></h2>
+<ul>
+<li>深入理解HDFS的架构设计和核心概念</li>
+<li>掌握HDFS的读写流程和数据存储机制</li>
+<li>熟练使用HDFS命令行和Java API</li>
+<li>理解HDFS高可用(HA)和联邦机制</li>
+<li>掌握HDFS性能调优和故障排查</li>
+<li>具备HDFS运维和管理能力</li>
+</ul>
+<h2 id="1-hdfs-概述"><a class="header" href="#1-hdfs-概述">1. HDFS 概述</a></h2>
+<h3 id="11-什么是-hdfs"><a class="header" href="#11-什么是-hdfs">1.1 什么是 HDFS</a></h3>
+<p>HDFS(Hadoop Distributed File System)是Hadoop生态系统的核心组件,是一个分布式文件系统,设计用于在商用硬件上运行,具有高容错性和高吞吐量。</p>
+<p><strong>核心特点:</strong></p>
+<ul>
+<li>高容错性: 自动数据副本机制</li>
+<li>高吞吐量: 优化批量数据访问</li>
+<li>大文件支持: 适合TB/PB级数据存储</li>
+<li>一次写入多次读取: 简化一致性模型</li>
+<li>可扩展性: 支持数千节点集群</li>
+</ul>
+<p><strong>设计目标:</strong></p>
+<ul>
+<li>硬件故障检测和自动恢复</li>
+<li>流式数据访问</li>
+<li>大数据集存储</li>
+<li>简单一致性模型</li>
+<li>移动计算而非移动数据</li>
+</ul>
+<h3 id="12-hdfs-与传统文件系统对比"><a class="header" href="#12-hdfs-与传统文件系统对比">1.2 HDFS 与传统文件系统对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>HDFS</th><th>传统文件系统</th></tr></thead><tbody>
+<tr><td>文件大小</td><td>GB-TB级</td><td>KB-MB级</td></tr>
+<tr><td>访问模式</td><td>流式读取</td><td>随机读写</td></tr>
+<tr><td>数据处理</td><td>批量处理</td><td>交互式处理</td></tr>
+<tr><td>延迟</td><td>高延迟</td><td>低延迟</td></tr>
+<tr><td>容错性</td><td>自动副本恢复</td><td>RAID/备份</td></tr>
+<tr><td>扩展性</td><td>水平扩展</td><td>垂直扩展</td></tr>
+</tbody></table>
+</div>
+<h3 id="13-hdfs-在-hadoop-生态中的作用"><a class="header" href="#13-hdfs-在-hadoop-生态中的作用">1.3 HDFS 在 Hadoop 生态中的作用</a></h3>
+<pre><code>┌─────────────────────────────────────┐
+│  应用层: Hive, Pig, HBase, Spark    │
+├─────────────────────────────────────┤
+│  计算层: MapReduce, YARN            │
+├─────────────────────────────────────┤
+│  存储层: HDFS (分布式文件系统)       │
+└─────────────────────────────────────┘
+</code></pre>
+<h2 id="2-hdfs-架构"><a class="header" href="#2-hdfs-架构">2. HDFS 架构</a></h2>
+<h3 id="21-主从架构模式"><a class="header" href="#21-主从架构模式">2.1 主从架构模式</a></h3>
+<pre><code>          ┌──────────────┐
+          │  NameNode    │  (主节点)
+          │  元数据管理   │
+          └──────┬───────┘
+                 │
+    ┌────────────┼────────────┐
+    │            │            │
+┌───▼───┐   ┌───▼───┐   ┌───▼───┐
+│DataNode│   │DataNode│   │DataNode│ (从节点)
+│ 数据块 │   │ 数据块 │   │ 数据块 │
+└────────┘   └────────┘   └────────┘
+
+      ┌─────────────────┐
+      │Secondary NameNode│ (检查点)
+      │  辅助节点        │
+      └─────────────────┘
+</code></pre>
+<h3 id="22-namenode-名字节点"><a class="header" href="#22-namenode-名字节点">2.2 NameNode (名字节点)</a></h3>
+<p><strong>职责与功能:</strong></p>
+<ul>
+<li>管理文件系统命名空间</li>
+<li>维护文件系统树和树内所有文件/目录的元数据</li>
+<li>记录每个文件各个块所在的DataNode信息</li>
+<li>处理客户端的读写请求</li>
+</ul>
+<p><strong>元数据管理:</strong></p>
+<pre><code>元数据内容:
+- 文件名、路径、权限、所有者
+- 文件到块的映射关系
+- 块到DataNode的映射关系
+- 副本数量、副本位置
+
+存储方式:
+- FsImage: 元数据镜像文件
+- EditLog: 操作日志文件
+- 内存: 运行时元数据
+</code></pre>
+<p><strong>NameNode存储结构:</strong></p>
+<pre><code>${dfs.namenode.name.dir}/
+├── current/
+│   ├── VERSION           # 版本信息
+│   ├── fsimage_*         # 元数据镜像
+│   ├── fsimage_*.md5     # MD5校验
+│   ├── edits_*           # 编辑日志
+│   └── seen_txid         # 事务ID
+└── in_use.lock           # 锁文件
+</code></pre>
+<h3 id="23-datanode-数据节点"><a class="header" href="#23-datanode-数据节点">2.3 DataNode (数据节点)</a></h3>
+<p><strong>职责与功能:</strong></p>
+<ul>
+<li>存储实际的数据块</li>
+<li>执行数据块的读写操作</li>
+<li>定期向NameNode发送心跳和块报告</li>
+<li>执行NameNode的块操作指令</li>
+</ul>
+<p><strong>心跳机制:</strong></p>
+<pre><code class="language-bash"># DataNode → NameNode
+每3秒发送一次心跳信号
+包含信息:
+- DataNode状态
+- 存储容量使用情况
+- 数据传输信息
+
+# NameNode响应
+- 块操作指令
+- 副本复制指令
+- 块删除指令
+</code></pre>
+<p><strong>DataNode存储结构:</strong></p>
+<pre><code>${dfs.datanode.data.dir}/
+├── current/
+│   ├── BP-随机ID/          # BlockPool目录
+│   │   ├── current/
+│   │   │   ├── finalized/  # 已完成的块
+│   │   │   │   ├── blk_*   # 数据块文件
+│   │   │   │   └── blk_*.meta  # 元数据文件
+│   │   │   └── rbw/        # 正在写入的块
+│   │   └── VERSION
+│   └── VERSION
+└── in_use.lock
+</code></pre>
+<h3 id="24-secondary-namenode-辅助名字节点"><a class="header" href="#24-secondary-namenode-辅助名字节点">2.4 Secondary NameNode (辅助名字节点)</a></h3>
+<p><strong>作用与功能:</strong></p>
+<ul>
+<li>定期合并fsimage和edits</li>
+<li>减轻NameNode的工作负担</li>
+<li>不是NameNode的热备份</li>
+</ul>
+<p><strong>检查点(Checkpoint)机制:</strong></p>
+<pre><code>工作流程:
+1. Secondary NameNode从NameNode获取fsimage和edits
+2. 在本地合并fsimage和edits生成新的fsimage
+3. 将新的fsimage传回NameNode
+4. NameNode用新fsimage替换旧的,并清空edits
+
+触发条件:
+- 时间间隔: 默认1小时(dfs.namenode.checkpoint.period)
+- 事务数量: 默认100万次(dfs.namenode.checkpoint.txns)
+</code></pre>
+<h2 id="3-hdfs-核心概念"><a class="header" href="#3-hdfs-核心概念">3. HDFS 核心概念</a></h2>
+<h3 id="31-数据块-block"><a class="header" href="#31-数据块-block">3.1 数据块 (Block)</a></h3>
+<p><strong>块大小设置:</strong></p>
+<pre><code class="language-xml">&lt;!-- hdfs-site.xml --&gt;
+&lt;property&gt;
+  &lt;name&gt;dfs.blocksize&lt;/name&gt;
+  &lt;value&gt;134217728&lt;/value&gt;  &lt;!-- 128MB --&gt;
+&lt;/property&gt;
+
+&lt;!-- Hadoop 3.x默认: 128MB --&gt;
+&lt;!-- Hadoop 2.x默认: 128MB --&gt;
+&lt;!-- Hadoop 1.x默认: 64MB --&gt;
+</code></pre>
+<p><strong>块的优势:</strong></p>
+<ol>
+<li>支持大文件存储: 文件大小不受单个磁盘限制</li>
+<li>简化存储管理: 文件元数据与块数据分离</li>
+<li>适合数据复制: 以块为单位进行副本管理</li>
+<li>便于容错恢复: 单个块损坏不影响整个文件</li>
+</ol>
+<h3 id="32-副本机制"><a class="header" href="#32-副本机制">3.2 副本机制</a></h3>
+<p><strong>副本数量配置:</strong></p>
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;dfs.replication&lt;/name&gt;
+  &lt;value&gt;3&lt;/value&gt;  &lt;!-- 默认3个副本 --&gt;
+&lt;/property&gt;
+</code></pre>
+<p><strong>副本放置策略 (Rack Awareness):</strong></p>
+<pre><code>标准策略(3副本):
+- 第一个副本: 客户端所在节点(或随机选择)
+- 第二个副本: 不同机架的随机节点
+- 第三个副本: 与第二个副本相同机架的不同节点
+
+示例:
+Rack1: DataNode1 (副本1), DataNode2 (副本3)
+Rack2: DataNode3 (副本2)
+</code></pre>
+<p><strong>副本选择读取策略:</strong></p>
+<ul>
+<li>优先选择本地副本</li>
+<li>其次选择同机架副本</li>
+<li>最后选择不同机架副本</li>
+</ul>
+<h3 id="33-机架感知"><a class="header" href="#33-机架感知">3.3 机架感知</a></h3>
+<p><strong>配置机架拓扑:</strong></p>
+<pre><code class="language-bash"># 1. 创建机架拓扑脚本 rack-topology.sh
+#!/bin/bash
+while [ $# -gt 0 ]; do
+  case $1 in
+    192.168.1.*)
+      echo /rack1
+      ;;
+    192.168.2.*)
+      echo /rack2
+      ;;
+    *)
+      echo /default-rack
+      ;;
+  esac
+  shift
+done
+
+# 2. 配置core-site.xml
+&lt;property&gt;
+  &lt;name&gt;net.topology.script.file.name&lt;/name&gt;
+  &lt;value&gt;/path/to/rack-topology.sh&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+<h2 id="4-hdfs-读写流程"><a class="header" href="#4-hdfs-读写流程">4. HDFS 读写流程</a></h2>
+<h3 id="41-文件写入流程"><a class="header" href="#41-文件写入流程">4.1 文件写入流程</a></h3>
+<pre><code>客户端写入流程:
+1. 客户端向NameNode发起创建文件请求
+2. NameNode检查权限和文件是否存在
+3. NameNode返回可写入的DataNode列表
+4. 客户端向第一个DataNode写入数据
+5. 第一个DataNode建立Pipeline传输到其他副本
+6. 数据写入完成后,客户端通知NameNode
+7. NameNode更新元数据
+</code></pre>
+<p><strong>详细步骤图:</strong></p>
+<pre><code>Client                NameNode         DataNode1-2-3
+  │                      │                   │
+  ├──create()───────────►│                   │
+  │                      │                   │
+  │◄──DataNode list──────┤                   │
+  │                      │                   │
+  ├──write data─────────────────────────────►│
+  │                      │                   │ Pipeline
+  │                      │                   ├───────►DN2
+  │                      │                   │        │
+  │                      │                   │        └──►DN3
+  │                      │                   │
+  │◄──ack────────────────────────────────────┤
+  │                      │                   │
+  ├──complete()─────────►│                   │
+  │                      │                   │
+</code></pre>
+<p><strong>Pipeline机制:</strong></p>
+<pre><code class="language-java">// 数据传输管道
+客户端 → DataNode1 → DataNode2 → DataNode3
+         (确认)  ←  (确认)  ←  (确认)
+
+// ACK确认机制
+DataNode3 → DataNode2 → DataNode1 → 客户端
+</code></pre>
+<h3 id="42-文件读取流程"><a class="header" href="#42-文件读取流程">4.2 文件读取流程</a></h3>
+<pre><code>客户端读取流程:
+1. 客户端向NameNode发起读取文件请求
+2. NameNode返回文件块位置信息(DataNode列表)
+3. 客户端选择最近的DataNode读取数据块
+4. 读取完一个块后,请求下一个块的位置
+5. 所有块读取完成后关闭连接
+</code></pre>
+<p><strong>详细步骤图:</strong></p>
+<pre><code>Client             NameNode          DataNode
+  │                   │                  │
+  ├──open()──────────►│                  │
+  │                   │                  │
+  │◄──block locations─┤                  │
+  │                   │                  │
+  ├──read block 1─────────────────────►  │
+  │                   │                  │
+  │◄──block data───────────────────────  │
+  │                   │                  │
+  ├──read block 2─────────────────────►  │
+  │                   │                  │
+  │◄──block data───────────────────────  │
+  │                   │                  │
+  ├──close()─────────►│                  │
+  │                   │                  │
+</code></pre>
+<p><strong>数据本地化优先级:</strong></p>
+<ol>
+<li>数据本地化(Data Local): 数据在同一节点</li>
+<li>机架本地化(Rack Local): 数据在同一机架</li>
+<li>跨机架(Off-Rack): 数据在不同机架</li>
+</ol>
+<h2 id="5-hdfs-高可用性-ha"><a class="header" href="#5-hdfs-高可用性-ha">5. HDFS 高可用性 (HA)</a></h2>
+<h3 id="51-namenode-单点故障问题"><a class="header" href="#51-namenode-单点故障问题">5.1 NameNode 单点故障问题</a></h3>
+<p><strong>传统架构的问题:</strong></p>
+<ul>
+<li>NameNode宕机导致整个集群不可用</li>
+<li>计划维护需要停机</li>
+<li>故障恢复时间长</li>
+</ul>
+<h3 id="52-hdfs-ha-解决方案"><a class="header" href="#52-hdfs-ha-解决方案">5.2 HDFS HA 解决方案</a></h3>
+<p><strong>QJM (Quorum Journal Manager) 架构:</strong></p>
+<pre><code>┌──────────────┐       ┌──────────────┐
+│Active NameNode│       │Standby NameNode│
+└──────┬───────┘       └──────┬────────┘
+       │                      │
+       ├──────────┬───────────┤
+       │          │           │
+   ┌───▼──┐   ┌──▼───┐   ┌───▼──┐
+   │JN1   │   │JN2   │   │JN3   │  (JournalNode)
+   └──────┘   └──────┘   └──────┘
+       │          │           │
+       └──────────┴───────────┘
+              Quorum
+         (至少N/2+1个节点)
+</code></pre>
+<p><strong>配置HDFS HA:</strong></p>
+<pre><code class="language-xml">&lt;!-- hdfs-site.xml --&gt;
+&lt;configuration&gt;
+  &lt;!-- 启用HA --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.nameservices&lt;/name&gt;
+    &lt;value&gt;mycluster&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- NameNode IDs --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.ha.namenodes.mycluster&lt;/name&gt;
+    &lt;value&gt;nn1,nn2&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- NameNode RPC地址 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.namenode.rpc-address.mycluster.nn1&lt;/name&gt;
+    &lt;value&gt;node1:8020&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.namenode.rpc-address.mycluster.nn2&lt;/name&gt;
+    &lt;value&gt;node2:8020&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- JournalNode地址 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.namenode.shared.edits.dir&lt;/name&gt;
+    &lt;value&gt;qjournal://node1:8485;node2:8485;node3:8485/mycluster&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- 自动故障转移 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.ha.automatic-failover.enabled&lt;/name&gt;
+    &lt;value&gt;true&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- Fencing方法 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.ha.fencing.methods&lt;/name&gt;
+    &lt;value&gt;sshfence&lt;/value&gt;
+  &lt;/property&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.ha.fencing.ssh.private-key-files&lt;/name&gt;
+    &lt;value&gt;/home/hadoop/.ssh/id_rsa&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+<h3 id="53-故障转移机制"><a class="header" href="#53-故障转移机制">5.3 故障转移机制</a></h3>
+<p><strong>手动故障转移:</strong></p>
+<pre><code class="language-bash"># 将nn2切换为Active
+hdfs haadmin -transitionToActive nn2
+
+# 将nn1切换为Standby
+hdfs haadmin -transitionToStandby nn1
+
+# 查看NameNode状态
+hdfs haadmin -getServiceState nn1
+</code></pre>
+<p><strong>自动故障转移 (使用ZooKeeper):</strong></p>
+<pre><code class="language-xml">&lt;!-- core-site.xml --&gt;
+&lt;property&gt;
+  &lt;name&gt;ha.zookeeper.quorum&lt;/name&gt;
+  &lt;value&gt;zk1:2181,zk2:2181,zk3:2181&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+  &lt;name&gt;ha.zookeeper.session-timeout.ms&lt;/name&gt;
+  &lt;value&gt;5000&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+<h3 id="54-federation-联邦机制"><a class="header" href="#54-federation-联邦机制">5.4 Federation 联邦机制</a></h3>
+<p><strong>HDFS Federation架构:</strong></p>
+<pre><code>多个独立的NameNode,共享DataNode
+
+NameNode1         NameNode2         NameNode3
+ (namespace1)      (namespace2)      (namespace3)
+     │                 │                 │
+     └────────┬────────┴────────┬────────┘
+              │                 │
+         DataNode Pool    DataNode Pool
+</code></pre>
+<p><strong>配置Federation:</strong></p>
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;dfs.nameservices&lt;/name&gt;
+  &lt;value&gt;ns1,ns2&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+  &lt;name&gt;dfs.namenode.rpc-address.ns1&lt;/name&gt;
+  &lt;value&gt;nn1:8020&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;property&gt;
+  &lt;name&gt;dfs.namenode.rpc-address.ns2&lt;/name&gt;
+  &lt;value&gt;nn2:8020&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+<h2 id="6-hdfs-命令行操作"><a class="header" href="#6-hdfs-命令行操作">6. HDFS 命令行操作</a></h2>
+<h3 id="61-基础文件操作"><a class="header" href="#61-基础文件操作">6.1 基础文件操作</a></h3>
+<pre><code class="language-bash"># 查看文件列表
+hdfs dfs -ls /
+hdfs dfs -ls -R /user    # 递归列出
+
+# 创建目录
+hdfs dfs -mkdir /user/hadoop
+hdfs dfs -mkdir -p /user/hadoop/data  # 递归创建
+
+# 上传文件
+hdfs dfs -put localfile.txt /user/hadoop/
+hdfs dfs -copyFromLocal localfile.txt /user/hadoop/
+hdfs dfs -moveFromLocal localfile.txt /user/hadoop/  # 移动
+
+# 下载文件
+hdfs dfs -get /user/hadoop/file.txt ./
+hdfs dfs -copyToLocal /user/hadoop/file.txt ./
+hdfs dfs -getmerge /user/hadoop/dir ./output.txt  # 合并下载
+
+# 查看文件内容
+hdfs dfs -cat /user/hadoop/file.txt
+hdfs dfs -tail /user/hadoop/file.txt
+hdfs dfs -head /user/hadoop/file.txt
+
+# 复制文件
+hdfs dfs -cp /src/file.txt /dst/
+hdfs dfs -mv /src/file.txt /dst/  # 移动
+
+# 删除文件
+hdfs dfs -rm /user/hadoop/file.txt
+hdfs dfs -rm -r /user/hadoop/dir   # 递归删除
+hdfs dfs -rm -r -skipTrash /path   # 跳过回收站
+
+# 查看文件信息
+hdfs dfs -stat "%b %o %r %n" /user/hadoop/file.txt
+# %b: 文件大小, %o: 块大小, %r: 副本数, %n: 文件名
+</code></pre>
+<h3 id="62-管理命令"><a class="header" href="#62-管理命令">6.2 管理命令</a></h3>
+<pre><code class="language-bash"># 查看HDFS空间使用情况
+hdfs dfs -df -h
+
+# 查看目录大小
+hdfs dfs -du -h /user/hadoop
+hdfs dfs -du -s -h /user/hadoop  # 汇总
+
+# 设置副本数
+hdfs dfs -setrep 3 /user/hadoop/file.txt
+hdfs dfs -setrep -R 3 /user/hadoop/  # 递归设置
+
+# 修改文件权限
+hdfs dfs -chmod 755 /user/hadoop/file.txt
+hdfs dfs -chmod -R 755 /user/hadoop/  # 递归
+
+# 修改文件所有者
+hdfs dfs -chown hadoop:hadoop /user/hadoop/file.txt
+hdfs dfs -chown -R hadoop:hadoop /user/hadoop/
+
+# 测试文件是否存在
+hdfs dfs -test -e /user/hadoop/file.txt
+echo $?  # 0表示存在
+
+# 查看文件的块信息
+hdfs fsck /user/hadoop/file.txt -files -blocks -locations
+</code></pre>
+<h3 id="63-hdfs-管理员命令"><a class="header" href="#63-hdfs-管理员命令">6.3 HDFS 管理员命令</a></h3>
+<pre><code class="language-bash"># 查看集群状态
+hdfs dfsadmin -report
+
+# 进入/退出安全模式
+hdfs dfsadmin -safemode enter
+hdfs dfsadmin -safemode leave
+hdfs dfsadmin -safemode get
+
+# 保存命名空间
+hdfs dfsadmin -saveNamespace
+
+# 刷新节点
+hdfs dfsadmin -refreshNodes
+
+# 查看DataNode列表
+hdfs dfsadmin -printTopology
+
+# 均衡集群数据
+hdfs balancer -threshold 10
+
+# 检查文件系统
+hdfs fsck /
+hdfs fsck / -files -blocks -locations
+hdfs fsck / -delete  # 删除损坏文件
+</code></pre>
+<h2 id="7-hdfs-java-api"><a class="header" href="#7-hdfs-java-api">7. HDFS Java API</a></h2>
+<h3 id="71-环境配置"><a class="header" href="#71-环境配置">7.1 环境配置</a></h3>
+<p><strong>Maven依赖:</strong></p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.hadoop&lt;/groupId&gt;
+    &lt;artifactId&gt;hadoop-client&lt;/artifactId&gt;
+    &lt;version&gt;3.3.4&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="72-基础操作示例"><a class="header" href="#72-基础操作示例">7.2 基础操作示例</a></h3>
+<pre><code class="language-java">import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.*;
+import java.io.*;
+
+public class HDFSOperations {
+
+    // 获取FileSystem对象
+    public static FileSystem getFileSystem() throws IOException {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", "hdfs://namenode:8020");
+        conf.set("dfs.replication", "3");
+        return FileSystem.get(conf);
+    }
+
+    // 创建目录
+    public static void mkdir(String path) throws IOException {
+        FileSystem fs = getFileSystem();
+        Path dirPath = new Path(path);
+        fs.mkdirs(dirPath);
+        System.out.println("目录创建成功: " + path);
+        fs.close();
+    }
+
+    // 上传文件
+    public static void uploadFile(String localPath, String hdfsPath)
+            throws IOException {
+        FileSystem fs = getFileSystem();
+        Path local = new Path(localPath);
+        Path hdfs = new Path(hdfsPath);
+        fs.copyFromLocalFile(local, hdfs);
+        System.out.println("文件上传成功");
+        fs.close();
+    }
+
+    // 下载文件
+    public static void downloadFile(String hdfsPath, String localPath)
+            throws IOException {
+        FileSystem fs = getFileSystem();
+        Path hdfs = new Path(hdfsPath);
+        Path local = new Path(localPath);
+        fs.copyToLocalFile(hdfs, local);
+        System.out.println("文件下载成功");
+        fs.close();
+    }
+
+    // 读取文件
+    public static void readFile(String hdfsPath) throws IOException {
+        FileSystem fs = getFileSystem();
+        Path path = new Path(hdfsPath);
+        FSDataInputStream in = fs.open(path);
+
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(in)
+        );
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
+        reader.close();
+        fs.close();
+    }
+
+    // 写入文件
+    public static void writeFile(String hdfsPath, String content)
+            throws IOException {
+        FileSystem fs = getFileSystem();
+        Path path = new Path(hdfsPath);
+        FSDataOutputStream out = fs.create(path);
+        out.writeBytes(content);
+        out.close();
+        System.out.println("文件写入成功");
+        fs.close();
+    }
+
+    // 删除文件
+    public static void deleteFile(String hdfsPath) throws IOException {
+        FileSystem fs = getFileSystem();
+        Path path = new Path(hdfsPath);
+        boolean deleted = fs.delete(path, true);
+        System.out.println("文件删除: " + deleted);
+        fs.close();
+    }
+
+    // 列出目录内容
+    public static void listFiles(String hdfsPath) throws IOException {
+        FileSystem fs = getFileSystem();
+        Path path = new Path(hdfsPath);
+        FileStatus[] files = fs.listStatus(path);
+
+        for (FileStatus file : files) {
+            System.out.println(file.getPath().getName() +
+                " | " + file.getLen() + " bytes | " +
+                " | " + file.getReplication() + " replicas");
+        }
+        fs.close();
+    }
+
+    // 查看文件块信息
+    public static void getBlockLocations(String hdfsPath)
+            throws IOException {
+        FileSystem fs = getFileSystem();
+        Path path = new Path(hdfsPath);
+        FileStatus fileStatus = fs.getFileStatus(path);
+        BlockLocation[] blocks = fs.getFileBlockLocations(
+            fileStatus, 0, fileStatus.getLen()
+        );
+
+        for (int i = 0; i &lt; blocks.length; i++) {
+            System.out.println("Block " + i + ":");
+            System.out.println("  Hosts: " +
+                String.join(", ", blocks[i].getHosts()));
+            System.out.println("  Offset: " + blocks[i].getOffset());
+            System.out.println("  Length: " + blocks[i].getLength());
+        }
+        fs.close();
+    }
+}
+</code></pre>
+<h2 id="8-hdfs-配置与优化"><a class="header" href="#8-hdfs-配置与优化">8. HDFS 配置与优化</a></h2>
+<h3 id="81-核心配置文件"><a class="header" href="#81-核心配置文件">8.1 核心配置文件</a></h3>
+<p><strong>core-site.xml:</strong></p>
+<pre><code class="language-xml">&lt;configuration&gt;
+  &lt;!-- HDFS地址 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;fs.defaultFS&lt;/name&gt;
+    &lt;value&gt;hdfs://namenode:8020&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- 临时目录 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+    &lt;value&gt;/data/hadoop/tmp&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- 回收站保留时间(分钟) --&gt;
+  &lt;property&gt;
+    &lt;name&gt;fs.trash.interval&lt;/name&gt;
+    &lt;value&gt;1440&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+<p><strong>hdfs-site.xml:</strong></p>
+<pre><code class="language-xml">&lt;configuration&gt;
+  &lt;!-- 副本数 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.replication&lt;/name&gt;
+    &lt;value&gt;3&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- 块大小 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.blocksize&lt;/name&gt;
+    &lt;value&gt;134217728&lt;/value&gt;  &lt;!-- 128MB --&gt;
+  &lt;/property&gt;
+
+  &lt;!-- NameNode存储目录 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.namenode.name.dir&lt;/name&gt;
+    &lt;value&gt;file:///data/hadoop/namenode&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- DataNode存储目录 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.datanode.data.dir&lt;/name&gt;
+    &lt;value&gt;file:///data/hadoop/datanode&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- Secondary NameNode检查点目录 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.namenode.checkpoint.dir&lt;/name&gt;
+    &lt;value&gt;file:///data/hadoop/checkpoint&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- DataNode心跳间隔(秒) --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.heartbeat.interval&lt;/name&gt;
+    &lt;value&gt;3&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- DataNode超时时间(毫秒) --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.namenode.heartbeat.recheck-interval&lt;/name&gt;
+    &lt;value&gt;300000&lt;/value&gt;  &lt;!-- 5分钟 --&gt;
+  &lt;/property&gt;
+
+  &lt;!-- 权限检查 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.permissions.enabled&lt;/name&gt;
+    &lt;value&gt;true&lt;/value&gt;
+  &lt;/property&gt;
+
+  &lt;!-- WebHDFS启用 --&gt;
+  &lt;property&gt;
+    &lt;name&gt;dfs.webhdfs.enabled&lt;/name&gt;
+    &lt;value&gt;true&lt;/value&gt;
+  &lt;/property&gt;
+&lt;/configuration&gt;
+</code></pre>
+<h3 id="82-性能调优"><a class="header" href="#82-性能调优">8.2 性能调优</a></h3>
+<p><strong>块大小优化:</strong></p>
+<pre><code class="language-xml">&lt;!-- 大文件场景: 增大块大小 --&gt;
+&lt;property&gt;
+  &lt;name&gt;dfs.blocksize&lt;/name&gt;
+  &lt;value&gt;268435456&lt;/value&gt;  &lt;!-- 256MB --&gt;
+&lt;/property&gt;
+
+优点:
+- 减少NameNode内存压力
+- 减少寻址时间
+- 提高MapReduce处理效率
+
+缺点:
+- 小文件浪费存储空间
+- 并行度降低
+</code></pre>
+<p><strong>副本数优化:</strong></p>
+<pre><code class="language-xml">&lt;!-- 重要数据: 增加副本数 --&gt;
+&lt;property&gt;
+  &lt;name&gt;dfs.replication&lt;/name&gt;
+  &lt;value&gt;5&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;!-- 临时数据: 减少副本数 --&gt;
+&lt;property&gt;
+  &lt;name&gt;dfs.replication&lt;/name&gt;
+  &lt;value&gt;1&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+<p><strong>DataNode配置优化:</strong></p>
+<pre><code class="language-xml">&lt;!-- 增加数据传输线程数 --&gt;
+&lt;property&gt;
+  &lt;name&gt;dfs.datanode.max.transfer.threads&lt;/name&gt;
+  &lt;value&gt;8192&lt;/value&gt;
+&lt;/property&gt;
+
+&lt;!-- 增加RPC处理线程数 --&gt;
+&lt;property&gt;
+  &lt;name&gt;dfs.datanode.handler.count&lt;/name&gt;
+  &lt;value&gt;10&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+<h3 id="83-容量规划"><a class="header" href="#83-容量规划">8.3 容量规划</a></h3>
+<p><strong>存储容量计算:</strong></p>
+<pre><code>原始数据大小: 100TB
+副本数: 3
+额外开销: 10%
+
+总存储需求 = 100TB × 3 × 1.1 = 330TB
+
+节点数计算:
+单节点容量: 12TB × 10块盘 = 120TB
+所需节点数 = 330TB / 120TB ≈ 3个节点(最少)
+推荐节点数 = 3 × 1.5 = 5个节点(冗余)
+</code></pre>
+<h2 id="9-hdfs-监控与故障排除"><a class="header" href="#9-hdfs-监控与故障排除">9. HDFS 监控与故障排除</a></h2>
+<h3 id="91-web-ui-监控"><a class="header" href="#91-web-ui-监控">9.1 Web UI 监控</a></h3>
+<p><strong>NameNode Web UI (http://namenode:9870):</strong></p>
+<ul>
+<li>Overview: 集群概览</li>
+<li>Datanodes: DataNode状态</li>
+<li>Datanode Volume Failures: 磁盘故障</li>
+<li>Snapshot: 快照信息</li>
+</ul>
+<p><strong>关键监控指标:</strong></p>
+<ul>
+<li>Configured Capacity: 配置容量</li>
+<li>DFS Used: 已使用空间</li>
+<li>DFS Remaining: 剩余空间</li>
+<li>Live Nodes: 存活节点数</li>
+<li>Dead Nodes: 死亡节点数</li>
+<li>Corrupt Blocks: 损坏块数</li>
+<li>Missing Blocks: 丢失块数</li>
+</ul>
+<h3 id="92-日志分析"><a class="header" href="#92-日志分析">9.2 日志分析</a></h3>
+<pre><code class="language-bash"># NameNode日志
+tail -f $HADOOP_HOME/logs/hadoop-*-namenode-*.log
+
+# DataNode日志
+tail -f $HADOOP_HOME/logs/hadoop-*-datanode-*.log
+
+# 查找错误日志
+grep -i "error\|exception" $HADOOP_HOME/logs/*.log
+</code></pre>
+<h3 id="93-常见故障处理"><a class="header" href="#93-常见故障处理">9.3 常见故障处理</a></h3>
+<p><strong>问题1: DataNode无法启动</strong></p>
+<pre><code>错误: Incompatible clusterIDs
+
+原因: DataNode的clusterID与NameNode不一致
+
+解决:
+1. 停止DataNode
+2. 删除DataNode的current目录
+   rm -rf $DFS_DATANODE_DIR/current
+3. 重启DataNode
+</code></pre>
+<p><strong>问题2: NameNode进入安全模式</strong></p>
+<pre><code>错误: Name node is in safe mode
+
+原因: 副本数量未达到最小阈值
+
+解决:
+1. 等待副本复制完成
+2. 手动离开安全模式
+   hdfs dfsadmin -safemode leave
+</code></pre>
+<p><strong>问题3: 块丢失</strong></p>
+<pre><code>检查:
+hdfs fsck / -list-corruptfileblocks
+
+恢复:
+1. 如果有副本,HDFS自动恢复
+2. 如果全部丢失,从备份恢复
+3. 删除损坏文件
+   hdfs fsck / -delete
+</code></pre>
+<h2 id="10-学习验证标准"><a class="header" href="#10-学习验证标准">10. 学习验证标准</a></h2>
+<h3 id="-基础能力验证"><a class="header" href="#-基础能力验证">✅ 基础能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+理解HDFS架构和核心概念</li>
+<li><input disabled="" type="checkbox"/>
+能够安装配置HDFS集群</li>
+<li><input disabled="" type="checkbox"/>
+熟练使用HDFS命令行操作</li>
+<li><input disabled="" type="checkbox"/>
+理解HDFS读写流程</li>
+</ul>
+<h3 id="-进阶能力验证"><a class="header" href="#-进阶能力验证">✅ 进阶能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够配置HDFS HA高可用</li>
+<li><input disabled="" type="checkbox"/>
+能够使用Java API操作HDFS</li>
+<li><input disabled="" type="checkbox"/>
+能够进行性能调优</li>
+<li><input disabled="" type="checkbox"/>
+能够处理常见故障</li>
+</ul>
+<h3 id="-高级能力验证"><a class="header" href="#-高级能力验证">✅ 高级能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够设计大规模HDFS集群</li>
+<li><input disabled="" type="checkbox"/>
+能够实现自定义副本策略</li>
+<li><input disabled="" type="checkbox"/>
+能够优化存储空间使用</li>
+<li><input disabled="" type="checkbox"/>
+能够进行容量规划</li>
+</ul>
+<h2 id="11-扩展资源"><a class="header" href="#11-扩展资源">11. 扩展资源</a></h2>
+<h3 id="官方资源"><a class="header" href="#官方资源">官方资源</a></h3>
+<ul>
+<li>官网: https://hadoop.apache.org/</li>
+<li>文档: https://hadoop.apache.org/docs/current/</li>
+<li>GitHub: https://github.com/apache/hadoop</li>
+</ul>
+<h3 id="学习建议"><a class="header" href="#学习建议">学习建议</a></h3>
+<ol>
+<li>从单机模式开始实践</li>
+<li>搭建3节点集群环境</li>
+<li>熟练掌握命令行操作</li>
+<li>学习Java API编程</li>
+<li>研究源码理解原理</li>
+</ol>
+<h3 id="进阶方向"><a class="header" href="#进阶方向">进阶方向</a></h3>
+<ul>
+<li>HDFS Erasure Coding纠删码</li>
+<li>HDFS Snapshot快照机制</li>
+<li>HDFS Quota配额管理</li>
+<li>HDFS与云存储集成</li>
+<li>HDFS性能调优实战</li>
+</ul>
+<h3 id="相关技术"><a class="header" href="#相关技术">相关技术</a></h3>
+<ul>
+<li>HBase: 基于HDFS的NoSQL数据库</li>
+<li>Hive: 基于HDFS的数据仓库</li>
+<li>Spark: 可使用HDFS作为存储层</li>
+<li>Flink: 支持HDFS作为状态后端</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/bigdata/1-ApacheNiFi.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/bigdata/3-Flink.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/bigdata/1-ApacheNiFi.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/bigdata/3-Flink.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

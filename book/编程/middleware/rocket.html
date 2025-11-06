@@ -1,0 +1,2013 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RocketMQ 消息队列技术学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="rocketmq-消息队列技术学习笔记"><a class="header" href="#rocketmq-消息队列技术学习笔记">RocketMQ 消息队列技术学习笔记</a></h1>
+<blockquote>
+<p><strong>学习者角色定位</strong>: 具备基础Java编程能力和分布式系统概念的后端开发人员
+<strong>目标群体</strong>: 1-5年工作经验的后端开发、架构师、DevOps工程师
+<strong>预计学习周期</strong>: 3-4周(每天2-3小时)</p>
+</blockquote>
+<h2 id="一技术概述与核心价值"><a class="header" href="#一技术概述与核心价值">一、技术概述与核心价值</a></h2>
+<h3 id="11-什么是rocketmq"><a class="header" href="#11-什么是rocketmq">1.1 什么是RocketMQ</a></h3>
+<p><strong>定义</strong>: Apache RocketMQ是一个开源的分布式消息中间件,由阿里巴巴开发并贡献给Apache基金会,支持事务消息、顺序消息、批量消息和延迟消息。</p>
+<p><strong>核心特性</strong>:</p>
+<ul>
+<li><strong>高性能</strong>: 支持单机10万+TPS</li>
+<li><strong>高可靠</strong>: 99.6%消息可靠性(1ms级延迟)</li>
+<li><strong>高可用</strong>: 支持集群部署和主从同步</li>
+<li><strong>顺序消息</strong>: 支持全局顺序和分区顺序</li>
+<li><strong>事务消息</strong>: 支持分布式事务消息</li>
+<li><strong>延迟消息</strong>: 支持18个延迟等级</li>
+<li><strong>消息过滤</strong>: 支持Tag和SQL92过滤</li>
+<li><strong>消息轨迹</strong>: 追踪消息全链路轨迹</li>
+<li><strong>死信队列</strong>: 支持失败消息重试和隔离</li>
+</ul>
+<h3 id="12-核心应用场景"><a class="header" href="#12-核心应用场景">1.2 核心应用场景</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>应用场景</th><th>业务价值</th><th>RocketMQ优势</th></tr></thead><tbody>
+<tr><td><strong>异步解耦</strong></td><td>提升系统响应速度</td><td>高吞吐量和低延迟</td></tr>
+<tr><td><strong>削峰填谷</strong></td><td>平滑突发流量</td><td>高性能和高可用</td></tr>
+<tr><td><strong>数据同步</strong></td><td>MySQL Binlog同步</td><td>顺序消息保证</td></tr>
+<tr><td><strong>分布式事务</strong></td><td>保证数据一致性</td><td>事务消息支持</td></tr>
+<tr><td><strong>日志收集</strong></td><td>海量日志聚合</td><td>批量消息高效</td></tr>
+<tr><td><strong>流式处理</strong></td><td>实时数据处理</td><td>消息重放和高可靠</td></tr>
+</tbody></table>
+</div>
+<h3 id="13-rocketmq-vs-其他消息队列"><a class="header" href="#13-rocketmq-vs-其他消息队列">1.3 RocketMQ vs 其他消息队列</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>RocketMQ</th><th>Kafka</th><th>RabbitMQ</th><th>Pulsar</th></tr></thead><tbody>
+<tr><td><strong>开发语言</strong></td><td>Java</td><td>Scala</td><td>Erlang</td><td>Java</td></tr>
+<tr><td><strong>单机TPS</strong></td><td>10万+</td><td>100万+</td><td>2-5万</td><td>100万+</td></tr>
+<tr><td><strong>延迟</strong></td><td>ms级</td><td>ms级</td><td>μs级</td><td>ms级</td></tr>
+<tr><td><strong>顺序消息</strong></td><td>支持</td><td>支持</td><td>不支持</td><td>支持</td></tr>
+<tr><td><strong>事务消息</strong></td><td>⭐⭐⭐⭐⭐</td><td>❌</td><td>❌</td><td>⭐⭐⭐</td></tr>
+<tr><td><strong>延迟消息</strong></td><td>18级</td><td>❌</td><td>插件支持</td><td>支持</td></tr>
+<tr><td><strong>消息过滤</strong></td><td>Tag+SQL</td><td>❌</td><td>支持</td><td>支持</td></tr>
+<tr><td><strong>消息回溯</strong></td><td>时间戳</td><td>offset</td><td>不支持</td><td>支持</td></tr>
+<tr><td><strong>消息优先级</strong></td><td>支持</td><td>支持</td><td>不支持</td><td>支持</td></tr>
+<tr><td><strong>社区活跃度</strong></td><td>中等</td><td>高</td><td>高</td><td>中</td></tr>
+<tr><td><strong>适合场景</strong></td><td>金融交易</td><td>大数据流</td><td>轻量级</td><td>云原生</td></tr>
+</tbody></table>
+</div>
+<h3 id="14-rocketmq核心架构"><a class="header" href="#14-rocketmq核心架构">1.4 RocketMQ核心架构</a></h3>
+<pre><code>┌────────────────────────────────────────────────────────────┐
+│                      RocketMQ Cluster                       │
+│                                                              │
+│  ┌────────────┐   ┌────────────┐   ┌────────────┐       │
+│  │ NameServer │   │ NameServer │   │ NameServer │       │
+│  │  (注册中心) │   │  (注册中心) │   │  (注册中心) │       │
+│  └──────┬─────┘   └──────┬─────┘   └──────┬─────┘       │
+│         │                │                │              │
+│         └────────────────┼────────────────┘              │
+│                          │                                │
+│         ┌────────────────┴────────────────┐              │
+│         │                │                │              │
+│  ┌──────▼─────┐   ┌──────▼─────┐   ┌──────▼─────┐       │
+│  │  Broker    │   │  Broker    │   │  Broker    │       │
+│  │  Master    │───│   Slave    │   │  Master    │       │
+│  │ (主节点)    │   │ (从节点)    │   │ (主节点)    │       │
+│  └──────┬─────┘   └────────────┘   └──────┬─────┘       │
+│         │                                  │             │
+└─────────┼──────────────────────────────────┼─────────────┘
+          │                                  │
+    ┌─────▼────┐                      ┌─────▼────┐
+    │ Producer │                      │ Consumer │
+    │ (生产者)  │                      │ (消费者)  │
+    └──────────┘                      └──────────┘
+</code></pre>
+<p><strong>核心组件</strong>:</p>
+<ul>
+<li><strong>NameServer</strong>: 路由注册中心,无状态</li>
+<li><strong>Broker</strong>: 消息存储、投递和查询</li>
+<li><strong>Producer</strong>: 消息生产者</li>
+<li><strong>Consumer</strong>: 消息消费者</li>
+</ul>
+<p><strong>消息流转流程</strong>:</p>
+<pre><code>1. Producer启动 → 连接NameServer → 获取Broker路由信息
+2. Producer发送消息到Broker Master
+3. Broker Master将消息存储到CommitLog并更新ConsumeQueue
+4. Broker Master同步消息到Slave(异步/同步)
+5. Consumer启动 → 连接NameServer → 获取Broker路由信息
+6. Consumer从Broker拉取消息消费并ACK
+</code></pre>
+<hr />
+<h2 id="二环境搭建与快速启动"><a class="header" href="#二环境搭建与快速启动">二、环境搭建与快速启动</a></h2>
+<h3 id="21-使用docker快速部署"><a class="header" href="#21-使用docker快速部署">2.1 使用Docker快速部署</a></h3>
+<p><strong>单机版部署</strong></p>
+<pre><code class="language-bash"># 拉取镜像
+docker pull apache/rocketmq:5.1.4
+
+# 创建网络
+docker network create rocketmq
+
+# 启动NameServer
+docker run -d \
+  --name rmqnamesrv \
+  --network rocketmq \
+  -p 9876:9876 \
+  -e "MAX_HEAP_SIZE=256M" \
+  apache/rocketmq:5.1.4 \
+  sh mqnamesrv
+
+# 启动Broker
+docker run -d \
+  --name rmqbroker \
+  --network rocketmq \
+  -p 10909:10909 \
+  -p 10911:10911 \
+  -p 10912:10912 \
+  -e "NAMESRV_ADDR=rmqnamesrv:9876" \
+  -e "MAX_HEAP_SIZE=512M" \
+  apache/rocketmq:5.1.4 \
+  sh mqbroker
+
+# 验证部署
+docker exec -it rmqbroker sh mqadmin clusterList -n rmqnamesrv:9876
+</code></pre>
+<h3 id="22-使用docker-compose部署集群"><a class="header" href="#22-使用docker-compose部署集群">2.2 使用Docker Compose部署集群</a></h3>
+<p><strong>创建 docker-compose.yml</strong></p>
+<pre><code class="language-yaml">version: '3.8'
+
+services:
+  # NameServer 集群
+  namesrv1:
+    image: apache/rocketmq:5.1.4
+    container_name: rmqnamesrv1
+    ports:
+      - "9876:9876"
+    environment:
+      - MAX_HEAP_SIZE=256M
+    command: sh mqnamesrv
+    networks:
+      - rocketmq
+    volumes:
+      - ./data/namesrv1/logs:/home/rocketmq/logs
+
+  namesrv2:
+    image: apache/rocketmq:5.1.4
+    container_name: rmqnamesrv2
+    ports:
+      - "9877:9876"
+    environment:
+      - MAX_HEAP_SIZE=256M
+    command: sh mqnamesrv
+    networks:
+      - rocketmq
+    volumes:
+      - ./data/namesrv2/logs:/home/rocketmq/logs
+
+  # Broker Master-Slave 集群
+  broker-a-master:
+    image: apache/rocketmq:5.1.4
+    container_name: rmqbroker-a-master
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    environment:
+      - NAMESRV_ADDR=namesrv1:9876;namesrv2:9876
+      - MAX_HEAP_SIZE=512M
+    command: sh mqbroker -c /home/rocketmq/conf/broker-a-master.conf
+    volumes:
+      - ./conf/broker-a-master.conf:/home/rocketmq/conf/broker-a-master.conf
+      - ./data/broker-a-master/logs:/home/rocketmq/logs
+      - ./data/broker-a-master/store:/home/rocketmq/store
+    networks:
+      - rocketmq
+    depends_on:
+      - namesrv1
+      - namesrv2
+
+  broker-a-slave:
+    image: apache/rocketmq:5.1.4
+    container_name: rmqbroker-a-slave
+    ports:
+      - "11909:10909"
+      - "11911:10911"
+      - "11912:10912"
+    environment:
+      - NAMESRV_ADDR=namesrv1:9876;namesrv2:9876
+      - MAX_HEAP_SIZE=512M
+    command: sh mqbroker -c /home/rocketmq/conf/broker-a-slave.conf
+    volumes:
+      - ./conf/broker-a-slave.conf:/home/rocketmq/conf/broker-a-slave.conf
+      - ./data/broker-a-slave/logs:/home/rocketmq/logs
+      - ./data/broker-a-slave/store:/home/rocketmq/store
+    networks:
+      - rocketmq
+    depends_on:
+      - broker-a-master
+
+  # RocketMQ Console (Web管理界面)
+  console:
+    image: apacherocketmq/rocketmq-console:2.0.0
+    container_name: rmqconsole
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Drocketmq.namesrv.addr=namesrv1:9876;namesrv2:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+    networks:
+      - rocketmq
+    depends_on:
+      - namesrv1
+
+networks:
+  rocketmq:
+    driver: bridge
+
+volumes:
+  broker-a-master-store:
+  broker-a-slave-store:
+</code></pre>
+<p><strong>Broker配置文件 conf/broker-a-master.conf</strong></p>
+<pre><code class="language-properties"># Broker集群名
+brokerClusterName=DefaultCluster
+# Broker名称(同一组Master-Slave名称相同)
+brokerName=broker-a
+# BrokerId: 0表示Master, &gt;0表示Slave
+brokerId=0
+# 删除文件时间点,默认凌晨4点
+deleteWhen=04
+# 文件保留时间,默认48小时
+fileReservedTime=48
+# Broker角色: ASYNC_MASTER, SYNC_MASTER, SLAVE
+brokerRole=ASYNC_MASTER
+# 刷盘方式: ASYNC_FLUSH, SYNC_FLUSH
+flushDiskType=ASYNC_FLUSH
+# NameServer地址
+namesrvAddr=namesrv1:9876;namesrv2:9876
+# Broker对外监听端口
+listenPort=10911
+# 存储路径
+storePathRootDir=/home/rocketmq/store
+storePathCommitLog=/home/rocketmq/store/commitlog
+# 自动创建Topic
+autoCreateTopicEnable=true
+# 自动创建订阅组
+autoCreateSubscriptionGroup=true
+</code></pre>
+<p><strong>Slave配置文件 conf/broker-a-slave.conf</strong></p>
+<pre><code class="language-properties">brokerClusterName=DefaultCluster
+brokerName=broker-a
+brokerId=1  # Slave
+deleteWhen=04
+fileReservedTime=48
+brokerRole=SLAVE
+flushDiskType=ASYNC_FLUSH
+namesrvAddr=namesrv1:9876;namesrv2:9876
+listenPort=10911
+storePathRootDir=/home/rocketmq/store
+storePathCommitLog=/home/rocketmq/store/commitlog
+autoCreateTopicEnable=true
+autoCreateSubscriptionGroup=true
+</code></pre>
+<p><strong>启动集群</strong></p>
+<pre><code class="language-bash"># 创建配置目录
+mkdir -p conf data
+
+# 启动所有服务
+docker-compose up -d
+
+# 查看日志
+docker-compose logs -f
+
+# 访问Console管理界面
+http://localhost:8080
+</code></pre>
+<h3 id="23-管理命令使用"><a class="header" href="#23-管理命令使用">2.3 管理命令使用</a></h3>
+<p><strong>常用管理命令</strong>:</p>
+<pre><code class="language-bash"># 进入Broker容器
+docker exec -it rmqbroker bash
+
+# 查看集群信息
+sh mqadmin clusterList -n namesrv1:9876
+
+# 查看Topic列表
+sh mqadmin topicList -n namesrv1:9876
+
+# 创建Topic
+sh mqadmin updateTopic -n namesrv1:9876 \
+  -t TestTopic \
+  -c DefaultCluster \
+  -r 8 \
+  -w 8
+
+# 查看Topic详情
+sh mqadmin topicStatus -n namesrv1:9876 -t TestTopic
+
+# 查看消费组信息
+sh mqadmin consumerProgress -n namesrv1:9876 -g test-consumer-group
+
+# 查询消息
+sh mqadmin queryMsgById -n namesrv1:9876 -i messageId
+
+# 发送测试消息
+sh mqadmin sendMessage -n namesrv1:9876 \
+  -t TestTopic \
+  -p "Hello RocketMQ"
+</code></pre>
+<hr />
+<h2 id="三核心概念深入理解"><a class="header" href="#三核心概念深入理解">三、核心概念深入理解</a></h2>
+<h3 id="31-消息模型"><a class="header" href="#31-消息模型">3.1 消息模型</a></h3>
+<h4 id="311-topic主题"><a class="header" href="#311-topic主题">3.1.1 Topic(主题)</a></h4>
+<p><strong>定义</strong>: 消息的逻辑分类,用于消息的分类和隔离</p>
+<p><strong>特性</strong>:</p>
+<ul>
+<li>生产者向Topic发送消息</li>
+<li>消费者订阅Topic获取消息</li>
+<li>一个Topic可以包含多个生产者和消费者</li>
+<li>支持Tag和Key过滤</li>
+</ul>
+<p><strong>Topic与Queue的关系</strong>:</p>
+<pre><code>Topic: OrderTopic
+  ├── Queue0 (消息队列0)
+  ├── Queue1 (消息队列1)
+  ├── Queue2 (消息队列2)
+  └── Queue3 (消息队列3)
+
+一个Topic由多个4个Queue组成(可配置)
+</code></pre>
+<h4 id="312-message-queue消息队列"><a class="header" href="#312-message-queue消息队列">3.1.2 Message Queue(消息队列)</a></h4>
+<p><strong>定义</strong>: Topic的物理分片,是消息存储的最小单元</p>
+<p><strong>特性</strong>:</p>
+<ul>
+<li>每个Queue的消息按FIFO顺序排列</li>
+<li>支持顺序消息(同一Queue内消息有序)</li>
+<li>队列数量影响消费并发度</li>
+</ul>
+<p><strong>Queue数量建议</strong>:</p>
+<pre><code>原则:
+- 生产者: writeQueueNums = 4~16
+- 消费者: readQueueNums = writeQueueNums
+- Queue数量≥Consumer数量(保证并发消费)
+- Queue数量不宜过多(影响数据分布)
+
+推荐:
+- 小流量Topic: 4个Queue
+- 中流量Topic: 8个Queue
+- 大流量Topic: 16个Queue
+</code></pre>
+<h4 id="313-tag标签"><a class="header" href="#313-tag标签">3.1.3 Tag(标签)</a></h4>
+<p><strong>定义</strong>: 消息子分类标签</p>
+<p><strong>应用场景</strong>:</p>
+<pre><code class="language-java">// 生产者: 发送带Tag的消息
+Message msg = new Message(
+    "OrderTopic",        // Topic
+    "PaySuccess",        // Tag
+    "ORDER_001",         // Key
+    "订单支付成功".getBytes()  // Body
+);
+
+// 消费者: 订阅指定Tag的消息
+consumer.subscribe("OrderTopic", "PaySuccess || RefundSuccess");
+
+// Tag支持:
+// "*"         - 订阅所有Tag
+// "TagA"      - 订阅TagA
+// "TagA || TagB" - 订阅TagA或TagB
+</code></pre>
+<p><strong>Tag vs Topic</strong>:</p>
+<pre><code>Topic: 用于业务模块隔离(订单/支付/库存)
+Tag:   用于细分子类型(创建/更新/删除)
+
+良好设计:
+OrderTopic
+  ├── Tag: Create
+  ├── Tag: Update
+  └── Tag: Delete
+
+不良设计:
+OrderCreateTopic
+OrderUpdateTopic
+OrderDeleteTopic
+</code></pre>
+<h3 id="32-消息类型"><a class="header" href="#32-消息类型">3.2 消息类型</a></h3>
+<h4 id="321-普通消息"><a class="header" href="#321-普通消息">3.2.1 普通消息</a></h4>
+<p><strong>特性</strong>: 最基本的消息类型,无特殊语义</p>
+<p><strong>发送示例(Java)</strong>:</p>
+<pre><code class="language-java">DefaultMQProducer producer = new DefaultMQProducer("producer-group");
+producer.setNamesrvAddr("localhost:9876");
+producer.start();
+
+// 同步发送
+Message msg = new Message("TestTopic", "TagA", "Hello RocketMQ".getBytes());
+SendResult sendResult = producer.send(msg);
+System.out.println("msgId: " + sendResult.getMsgId());
+System.out.println("status: " + sendResult.getSendStatus());
+
+// 异步发送
+producer.send(msg, new SendCallback() {
+    @Override
+    public void onSuccess(SendResult sendResult) {
+        System.out.println("发送成功: " + sendResult.getMsgId());
+    }
+
+    @Override
+    public void onException(Throwable e) {
+        System.err.println("发送失败: " + e.getMessage());
+    }
+});
+
+// 单向发送(不关心结果,最高性能)
+producer.sendOneway(msg);
+
+producer.shutdown();
+</code></pre>
+<h4 id="322-顺序消息"><a class="header" href="#322-顺序消息">3.2.2 顺序消息</a></h4>
+<p><strong>分类</strong>:</p>
+<ol>
+<li><strong>全局顺序</strong>: 整个Topic的所有消息严格FIFO,性能低</li>
+<li><strong>分区顺序</strong>: 同一分区ID的消息到同一Queue,推荐</li>
+</ol>
+<p><strong>应用场景</strong>:</p>
+<ul>
+<li>订单状态流转(创建→支付→发货→完成)</li>
+<li>MySQL Binlog同步</li>
+<li>消息依赖顺序处理</li>
+</ul>
+<p><strong>发送顺序消息</strong>:</p>
+<pre><code class="language-java">// 方法1: 使用MessageQueueSelector
+producer.send(msg, new MessageQueueSelector() {
+    @Override
+    public MessageQueue select(List&lt;MessageQueue&gt; mqs, Message msg, Object arg) {
+        // arg为分区ID(比如订单ID)
+        Long orderId = (Long) arg;
+        // 根据订单ID取模选择Queue
+        int index = (int) (orderId % mqs.size());
+        return mqs.get(index);
+    }
+}, orderId);  // orderId作为selector的参数
+
+// 方法2: 简化Lambda写法
+producer.send(msg, (mqs, msg1, arg) -&gt; {
+    Long id = (Long) arg;
+    return mqs.get((int) (id % mqs.size()));
+}, orderId);
+</code></pre>
+<p><strong>消费顺序消息</strong>:</p>
+<pre><code class="language-java">consumer.registerMessageListener(new MessageListenerOrderly() {
+    @Override
+    public ConsumeOrderlyStatus consumeMessage(List&lt;MessageExt&gt; msgs, ConsumeOrderlyContext context) {
+        // 同一Queue的消息会顺序消费
+        for (MessageExt msg : msgs) {
+            System.out.println("顺序消费: " + new String(msg.getBody()));
+        }
+        return ConsumeOrderlyStatus.SUCCESS;
+    }
+});
+</code></pre>
+<p><strong>顺序消息保证</strong>:</p>
+<pre><code>生产端: 同一分区ID → 同一Queue
+Broker:  单Queue内FIFO
+消费端: MessageListenerOrderly + 单线程
+</code></pre>
+<h4 id="323-延迟消息"><a class="header" href="#323-延迟消息">3.2.3 延迟消息</a></h4>
+<p><strong>延迟等级</strong>(18个固定等级):</p>
+<pre><code>Level:  1   2   3    4    5    6    7    8    9    10   11   12   13   14   15   16   17   18
+Delay:  1s  5s  10s  30s  1m   2m   3m   4m   5m   6m   7m   8m   9m   10m  20m  30m  1h   2h
+</code></pre>
+<p><strong>应用场景</strong>:</p>
+<ul>
+<li>订单超时取消(15分钟未支付)</li>
+<li>消息重试(失败后延迟重发)</li>
+<li>定时任务触发</li>
+</ul>
+<p><strong>发送延迟消息</strong>:</p>
+<pre><code class="language-java">Message msg = new Message("DelayTopic", "Hello".getBytes());
+
+// 设置延迟等级: 14表示延迟10分钟
+msg.setDelayTimeLevel(14);
+
+SendResult result = producer.send(msg);
+
+// 10分钟后,消费者才能收到消息
+</code></pre>
+<p><strong>实现原理</strong>:</p>
+<pre><code>1. Producer发送延迟消息到Broker
+2. Broker将消息存储到SCHEDULE_TOPIC_XXXX
+3. 定时任务扫描到期消息转发到原Topic
+4. Consumer从Topic消费
+</code></pre>
+<h4 id="324-事务消息"><a class="header" href="#324-事务消息">3.2.4 事务消息</a></h4>
+<p><strong>定义</strong>: 支持分布式事务场景的消息类型</p>
+<p><strong>应用场景</strong>:</p>
+<ul>
+<li>订单创建 + 扣库存(保证一致性)</li>
+<li>支付成功 + 积分增加(支持成功后加分)</li>
+</ul>
+<p><strong>事务消息流程</strong>:</p>
+<pre><code>1. Producer发送半事务消息 (Half Message) 到Broker
+2. Broker存储半事务消息,但Consumer不可见
+3. Producer执行本地事务
+4. Producer根据本地事务结果提交commit/rollback
+5. commit: 消息对Consumer可见
+   rollback: 删除消息
+6. 若Producer异常: Broker会回查本地事务状态
+</code></pre>
+<p><strong>事务消息实现</strong>:</p>
+<pre><code class="language-java">// 1. 创建事务生产者
+TransactionMQProducer producer = new TransactionMQProducer("tx-producer-group");
+producer.setNamesrvAddr("localhost:9876");
+
+// 2. 设置事务监听器
+producer.setTransactionListener(new TransactionListener() {
+    /**
+     * 执行本地事务
+     */
+    @Override
+    public LocalTransactionState executeLocalTransaction(Message msg, Object arg) {
+        try {
+            // 本地事务逻辑(比如数据库操作)
+            String orderId = (String) arg;
+            orderService.createOrder(orderId);
+
+            // 事务成功提交消息
+            return LocalTransactionState.COMMIT_MESSAGE;
+
+        } catch (Exception e) {
+            // 事务失败回滚消息
+            return LocalTransactionState.ROLLBACK_MESSAGE;
+        }
+    }
+
+    /**
+     * 回查本地事务状态(Producer异常后调用)
+     */
+    @Override
+    public LocalTransactionState checkLocalTransaction(MessageExt msg) {
+        // 根据消息Key查询本地事务状态
+        String orderId = msg.getKeys();
+        Order order = orderService.getOrder(orderId);
+
+        if (order != null &amp;&amp; order.getStatus() == OrderStatus.SUCCESS) {
+            return LocalTransactionState.COMMIT_MESSAGE;
+        } else if (order != null &amp;&amp; order.getStatus() == OrderStatus.FAILED) {
+            return LocalTransactionState.ROLLBACK_MESSAGE;
+        } else {
+            // 未知状态,继续查询
+            return LocalTransactionState.UNKNOW;
+        }
+    }
+});
+
+producer.start();
+
+// 3. 发送事务消息
+Message msg = new Message("OrderTopic", "订单创建消息".getBytes());
+msg.setKeys("ORDER_001");
+
+TransactionSendResult result = producer.sendMessageInTransaction(msg, "ORDER_001");
+System.out.println("事务消息发送结果: " + result.getLocalTransactionState());
+
+// 4. 消费者正常消费
+DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("consumer-group");
+consumer.setNamesrvAddr("localhost:9876");
+consumer.subscribe("OrderTopic", "*");
+consumer.registerMessageListener(new MessageListenerConcurrently() {
+    @Override
+    public ConsumeConcurrentlyStatus consumeMessage(List&lt;MessageExt&gt; msgs, ConsumeConcurrentlyContext context) {
+        for (MessageExt msg : msgs) {
+            // 只有commit的消息才能被消费到
+            System.out.println("消费消息: " + new String(msg.getBody()));
+        }
+        return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+    }
+});
+consumer.start();
+</code></pre>
+<h3 id="33-消费模式"><a class="header" href="#33-消费模式">3.3 消费模式</a></h3>
+<h4 id="331-集群消费clustering"><a class="header" href="#331-集群消费clustering">3.3.1 集群消费(Clustering)</a></h4>
+<p><strong>特性</strong>:</p>
+<ul>
+<li>同一条消息只被同一个Consumer消费</li>
+<li>队列分配:Queue分配给Consumer</li>
+<li>消费进度存储在Broker端</li>
+</ul>
+<pre><code>Producer → Topic (4 Queues)
+             ↓
+    Consumer Group (3 Consumers)
+    ├── Consumer1 → Queue0, Queue1
+    ├── Consumer2 → Queue2
+    └── Consumer3 → Queue3
+
+每个Consumer负责不同Queue,保证队列分配
+</code></pre>
+<p><strong>发送示例</strong>:</p>
+<pre><code class="language-java">DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("consumer-group");
+// 设置集群消费模式(默认)
+consumer.setMessageModel(MessageModel.CLUSTERING);
+consumer.setNamesrvAddr("localhost:9876");
+consumer.subscribe("TestTopic", "*");
+// ... 注册监听器
+consumer.start();
+</code></pre>
+<h4 id="332-广播消费broadcasting"><a class="header" href="#332-广播消费broadcasting">3.3.2 广播消费(Broadcasting)</a></h4>
+<p><strong>特性</strong>:</p>
+<ul>
+<li>同一条消息会被所有Consumer消费</li>
+<li>每个Consumer消费全部Queue</li>
+<li>消费进度存储在Consumer本地</li>
+</ul>
+<pre><code>Producer → Topic (4 Queues)
+             ↓
+    Consumer Group (3 Consumers)
+    ├── Consumer1 → 消费全部Queue (0,1,2,3)
+    ├── Consumer2 → 消费全部Queue (0,1,2,3)
+    └── Consumer3 → 消费全部Queue (0,1,2,3)
+
+每个Consumer都消费全量消息
+</code></pre>
+<p><strong>应用场景</strong>:</p>
+<ul>
+<li>配置更新</li>
+<li>缓存刷新通知</li>
+<li>告警广播(发送给所有监控实例)</li>
+</ul>
+<p><strong>发送示例</strong>:</p>
+<pre><code class="language-java">DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("broadcast-group");
+// 设置广播消费模式
+consumer.setMessageModel(MessageModel.BROADCASTING);
+consumer.setNamesrvAddr("localhost:9876");
+consumer.subscribe("ConfigTopic", "*");
+consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -&gt; {
+    // 每个Consumer都会收到同一批消息
+    msgs.forEach(msg -&gt; {
+        System.out.println("广播消费: " + new String(msg.getBody()));
+    });
+    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+});
+consumer.start();
+</code></pre>
+<hr />
+<h2 id="四开发实践"><a class="header" href="#四开发实践">四、开发实践</a></h2>
+<h3 id="41-java客户端完整示例"><a class="header" href="#41-java客户端完整示例">4.1 Java客户端完整示例</a></h3>
+<p><strong>添加依赖(Maven)</strong>:</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.rocketmq&lt;/groupId&gt;
+    &lt;artifactId&gt;rocketmq-client&lt;/artifactId&gt;
+    &lt;version&gt;5.1.4&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p><strong>生产者完整示例</strong>:</p>
+<pre><code class="language-java">import org.apache.rocketmq.client.producer.*;
+import org.apache.rocketmq.common.message.Message;
+
+public class ProducerExample {
+
+    public static void main(String[] args) throws Exception {
+        // 1. 创建生产者
+        DefaultMQProducer producer = new DefaultMQProducer("producer-group");
+
+        // 2. 设置NameServer地址
+        producer.setNamesrvAddr("localhost:9876");
+
+        // 3. 设置生产者参数
+        producer.setSendMsgTimeout(3000);          // 发送超时时间
+        producer.setRetryTimesWhenSendFailed(2);   // 同步发送失败重试次数
+        producer.setRetryTimesWhenSendAsyncFailed(2); // 异步发送失败重试次数
+        producer.setMaxMessageSize(4 * 1024 * 1024); // 最大消息4MB
+
+        // 4. 启动生产者
+        producer.start();
+        System.out.println("Producer started");
+
+        try {
+            // 5. 同步发送消息
+            for (int i = 0; i &lt; 10; i++) {
+                Message msg = new Message(
+                    "TestTopic",                      // Topic
+                    "TagA",                           // Tag
+                    "KEY_" + i,                       // Key (用于消息查找)
+                    ("Hello RocketMQ " + i).getBytes() // Body
+                );
+
+                // 设置消息属性
+                msg.putUserProperty("orderId", "ORDER_" + i);
+                msg.putUserProperty("userId", "USER_" + (i % 5));
+
+                SendResult result = producer.send(msg);
+
+                System.out.printf("消息ID: %s, 发送状态: %s, Queue: %d%n",
+                    result.getMsgId(),
+                    result.getSendStatus(),
+                    result.getMessageQueue().getQueueId()
+                );
+            }
+
+            // 6. 异步发送消息
+            Message asyncMsg = new Message("TestTopic", "Hello Async".getBytes());
+            producer.send(asyncMsg, new SendCallback() {
+                @Override
+                public void onSuccess(SendResult sendResult) {
+                    System.out.println("异步发送成功: " + sendResult.getMsgId());
+                }
+
+                @Override
+                public void onException(Throwable e) {
+                    System.err.println("异步发送失败: " + e.getMessage());
+                    // 可以重试或记录失败日志
+                }
+            });
+
+            // 7. 单向发送(不关心结果,最高性能)
+            Message onewayMsg = new Message("TestTopic", "Hello Oneway".getBytes());
+            producer.sendOneway(onewayMsg);
+
+            // 等待异步发送完成
+            Thread.sleep(1000);
+
+        } finally {
+            // 8. 关闭生产者
+            producer.shutdown();
+            System.out.println("Producer shutdown");
+        }
+    }
+}
+</code></pre>
+<p><strong>消费者完整示例(Push模式)</strong>:</p>
+<pre><code class="language-java">import org.apache.rocketmq.client.consumer.*;
+import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
+import org.apache.rocketmq.common.message.MessageExt;
+import java.util.List;
+
+public class ConsumerExample {
+
+    public static void main(String[] args) throws Exception {
+        // 1. 创建消费者
+        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("consumer-group");
+
+        // 2. 设置NameServer地址
+        consumer.setNamesrvAddr("localhost:9876");
+
+        // 3. 设置消费者参数
+        consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET); // 从最早开始消费
+        consumer.setConsumeThreadMin(10);    // 最小消费线程数
+        consumer.setConsumeThreadMax(20);    // 最大消费线程数
+        consumer.setConsumeMessageBatchMaxSize(1); // 批量消费数量
+        consumer.setPullBatchSize(32);       // 拉取批量大小
+
+        // 4. 订阅Topic和Tag
+        consumer.subscribe("TestTopic", "*");  // 订阅所有Tag
+        // consumer.subscribe("TestTopic", "TagA || TagB");  // 订阅TagA或TagB
+
+        // 5. 注册并发消费监听器
+        consumer.registerMessageListener(new MessageListenerConcurrently() {
+            @Override
+            public ConsumeConcurrentlyStatus consumeMessage(
+                    List&lt;MessageExt&gt; msgs,
+                    ConsumeConcurrentlyContext context) {
+
+                for (MessageExt msg : msgs) {
+                    try {
+                        System.out.printf("消费消息: Topic=%s, Tag=%s, Key=%s, MsgId=%s, Body=%s%n",
+                            msg.getTopic(),
+                            msg.getTags(),
+                            msg.getKeys(),
+                            msg.getMsgId(),
+                            new String(msg.getBody())
+                        );
+
+                        // 获取自定义属性
+                        String orderId = msg.getUserProperty("orderId");
+                        String userId = msg.getUserProperty("userId");
+                        System.out.println("orderId: " + orderId + ", userId: " + userId);
+
+                        // 业务处理
+                        processMessage(msg);
+
+                        // 消费成功
+                    } catch (Exception e) {
+                        System.err.println("消费失败: " + e.getMessage());
+                        // 消费失败,稍后重试
+                        return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+                    }
+                }
+
+                // 消费成功,提交offset
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            }
+        });
+
+        // 6. 启动消费者
+        consumer.start();
+        System.out.println("Consumer started");
+
+        // 保持运行
+        Thread.sleep(Long.MAX_VALUE);
+    }
+
+    private static void processMessage(MessageExt msg) {
+        // 实际业务处理逻辑
+        System.out.println("处理业务...");
+    }
+}
+</code></pre>
+<h3 id="42-spring-boot集成"><a class="header" href="#42-spring-boot集成">4.2 Spring Boot集成</a></h3>
+<p><strong>添加依赖</strong>:</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.rocketmq&lt;/groupId&gt;
+    &lt;artifactId&gt;rocketmq-spring-boot-starter&lt;/artifactId&gt;
+    &lt;version&gt;2.2.3&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p><strong>配置文件 application.yml</strong>:</p>
+<pre><code class="language-yaml">rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: spring-producer-group
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 2
+    max-message-size: 4194304  # 4MB
+  consumer:
+    group: spring-consumer-group
+    consume-thread-min: 10
+    consume-thread-max: 20
+</code></pre>
+<p><strong>生产者(Spring Boot)</strong>:</p>
+<pre><code class="language-java">import org.apache.rocketmq.spring.core.RocketMQTemplate;
+import org.apache.rocketmq.client.producer.SendCallback;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderProducer {
+
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
+
+    /**
+     * 同步发送普通消息
+     */
+    public void sendOrder(Order order) {
+        SendResult result = rocketMQTemplate.syncSend(
+            "OrderTopic:Create",  // destination = Topic:Tag
+            order
+        );
+        System.out.println("发送结果: " + result.getSendStatus());
+    }
+
+    /**
+     * 异步发送消息
+     */
+    public void sendOrderAsync(Order order) {
+        rocketMQTemplate.asyncSend("OrderTopic:Create", order, new SendCallback() {
+            @Override
+            public void onSuccess(SendResult sendResult) {
+                System.out.println("异步发送成功: " + sendResult.getMsgId());
+            }
+
+            @Override
+            public void onException(Throwable e) {
+                System.err.println("异步发送失败: " + e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * 发送顺序消息
+     */
+    public void sendOrderSequential(Order order) {
+        // 使用orderId作为分区key,保证同一订单消息到同一Queue
+        rocketMQTemplate.syncSendOrderly(
+            "OrderTopic:Update",
+            order,
+            order.getOrderId().toString()  // hashKey
+        );
+    }
+
+    /**
+     * 发送延迟消息
+     */
+    public void sendDelayedOrder(Order order, int delayLevel) {
+        rocketMQTemplate.syncSend(
+            "OrderTopic:Cancel",
+            MessageBuilder.withPayload(order).build(),
+            3000,         // timeout
+            delayLevel    // 延迟等级 (1-18)
+        );
+    }
+
+    /**
+     * 发送事务消息
+     */
+    public void sendTransactionOrder(Order order) {
+        rocketMQTemplate.sendMessageInTransaction(
+            "OrderTopic:Create",
+            MessageBuilder.withPayload(order).build(),
+            order  // arg: 传递给TransactionListener
+        );
+    }
+}
+</code></pre>
+<p><strong>消费者(Spring Boot)</strong>:</p>
+<pre><code class="language-java">import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
+import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.stereotype.Component;
+
+/**
+ * 普通并发消费
+ */
+@Component
+@RocketMQMessageListener(
+    topic = "OrderTopic",
+    consumerGroup = "order-consumer-group",
+    selectorExpression = "Create || Update"  // Tag过滤
+)
+public class OrderConsumer implements RocketMQListener&lt;Order&gt; {
+
+    @Override
+    public void onMessage(Order order) {
+        System.out.println("消费订单: " + order.getOrderId());
+        // 业务处理
+        processOrder(order);
+    }
+
+    private void processOrder(Order order) {
+        // 实际业务逻辑
+    }
+}
+
+/**
+ * 顺序消费
+ */
+@Component
+@RocketMQMessageListener(
+    topic = "OrderTopic",
+    consumerGroup = "order-sequential-group",
+    consumeMode = ConsumeMode.ORDERLY  // 顺序消费
+)
+public class OrderSequentialConsumer implements RocketMQListener&lt;Order&gt; {
+
+    @Override
+    public void onMessage(Order order) {
+        // 同一Queue的消息会顺序消费
+        System.out.println("顺序消费订单: " + order.getOrderId());
+    }
+}
+
+/**
+ * 批量消费
+ */
+@Component
+@RocketMQMessageListener(
+    topic = "OrderTopic",
+    consumerGroup = "order-batch-group",
+    consumeMode = ConsumeMode.CONCURRENTLY,
+    messageModel = MessageModel.CLUSTERING
+)
+public class OrderBatchConsumer implements RocketMQListener&lt;List&lt;Order&gt;&gt; {
+
+    @Override
+    public void onMessage(List&lt;Order&gt; orders) {
+        System.out.println("批量消费: " + orders.size() + "条消息");
+        // 批处理业务
+        orders.forEach(this::processOrder);
+    }
+
+    private void processOrder(Order order) {
+        // 处理单条订单
+    }
+}
+</code></pre>
+<p><strong>事务监听器(Spring Boot)</strong>:</p>
+<pre><code class="language-java">import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
+import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
+import org.apache.rocketmq.spring.core.RocketMQLocalTransactionState;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+
+@RocketMQTransactionListener
+public class OrderTransactionListener implements RocketMQLocalTransactionListener {
+
+    @Autowired
+    private OrderService orderService;
+
+    /**
+     * 执行本地事务
+     */
+    @Override
+    public RocketMQLocalTransactionState executeLocalTransaction(Message msg, Object arg) {
+        try {
+            Order order = (Order) arg;
+
+            // 执行本地事务(数据库操作)
+            orderService.createOrder(order);
+
+            // 事务成功
+            return RocketMQLocalTransactionState.COMMIT;
+
+        } catch (Exception e) {
+            // 事务失败
+            return RocketMQLocalTransactionState.ROLLBACK;
+        }
+    }
+
+    /**
+     * 回查本地事务状态
+     */
+    @Override
+    public RocketMQLocalTransactionState checkLocalTransaction(Message msg) {
+        // 从消息头获取订单ID
+        String orderId = (String) msg.getHeaders().get("orderId");
+
+        // 查询本地事务状态
+        Order order = orderService.getOrder(orderId);
+
+        if (order != null &amp;&amp; order.getStatus() == OrderStatus.SUCCESS) {
+            return RocketMQLocalTransactionState.COMMIT;
+        } else if (order != null &amp;&amp; order.getStatus() == OrderStatus.FAILED) {
+            return RocketMQLocalTransactionState.ROLLBACK;
+        } else {
+            // 未知状态,继续查询
+            return RocketMQLocalTransactionState.UNKNOWN;
+        }
+    }
+}
+</code></pre>
+<hr />
+<h2 id="五高级特性与最佳实践"><a class="header" href="#五高级特性与最佳实践">五、高级特性与最佳实践</a></h2>
+<h3 id="51-消息过滤"><a class="header" href="#51-消息过滤">5.1 消息过滤</a></h3>
+<h4 id="511-tag过滤"><a class="header" href="#511-tag过滤">5.1.1 Tag过滤</a></h4>
+<p><strong>优势</strong>: 简单高效,在Broker端过滤
+<strong>示例</strong>: 发布订阅不同状态</p>
+<pre><code class="language-java">// 生产者: 设置Tag
+Message msg = new Message("OrderTopic", "PaySuccess", body);
+
+// 消费者: 订阅Tag
+consumer.subscribe("OrderTopic", "PaySuccess || RefundSuccess");
+</code></pre>
+<h4 id="512-sql92过滤"><a class="header" href="#512-sql92过滤">5.1.2 SQL92过滤</a></h4>
+<p><strong>优势</strong>: 支持更复杂的条件,在Broker端过滤
+<strong>配置</strong>: Broker需开启 <code>enablePropertyFilter=true</code></p>
+<pre><code class="language-java">// 生产者: 设置自定义属性
+Message msg = new Message("OrderTopic", body);
+msg.putUserProperty("amount", "1000");
+msg.putUserProperty("region", "beijing");
+
+// 消费者: 使用SQL过滤
+consumer.subscribe("OrderTopic",
+    MessageSelector.bySql("amount &gt; 500 AND region = 'beijing'"));
+</code></pre>
+<p><strong>支持的SQL表达式</strong>:</p>
+<pre><code class="language-sql">-- 数值比较
+amount &gt; 100 AND amount &lt;= 1000
+
+-- 字符串匹配
+region = 'beijing' OR region = 'shanghai'
+
+-- BETWEEN
+amount BETWEEN 100 AND 1000
+
+// IN
+region IN ('beijing', 'shanghai', 'guangzhou')
+
+-- IS NULL / IS NOT NULL
+vipLevel IS NOT NULL
+
+-- 组合条件
+(amount &gt; 500 AND region = 'beijing') OR vipLevel = 'gold'
+</code></pre>
+<h3 id="52-消息重试机制"><a class="header" href="#52-消息重试机制">5.2 消息重试机制</a></h3>
+<p><strong>重试策略</strong>:</p>
+<pre><code>重试次数: 16次(可配置)
+重试间隔: 10s, 30s, 1m, 2m, 3m, 4m, 5m, 6m, 7m, 8m, 9m, 10m, 20m, 30m, 1h, 2h
+
+总计: 最多4.5小时
+</code></pre>
+<p><strong>消费失败处理</strong>:</p>
+<pre><code class="language-java">@Override
+public ConsumeConcurrentlyStatus consumeMessage(List&lt;MessageExt&gt; msgs, ConsumeConcurrentlyContext context) {
+    for (MessageExt msg : msgs) {
+        try {
+            processMessage(msg);
+            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+
+        } catch (BusinessException e) {
+            // 业务异常,不建议重试
+            log.error("业务异常,忽略重试: {}", e.getMessage());
+            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+
+        } catch (Exception e) {
+            // 系统异常,触发重试
+            log.error("系统异常,稍后重试: {}", e.getMessage());
+
+            // 检查重试次数
+            int reconsumeTimes = msg.getReconsumeTimes();
+            if (reconsumeTimes &gt;= 3) {
+                // 超过3次后失败,存储到DB或发送告警
+                log.error("消息消费失败,超过重试次数: msgId={}", msg.getMsgId());
+                saveFailedMessage(msg);
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            }
+
+            return ConsumeConcurrentlyStatus.RECONSUME_LATER;
+        }
+    }
+}
+</code></pre>
+<h3 id="53-消息幂等性设计"><a class="header" href="#53-消息幂等性设计">5.3 消息幂等性设计</a></h3>
+<p><strong>方案1: 数据库唯一约束</strong></p>
+<pre><code class="language-sql">CREATE TABLE orders (
+    order_id VARCHAR(64) PRIMARY KEY,  -- 唯一约束
+    user_id BIGINT NOT NULL,
+    amount DECIMAL(10,2),
+    status VARCHAR(20),
+    created_at TIMESTAMP
+);
+
+INSERT INTO orders VALUES (...)
+ON DUPLICATE KEY UPDATE updated_at = NOW();
+</code></pre>
+<p><strong>方案2: Redis分布式锁</strong></p>
+<pre><code class="language-java">public void processMessage(MessageExt msg) {
+    String msgId = msg.getMsgId();
+    String lockKey = "lock:msg:" + msgId;
+
+    // 尝试获取锁(5分钟过期)
+    Boolean locked = redisTemplate.opsForValue()
+        .setIfAbsent(lockKey, "1", 5, TimeUnit.MINUTES);
+
+    if (Boolean.TRUE.equals(locked)) {
+        try {
+            // 处理业务
+            doProcessMessage(msg);
+        } finally {
+            // 释放锁
+            redisTemplate.delete(lockKey);
+        }
+    } else {
+        log.warn("消息正在处理中,跳过: {}", msgId);
+    }
+}
+</code></pre>
+<p><strong>方案3: 消息轨迹表</strong></p>
+<pre><code class="language-java">@Transactional
+public void processMessage(MessageExt msg) {
+    String msgId = msg.getMsgId();
+
+    // 1. 检查消息是否已处理
+    if (messageLogMapper.exists(msgId)) {
+        log.info("消息已处理,跳过: {}", msgId);
+        return;
+    }
+
+    // 2. 处理业务
+    orderService.createOrder(order);
+
+    // 3. 记录消息处理状态
+    MessageLog log = new MessageLog();
+    log.setMsgId(msgId);
+    log.setStatus("SUCCESS");
+    log.setCreateTime(new Date());
+    messageLogMapper.insert(log);
+}
+</code></pre>
+<h3 id="54-消息堆积处理"><a class="header" href="#54-消息堆积处理">5.4 消息堆积处理</a></h3>
+<p><strong>监控堆积</strong>:</p>
+<pre><code class="language-bash"># 查看消费进度
+sh mqadmin consumerProgress -n localhost:9876 -g consumer-group
+
+# 输出字段:
+# Diff: 堆积消息数
+# LastConsume: 最后消费时间
+</code></pre>
+<p><strong>解决方案</strong>:</p>
+<p><strong>1. 增加消费者数量</strong></p>
+<pre><code class="language-java">// 扩容消费者实例
+// 或增加消费线程
+consumer.setConsumeThreadMin(20);
+consumer.setConsumeThreadMax(64);
+</code></pre>
+<p><strong>2. 批量消费</strong></p>
+<pre><code class="language-java">consumer.setConsumeMessageBatchMaxSize(10);  // 拉取10条
+
+@Override
+public ConsumeConcurrentlyStatus consumeMessage(List&lt;MessageExt&gt; msgs, ...) {
+    // 批量处理
+    batchProcess(msgs);
+    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+}
+</code></pre>
+<p><strong>3. 分级处理</strong></p>
+<pre><code class="language-java">// 优先处理高优先级消息
+if (msg.getUserProperty("priority").equals("high")) {
+    processImmediately(msg);
+} else {
+    // 低优先级消息稍后处理
+    delayProcess(msg);
+}
+</code></pre>
+<p><strong>4. 跳过消费(紧急措施)</strong></p>
+<pre><code class="language-bash">// 设置消费位点,跳过堆积消息
+sh mqadmin resetOffsetByTime -n localhost:9876 \
+  -g consumer-group \
+  -t TestTopic \
+  -s -1  # -1表示跳到最新
+</code></pre>
+<hr />
+<h2 id="六生产环境部署"><a class="header" href="#六生产环境部署">六、生产环境部署</a></h2>
+<h3 id="61-集群规划"><a class="header" href="#61-集群规划">6.1 集群规划</a></h3>
+<p><strong>小规模集群(10万TPS以内)</strong>:</p>
+<pre><code>2个NameServer
+2个Broker (主备异步复制)
+  - Broker-A: 1 Master + 1 Slave
+  - Broker-B: 1 Master + 1 Slave
+
+配置:
+  CPU: 8核
+  内存: 16GB
+  磁盘: SSD 500GB
+</code></pre>
+<p><strong>中规模集群(50万TPS以内)</strong>:</p>
+<pre><code>3个NameServer
+4个Broker (主备异步复制)
+  - 4 Master + 4 Slave
+
+配置:
+  CPU: 16核
+  内存: 32GB
+  磁盘: SSD 1TB
+</code></pre>
+<p><strong>大规模集群(百万TPS+)</strong>:</p>
+<pre><code>3-5个NameServer
+8-16个Broker (主备异步复制 + DLedger高可用)
+
+配置:
+  CPU: 32核+
+  内存: 64GB+
+  磁盘: SSD 2TB+ (RAID10)
+  网络: 万兆网卡
+</code></pre>
+<h3 id="62-broker配置优化"><a class="header" href="#62-broker配置优化">6.2 Broker配置优化</a></h3>
+<p><strong>生产级配置 broker.conf</strong>:</p>
+<pre><code class="language-properties"># ========== 基础配置 ==========
+brokerClusterName=RocketMQ-Cluster
+brokerName=broker-a
+brokerId=0
+brokerIP1=192.168.1.10
+namesrvAddr=192.168.1.1:9876;192.168.1.2:9876;192.168.1.3:9876
+listenPort=10911
+
+# ========== 消息存储配置 ==========
+storePathRootDir=/data/rocketmq/store
+storePathCommitLog=/data/rocketmq/store/commitlog
+storePathConsumeQueue=/data/rocketmq/store/consumequeue
+storePathIndex=/data/rocketmq/store/index
+
+# CommitLog文件大小 (1GB)
+mapedFileSizeCommitLog=1073741824
+# ConsumeQueue文件大小 (6MB)
+mapedFileSizeConsumeQueue=6000000
+
+# 文件保留时间 (48小时)
+fileReservedTime=48
+# 删除文件时间 (凌晨4点)
+deleteWhen=04
+
+# ========== 刷盘配置 ==========
+# 刷盘方式: ASYNC_FLUSH (异步), SYNC_FLUSH (同步)
+flushDiskType=ASYNC_FLUSH
+# 异步刷盘间隔 (500ms)
+flushIntervalCommitLog=500
+# 同步刷盘超时时间 (5s)
+syncFlushTimeout=5000
+
+# ========== 复制配置 ==========
+# Broker角色: ASYNC_MASTER, SYNC_MASTER, SLAVE
+brokerRole=ASYNC_MASTER
+# 从Broker同步落后字节数 (10MB)
+haMasterAddress=
+haSlaveFallbackMaxBytes=10485760
+
+# ========== 性能优化 ==========
+# 异步发送消息线程数量
+sendMessageThreadPoolNums=128
+# 拉取消息线程数量
+pullMessageThreadPoolNums=128
+# 查询消息线程数量
+queryMessageThreadPoolNums=64
+# 管理Broker线程数量
+adminBrokerThreadPoolNums=16
+
+# 单个ConsumeQueue最大消息数
+maxMessageSize=4194304  # 4MB
+# ConsumeQueue扩展文件大小
+maxConsumeQueueExtSize=20971520  # 20MB
+
+# ========== 内存配置 ==========
+# TransientStorePool大小 (GB)
+transientStorePoolSize=5
+# 是否启用TransientStorePool
+transientStorePoolEnable=true
+# 是否预热TransientStorePool
+warmMapedFileEnable=true
+
+# ========== 消息过滤配置 ==========
+# 启用SQL92过滤
+enablePropertyFilter=true
+
+# ========== 监控配置 ==========
+# 是否启用日志
+enableCalcFilterBitMap=true
+# 是否启用消息轨迹
+traceTopicEnable=true
+# 日志刷新间隔 (60秒)
+flushConsumerOffsetInterval=60000
+</code></pre>
+<p><strong>JVM参数配置 runbroker.sh</strong>:</p>
+<pre><code class="language-bash"># 根据实际内存容量调整
+JAVA_OPT="${JAVA_OPT} -server -Xms16g -Xmx16g"
+
+# 年轻代与老年代比例
+JAVA_OPT="${JAVA_OPT} -XX:NewRatio=3"
+
+# 使用G1GC
+JAVA_OPT="${JAVA_OPT} -XX:+UseG1GC"
+JAVA_OPT="${JAVA_OPT} -XX:G1ReservePercent=25"
+JAVA_OPT="${JAVA_OPT} -XX:InitiatingHeapOccupancyPercent=30"
+
+# GC日志
+JAVA_OPT="${JAVA_OPT} -XX:+PrintGCDetails"
+JAVA_OPT="${JAVA_OPT} -XX:+PrintGCDateStamps"
+JAVA_OPT="${JAVA_OPT} -Xloggc:/data/rocketmq/logs/gc.log"
+
+# 堆外内存
+JAVA_OPT="${JAVA_OPT} -XX:MaxDirectMemorySize=15g"
+
+# OOM时dump
+JAVA_OPT="${JAVA_OPT} -XX:+HeapDumpOnOutOfMemoryError"
+JAVA_OPT="${JAVA_OPT} -XX:HeapDumpPath=/data/rocketmq/logs/heap.hprof"
+</code></pre>
+<h3 id="63-监控与告警"><a class="header" href="#63-监控与告警">6.3 监控与告警</a></h3>
+<p><strong>Prometheus + Grafana监控</strong>:</p>
+<p><strong>1. 启动RocketMQ Exporter</strong>:</p>
+<pre><code class="language-bash">docker run -d \
+  --name rocketmq-exporter \
+  -p 5557:5557 \
+  -e "NAMESRV_ADDR=192.168.1.1:9876;192.168.1.2:9876" \
+  apache/rocketmq-exporter:latest
+</code></pre>
+<p><strong>2. Prometheus配置</strong>:</p>
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'rocketmq'
+    static_configs:
+      - targets: ['localhost:5557']
+</code></pre>
+<p><strong>3. 关键指标</strong>:</p>
+<pre><code class="language-promql"># Broker消息TPS
+rate(rocketmq_brokeruntime_put_tps[5m])
+rate(rocketmq_brokeruntime_get_tps[5m])
+
+# 消息堆积
+rocketmq_consumer_diff
+
+# Broker磁盘使用率
+(rocketmq_brokeruntime_commitlog_disk_ratio) * 100
+
+# 消费延迟
+rocketmq_consumer_lag_latency
+</code></pre>
+<p><strong>4. 告警规则</strong>:</p>
+<pre><code class="language-yaml">groups:
+  - name: rocketmq_alerts
+    rules:
+      # 消息堆积告警
+      - alert: MessageBacklog
+        expr: rocketmq_consumer_diff &gt; 100000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "消息堆积超过10万"
+          description: "Consumer Group {{ $labels.group }} 堆积数量: {{ $value }}"
+
+      # 消费延迟告警
+      - alert: ConsumerLag
+        expr: rocketmq_consumer_lag_latency &gt; 60000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "消费延迟超过1分钟"
+          description: "Consumer Group {{ $labels.group }} 延迟: {{ $value }}ms"
+
+      # Broker磁盘告警
+      - alert: BrokerDiskFull
+        expr: rocketmq_brokeruntime_commitlog_disk_ratio &gt; 0.85
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Broker磁盘使用率过高"
+          description: "Broker {{ $labels.broker }} 磁盘使用率: {{ $value | humanizePercentage }}"
+</code></pre>
+<hr />
+<h2 id="七故障排查与性能优化"><a class="header" href="#七故障排查与性能优化">七、故障排查与性能优化</a></h2>
+<h3 id="71-常见问题"><a class="header" href="#71-常见问题">7.1 常见问题</a></h3>
+<p><strong>问题1: 消息发送失败</strong></p>
+<pre><code>现象: RemotingTooMuchRequestException
+
+原因: Broker线程池满
+
+排查:
+1. 检查Broker CPU和内存
+sh mqadmin brokerStatus -n localhost:9876 -b broker-a
+
+2. 查看发送线程
+# 检查sendThreadPoolQueueSize
+
+解决:
+# 增加发送线程
+sendMessageThreadPoolNums=256
+</code></pre>
+<p><strong>问题2: 消费堆积</strong></p>
+<pre><code>排查步骤:
+1. 查看消费进度
+sh mqadmin consumerProgress -n localhost:9876 -g consumer-group
+
+2. 检查消费者数量与Queue数量
+# Consumer数量 &lt;= Queue数量
+
+3. 检查消费者线程配置
+consumer.setConsumeThreadMin(20);
+consumer.setConsumeThreadMax(64);
+
+4. 检查业务处理耗时
+# 优化业务逻辑,提升处理速度
+
+5. 启用批量消费
+consumer.setConsumeMessageBatchMaxSize(10);
+</code></pre>
+<p><strong>问题3: 消息丢失</strong></p>
+<pre><code>排查:
+1. Producer发送确认
+SendResult result = producer.send(msg);
+if (result.getSendStatus() != SendStatus.SEND_OK) {
+    // 处理失败重试
+}
+
+2. Broker刷盘方式
+# 同步刷盘 + 同步复制 (最高可靠)
+flushDiskType=SYNC_FLUSH
+brokerRole=SYNC_MASTER
+
+3. Consumer消费确认
+return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+</code></pre>
+<h3 id="72-性能优化建议"><a class="header" href="#72-性能优化建议">7.2 性能优化建议</a></h3>
+<p><strong>1. 生产者优化</strong></p>
+<pre><code class="language-java">// 批量发送
+List&lt;Message&gt; messages = new ArrayList&lt;&gt;();
+for (int i = 0; i &lt; 100; i++) {
+    messages.add(new Message("TestTopic", body));
+}
+SendResult result = producer.send(messages);
+
+// 异步发送
+producer.send(msg, new SendCallback() {
+    @Override
+    public void onSuccess(SendResult sendResult) {
+        // 成功处理
+    }
+
+    @Override
+    public void onException(Throwable e) {
+        // 失败处理,重试或记录
+    }
+});
+
+// 单向发送(适用于低重要性场景)
+producer.sendOneway(msg);
+</code></pre>
+<p><strong>2. 消费者优化</strong></p>
+<pre><code class="language-java">// 增加消费线程
+consumer.setConsumeThreadMin(20);
+consumer.setConsumeThreadMax(64);
+
+// 批量消费
+consumer.setConsumeMessageBatchMaxSize(10);
+
+// 增加拉取批量大小
+consumer.setPullBatchSize(32);
+
+// 异步处理
+@Override
+public ConsumeConcurrentlyStatus consumeMessage(List&lt;MessageExt&gt; msgs, ...) {
+    CompletableFuture.allOf(
+        msgs.stream()
+            .map(msg -&gt; CompletableFuture.runAsync(() -&gt; processMessage(msg), executor))
+            .toArray(CompletableFuture[]::new)
+    ).join();
+
+    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+}
+</code></pre>
+<p><strong>3. Broker优化</strong></p>
+<pre><code class="language-properties"># 异步刷盘
+flushDiskType=ASYNC_FLUSH
+
+# 异步复制
+brokerRole=ASYNC_MASTER
+
+# 启用TransientStorePool
+transientStorePoolEnable=true
+
+# 预热内存 映射文件
+warmMapedFileEnable=true
+
+# 增加线程池
+sendMessageThreadPoolNums=256
+pullMessageThreadPoolNums=256
+</code></pre>
+<p><strong>4. 消息压缩</strong></p>
+<pre><code class="language-java">// 生产者启用压缩
+producer.setCompressMsgBodyOverHowmuch(4096);  // 超过4KB压缩
+
+// 消费者自动解压(无需配置)
+</code></pre>
+<hr />
+<h2 id="八学习成果验证标准"><a class="header" href="#八学习成果验证标准">八、学习成果验证标准</a></h2>
+<h3 id="验证标准1-环境搭建能力"><a class="header" href="#验证标准1-环境搭建能力">验证标准1: 环境搭建能力</a></h3>
+<p><strong>要求</strong>: 30分钟内搭建RocketMQ集群(2 NameServer + 2 Broker)</p>
+<p><strong>验证步骤</strong>:</p>
+<ol>
+<li>使用Docker Compose部署集群</li>
+<li>验证Console管理界面</li>
+<li>创建Topic并发送测试消息</li>
+<li>验证主从复制是否正常</li>
+</ol>
+<h3 id="验证标准2-开发能力"><a class="header" href="#验证标准2-开发能力">验证标准2: 开发能力</a></h3>
+<p><strong>要求</strong>: 编写生产者和消费者,实现事务消息</p>
+<p><strong>考核任务</strong>:</p>
+<pre><code>1. 编写同步/异步/单向发送示例
+2. 实现顺序消息发送和消费
+3. 实现延迟消息(15分钟后消费)
+4. 实现事务消息(订单+扣库存场景)
+5. 实现批量消费(拉取10条)
+</code></pre>
+<h3 id="验证标准3-故障排查能力"><a class="header" href="#验证标准3-故障排查能力">验证标准3: 故障排查能力</a></h3>
+<p><strong>要求</strong>: 识别并解决常见问题</p>
+<p><strong>考核场景</strong>:</p>
+<pre><code>场景1: 消息发送失败 RemotingTooMuchRequestException
+- 如何排查原因?
+- 如何解决?
+
+场景2: 消息堆积10万条
+- 如何监控排查?
+- 提出3种解决方案
+
+场景3: 消费者不消费
+- 如何确认幂等性?
+- 列出3种幂等方案
+</code></pre>
+<h3 id="验证标准4-性能优化能力"><a class="header" href="#验证标准4-性能优化能力">验证标准4: 性能优化能力</a></h3>
+<p><strong>要求</strong>: 优化吞吐量和延迟</p>
+<p><strong>考核目标</strong>:</p>
+<pre><code>优化前: 10万TPS, 平均延迟10ms
+优化后: 20万TPS, 平均延迟5ms
+
+优化方向:
+1. Broker配置参数调整
+2. 生产者参数调优
+3. 消费者并发优化
+4. 网络和磁盘优化
+</code></pre>
+<h3 id="验证标准5-生产部署能力"><a class="header" href="#验证标准5-生产部署能力">验证标准5: 生产部署能力</a></h3>
+<p><strong>要求</strong>: 设计并部署生产级集群</p>
+<p><strong>考核场景</strong>:</p>
+<pre><code>需求:
+- 峰值TPS: 50万
+- 可用性: 99.99%
+- 延迟: P99 &lt; 10ms
+- 消息不丢失
+
+设计方案:
+1. 集群规模和配置
+2. Broker配置方案
+3. 监控告警方案
+4. 容灾预案
+</code></pre>
+<hr />
+<h2 id="九进阶学习路径"><a class="header" href="#九进阶学习路径">九、进阶学习路径</a></h2>
+<h3 id="91-源码层面"><a class="header" href="#91-源码层面">9.1 源码层面</a></h3>
+<p><strong>核心模块</strong>:</p>
+<ol>
+<li><strong>remoting</strong>: 网络通信(Netty)</li>
+<li><strong>store</strong>: 消息存储(CommitLog,ConsumeQueue)</li>
+<li><strong>client</strong>: 客户端(Producer,Consumer)</li>
+<li><strong>broker</strong>: Broker服务核心</li>
+<li><strong>namesrv</strong>: NameServer路由注册</li>
+</ol>
+<p><strong>学习路径</strong>:</p>
+<pre><code>1. 消息发送流程
+   Producer → Broker (Netty) → CommitLog → ConsumeQueue
+
+2. 消息消费流程
+   Consumer → Broker (Pull) → ConsumeQueue → CommitLog → 返回消息
+
+3. 顺序消息原理
+   MessageQueueSelector → 单Queue → MessageListenerOrderly + 锁
+
+4. 事务消息原理
+   Half消息 → 本地事务 → commit/rollback → 回查机制
+
+5. 主从复制
+   HAService → HAConnection → 数据同步
+</code></pre>
+<h3 id="92-高级特性"><a class="header" href="#92-高级特性">9.2 高级特性</a></h3>
+<p><strong>1. DLedger高可用</strong></p>
+<pre><code>特性: 基于Raft协议的主从高可用
+优势: Master挂掉自动选主
+
+部署:
+broker.conf:
+  enableDLegerCommitLog=true
+  dLegerGroup=broker-a
+  dLegerPeers=n0-127.0.0.1:40911;n1-127.0.0.2:40911;n2-127.0.0.3:40911
+  dLegerSelfId=n0
+</code></pre>
+<p><strong>2. 消息轨迹</strong></p>
+<pre><code class="language-java">// 生产者开启
+DefaultMQProducer producer = new DefaultMQProducer("group", true);
+
+// 消费者开启
+DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("group", true);
+
+// 查询消息轨迹
+sh mqadmin queryMsgTraceById -n localhost:9876 -i msgId
+</code></pre>
+<p><strong>3. ACL权限控制</strong></p>
+<pre><code class="language-yaml"># acl/plain_acl.yml
+accounts:
+  - accessKey: RocketMQ
+    secretKey: 12345678
+    whiteRemoteAddress: 192.168.0.*
+    admin: false
+    defaultTopicPerm: DENY
+    defaultGroupPerm: SUB
+    topicPerms:
+      - topic: TestTopic
+        perm: PUB|SUB
+</code></pre>
+<h3 id="93-推荐学习资源"><a class="header" href="#93-推荐学习资源">9.3 推荐学习资源</a></h3>
+<p><strong>官方资源</strong>:</p>
+<ul>
+<li>官方文档: https://rocketmq.apache.org/docs/</li>
+<li>GitHub源码: https://github.com/apache/rocketmq</li>
+<li>源码分析: https://github.com/apache/rocketmq/tree/develop</li>
+</ul>
+<p><strong>社区资源</strong>:</p>
+<ul>
+<li>RocketMQ中文社区: https://github.com/apache/rocketmq/tree/develop/docs/cn</li>
+<li>知乎专栏: 搜索"RocketMQ源码分析"</li>
+</ul>
+<p><strong>实践项目</strong>:</p>
+<ol>
+<li>订单系统(异步解耦)</li>
+<li>支付系统(事务消息)</li>
+<li>日志收集(批量消息)</li>
+<li>实时数据流(顺序消息)</li>
+</ol>
+<hr />
+<h2 id="十总结"><a class="header" href="#十总结">十、总结</a></h2>
+<h3 id="101-核心知识点速查"><a class="header" href="#101-核心知识点速查">10.1 核心知识点速查</a></h3>
+<pre><code class="language-bash"># ========== 集群管理 ==========
+# 查看集群信息
+sh mqadmin clusterList -n localhost:9876
+
+# 查看Broker状态
+sh mqadmin brokerStatus -n localhost:9876 -b broker-a
+
+# ========== Topic管理 ==========
+# 查看Topic列表
+sh mqadmin topicList -n localhost:9876
+
+# 创建Topic
+sh mqadmin updateTopic -n localhost:9876 -t TestTopic -c DefaultCluster -r 8 -w 8
+
+# 删除Topic
+sh mqadmin deleteTopic -n localhost:9876 -t TestTopic -c DefaultCluster
+
+# 查看Topic详情
+sh mqadmin topicStatus -n localhost:9876 -t TestTopic
+
+# ========== 消费组管理 ==========
+# 查看消费进度
+sh mqadmin consumerProgress -n localhost:9876 -g consumer-group
+
+# 设置消费位点
+sh mqadmin resetOffsetByTime -n localhost:9876 -g consumer-group -t TestTopic -s -1
+
+# 删除消费组
+sh mqadmin deleteSubGroup -n localhost:9876 -g consumer-group -c DefaultCluster
+
+# ========== 消息管理 ==========
+# 根据MessageId查询消息
+sh mqadmin queryMsgById -n localhost:9876 -i msgId
+
+# 根据Key查询消息
+sh mqadmin queryMsgByKey -n localhost:9876 -t TestTopic -k KEY_001
+
+# 根据时间查询消息
+sh mqadmin queryMsgByOffset -n localhost:9876 -t TestTopic -b 0 -i 0 -o 100
+
+# 发送测试消息
+sh mqadmin sendMessage -n localhost:9876 -t TestTopic -p "test message"
+</code></pre>
+<h3 id="102-性能基准参考"><a class="header" href="#102-性能基准参考">10.2 性能基准参考</a></h3>
+<p><strong>单机性能</strong>(标准配置16核32GB SSD):</p>
+<pre><code>同步发送: 5-10万 TPS
+异步发送: 20-30万 TPS
+单向发送: 30-50万 TPS
+
+消息延迟:
+P99: &lt; 10ms
+P999: &lt; 20ms
+平均: &lt; 5ms
+</code></pre>
+<p><strong>集群性能</strong>(4个Broker):</p>
+<pre><code>总吞吐量: 100万+ TPS
+消息堆积: 支持TB级
+可用性: 99.99%
+</code></pre>
+<h3 id="103-与kafka对比"><a class="header" href="#103-与kafka对比">10.3 与Kafka对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>RocketMQ</th><th>Kafka</th></tr></thead><tbody>
+<tr><td><strong>定位</strong></td><td>业务消息队列</td><td>大数据流处理</td></tr>
+<tr><td><strong>顺序消息</strong></td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td><strong>事务消息</strong></td><td>⭐⭐⭐⭐⭐</td><td>❌</td></tr>
+<tr><td><strong>延迟消息</strong></td><td>⭐⭐⭐⭐⭐</td><td>❌</td></tr>
+<tr><td><strong>消息过滤</strong></td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td><strong>消息回溯</strong></td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td><strong>消息堆积</strong></td><td>时间戳</td><td>offset</td></tr>
+<tr><td><strong>社区活跃度</strong></td><td>中</td><td>高(依赖ZK)</td></tr>
+<tr><td><strong>性能</strong></td><td>10万TPS</td><td>100万TPS</td></tr>
+<tr><td><strong>延迟</strong></td><td>ms级</td><td>ms级</td></tr>
+<tr><td><strong>学习曲线</strong></td><td>中等</td><td>陡峭</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="结语"><a class="header" href="#结语">结语</a></h2>
+<p>RocketMQ是阿里巴巴开源的高性能分布式消息中间件,支持事务消息、顺序消息、延迟消息等高级特性。</p>
+<p><strong>学习路径总结</strong>:</p>
+<pre><code>阶段1: 基础入门
+  → 理解核心概念
+  → 环境搭建
+  → 简单收发消息
+
+阶段2: 深入应用
+  → 顺序消息
+  → 延迟消息
+  → 事务消息
+  → 消费重试
+
+阶段3: 生产实战
+  → 集群部署
+  → 性能优化
+  → 监控告警
+  → 故障排查
+</code></pre>
+<p><strong>持续提升建议</strong>:</p>
+<ol>
+<li>深入阅读官方文档</li>
+<li>关注社区最佳实践</li>
+<li>在实际项目中应用</li>
+<li>对比学习Kafka和Pulsar</li>
+<li>深入研究源码</li>
+</ol>
+<p>祝你学习之旅圆满完成!🚀📮</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/middleware/rabbitmq.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/network/nginx.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/middleware/rabbitmq.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/network/nginx.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

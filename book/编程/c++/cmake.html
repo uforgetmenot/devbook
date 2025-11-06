@@ -1,0 +1,555 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CMake 技术笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="cmake-技术笔记"><a class="header" href="#cmake-技术笔记">CMake 技术笔记</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>CMake是一个跨平台的构建系统生成器，用于管理C/C++项目的构建过程。它使用平台无关的配置文件来生成特定于平台的构建文件（如Makefile、Visual Studio项目文件等）。</p>
+<h2 id="核心架构"><a class="header" href="#核心架构">核心架构</a></h2>
+<h3 id="1-基础组件"><a class="header" href="#1-基础组件">1. 基础组件</a></h3>
+<ul>
+<li><strong>CMakeLists.txt</strong>: 主要的配置文件，定义构建规则</li>
+<li><strong>cmake命令</strong>: 核心命令行工具</li>
+<li><strong>生成器(Generators)</strong>: 负责生成特定平台的构建文件</li>
+<li><strong>模块系统</strong>: 提供可复用的功能模块</li>
+</ul>
+<h3 id="2-构建过程"><a class="header" href="#2-构建过程">2. 构建过程</a></h3>
+<pre><code>源码 -&gt; CMakeLists.txt -&gt; CMake处理 -&gt; 构建文件 -&gt; 编译器 -&gt; 可执行文件
+</code></pre>
+<h2 id="核心命令和函数"><a class="header" href="#核心命令和函数">核心命令和函数</a></h2>
+<h3 id="1-项目配置命令"><a class="header" href="#1-项目配置命令">1. 项目配置命令</a></h3>
+<pre><code class="language-cmake"># 指定CMake最低版本要求
+cmake_minimum_required(VERSION 3.10)
+
+# 定义项目
+project(ProjectName VERSION 1.0.0 LANGUAGES CXX)
+
+# 设置C++标准
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+</code></pre>
+<h3 id="2-目标管理命令"><a class="header" href="#2-目标管理命令">2. 目标管理命令</a></h3>
+<pre><code class="language-cmake"># 创建可执行文件目标
+add_executable(target_name source1.cpp source2.cpp)
+
+# 创建静态库目标
+add_library(lib_name STATIC lib_source.cpp)
+
+# 创建动态库目标
+add_library(lib_name SHARED lib_source.cpp)
+
+# 链接库到目标
+target_link_libraries(target_name lib_name)
+
+# 设置目标属性
+target_include_directories(target_name PRIVATE include/)
+target_compile_definitions(target_name PRIVATE MACRO_NAME=VALUE)
+</code></pre>
+<h3 id="3-查找和配置命令"><a class="header" href="#3-查找和配置命令">3. 查找和配置命令</a></h3>
+<pre><code class="language-cmake"># 查找包
+find_package(PackageName REQUIRED)
+
+# 查找库文件
+find_library(LIB_VAR library_name PATHS /usr/lib)
+
+# 查找头文件
+find_path(HEADER_VAR header.h PATHS /usr/include)
+
+# 查找程序
+find_program(PROG_VAR program_name)
+</code></pre>
+<h2 id="关键特性分析"><a class="header" href="#关键特性分析">关键特性分析</a></h2>
+<h3 id="1-变量系统"><a class="header" href="#1-变量系统">1. 变量系统</a></h3>
+<pre><code class="language-cmake"># 设置变量
+set(VAR_NAME "value")
+set(LIST_VAR item1 item2 item3)
+
+# 使用变量
+message(STATUS "Variable value: ${VAR_NAME}")
+
+# 环境变量
+set(ENV{PATH} "${CMAKE_BINARY_DIR}/bin:$ENV{PATH}")
+</code></pre>
+<h3 id="2-条件处理"><a class="header" href="#2-条件处理">2. 条件处理</a></h3>
+<pre><code class="language-cmake"># 条件判断
+if(CONDITION)
+    # 执行代码
+elseif(OTHER_CONDITION)
+    # 执行其他代码
+else()
+    # 默认代码
+endif()
+
+# 常用条件
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_compile_definitions(target DEBUG_MODE)
+endif()
+</code></pre>
+<h3 id="3-循环结构"><a class="header" href="#3-循环结构">3. 循环结构</a></h3>
+<pre><code class="language-cmake"># foreach循环
+foreach(item IN LISTS list_var)
+    message(STATUS "Item: ${item}")
+endforeach()
+
+# while循环
+while(condition)
+    # 循环体
+endwhile()
+</code></pre>
+<h2 id="高级功能"><a class="header" href="#高级功能">高级功能</a></h2>
+<h3 id="1-自定义函数和宏"><a class="header" href="#1-自定义函数和宏">1. 自定义函数和宏</a></h3>
+<pre><code class="language-cmake"># 定义函数
+function(my_function arg1 arg2)
+    message(STATUS "Arguments: ${arg1}, ${arg2}")
+    # 函数体
+endfunction()
+
+# 定义宏
+macro(my_macro arg)
+    set(LOCAL_VAR ${arg})
+    # 宏体
+endmacro()
+</code></pre>
+<h3 id="2-生成器表达式"><a class="header" href="#2-生成器表达式">2. 生成器表达式</a></h3>
+<pre><code class="language-cmake"># 根据构建类型设置不同的编译选项
+target_compile_options(target PRIVATE
+    $&lt;$&lt;CONFIG:Debug&gt;:-g -O0&gt;
+    $&lt;$&lt;CONFIG:Release&gt;:-O3&gt;
+)
+
+# 根据编译器设置选项
+target_compile_options(target PRIVATE
+    $&lt;$&lt;CXX_COMPILER_ID:GNU&gt;:-Wall -Wextra&gt;
+    $&lt;$&lt;CXX_COMPILER_ID:MSVC&gt;:/W4&gt;
+)
+</code></pre>
+<h3 id="3-属性系统"><a class="header" href="#3-属性系统">3. 属性系统</a></h3>
+<pre><code class="language-cmake"># 设置全局属性
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+# 设置目标属性
+set_target_properties(target PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
+    POSITION_INDEPENDENT_CODE ON
+)
+
+# 获取属性
+get_target_property(std_value target CXX_STANDARD)
+</code></pre>
+<h2 id="依赖管理"><a class="header" href="#依赖管理">依赖管理</a></h2>
+<h3 id="1-传统方式"><a class="header" href="#1-传统方式">1. 传统方式</a></h3>
+<pre><code class="language-cmake"># 手动查找和链接
+find_package(Boost REQUIRED COMPONENTS system filesystem)
+target_link_libraries(target ${Boost_LIBRARIES})
+target_include_directories(target PRIVATE ${Boost_INCLUDE_DIRS})
+</code></pre>
+<h3 id="2-现代cmake方式"><a class="header" href="#2-现代cmake方式">2. 现代CMake方式</a></h3>
+<pre><code class="language-cmake"># 使用导入目标
+find_package(Boost REQUIRED COMPONENTS system filesystem)
+target_link_libraries(target Boost::system Boost::filesystem)
+</code></pre>
+<h3 id="3-fetchcontent模块"><a class="header" href="#3-fetchcontent模块">3. FetchContent模块</a></h3>
+<pre><code class="language-cmake">include(FetchContent)
+
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG release-1.12.1
+)
+
+FetchContent_MakeAvailable(googletest)
+target_link_libraries(target gtest_main)
+</code></pre>
+<h2 id="配置和安装"><a class="header" href="#配置和安装">配置和安装</a></h2>
+<h3 id="1-安装规则"><a class="header" href="#1-安装规则">1. 安装规则</a></h3>
+<pre><code class="language-cmake"># 安装可执行文件
+install(TARGETS target
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+
+# 安装头文件
+install(DIRECTORY include/
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h"
+)
+
+# 安装配置文件
+install(FILES config.txt DESTINATION etc)
+</code></pre>
+<h3 id="2-包配置"><a class="header" href="#2-包配置">2. 包配置</a></h3>
+<pre><code class="language-cmake"># 生成版本文件
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/ProjectConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+# 导出目标
+export(TARGETS target FILE ProjectTargets.cmake)
+</code></pre>
+<h2 id="测试集成"><a class="header" href="#测试集成">测试集成</a></h2>
+<h3 id="1-ctest集成"><a class="header" href="#1-ctest集成">1. CTest集成</a></h3>
+<pre><code class="language-cmake"># 启用测试
+enable_testing()
+
+# 添加测试
+add_test(NAME test_name COMMAND test_executable)
+
+# 设置测试属性
+set_tests_properties(test_name PROPERTIES
+    PASS_REGULAR_EXPRESSION "Test passed"
+    TIMEOUT 30
+)
+</code></pre>
+<h3 id="2-googletest集成"><a class="header" href="#2-googletest集成">2. GoogleTest集成</a></h3>
+<pre><code class="language-cmake">find_package(GTest REQUIRED)
+add_executable(tests test_main.cpp)
+target_link_libraries(tests GTest::gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(tests)
+</code></pre>
+<h2 id="常用变量和属性"><a class="header" href="#常用变量和属性">常用变量和属性</a></h2>
+<h3 id="1-内置变量"><a class="header" href="#1-内置变量">1. 内置变量</a></h3>
+<ul>
+<li><code>CMAKE_SOURCE_DIR</code>: 源码根目录</li>
+<li><code>CMAKE_BINARY_DIR</code>: 构建根目录</li>
+<li><code>CMAKE_CURRENT_SOURCE_DIR</code>: 当前CMakeLists.txt所在目录</li>
+<li><code>CMAKE_CURRENT_BINARY_DIR</code>: 当前构建目录</li>
+<li><code>CMAKE_BUILD_TYPE</code>: 构建类型(Debug/Release)</li>
+<li><code>CMAKE_CXX_COMPILER</code>: C++编译器路径</li>
+<li><code>CMAKE_SYSTEM_NAME</code>: 目标系统名称</li>
+</ul>
+<h3 id="2-平台相关变量"><a class="header" href="#2-平台相关变量">2. 平台相关变量</a></h3>
+<ul>
+<li><code>WIN32</code>: Windows平台标识</li>
+<li><code>UNIX</code>: Unix-like系统标识</li>
+<li><code>APPLE</code>: macOS平台标识</li>
+<li><code>CMAKE_SIZEOF_VOID_P</code>: 指针大小(32位=4, 64位=8)</li>
+</ul>
+<h2 id="最佳实践"><a class="header" href="#最佳实践">最佳实践</a></h2>
+<h3 id="1-现代cmake原则"><a class="header" href="#1-现代cmake原则">1. 现代CMake原则</a></h3>
+<ul>
+<li>使用target_*命令而不是全局命令</li>
+<li>优先使用导入目标而不是变量</li>
+<li>避免使用全局的include_directories和link_directories</li>
+<li>使用target_compile_features而不是设置CMAKE_CXX_STANDARD</li>
+</ul>
+<h3 id="2-项目结构建议"><a class="header" href="#2-项目结构建议">2. 项目结构建议</a></h3>
+<pre><code>project/
+├── CMakeLists.txt
+├── src/
+│   ├── CMakeLists.txt
+│   └── main.cpp
+├── include/
+│   └── project/
+│       └── header.h
+├── tests/
+│   ├── CMakeLists.txt
+│   └── test_main.cpp
+└── cmake/
+    └── modules/
+</code></pre>
+<h3 id="3-版本管理"><a class="header" href="#3-版本管理">3. 版本管理</a></h3>
+<pre><code class="language-cmake"># 总是指定最低版本
+cmake_minimum_required(VERSION 3.15)
+
+# 使用版本范围
+find_package(Boost 1.70..1.80 REQUIRED)
+
+# 检查特性支持
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.20)
+    # 使用新特性
+endif()
+</code></pre>
+<h2 id="调试和故障排除"><a class="header" href="#调试和故障排除">调试和故障排除</a></h2>
+<h3 id="1-调试技巧"><a class="header" href="#1-调试技巧">1. 调试技巧</a></h3>
+<pre><code class="language-cmake"># 输出调试信息
+message(STATUS "Debug info: ${VARIABLE}")
+message(WARNING "Warning message")
+message(FATAL_ERROR "Fatal error message")
+
+# 打印所有变量
+get_cmake_property(_variableNames VARIABLES)
+foreach(_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+</code></pre>
+<h3 id="2-常见问题"><a class="header" href="#2-常见问题">2. 常见问题</a></h3>
+<ul>
+<li><strong>路径问题</strong>: 使用绝对路径或CMAKE_CURRENT_*变量</li>
+<li><strong>链接问题</strong>: 检查库的链接顺序和依赖关系</li>
+<li><strong>头文件问题</strong>: 确保include_directories正确设置</li>
+<li><strong>版本兼容</strong>: 检查CMake版本和包版本要求</li>
+</ul>
+<h2 id="性能优化"><a class="header" href="#性能优化">性能优化</a></h2>
+<h3 id="1-并行构建"><a class="header" href="#1-并行构建">1. 并行构建</a></h3>
+<pre><code class="language-bash"># 使用多核编译
+cmake --build . --parallel 8
+
+# 在CMakeLists.txt中设置
+set(CMAKE_BUILD_PARALLEL_LEVEL 8)
+</code></pre>
+<h3 id="2-缓存优化"><a class="header" href="#2-缓存优化">2. 缓存优化</a></h3>
+<pre><code class="language-cmake"># 缓存变量
+set(CACHE_VAR "value" CACHE STRING "Description")
+
+# 强制缓存
+set(FORCE_VAR "value" CACHE STRING "Description" FORCE)
+</code></pre>
+<h2 id="扩展和插件"><a class="header" href="#扩展和插件">扩展和插件</a></h2>
+<h3 id="1-自定义命令"><a class="header" href="#1-自定义命令">1. 自定义命令</a></h3>
+<pre><code class="language-cmake">add_custom_command(
+    OUTPUT generated_file.cpp
+    COMMAND generator_tool input.txt output.cpp
+    DEPENDS input.txt
+    COMMENT "Generating source file"
+)
+</code></pre>
+<h3 id="2-自定义目标"><a class="header" href="#2-自定义目标">2. 自定义目标</a></h3>
+<pre><code class="language-cmake">add_custom_target(docs
+    COMMAND doxygen Doxyfile
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Generating documentation"
+)
+</code></pre>
+<p>CMake是现代C++项目构建的核心工具，掌握其各种特性和最佳实践对于高效的项目管理至关重要。通过合理使用CMake的各种功能，可以创建可维护、可移植且高效的构建系统。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/bigdata/8-MapReduce.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/dlib.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/bigdata/8-MapReduce.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/dlib.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

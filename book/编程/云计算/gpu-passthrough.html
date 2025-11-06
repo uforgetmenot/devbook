@@ -1,0 +1,1079 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>GPU Passthrough（GPU 直通）学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="gpu-passthroughgpu-直通学习笔记"><a class="header" href="#gpu-passthroughgpu-直通学习笔记">GPU Passthrough（GPU 直通）学习笔记</a></h1>
+<blockquote>
+<p>面向虚拟化、云桌面、HPC、AI 训练和图形渲染场景的工程师（0-5 年经验），系统掌握 GPU 直通技术原理、平台配置方法、性能调优与运维治理，构建高性能可靠的虚拟化 GPU 方案。</p>
+</blockquote>
+<hr />
+<h2 id="学习定位与总体目标"><a class="header" href="#学习定位与总体目标">学习定位与总体目标</a></h2>
+<ul>
+<li><strong>学习者画像</strong>：熟悉基本的虚拟化（KVM/VMware/Hyper-V）、硬件与 Linux 运维知识，需为虚拟机或容器提供接近原生性能的 GPU 加速能力，用于图形工作站、游戏云、AI 推理训练、视频转码等场景。</li>
+<li><strong>技术定位</strong>：GPU Passthrough 通过 VT-d/IOMMU 等硬件虚拟化技术，将物理 GPU 直接分配给虚拟机或容器，使其独占设备并使用原生驱动，消除模拟层开销，提升性能与兼容性。</li>
+<li><strong>学习目标</strong>：
+<ol>
+<li>理解 GPU 直通的硬件需求、IOMMU 原理、驱动栈与平台差异；</li>
+<li>熟悉 KVM/libvirt、Proxmox、OpenStack、VMware ESXi、Hyper-V、NVIDIA vGPU、SR-IOV 等实现；</li>
+<li>能够配置并验证 GPU 直通，包括 BIOS、内核参数、驱动安装、可视化管理；</li>
+<li>设计多租户隔离、安全策略、性能监控与自动化工具链；</li>
+<li>解决常见问题（Code 43、驱动冲突、设备分组、重启失效）；</li>
+<li>输出实践案例、性能报告、最佳实践与知识沉淀。</li>
+</ol>
+</li>
+<li><strong>成果要求</strong>：
+<ul>
+<li>建立规范化的 GPU 直通部署手册；</li>
+<li>完成至少两种平台的 GPU Passthrough 实验；</li>
+<li>输出性能对比数据、监控方案、故障排查流程；</li>
+<li>编写自动化脚本或模板实现快速配置；</li>
+<li>形成团队培训材料、QA 清单与变更管理流程。</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="核心模块结构"><a class="header" href="#核心模块结构">核心模块结构</a></h2>
+<ol>
+<li><strong>模块一：GPU 直通原理与系统需求</strong> —— 硬件基础、IOMMU、PCIe 拓扑。</li>
+<li><strong>模块二：KVM/libvirt 平台 GPU 直通实践</strong> —— Linux 主机配置、VM XML、驱动安装。</li>
+<li><strong>模块三：其他虚拟化平台（Proxmox/OpenStack/VMware 等）实践</strong> —— 多平台实现对比。</li>
+<li><strong>模块四：容器与混合场景（Docker/Kubernetes/NVIDIA vGPU/SR-IOV）</strong> —— GPU 共享与多租户。</li>
+<li><strong>模块五：性能评估、调优与监控</strong> —— 基准测试、资源管理、监控告警。</li>
+<li><strong>模块六：故障诊断、安全治理与最佳实践</strong> —— 常见问题、排查流程、文档沉淀。</li>
+</ol>
+<hr />
+<h2 id="模块一gpu-直通原理与系统需求"><a class="header" href="#模块一gpu-直通原理与系统需求">模块一：GPU 直通原理与系统需求</a></h2>
+<h3 id="11-硬件与基础知识"><a class="header" href="#11-硬件与基础知识">1.1 硬件与基础知识</a></h3>
+<ul>
+<li><strong>CPU 支持</strong>：Intel VT-d、AMD-Vi（IOMMU）；</li>
+<li><strong>主板/BIOS</strong>：需支持 IOMMU、SR-IOV、Resizable BAR；</li>
+<li><strong>GPU 品类</strong>：NVIDIA GeForce/Quadro/Tesla，AMD Radeon/FirePro/Instinct；</li>
+<li><strong>PCIe 结构</strong>：设备需位于独立 IOMMU Group；</li>
+<li><strong>ACS (Access Control Services)</strong>：影响设备分组与隔离；</li>
+<li><strong>内核版本</strong>：较新内核对硬件兼容度更高，解决 bug；</li>
+<li><strong>驱动</strong>：宿主机与虚拟机中驱动使用策略（host 不加载/使用 stub）；</li>
+<li><strong>固件/BIOS</strong>：UEFI vs Legacy，GPU Option ROM；</li>
+<li><strong>电源/散热</strong>：高功耗 GPU 需考虑稳定性。</li>
+</ul>
+<h3 id="12-iommu-与-vfio"><a class="header" href="#12-iommu-与-vfio">1.2 IOMMU 与 VFIO</a></h3>
+<ul>
+<li>IOMMU：Input-Output Memory Management Unit，将设备映射到虚拟地址，确保隔离；</li>
+<li>VT-d/AMD-Vi：硬件实现；</li>
+<li>VFIO（Virtual Function I/O）：Linux 内核驱动，提供安全用户态驱动接口；</li>
+<li><code>vfio-pci</code> 绑定设备 → 虚拟机使用；</li>
+<li><code>pci-stub</code> 或 <code>x-pci_passthrough</code> 旧方案；</li>
+<li>VFIO 功能：DMA 隔离、MSI、MSI-X、INTx、PCIe 热插拔模拟。</li>
+</ul>
+<h3 id="13-pcie-拓扑分析"><a class="header" href="#13-pcie-拓扑分析">1.3 PCIe 拓扑分析</a></h3>
+<ul>
+<li><code>lspci -nn</code> 查看设备 ID；</li>
+<li><code>lspci -t</code> / <code>tree</code> 查看层次；</li>
+<li><code>find /sys/kernel/iommu_groups/ -type l</code> → IOMMU Group；</li>
+<li><code>dmesg | grep -e DMAR -e IOMMU</code> 验证 IOMMU；</li>
+<li><code>lspci -vvv</code> 查看 ACS Capabilities；</li>
+<li>如 IOMMU 分组不理想，可使用 <code>pcie_acs_override=downstream,multifunction</code>（但降低安全性）。</li>
+</ul>
+<h3 id="14-biosuefi-配置"><a class="header" href="#14-biosuefi-配置">1.4 BIOS/UEFI 配置</a></h3>
+<ul>
+<li>关键选项：
+<ul>
+<li><code>Intel VT-d</code> / <code>AMD SVM</code> / <code>IOMMU</code>；</li>
+<li><code>Above 4G Decoding</code>；</li>
+<li><code>Resizable BAR</code>（某些 GPU）；</li>
+<li><code>Primary GPU</code> 设置，保留主机输出；</li>
+<li><code>SR-IOV</code>；</li>
+<li><code>ACS</code>；</li>
+</ul>
+</li>
+<li>升级 BIOS 以修复 Bug；</li>
+<li>注意：部分 OEM 主板或笔记本 BIOS 限制直通。</li>
+</ul>
+<h3 id="15-内核参数配置"><a class="header" href="#15-内核参数配置">1.5 内核参数配置</a></h3>
+<ul>
+<li><code>/etc/default/grub</code>:
+<ul>
+<li>Intel: <code>intel_iommu=on iommu=pt</code>;</li>
+<li>AMD: <code>amd_iommu=on iommu=pt</code>;</li>
+<li><code>pcie_acs_override=downstream,multifunction</code>（视情况）；</li>
+<li><code>vfio-pci.ids=10de:1db6,10de:10f0</code>（示例设备 ID）；</li>
+<li><code>video=efifb:off</code>（避免宿主加载 framebuffer）；</li>
+</ul>
+</li>
+<li>更新 GRUB：<code>sudo update-grub</code>；</li>
+<li>重启后验证 <code>dmesg</code>。</li>
+</ul>
+<h3 id="16-学习重点与易错点"><a class="header" href="#16-学习重点与易错点">1.6 学习重点与易错点</a></h3>
+<ul>
+<li><strong>重点</strong>：硬件支持、IOMMU、VFIO、PCIe 分组、驱动绑定。</li>
+<li><strong>易错点</strong>：
+<ol>
+<li>BIOS 未开启 VT-d/AMD-Vi → 无法直通；</li>
+<li>GPU 与其他设备在同一 IOMMU Group → 需要 ACS 或更换槽位；</li>
+<li>宿主机加载 GPU 驱动 → 无法绑定 VFIO；</li>
+<li>NVIDIA GeForce Code 43（检测虚拟环境）；</li>
+<li>旧内核/旧驱动导致兼容性差。</li>
+</ol>
+</li>
+</ul>
+<h3 id="17-实验准备清单"><a class="header" href="#17-实验准备清单">1.7 实验准备清单</a></h3>
+<ul>
+<li>确认硬件支持 IOMMU 与 GPU 直通；</li>
+<li>安装最新内核与 qemu/libvirt；</li>
+<li>准备虚拟机镜像（Windows/Linux）；</li>
+<li>收集 GPU VBIOS（必要时）；</li>
+<li>备份系统配置，创建快照。</li>
+</ul>
+<hr />
+<h2 id="模块二kvmlibvirt-环境-gpu-直通实践"><a class="header" href="#模块二kvmlibvirt-环境-gpu-直通实践">模块二：KVM/libvirt 环境 GPU 直通实践</a></h2>
+<h3 id="21-环境概述"><a class="header" href="#21-环境概述">2.1 环境概述</a></h3>
+<ul>
+<li>宿主机：Linux（Fedora/RHEL/Ubuntu/Debian）；</li>
+<li>管理工具：libvirt (<code>virsh</code>), virt-manager；</li>
+<li>QEMU 版本 ≥ 4.x 推荐；</li>
+<li>GPU Passthrough 流程：
+<ol>
+<li>检查 IOMMU；</li>
+<li>将 GPU 与音频设备绑定 VFIO；</li>
+<li>配置 libvirt VM XML，添加 <code>hostdev</code>；</li>
+<li>在虚拟机中安装驱动；</li>
+<li>验证性能与稳定性。</li>
+</ol>
+</li>
+</ul>
+<h3 id="22-绑定-gpu-到-vfio"><a class="header" href="#22-绑定-gpu-到-vfio">2.2 绑定 GPU 到 VFIO</a></h3>
+<ul>
+<li>获取设备 ID：<code>lspci -nn | grep -i vga</code>；</li>
+<li>例如：<code>01:00.0 VGA compatible controller [0300]: NVIDIA Corporation GP104 [10de:1b81]</code>；</li>
+<li><code>/etc/modprobe.d/vfio.conf</code>：
+<pre><code>options vfio-pci ids=10de:1b81,10de:10f0
+</code></pre>
+</li>
+<li>禁止 nouveau/nvidia 驱动：
+<pre><code>echo "blacklist nouveau" | sudo tee /etc/modprobe.d/blacklist-nouveau.conf
+sudo update-initramfs -u
+</code></pre>
+</li>
+<li>重启后检查：<code>lspci -nnk</code> → Driver in use: <code>vfio-pci</code>。</li>
+</ul>
+<h3 id="23-libvirt-xml-配置示例"><a class="header" href="#23-libvirt-xml-配置示例">2.3 libvirt XML 配置示例</a></h3>
+<pre><code class="language-xml">&lt;devices&gt;
+  &lt;hostdev mode='subsystem' type='pci' managed='yes'&gt;
+    &lt;source&gt;
+      &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x0'/&gt;
+    &lt;/source&gt;
+    &lt;rom file='/usr/share/vgabios/NVIDIA.GTX1080.rom'/&gt;
+    &lt;driver name='vfio'/&gt;
+  &lt;/hostdev&gt;
+  &lt;hostdev mode='subsystem' type='pci' managed='yes'&gt;
+    &lt;source&gt;
+      &lt;address domain='0x0000' bus='0x01' slot='0x00' function='0x1'/&gt;
+    &lt;/source&gt;
+    &lt;driver name='vfio'/&gt;
+  &lt;/hostdev&gt;
+&lt;/devices&gt;
+</code></pre>
+<ul>
+<li><code>function='0x0'</code> GPU；<code>function='0x1'</code> 音频设备；</li>
+<li><code>rom file</code>：可选，给虚拟机提供 VBIOS（某些 GPU 必须）；</li>
+<li><code>managed='yes'</code> libvirt 自动绑定；</li>
+<li><code>multifunction='on'</code> 如果需要；</li>
+<li>设置 <code>virtio</code> 或 <code>q35</code> chipset。</li>
+</ul>
+<h3 id="24-cpunuma-与-hugepages-配合"><a class="header" href="#24-cpunuma-与-hugepages-配合">2.4 CPU/NUMA 与 HugePages 配合</a></h3>
+<ul>
+<li><code>cpu mode='host-passthrough'</code>;</li>
+<li>直通 GPU 的 VM 可配合 <code>CPU Pinning</code>、<code>HugePages</code>；</li>
+<li><code>memoryBacking</code>：
+<pre><code class="language-xml">&lt;memoryBacking&gt;
+  &lt;hugepages&gt;
+    &lt;page size='1' unit='GiB'/&gt;
+  &lt;/hugepages&gt;
+&lt;/memoryBacking&gt;
+</code></pre>
+</li>
+<li>NUMA：<code>&lt;numatune&gt;&lt;memory mode='preferred' nodeset='0'/&gt;&lt;/numatune&gt;</code>。</li>
+</ul>
+<h3 id="25-virt-install--cli"><a class="header" href="#25-virt-install--cli">2.5 virt-install &amp; CLI</a></h3>
+<pre><code class="language-bash">virt-install \
+  --name win10-gpu \
+  --os-variant win10 \
+  --memory 16384 --vcpus 8 \
+  --disk path=/var/lib/libvirt/images/win10.qcow2,bus=virtio,size=100 \
+  --graphics none \
+  --boot uefi \
+  --features kvm_hidden=on \
+  --host-device 0000:01:00.0 \
+  --host-device 0000:01:00.1
+</code></pre>
+<ul>
+<li><code>--graphics none</code>: 仅 GPU 输出；</li>
+<li>使用 <code>spice</code> 或 <code>VNC</code> 作为辅助控制台；</li>
+<li><code>kvm_hidden=on</code> 隐藏 KVM 特征（防止 NVIDIA Code 43）；</li>
+<li>Windows 需要 <code>virtio</code> 驱动。</li>
+</ul>
+<h3 id="26-驱动安装与配置"><a class="header" href="#26-驱动安装与配置">2.6 驱动安装与配置</a></h3>
+<ul>
+<li>Windows 虚拟机：安装官方 NVIDIA/AMD 驱动；</li>
+<li>Linux 虚拟机：安装 GPU 驱动 + CUDA/TensorRT；</li>
+<li>验证 <code>Device Manager</code> / <code>lspci</code>; <code>nvidia-smi</code>；</li>
+<li>需安装 <code>virtio</code> 网卡/磁盘驱动。</li>
+</ul>
+<h3 id="27-code-43-问题处理"><a class="header" href="#27-code-43-问题处理">2.7 Code 43 问题处理</a></h3>
+<ul>
+<li>NVIDIA GeForce 在虚拟机中会检测虚拟化，抛出 Code 43；</li>
+<li>解决方法：
+<ul>
+<li><code>kvm=off</code> 或 <code>hv_vendor_id=NVIDIA-hypervisor</code>;</li>
+<li>修改 libvirt XML：
+<pre><code class="language-xml">&lt;features&gt;
+  &lt;hyperv&gt;
+    &lt;vendor_id state='on' value='1234567890ab'/&gt;
+  &lt;/hyperv&gt;
+  &lt;kvm&gt;
+    &lt;hidden state='on'/&gt;
+  &lt;/kvm&gt;
+&lt;/features&gt;
+</code></pre>
+</li>
+<li>使用 patched 驱动或 <code>nvidia-kvm-patcher</code>（注意许可）；</li>
+<li>使用专业卡（Quadro/Tesla）无此限制。</li>
+</ul>
+</li>
+</ul>
+<h3 id="28-监控与测试"><a class="header" href="#28-监控与测试">2.8 监控与测试</a></h3>
+<ul>
+<li>VM 内：<code>nvidia-smi</code>, <code>glxinfo</code>, <code>cuda-smi</code>;</li>
+<li>性能测试：<code>Unigine Heaven</code>, <code>FurMark</code>, <code>CUDA samples</code>, <code>TensorFlow benchmark</code>;</li>
+<li>VR Display：连接物理显示器或 Dummy HDMI 插头。</li>
+</ul>
+<h3 id="29-自动化脚本示例"><a class="header" href="#29-自动化脚本示例">2.9 自动化脚本示例</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+GPU_IDS=$(lspci -nn | awk '/VGA|3D/{print $1}')
+for id in $GPU_IDS; do
+  virsh nodedev-reattach pci_${id//[:.]/_}
+done
+</code></pre>
+<ul>
+<li>用于维护/重启后重新绑定。</li>
+</ul>
+<h3 id="210-实验练习"><a class="header" href="#210-实验练习">2.10 实验练习</a></h3>
+<ul>
+<li>在 KVM 环境中将 NVIDIA GPU 直通到 Windows 10，运行游戏/3D 软件；</li>
+<li>将 AMD GPU 直通到 Linux 虚拟机，运行 Blender 渲染；</li>
+<li>测试 GPU 与 SR-IOV NIC 同时直通；</li>
+<li>结合 <code>vfio-pci</code> + HugePages + CPU Pinning；</li>
+<li>整理操作步骤和问题记录。</li>
+</ul>
+<hr />
+<h2 id="模块三多平台-gpu-passthrough-实践"><a class="header" href="#模块三多平台-gpu-passthrough-实践">模块三：多平台 GPU Passthrough 实践</a></h2>
+<h3 id="31-proxmox-ve"><a class="header" href="#31-proxmox-ve">3.1 Proxmox VE</a></h3>
+<ul>
+<li>Proxmox 基于 KVM/QEMU，提供 Web 界面；</li>
+<li>配置：
+<ul>
+<li><code>/etc/default/grub</code> 同 KVM；</li>
+<li><code>/etc/modules</code> 添加 <code>vfio</code>, <code>vfio_iommu_type1</code>, <code>vfio_pci</code>, <code>vfio_virqfd</code>；</li>
+<li><code>/etc/modprobe.d/vfio.conf</code> 指定设备；</li>
+<li>Web UI：硬件 → 添加 PCI 设备 → 勾选 <code>Primary GPU</code>, <code>ROM-Bar</code>；</li>
+<li><code>args: -set device.pci0.x.y=&lt;参数&gt;</code> (高级)；</li>
+</ul>
+</li>
+<li>Proxmox 支持 LXC 的 GPU 直通（通过 <code>/dev/dri</code>）。</li>
+</ul>
+<h3 id="32-openstack"><a class="header" href="#32-openstack">3.2 OpenStack</a></h3>
+<ul>
+<li>使用 Nova + QEMU；</li>
+<li>配置步骤：
+<ul>
+<li>控制节点 <code>nova.conf</code>：
+<pre><code class="language-ini">[filter_scheduler]
+enabled_filters = PciPassthroughFilter
+[pci]
+passthrough_whitelist = {"vendor_id":"10de","product_id":"1eb8","address":"*:00:1b.*"}
+alias = {"name":"gpu","product_id":"1eb8","vendor_id":"10de","device_type":"type-PCI"}
+</code></pre>
+</li>
+<li>创建 Flavor：<code>openstack flavor set gpu.large --property "pci_passthrough:alias"="gpu:1"</code>；</li>
+<li>镜像元数据 <code>hw_video_model=vga</code>，<code>hw_boot_menu=true</code>；</li>
+<li>调度：Placement + Resource Provider；</li>
+<li>多租户隔离：Node label、aggregates；</li>
+<li>使用 <code>nova boot</code> 指定 GPU Flavor；</li>
+</ul>
+</li>
+<li>Neutron 网络可能需要隔离；</li>
+<li>需配合 <code>cyborg</code>（硬件加速管理）进行高级管理。</li>
+</ul>
+<h3 id="33-vmware-esxi"><a class="header" href="#33-vmware-esxi">3.3 VMware ESXi</a></h3>
+<ul>
+<li>启用 <code>DirectPath I/O</code>；</li>
+<li>操作步骤：
+<ul>
+<li>BIOS 开启 VT-d；</li>
+<li>ESXi Web → Host → Manage → Hardware → PCI Devices → 勾选 GPU 直通；</li>
+<li>重启主机；</li>
+<li>创建/编辑 VM：添加 PCI 设备；</li>
+<li>选择 <code>Reserve all guest memory</code>；</li>
+<li>Windows 需安装 VMware Tools；</li>
+<li><code>vmx</code> 文件可手动编辑 <code>hypervisor.cpuid.v0 = FALSE</code> (隐藏虚拟化)；</li>
+<li>支持 vGPU（NVIDIA vGPU, AMD MxGPU）；</li>
+</ul>
+</li>
+<li>与 vMotion 不兼容（除非使用 vGPU）；</li>
+<li>许可限制：GeForce 直通 vs 专业卡。</li>
+</ul>
+<h3 id="34-hyper-v"><a class="header" href="#34-hyper-v">3.4 Hyper-V</a></h3>
+<ul>
+<li>Windows Server/Hyper-V 支持 DDA (Discrete Device Assignment)；</li>
+<li>步骤：
+<ul>
+<li>Powershell：
+<pre><code class="language-powershell">Dismount-VMHostAssignableDevice -LocationPath "PCIROOT(0)#PCI(1C02)#PCI(0000)#PCI(0000)"
+Add-VMAssignableDevice -LocationPath ... -VMName "VM01"
+</code></pre>
+</li>
+<li>需要禁用设备在主机上驱动；</li>
+<li>仅部分 GPU 支持；</li>
+<li>虚拟机需运行 Windows 10/Server 2019+；</li>
+<li>结合 RemoteFX vGPU（已弃用），推荐 DDA；</li>
+</ul>
+</li>
+<li>Hyper-V 容器也可使用 GPU Passthrough。</li>
+</ul>
+<h3 id="35-xenserver--citrix-hypervisor"><a class="header" href="#35-xenserver--citrix-hypervisor">3.5 XenServer / Citrix Hypervisor</a></h3>
+<ul>
+<li>支持 GPU Passthrough 与 vGPU；</li>
+<li><code>xe vgpu-type-list</code>，<code>xe vgpu-create</code>；</li>
+<li>vGPU Profile 选择；</li>
+<li>需要 Citrix 许可。</li>
+</ul>
+<h3 id="36-nvidia-vgpu-与-sr-iov"><a class="header" href="#36-nvidia-vgpu-与-sr-iov">3.6 NVIDIA vGPU 与 SR-IOV</a></h3>
+<ul>
+<li>NVIDIA vGPU：共享 GPU 的虚拟化技术；
+<ul>
+<li>需 vGPU 许可（商业）；</li>
+<li>安装 <code>NVIDIA vGPU Manager</code> 在宿主机；</li>
+<li>虚拟机使用对应 vGPU 驱动；</li>
+<li>Profile 选择（如 <code>GRID T4-16Q</code>）；</li>
+</ul>
+</li>
+<li>AMD MxGPU：SR-IOV 基于 PCIe，硬件划分虚拟函数（VF）；
+<ul>
+<li><code>echo 4 &gt; /sys/bus/pci/devices/.../sriov_numvfs</code> 创建 VF；</li>
+<li>将 VF 直通虚拟机；</li>
+</ul>
+</li>
+<li>Intel GVT-g：老方案（已弃用），新推荐 SR-IOV（Xe GPU）。</li>
+</ul>
+<h3 id="37-案例proxmox--windows-11-游戏-vm"><a class="header" href="#37-案例proxmox--windows-11-游戏-vm">3.7 案例：Proxmox + Windows 11 游戏 VM</a></h3>
+<ul>
+<li>直通 RTX 3080；</li>
+<li>解决 Code 43；</li>
+<li>使用 Looking Glass（共享帧缓冲）+ <code>virtio</code>；</li>
+<li>Perf：对比原生 vs 虚拟；</li>
+<li>记录参数与 BIOS 设置。</li>
+</ul>
+<h3 id="38-案例openstack-gpu-云服务"><a class="header" href="#38-案例openstack-gpu-云服务">3.8 案例：OpenStack GPU 云服务</a></h3>
+<ul>
+<li>Flavor <code>g1.large</code> with 1 GPU；</li>
+<li>使用 Keystone + Horizon 自助；</li>
+<li><code>cuda driver</code> 预装；</li>
+<li>监控 GPU 利用率；</li>
+<li>计费：Ceilometer/Prometheus。</li>
+</ul>
+<h3 id="39-案例vmware-vsphere-ai-平台"><a class="header" href="#39-案例vmware-vsphere-ai-平台">3.9 案例：VMware vSphere AI 平台</a></h3>
+<ul>
+<li>多台 ESXi，vCenter 管理；</li>
+<li>直通 Tesla V100；</li>
+<li>GPU 池化 + DRS；</li>
+<li>配合 vRealize 监控；</li>
+<li>自动部署脚本（PowerCLI）。</li>
+</ul>
+<h3 id="310-练习"><a class="header" href="#310-练习">3.10 练习</a></h3>
+<ul>
+<li>在 Proxmox 部署 Windows VM 直通 GTX 1080；</li>
+<li>在 OpenStack 上创建 GPU Flavor 并验证；</li>
+<li>在 Hyper-V 配置 DDA 并运行 TensorFlow；</li>
+<li>对比 ESXi, KVM, Proxmox 体验差异。</li>
+</ul>
+<hr />
+<h2 id="模块四容器与混合场景"><a class="header" href="#模块四容器与混合场景">模块四：容器与混合场景</a></h2>
+<h3 id="41-docker-与-nvidia-container-runtime"><a class="header" href="#41-docker-与-nvidia-container-runtime">4.1 Docker 与 NVIDIA Container Runtime</a></h3>
+<ul>
+<li>使用 <code>nvidia-docker2</code> / <code>nvidia-container-toolkit</code>；</li>
+<li><code>docker run --gpus all nvidia/cuda:11.7-base nvidia-smi</code>；</li>
+<li>直通 GPU 到 VM → VM 内容器使用；</li>
+<li>宿主级容器直通：
+<ul>
+<li><code>--device=/dev/nvidia0</code>；</li>
+<li><code>NVIDIA_VISIBLE_DEVICES=all</code>；</li>
+</ul>
+</li>
+<li>与 Passthrough 配合：容器运行在直通 GPU 的 VM 中，或宿主直接共享（但非 VM 直通）。</li>
+</ul>
+<h3 id="42-kubernetes-gpu-管理"><a class="header" href="#42-kubernetes-gpu-管理">4.2 Kubernetes GPU 管理</a></h3>
+<ul>
+<li>NVIDIA Device Plugin：<code>DaemonSet</code> 部署；</li>
+<li>CRD：<code>nvidia.com/gpu: 1</code>;</li>
+<li><code>gpu-feature-discovery</code>；</li>
+<li><code>time-slicing</code> / MIG（A100 多实例 GPU）；</li>
+<li><code>Topology Aware Scheduling</code>；</li>
+<li>直通 GPU VM 上运行 K8s Worker；</li>
+<li>OpenShift GPU Operator；</li>
+<li>结合 <code>SR-IOV Network Operator</code>。</li>
+</ul>
+<h3 id="43-sr-iov--gpu-passthrough"><a class="header" href="#43-sr-iov--gpu-passthrough">4.3 SR-IOV + GPU Passthrough</a></h3>
+<ul>
+<li>部分 GPU 支持 SR-IOV，创建多个 VF；</li>
+<li>每个 VF 直通不同 VM，实现共享；</li>
+<li>需 BIOS/固件支持；</li>
+<li>示例：AMD MxGPU、Intel Xe SR-IOV。</li>
+</ul>
+<h3 id="44-nvidia-migmulti-instance-gpu"><a class="header" href="#44-nvidia-migmulti-instance-gpu">4.4 NVIDIA MIG（Multi-Instance GPU）</a></h3>
+<ul>
+<li>A100 分割为多个实例；</li>
+<li><code>nvidia-smi mig -cgi 19,19 -C</code>；</li>
+<li>虚拟机直通 MIG 实例；</li>
+<li>Kubernetes 配合 MIG Plugin。</li>
+</ul>
+<h3 id="45-gpu-passthrough--remote-desktop"><a class="header" href="#45-gpu-passthrough--remote-desktop">4.5 GPU Passthrough + Remote Desktop</a></h3>
+<ul>
+<li>VDI：GPU 直通配合 FreeRDP/PCoIP/Blast；</li>
+<li>Windows 远程桌面 + GPU（需启用 <code>Use hardware graphics adapters for all Remote Desktop Services sessions</code>）。</li>
+</ul>
+<h3 id="46-devops-与-ci-场景"><a class="header" href="#46-devops-与-ci-场景">4.6 DevOps 与 CI 场景</a></h3>
+<ul>
+<li>GPU Passthrough VM 用于 CI Runner（GitLab, Jenkins）；</li>
+<li>自动启动/停止 GPU VM 节省成本；</li>
+<li>Terraform/Ansible 管理；</li>
+<li>结合云服务（AWS/GCP/Azure）进行混合云。</li>
+</ul>
+<h3 id="47-安全与隔离"><a class="header" href="#47-安全与隔离">4.7 安全与隔离</a></h3>
+<ul>
+<li>虚拟机独占 GPU → 安全性强；</li>
+<li>容器共享 GPU 需关注资源隔离、内存泄漏；</li>
+<li>使用 vGPU/SR-IOV 需关注硬件隔离级别；</li>
+<li>GPU Memory Scrubbing（防止数据残留）。</li>
+</ul>
+<h3 id="48-混合部署案例"><a class="header" href="#48-混合部署案例">4.8 混合部署案例</a></h3>
+<ul>
+<li>VMware VM 直通 GPU，内部运行 K3s 集群；</li>
+<li>K8s 节点使用 MIG 划分多实例；</li>
+<li>部署 TensorFlow、PyTorch 任务；</li>
+<li>监控 <code>Prometheus + DCGM</code>；</li>
+<li>自动扩缩容。</li>
+</ul>
+<h3 id="49-自动化脚本"><a class="header" href="#49-自动化脚本">4.9 自动化脚本</a></h3>
+<ul>
+<li>Terraform 模块：创建 GPU VM；</li>
+<li>Ansible Role：设置 VFIO、libvirt XML；</li>
+<li>Kubernetes Helm：部署 Device Plugin；</li>
+<li>Jenkins Pipeline：触发 GPU 作业。</li>
+</ul>
+<h3 id="410-练习"><a class="header" href="#410-练习">4.10 练习</a></h3>
+<ul>
+<li>在 VM 中运行 Docker + GPU；</li>
+<li>部署 Kubernetes Device Plugin；</li>
+<li>使用 MIG 划分 GPU，分配给多个容器；</li>
+<li>编写 Ansible Playbook 自动配置 VFIO。</li>
+</ul>
+<hr />
+<h2 id="模块五性能评估调优与监控"><a class="header" href="#模块五性能评估调优与监控">模块五：性能评估、调优与监控</a></h2>
+<h3 id="51-性能指标"><a class="header" href="#51-性能指标">5.1 性能指标</a></h3>
+<ul>
+<li>GPU 计算性能（TFLOPS, Tensor Ops）；</li>
+<li>图形渲染帧率；</li>
+<li>PCIe 带宽、延迟；</li>
+<li>GPU 内存带宽；</li>
+<li>CPU 占用、NUMA 访问；</li>
+<li>IO 等待、磁盘吞吐。</li>
+</ul>
+<h3 id="52-测试工具"><a class="header" href="#52-测试工具">5.2 测试工具</a></h3>
+<ul>
+<li><code>nvidia-smi</code>, <code>nvtop</code>, <code>dcgm-exporter</code>；</li>
+<li><code>glmark2</code>, <code>Unigine</code>, <code>3DMark</code>；</li>
+<li><code>CUDA Toolkit</code>：<code>deviceQuery</code>, <code>bandwidthTest</code>, <code>matrixMul</code>；</li>
+<li><code>TensorFlow Benchmark</code>, <code>PyTorch</code>；</li>
+<li><code>FFmpeg</code> 硬件转码；</li>
+<li><code>GpuTest</code>, <code>SPECviewperf</code>；</li>
+<li><code>iperf</code> + <code>Fio</code>（综合）。</li>
+</ul>
+<h3 id="53-调优策略"><a class="header" href="#53-调优策略">5.3 调优策略</a></h3>
+<ul>
+<li>NUMA：将 VM 内存/CPU 绑定与 GPU 同节点；</li>
+<li>HugePages 减少 TLB miss；</li>
+<li>CPU Pinning + <code>isolcpus</code>；</li>
+<li>使用 <code>virtio-net</code>/<code>virtio-blk</code> 提升 IO；</li>
+<li>GPU 功耗模式：<code>nvidia-smi -pm 1</code>, <code>-ac</code>；</li>
+<li>内核参数 <code>nohz_full</code>, <code>rcu_nocbs</code>；</li>
+<li>BIOS 设置：禁用节能；</li>
+<li>更新 GPU 驱动/固件；</li>
+<li>虚拟机图形设置：<code>virtio-gpu</code> vs <code>none</code>；</li>
+<li>Hypervisor 参数 <code>kvm_intel.nested=1</code>（对性能影响需评估）。</li>
+</ul>
+<h3 id="54-监控与告警"><a class="header" href="#54-监控与告警">5.4 监控与告警</a></h3>
+<ul>
+<li>Prometheus + DCGM Exporter；</li>
+<li>Grafana Dashboard（GPU 利用率、温度、功耗）；</li>
+<li>Alert：GPU 利用率低、高温、高功耗；</li>
+<li>日志：<code>/var/log/libvirt/qemu/</code>; <code>dmesg</code> 监控 VFIO；</li>
+<li>VM 内：<code>nvidia-smi --loop</code>; <code>nvml</code> API；</li>
+<li>Elasticsearch 收集日志；</li>
+<li>终端监控：<code>Collectd</code>, <code>Telegraf</code>。</li>
+</ul>
+<h3 id="55-成本与效率"><a class="header" href="#55-成本与效率">5.5 成本与效率</a></h3>
+<ul>
+<li>GPU 资源昂贵：需计费与资源池化；</li>
+<li>GPU Utilization KPI；</li>
+<li>自动化调度：释放闲置 GPU；</li>
+<li>结合云 GPU Spot 实例；</li>
+<li>混合云：本地 + 云。</li>
+</ul>
+<h3 id="56-性能对比实验"><a class="header" href="#56-性能对比实验">5.6 性能对比实验</a></h3>
+<ul>
+<li>原生 vs 直通 vs vGPU vs SR-IOV；</li>
+<li>对比指标：训练速度、渲染帧率、功耗；</li>
+<li>记录数据作图；</li>
+<li>分析差异与瓶颈。</li>
+</ul>
+<h3 id="57-自动化测试方案"><a class="header" href="#57-自动化测试方案">5.7 自动化测试方案</a></h3>
+<ul>
+<li>Jenkins：自动部署 VM → 运行 benchmark → 汇总结果；</li>
+<li>GitLab Runner：GPU job → <code>nvidia-smi</code> 分析；</li>
+<li>结合 Terraform/Ansible 完成整机部署；</li>
+<li>结果写入数据库，生成报告。</li>
+</ul>
+<h3 id="58-案例ai-训练平台"><a class="header" href="#58-案例ai-训练平台">5.8 案例：AI 训练平台</a></h3>
+<ul>
+<li>直通 GPU + K8s；</li>
+<li>DCGM Exporter + Alertmanager；</li>
+<li>阈值：温度 85℃，利用率 &lt; 30% 告警；</li>
+<li>节能策略：任务完成后自动休眠；</li>
+<li>可视化：Grafana + ECharts。</li>
+</ul>
+<h3 id="59-qos-与优先级"><a class="header" href="#59-qos-与优先级">5.9 QoS 与优先级</a></h3>
+<ul>
+<li>Kubernetes <code>PriorityClass</code>；</li>
+<li>cgroup <code>cpu.shares</code>；</li>
+<li>资源预估模型；</li>
+<li>GPU Memory Allocation 控制；</li>
+<li>结合调度器插件（Volcano, YuniKorn）。</li>
+</ul>
+<h3 id="510-练习"><a class="header" href="#510-练习">5.10 练习</a></h3>
+<ul>
+<li>运行 <code>glmark2</code> 对比原生 vs 直通；</li>
+<li>使用 DCGM Exporter 搭建监控；</li>
+<li>自动化脚本收集 T4 GPU 利用数据；</li>
+<li>分析 NUMA 影响：<code>numactl --hardware</code> + 性能对比。</li>
+</ul>
+<hr />
+<h2 id="模块六故障诊断安全治理与最佳实践"><a class="header" href="#模块六故障诊断安全治理与最佳实践">模块六：故障诊断、安全治理与最佳实践</a></h2>
+<h3 id="61-常见问题"><a class="header" href="#61-常见问题">6.1 常见问题</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>现象</th><th>排查</th><th>解决</th></tr></thead><tbody>
+<tr><td>Code 43</td><td>Windows 设备管理器错误</td><td>检查 KVM 隐藏、驱动版本</td><td>开启 <code>kvm=off</code>, 更新驱动</td></tr>
+<tr><td>IOMMU Group 不独立</td><td>无法绑定 VFIO</td><td><code>find /sys/kernel/iommu_groups</code></td><td>启用 ACS override / 调整槽位</td></tr>
+<tr><td>黑屏/无法启动</td><td>VM 无显示</td><td>检查 VBIOS, primary GPU</td><td>指定 VBIOS, 使用辅助 GPU</td></tr>
+<tr><td>重启后无法直通</td><td>驱动回绑定</td><td><code>lspci -nnk</code></td><td>在 initramfs/ modprobe 配置 VFIO</td></tr>
+<tr><td>直通后宿主机卡死</td><td>IOMMU bug/驱动冲突</td><td><code>dmesg</code></td><td>更新内核/BIOS, 检查 IOMMU</td></tr>
+<tr><td>内存溢出</td><td>QEMU 错误 <code>BAR 0</code></td><td>Above 4G decoding 未启用</td><td>在 BIOS 开启</td></tr>
+<tr><td>无法热插拔</td><td>VM 操作失败</td><td>GPU 不支持 hotplug</td><td>需关机/冷启动</td></tr>
+<tr><td>性能低</td><td>帧率下降</td><td>NUMA/CPU 瓶颈</td><td>调整 CPU pinning, HugePages</td></tr>
+<tr><td>Passthrough 成功但应用崩溃</td><td>驱动不兼容</td><td>检查驱动版本</td><td>更换驱动/OS 版本</td></tr>
+<tr><td>无法在容器中使用</td><td>设备不可见</td><td><code>docker run --gpus</code></td><td>安装 GPU runtime</td></tr>
+</tbody></table>
+</div>
+<h3 id="62-排查流程"><a class="header" href="#62-排查流程">6.2 排查流程</a></h3>
+<ol>
+<li>确认 BIOS/内核参数；</li>
+<li>查看 <code>dmesg</code> 中 IOMMU/VFIO 信息；</li>
+<li><code>lspci -nnk</code> 检查 driver；</li>
+<li>检查 libvirt XML 设置；</li>
+<li>查看宿主/虚拟机日志；</li>
+<li>更换驱动版本、更新固件；</li>
+<li>使用其他 GPU/槽位测试；</li>
+<li>参考社区案例、CVE；</li>
+<li>记录 RCA 与预防措施。</li>
+</ol>
+<h3 id="63-安全与合规"><a class="header" href="#63-安全与合规">6.3 安全与合规</a></h3>
+<ul>
+<li>虚拟机直接访问硬件 → 需严格控制权限；</li>
+<li>防止 PCIe DMA 攻击：确保 IOMMU 生效；</li>
+<li>GPU firmware 更新 → 安全补丁；</li>
+<li>隐私：GPU 内存残留→ GPU reset 方法；</li>
+<li>监控 GPU 温度避免硬件损坏；</li>
+<li>许可：NVIDIA 许可条款（GeForce vs vGPU）；</li>
+<li>应用层安全：访问控制、审计日志；</li>
+<li>零信任：结合网络/身份安全策略。</li>
+</ul>
+<h3 id="64-最佳实践清单"><a class="header" href="#64-最佳实践清单">6.4 最佳实践清单</a></h3>
+<ul>
+<li>选择兼容性良好的主板和 GPU；</li>
+<li>保持 BIOS/内核/驱动更新；</li>
+<li>预留辅助 GPU 供宿主机使用；</li>
+<li>使用 <code>vfio-pci</code> 而非 <code>pci-stub</code>；</li>
+<li>为每个 GPU 建立维护文档（SN, BIOS 版本）；</li>
+<li>与 CPU Pinning、HugePages 联合优化；</li>
+<li>使用自动化脚本降低人为错误；</li>
+<li>定期执行 failover 演练；</li>
+<li>维护监控与告警系统；</li>
+<li>建立变更管理与备份计划；</li>
+<li>记录 vBIOS、固件、驱动版本组合；</li>
+<li>合规审查：许可、数据安全、访问控制。</li>
+</ul>
+<h3 id="65-知识沉淀"><a class="header" href="#65-知识沉淀">6.5 知识沉淀</a></h3>
+<ul>
+<li>搭建内部 Wiki：文档、FAQ、案例库；</li>
+<li>故障复盘模板：问题描述、影响、根因、预防；</li>
+<li>定期培训：新成员熟悉流程；</li>
+<li>跟踪社区（Reddit VFIO, Level1Techs, Proxmox Forum）；</li>
+<li>参与开源贡献（文档翻译、issue、代码）。</li>
+</ul>
+<h3 id="66-faq"><a class="header" href="#66-faq">6.6 FAQ</a></h3>
+<ol>
+<li><strong>如何确认 GPU 在 IOMMU 独立组中？</strong> 使用 <code>find /sys/kernel/iommu_groups</code>；</li>
+<li><strong>能否直通到多台 VM？</strong> 物理直通只支持独占，可使用 vGPU/SR-IOV；</li>
+<li><strong>如何避免 Code 43？</strong> 隐藏 KVM、使用专业卡、更新驱动；</li>
+<li><strong>是否支持热迁移？</strong> 纯直通不支持，需 vGPU；</li>
+<li><strong>支持多 GPU 吗？</strong> 可直通多块，但需分组独立；</li>
+<li><strong>如何备份 GPU 配置？</strong> libvirt XML、脚本、vBIOS；</li>
+<li><strong>是否能直通集显？</strong> 部分 Intel iGPU 可直通（需注意显示输出）；</li>
+<li><strong>如何释放 GPU？</strong> 停止 VM，<code>virsh nodedev-detach</code>/<code>reattach</code>；</li>
+<li><strong>能否用于嵌入式设备？</strong> 受硬件限制，部分不支持。</li>
+</ol>
+<h3 id="67-实战演练清单"><a class="header" href="#67-实战演练清单">6.7 实战演练清单</a></h3>
+<ul>
+<li>模拟 Code 43，记录排查步骤；</li>
+<li>模拟 IOMMU Group 冲突，启用 ACS override；</li>
+<li>进行 GPU 驱动升级与回退演练；</li>
+<li>在生产环境执行一次 GPU Failover；</li>
+<li>编写 GPU 故障响应手册。</li>
+</ul>
+<hr />
+<h2 id="学习路径设计"><a class="header" href="#学习路径设计">学习路径设计</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>时间</th><th>目标</th><th>关键行动</th><th>产出</th></tr></thead><tbody>
+<tr><td>阶段 0：准备</td><td>1 天</td><td>理解硬件/软件需求</td><td>检查 BIOS、收集设备信息</td><td>环境评估报告</td></tr>
+<tr><td>阶段 1：基础实践</td><td>3 天</td><td>搭建 KVM GPU Passthrough</td><td>完成直通、驱动安装、性能验证</td><td>操作手册、脚本</td></tr>
+<tr><td>阶段 2：平台扩展</td><td>4-5 天</td><td>体验 Proxmox/OpenStack/VMware</td><td>部署实验、记录差异</td><td>平台对比文档</td></tr>
+<tr><td>阶段 3：容器与自动化</td><td>4 天</td><td>引入容器/K8s、自动化</td><td>运行 GPU 容器、Device Plugin、监控</td><td>自动化脚本、监控方案</td></tr>
+<tr><td>阶段 4：性能/运维</td><td>5-7 天</td><td>测试、调优、故障排查</td><td>完成性能报告、故障演练</td><td>性能基线、RCA 模板</td></tr>
+<tr><td>阶段 5：沉淀推广</td><td>持续</td><td>文档化、培训、迭代</td><td>构建知识库与 SOP</td><td>培训材料、知识库</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="实战案例设计"><a class="header" href="#实战案例设计">实战案例设计</a></h2>
+<h3 id="案例一云游戏-vm-平台"><a class="header" href="#案例一云游戏-vm-平台">案例一：云游戏 VM 平台</a></h3>
+<ul>
+<li><strong>目标</strong>：在数据中心部署多台 GPU 直通 VM，提供云游戏服务。</li>
+<li><strong>步骤</strong>：
+<ol>
+<li>选择支持直通的主板+GPU；</li>
+<li>安装 Proxmox，配置 VFIO；</li>
+<li>使用 Looking Glass 实现低延迟输出；</li>
+<li>结合 Sunshine + Moonlight 流媒体；</li>
+<li>部署监控，记录帧率、延迟；</li>
+</ol>
+</li>
+<li><strong>验收标准</strong>：延迟 &lt; 35ms，帧率 60fps，稳定运行 48 小时。</li>
+</ul>
+<h3 id="案例二ai-训练集群openstack--k8s"><a class="header" href="#案例二ai-训练集群openstack--k8s">案例二：AI 训练集群（OpenStack + K8s）</a></h3>
+<ul>
+<li><strong>目标</strong>：为数据科学团队提供 GPU 云服务。</li>
+<li><strong>步骤</strong>：
+<ol>
+<li>在 OpenStack 配置 GPU Flavor；</li>
+<li>部署 GPU Worker（K8s）在虚拟机内；</li>
+<li>安装 NVIDIA Device Plugin；</li>
+<li>搭建 CI/CD Pipeline 自动部署模型；</li>
+<li>监控 GPU 利用率，优化调度；</li>
+</ol>
+</li>
+<li><strong>验收标准</strong>：训练性能损耗 &lt; 5%，可视化监控上线。</li>
+</ul>
+<h3 id="案例三虚拟化图形工作站"><a class="header" href="#案例三虚拟化图形工作站">案例三：虚拟化图形工作站</a></h3>
+<ul>
+<li><strong>背景</strong>：设计团队远程使用 GPU 工作站。</li>
+<li><strong>方案</strong>：
+<ol>
+<li>VMware ESXi + RTX A6000；</li>
+<li>每名设计师一个直通 VM；</li>
+<li>协助配置 Wacom 手写板（USB Passthrough）；</li>
+<li>远程协议：PCoIP/Blast；</li>
+<li>Performance 測試：SPECviewperf；</li>
+</ol>
+</li>
+<li><strong>验收标准</strong>：渲染性能接近原生，远程操作无明显延迟。</li>
+</ul>
+<h3 id="案例四边缘-ai-推理盒子"><a class="header" href="#案例四边缘-ai-推理盒子">案例四：边缘 AI 推理盒子</a></h3>
+<ul>
+<li><strong>目标</strong>：在边缘节点部署 GPU 直通轻量 VM。</li>
+<li><strong>流程</strong>：
+<ol>
+<li>Intel NUC + eGPU（Thunderbolt）；</li>
+<li>KVM + GPU 直通；</li>
+<li>VM 内运行 TensorRT 推理服务；</li>
+<li>通过 MQTT 汇报状态；</li>
+</ol>
+</li>
+<li><strong>验收标准</strong>：推理延迟 &lt; 50ms，设备稳定运行。</li>
+</ul>
+<h3 id="案例五gpu-passthrough-自动化流水线"><a class="header" href="#案例五gpu-passthrough-自动化流水线">案例五：GPU Passthrough 自动化流水线</a></h3>
+<ul>
+<li><strong>目标</strong>：实现 GPU VM 自动部署与测试。</li>
+<li><strong>步骤</strong>：
+<ol>
+<li>Terraform 定义宿主机资源；</li>
+<li>Ansible 配置 VFIO 与 VM；</li>
+<li>Jenkins 触发 GPU VM 创建与基准测试；</li>
+<li>将结果推送到 Grafana；</li>
+</ol>
+</li>
+<li><strong>验收标准</strong>：部署时间 &lt; 30 分钟，自动化通过率 &gt; 95%。</li>
+</ul>
+<hr />
+<h2 id="学习成果验证标准"><a class="header" href="#学习成果验证标准">学习成果验证标准</a></h2>
+<ol>
+<li><strong>部署能力</strong>：完成至少两种平台的 GPU 直通配置，并通过 <code>nvidia-smi</code> 验证；</li>
+<li><strong>自动化脚本</strong>：编写脚本自动化执行 VFIO 配置或 VM 创建，代码评审通过；</li>
+<li><strong>性能评估</strong>：输出基准测试报告，包含原生 vs 直通对比，明确指标改进；</li>
+<li><strong>监控上线</strong>：搭建 GPU 监控/告警，验证告警触发（温度/利用率）；</li>
+<li><strong>故障演练</strong>：模拟至少三种故障并完成 RCA 文档；</li>
+<li><strong>安全策略</strong>：制定访问控制、固件更新、数据清理策略；</li>
+<li><strong>知识沉淀</strong>：发布操作手册、FAQ、培训材料，并通过团队评审；</li>
+<li><strong>迭代计划</strong>：制定 GPU 直通环境的维护与升级路线图。</li>
+</ol>
+<hr />
+<h2 id="扩展资源与进阶建议"><a class="header" href="#扩展资源与进阶建议">扩展资源与进阶建议</a></h2>
+<ul>
+<li><strong>官方文档</strong>：
+<ul>
+<li>VFIO：https://www.kernel.org/doc/Documentation/vfio.txt</li>
+<li>libvirt PCI Passthrough：https://libvirt.org/formatdomain.html#elementsPCI</li>
+<li>Proxmox GPU：https://pve.proxmox.com/wiki/Pci_passthrough</li>
+<li>OpenStack Docs: GPU Acceleration</li>
+<li>VMware vSphere DirectPath I/O 指南</li>
+</ul>
+</li>
+<li><strong>社区与论坛</strong>：
+<ul>
+<li>Level1Techs VFIO Forum</li>
+<li>/r/VFIO, /r/homelab</li>
+<li>NVIDIA Developer Forums（vGPU）；</li>
+<li>Proxmox 论坛；</li>
+</ul>
+</li>
+<li><strong>工具与项目</strong>：
+<ul>
+<li>Looking Glass Project</li>
+<li>OVMF (UEFI for VMs)；</li>
+<li>Libvirt hooks；</li>
+<li>DCGM Exporter；</li>
+</ul>
+</li>
+<li><strong>学习材料</strong>：
+<ul>
+<li>NVIDIA vGPU 白皮书</li>
+<li>AMD MxGPU 技术指南</li>
+<li>Intel Xe GPU SR-IOV 文档</li>
+<li>Red Hat Virtualization GPU Guide</li>
+</ul>
+</li>
+<li><strong>进阶建议</strong>：
+<ol>
+<li>探索 GPU 虚拟化（vGPU/SR-IOV）与资源池化策略；</li>
+<li>参与社区分享案例、解决方案；</li>
+<li>关注新硬件（Intel Flex GPU, AMD CDNA, NVIDIA Hopper）；</li>
+<li>研究 GPU Passthrough 在云原生（KubeVirt, Harvester）中的应用；</li>
+<li>建立持续测试/升级流程，防止驱动更新带来回归；</li>
+<li>调研 GPU 相关安全研究，及时防范漏洞。</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="附录"><a class="header" href="#附录">附录</a></h2>
+<h3 id="a-常用命令速查"><a class="header" href="#a-常用命令速查">A. 常用命令速查</a></h3>
+<pre><code class="language-bash">lspci -nn | grep -i nvidia
+find /sys/kernel/iommu_groups/ -type l
+lspci -nnk -d 10de:
+dmesg | grep -e DMAR -e IOMMU
+virsh nodedev-list | grep pci
+virsh nodedev-dumpxml pci_0000_01_00_0
+virsh attach-device vm1 gpu.xml
+virsh detach-device vm1 gpu.xml
+nvidia-smi -L
+watch -n 1 nvidia-smi
+</code></pre>
+<h3 id="b-重要文件路径"><a class="header" href="#b-重要文件路径">B. 重要文件路径</a></h3>
+<ul>
+<li><code>/etc/modprobe.d/vfio.conf</code></li>
+<li><code>/etc/modprobe.d/blacklist-nouveau.conf</code></li>
+<li><code>/etc/default/grub</code></li>
+<li><code>/etc/libvirt/qemu/&lt;vm&gt;.xml</code></li>
+<li><code>/usr/share/vgabios/*.rom</code></li>
+<li><code>/var/log/libvirt/qemu/&lt;vm&gt;.log</code></li>
+</ul>
+<h3 id="c-vfio-驱动绑定脚本模板"><a class="header" href="#c-vfio-驱动绑定脚本模板">C. VFIO 驱动绑定脚本模板</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+GPU_PCI_ID="0000:01:00.0"
+AUDIO_PCI_ID="0000:01:00.1"
+
+for dev in $GPU_PCI_ID $AUDIO_PCI_ID; do
+  echo $dev &gt; /sys/bus/pci/devices/$dev/driver/unbind
+  echo 10de 1b81 &gt; /sys/bus/pci/drivers/vfio-pci/new_id
+  echo $dev &gt; /sys/bus/pci/drivers/vfio-pci/bind
+ done
+</code></pre>
+<h3 id="d-vbios-提取方法"><a class="header" href="#d-vbios-提取方法">D. VBIOS 提取方法</a></h3>
+<pre><code class="language-bash">sudo cat /sys/bus/pci/devices/0000:01:00.0/rom &gt; gtx1080.rom
+</code></pre>
+<ul>
+<li>如果访问受限，需要先 <code>echo 1 &gt; /sys/bus/pci/devices/0000:01:00.0/rom</code>。</li>
+</ul>
+<h3 id="e-故障排查模板"><a class="header" href="#e-故障排查模板">E. 故障排查模板</a></h3>
+<pre><code>事件编号：GPU-2024-01
+时间：2024-06-18 14:20
+环境：KVM + RTX 2080, libvirt 8.6
+现象：VM 启动后黑屏，nvidia-smi 无输出
+步骤：
+1. 查看 dmesg："BAR 3: can't reserve" -&gt; Above 4G disabled
+2. 进入 BIOS 开启 Above 4G Decoding
+3. 重启，确认 VFIO 绑定成功
+结果：VM 正常启动
+预防措施：更新 BIOS 配置文档
+</code></pre>
+<blockquote>
+<p>GPU Passthrough 是实现高性能虚拟化的关键技术。掌握硬件基础、配置流程、性能调优与故障治理，再结合自动化与监控体系，能让团队在 AI、图形、视频、云桌面等多场景下灵活、安全地交付 GPU 能力。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/云计算/freerdp.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/云计算/hugepages.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/云计算/freerdp.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/云计算/hugepages.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

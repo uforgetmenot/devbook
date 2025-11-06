@@ -1,0 +1,1704 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>PySide6 桌面应用系统学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="pyside6-桌面应用系统学习笔记"><a class="header" href="#pyside6-桌面应用系统学习笔记">PySide6 桌面应用系统学习笔记</a></h1>
+<blockquote>
+<p>面向 0-5 年经验的 Python 开发者、跨端开发转岗者以及希望快速掌握 Qt for Python 的学习者，提供一套从基础到生产部署的系统化学习资料。本笔记遵循“概念 - 实战 - 验证 - 拓展”的编排原则，帮助你在循序渐进的实践中掌握 PySide6 的核心能力。</p>
+</blockquote>
+<h2 id="学习者画像与学习目标"><a class="header" href="#学习者画像与学习目标">学习者画像与学习目标</a></h2>
+<ul>
+<li><strong>目标受众</strong>：熟悉 Python 语法，具备基础面向对象编程概念的开发者；对桌面 GUI、跨平台客户端、自动化工具或内部运维工具有需求的工程师。</li>
+<li><strong>前置知识</strong>：Python 3.9+、基础终端操作、Git 基础、面向对象设计理念。</li>
+<li><strong>学习目标</strong>：
+<ol>
+<li>建立 PySide6 与 Qt 框架的整体认识，理解核心模块与生态。</li>
+<li>能够独立搭建跨平台 PySide6 开发环境与项目结构。</li>
+<li>熟练使用控件、布局、信号槽机制构建典型桌面应用 UI。</li>
+<li>掌握模型-视图编程范式，完成数据驱动型应用开发。</li>
+<li>能在项目中引入多线程/异步、资源管理、打包部署等进阶能力。</li>
+</ol>
+</li>
+</ul>
+<h2 id="快速导航"><a class="header" href="#快速导航">快速导航</a></h2>
+<ul>
+<li><a href="#%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84%E6%80%BB%E8%A7%88">学习路径总览</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E4%B8%80-pyside6-%E5%9F%BA%E7%A1%80%E8%AE%A4%E7%9F%A5%E4%B8%8E%E7%94%9F%E6%80%81%E5%9C%B0%E5%9B%BE">模块一：PySide6 基础认知与生态地图</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E4%BA%8C-%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B8%8E%E9%A1%B9%E7%9B%AE%E8%84%9A%E6%89%8B%E6%9E%B6">模块二：开发环境搭建与项目脚手架</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E4%B8%89-%E7%95%8C%E9%9D%A2%E6%9E%84%E5%BB%BA%E6%8E%A7%E4%BB%B6%E5%B8%83%E5%B1%80%E4%B8%8E%E6%A0%B7%E5%BC%8F">模块三：界面构建——控件、布局与样式</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E5%9B%9B-%E4%BA%A4%E4%BA%92%E9%80%BB%E8%BE%91%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E4%B8%8E%E4%BF%A1%E5%8F%B7%E6%A7%BD%E7%BC%96%E7%A8%8B">模块四：交互逻辑——事件循环与信号槽编程</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E4%BA%94-%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8%E7%95%8C%E9%9D%A2%E6%A8%A1%E5%9E%8B%E8%A7%86%E5%9B%BE%E6%A1%86%E6%9E%B6%E4%B8%8E%E8%A1%A8%E5%8D%95%E7%AE%A1%E7%90%86">模块五：数据驱动界面——模型视图框架与表单管理</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E5%85%AD-%E7%94%9F%E4%BA%A7%E7%BA%A7%E5%AE%9E%E8%B7%B5%E5%BC%82%E6%AD%A5%E5%A4%9A%E5%AA%92%E4%BD%93%E9%83%A8%E7%BD%B2%E4%B8%8E%E6%B5%8B%E8%AF%95">模块六：生产级实践——异步、多媒体、部署与测试</a></li>
+<li><a href="#%E5%AD%A6%E4%B9%A0%E6%88%90%E6%9E%9C%E9%AA%8C%E8%AF%81%E6%A0%87%E5%87%86">学习成果验证标准</a></li>
+<li><a href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5">常见问题与故障排查</a></li>
+<li><a href="#%E6%89%A9%E5%B1%95%E8%B5%84%E6%BA%90%E4%B8%8E%E8%BF%9B%E9%98%B6%E5%BB%BA%E8%AE%AE">扩展资源与进阶建议</a></li>
+</ul>
+<hr />
+<h2 id="学习路径总览"><a class="header" href="#学习路径总览">学习路径总览</a></h2>
+<p>PySide6 学习建议分为四个阶段，每个阶段都附带具体的目标产出与检验点，确保学习成果可量化。</p>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>时间建议</th><th>学习重点</th><th>产出/检验</th></tr></thead><tbody>
+<tr><td>第 1 阶段：基础起步</td><td>1-2 周</td><td>PySide6 架构、安装配置、基础控件与布局</td><td>完成“任务清单”桌面应用原型，熟悉信号槽机制</td></tr>
+<tr><td>第 2 阶段：界面深化</td><td>2 周</td><td>自定义控件、资源管理、样式表 (QSS)、多窗口导航</td><td>交付一个具备多页面切换的“项目管理器”应用</td></tr>
+<tr><td>第 3 阶段：数据驱动</td><td>2-3 周</td><td>Model/View、数据校验、表单绑定、与数据库/API 交互</td><td>实现可编辑的数据看板或库存管理工具</td></tr>
+<tr><td>第 4 阶段：生产实战</td><td>2-4 周</td><td>多线程、多进程、异步 IO、插件化、部署与更新</td><td>打包发布内部分发版本，具备日志、配置、自动更新能力</td></tr>
+</tbody></table>
+</div>
+<h3 id="学习策略建议"><a class="header" href="#学习策略建议">学习策略建议</a></h3>
+<ol>
+<li><strong>每阶段最少完成一个实战项目</strong>：理论穿插实践，保证每个概念都有实际落地场景。</li>
+<li><strong>以问题驱动学习</strong>：围绕真实业务需求（如自动化工具、内部客户端）设计需求清单，逐项拆解。</li>
+<li><strong>持续记录实验结果</strong>：使用 Markdown、截图和 demo 项目提交历史记录学习过程，便于回顾与复盘。</li>
+<li><strong>定期回顾与知识图谱整理</strong>：每完成一个模块，总结知识点之间的关联，形成可视化学习地图。</li>
+</ol>
+<hr />
+<h2 id="模块一pyside6-基础认知与生态地图"><a class="header" href="#模块一pyside6-基础认知与生态地图">模块一：PySide6 基础认知与生态地图</a></h2>
+<blockquote>
+<p>目标：理解 Qt for Python 的定位、PySide6 的模块划分、项目可选组件与常见应用场景，为后续深入奠定框架级认知。</p>
+</blockquote>
+<h3 id="11-qt-与-pyside6-的关系"><a class="header" href="#11-qt-与-pyside6-的关系">1.1 Qt 与 PySide6 的关系</a></h3>
+<ul>
+<li><strong>Qt 框架</strong>：跨平台原生 GUI 框架，提供 GUI 控件、2D/3D 绘图、多媒体、网络、线程等完整能力。</li>
+<li><strong>PySide6</strong>：Qt 官方支持的 Python 绑定，提供与 Qt C++ API 相同的命名空间与功能，兼容 Qt6 新特性。</li>
+<li><strong>PyQt vs PySide</strong>：PyQt 由 Riverbank 维护，GPL/商业双许可证；PySide 由 Qt 公司维护，LGPL，企业级项目更易接受；API 90% 一致，细节差异 (如信号声明方式、许可证、自定义 widget 注册) 需要注意。</li>
+<li><strong>Qt Modules 在 PySide6 中的映射</strong>：如 <code>QtCore</code>、<code>QtWidgets</code>、<code>QtGui</code>、<code>QtNetwork</code>、<code>QtCharts</code>、<code>QtMultimedia</code>、<code>QtQuick</code> 等，按照需求按需导入。</li>
+</ul>
+<h3 id="12-核心概念速览"><a class="header" href="#12-核心概念速览">1.2 核心概念速览</a></h3>
+<ul>
+<li><strong>事件循环 (Event Loop)</strong>：<code>QApplication</code>/<code>QCoreApplication</code> 初始化后调用 <code>app.exec()</code>，进入主线程事件循环，驱动 UI 响应。</li>
+<li><strong>QObject 与继承体系</strong>：所有可发射信号、接收槽函数的类需继承 <code>QObject</code>，注意所有 QObject 对象必须在创建线程内销毁。</li>
+<li><strong>信号与槽 (Signals &amp; Slots)</strong>：线程安全的发布/订阅机制，避免直接调用跨线程 UI 更新。</li>
+<li><strong>资源系统 (Qt Resource System)</strong>：通过 <code>.qrc</code> 或 <code>qt-resource</code> 模块打包静态资源，实现跨平台资源路径统一。</li>
+<li><strong>布局管理器 (Layout Managers)</strong>：Qt 使用布局对象 (<code>QVBoxLayout</code>, <code>QHBoxLayout</code>, <code>QGridLayout</code>, <code>QFormLayout</code>) 自动管理控件位置与尺寸，避免绝对定位。</li>
+</ul>
+<h3 id="13-pyside6-项目常见场景"><a class="header" href="#13-pyside6-项目常见场景">1.3 PySide6 项目常见场景</a></h3>
+<ul>
+<li>内部工具：工单处理、数据标注、日志分析可视化。</li>
+<li>桌面客户端：跨平台桌面端 (Windows/macOS/Linux) 的轻量级业务客户端。</li>
+<li>自动化脚本封装：将命令行工具升级为 GUI，提高团队使用便捷性。</li>
+<li>硬件控制与监控：结合串口、网络通信控制硬件设备，实现监控面板。</li>
+<li>教学与数据可视化：数据分析结果的可视化呈现，结合 <code>QtCharts</code>、<code>QtDataVisualization</code>。</li>
+</ul>
+<h3 id="14-入门实战案例hello-pyside6"><a class="header" href="#14-入门实战案例hello-pyside6">1.4 入门实战案例：Hello, PySide6!</a></h3>
+<p><strong>场景描述</strong>：创建一个带按钮和文本标签的最小 PySide6 应用，熟悉事件循环、控件实例化、信号槽连接。</p>
+<pre><code class="language-python">from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout
+from PySide6.QtCore import Qt
+import sys
+
+class HelloWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Hello PySide6")
+        self.resize(320, 180)
+
+        self.counter = 0
+        self.label = QLabel("点击按钮开始计数")
+        self.label.setAlignment(Qt.AlignCenter)
+
+        self.button = QPushButton("点我")
+        self.button.clicked.connect(self.increment)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.label)
+        layout.addWidget(self.button)
+        self.setLayout(layout)
+
+    def increment(self):
+        self.counter += 1
+        self.label.setText(f"按钮被点击了 {self.counter} 次")
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = HelloWindow()
+    window.show()
+    sys.exit(app.exec())
+</code></pre>
+<p><strong>执行步骤</strong>：</p>
+<ol>
+<li>创建虚拟环境并安装 <code>PySide6</code>。</li>
+<li>将代码保存为 <code>hello_pyside6.py</code>。</li>
+<li>在终端执行 <code>python hello_pyside6.py</code>。</li>
+<li>点击按钮，观察标签文本变化。</li>
+</ol>
+<p><strong>常见错误排查</strong>：</p>
+<ul>
+<li><code>ImportError: No module named PySide6</code>：确认虚拟环境已激活，运行 <code>pip show PySide6</code>。</li>
+<li><code>Segmentation fault</code>：不要在回调中重复创建 <code>QApplication</code>；确保 GUI 操作在主线程执行。</li>
+</ul>
+<h3 id="15-进阶关注点"><a class="header" href="#15-进阶关注点">1.5 进阶关注点</a></h3>
+<ul>
+<li><strong>模块拆分</strong>：理解 <code>QtCore</code> (基础类/事件/信号)、<code>QtWidgets</code> (控件与窗口)、<code>QtGui</code> (绘图/字体/图像) 的角色。</li>
+<li><strong>生态工具链</strong>：Qt Designer、Qt Creator、Qt Linguist、pyside6-uic、pyside6-rcc 的作用及整合方式。</li>
+<li><strong>版本演进</strong>：关注 Qt 6.x 的 LTS 节奏与 PySide6 版本对齐策略，避免 API 变化带来的升级风险。</li>
+<li><strong>许可证</strong>：LGPL 允许动态链接发布；如需静态链接或闭源发布，需评估商业许可。</li>
+</ul>
+<h3 id="16-模块小结"><a class="header" href="#16-模块小结">1.6 模块小结</a></h3>
+<ul>
+<li>将 PySide6 放在 Qt 生态全景中理解，明确它是官方 Python 绑定。</li>
+<li>掌握事件循环、QObject 继承、信号槽等核心机制，是后续所有模块的前置基础。</li>
+<li>通过第一个 Hello 示例，确保项目可以跑起来，验证环境与依赖无误。</li>
+</ul>
+<hr />
+<h2 id="模块二开发环境搭建与项目脚手架"><a class="header" href="#模块二开发环境搭建与项目脚手架">模块二：开发环境搭建与项目脚手架</a></h2>
+<blockquote>
+<p>目标：构建跨平台一致的开发环境，掌握典型项目结构、资源管理方式与构建发布流程。</p>
+</blockquote>
+<h3 id="21-环境需求与版本规划"><a class="header" href="#21-环境需求与版本规划">2.1 环境需求与版本规划</a></h3>
+<ul>
+<li><strong>Python 版本</strong>：推荐 3.9 - 3.12，确保与 PySide6 兼容；LTS 项目优先选择已验证的版本。</li>
+<li><strong>操作系统</strong>：Windows 10+、macOS 12+、Ubuntu 20.04+；注意 macOS 下 <code>codesign</code>、Windows 下 <code>MSVC</code> 运行库。</li>
+<li><strong>依赖管理工具</strong>：<code>pip</code>/<code>venv</code>、<code>pipenv</code>、<code>poetry</code>、<code>uv</code> 均可；推荐 <code>poetry</code> 管理多依赖，或者使用 <code>uv</code> 获得更快的安装速度。</li>
+<li><strong>可选加速</strong>：利用 PySide6 提供的 <code>--index-url https://download.qt.io/official_releases/QtForPython/pi-wheel/</code> 下载预编译 wheel，提高安装速度。</li>
+</ul>
+<h3 id="22-开发环境搭建流程"><a class="header" href="#22-开发环境搭建流程">2.2 开发环境搭建流程</a></h3>
+<pre><code class="language-bash"># 1. 创建项目目录
+mkdir pyside6-starter &amp;&amp; cd pyside6-starter
+
+# 2. 创建虚拟环境并激活
+python -m venv .venv
+source .venv/bin/activate  # Windows 使用 .venv\Scripts\activate
+
+# 3. 安装 PySide6 与常用配套库
+pip install --upgrade pip wheel
+pip install PySide6 black isort pytest loguru qdarkstyle
+
+# 4. 初始化 Git 仓库与 ignore 规则
+git init
+echo -e "*.pyc\n__pycache__/\n.venv/" &gt; .gitignore
+</code></pre>
+<blockquote>
+<p>建议将以上步骤封装为 <code>Makefile</code> 或 <code>invoke</code> 任务，便于团队复用。</p>
+</blockquote>
+<h3 id="23-标准化项目结构"><a class="header" href="#23-标准化项目结构">2.3 标准化项目结构</a></h3>
+<pre><code class="language-text">pyside6-starter/
+├─ app/
+│  ├─ __init__.py
+│  ├─ main.py              # 程序入口，初始化 QApplication
+│  ├─ ui/                   # Qt Designer 生成的 UI 文件及转换结果
+│  │  ├─ main_window.ui
+│  │  └─ main_window.py
+│  ├─ widgets/             # 自定义控件
+│  │  └─ navigation.py
+│  ├─ services/            # 业务逻辑、数据访问层
+│  ├─ resources/           # 静态资源与 qrc 文件
+│  │  ├─ qml/
+│  │  ├─ icons/
+│  │  └─ app.qrc
+│  └─ config.py            # 配置中心
+├─ tests/
+│  └─ test_main.py
+├─ scripts/
+│  └─ build.py             # 打包脚本
+├─ requirements.txt 或 pyproject.toml
+├─ README.md
+└─ Makefile
+</code></pre>
+<p><strong>结构设计原则</strong>：</p>
+<ul>
+<li>将 UI、业务、配置、资源分层；避免在窗口类中堆积业务逻辑。</li>
+<li>自定义控件放在 <code>widgets/</code>，方便复用与单元测试。</li>
+<li>资源统一通过 <code>.qrc</code> 管理，使用 <code>pyside6-rcc app/resources/app.qrc -o app/resources_rc.py</code> 生成 Python 模块。</li>
+<li><code>services/</code> 负责数据获取、缓存、网络请求等，与 UI 层解耦。</li>
+</ul>
+<h3 id="24-使用-qt-designer-与代码生成"><a class="header" href="#24-使用-qt-designer-与代码生成">2.4 使用 Qt Designer 与代码生成</a></h3>
+<ol>
+<li>安装 Qt Designer：<code>pip install PySide6-essentials</code> 后可执行 <code>designer</code> 命令。</li>
+<li>在 Designer 中绘制 UI，保存为 <code>.ui</code> 文件。</li>
+<li>使用 <code>pyside6-uic</code> 将 <code>.ui</code> 转换为 Python 模块。</li>
+</ol>
+<pre><code class="language-bash">pyside6-uic app/ui/main_window.ui -o app/ui/main_window.py
+</code></pre>
+<ol start="4">
+<li>在业务代码中继承生成的 UI 类：</li>
+</ol>
+<pre><code class="language-python">from PySide6.QtWidgets import QMainWindow
+from app.ui.main_window import Ui_MainWindow
+
+class MainWindow(QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self._init_signals()
+
+    def _init_signals(self):
+        self.refreshButton.clicked.connect(self.on_refresh)
+</code></pre>
+<blockquote>
+<p><strong>最佳实践</strong>：避免直接修改 <code>Ui_MainWindow</code> 中的生成代码；自定义逻辑永远写在继承类中，保持生成文件可重复覆盖。</p>
+</blockquote>
+<h3 id="25-实战案例脚手架生成器"><a class="header" href="#25-实战案例脚手架生成器">2.5 实战案例：脚手架生成器</a></h3>
+<p><strong>需求场景</strong>：创建一个命令行脚本 <code>scripts/init_app.py</code>，自动生成项目目录、<code>pyproject.toml</code>、示例窗口代码与基础测试。</p>
+<p><strong>关键步骤</strong>：</p>
+<ol>
+<li>使用 <code>pathlib</code> 和 <code>jinja2</code> 模板生成基础文件。</li>
+<li>自动创建 <code>app/main.py</code>，包含 QApplication 初始化、主题加载。</li>
+<li>创建 <code>tests/test_smoke.py</code> 验证窗口是否可实例化。</li>
+<li>输出终端提示，告知用户如何运行。</li>
+</ol>
+<p><strong>示例：<code>scripts/init_app.py</code></strong></p>
+<pre><code class="language-python">#!/usr/bin/env python3
+from pathlib import Path
+from textwrap import dedent
+
+BASE_FILES = {
+    "app/__init__.py": "",
+    "app/main.py": dedent(
+        """
+        import sys
+        from PySide6.QtWidgets import QApplication
+        from app.windows.main_window import MainWindow
+
+        def main():
+            app = QApplication(sys.argv)
+            window = MainWindow()
+            window.show()
+            sys.exit(app.exec())
+
+        if __name__ == "__main__":
+            main()
+        """
+    ),
+    "app/windows/__init__.py": "",
+    "app/windows/main_window.py": dedent(
+        """
+        from PySide6.QtWidgets import QMainWindow, QLabel
+
+
+        class MainWindow(QMainWindow):
+            def __init__(self):
+                super().__init__()
+                self.setWindowTitle("PySide6 Starter")
+                self.resize(640, 480)
+                self.setCentralWidget(QLabel("欢迎使用 PySide6"))
+        """
+    ),
+    "tests/test_smoke.py": dedent(
+        """
+        import pytest
+        from PySide6.QtWidgets import QApplication
+        from app.windows.main_window import MainWindow
+
+        @pytest.fixture(scope="session")
+        def app():
+            app = QApplication([])
+            yield app
+            app.quit()
+
+        def test_main_window(app):
+            window = MainWindow()
+            assert window.windowTitle() == "PySide6 Starter"
+        """
+    ),
+}
+
+
+def init_project(base_dir: Path) -&gt; None:
+    for path, content in BASE_FILES.items():
+        file_path = base_dir / path
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        file_path.write_text(content, encoding="utf-8")
+    print("项目脚手架创建完成，运行 `python -m app.main` 启动应用")
+
+
+if __name__ == "__main__":
+    init_project(Path.cwd())
+</code></pre>
+<p><strong>实践任务</strong>：</p>
+<ul>
+<li>运行脚本生成骨架项目。</li>
+<li>执行 <code>pytest</code> 验证测试通过。</li>
+<li>启动应用确认主窗口展示。</li>
+</ul>
+<p><strong>常见错误与修复</strong>：</p>
+<ul>
+<li><code>qt.qpa.plugin: Could not load the Qt platform plugin "xcb"</code>: Linux 缺少 <code>libxcb</code> 相关依赖，使用 <code>sudo apt install libxcb-xinerama0</code> 解决。</li>
+<li>macOS 出现权限错误：使用 <code>chmod +x scripts/init_app.py</code> 确认脚本可执行。</li>
+</ul>
+<h3 id="26-模块小结"><a class="header" href="#26-模块小结">2.6 模块小结</a></h3>
+<ul>
+<li>环境搭建阶段重点在于可复制、可追溯，建议将流程文档化并写入团队 wiki。</li>
+<li>项目分层结构让 UI 与业务逻辑解耦，提前为测试与迭代留出空间。</li>
+<li>通过脚手架生成器案例，掌握如何标准化初始化流程，降低团队成员上手成本。</li>
+</ul>
+<hr />
+<h2 id="模块三界面构建控件布局与样式"><a class="header" href="#模块三界面构建控件布局与样式">模块三：界面构建——控件、布局与样式</a></h2>
+<blockquote>
+<p>目标：掌握常用控件组合方式、布局管理策略与样式表 (QSS) 定制，能够搭建具有设计感和可维护性的应用界面。</p>
+</blockquote>
+<h3 id="31-控件族群与使用场景"><a class="header" href="#31-控件族群与使用场景">3.1 控件族群与使用场景</a></h3>
+<ul>
+<li><strong>基础输入控件</strong>：<code>QLabel</code>、<code>QLineEdit</code>、<code>QTextEdit</code>、<code>QPlainTextEdit</code>。适用于文本展示与输入。</li>
+<li><strong>组合控件</strong>：<code>QComboBox</code>、<code>QSpinBox</code>、<code>QDateEdit</code>、<code>QSlider</code>，适用于范围选择、日期时间输入。</li>
+<li><strong>数据展示</strong>：<code>QTableWidget</code>、<code>QTreeWidget</code>、<code>QListWidget</code>，适合轻量级数据列表；复杂场景使用 Model/View。</li>
+<li><strong>容器控件</strong>：<code>QGroupBox</code>、<code>QFrame</code>、<code>QTabWidget</code>、<code>QStackedWidget</code>，用于分组和页面导航。</li>
+<li><strong>高级控件</strong>：<code>QChartView</code>、<code>QGraphicsView</code>、<code>QWebEngineView</code> 等扩展功能。</li>
+</ul>
+<h3 id="32-布局管理策略"><a class="header" href="#32-布局管理策略">3.2 布局管理策略</a></h3>
+<ul>
+<li><strong>目标</strong>：实现响应式布局，适应不同分辨率与 DPI。</li>
+<li><strong>常用布局</strong>：垂直/水平 (<code>QVBoxLayout</code>、<code>QHBoxLayout</code>)、栅格 (<code>QGridLayout</code>)、表单 (<code>QFormLayout</code>)。</li>
+<li><strong>嵌套布局技巧</strong>：组合多个布局形成复杂界面，例如顶部工具栏 + 中央主视图 + 底部状态栏。</li>
+<li><strong>伸缩因子</strong>：<code>layout.setStretch()</code> 控制子元素比例；<code>QSpacerItem</code> 增加弹性空间。</li>
+<li><strong>尺寸策略</strong>：<code>setFixedSize</code>、<code>setMinimumSize</code>、<code>sizePolicy</code> 控制控件尺寸行为。</li>
+</ul>
+<h3 id="33-qss-样式表基础"><a class="header" href="#33-qss-样式表基础">3.3 QSS 样式表基础</a></h3>
+<ul>
+<li>QSS 类似 CSS，用于定制控件外观。</li>
+<li>支持伪状态 (<code>:hover</code>, <code>:pressed</code>, <code>:disabled</code>) 定义不同状态样式。</li>
+<li>可通过 <code>setStyleSheet</code> 应用于单个控件或全局。</li>
+<li>建议将 QSS 放入独立文件，通过资源系统加载。</li>
+</ul>
+<p><strong>示例：全局样式加载</strong></p>
+<pre><code class="language-python">from pathlib import Path
+from PySide6.QtWidgets import QApplication
+
+def apply_stylesheet(app: QApplication) -&gt; None:
+    qss_path = Path(__file__).parent / "resources" / "dark.qss"
+    with qss_path.open(encoding="utf-8") as f:
+        app.setStyleSheet(f.read())
+</code></pre>
+<h3 id="34-实战案例任务管理面板"><a class="header" href="#34-实战案例任务管理面板">3.4 实战案例：任务管理面板</a></h3>
+<p><strong>需求背景</strong>：内部团队需要一个“任务管理面板”，展示待办事项、任务详情与分类标签，可快速增删任务。</p>
+<p><strong>界面布局</strong>：</p>
+<ul>
+<li>左侧：任务分类列表 (<code>QListWidget</code>)。</li>
+<li>中央：任务表格 (<code>QTableWidget</code>)，展示标题、截止日期、状态。</li>
+<li>右侧：任务详情面板 (<code>QTextEdit</code> + <code>QListWidget</code> 标签)。</li>
+<li>底部：操作按钮 (<code>QPushButton</code>)，包含“新增”“删除”“标记完成”。</li>
+</ul>
+<p><strong>关键代码片段</strong>：</p>
+<pre><code class="language-python">from PySide6.QtWidgets import (
+    QWidget, QListWidget, QTableWidget, QTextEdit, QPushButton,
+    QVBoxLayout, QHBoxLayout, QTableWidgetItem, QHeaderView
+)
+
+class TaskBoard(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("任务管理面板")
+        self.resize(960, 600)
+        self._build_ui()
+        self._connect_signals()
+        self._seed_data()
+
+    def _build_ui(self):
+        self.category_list = QListWidget()
+        self.category_list.addItems(["全部", "开发", "测试", "运维"])
+
+        self.task_table = QTableWidget(0, 3)
+        self.task_table.setHorizontalHeaderLabels(["标题", "截止日期", "状态"])
+        self.task_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.task_table.verticalHeader().setVisible(False)
+        self.task_table.setSelectionBehavior(QTableWidget.SelectRows)
+
+        self.detail_text = QTextEdit()
+        self.detail_text.setPlaceholderText("任务详情")
+
+        self.add_button = QPushButton("新增任务")
+        self.remove_button = QPushButton("删除任务")
+        self.complete_button = QPushButton("标记完成")
+
+        left_layout = QVBoxLayout()
+        left_layout.addWidget(self.category_list)
+
+        right_layout = QVBoxLayout()
+        right_layout.addWidget(self.detail_text)
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.add_button)
+        button_layout.addWidget(self.remove_button)
+        button_layout.addWidget(self.complete_button)
+        right_layout.addLayout(button_layout)
+
+        main_layout = QHBoxLayout()
+        main_layout.addLayout(left_layout, stretch=1)
+        main_layout.addWidget(self.task_table, stretch=3)
+        main_layout.addLayout(right_layout, stretch=2)
+
+        self.setLayout(main_layout)
+
+    def _connect_signals(self):
+        self.category_list.currentTextChanged.connect(self.filter_tasks)
+        self.task_table.itemSelectionChanged.connect(self.show_task_detail)
+        self.add_button.clicked.connect(self.add_task)
+        self.remove_button.clicked.connect(self.remove_task)
+        self.complete_button.clicked.connect(self.mark_completed)
+
+    def _seed_data(self):
+        tasks = [
+            ("实现登录功能", "2024-06-20", "进行中"),
+            ("完善单元测试", "2024-06-25", "待开始"),
+            ("部署 staging 环境", "2024-06-21", "已完成"),
+        ]
+        for title, due, status in tasks:
+            row = self.task_table.rowCount()
+            self.task_table.insertRow(row)
+            self.task_table.setItem(row, 0, QTableWidgetItem(title))
+            self.task_table.setItem(row, 1, QTableWidgetItem(due))
+            self.task_table.setItem(row, 2, QTableWidgetItem(status))
+
+    def filter_tasks(self, category: str):
+        # TODO: 根据分类过滤任务列表，可结合数据模型实现
+        pass
+
+    def show_task_detail(self):
+        current_row = self.task_table.currentRow()
+        if current_row == -1:
+            self.detail_text.clear()
+            return
+        title_item = self.task_table.item(current_row, 0)
+        detail = f"任务：{title_item.text()}\n描述：待补充"
+        self.detail_text.setPlainText(detail)
+
+    def add_task(self):
+        # TODO: 弹出对话框收集信息，插入到数据模型
+        pass
+
+    def remove_task(self):
+        current_row = self.task_table.currentRow()
+        if current_row != -1:
+            self.task_table.removeRow(current_row)
+
+    def mark_completed(self):
+        current_row = self.task_table.currentRow()
+        if current_row != -1:
+            self.task_table.setItem(current_row, 2, QTableWidgetItem("已完成"))
+</code></pre>
+<p><strong>实践任务建议</strong>：</p>
+<ul>
+<li>结合 <code>QInputDialog</code> 或自定义对话框实现新增任务功能。</li>
+<li>使用 <code>QStyledItemDelegate</code> 自定义任务状态下拉选择。</li>
+<li>引入 <code>QtCharts</code> 绘制任务完成趋势。</li>
+</ul>
+<p><strong>常见问题排查</strong>：</p>
+<ul>
+<li>列宽不均匀：确认使用 <code>QHeaderView.Stretch</code> 或 <code>setSectionResizeMode</code>。</li>
+<li>文本框无法换行：<code>QLineEdit</code> 仅支持单行，使用 <code>QTextEdit</code> 或 <code>QPlainTextEdit</code>。</li>
+<li>中文显示异常：确保系统字体支持，或通过 <code>QFontDatabase.addApplicationFont</code> 加载字体。</li>
+</ul>
+<h3 id="35-动态界面与多窗口导航"><a class="header" href="#35-动态界面与多窗口导航">3.5 动态界面与多窗口导航</a></h3>
+<ul>
+<li>使用 <code>QStackedWidget</code> 实现多页面切换，可与侧边栏按钮结合。</li>
+<li><code>QDialog</code> 适合临时对话框；<code>QMainWindow</code> 提供菜单栏、工具栏、状态栏结构。</li>
+<li>通过 <code>QMdiArea</code> 管理多文档界面 (MDI)，适合编辑器类应用。</li>
+</ul>
+<h3 id="36-qt-designer-与代码双向工作流"><a class="header" href="#36-qt-designer-与代码双向工作流">3.6 Qt Designer 与代码双向工作流</a></h3>
+<ol>
+<li>在 Designer 绘制 UI，生成 <code>.ui</code> 文件。</li>
+<li>使用 <code>pyside6-uic</code> 生成 Python 类。</li>
+<li>在继承类中补充逻辑，并在 <code>resources.qrc</code> 配置图标/样式。</li>
+<li>通过 <code>pyside6-rcc</code> 生成资源模块，保证跨平台资源加载。</li>
+</ol>
+<h3 id="37-模块小结"><a class="header" href="#37-模块小结">3.7 模块小结</a></h3>
+<ul>
+<li>掌握控件与布局后，可快速搭建符合需求的界面雏形。</li>
+<li>QSS 提供可视化一致性，建议建立团队设计系统与样式变量。</li>
+<li>实战案例应同时关注布局、交互与数据结构设计，为 Model/View 模块铺垫。</li>
+</ul>
+<hr />
+<h2 id="模块四交互逻辑事件循环与信号槽编程"><a class="header" href="#模块四交互逻辑事件循环与信号槽编程">模块四：交互逻辑——事件循环与信号槽编程</a></h2>
+<blockquote>
+<p>目标：深刻理解 Qt 事件系统，掌握信号槽连接、事件过滤、多线程与异步更新的最佳实践，构建稳定响应的交互逻辑。</p>
+</blockquote>
+<h3 id="41-事件循环与事件类型"><a class="header" href="#41-事件循环与事件类型">4.1 事件循环与事件类型</a></h3>
+<ul>
+<li><strong>事件循环</strong>：<code>QApplication.exec()</code> 进入消息循环，从操作系统接收事件，派发给目标对象。</li>
+<li><strong>常见事件</strong>：
+<ul>
+<li><code>QEvent.MouseButtonPress</code>, <code>QEvent.KeyPress</code></li>
+<li>窗口事件：<code>QEvent.Show</code>, <code>QEvent.Close</code></li>
+<li>定时器：<code>QTimerEvent</code></li>
+</ul>
+</li>
+<li><strong>自定义事件</strong>：继承 <code>QEvent</code> 并通过 <code>QCoreApplication.postEvent()</code> 发送。</li>
+</ul>
+<h3 id="42-信号槽机制详解"><a class="header" href="#42-信号槽机制详解">4.2 信号槽机制详解</a></h3>
+<ul>
+<li>信号声明：PySide6 使用 <code>Signal</code> 对象，槽函数可为任何可调用对象。</li>
+</ul>
+<pre><code class="language-python">from PySide6.QtCore import QObject, Signal
+
+class TaskService(QObject):
+    task_added = Signal(dict)
+
+    def add_task(self, payload: dict) -&gt; None:
+        # 处理业务逻辑
+        self.task_added.emit(payload)
+</code></pre>
+<ul>
+<li><strong>连接方式</strong>：<code>signal.connect(slot)</code>，槽可带参数，支持 lambda、<code>functools.partial</code>。</li>
+<li><strong>断开连接</strong>：<code>signal.disconnect(slot)</code>。</li>
+<li><strong>队列连接 (Queued Connection)</strong>：跨线程自动转为异步队列调用，保证线程安全。</li>
+</ul>
+<h3 id="43-事件过滤与拦截"><a class="header" href="#43-事件过滤与拦截">4.3 事件过滤与拦截</a></h3>
+<ul>
+<li>使用 <code>QObject.installEventFilter</code> 在父对象中捕获子对象事件，实现更精细的控制。</li>
+</ul>
+<pre><code class="language-python">class ShortcutFilter(QObject):
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.KeyPress and event.key() == Qt.Key_S and event.modifiers() == Qt.ControlModifier:
+            obj.save_current_task()
+            return True
+        return super().eventFilter(obj, event)
+</code></pre>
+<h3 id="44-多线程与异步任务"><a class="header" href="#44-多线程与异步任务">4.4 多线程与异步任务</a></h3>
+<ul>
+<li><strong>问题背景</strong>：耗时操作 (网络请求、文件读写) 阻塞主线程，导致界面卡顿。</li>
+<li><strong>解决方案</strong>：
+<ol>
+<li><code>QThread</code> + 工作者对象 (Worker)；</li>
+<li><code>QtConcurrent</code> 提供线程池简单接口；</li>
+<li>Python 原生线程/异步，结合 <code>QTimer</code> 或 <code>QEventLoop</code>。</li>
+</ol>
+</li>
+</ul>
+<p><strong>推荐模式：QThread + Worker</strong></p>
+<pre><code class="language-python">from PySide6.QtCore import QObject, Signal, Slot, QThread
+
+class DataFetcher(QObject):
+    finished = Signal()
+    error = Signal(str)
+    data_ready = Signal(list)
+
+    @Slot()
+    def run(self):
+        try:
+            data = self._load_data()
+        except Exception as exc:
+            self.error.emit(str(exc))
+        else:
+            self.data_ready.emit(data)
+        finally:
+            self.finished.emit()
+
+    def _load_data(self):
+        # 模拟耗时操作
+        import time
+        time.sleep(2)
+        return [1, 2, 3]
+</code></pre>
+<p><strong>在线程中运行</strong>：</p>
+<pre><code class="language-python">class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.thread = QThread()
+        self.worker = DataFetcher()
+        self.worker.moveToThread(self.thread)
+
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+
+        self.worker.data_ready.connect(self.handle_data)
+        self.worker.error.connect(self.show_error)
+
+    def fetch_data(self):
+        if not self.thread.isRunning():
+            self.thread.start()
+</code></pre>
+<p><strong>注意事项</strong>：</p>
+<ul>
+<li>不要在 Worker 中直接操作 UI，使用信号通知主线程更新。</li>
+<li>线程对象需手动管理生命周期，否则退出时会报 <code>QThread: Destroyed while thread is still running</code>。</li>
+<li>使用 <code>moveToThread</code> 将 QObject 关联到目标线程，确保槽函数在对应线程执行。</li>
+</ul>
+<h3 id="45-定时器与异步更新模式"><a class="header" href="#45-定时器与异步更新模式">4.5 定时器与异步更新模式</a></h3>
+<ul>
+<li>使用 <code>QTimer.singleShot</code> 执行延迟任务。</li>
+<li>使用 <code>QTimer</code> 周期触发定时任务，如刷新数据、统计性能。</li>
+<li>结合 <code>asyncio</code>：<code>QEventLoop</code> 集成 <code>asyncio</code> 事件循环，适合网络 IO。</li>
+</ul>
+<pre><code class="language-python">import asyncio
+from qasync import QEventLoop, asyncSlot
+
+class AsyncWindow(QMainWindow):
+    @asyncSlot()
+    async def on_refresh_clicked(self):
+        data = await self.fetch_remote_data()
+        self.update_ui(data)
+
+app = QApplication([])
+loop = QEventLoop(app)
+asyncio.set_event_loop(loop)
+with loop:
+    loop.run_forever()
+</code></pre>
+<h3 id="46-实战案例日志监控工具"><a class="header" href="#46-实战案例日志监控工具">4.6 实战案例：日志监控工具</a></h3>
+<p><strong>背景</strong>：运维团队需要实时查看服务器日志，支持过滤、暂停、导出。</p>
+<p><strong>功能需求</strong>：</p>
+<ul>
+<li>通过 SSH 或本地文件流读取日志。</li>
+<li>GUI 显示实时更新，支持关键字高亮。</li>
+<li>提供暂停、继续、清屏、导出按钮。</li>
+<li>支持多线程读取，避免阻塞。</li>
+</ul>
+<p><strong>关键代码片段</strong>：</p>
+<pre><code class="language-python">class LogMonitor(QWidget):
+    log_received = Signal(str)
+
+    def __init__(self):
+        super().__init__()
+        self.log_view = QPlainTextEdit()
+        self.log_view.setReadOnly(True)
+        self.start_button = QPushButton("开始")
+        self.stop_button = QPushButton("停止")
+        self.keyword_input = QLineEdit()
+        self.keyword_input.setPlaceholderText("关键字过滤, 多个以逗号分隔")
+
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.keyword_input)
+        layout.addWidget(self.log_view)
+        buttons = QHBoxLayout()
+        buttons.addWidget(self.start_button)
+        buttons.addWidget(self.stop_button)
+        layout.addLayout(buttons)
+
+        self._init_thread()
+        self._connect_signals()
+
+    def _init_thread(self):
+        self.thread = QThread(self)
+        self.worker = LogWorker()
+        self.worker.moveToThread(self.thread)
+        self.thread.started.connect(self.worker.read_log)
+        self.worker.log_line.connect(self._append_log)
+        self.worker.finished.connect(self.thread.quit)
+
+    def _connect_signals(self):
+        self.start_button.clicked.connect(self.thread.start)
+        self.stop_button.clicked.connect(self.worker.stop)
+        self.log_received.connect(self._append_log)
+
+    def _append_log(self, line: str):
+        keywords = [k.strip() for k in self.keyword_input.text().split(',') if k.strip()]
+        if keywords and not any(k.lower() in line.lower() for k in keywords):
+            return
+        self.log_view.appendPlainText(line)
+</code></pre>
+<p><strong>实践任务</strong>：</p>
+<ol>
+<li>实现 <code>LogWorker</code>，使用 <code>paramiko</code> 连接远程服务器拉取日志。</li>
+<li>添加“导出日志”功能，使用 <code>QFileDialog</code> 保存文本。</li>
+<li>引入 <code>QSyntaxHighlighter</code> 实现关键字高亮。</li>
+</ol>
+<h3 id="47-模块小结"><a class="header" href="#47-模块小结">4.7 模块小结</a></h3>
+<ul>
+<li>信号槽是 PySide6 的核心，需要熟练掌握多线程场景下的连接模式。</li>
+<li>事件机制提供强大扩展能力，通过事件过滤和自定义事件可实现精细控制。</li>
+<li>实战项目结合真实需求，锻炼线程安全、性能优化与用户交互设计能力。</li>
+</ul>
+<hr />
+<h2 id="模块五数据驱动界面模型视图框架与表单管理"><a class="header" href="#模块五数据驱动界面模型视图框架与表单管理">模块五：数据驱动界面——模型视图框架与表单管理</a></h2>
+<blockquote>
+<p>目标：掌握 Qt Model/View 架构，构建与维护中大型数据驱动界面的能力，实现可编辑表格、树形数据、表单校验与数据同步。</p>
+</blockquote>
+<h3 id="51-modelview-体系概览"><a class="header" href="#51-modelview-体系概览">5.1 Model/View 体系概览</a></h3>
+<ul>
+<li><strong>View</strong>：负责呈现数据，如 <code>QTableView</code>、<code>QTreeView</code>、<code>QListView</code>、<code>QColumnView</code>。</li>
+<li><strong>Model</strong>：提供数据访问接口，如 <code>QAbstractListModel</code>、<code>QAbstractTableModel</code>、<code>QAbstractItemModel</code>。</li>
+<li><strong>Delegate</strong>：负责单元格编辑与绘制，自定义显示逻辑，如 <code>QStyledItemDelegate</code>。</li>
+</ul>
+<p><strong>优势</strong>：数据与显示解耦，支持大量数据虚拟化加载、重用模型、多视图共享数据源。</p>
+<h3 id="52-自定义模型实战"><a class="header" href="#52-自定义模型实战">5.2 自定义模型实战</a></h3>
+<p><strong>场景</strong>：实现一个任务列表模型 <code>TaskListModel</code>，包含标题、优先级、状态。</p>
+<pre><code class="language-python">from PySide6.QtCore import Qt, QModelIndex, QAbstractListModel
+
+class TaskListModel(QAbstractListModel):
+    def __init__(self, tasks=None):
+        super().__init__()
+        self._tasks = tasks or []
+
+    def data(self, index: QModelIndex, role: int = Qt.DisplayRole):
+        if not index.isValid() or not (0 &lt;= index.row() &lt; len(self._tasks)):
+            return None
+        task = self._tasks[index.row()]
+        if role == Qt.DisplayRole:
+            return task["title"]
+        if role == Qt.DecorationRole:
+            return task.get("icon")
+        if role == Qt.UserRole:
+            return task
+        return None
+
+    def rowCount(self, parent=QModelIndex()):
+        return len(self._tasks)
+
+    def add_task(self, task: dict):
+        self.beginInsertRows(QModelIndex(), self.rowCount(), self.rowCount())
+        self._tasks.append(task)
+        self.endInsertRows()
+
+    def remove_task(self, row: int):
+        if 0 &lt;= row &lt; self.rowCount():
+            self.beginRemoveRows(QModelIndex(), row, row)
+            self._tasks.pop(row)
+            self.endRemoveRows()
+</code></pre>
+<p><strong>绑定视图</strong>：</p>
+<pre><code class="language-python">self.model = TaskListModel(tasks)
+self.list_view = QListView()
+self.list_view.setModel(self.model)
+self.list_view.setSelectionMode(QListView.SingleSelection)
+</code></pre>
+<h3 id="53-表格模型与数据校验"><a class="header" href="#53-表格模型与数据校验">5.3 表格模型与数据校验</a></h3>
+<ul>
+<li>继承 <code>QAbstractTableModel</code>，实现 <code>rowCount</code>, <code>columnCount</code>, <code>data</code>, <code>setData</code>, <code>flags</code>。</li>
+<li>使用 <code>Qt.ItemIsEditable</code> 标记可编辑单元格。</li>
+<li>在 <code>setData</code> 中添加校验逻辑，保证数据有效性。</li>
+</ul>
+<p><strong>示例：库存列表模型</strong></p>
+<pre><code class="language-python">class InventoryModel(QAbstractTableModel):
+    HEADERS = ["SKU", "名称", "库存", "单价"]
+
+    def __init__(self, items=None):
+        super().__init__()
+        self._items = items or []
+
+    def rowCount(self, parent=QModelIndex()):
+        return len(self._items)
+
+    def columnCount(self, parent=QModelIndex()):
+        return len(self.HEADERS)
+
+    def data(self, index, role=Qt.DisplayRole):
+        if not index.isValid():
+            return None
+        item = self._items[index.row()]
+        column = index.column()
+        if role in (Qt.DisplayRole, Qt.EditRole):
+            return item[self.HEADERS[column]]
+        if role == Qt.TextAlignmentRole and column in (2, 3):
+            return Qt.AlignRight | Qt.AlignVCenter
+        return None
+
+    def headerData(self, section, orientation, role=Qt.DisplayRole):
+        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+            return self.HEADERS[section]
+        return super().headerData(section, orientation, role)
+
+    def flags(self, index):
+        base_flags = super().flags(index)
+        if index.column() in (2, 3):
+            return base_flags | Qt.ItemIsEditable
+        return base_flags
+
+    def setData(self, index, value, role=Qt.EditRole):
+        if role != Qt.EditRole or not index.isValid():
+            return False
+        column = index.column()
+        key = self.HEADERS[column]
+        if column == 2:  # 库存
+            try:
+                value = int(value)
+                assert value &gt;= 0
+            except (ValueError, AssertionError):
+                return False
+        if column == 3:  # 单价
+            try:
+                value = float(value)
+                assert value &gt;= 0
+            except (ValueError, AssertionError):
+                return False
+        self._items[index.row()][key] = value
+        self.dataChanged.emit(index, index, [Qt.DisplayRole, Qt.EditRole])
+        return True
+</code></pre>
+<h3 id="54-delegate-自定义编辑器"><a class="header" href="#54-delegate-自定义编辑器">5.4 Delegate 自定义编辑器</a></h3>
+<ul>
+<li>通过 <code>QStyledItemDelegate</code> 重写 <code>createEditor</code>, <code>setEditorData</code>, <code>setModelData</code>。</li>
+<li>示例：价格字段使用 <code>QDoubleSpinBox</code>，状态字段使用 <code>QComboBox</code>。</li>
+</ul>
+<pre><code class="language-python">class PriceDelegate(QStyledItemDelegate):
+    def createEditor(self, parent, option, index):
+        editor = QDoubleSpinBox(parent)
+        editor.setRange(0.0, 99999.99)
+        editor.setDecimals(2)
+        return editor
+
+    def setEditorData(self, editor, index):
+        value = float(index.data(Qt.EditRole))
+        editor.setValue(value)
+
+    def setModelData(self, editor, model, index):
+        model.setData(index, editor.value(), Qt.EditRole)
+</code></pre>
+<h3 id="55-表单管理与数据绑定"><a class="header" href="#55-表单管理与数据绑定">5.5 表单管理与数据绑定</a></h3>
+<ul>
+<li>使用 <code>QDataWidgetMapper</code> 将模型字段与控件绑定，实现表单与视图联动。</li>
+<li>自定义验证器 (<code>QValidator</code>) 保障输入合法性。</li>
+<li>引入 <code>pydantic</code> 或 <code>marshmallow</code> 进行更复杂的数据校验与转换。</li>
+</ul>
+<p><strong>示例：表单映射</strong></p>
+<pre><code class="language-python">mapper = QDataWidgetMapper()
+mapper.setModel(self.inventory_model)
+mapper.addMapping(self.sku_edit, 0)
+mapper.addMapping(self.name_edit, 1)
+mapper.addMapping(self.stock_spin, 2)
+mapper.addMapping(self.price_spin, 3)
+mapper.toFirst()
+</code></pre>
+<h3 id="56-数据持久化与同步"><a class="header" href="#56-数据持久化与同步">5.6 数据持久化与同步</a></h3>
+<ul>
+<li>结合 <code>sqlalchemy</code>、<code>peewee</code>、<code>TinyDB</code> 等实现持久化层。</li>
+<li>使用 Repository 模式封装数据访问，UI 通过事件与服务通信。</li>
+<li>支持远程 API 同步时，利用任务队列或本地缓存处理离线场景。</li>
+</ul>
+<h3 id="57-实战案例库存管理工具"><a class="header" href="#57-实战案例库存管理工具">5.7 实战案例：库存管理工具</a></h3>
+<p><strong>需求</strong>：构建一个支持库存增删改查、导入导出、实时同步的桌面应用。</p>
+<p><strong>核心功能</strong>：</p>
+<ul>
+<li>表格展示库存列表，支持排序筛选。</li>
+<li>表单编辑选中 SKU 信息，实时校验。</li>
+<li>导入 CSV、导出 Excel。</li>
+<li>后台线程同步远程数据库，更新 UI。</li>
+</ul>
+<p><strong>实现要点</strong>：</p>
+<ol>
+<li>自定义 <code>InventoryModel</code> 与代理实现数据编辑。</li>
+<li>使用 <code>QSortFilterProxyModel</code> 实现模糊搜索与状态过滤。</li>
+<li>集成 <code>pandas</code> 完成导入导出。</li>
+<li>通过 <code>QThread</code> + <code>Signal</code> 更新同步状态，在状态栏展示。</li>
+</ol>
+<h3 id="58-模块小结"><a class="header" href="#58-模块小结">5.8 模块小结</a></h3>
+<ul>
+<li>Model/View 架构是 PySide6 的核心竞争力，适合处理复杂数据界面。</li>
+<li>自定义模型 + 代理可实现高度定制化的编辑体验。</li>
+<li>数据驱动思维（模型 - 服务 - UI）有助于代码解耦与测试。</li>
+</ul>
+<hr />
+<h2 id="模块六生产级实践异步多媒体部署与测试"><a class="header" href="#模块六生产级实践异步多媒体部署与测试">模块六：生产级实践——异步、多媒体、部署与测试</a></h2>
+<blockquote>
+<p>目标：掌握在实际生产环境中使用 PySide6 的高级技巧，包括多媒体处理、国际化、打包部署、自动更新与测试策略。</p>
+</blockquote>
+<h3 id="61-多线程异步应用场景"><a class="header" href="#61-多线程异步应用场景">6.1 多线程/异步应用场景</a></h3>
+<ul>
+<li>大文件处理、视频流解析、网络请求、AI 推理。</li>
+<li>结合 <code>QThreadPool</code>、<code>QtConcurrent.run</code>、<code>asyncio</code> 实现性能优化。</li>
+</ul>
+<pre><code class="language-python">from PySide6.QtCore import QThreadPool, QRunnable, Slot
+
+class Worker(QRunnable):
+    def __init__(self, fn, *args, **kwargs):
+        super().__init__()
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+
+    @Slot()
+    def run(self):
+        self.fn(*self.args, **self.kwargs)
+
+thread_pool = QThreadPool.globalInstance()
+thread_pool.start(Worker(load_heavy_data))
+</code></pre>
+<h3 id="62-多媒体与图形增强"><a class="header" href="#62-多媒体与图形增强">6.2 多媒体与图形增强</a></h3>
+<ul>
+<li>使用 <code>QtMultimedia</code> 播放音视频，构建监控面板或媒体播放器。</li>
+<li><code>QtCharts</code> 可视化折线图、柱状图、饼图；<code>QtDataVisualization</code> 构建 3D 数据图。</li>
+<li><code>QtSvg</code> 支持矢量图标；<code>QtWebEngine</code> 嵌入网页内容或混合应用。</li>
+</ul>
+<p><strong>视频监控示例片段</strong>：</p>
+<pre><code class="language-python">from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PySide6.QtMultimediaWidgets import QVideoWidget
+
+self.video_widget = QVideoWidget()
+self.media_player = QMediaPlayer()
+self.media_player.setVideoOutput(self.video_widget)
+self.audio_output = QAudioOutput()
+self.media_player.setAudioOutput(self.audio_output)
+self.media_player.setSource(QUrl.fromLocalFile("sample.mp4"))
+self.media_player.play()
+</code></pre>
+<h3 id="63-国际化与本地化"><a class="header" href="#63-国际化与本地化">6.3 国际化与本地化</a></h3>
+<ul>
+<li>使用 <code>pyside6-lupdate</code> 提取翻译源：<code>pyside6-lupdate app -ts translations/app_zh_CN.ts</code>。</li>
+<li>在 <code>Qt Linguist</code> 中翻译 <code>.ts</code> 文件，生成 <code>.qm</code>。</li>
+<li>运行时加载翻译：</li>
+</ul>
+<pre><code class="language-python">from PySide6.QtCore import QTranslator, QLocale, QLibraryInfo
+
+translator = QTranslator()
+translator.load("app_zh_CN", "translations")
+app.installTranslator(translator)
+</code></pre>
+<h3 id="64-配置管理与插件化"><a class="header" href="#64-配置管理与插件化">6.4 配置管理与插件化</a></h3>
+<ul>
+<li>使用 <code>QSettings</code> 读写配置，支持 ini/注册表/plist。</li>
+<li>设计插件系统：通过 <code>importlib</code> 动态加载，或使用 <code>pluggy</code> 等框架。</li>
+<li>提供配置编辑界面，支持导入导出 JSON/YAML。</li>
+</ul>
+<h3 id="65-测试与-cicd"><a class="header" href="#65-测试与-cicd">6.5 测试与 CI/CD</a></h3>
+<ul>
+<li><strong>单元测试</strong>：<code>pytest-qt</code> 提供 Qt 应用测试辅助。</li>
+<li><strong>UI 自动化</strong>：<code>pytest-qt</code> 的 <code>qtbot</code> 可模拟用户交互。</li>
+</ul>
+<pre><code class="language-python">def test_button_click(qtbot):
+    widget = TaskBoard()
+    qtbot.addWidget(widget)
+    widget.show()
+    qtbot.mouseClick(widget.add_button, Qt.LeftButton)
+    assert widget.task_table.rowCount() == 1
+</code></pre>
+<ul>
+<li><strong>截图回归测试</strong>：<code>pytest-qt</code> 支持截图比对，发现 UI 回归。</li>
+<li><strong>CI 集成</strong>：使用 GitHub Actions/ GitLab CI，结合 xvfb-headless 运行 GUI 测试。</li>
+</ul>
+<h3 id="66-打包与部署"><a class="header" href="#66-打包与部署">6.6 打包与部署</a></h3>
+<ul>
+<li><strong>PyInstaller</strong>：</li>
+</ul>
+<pre><code class="language-bash">pyinstaller app/main.py -n TaskBoard --noconfirm --noconsole \
+    --add-data "app/resources;app/resources" \
+    --icon app/resources/icons/app.ico
+</code></pre>
+<ul>
+<li><strong>cx_Freeze</strong>、<code>briefcase</code> (BeeWare) 作为替代方案。</li>
+<li>macOS 需 <code>codesign</code>，Windows 注意 VC++ 运行库。</li>
+<li>使用 <code>Qt Installer Framework</code> 制作安装向导。</li>
+<li>自动更新：集成 <code>sparkle</code> (macOS)、<code>winsparkle</code> (Windows) 或自研 HTTP 更新模块。</li>
+</ul>
+<h3 id="67-日志与监控"><a class="header" href="#67-日志与监控">6.7 日志与监控</a></h3>
+<ul>
+<li>使用 <code>loguru</code> 或 Python <code>logging</code> 将日志输出到文件、控制台、GUI 面板。</li>
+<li>引入崩溃捕获 (<code>sys.excepthook</code>)，弹窗提示并写入日志。</li>
+<li>记录关键用户行为，用于排查问题和产品迭代。</li>
+</ul>
+<h3 id="68-安全与合规"><a class="header" href="#68-安全与合规">6.8 安全与合规</a></h3>
+<ul>
+<li>加密配置文件中的敏感信息 (如 API Key)，可以使用 <code>cryptography</code>。</li>
+<li>对外网通信使用 HTTPS/TLS，验证证书。</li>
+<li>严格控制第三方依赖许可证，确保与产品发放策略一致。</li>
+</ul>
+<h3 id="69-实战案例桌面数据可视化平台"><a class="header" href="#69-实战案例桌面数据可视化平台">6.9 实战案例：桌面数据可视化平台</a></h3>
+<p><strong>背景</strong>：数据团队需要一个跨平台桌面端，实时展示 KPI、监控告警。</p>
+<p><strong>功能设计</strong>：</p>
+<ul>
+<li>图表仪表板：<code>QtCharts</code> 绘制折线、柱状、饼图。</li>
+<li>告警系统：多线程监听消息队列 (如 RabbitMQ)，在 GUI 中弹窗。</li>
+<li>用户权限：登录界面 + 配置文件存储权限。</li>
+<li>部署：使用 PyInstaller 打包，配置自动更新。</li>
+</ul>
+<p><strong>技术要点</strong>：</p>
+<ul>
+<li>数据服务层与 UI 解耦，采用事件驱动。</li>
+<li>使用 <code>QThreadPool</code> + Future 处理数据刷新，避免阻塞。</li>
+<li>使用 <code>pytest-qt</code> 编写回归测试确保仪表板控件渲染。</li>
+</ul>
+<h3 id="610-模块小结"><a class="header" href="#610-模块小结">6.10 模块小结</a></h3>
+<ul>
+<li>生产级应用需要综合考虑性能、部署、国际化、测试等非功能性要求。</li>
+<li>自动化测试、日志监控与更新机制是长期维护的基础设施。</li>
+<li>实战案例强调如何将 PySide6 应用真正上线运营。</li>
+</ul>
+<hr />
+<h2 id="综合项目实战pyside6-工单管理系统"><a class="header" href="#综合项目实战pyside6-工单管理系统">综合项目实战：PySide6 工单管理系统</a></h2>
+<blockquote>
+<p>目标：将前面模块的知识整合，构建一个包含用户认证、工单流转、实时消息、数据可视化的桌面系统，并输出完整的实施方案与代码结构示例。</p>
+</blockquote>
+<h3 id="项目背景与目标"><a class="header" href="#项目背景与目标">项目背景与目标</a></h3>
+<ul>
+<li><strong>业务场景</strong>：公司内的技术支持团队需要一个跨平台工单客户端，支持提交工单、查看状态、与客服沟通、统计分析。</li>
+<li><strong>主要功能</strong>：
+<ol>
+<li>用户登录与权限控制。</li>
+<li>工单列表（分页、搜索、过滤、高亮 SLA 超时）。</li>
+<li>工单详情与富文本回复。</li>
+<li>实时通知（WebSocket/SSE）。</li>
+<li>仪表盘统计（待处理工单数、平均处理时长、按类别占比）。</li>
+<li>离线缓存与重试机制。</li>
+</ol>
+</li>
+<li><strong>技术要求</strong>：
+<ul>
+<li>界面使用 <code>QMainWindow</code> + <code>QStackedWidget</code>，多模块导航。</li>
+<li>数据层使用 <code>Repository</code> 模式，支持 HTTP API 与本地 SQLite 双通道。</li>
+<li>实现单元测试、集成测试与打包方案。</li>
+</ul>
+</li>
+</ul>
+<h3 id="领域建模"><a class="header" href="#领域建模">领域建模</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>模块</th><th>说明</th><th>关键类</th></tr></thead><tbody>
+<tr><td>身份认证</td><td>负责登录、Token 管理</td><td><code>AuthService</code>, <code>LoginDialog</code></td></tr>
+<tr><td>工单列表</td><td>展示与过滤</td><td><code>TicketTableModel</code>, <code>QSortFilterProxyModel</code>, <code>TicketToolbar</code></td></tr>
+<tr><td>工单详情</td><td>展示富文本、上传附件</td><td><code>TicketDetailWidget</code></td></tr>
+<tr><td>通知中心</td><td>接收实时事件</td><td><code>NotificationWorker</code>, <code>QSystemTrayIcon</code></td></tr>
+<tr><td>仪表盘</td><td>数据可视化</td><td><code>DashboardWidget</code>, <code>QtCharts</code></td></tr>
+<tr><td>配置管理</td><td>API 地址、主题、缓存</td><td><code>SettingsService</code>, <code>QSettings</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="目录结构设计"><a class="header" href="#目录结构设计">目录结构设计</a></h3>
+<pre><code class="language-text">support-desk/
+├─ app/
+│  ├─ core/
+│  │  ├─ settings.py
+│  │  ├─ events.py
+│  │  └─ utils.py
+│  ├─ auth/
+│  │  ├─ dialogs.py
+│  │  ├─ models.py
+│  │  └─ services.py
+│  ├─ tickets/
+│  │  ├─ models.py
+│  │  ├─ repositories.py
+│  │  ├─ views.py
+│  │  └─ delegates.py
+│  ├─ dashboard/
+│  │  ├─ charts.py
+│  │  └─ services.py
+│  ├─ resources/
+│  ├─ widgets/
+│  ├─ windows/
+│  │  ├─ main_window.py
+│  │  └─ __init__.py
+│  └─ main.py
+├─ tests/
+│  ├─ test_auth.py
+│  ├─ test_tickets.py
+│  └─ test_end_to_end.py
+├─ scripts/
+│  ├─ dev_server.py
+│  └─ package.py
+├─ requirements.txt
+└─ README.md
+</code></pre>
+<h3 id="核心流程设计"><a class="header" href="#核心流程设计">核心流程设计</a></h3>
+<ol>
+<li>
+<p><strong>启动流程</strong></p>
+<ul>
+<li>读取配置 (<code>QSettings</code>)，确定 API 地址与主题。</li>
+<li>启动 <code>SplashScreen</code>，加载资源，执行版本检查。</li>
+<li>弹出 <code>LoginDialog</code>，完成认证后，加载主窗口。</li>
+</ul>
+</li>
+<li>
+<p><strong>工单列表加载</strong></p>
+<ul>
+<li><code>TicketRepository</code> 提供 <code>fetch_page</code>, <code>search</code>, <code>update_status</code> 等方法。</li>
+<li><code>TicketTableModel</code> 通过 <code>beginResetModel</code>/<code>endResetModel</code> 刷新数据。</li>
+<li><code>QSortFilterProxyModel</code> 处理搜索与过滤。</li>
+</ul>
+</li>
+<li>
+<p><strong>工单详情显示</strong></p>
+<ul>
+<li>通过信号槽将选中行的 <code>Ticket</code> 对象传递给详情窗体。</li>
+<li>支持富文本编辑 (<code>QTextEdit</code>) 与附件上传 (<code>QFileDialog</code>)。</li>
+<li>回复提交后调用 <code>TicketRepository.reply(ticket_id, payload)</code>。</li>
+</ul>
+</li>
+<li>
+<p><strong>实时通知</strong></p>
+<ul>
+<li>独立线程运行 <code>NotificationWorker</code>，通过 WebSocket 监听。</li>
+<li>收到新消息时发射 <code>Signal</code>，主线程更新列表并弹出系统通知。</li>
+</ul>
+</li>
+</ol>
+<h3 id="关键代码片段"><a class="header" href="#关键代码片段">关键代码片段</a></h3>
+<p><strong>主窗口骨架</strong>：</p>
+<pre><code class="language-python">class MainWindow(QMainWindow):
+    def __init__(self, auth_user: User):
+        super().__init__()
+        self.auth_user = auth_user
+        self.setWindowTitle(f"Support Desk - {auth_user.name}")
+        self.resize(1280, 800)
+        self._init_ui()
+        self._init_services()
+        self._register_shortcuts()
+
+    def _init_ui(self):
+        self.stacked = QStackedWidget()
+        self.ticket_view = TicketBoard()
+        self.dashboard = DashboardWidget()
+        self.settings_view = SettingsWidget()
+        self.stacked.addWidget(self.ticket_view)
+        self.stacked.addWidget(self.dashboard)
+        self.stacked.addWidget(self.settings_view)
+
+        self.sidebar = NavigationWidget([
+            ("工单", self.ticket_view),
+            ("仪表盘", self.dashboard),
+            ("设置", self.settings_view),
+        ])
+
+        central = QWidget()
+        layout = QHBoxLayout(central)
+        layout.addWidget(self.sidebar)
+        layout.addWidget(self.stacked, stretch=1)
+        self.setCentralWidget(central)
+
+    def _init_services(self):
+        self.ticket_repo = TicketRepository()
+        self.ticket_view.set_repository(self.ticket_repo)
+        self.notification_worker = NotificationWorker(self.ticket_repo)
+        self.notification_worker.new_ticket.connect(self.ticket_view.refresh)
+        self.notification_worker.start()
+
+    def closeEvent(self, event):
+        self.notification_worker.stop()
+        super().closeEvent(event)
+</code></pre>
+<p><strong>登录对话框</strong>：</p>
+<pre><code class="language-python">class LoginDialog(QDialog):
+    authenticated = Signal(User)
+
+    def __init__(self, auth_service: AuthService):
+        super().__init__()
+        self.auth_service = auth_service
+        self._build_ui()
+
+    def _build_ui(self):
+        self.setWindowTitle("登录 Support Desk")
+        self.username_input = QLineEdit()
+        self.password_input = QLineEdit()
+        self.password_input.setEchoMode(QLineEdit.Password)
+        form = QFormLayout(self)
+        form.addRow("用户名", self.username_input)
+        form.addRow("密码", self.password_input)
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self._on_accept)
+        buttons.rejected.connect(self.reject)
+        form.addRow(buttons)
+
+    def _on_accept(self):
+        try:
+            user = self.auth_service.login(
+                self.username_input.text(),
+                self.password_input.text()
+            )
+        except AuthError as exc:
+            QMessageBox.warning(self, "登录失败", str(exc))
+            return
+        self.authenticated.emit(user)
+        self.accept()
+</code></pre>
+<h3 id="测试策略"><a class="header" href="#测试策略">测试策略</a></h3>
+<ul>
+<li><strong>单元测试</strong>：对 <code>TicketRepository</code>、<code>AuthService</code>、<code>NotificationWorker</code> 进行 mock 测试。</li>
+<li><strong>UI 测试</strong>：利用 <code>pytest-qt</code> 检查表格加载、过滤按钮响应。</li>
+<li><strong>性能测试</strong>：模拟 10k 工单加载，确保界面响应 &lt; 200ms。</li>
+<li><strong>部署测试</strong>：打包后在 Windows/macOS/Linux 虚拟机验证启动、升级、自动更新流程。</li>
+</ul>
+<h3 id="工程化实践"><a class="header" href="#工程化实践">工程化实践</a></h3>
+<ul>
+<li>使用 <code>pre-commit</code> 统一代码风格：<code>black</code>, <code>isort</code>, <code>flake8</code>。</li>
+<li>构建 <code>Makefile</code>：<code>make dev</code>, <code>make test</code>, <code>make package</code>。</li>
+<li>使用 <code>Sentry</code> 或 <code>rollbar</code> 捕获桌面端异常。</li>
+<li>引入 <code>dotenv</code> 或 <code>pydantic-settings</code> 管理环境变量。</li>
+</ul>
+<h3 id="项目扩展建议"><a class="header" href="#项目扩展建议">项目扩展建议</a></h3>
+<ul>
+<li>加入角色权限控制：基于后端返回的 RBAC 配置启用/禁用操作按钮。</li>
+<li>支持离线模式：缓存工单数据，离线编辑后自动同步。</li>
+<li>引入插件系统：允许第三方编写数据采集插件。</li>
+</ul>
+<hr />
+<h2 id="进阶专题"><a class="header" href="#进阶专题">进阶专题</a></h2>
+<h3 id="专题一pyside6-与-qml-混合开发"><a class="header" href="#专题一pyside6-与-qml-混合开发">专题一：PySide6 与 QML 混合开发</a></h3>
+<ul>
+<li><strong>背景</strong>：Qt Quick (QML) 适合构建现代化、动画丰富的界面；PySide6 提供 <code>QtQuick</code> 模块与 <code>QmlElement</code> 装饰器实现 Python 与 QML 的交互。</li>
+<li><strong>场景</strong>：构建需要复杂动画、响应式布局、触摸操作的应用，例如控制面板、大屏展示。</li>
+</ul>
+<h4 id="环境准备"><a class="header" href="#环境准备">环境准备</a></h4>
+<pre><code class="language-bash">pip install PySide6 PySide6-Addons
+</code></pre>
+<h4 id="目录结构示例"><a class="header" href="#目录结构示例">目录结构示例</a></h4>
+<pre><code class="language-text">qml-hybrid/
+├─ app/
+│  ├─ main.py
+│  ├─ backend.py
+│  └─ qml/
+│     ├─ Main.qml
+│     └─ components/
+│        └─ TicketCard.qml
+</code></pre>
+<h4 id="代码示例"><a class="header" href="#代码示例">代码示例</a></h4>
+<pre><code class="language-python">from PySide6.QtCore import QObject, Slot, Property, Signal
+from PySide6.QtQml import QQmlApplicationEngine
+
+class TicketStore(QObject):
+    ticketsChanged = Signal()
+
+    def __init__(self):
+        super().__init__()
+        self._tickets = []
+
+    @Property(list, notify=ticketsChanged)
+    def tickets(self):
+        return self._tickets
+
+    @Slot(dict)
+    def addTicket(self, ticket):
+        self._tickets.append(ticket)
+        self.ticketsChanged.emit()
+
+app = QApplication(sys.argv)
+engine = QQmlApplicationEngine()
+store = TicketStore()
+engine.rootContext().setContextProperty("ticketStore", store)
+engine.load("app/qml/Main.qml")
+app.exec()
+</code></pre>
+<h4 id="qml-示例"><a class="header" href="#qml-示例">QML 示例</a></h4>
+<pre><code class="language-qml">import QtQuick 2.15
+import QtQuick.Controls 2.15
+
+ApplicationWindow {
+    visible: true
+    width: 960
+    height: 600
+    title: qsTr("QML 混合示例")
+
+    ListView {
+        anchors.fill: parent
+        model: ticketStore.tickets
+        delegate: TicketCard {}
+    }
+}
+</code></pre>
+<h4 id="混合开发注意事项"><a class="header" href="#混合开发注意事项">混合开发注意事项</a></h4>
+<ul>
+<li>维护数据同步：使用 <code>Property</code> 与 <code>Signal</code> 确保状态一致。</li>
+<li>调试工具：<code>qmlscene</code>, <code>qmlpreview</code>，QML 支持热加载。</li>
+<li>性能优化：避免在 Python 与 QML 之间频繁传输大量数据，考虑使用 <code>QAbstractListModel</code> 暴露给 QML。</li>
+</ul>
+<h3 id="专题二pyside6-与数据科学工具集成"><a class="header" href="#专题二pyside6-与数据科学工具集成">专题二：PySide6 与数据科学工具集成</a></h3>
+<ul>
+<li>使用 <code>matplotlib</code> 的 <code>FigureCanvasQTAgg</code> 将图表嵌入 PySide6。</li>
+<li>通过 <code>pandas</code> + <code>QAbstractTableModel</code> 展示数据表。</li>
+<li>结合 <code>scikit-learn</code> 实现 GUI AI 模型参数调优。</li>
+</ul>
+<p><strong>示例：嵌入 Matplotlib 图表</strong></p>
+<pre><code class="language-python">from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.figure import Figure
+
+class MatplotlibWidget(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.figure = Figure(figsize=(5, 3))
+        self.canvas = FigureCanvasQTAgg(self.figure)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.canvas)
+
+    def plot(self, x, y):
+        ax = self.figure.subplots()
+        ax.clear()
+        ax.plot(x, y)
+        self.canvas.draw()
+</code></pre>
+<h3 id="专题三pyside6-与嵌入式开发"><a class="header" href="#专题三pyside6-与嵌入式开发">专题三：PySide6 与嵌入式开发</a></h3>
+<ul>
+<li>使用 Qt for Device Creation 或 Raspberry Pi 搭建触控界面。</li>
+<li>利用 <code>PySide6.QtSerialPort</code> 与硬件串口通信。</li>
+<li>通过 <code>GPIO</code> 库控制硬件，使用 PySide6 构建控制面板。</li>
+</ul>
+<p><strong>项目建议</strong>：</p>
+<ul>
+<li>构建一个 IoT 传感器控制面板，实时展示数据、支持远程控制。</li>
+<li>使用 <code>PySide6.QtMqtt</code> 订阅 MQTT 消息，更新界面控件。</li>
+</ul>
+<hr />
+<h2 id="常见问题与故障排查"><a class="header" href="#常见问题与故障排查">常见问题与故障排查</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>可能原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>程序启动报错 <code>Could not load the Qt platform plugin "xcb"</code></td><td>Linux 缺少依赖</td><td>安装 <code>sudo apt install libxcb-xinerama0 libxcb-xinput0</code></td></tr>
+<tr><td>打包后界面空白</td><td>缺少资源文件</td><td>确保在打包命令中使用 <code>--add-data</code>，或在 <code>.spec</code> 中配置 <code>datas</code></td></tr>
+<tr><td>中文字体变形</td><td>默认字体不支持</td><td>使用 <code>QFontDatabase.addApplicationFont</code> 加载 Noto Sans CJK</td></tr>
+<tr><td>信号槽未触发</td><td>槽函数生命周期结束或没有匹配签名</td><td>确保对象未被垃圾回收；检查槽函数参数签名</td></tr>
+<tr><td>线程报错 <code>QObject::moveToThread: Current thread</code></td><td>在目标线程之外创建 QObject</td><td>在主线程创建对象后，使用 <code>moveToThread</code> 再启动线程</td></tr>
+<tr><td>UI 卡顿</td><td>在主线程执行耗时任务</td><td>使用线程池、异步 I/O 或拆分任务</td></tr>
+<tr><td>QSS 样式无效</td><td>选择器错误、层级不匹配</td><td>使用 <code>objectName</code> 精确选择，或在 Developer Tools 中调试</td></tr>
+</tbody></table>
+</div>
+<h3 id="调试技巧"><a class="header" href="#调试技巧">调试技巧</a></h3>
+<ul>
+<li>启用 Qt 日志：设置环境变量 <code>QT_DEBUG_PLUGINS=1</code>。</li>
+<li>使用 <code>Qt Creator</code> 的调试器查看对象树。</li>
+<li>利用 <code>QLoggingCategory</code> 调整日志级别。</li>
+<li><code>qt-material</code>, <code>qdarkstyle</code> 等主题库自带调试工具。</li>
+</ul>
+<h3 id="性能优化清单"><a class="header" href="#性能优化清单">性能优化清单</a></h3>
+<ul>
+<li>避免频繁的 <code>beginResetModel</code>，改用 <code>dataChanged</code> 提升性能。</li>
+<li>大量数据使用懒加载或分页。</li>
+<li>对频繁刷新区域使用 <code>QGraphicsView</code> 或缓存机制。</li>
+<li>图像处理应用中使用 <code>QPixmapCache</code>。</li>
+</ul>
+<h3 id="部署排障手册"><a class="header" href="#部署排障手册">部署排障手册</a></h3>
+<ol>
+<li>打包时使用 <code>--debug</code> 检查缺失文件。</li>
+<li>使用 <code>Dependency Walker</code> (Windows) 或 <code>otool</code> (macOS) 检查依赖库。</li>
+<li>将日志输出到本地文件，安装后可快速定位问题。</li>
+<li>制作安装包后，在干净环境（纯净虚拟机）测试。</li>
+</ol>
+<hr />
+<h2 id="学习成果验证标准"><a class="header" href="#学习成果验证标准">学习成果验证标准</a></h2>
+<ol>
+<li><strong>功能实现能力</strong>：能够在 2 周内独立完成一个包含多窗口、模型视图、信号槽、数据持久化的 PySide6 小型项目，并通过导师代码审查。</li>
+<li><strong>性能与稳定性指标</strong>：掌握多线程与异步优化，能将界面响应延迟控制在 200ms 内，关键操作具备异常捕获与日志记录。</li>
+<li><strong>工程化能力</strong>：建立包含测试、打包、CI 的完整工作流，项目可在 Windows 与 macOS 上打包发布，无需人工修复。</li>
+<li><strong>可维护性评估</strong>：代码库通过 <code>pylint</code>/<code>ruff</code> 分析评分 ≥ 8.0，模块划分清晰，文档覆盖初始化、配置、部署过程。</li>
+<li><strong>知识迁移能力</strong>：能够根据需求选择 Qt Widgets 或 Qt Quick，评估不同模块 (Charts, Multimedia, WebEngine) 的适用场景，并撰写对比分析报告或技术调研文档。</li>
+</ol>
+<hr />
+<h2 id="自主练习与挑战任务"><a class="header" href="#自主练习与挑战任务">自主练习与挑战任务</a></h2>
+<h3 id="基础级练习"><a class="header" href="#基础级练习">基础级练习</a></h3>
+<ol>
+<li>完成一个待办事项应用，支持增删查改与数据持久化。</li>
+<li>使用 <code>QFileDialog</code> 实现批量文件重命名工具。</li>
+<li>将命令行脚本包装为 GUI，包含输入、输出日志与进度条。</li>
+</ol>
+<h3 id="进阶级挑战"><a class="header" href="#进阶级挑战">进阶级挑战</a></h3>
+<ol>
+<li>实现 Markdown 笔记应用，支持实时预览与本地搜索。</li>
+<li>开发 SQL 客户端工具，集成语法高亮、结果表格导出。</li>
+<li>构建 Git 管理 GUI，展示仓库分支、提交历史与差异。</li>
+</ol>
+<h3 id="专家级挑战"><a class="header" href="#专家级挑战">专家级挑战</a></h3>
+<ol>
+<li>构建跨平台音视频播放器，支持多格式播放、字幕、截图。</li>
+<li>设计自动化测试客户端，集成 Selenium/Grid，展示执行结果。</li>
+<li>利用 QML + PySide6 制作数据可视化大屏，支持动画与互动。</li>
+</ol>
+<p><strong>建议</strong>：记录每个练习的需求、设计方案、实现难点、复盘总结，形成学习档案。</p>
+<hr />
+<h2 id="扩展资源与进阶建议"><a class="header" href="#扩展资源与进阶建议">扩展资源与进阶建议</a></h2>
+<ul>
+<li><strong>官方文档</strong>：
+<ul>
+<li><a href="https://doc.qt.io/qtforpython/">Qt for Python Documentation</a>：API 参考与教程。</li>
+<li><a href="https://doc.qt.io/qt-6/">Qt Widgets 5/6 Manual</a>：控件与布局详解。</li>
+</ul>
+</li>
+<li><strong>社区与课程</strong>：
+<ul>
+<li>KDAB 博客：大量 Qt 深度文章与视频。</li>
+<li><code>Real Python</code>、<code>Qt Dev Letter</code> 提供实战案例。</li>
+<li>B 站、YouTube 搜索 “PySide6 教程” 获取视频演示。</li>
+</ul>
+</li>
+<li><strong>工具推荐</strong>：
+<ul>
+<li>Qt Creator：集成 UI 设计、调试、翻译工具。</li>
+<li>Qt Designer：快速拖拽 UI。</li>
+<li><code>fbs</code>：PyQt/PySide 打包工具。</li>
+<li><code>poetry</code> / <code>uv</code>：现代依赖管理。</li>
+</ul>
+</li>
+<li><strong>进阶建议</strong>：
+<ol>
+<li>学习 C++ Qt 与 PySide6 的差异，必要时阅读 C++ 文档帮助理解底层机制。</li>
+<li>尝试在实际项目中推广 PySide6，收集用户反馈，持续改进界面与交互。</li>
+<li>关注 Qt 6 更新，及时适配新 API，如 <code>Qt Quick 3D</code>、<code>Qt Design Studio</code>。</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="复盘与持续改进"><a class="header" href="#复盘与持续改进">复盘与持续改进</a></h2>
+<ul>
+<li><strong>学习周期回顾</strong>：每 2 周回顾一次完成的模块、实战项目、遇到的问题与解决方案。</li>
+<li><strong>知识图谱维护</strong>：使用思维导图或 Notion 整理控件、模块、工具之间的关系。</li>
+<li><strong>经验输出</strong>：撰写技术博客、内部分享或短视频，巩固知识并影响团队。</li>
+<li><strong>社区参与</strong>：在 StackOverflow、知乎、Qt 官方论坛提问或回答，提升问题解决能力。</li>
+</ul>
+<hr />
+<h2 id="术语速查与-api-备忘"><a class="header" href="#术语速查与-api-备忘">术语速查与 API 备忘</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>术语</th><th>英文</th><th>说明</th><th>常用 API</th></tr></thead><tbody>
+<tr><td>应用对象</td><td>QApplication</td><td>Qt 程序的入口与事件循环管理</td><td><code>app = QApplication(sys.argv)</code>、<code>app.exec()</code></td></tr>
+<tr><td>窗口部件</td><td>QWidget</td><td>所有可见控件的基类</td><td><code>setWindowTitle()</code>、<code>resize()</code>、<code>show()</code></td></tr>
+<tr><td>主窗口</td><td>QMainWindow</td><td>提供菜单、工具栏、状态栏结构的顶层窗口</td><td><code>setMenuBar()</code>、<code>setStatusBar()</code>、<code>setCentralWidget()</code></td></tr>
+<tr><td>对话框</td><td>QDialog</td><td>模态/非模态弹窗，专注于交互任务</td><td><code>exec()</code>、<code>accept()</code>、<code>reject()</code></td></tr>
+<tr><td>布局管理器</td><td>Layout</td><td>控件布局方式，自动调整位置与尺寸</td><td><code>QVBoxLayout</code>、<code>QHBoxLayout</code>、<code>addWidget()</code>、<code>setStretch()</code></td></tr>
+<tr><td>信号槽</td><td>Signal/Slot</td><td>事件处理机制</td><td><code>signal.connect(slot)</code>、<code>signal.emit()</code></td></tr>
+<tr><td>模型</td><td>Model</td><td>数据源抽象层，驱动视图展示</td><td><code>QAbstractTableModel</code>、<code>data()</code>、<code>setData()</code></td></tr>
+<tr><td>代理</td><td>Delegate</td><td>控制单元格显示与编辑</td><td><code>QStyledItemDelegate</code>、<code>createEditor()</code></td></tr>
+<tr><td>资源系统</td><td>Qt Resource</td><td>打包图标、QSS 等静态资源</td><td><code>.qrc</code> 文件、<code>pyside6-rcc</code></td></tr>
+<tr><td>线程</td><td>QThread</td><td>后台执行耗时任务</td><td><code>moveToThread()</code>、<code>start()</code>、<code>finished</code> 信号</td></tr>
+<tr><td>定时器</td><td>QTimer</td><td>定期触发任务</td><td><code>QTimer.singleShot()</code>、<code>timer.start()</code></td></tr>
+<tr><td>状态栏</td><td>QStatusBar</td><td>主窗口底部状态提示</td><td><code>showMessage()</code></td></tr>
+<tr><td>菜单栏</td><td>QMenuBar</td><td>顶部菜单系统</td><td><code>addMenu()</code>、<code>addAction()</code></td></tr>
+<tr><td>工具栏</td><td>QToolBar</td><td>快速访问按钮</td><td><code>addAction()</code>、<code>setIconSize()</code></td></tr>
+<tr><td>系统托盘</td><td>QSystemTrayIcon</td><td>窗口最小化到托盘/弹出通知</td><td><code>showMessage()</code>、<code>setContextMenu()</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="常用快捷操作示例"><a class="header" href="#常用快捷操作示例">常用快捷操作示例</a></h3>
+<ul>
+<li><strong>创建带图标的按钮</strong>：</li>
+</ul>
+<pre><code class="language-python">button = QPushButton("刷新")
+button.setIcon(QIcon(":/icons/refresh.svg"))
+</code></pre>
+<ul>
+<li><strong>对话框返回值</strong>：</li>
+</ul>
+<pre><code class="language-python">if dialog.exec() == QDialog.Accepted:
+    # 用户点击确认
+    pass
+</code></pre>
+<ul>
+<li><strong>状态栏临时消息</strong>：</li>
+</ul>
+<pre><code class="language-python">self.statusBar().showMessage("保存成功", 3000)  # 显示 3 秒
+</code></pre>
+<ul>
+<li><strong>快捷键绑定</strong>：</li>
+</ul>
+<pre><code class="language-python">shortcut = QShortcut(QKeySequence("Ctrl+S"), self)
+shortcut.activated.connect(self.save)
+</code></pre>
+<ul>
+<li><strong>全局热键 (平台相关)</strong>：可使用第三方库 <code>pyhk</code>、<code>keyboard</code>。</li>
+</ul>
+<h3 id="控件选型指南"><a class="header" href="#控件选型指南">控件选型指南</a></h3>
+<ul>
+<li>文本显示：<code>QLabel</code> (静态)、<code>QTextBrowser</code> (带链接)、<code>QPlainTextEdit</code> (日志)。</li>
+<li>文本输入：<code>QLineEdit</code> (单行)、<code>QTextEdit</code> (富文本)、<code>QPlainTextEdit</code> (纯文本、多行)。</li>
+<li>列表展示：简易选择用 <code>QListWidget</code>，大数据量用 <code>QListView + Model</code>。</li>
+<li>表格展示：<code>QTableWidget</code> 快速原型；正式项目使用 <code>QTableView + Model</code>。</li>
+<li>树形结构：<code>QTreeView</code> + 自定义模型可呈现目录、多级数据。</li>
+<li>日期时间：<code>QDateEdit</code>、<code>QDateTimeEdit</code>、<code>QCalendarWidget</code>。</li>
+<li>进度反馈：<code>QProgressBar</code>、<code>QProgressDialog</code>、<code>QMovie</code> (加载动画)。</li>
+</ul>
+<h3 id="设计规范建议"><a class="header" href="#设计规范建议">设计规范建议</a></h3>
+<ol>
+<li><strong>一致性</strong>：统一字体、颜色、按钮样式；定义主题变量（如 <code>--primary-color</code>）。</li>
+<li><strong>布局规则</strong>：保持控件与容器间距，使用 <code>layout.setContentsMargins(16, 16, 16, 16)</code>。</li>
+<li><strong>状态提醒</strong>：区分主要按钮 (Primary) 与次要按钮 (Secondary)，合理使用禁用态。</li>
+<li><strong>响应式</strong>：针对不同屏幕尺寸，提供最小/最大尺寸限制。</li>
+<li><strong>可访问性</strong>：设置 <code>setAccessibleName</code>、<code>setToolTip</code>，提升可读性与可操作性。</li>
+</ol>
+<hr />
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/10-flet.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/10-Python.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/10-flet.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/10-Python.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,1386 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Kubernetes 容器编排平台学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="kubernetes-容器编排平台学习笔记"><a class="header" href="#kubernetes-容器编排平台学习笔记">Kubernetes 容器编排平台学习笔记</a></h1>
+<blockquote>
+<p><strong>学习目标</strong>: 掌握Kubernetes容器编排核心概念、集群部署管理、应用发布运维，能够在生产环境构建高可用云原生应用</p>
+<p><strong>适用人群</strong>: 云原生工程师、DevOps工程师、后端开发工程师</p>
+<p><strong>前置知识</strong>: Docker容器技术、Linux系统、网络基础</p>
+</blockquote>
+<hr />
+<h2 id="1-基础概念"><a class="header" href="#1-基础概念">1. 基础概念</a></h2>
+<h3 id="11-什么是-kubernetes"><a class="header" href="#11-什么是-kubernetes">1.1 什么是 Kubernetes</a></h3>
+<p>Kubernetes (K8s) 是一个开源的容器编排平台，用于自动化部署、扩展和管理容器化应用。</p>
+<p><strong>核心价值</strong>:</p>
+<ul>
+<li><strong>自动化部署</strong>: 声明式配置，自动调度容器</li>
+<li><strong>弹性伸缩</strong>: 根据负载自动扩缩容</li>
+<li><strong>自我修复</strong>: 自动重启失败容器、替换节点</li>
+<li><strong>服务发现</strong>: 内置服务发现和负载均衡</li>
+<li><strong>滚动更新</strong>: 无停机更新应用</li>
+</ul>
+<p><strong>适用场景</strong>:</p>
+<pre><code>微服务架构 → 容器化应用编排
+云原生应用 → 多云部署管理
+持续交付 → CI/CD自动化
+大规模集群 → 弹性计算资源
+</code></pre>
+<h3 id="12-kubernetes-架构"><a class="header" href="#12-kubernetes-架构">1.2 Kubernetes 架构</a></h3>
+<p><strong>集群架构图</strong>:</p>
+<pre><code>┌─────────────────────────────────────────────────────┐
+│                   Master Node                        │
+│  ┌──────────┐  ┌──────────┐  ┌────────────────┐   │
+│  │ API      │  │ Scheduler│  │   Controller   │   │
+│  │ Server   │  │          │  │   Manager      │   │
+│  └────┬─────┘  └────┬─────┘  └────────┬───────┘   │
+│       │             │                  │            │
+│       └─────────────┴──────────────────┘            │
+│                      │                               │
+│                ┌─────▼─────┐                        │
+│                │   etcd    │                        │
+│                │  (数据库)  │                        │
+│                └───────────┘                        │
+└─────────────────────────────────────────────────────┘
+                       │
+        ┌──────────────┼──────────────┐
+        │              │              │
+┌───────▼──────┐ ┌────▼──────┐ ┌────▼──────┐
+│ Worker Node1 │ │Worker Node2│ │Worker Node3│
+│ ┌──────────┐ │ │┌──────────┐│ │┌──────────┐│
+│ │  kubelet │ │ ││  kubelet ││ ││  kubelet ││
+│ │kube-proxy│ │ ││kube-proxy││ ││kube-proxy││
+│ │ Container│ │ ││ Container││ ││ Container││
+│ │ Runtime  │ │ ││ Runtime  ││ ││ Runtime  ││
+│ └──────────┘ │ │└──────────┘│ │└──────────┘│
+└──────────────┘ └────────────┘ └────────────┘
+</code></pre>
+<p><strong>Master节点组件</strong>:</p>
+<p><strong>1. API Server</strong></p>
+<ul>
+<li>集群的统一入口，所有操作通过API Server</li>
+<li>RESTful API接口</li>
+<li>认证、授权、准入控制</li>
+</ul>
+<p><strong>2. Scheduler</strong></p>
+<ul>
+<li>负责Pod调度到合适的Node</li>
+<li>考虑资源需求、亲和性、污点容忍等</li>
+</ul>
+<p><strong>3. Controller Manager</strong></p>
+<ul>
+<li>管理各种控制器</li>
+<li>节点控制器、副本控制器、端点控制器等</li>
+</ul>
+<p><strong>4. etcd</strong></p>
+<ul>
+<li>分布式键值存储</li>
+<li>存储集群所有配置和状态数据</li>
+</ul>
+<p><strong>Worker节点组件</strong>:</p>
+<p><strong>1. kubelet</strong></p>
+<ul>
+<li>节点代理，管理Pod生命周期</li>
+<li>与API Server通信</li>
+<li>监控Pod健康状态</li>
+</ul>
+<p><strong>2. kube-proxy</strong></p>
+<ul>
+<li>网络代理，实现Service功能</li>
+<li>负载均衡流量转发</li>
+</ul>
+<p><strong>3. Container Runtime</strong></p>
+<ul>
+<li>容器运行时 (Docker、containerd、CRI-O)</li>
+<li>实际运行容器</li>
+</ul>
+<h3 id="13-核心概念"><a class="header" href="#13-核心概念">1.3 核心概念</a></h3>
+<p><strong>Pod</strong>:</p>
+<ul>
+<li>Kubernetes最小部署单元</li>
+<li>包含一个或多个容器</li>
+<li>共享网络和存储</li>
+</ul>
+<p><strong>Service</strong>:</p>
+<ul>
+<li>为一组Pod提供统一访问入口</li>
+<li>负载均衡和服务发现</li>
+<li>ClusterIP、NodePort、LoadBalancer类型</li>
+</ul>
+<p><strong>Namespace</strong>:</p>
+<ul>
+<li>逻辑隔离的虚拟集群</li>
+<li>资源配额和权限管理</li>
+<li>多租户环境</li>
+</ul>
+<p><strong>Label 和 Selector</strong>:</p>
+<ul>
+<li>Label: 键值对标签，附加到资源</li>
+<li>Selector: 通过标签选择资源</li>
+</ul>
+<hr />
+<h2 id="2-集群部署"><a class="header" href="#2-集群部署">2. 集群部署</a></h2>
+<h3 id="21-kubeadm-部署-推荐"><a class="header" href="#21-kubeadm-部署-推荐">2.1 kubeadm 部署 (推荐)</a></h3>
+<p><strong>环境准备</strong>:</p>
+<pre><code class="language-bash"># 所有节点关闭swap
+swapoff -a
+sed -i '/ swap / s/^/#/' /etc/fstab
+
+# 禁用SELinux
+setenforce 0
+sed -i 's/^SELINUX=enforcing$/SELINUX=disabled/' /etc/selinux/config
+
+# 配置内核参数
+cat &lt;&lt;EOF | tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+modprobe overlay
+modprobe br_netfilter
+
+cat &lt;&lt;EOF | tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+sysctl --system
+</code></pre>
+<p><strong>安装Docker</strong>:</p>
+<pre><code class="language-bash"># 参考Docker章节安装
+apt-get install docker-ce docker-ce-cli containerd.io
+
+# 配置Docker
+cat &lt;&lt;EOF | tee /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+
+systemctl restart docker
+</code></pre>
+<p><strong>安装kubeadm、kubelet、kubectl</strong>:</p>
+<pre><code class="language-bash"># 添加K8s源
+cat &lt;&lt;EOF | tee /etc/apt/sources.list.d/kubernetes.list
+deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+EOF
+
+# 安装
+apt-get update
+apt-get install -y kubelet=1.26.0-00 kubeadm=1.26.0-00 kubectl=1.26.0-00
+apt-mark hold kubelet kubeadm kubectl
+</code></pre>
+<p><strong>初始化Master节点</strong>:</p>
+<pre><code class="language-bash"># 初始化集群
+kubeadm init \
+  --apiserver-advertise-address=192.168.1.10 \
+  --image-repository registry.aliyuncs.com/google_containers \
+  --kubernetes-version v1.26.0 \
+  --service-cidr=10.96.0.0/12 \
+  --pod-network-cidr=10.244.0.0/16
+
+# 配置kubectl
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+# 查看节点
+kubectl get nodes
+</code></pre>
+<p><strong>安装网络插件 (Flannel)</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+</code></pre>
+<p><strong>加入Worker节点</strong>:</p>
+<pre><code class="language-bash"># 在Worker节点执行 (Master初始化时输出的命令)
+kubeadm join 192.168.1.10:6443 \
+  --token abcdef.0123456789abcdef \
+  --discovery-token-ca-cert-hash sha256:xxx...
+</code></pre>
+<h3 id="22-验证集群"><a class="header" href="#22-验证集群">2.2 验证集群</a></h3>
+<pre><code class="language-bash"># 查看节点状态
+kubectl get nodes
+
+# 预期输出:
+# NAME     STATUS   ROLES           AGE   VERSION
+# master   Ready    control-plane   5m    v1.26.0
+# worker1  Ready    &lt;none&gt;          2m    v1.26.0
+# worker2  Ready    &lt;none&gt;          2m    v1.26.0
+
+# 查看系统Pod
+kubectl get pods -n kube-system
+
+# 查看组件状态
+kubectl get cs
+</code></pre>
+<hr />
+<h2 id="3-工作负载"><a class="header" href="#3-工作负载">3. 工作负载</a></h2>
+<h3 id="31-pod"><a class="header" href="#31-pod">3.1 Pod</a></h3>
+<p><strong>Pod YAML示例</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-pod
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.23
+    ports:
+    - containerPort: 80
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+</code></pre>
+<p><strong>Pod操作</strong>:</p>
+<pre><code class="language-bash"># 创建Pod
+kubectl apply -f nginx-pod.yaml
+
+# 查看Pod
+kubectl get pods
+kubectl get pod nginx-pod -o wide
+
+# 查看Pod详情
+kubectl describe pod nginx-pod
+
+# 查看Pod日志
+kubectl logs nginx-pod
+
+# 进入Pod
+kubectl exec -it nginx-pod -- /bin/bash
+
+# 删除Pod
+kubectl delete pod nginx-pod
+</code></pre>
+<p><strong>Init容器</strong>:</p>
+<pre><code class="language-yaml">spec:
+  initContainers:
+  - name: init-myservice
+    image: busybox
+    command: ['sh', '-c', 'until nslookup myservice; do echo waiting; sleep 2; done']
+  containers:
+  - name: myapp
+    image: myapp:latest
+</code></pre>
+<h3 id="32-deployment"><a class="header" href="#32-deployment">3.2 Deployment</a></h3>
+<p><strong>Deployment示例</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.23
+        ports:
+        - containerPort: 80
+</code></pre>
+<p><strong>Deployment操作</strong>:</p>
+<pre><code class="language-bash"># 创建Deployment
+kubectl apply -f nginx-deployment.yaml
+
+# 查看Deployment
+kubectl get deployment
+kubectl get deploy nginx-deployment
+
+# 查看ReplicaSet
+kubectl get rs
+
+# 查看Pod
+kubectl get pods -l app=nginx
+
+# 扩容/缩容
+kubectl scale deployment nginx-deployment --replicas=5
+
+# 更新镜像
+kubectl set image deployment/nginx-deployment nginx=nginx:1.24
+
+# 查看滚动更新状态
+kubectl rollout status deployment/nginx-deployment
+
+# 查看历史版本
+kubectl rollout history deployment/nginx-deployment
+
+# 回滚到上一版本
+kubectl rollout undo deployment/nginx-deployment
+
+# 回滚到指定版本
+kubectl rollout undo deployment/nginx-deployment --to-revision=2
+</code></pre>
+<h3 id="33-statefulset"><a class="header" href="#33-statefulset">3.3 StatefulSet</a></h3>
+<p>用于有状态应用 (数据库、消息队列等)。</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  serviceName: mysql
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi
+</code></pre>
+<p><strong>特点</strong>:</p>
+<ul>
+<li>稳定的网络标识 (mysql-0, mysql-1, mysql-2)</li>
+<li>有序部署和扩展</li>
+<li>持久化存储</li>
+</ul>
+<h3 id="34-daemonset"><a class="header" href="#34-daemonset">3.4 DaemonSet</a></h3>
+<p>确保每个Node运行一个Pod副本。</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+      - name: fluentd
+        image: fluentd:latest
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+</code></pre>
+<p><strong>应用场景</strong>:</p>
+<ul>
+<li>日志收集 (Fluentd, Filebeat)</li>
+<li>监控代理 (Node Exporter)</li>
+<li>网络插件 (Calico, Flannel)</li>
+</ul>
+<h3 id="35-job-和-cronjob"><a class="header" href="#35-job-和-cronjob">3.5 Job 和 CronJob</a></h3>
+<p><strong>Job (一次性任务)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pi
+spec:
+  template:
+    spec:
+      containers:
+      - name: pi
+        image: perl
+        command: ["perl", "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never
+  backoffLimit: 4
+</code></pre>
+<p><strong>CronJob (定时任务)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup
+spec:
+  schedule: "0 2 * * *"  # 每天凌晨2点
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: backup-tool:latest
+            command: ["/bin/sh", "-c", "backup.sh"]
+          restartPolicy: OnFailure
+</code></pre>
+<hr />
+<h2 id="4-服务发现与负载均衡"><a class="header" href="#4-服务发现与负载均衡">4. 服务发现与负载均衡</a></h2>
+<h3 id="41-service"><a class="header" href="#41-service">4.1 Service</a></h3>
+<p><strong>ClusterIP (默认)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: ClusterIP
+</code></pre>
+<p><strong>NodePort</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-nodeport
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30080
+  type: NodePort
+</code></pre>
+<p><strong>LoadBalancer (云平台)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-lb
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+</code></pre>
+<p><strong>Headless Service</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-headless
+spec:
+  clusterIP: None  # Headless
+  selector:
+    app: mysql
+  ports:
+  - port: 3306
+</code></pre>
+<h3 id="42-ingress"><a class="header" href="#42-ingress">4.2 Ingress</a></h3>
+<p><strong>安装Nginx Ingress Controller</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+</code></pre>
+<p><strong>Ingress示例</strong>:</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: web-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: www.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-service
+            port:
+              number: 80
+  - host: api.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-service
+            port:
+              number: 8080
+</code></pre>
+<p><strong>TLS配置</strong>:</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tls-ingress
+spec:
+  tls:
+  - hosts:
+    - www.example.com
+    secretName: tls-secret
+  rules:
+  - host: www.example.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-service
+            port:
+              number: 80
+</code></pre>
+<p><strong>创建TLS Secret</strong>:</p>
+<pre><code class="language-bash">kubectl create secret tls tls-secret \
+  --cert=tls.crt \
+  --key=tls.key
+</code></pre>
+<hr />
+<h2 id="5-存储"><a class="header" href="#5-存储">5. 存储</a></h2>
+<h3 id="51-configmap"><a class="header" href="#51-configmap">5.1 ConfigMap</a></h3>
+<p><strong>创建ConfigMap</strong>:</p>
+<pre><code class="language-bash"># 从文件创建
+kubectl create configmap app-config --from-file=config.properties
+
+# 从字面值创建
+kubectl create configmap app-config \
+  --from-literal=database.host=mysql \
+  --from-literal=database.port=3306
+
+# 从YAML创建
+kubectl apply -f - &lt;&lt;EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  database.host: mysql
+  database.port: "3306"
+  config.properties: |
+    server.port=8080
+    log.level=INFO
+EOF
+</code></pre>
+<p><strong>使用ConfigMap</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+spec:
+  containers:
+  - name: app
+    image: myapp:latest
+    # 方式1: 环境变量
+    env:
+    - name: DB_HOST
+      valueFrom:
+        configMapKeyRef:
+          name: app-config
+          key: database.host
+    # 方式2: 挂载为文件
+    volumeMounts:
+    - name: config
+      mountPath: /etc/config
+  volumes:
+  - name: config
+    configMap:
+      name: app-config
+</code></pre>
+<h3 id="52-secret"><a class="header" href="#52-secret">5.2 Secret</a></h3>
+<p><strong>创建Secret</strong>:</p>
+<pre><code class="language-bash"># 创建generic类型
+kubectl create secret generic db-secret \
+  --from-literal=username=admin \
+  --from-literal=password=secret123
+
+# 创建TLS证书
+kubectl create secret tls tls-secret \
+  --cert=tls.crt \
+  --key=tls.key
+
+# 创建Docker registry认证
+kubectl create secret docker-registry regcred \
+  --docker-server=myregistry.com \
+  --docker-username=user \
+  --docker-password=pass \
+  --docker-email=user@example.com
+</code></pre>
+<p><strong>使用Secret</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+spec:
+  containers:
+  - name: app
+    image: myapp:latest
+    env:
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: db-secret
+          key: password
+  imagePullSecrets:
+  - name: regcred
+</code></pre>
+<h3 id="53-持久化存储"><a class="header" href="#53-持久化存储">5.3 持久化存储</a></h3>
+<p><strong>PersistentVolume (PV)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-nfs
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+  - ReadWriteMany
+  nfs:
+    server: nfs-server.example.com
+    path: /exported/path
+</code></pre>
+<p><strong>PersistentVolumeClaim (PVC)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-nfs
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+</code></pre>
+<p><strong>StorageClass (动态供应)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  replication-type: regional-pd
+</code></pre>
+<p><strong>使用PVC</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+spec:
+  containers:
+  - name: app
+    image: nginx
+    volumeMounts:
+    - name: data
+      mountPath: /usr/share/nginx/html
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: pvc-nfs
+</code></pre>
+<hr />
+<h2 id="6-安全"><a class="header" href="#6-安全">6. 安全</a></h2>
+<h3 id="61-rbac"><a class="header" href="#61-rbac">6.1 RBAC</a></h3>
+<p><strong>ServiceAccount</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-sa
+  namespace: default
+</code></pre>
+<p><strong>Role (命名空间级别)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: default
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+</code></pre>
+<p><strong>RoleBinding</strong>:</p>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: my-sa
+  namespace: default
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+<p><strong>ClusterRole (集群级别)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-reader
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "namespaces"]
+  verbs: ["get", "list"]
+</code></pre>
+<h3 id="62-networkpolicy"><a class="header" href="#62-networkpolicy">6.2 NetworkPolicy</a></h3>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all
+  namespace: default
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-web-to-db
+spec:
+  podSelector:
+    matchLabels:
+      app: database
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: web
+    ports:
+    - protocol: TCP
+      port: 3306
+</code></pre>
+<hr />
+<h2 id="7-监控与日志"><a class="header" href="#7-监控与日志">7. 监控与日志</a></h2>
+<h3 id="71-metrics-server"><a class="header" href="#71-metrics-server">7.1 Metrics Server</a></h3>
+<pre><code class="language-bash"># 安装Metrics Server
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+# 查看节点资源
+kubectl top nodes
+
+# 查看Pod资源
+kubectl top pods
+</code></pre>
+<h3 id="72-prometheus--grafana"><a class="header" href="#72-prometheus--grafana">7.2 Prometheus + Grafana</a></h3>
+<p><strong>使用Helm安装</strong>:</p>
+<pre><code class="language-bash"># 添加Helm仓库
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+# 安装kube-prometheus-stack
+helm install prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace
+
+# 访问Grafana
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+# 默认用户名: admin
+# 密码: prom-operator
+</code></pre>
+<h3 id="73-日志收集-efk"><a class="header" href="#73-日志收集-efk">7.3 日志收集 (EFK)</a></h3>
+<p><strong>部署Elasticsearch + Fluentd + Kibana</strong>:</p>
+<pre><code class="language-bash"># 使用ECK Operator
+kubectl create -f https://download.elastic.co/downloads/eck/2.6.1/crds.yaml
+kubectl apply -f https://download.elastic.co/downloads/eck/2.6.1/operator.yaml
+</code></pre>
+<hr />
+<h2 id="8-调度"><a class="header" href="#8-调度">8. 调度</a></h2>
+<h3 id="81-节点选择"><a class="header" href="#81-节点选择">8.1 节点选择</a></h3>
+<p><strong>nodeSelector</strong>:</p>
+<pre><code class="language-yaml">spec:
+  nodeSelector:
+    disktype: ssd
+  containers:
+  - name: nginx
+    image: nginx
+</code></pre>
+<p><strong>Node Affinity</strong>:</p>
+<pre><code class="language-yaml">spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - worker1
+            - worker2
+</code></pre>
+<p><strong>Pod Affinity</strong>:</p>
+<pre><code class="language-yaml">spec:
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: cache
+        topologyKey: kubernetes.io/hostname
+</code></pre>
+<h3 id="82-污点和容忍"><a class="header" href="#82-污点和容忍">8.2 污点和容忍</a></h3>
+<p><strong>给节点打污点</strong>:</p>
+<pre><code class="language-bash">kubectl taint nodes worker1 key=value:NoSchedule
+</code></pre>
+<p><strong>Pod容忍污点</strong>:</p>
+<pre><code class="language-yaml">spec:
+  tolerations:
+  - key: "key"
+    operator: "Equal"
+    value: "value"
+    effect: "NoSchedule"
+</code></pre>
+<h3 id="83-hpa-水平自动伸缩"><a class="header" href="#83-hpa-水平自动伸缩">8.3 HPA (水平自动伸缩)</a></h3>
+<pre><code class="language-yaml">apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-deployment
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+</code></pre>
+<hr />
+<h2 id="9-运维管理"><a class="header" href="#9-运维管理">9. 运维管理</a></h2>
+<h3 id="91-常用kubectl命令"><a class="header" href="#91-常用kubectl命令">9.1 常用kubectl命令</a></h3>
+<pre><code class="language-bash"># 资源查看
+kubectl get pods -o wide
+kubectl get all -n kube-system
+kubectl describe pod nginx-pod
+
+# 日志和调试
+kubectl logs nginx-pod -f
+kubectl logs nginx-pod --previous
+kubectl exec -it nginx-pod -- /bin/bash
+
+# 资源操作
+kubectl apply -f deployment.yaml
+kubectl delete -f deployment.yaml
+kubectl edit deployment nginx-deployment
+
+# 集群信息
+kubectl cluster-info
+kubectl get nodes
+kubectl get cs
+
+# 标签操作
+kubectl label pods nginx-pod env=prod
+kubectl label pods nginx-pod env-
+
+# 资源配额
+kubectl get resourcequota
+kubectl describe quota
+</code></pre>
+<h3 id="92-故障排查"><a class="header" href="#92-故障排查">9.2 故障排查</a></h3>
+<p><strong>Pod无法启动</strong>:</p>
+<pre><code class="language-bash"># 查看Pod状态
+kubectl get pods
+kubectl describe pod &lt;pod-name&gt;
+
+# 常见状态:
+# Pending: 资源不足或调度失败
+# ImagePullBackOff: 镜像拉取失败
+# CrashLoopBackOff: 容器启动后崩溃
+# Error: 容器退出
+
+# 查看事件
+kubectl get events --sort-by=.metadata.creationTimestamp
+
+# 查看日志
+kubectl logs &lt;pod-name&gt; --previous
+</code></pre>
+<p><strong>Service不通</strong>:</p>
+<pre><code class="language-bash"># 检查Service
+kubectl get svc
+kubectl describe svc &lt;service-name&gt;
+
+# 检查Endpoints
+kubectl get endpoints
+
+# 测试DNS
+kubectl run -it --rm debug --image=busybox --restart=Never -- nslookup &lt;service-name&gt;
+
+# 测试连接
+kubectl run -it --rm debug --image=nicolaka/netshoot --restart=Never -- bash
+</code></pre>
+<hr />
+<h2 id="10-helm"><a class="header" href="#10-helm">10. Helm</a></h2>
+<h3 id="101-安装helm"><a class="header" href="#101-安装helm">10.1 安装Helm</a></h3>
+<pre><code class="language-bash">curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+</code></pre>
+<h3 id="102-使用helm"><a class="header" href="#102-使用helm">10.2 使用Helm</a></h3>
+<pre><code class="language-bash"># 添加仓库
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+
+# 搜索Chart
+helm search repo mysql
+
+# 安装Chart
+helm install my-mysql bitnami/mysql
+
+# 查看已安装
+helm list
+
+# 升级
+helm upgrade my-mysql bitnami/mysql
+
+# 卸载
+helm uninstall my-mysql
+</code></pre>
+<h3 id="103-创建chart"><a class="header" href="#103-创建chart">10.3 创建Chart</a></h3>
+<pre><code class="language-bash"># 创建Chart
+helm create mychart
+
+# 目录结构:
+# mychart/
+#   Chart.yaml        # Chart元数据
+#   values.yaml       # 默认配置值
+#   templates/        # 模板文件
+#     deployment.yaml
+#     service.yaml
+#     ingress.yaml
+
+# 打包Chart
+helm package mychart
+
+# 安装本地Chart
+helm install myapp ./mychart
+</code></pre>
+<hr />
+<h2 id="11-生产最佳实践"><a class="header" href="#11-生产最佳实践">11. 生产最佳实践</a></h2>
+<h3 id="111-资源配置"><a class="header" href="#111-资源配置">11.1 资源配置</a></h3>
+<pre><code class="language-yaml">spec:
+  containers:
+  - name: app
+    image: myapp:latest
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "500m"
+      limits:
+        memory: "512Mi"
+        cpu: "1000m"
+    livenessProbe:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 5
+</code></pre>
+<h3 id="112-生产环境检查清单"><a class="header" href="#112-生产环境检查清单">11.2 生产环境检查清单</a></h3>
+<p><strong>集群层面</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+至少3个Master节点高可用</li>
+<li><input disabled="" type="checkbox"/>
+节点打标签分类 (生产/测试)</li>
+<li><input disabled="" type="checkbox"/>
+配置资源配额</li>
+<li><input disabled="" type="checkbox"/>
+启用RBAC</li>
+<li><input disabled="" type="checkbox"/>
+配置网络策略</li>
+<li><input disabled="" type="checkbox"/>
+etcd定期备份</li>
+</ul>
+<p><strong>应用层面</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+设置资源requests/limits</li>
+<li><input disabled="" type="checkbox"/>
+配置健康检查</li>
+<li><input disabled="" type="checkbox"/>
+使用滚动更新策略</li>
+<li><input disabled="" type="checkbox"/>
+配置HPA自动伸缩</li>
+<li><input disabled="" type="checkbox"/>
+使用ConfigMap/Secret管理配置</li>
+<li><input disabled="" type="checkbox"/>
+持久化数据使用PVC</li>
+</ul>
+<p><strong>监控和日志</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+部署Prometheus监控</li>
+<li><input disabled="" type="checkbox"/>
+配置Grafana仪表板</li>
+<li><input disabled="" type="checkbox"/>
+集中化日志收集</li>
+<li><input disabled="" type="checkbox"/>
+配置告警规则</li>
+</ul>
+<h3 id="113-常见生产问题"><a class="header" href="#113-常见生产问题">11.3 常见生产问题</a></h3>
+<p><strong>问题1: Pod频繁重启</strong></p>
+<pre><code class="language-bash"># 检查资源限制
+kubectl describe pod &lt;pod-name&gt;
+
+# 增加资源限制或优化应用
+</code></pre>
+<p><strong>问题2: 集群资源不足</strong></p>
+<pre><code class="language-bash"># 查看节点资源
+kubectl top nodes
+
+# 添加节点或清理资源
+kubectl get pods --all-namespaces
+</code></pre>
+<p><strong>问题3: 存储卷挂载失败</strong></p>
+<pre><code class="language-bash"># 检查PV/PVC状态
+kubectl get pv,pvc
+
+# 查看详情
+kubectl describe pvc &lt;pvc-name&gt;
+</code></pre>
+<hr />
+<h2 id="12-学习验证"><a class="header" href="#12-学习验证">12. 学习验证</a></h2>
+<h3 id="验证任务1-集群部署"><a class="header" href="#验证任务1-集群部署">验证任务1: 集群部署</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用kubeadm部署3节点集群</li>
+<li><input disabled="" type="checkbox"/>
+安装网络插件</li>
+<li><input disabled="" type="checkbox"/>
+验证所有节点Ready</li>
+</ul>
+<h3 id="验证任务2-应用部署"><a class="header" href="#验证任务2-应用部署">验证任务2: 应用部署</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+创建Deployment部署nginx</li>
+<li><input disabled="" type="checkbox"/>
+创建Service暴露服务</li>
+<li><input disabled="" type="checkbox"/>
+配置Ingress实现域名访问</li>
+</ul>
+<h3 id="验证任务3-存储管理"><a class="header" href="#验证任务3-存储管理">验证任务3: 存储管理</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+创建ConfigMap和Secret</li>
+<li><input disabled="" type="checkbox"/>
+配置PV和PVC</li>
+<li><input disabled="" type="checkbox"/>
+验证数据持久化</li>
+</ul>
+<h3 id="验证任务4-自动伸缩"><a class="header" href="#验证任务4-自动伸缩">验证任务4: 自动伸缩</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+安装Metrics Server</li>
+<li><input disabled="" type="checkbox"/>
+配置HPA</li>
+<li><input disabled="" type="checkbox"/>
+压测验证自动扩容</li>
+</ul>
+<h3 id="验证任务5-监控运维"><a class="header" href="#验证任务5-监控运维">验证任务5: 监控运维</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+部署Prometheus</li>
+<li><input disabled="" type="checkbox"/>
+配置Grafana监控面板</li>
+<li><input disabled="" type="checkbox"/>
+模拟故障并排查</li>
+</ul>
+<hr />
+<h2 id="13-扩展资源"><a class="header" href="#13-扩展资源">13. 扩展资源</a></h2>
+<h3 id="官方文档"><a class="header" href="#官方文档">官方文档</a></h3>
+<ul>
+<li>Kubernetes官方文档: https://kubernetes.io/docs/</li>
+<li>Kubernetes中文文档: https://kubernetes.io/zh-cn/docs/</li>
+<li>kubectl速查表: https://kubernetes.io/docs/reference/kubectl/cheatsheet/</li>
+</ul>
+<h3 id="学习资源"><a class="header" href="#学习资源">学习资源</a></h3>
+<ul>
+<li>Kubernetes the Hard Way: https://github.com/kelseyhightower/kubernetes-the-hard-way</li>
+<li>Play with Kubernetes: https://labs.play-with-k8s.com/</li>
+</ul>
+<h3 id="工具推荐"><a class="header" href="#工具推荐">工具推荐</a></h3>
+<ul>
+<li>K9s: 终端UI管理工具</li>
+<li>Lens: Kubernetes IDE</li>
+<li>kubectx/kubens: 上下文切换工具</li>
+<li>Kustomize: 配置管理工具</li>
+</ul>
+<h3 id="常见问题faq"><a class="header" href="#常见问题faq">常见问题FAQ</a></h3>
+<p><strong>Q1: Kubernetes与Docker Swarm的选择？</strong>
+A: Kubernetes功能更强大、生态更丰富，适合大规模生产环境；Swarm更简单，适合小型项目。</p>
+<p><strong>Q2: 如何选择网络插件？</strong>
+A: Flannel简单易用；Calico支持网络策略；Cilium基于eBPF性能更好。</p>
+<p><strong>Q3: StatefulSet与Deployment的区别？</strong>
+A: StatefulSet提供稳定的网络标识和有序部署，适合有状态应用；Deployment适合无状态应用。</p>
+<p><strong>Q4: 如何实现金丝雀发布？</strong>
+A: 使用Deployment的滚动更新，配合Service权重分流，或使用Istio等Service Mesh。</p>
+<p><strong>Q5: 生产环境推荐几个Master节点？</strong>
+A: 至少3个Master节点实现高可用，建议5个以上。</p>
+<hr />
+<p><strong>学习建议</strong>: Kubernetes学习曲线较陡，建议先掌握Docker基础，再学习K8s核心概念。从单节点集群开始实践，逐步掌握部署、网络、存储、监控。生产环境务必关注高可用、安全和监控。祝学习愉快！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/paas/docker.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/paas/kvm.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/paas/docker.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/paas/kvm.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

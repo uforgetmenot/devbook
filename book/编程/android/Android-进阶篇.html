@@ -1,0 +1,2107 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Android开发学习笔记 - 进阶篇 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="android开发学习笔记---进阶篇"><a class="header" href="#android开发学习笔记---进阶篇">Android开发学习笔记 - 进阶篇</a></h1>
+<blockquote>
+<p>适用人群：有Android基础开发经验，希望深入学习进阶技术
+学习目标：掌握网络编程、多线程、Fragment、动画等进阶技术</p>
+</blockquote>
+<h2 id="一网络编程"><a class="header" href="#一网络编程">一、网络编程</a></h2>
+<h3 id="11-http通信基础"><a class="header" href="#11-http通信基础">1.1 HTTP通信基础</a></h3>
+<h4 id="111-添加网络权限"><a class="header" href="#111-添加网络权限">1.1.1 添加网络权限</a></h4>
+<pre><code class="language-xml">&lt;!-- AndroidManifest.xml --&gt;
+&lt;uses-permission android:name="android.permission.INTERNET" /&gt;
+&lt;uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /&gt;
+
+&lt;!-- Android 9.0+需要允许HTTP明文传输 --&gt;
+&lt;application
+    android:usesCleartextTraffic="true"&gt;
+&lt;/application&gt;
+</code></pre>
+<h4 id="112-httpurlconnection"><a class="header" href="#112-httpurlconnection">1.1.2 HttpURLConnection</a></h4>
+<pre><code class="language-kotlin">class HttpURLConnectionActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_http)
+
+        findViewById&lt;Button&gt;(R.id.btnGetRequest).setOnClickListener {
+            // 网络请求必须在子线程执行
+            Thread {
+                performGetRequest()
+            }.start()
+        }
+
+        findViewById&lt;Button&gt;(R.id.btnPostRequest).setOnClickListener {
+            Thread {
+                performPostRequest()
+            }.start()
+        }
+    }
+
+    private fun performGetRequest() {
+        var connection: HttpURLConnection? = null
+        try {
+            val url = URL("https://api.example.com/users")
+            connection = url.openConnection() as HttpURLConnection
+
+            // 设置请求方法
+            connection.requestMethod = "GET"
+
+            // 设置连接超时和读取超时
+            connection.connectTimeout = 8000
+            connection.readTimeout = 8000
+
+            // 设置请求头
+            connection.setRequestProperty("User-Agent", "Android")
+            connection.setRequestProperty("Accept", "application/json")
+
+            // 获取响应码
+            val responseCode = connection.responseCode
+            Log.d(TAG, "Response Code: $responseCode")
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // 读取响应
+                val inputStream = connection.inputStream
+                val response = inputStream.bufferedReader().use { it.readText() }
+
+                // 更新UI（切换到主线程）
+                runOnUiThread {
+                    findViewById&lt;TextView&gt;(R.id.tvResponse).text = response
+                    Toast.makeText(this, "请求成功", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            runOnUiThread {
+                Toast.makeText(this, "请求失败: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } finally {
+            connection?.disconnect()
+        }
+    }
+
+    private fun performPostRequest() {
+        var connection: HttpURLConnection? = null
+        try {
+            val url = URL("https://api.example.com/login")
+            connection = url.openConnection() as HttpURLConnection
+
+            connection.requestMethod = "POST"
+            connection.doOutput = true
+            connection.connectTimeout = 8000
+            connection.readTimeout = 8000
+
+            // 设置请求头
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.setRequestProperty("Accept", "application/json")
+
+            // 构建请求体
+            val jsonBody = """
+                {
+                    "username": "test",
+                    "password": "123456"
+                }
+            """.trimIndent()
+
+            // 写入请求体
+            connection.outputStream.use { os -&gt;
+                os.write(jsonBody.toByteArray())
+            }
+
+            // 读取响应
+            val responseCode = connection.responseCode
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                runOnUiThread {
+                    findViewById&lt;TextView&gt;(R.id.tvResponse).text = response
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            connection?.disconnect()
+        }
+    }
+}
+</code></pre>
+<h3 id="12-okhttp框架"><a class="header" href="#12-okhttp框架">1.2 OkHttp框架</a></h3>
+<p>OkHttp是目前最流行的Android网络库。</p>
+<p><strong>添加依赖：</strong></p>
+<pre><code class="language-kotlin">// build.gradle.kts
+dependencies {
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+}
+</code></pre>
+<p><strong>基础用法：</strong></p>
+<pre><code class="language-kotlin">class OkHttpActivity : AppCompatActivity() {
+
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS)
+        .addInterceptor(LoggingInterceptor()) // 日志拦截器
+        .build()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_okhttp)
+
+        // GET请求
+        findViewById&lt;Button&gt;(R.id.btnGet).setOnClickListener {
+            performGet()
+        }
+
+        // POST请求
+        findViewById&lt;Button&gt;(R.id.btnPost).setOnClickListener {
+            performPost()
+        }
+
+        // 文件上传
+        findViewById&lt;Button&gt;(R.id.btnUpload).setOnClickListener {
+            uploadFile()
+        }
+
+        // 文件下载
+        findViewById&lt;Button&gt;(R.id.btnDownload).setOnClickListener {
+            downloadFile()
+        }
+    }
+
+    // GET请求
+    private fun performGet() {
+        val request = Request.Builder()
+            .url("https://api.example.com/users")
+            .addHeader("Authorization", "Bearer token")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(this@OkHttpActivity, "请求失败: ${e.message}",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                runOnUiThread {
+                    findViewById&lt;TextView&gt;(R.id.tvResponse).text = body
+                }
+            }
+        })
+    }
+
+    // POST请求（JSON）
+    private fun performPost() {
+        val json = """
+            {
+                "username": "test",
+                "password": "123456"
+            }
+        """.trimIndent()
+
+        val requestBody = json.toRequestBody("application/json".toMediaType())
+
+        val request = Request.Builder()
+            .url("https://api.example.com/login")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                Log.d(TAG, "Response: $body")
+            }
+        })
+    }
+
+    // POST请求（表单）
+    private fun performFormPost() {
+        val formBody = FormBody.Builder()
+            .add("username", "test")
+            .add("password", "123456")
+            .build()
+
+        val request = Request.Builder()
+            .url("https://api.example.com/login")
+            .post(formBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val body = response.body?.string()
+                Log.d(TAG, "Response: $body")
+            }
+        })
+    }
+
+    // 文件上传
+    private fun uploadFile() {
+        val file = File(getExternalFilesDir(null), "test.jpg")
+
+        val requestBody = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("file", file.name,
+                file.asRequestBody("image/jpeg".toMediaType()))
+            .addFormDataPart("description", "图片描述")
+            .build()
+
+        val request = Request.Builder()
+            .url("https://api.example.com/upload")
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runOnUiThread {
+                    Toast.makeText(this@OkHttpActivity, "上传失败", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                runOnUiThread {
+                    Toast.makeText(this@OkHttpActivity, "上传成功", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+    }
+
+    // 文件下载
+    private fun downloadFile() {
+        val request = Request.Builder()
+            .url("https://example.com/file.zip")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val file = File(getExternalFilesDir(null), "downloaded.zip")
+                response.body?.byteStream()?.use { input -&gt;
+                    file.outputStream().use { output -&gt;
+                        input.copyTo(output)
+                    }
+                }
+                runOnUiThread {
+                    Toast.makeText(this@OkHttpActivity, "下载完成", Toast.LENGTH_SHORT).show()
+                }
+            }
+        })
+    }
+}
+
+// 日志拦截器
+class LoggingInterceptor : Interceptor {
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+
+        val t1 = System.nanoTime()
+        Log.d(TAG, "发送请求: ${request.url}")
+
+        val response = chain.proceed(request)
+
+        val t2 = System.nanoTime()
+        Log.d(TAG, "收到响应: ${request.url} (${(t2 - t1) / 1e6}ms)")
+        Log.d(TAG, "响应码: ${response.code}")
+
+        return response
+    }
+}
+</code></pre>
+<h3 id="13-retrofit框架"><a class="header" href="#13-retrofit框架">1.3 Retrofit框架</a></h3>
+<p>Retrofit是基于OkHttp的类型安全HTTP客户端。</p>
+<p><strong>添加依赖：</strong></p>
+<pre><code class="language-kotlin">dependencies {
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+}
+</code></pre>
+<p><strong>完整实战案例：用户管理API</strong></p>
+<pre><code class="language-kotlin">// 1. 数据模型
+data class User(
+    val id: Int,
+    val name: String,
+    val email: String,
+    val avatar: String
+)
+
+data class LoginRequest(
+    val username: String,
+    val password: String
+)
+
+data class LoginResponse(
+    val token: String,
+    val user: User
+)
+
+data class ApiResponse&lt;T&gt;(
+    val code: Int,
+    val message: String,
+    val data: T?
+)
+
+// 2. API接口定义
+interface ApiService {
+
+    @GET("users")
+    suspend fun getUsers(): ApiResponse&lt;List&lt;User&gt;&gt;
+
+    @GET("users/{id}")
+    suspend fun getUserById(@Path("id") userId: Int): ApiResponse&lt;User&gt;
+
+    @POST("login")
+    suspend fun login(@Body request: LoginRequest): ApiResponse&lt;LoginResponse&gt;
+
+    @POST("users")
+    suspend fun createUser(@Body user: User): ApiResponse&lt;User&gt;
+
+    @PUT("users/{id}")
+    suspend fun updateUser(
+        @Path("id") userId: Int,
+        @Body user: User
+    ): ApiResponse&lt;User&gt;
+
+    @DELETE("users/{id}")
+    suspend fun deleteUser(@Path("id") userId: Int): ApiResponse&lt;Unit&gt;
+
+    @Multipart
+    @POST("upload")
+    suspend fun uploadImage(
+        @Part file: MultipartBody.Part,
+        @Part("description") description: RequestBody
+    ): ApiResponse&lt;String&gt;
+
+    @GET("search")
+    suspend fun searchUsers(
+        @Query("keyword") keyword: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int
+    ): ApiResponse&lt;List&lt;User&gt;&gt;
+}
+
+// 3. Retrofit配置
+object RetrofitClient {
+
+    private const val BASE_URL = "https://api.example.com/"
+
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    private val okHttpClient = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(30, TimeUnit.SECONDS)
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .addInterceptor(loggingInterceptor)
+        .addInterceptor { chain -&gt;
+            // 添加通用请求头
+            val request = chain.request().newBuilder()
+                .addHeader("User-Agent", "Android")
+                .addHeader("Accept", "application/json")
+                .build()
+            chain.proceed(request)
+        }
+        .build()
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    val apiService: ApiService = retrofit.create(ApiService::class.java)
+}
+
+// 4. Repository层
+class UserRepository {
+
+    private val apiService = RetrofitClient.apiService
+
+    suspend fun getUsers(): Result&lt;List&lt;User&gt;&gt; {
+        return try {
+            val response = apiService.getUsers()
+            if (response.code == 200 &amp;&amp; response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun login(username: String, password: String): Result&lt;LoginResponse&gt; {
+        return try {
+            val request = LoginRequest(username, password)
+            val response = apiService.login(request)
+            if (response.code == 200 &amp;&amp; response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun createUser(user: User): Result&lt;User&gt; {
+        return try {
+            val response = apiService.createUser(user)
+            if (response.code == 200 &amp;&amp; response.data != null) {
+                Result.success(response.data)
+            } else {
+                Result.failure(Exception(response.message))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}
+
+// 5. ViewModel
+class UserViewModel : ViewModel() {
+
+    private val repository = UserRepository()
+
+    private val _users = MutableLiveData&lt;List&lt;User&gt;&gt;()
+    val users: LiveData&lt;List&lt;User&gt;&gt; = _users
+
+    private val _loading = MutableLiveData&lt;Boolean&gt;()
+    val loading: LiveData&lt;Boolean&gt; = _loading
+
+    private val _error = MutableLiveData&lt;String&gt;()
+    val error: LiveData&lt;String&gt; = _error
+
+    fun loadUsers() {
+        viewModelScope.launch {
+            _loading.value = true
+            repository.getUsers()
+                .onSuccess { users -&gt;
+                    _users.value = users
+                    _loading.value = false
+                }
+                .onFailure { exception -&gt;
+                    _error.value = exception.message
+                    _loading.value = false
+                }
+        }
+    }
+
+    fun login(username: String, password: String) {
+        viewModelScope.launch {
+            _loading.value = true
+            repository.login(username, password)
+                .onSuccess { loginResponse -&gt;
+                    // 保存token
+                    _loading.value = false
+                }
+                .onFailure { exception -&gt;
+                    _error.value = exception.message
+                    _loading.value = false
+                }
+        }
+    }
+}
+
+// 6. Activity中使用
+class UserListActivity : AppCompatActivity() {
+
+    private val viewModel: UserViewModel by viewModels()
+    private lateinit var adapter: UserAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_user_list)
+
+        setupRecyclerView()
+        observeViewModel()
+
+        // 加载用户列表
+        viewModel.loadUsers()
+    }
+
+    private fun setupRecyclerView() {
+        adapter = UserAdapter()
+        findViewById&lt;RecyclerView&gt;(R.id.recyclerView).apply {
+            layoutManager = LinearLayoutManager(this@UserListActivity)
+            adapter = this@UserListActivity.adapter
+        }
+    }
+
+    private fun observeViewModel() {
+        // 观察用户列表
+        viewModel.users.observe(this) { users -&gt;
+            adapter.submitList(users)
+        }
+
+        // 观察加载状态
+        viewModel.loading.observe(this) { isLoading -&gt;
+            findViewById&lt;ProgressBar&gt;(R.id.progressBar).visibility =
+                if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        // 观察错误信息
+        viewModel.error.observe(this) { error -&gt;
+            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+</code></pre>
+<h3 id="14-json数据解析"><a class="header" href="#14-json数据解析">1.4 JSON数据解析</a></h3>
+<h4 id="141-gson"><a class="header" href="#141-gson">1.4.1 Gson</a></h4>
+<pre><code class="language-kotlin">// 添加依赖
+dependencies {
+    implementation("com.google.code.gson:gson:2.10.1")
+}
+
+// 数据模型
+data class Article(
+    val id: Int,
+    val title: String,
+    val content: String,
+    @SerializedName("author_name") // 字段映射
+    val authorName: String,
+    @Expose // 参与序列化
+    val publishTime: Long,
+    @Transient // 不参与序列化
+    var tempData: String? = null
+)
+
+// 使用Gson
+class GsonExample {
+
+    private val gson = GsonBuilder()
+        .setDateFormat("yyyy-MM-dd HH:mm:ss")
+        .setPrettyPrinting() // 格式化输出
+        .create()
+
+    // 对象转JSON
+    fun objectToJson() {
+        val article = Article(
+            id = 1,
+            title = "标题",
+            content = "内容",
+            authorName = "作者",
+            publishTime = System.currentTimeMillis()
+        )
+
+        val json = gson.toJson(article)
+        Log.d(TAG, json)
+    }
+
+    // JSON转对象
+    fun jsonToObject() {
+        val json = """
+            {
+                "id": 1,
+                "title": "标题",
+                "content": "内容",
+                "author_name": "作者",
+                "publishTime": 1234567890
+            }
+        """.trimIndent()
+
+        val article = gson.fromJson(json, Article::class.java)
+        Log.d(TAG, article.toString())
+    }
+
+    // JSON转列表
+    fun jsonToList() {
+        val json = """
+            [
+                {"id": 1, "title": "文章1"},
+                {"id": 2, "title": "文章2"}
+            ]
+        """.trimIndent()
+
+        val type = object : TypeToken&lt;List&lt;Article&gt;&gt;() {}.type
+        val articles: List&lt;Article&gt; = gson.fromJson(json, type)
+        Log.d(TAG, articles.toString())
+    }
+
+    // 复杂嵌套JSON
+    fun complexJson() {
+        val json = """
+            {
+                "code": 200,
+                "message": "success",
+                "data": {
+                    "user": {
+                        "id": 1,
+                        "name": "张三"
+                    },
+                    "articles": [
+                        {"id": 1, "title": "文章1"},
+                        {"id": 2, "title": "文章2"}
+                    ]
+                }
+            }
+        """.trimIndent()
+
+        data class UserData(
+            val user: User,
+            val articles: List&lt;Article&gt;
+        )
+
+        data class Response(
+            val code: Int,
+            val message: String,
+            val data: UserData
+        )
+
+        val response = gson.fromJson(json, Response::class.java)
+        Log.d(TAG, response.toString())
+    }
+}
+</code></pre>
+<h3 id="15-图片加载---glide"><a class="header" href="#15-图片加载---glide">1.5 图片加载 - Glide</a></h3>
+<p><strong>添加依赖：</strong></p>
+<pre><code class="language-kotlin">dependencies {
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+}
+</code></pre>
+<p><strong>基础用法：</strong></p>
+<pre><code class="language-kotlin">class ImageLoadActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_image_load)
+
+        val imageView = findViewById&lt;ImageView&gt;(R.id.imageView)
+
+        // 1. 基本加载
+        Glide.with(this)
+            .load("https://example.com/image.jpg")
+            .into(imageView)
+
+        // 2. 占位图和错误图
+        Glide.with(this)
+            .load("https://example.com/image.jpg")
+            .placeholder(R.drawable.placeholder) // 加载中显示
+            .error(R.drawable.error) // 加载失败显示
+            .into(imageView)
+
+        // 3. 圆形图片
+        Glide.with(this)
+            .load("https://example.com/avatar.jpg")
+            .circleCrop()
+            .into(imageView)
+
+        // 4. 圆角图片
+        Glide.with(this)
+            .load("https://example.com/image.jpg")
+            .transform(RoundedCorners(20))
+            .into(imageView)
+
+        // 5. 指定尺寸
+        Glide.with(this)
+            .load("https://example.com/image.jpg")
+            .override(300, 300)
+            .centerCrop()
+            .into(imageView)
+
+        // 6. 加载本地图片
+        val file = File(filesDir, "local_image.jpg")
+        Glide.with(this).load(file).into(imageView)
+
+        // 7. 加载资源图片
+        Glide.with(this).load(R.drawable.ic_launcher).into(imageView)
+
+        // 8. 监听加载状态
+        Glide.with(this)
+            .load("https://example.com/image.jpg")
+            .listener(object : RequestListener&lt;Drawable&gt; {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target&lt;Drawable&gt;?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Toast.makeText(this@ImageLoadActivity, "加载失败", Toast.LENGTH_SHORT).show()
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target&lt;Drawable&gt;?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Toast.makeText(this@ImageLoadActivity, "加载成功", Toast.LENGTH_SHORT).show()
+                    return false
+                }
+            })
+            .into(imageView)
+
+        // 9. 预加载
+        Glide.with(this)
+            .load("https://example.com/image.jpg")
+            .preload()
+
+        // 10. 清除缓存
+        findViewById&lt;Button&gt;(R.id.btnClearCache).setOnClickListener {
+            // 清除内存缓存（主线程）
+            Glide.get(this).clearMemory()
+
+            // 清除磁盘缓存（子线程）
+            Thread {
+                Glide.get(this).clearDiskCache()
+            }.start()
+        }
+    }
+}
+</code></pre>
+<h2 id="二多线程与异步编程"><a class="header" href="#二多线程与异步编程">二、多线程与异步编程</a></h2>
+<h3 id="21-线程基础"><a class="header" href="#21-线程基础">2.1 线程基础</a></h3>
+<h4 id="211-创建线程"><a class="header" href="#211-创建线程">2.1.1 创建线程</a></h4>
+<pre><code class="language-kotlin">class ThreadActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_thread)
+
+        // 方式1：继承Thread类
+        class MyThread : Thread() {
+            override fun run() {
+                Log.d(TAG, "线程1运行中: ${currentThread().name}")
+            }
+        }
+        MyThread().start()
+
+        // 方式2：实现Runnable接口
+        val runnable = Runnable {
+            Log.d(TAG, "线程2运行中: ${Thread.currentThread().name}")
+        }
+        Thread(runnable).start()
+
+        // 方式3：Kotlin风格
+        Thread {
+            Log.d(TAG, "线程3运行中: ${Thread.currentThread().name}")
+        }.start()
+
+        // 方式4：使用lambda
+        thread {
+            Log.d(TAG, "线程4运行中: ${Thread.currentThread().name}")
+        }
+    }
+}
+</code></pre>
+<h4 id="212-handler消息机制"><a class="header" href="#212-handler消息机制">2.1.2 Handler消息机制</a></h4>
+<pre><code class="language-kotlin">class HandlerActivity : AppCompatActivity() {
+
+    // 方式1：使用Handler.Callback
+    private val handler = Handler(Looper.getMainLooper()) { msg -&gt;
+        when (msg.what) {
+            MSG_UPDATE_TEXT -&gt; {
+                val text = msg.obj as String
+                findViewById&lt;TextView&gt;(R.id.tvResult).text = text
+                true
+            }
+            MSG_UPDATE_PROGRESS -&gt; {
+                val progress = msg.arg1
+                findViewById&lt;ProgressBar&gt;(R.id.progressBar).progress = progress
+                true
+            }
+            else -&gt; false
+        }
+    }
+
+    // 方式2：创建Handler子类
+    private inner class MyHandler : Handler(Looper.getMainLooper()) {
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                MSG_UPDATE_TEXT -&gt; {
+                    // 处理消息
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val MSG_UPDATE_TEXT = 1
+        private const val MSG_UPDATE_PROGRESS = 2
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_handler)
+
+        // 模拟后台任务
+        findViewById&lt;Button&gt;(R.id.btnStart).setOnClickListener {
+            Thread {
+                for (i in 1..100) {
+                    Thread.sleep(100)
+
+                    // 发送消息方式1：使用sendMessage
+                    val message = Message.obtain().apply {
+                        what = MSG_UPDATE_PROGRESS
+                        arg1 = i
+                    }
+                    handler.sendMessage(message)
+
+                    // 发送消息方式2：使用post
+                    handler.post {
+                        findViewById&lt;TextView&gt;(R.id.tvProgress).text = "$i%"
+                    }
+                }
+
+                // 延迟发送消息
+                handler.sendMessageDelayed(
+                    Message.obtain().apply {
+                        what = MSG_UPDATE_TEXT
+                        obj = "任务完成"
+                    },
+                    1000
+                )
+
+                // 延迟执行Runnable
+                handler.postDelayed({
+                    Toast.makeText(this, "完成", Toast.LENGTH_SHORT).show()
+                }, 2000)
+
+            }.start()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // 移除所有消息和回调
+        handler.removeCallbacksAndMessages(null)
+    }
+}
+</code></pre>
+<h4 id="213-asynctask已弃用"><a class="header" href="#213-asynctask已弃用">2.1.3 AsyncTask（已弃用）</a></h4>
+<p>虽然AsyncTask已弃用，但了解其原理仍有价值：</p>
+<pre><code class="language-kotlin">@Deprecated("Use coroutines instead")
+class DownloadTask : AsyncTask&lt;String, Int, String&gt;() {
+
+    // 主线程：执行前的准备工作
+    override fun onPreExecute() {
+        super.onPreExecute()
+        // 显示进度对话框
+    }
+
+    // 子线程：执行后台任务
+    override fun doInBackground(vararg params: String?): String {
+        val url = params[0]
+        for (i in 1..100) {
+            Thread.sleep(50)
+            publishProgress(i) // 发布进度
+        }
+        return "下载完成"
+    }
+
+    // 主线程：更新进度
+    override fun onProgressUpdate(vararg values: Int?) {
+        super.onProgressUpdate(*values)
+        val progress = values[0] ?: 0
+        // 更新进度条
+    }
+
+    // 主线程：任务完成后
+    override fun onPostExecute(result: String?) {
+        super.onPostExecute(result)
+        // 隐藏进度对话框
+        // 显示结果
+    }
+}
+
+// 使用
+// DownloadTask().execute("http://example.com/file.zip")
+</code></pre>
+<h3 id="22-kotlin协程推荐"><a class="header" href="#22-kotlin协程推荐">2.2 Kotlin协程（推荐）</a></h3>
+<h4 id="221-协程基础"><a class="header" href="#221-协程基础">2.2.1 协程基础</a></h4>
+<p><strong>添加依赖：</strong></p>
+<pre><code class="language-kotlin">dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+}
+</code></pre>
+<p><strong>基础用法：</strong></p>
+<pre><code class="language-kotlin">class CoroutineActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_coroutine)
+
+        // 1. 启动协程
+        findViewById&lt;Button&gt;(R.id.btnLaunch).setOnClickListener {
+            lifecycleScope.launch {
+                // 在主线程执行
+                Log.d(TAG, "协程开始: ${Thread.currentThread().name}")
+
+                // 切换到IO线程
+                withContext(Dispatchers.IO) {
+                    Log.d(TAG, "IO操作: ${Thread.currentThread().name}")
+                    Thread.sleep(2000)
+                }
+
+                // 自动切回主线程
+                Log.d(TAG, "返回主线程: ${Thread.currentThread().name}")
+                Toast.makeText(this@CoroutineActivity, "完成", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 2. async并发
+        findViewById&lt;Button&gt;(R.id.btnAsync).setOnClickListener {
+            lifecycleScope.launch {
+                val deferred1 = async(Dispatchers.IO) {
+                    delay(1000)
+                    "结果1"
+                }
+
+                val deferred2 = async(Dispatchers.IO) {
+                    delay(1000)
+                    "结果2"
+                }
+
+                // 等待两个任务完成
+                val result1 = deferred1.await()
+                val result2 = deferred2.await()
+
+                Log.d(TAG, "$result1, $result2")
+            }
+        }
+
+        // 3. 异常处理
+        findViewById&lt;Button&gt;(R.id.btnException).setOnClickListener {
+            lifecycleScope.launch {
+                try {
+                    val result = withContext(Dispatchers.IO) {
+                        // 模拟网络请求
+                        throw IOException("网络错误")
+                    }
+                } catch (e: IOException) {
+                    Toast.makeText(this@CoroutineActivity,
+                        "错误: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // 4. 超时控制
+        findViewById&lt;Button&gt;(R.id.btnTimeout).setOnClickListener {
+            lifecycleScope.launch {
+                try {
+                    withTimeout(2000) {
+                        // 模拟耗时操作
+                        delay(3000)
+                    }
+                } catch (e: TimeoutCancellationException) {
+                    Toast.makeText(this@CoroutineActivity, "超时", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // 5. 串行执行
+        findViewById&lt;Button&gt;(R.id.btnSequential).setOnClickListener {
+            lifecycleScope.launch {
+                val user = fetchUser() // 先获取用户
+                val articles = fetchArticles(user.id) // 再获取文章
+                displayArticles(articles)
+            }
+        }
+
+        // 6. 并行执行
+        findViewById&lt;Button&gt;(R.id.btnParallel).setOnClickListener {
+            lifecycleScope.launch {
+                val userDeferred = async { fetchUser() }
+                val settingsDeferred = async { fetchSettings() }
+
+                val user = userDeferred.await()
+                val settings = settingsDeferred.await()
+
+                displayUserInfo(user, settings)
+            }
+        }
+    }
+
+    private suspend fun fetchUser(): User {
+        return withContext(Dispatchers.IO) {
+            delay(1000)
+            User(1, "张三", "zhangsan@example.com")
+        }
+    }
+
+    private suspend fun fetchArticles(userId: Int): List&lt;Article&gt; {
+        return withContext(Dispatchers.IO) {
+            delay(1000)
+            listOf(Article(1, "文章1", "内容1", "作者1", 0))
+        }
+    }
+
+    private suspend fun fetchSettings(): Settings {
+        return withContext(Dispatchers.IO) {
+            delay(1000)
+            Settings(theme = "dark")
+        }
+    }
+
+    private fun displayArticles(articles: List&lt;Article&gt;) {
+        // 更新UI
+    }
+
+    private fun displayUserInfo(user: User, settings: Settings) {
+        // 更新UI
+    }
+}
+
+data class Settings(val theme: String)
+</code></pre>
+<h4 id="222-flow数据流"><a class="header" href="#222-flow数据流">2.2.2 Flow数据流</a></h4>
+<pre><code class="language-kotlin">class FlowActivity : AppCompatActivity() {
+
+    private val viewModel: FlowViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_flow)
+
+        // 收集Flow
+        lifecycleScope.launch {
+            viewModel.dataFlow.collect { data -&gt;
+                findViewById&lt;TextView&gt;(R.id.tvData).text = data
+            }
+        }
+
+        // StateFlow
+        lifecycleScope.launch {
+            viewModel.stateFlow.collect { state -&gt;
+                updateUI(state)
+            }
+        }
+    }
+
+    private fun updateUI(state: UiState) {
+        when (state) {
+            is UiState.Loading -&gt; {
+                findViewById&lt;ProgressBar&gt;(R.id.progressBar).visibility = View.VISIBLE
+            }
+            is UiState.Success -&gt; {
+                findViewById&lt;ProgressBar&gt;(R.id.progressBar).visibility = View.GONE
+                findViewById&lt;TextView&gt;(R.id.tvResult).text = state.data
+            }
+            is UiState.Error -&gt; {
+                findViewById&lt;ProgressBar&gt;(R.id.progressBar).visibility = View.GONE
+                Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+}
+
+class FlowViewModel : ViewModel() {
+
+    // Flow：冷流，只有订阅时才开始发射
+    val dataFlow: Flow&lt;String&gt; = flow {
+        for (i in 1..10) {
+            delay(1000)
+            emit("数据 $i")
+        }
+    }
+
+    // StateFlow：热流，有初始值，类似LiveData
+    private val _stateFlow = MutableStateFlow&lt;UiState&gt;(UiState.Loading)
+    val stateFlow: StateFlow&lt;UiState&gt; = _stateFlow.asStateFlow()
+
+    // SharedFlow：热流，无初始值
+    private val _sharedFlow = MutableSharedFlow&lt;String&gt;()
+    val sharedFlow: SharedFlow&lt;String&gt; = _sharedFlow.asSharedFlow()
+
+    init {
+        loadData()
+    }
+
+    private fun loadData() {
+        viewModelScope.launch {
+            _stateFlow.value = UiState.Loading
+
+            try {
+                delay(2000)
+                val data = "加载的数据"
+                _stateFlow.value = UiState.Success(data)
+            } catch (e: Exception) {
+                _stateFlow.value = UiState.Error(e.message ?: "未知错误")
+            }
+        }
+    }
+
+    fun sendEvent(event: String) {
+        viewModelScope.launch {
+            _sharedFlow.emit(event)
+        }
+    }
+}
+
+sealed class UiState {
+    object Loading : UiState()
+    data class Success(val data: String) : UiState()
+    data class Error(val message: String) : UiState()
+}
+</code></pre>
+<h3 id="23-线程池"><a class="header" href="#23-线程池">2.3 线程池</a></h3>
+<pre><code class="language-kotlin">class ThreadPoolActivity : AppCompatActivity() {
+
+    // 1. 固定线程数线程池
+    private val fixedThreadPool = Executors.newFixedThreadPool(4)
+
+    // 2. 缓存线程池
+    private val cachedThreadPool = Executors.newCachedThreadPool()
+
+    // 3. 单线程线程池
+    private val singleThreadExecutor = Executors.newSingleThreadExecutor()
+
+    // 4. 定时任务线程池
+    private val scheduledThreadPool = Executors.newScheduledThreadPool(2)
+
+    // 5. 自定义线程池（推荐）
+    private val customThreadPool = ThreadPoolExecutor(
+        2, // 核心线程数
+        4, // 最大线程数
+        60L, // 空闲线程存活时间
+        TimeUnit.SECONDS,
+        LinkedBlockingQueue&lt;Runnable&gt;(100), // 任务队列
+        ThreadFactory { r -&gt;
+            Thread(r, "CustomThread-${System.currentTimeMillis()}")
+        },
+        ThreadPoolExecutor.AbortPolicy() // 拒绝策略
+    )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_thread_pool)
+
+        findViewById&lt;Button&gt;(R.id.btnExecute).setOnClickListener {
+            // 执行任务
+            customThreadPool.execute {
+                Log.d(TAG, "任务执行: ${Thread.currentThread().name}")
+                Thread.sleep(2000)
+            }
+        }
+
+        findViewById&lt;Button&gt;(R.id.btnSubmit).setOnClickListener {
+            // 提交有返回值的任务
+            val future = customThreadPool.submit(Callable {
+                Thread.sleep(1000)
+                "任务结果"
+            })
+
+            Thread {
+                val result = future.get() // 阻塞等待结果
+                runOnUiThread {
+                    Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+                }
+            }.start()
+        }
+
+        findViewById&lt;Button&gt;(R.id.btnSchedule).setOnClickListener {
+            // 延迟执行
+            scheduledThreadPool.schedule({
+                Log.d(TAG, "延迟任务执行")
+            }, 3, TimeUnit.SECONDS)
+
+            // 定时执行
+            scheduledThreadPool.scheduleAtFixedRate({
+                Log.d(TAG, "定时任务执行")
+            }, 0, 5, TimeUnit.SECONDS)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // 关闭线程池
+        customThreadPool.shutdown()
+        scheduledThreadPool.shutdown()
+    }
+}
+</code></pre>
+<h2 id="三fragment"><a class="header" href="#三fragment">三、Fragment</a></h2>
+<h3 id="31-fragment基础"><a class="header" href="#31-fragment基础">3.1 Fragment基础</a></h3>
+<h4 id="311-创建fragment"><a class="header" href="#311-创建fragment">3.1.1 创建Fragment</a></h4>
+<pre><code class="language-kotlin">// UserFragment.kt
+class UserFragment : Fragment() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_user, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 初始化视图
+        view.findViewById&lt;TextView&gt;(R.id.tvUsername).text = "张三"
+
+        view.findViewById&lt;Button&gt;(R.id.btnAction).setOnClickListener {
+            Toast.makeText(requireContext(), "点击按钮", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    companion object {
+        // 工厂方法创建Fragment
+        fun newInstance(userId: Int): UserFragment {
+            return UserFragment().apply {
+                arguments = Bundle().apply {
+                    putInt("userId", userId)
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<pre><code class="language-xml">&lt;!-- fragment_user.xml --&gt;
+&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"&gt;
+
+    &lt;TextView
+        android:id="@+id/tvUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="用户名"
+        android:textSize="18sp" /&gt;
+
+    &lt;Button
+        android:id="@+id/btnAction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="操作按钮"
+        android:layout_marginTop="16dp" /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<h4 id="312-fragment的使用方式"><a class="header" href="#312-fragment的使用方式">3.1.2 Fragment的使用方式</a></h4>
+<p><strong>方式1：静态添加（XML）</strong></p>
+<pre><code class="language-xml">&lt;!-- activity_main.xml --&gt;
+&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"&gt;
+
+    &lt;fragment
+        android:id="@+id/fragment1"
+        android:name="com.example.UserFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" /&gt;
+
+    &lt;fragment
+        android:id="@+id/fragment2"
+        android:name="com.example.SettingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<p><strong>方式2：动态添加（代码）</strong></p>
+<pre><code class="language-kotlin">class FragmentActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_fragment)
+
+        // 添加Fragment
+        findViewById&lt;Button&gt;(R.id.btnAdd).setOnClickListener {
+            val fragment = UserFragment.newInstance(123)
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragmentContainer, fragment, "UserFragment")
+                .commit()
+        }
+
+        // 替换Fragment
+        findViewById&lt;Button&gt;(R.id.btnReplace).setOnClickListener {
+            val fragment = SettingsFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(null) // 添加到返回栈
+                .commit()
+        }
+
+        // 移除Fragment
+        findViewById&lt;Button&gt;(R.id.btnRemove).setOnClickListener {
+            val fragment = supportFragmentManager.findFragmentByTag("UserFragment")
+            fragment?.let {
+                supportFragmentManager.beginTransaction()
+                    .remove(it)
+                    .commit()
+            }
+        }
+
+        // 显示/隐藏Fragment
+        findViewById&lt;Button&gt;(R.id.btnHide).setOnClickListener {
+            val fragment = supportFragmentManager.findFragmentByTag("UserFragment")
+            fragment?.let {
+                supportFragmentManager.beginTransaction()
+                    .hide(it) // 或者 .show(it)
+                    .commit()
+            }
+        }
+    }
+}
+</code></pre>
+<h3 id="32-fragment生命周期"><a class="header" href="#32-fragment生命周期">3.2 Fragment生命周期</a></h3>
+<pre><code class="language-kotlin">class LifecycleFragment : Fragment() {
+
+    private val TAG = "LifecycleFragment"
+
+    // 1. Fragment附加到Activity
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d(TAG, "onAttach")
+    }
+
+    // 2. Fragment创建
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate")
+
+        // 获取参数
+        val userId = arguments?.getInt("userId")
+        Log.d(TAG, "userId: $userId")
+    }
+
+    // 3. 创建视图
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d(TAG, "onCreateView")
+        return inflater.inflate(R.layout.fragment_lifecycle, container, false)
+    }
+
+    // 4. 视图创建完成
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onViewCreated")
+        // 初始化视图
+    }
+
+    // 5. Activity的onCreate完成
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        Log.d(TAG, "onActivityCreated")
+    }
+
+    // 6. Fragment可见
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart")
+    }
+
+    // 7. Fragment可交互
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume")
+    }
+
+    // 8. Fragment失去焦点
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause")
+    }
+
+    // 9. Fragment不可见
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop")
+    }
+
+    // 10. 销毁视图
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "onDestroyView")
+    }
+
+    // 11. Fragment销毁
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy")
+    }
+
+    // 12. Fragment与Activity分离
+    override fun onDetach() {
+        super.onDetach()
+        Log.d(TAG, "onDetach")
+    }
+}
+</code></pre>
+<h3 id="33-fragment通信"><a class="header" href="#33-fragment通信">3.3 Fragment通信</a></h3>
+<h4 id="331-fragment与activity通信"><a class="header" href="#331-fragment与activity通信">3.3.1 Fragment与Activity通信</a></h4>
+<pre><code class="language-kotlin">// 方式1：接口回调
+interface OnFragmentInteractionListener {
+    fun onUserSelected(userId: Int)
+}
+
+class UserListFragment : Fragment() {
+
+    private var listener: OnFragmentInteractionListener? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnFragmentInteractionListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement OnFragmentInteractionListener")
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById&lt;Button&gt;(R.id.btnSelect).setOnClickListener {
+            listener?.onUserSelected(123)
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+}
+
+// Activity实现接口
+class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.fragmentContainer, UserListFragment())
+            .commit()
+    }
+
+    override fun onUserSelected(userId: Int) {
+        Toast.makeText(this, "选择了用户: $userId", Toast.LENGTH_SHORT).show()
+
+        // 替换为详情Fragment
+        val detailFragment = UserDetailFragment.newInstance(userId)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, detailFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+}
+
+// 方式2：ViewModel共享数据
+class SharedViewModel : ViewModel() {
+    private val _selectedUser = MutableLiveData&lt;User&gt;()
+    val selectedUser: LiveData&lt;User&gt; = _selectedUser
+
+    fun selectUser(user: User) {
+        _selectedUser.value = user
+    }
+}
+
+// Fragment1：选择用户
+class UserListFragment2 : Fragment() {
+
+    private val viewModel: SharedViewModel by activityViewModels()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById&lt;Button&gt;(R.id.btnSelect).setOnClickListener {
+            val user = User(1, "张三", "zhangsan@example.com")
+            viewModel.selectUser(user)
+        }
+    }
+}
+
+// Fragment2：显示用户详情
+class UserDetailFragment2 : Fragment() {
+
+    private val viewModel: SharedViewModel by activityViewModels()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.selectedUser.observe(viewLifecycleOwner) { user -&gt;
+            view.findViewById&lt;TextView&gt;(R.id.tvUsername).text = user.name
+            view.findViewById&lt;TextView&gt;(R.id.tvEmail).text = user.email
+        }
+    }
+}
+</code></pre>
+<h4 id="332-fragment之间通信"><a class="header" href="#332-fragment之间通信">3.3.2 Fragment之间通信</a></h4>
+<pre><code class="language-kotlin">// 使用Fragment Result API（推荐）
+class Fragment1 : Fragment() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // 设置结果监听器
+        setFragmentResultListener("requestKey") { _, bundle -&gt;
+            val result = bundle.getString("result")
+            Toast.makeText(requireContext(), "收到: $result", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById&lt;Button&gt;(R.id.btnGotoFragment2).setOnClickListener {
+            val fragment2 = Fragment2()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment2)
+                .addToBackStack(null)
+                .commit()
+        }
+    }
+}
+
+class Fragment2 : Fragment() {
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById&lt;Button&gt;(R.id.btnSendResult).setOnClickListener {
+            // 发送结果
+            val bundle = Bundle().apply {
+                putString("result", "来自Fragment2的数据")
+            }
+            setFragmentResult("requestKey", bundle)
+            parentFragmentManager.popBackStack()
+        }
+    }
+}
+</code></pre>
+<h3 id="34-viewpager--fragment实战"><a class="header" href="#34-viewpager--fragment实战">3.4 ViewPager + Fragment实战</a></h3>
+<p><strong>实战案例：Tab切换页面</strong></p>
+<pre><code class="language-kotlin">// 1. 创建Fragment
+class HomeFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_home, container, false)
+    }
+}
+
+class DiscoverFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_discover, container, false)
+    }
+}
+
+class ProfileFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_profile, container, false)
+    }
+}
+
+// 2. ViewPager2 Adapter
+class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+
+    private val fragments = listOf(
+        HomeFragment(),
+        DiscoverFragment(),
+        ProfileFragment()
+    )
+
+    override fun getItemCount(): Int = fragments.size
+
+    override fun createFragment(position: Int): Fragment = fragments[position]
+}
+
+// 3. Activity
+class TabActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_tab)
+
+        val viewPager = findViewById&lt;ViewPager2&gt;(R.id.viewPager)
+        val tabLayout = findViewById&lt;TabLayout&gt;(R.id.tabLayout)
+
+        // 设置Adapter
+        viewPager.adapter = ViewPagerAdapter(this)
+
+        // 关联TabLayout和ViewPager2
+        TabLayoutMediator(tabLayout, viewPager) { tab, position -&gt;
+            tab.text = when (position) {
+                0 -&gt; "首页"
+                1 -&gt; "发现"
+                2 -&gt; "我的"
+                else -&gt; ""
+            }
+            tab.setIcon(when (position) {
+                0 -&gt; R.drawable.ic_home
+                1 -&gt; R.drawable.ic_discover
+                2 -&gt; R.drawable.ic_profile
+                else -&gt; null
+            })
+        }.attach()
+    }
+}
+</code></pre>
+<pre><code class="language-xml">&lt;!-- activity_tab.xml --&gt;
+&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"&gt;
+
+    &lt;androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" /&gt;
+
+    &lt;com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="fixed"
+        app:tabGravity="fill" /&gt;
+&lt;/LinearLayout&gt;
+</code></pre>
+<h2 id="四动画"><a class="header" href="#四动画">四、动画</a></h2>
+<h3 id="41-视图动画view-animation"><a class="header" href="#41-视图动画view-animation">4.1 视图动画（View Animation）</a></h3>
+<h4 id="411-补间动画"><a class="header" href="#411-补间动画">4.1.1 补间动画</a></h4>
+<pre><code class="language-kotlin">class ViewAnimationActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_animation)
+
+        val imageView = findViewById&lt;ImageView&gt;(R.id.imageView)
+
+        // 1. 透明度动画
+        findViewById&lt;Button&gt;(R.id.btnAlpha).setOnClickListener {
+            val alphaAnimation = AlphaAnimation(1.0f, 0.0f).apply {
+                duration = 1000
+                fillAfter = true // 保持结束状态
+            }
+            imageView.startAnimation(alphaAnimation)
+        }
+
+        // 2. 缩放动画
+        findViewById&lt;Button&gt;(R.id.btnScale).setOnClickListener {
+            val scaleAnimation = ScaleAnimation(
+                1.0f, 2.0f, // X方向
+                1.0f, 2.0f, // Y方向
+                Animation.RELATIVE_TO_SELF, 0.5f, // 中心点X
+                Animation.RELATIVE_TO_SELF, 0.5f  // 中心点Y
+            ).apply {
+                duration = 1000
+            }
+            imageView.startAnimation(scaleAnimation)
+        }
+
+        // 3. 旋转动画
+        findViewById&lt;Button&gt;(R.id.btnRotate).setOnClickListener {
+            val rotateAnimation = RotateAnimation(
+                0f, 360f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f
+            ).apply {
+                duration = 1000
+                repeatCount = Animation.INFINITE // 无限重复
+            }
+            imageView.startAnimation(rotateAnimation)
+        }
+
+        // 4. 位移动画
+        findViewById&lt;Button&gt;(R.id.btnTranslate).setOnClickListener {
+            val translateAnimation = TranslateAnimation(
+                0f, 200f, // X方向
+                0f, 200f  // Y方向
+            ).apply {
+                duration = 1000
+            }
+            imageView.startAnimation(translateAnimation)
+        }
+
+        // 5. 组合动画
+        findViewById&lt;Button&gt;(R.id.btnSet).setOnClickListener {
+            val animationSet = AnimationSet(true).apply {
+                addAnimation(ScaleAnimation(1.0f, 2.0f, 1.0f, 2.0f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f))
+                addAnimation(AlphaAnimation(1.0f, 0.3f))
+                addAnimation(RotateAnimation(0f, 360f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f))
+                duration = 2000
+            }
+            imageView.startAnimation(animationSet)
+        }
+    }
+}
+</code></pre>
+<h3 id="42-属性动画property-animation"><a class="header" href="#42-属性动画property-animation">4.2 属性动画（Property Animation）</a></h3>
+<pre><code class="language-kotlin">class PropertyAnimationActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_property_animation)
+
+        val imageView = findViewById&lt;ImageView&gt;(R.id.imageView)
+
+        // 1. ObjectAnimator单个属性
+        findViewById&lt;Button&gt;(R.id.btnAlpha).setOnClickListener {
+            ObjectAnimator.ofFloat(imageView, "alpha", 1f, 0f, 1f).apply {
+                duration = 2000
+                start()
+            }
+        }
+
+        // 2. 位移动画
+        findViewById&lt;Button&gt;(R.id.btnTranslation).setOnClickListener {
+            ObjectAnimator.ofFloat(imageView, "translationX", 0f, 300f).apply {
+                duration = 1000
+                start()
+            }
+        }
+
+        // 3. 旋转动画
+        findViewById&lt;Button&gt;(R.id.btnRotation).setOnClickListener {
+            ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f).apply {
+                duration = 1000
+                repeatCount = ValueAnimator.INFINITE
+                start()
+            }
+        }
+
+        // 4. 缩放动画
+        findViewById&lt;Button&gt;(R.id.btnScale).setOnClickListener {
+            ObjectAnimator.ofFloat(imageView, "scaleX", 1f, 2f, 1f).apply {
+                duration = 2000
+                start()
+            }
+        }
+
+        // 5. AnimatorSet组合动画
+        findViewById&lt;Button&gt;(R.id.btnSet).setOnClickListener {
+            val alpha = ObjectAnimator.ofFloat(imageView, "alpha", 1f, 0.5f, 1f)
+            val scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 1f, 1.5f, 1f)
+            val scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 1f, 1.5f, 1f)
+            val rotation = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f)
+
+            AnimatorSet().apply {
+                playTogether(alpha, scaleX, scaleY, rotation)
+                duration = 2000
+                start()
+            }
+        }
+
+        // 6. ValueAnimator自定义动画
+        findViewById&lt;Button&gt;(R.id.btnValue).setOnClickListener {
+            ValueAnimator.ofInt(0, 100).apply {
+                duration = 2000
+                addUpdateListener { animation -&gt;
+                    val value = animation.animatedValue as Int
+                    findViewById&lt;TextView&gt;(R.id.tvProgress).text = "$value%"
+                }
+                start()
+            }
+        }
+
+        // 7. 插值器
+        findViewById&lt;Button&gt;(R.id.btnInterpolator).setOnClickListener {
+            ObjectAnimator.ofFloat(imageView, "translationY", 0f, 500f).apply {
+                duration = 1000
+                interpolator = BounceInterpolator() // 弹跳效果
+                start()
+            }
+        }
+
+        // 8. 监听器
+        findViewById&lt;Button&gt;(R.id.btnListener).setOnClickListener {
+            ObjectAnimator.ofFloat(imageView, "alpha", 1f, 0f).apply {
+                duration = 1000
+                addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animation: Animator) {
+                        Toast.makeText(this@PropertyAnimationActivity, "开始", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        Toast.makeText(this@PropertyAnimationActivity, "结束", Toast.LENGTH_SHORT).show()
+                    }
+                })
+                start()
+            }
+        }
+    }
+}
+</code></pre>
+<h2 id="五学习验证标准"><a class="header" href="#五学习验证标准">五、学习验证标准</a></h2>
+<p>完成进阶篇学习后，你应该能够：</p>
+<ol>
+<li><strong>网络编程</strong>：熟练使用OkHttp、Retrofit进行网络请求，能够处理JSON数据</li>
+<li><strong>多线程</strong>：掌握Handler消息机制，熟练使用Kotlin协程进行异步操作</li>
+<li><strong>Fragment</strong>：理解Fragment生命周期，能够实现Fragment通信和ViewPager切换</li>
+<li><strong>动画</strong>：掌握视图动画和属性动画的使用</li>
+<li><strong>综合应用</strong>：能够开发包含网络请求、列表展示、Tab切换的完整应用</li>
+</ol>
+<h2 id="六扩展学习资源"><a class="header" href="#六扩展学习资源">六、扩展学习资源</a></h2>
+<ol>
+<li><strong>官方文档</strong>：https://developer.android.com/guide</li>
+<li><strong>协程指南</strong>：https://kotlinlang.org/docs/coroutines-guide.html</li>
+<li><strong>开源项目</strong>：GitHub搜索"Android Architecture Samples"</li>
+</ol>
+<hr />
+<p><strong>下一步学习</strong>：继续学习《Android开发学习笔记-高级篇》，深入学习性能优化、架构设计等高级内容。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/android/Android-基础篇.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/android/Android-高级篇.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/android/Android-基础篇.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/android/Android-高级篇.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,1443 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>C++完整学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="c完整学习笔记"><a class="header" href="#c完整学习笔记">C++完整学习笔记</a></h1>
+<h2 id="学习目标定位"><a class="header" href="#学习目标定位">学习目标定位</a></h2>
+<ul>
+<li><strong>目标群体</strong>: 有C语言基础或其他编程语言经验的学习者</li>
+<li><strong>学习周期</strong>: 10-16周</li>
+<li><strong>前置要求</strong>: C语言基础或基础编程概念</li>
+<li><strong>学习成果</strong>: 掌握现代C++(C++11/14/17/20)并能开发实际项目</li>
+</ul>
+<h2 id="学习路径"><a class="header" href="#学习路径">学习路径</a></h2>
+<pre><code>基础强化(Week 1-2) → 面向对象(Week 3-4) → STL(Week 5-6)
+→ 模板编程(Week 7-8) → 内存管理(Week 9-10) → 并发编程(Week 11-12)
+→ 现代C++特性(Week 13-14) → 实战项目(Week 15-16)
+</code></pre>
+<hr />
+<h2 id="第一模块c基础强化"><a class="header" href="#第一模块c基础强化">第一模块：C++基础强化</a></h2>
+<h3 id="11-数据类型与变量"><a class="header" href="#11-数据类型与变量">1.1 数据类型与变量</a></h3>
+<h4 id="111-基本数据类型"><a class="header" href="#111-基本数据类型">1.1.1 基本数据类型</a></h4>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;limits&gt;
+using namespace std;
+
+void type_demo() {
+    // 整型
+    int a = 42;
+    short b = 10;
+    long c = 1000000L;
+    long long d = 9223372036854775807LL;
+
+    // 无符号类型
+    unsigned int ua = 100U;
+    size_t size = sizeof(int);  // 返回unsigned类型
+
+    // 浮点型
+    float f = 3.14f;
+    double pi = 3.14159265;
+    long double ld = 3.14159265358979L;
+
+    // 布尔型
+    bool flag = true;
+
+    // 字符型
+    char ch = 'A';
+    wchar_t wch = L'中';  // 宽字符
+
+    // 类型大小
+    cout &lt;&lt; "int: " &lt;&lt; sizeof(int) &lt;&lt; " bytes" &lt;&lt; endl;
+    cout &lt;&lt; "int range: " &lt;&lt; numeric_limits&lt;int&gt;::min()
+         &lt;&lt; " to " &lt;&lt; numeric_limits&lt;int&gt;::max() &lt;&lt; endl;
+}
+
+// C++11: auto类型推导
+void auto_demo() {
+    auto x = 42;        // int
+    auto y = 3.14;      // double
+    auto str = "hello"; // const char*
+
+    vector&lt;int&gt; vec = {1, 2, 3};
+    auto it = vec.begin();  // vector&lt;int&gt;::iterator
+}
+
+// C++11: decltype类型推导
+void decltype_demo() {
+    int x = 5;
+    decltype(x) y = x;  // y的类型是int
+
+    auto func = [](int a, int b) { return a + b; };
+    decltype(func) func2 = func;  // 推导Lambda类型
+}
+</code></pre>
+<h4 id="112-引用与指针对比"><a class="header" href="#112-引用与指针对比">1.1.2 引用与指针对比</a></h4>
+<pre><code class="language-cpp">// 指针
+void pointer_demo() {
+    int value = 10;
+    int* ptr = &amp;value;   // 指针存储地址
+    *ptr = 20;           // 通过解引用修改值
+
+    ptr = nullptr;       // C++11: nullptr替代NULL
+
+    // 指针可以重新赋值
+    int another = 30;
+    ptr = &amp;another;
+}
+
+// 引用
+void reference_demo() {
+    int value = 10;
+    int&amp; ref = value;    // 引用是别名
+    ref = 20;            // 直接修改value
+
+    // 引用必须初始化，且不能重新绑定
+    // int&amp; ref2;        // ❌ 错误：必须初始化
+    // ref = another;    // ✅ 这是修改value的值，不是重新绑定
+}
+
+// 常量引用：避免拷贝的高效参数传递
+void print_string(const string&amp; str) {
+    // str不能被修改，但避免了拷贝
+    cout &lt;&lt; str &lt;&lt; endl;
+}
+
+// 右值引用（C++11）
+void rvalue_demo() {
+    int&amp;&amp; rref = 42;           // 绑定到右值
+    string&amp;&amp; str = "hello";    // 临时字符串
+
+    vector&lt;int&gt; vec1 = {1, 2, 3};
+    vector&lt;int&gt; vec2 = std::move(vec1);  // 移动语义
+    // vec1现在为空
+}
+</code></pre>
+<h3 id="12-函数高级特性"><a class="header" href="#12-函数高级特性">1.2 函数高级特性</a></h3>
+<h4 id="121-函数重载"><a class="header" href="#121-函数重载">1.2.1 函数重载</a></h4>
+<pre><code class="language-cpp">// 同名函数，不同参数列表
+void print(int x) {
+    cout &lt;&lt; "Int: " &lt;&lt; x &lt;&lt; endl;
+}
+
+void print(double x) {
+    cout &lt;&lt; "Double: " &lt;&lt; x &lt;&lt; endl;
+}
+
+void print(const string&amp; x) {
+    cout &lt;&lt; "String: " &lt;&lt; x &lt;&lt; endl;
+}
+
+// 使用示例
+int main() {
+    print(10);        // 调用print(int)
+    print(3.14);      // 调用print(double)
+    print("hello");   // 调用print(const string&amp;)
+}
+</code></pre>
+<h4 id="122-默认参数"><a class="header" href="#122-默认参数">1.2.2 默认参数</a></h4>
+<pre><code class="language-cpp">// 从右向左指定默认参数
+void create_window(int width = 800, int height = 600,
+                   bool fullscreen = false) {
+    cout &lt;&lt; "Window: " &lt;&lt; width &lt;&lt; "x" &lt;&lt; height &lt;&lt; endl;
+}
+
+// 调用示例
+create_window();                    // 800x600, 非全屏
+create_window(1024);                // 1024x600, 非全屏
+create_window(1920, 1080);          // 1920x1080, 非全屏
+create_window(1920, 1080, true);    // 1920x1080, 全屏
+</code></pre>
+<h4 id="123-lambda表达式c11"><a class="header" href="#123-lambda表达式c11">1.2.3 Lambda表达式（C++11）</a></h4>
+<pre><code class="language-cpp">void lambda_demo() {
+    // 基础Lambda
+    auto add = [](int a, int b) { return a + b; };
+    cout &lt;&lt; add(3, 4) &lt;&lt; endl;  // 7
+
+    // 捕获外部变量
+    int x = 10;
+    auto print_x = [x]() { cout &lt;&lt; x &lt;&lt; endl; };  // 值捕获
+    print_x();  // 10
+
+    auto modify_x = [&amp;x]() { x = 20; };  // 引用捕获
+    modify_x();
+    cout &lt;&lt; x &lt;&lt; endl;  // 20
+
+    // 捕获所有变量
+    int a = 1, b = 2;
+    auto lambda1 = [=]() { return a + b; };   // 值捕获所有
+    auto lambda2 = [&amp;]() { a++; b++; };       // 引用捕获所有
+
+    // 混合捕获
+    auto lambda3 = [=, &amp;a]() { a++; return a + b; };
+
+    // 泛型Lambda (C++14)
+    auto generic = [](auto a, auto b) { return a + b; };
+    cout &lt;&lt; generic(1, 2) &lt;&lt; endl;      // 3
+    cout &lt;&lt; generic(1.5, 2.5) &lt;&lt; endl;  // 4.0
+}
+
+// 实战：STL算法中使用Lambda
+void lambda_with_stl() {
+    vector&lt;int&gt; nums = {1, 2, 3, 4, 5};
+
+    // 查找第一个大于3的数
+    auto it = find_if(nums.begin(), nums.end(),
+                      [](int n) { return n &gt; 3; });
+
+    // 遍历并打印
+    for_each(nums.begin(), nums.end(),
+             [](int n) { cout &lt;&lt; n &lt;&lt; " "; });
+
+    // 排序（自定义比较）
+    sort(nums.begin(), nums.end(),
+         [](int a, int b) { return a &gt; b; });  // 降序
+}
+</code></pre>
+<hr />
+<h2 id="第二模块面向对象编程"><a class="header" href="#第二模块面向对象编程">第二模块：面向对象编程</a></h2>
+<h3 id="21-类的基础"><a class="header" href="#21-类的基础">2.1 类的基础</a></h3>
+<h4 id="211-类的定义与使用"><a class="header" href="#211-类的定义与使用">2.1.1 类的定义与使用</a></h4>
+<pre><code class="language-cpp">class Rectangle {
+private:
+    double width;
+    double height;
+
+public:
+    // 构造函数
+    Rectangle() : width(0), height(0) {}
+
+    Rectangle(double w, double h) : width(w), height(h) {}
+
+    // 成员函数
+    double area() const {  // const成员函数不修改对象
+        return width * height;
+    }
+
+    double perimeter() const {
+        return 2 * (width + height);
+    }
+
+    // Getter/Setter
+    void set_width(double w) { width = w; }
+    double get_width() const { return width; }
+
+    // 析构函数
+    ~Rectangle() {
+        cout &lt;&lt; "Rectangle destroyed" &lt;&lt; endl;
+    }
+};
+
+// 使用示例
+void rectangle_demo() {
+    Rectangle rect1;                   // 默认构造
+    Rectangle rect2(10.0, 5.0);       // 参数化构造
+
+    cout &lt;&lt; "Area: " &lt;&lt; rect2.area() &lt;&lt; endl;
+    cout &lt;&lt; "Perimeter: " &lt;&lt; rect2.perimeter() &lt;&lt; endl;
+}
+</code></pre>
+<h4 id="212-构造函数高级特性"><a class="header" href="#212-构造函数高级特性">2.1.2 构造函数高级特性</a></h4>
+<pre><code class="language-cpp">class Student {
+private:
+    string name;
+    int age;
+    vector&lt;int&gt; grades;
+
+public:
+    // 默认构造函数
+    Student() : name(""), age(0) {}
+
+    // 参数化构造函数
+    Student(const string&amp; n, int a) : name(n), age(a) {}
+
+    // 初始化列表构造（C++11）
+    Student(const string&amp; n, int a, initializer_list&lt;int&gt; g)
+        : name(n), age(a), grades(g) {}
+
+    // 拷贝构造函数
+    Student(const Student&amp; other)
+        : name(other.name), age(other.age), grades(other.grades) {
+        cout &lt;&lt; "Copy constructor called" &lt;&lt; endl;
+    }
+
+    // 移动构造函数（C++11）
+    Student(Student&amp;&amp; other) noexcept
+        : name(std::move(other.name))
+        , age(other.age)
+        , grades(std::move(other.grades)) {
+        cout &lt;&lt; "Move constructor called" &lt;&lt; endl;
+    }
+
+    // 拷贝赋值运算符
+    Student&amp; operator=(const Student&amp; other) {
+        if (this != &amp;other) {
+            name = other.name;
+            age = other.age;
+            grades = other.grades;
+        }
+        return *this;
+    }
+
+    // 移动赋值运算符（C++11）
+    Student&amp; operator=(Student&amp;&amp; other) noexcept {
+        if (this != &amp;other) {
+            name = std::move(other.name);
+            age = other.age;
+            grades = std::move(other.grades);
+        }
+        return *this;
+    }
+};
+
+// 使用示例
+void student_demo() {
+    Student s1("Alice", 20);
+    Student s2 = s1;                           // 拷贝构造
+    Student s3("Bob", 21, {85, 90, 95});      // 初始化列表
+    Student s4 = std::move(s3);               // 移动构造
+}
+</code></pre>
+<h3 id="22-继承与多态"><a class="header" href="#22-继承与多态">2.2 继承与多态</a></h3>
+<h4 id="221-继承机制"><a class="header" href="#221-继承机制">2.2.1 继承机制</a></h4>
+<pre><code class="language-cpp">// 基类
+class Shape {
+protected:
+    string color;
+
+public:
+    Shape(const string&amp; c) : color(c) {}
+
+    virtual ~Shape() {}  // 虚析构函数
+
+    virtual double area() const = 0;  // 纯虚函数
+
+    virtual void draw() const {
+        cout &lt;&lt; "Drawing a " &lt;&lt; color &lt;&lt; " shape" &lt;&lt; endl;
+    }
+
+    string get_color() const { return color; }
+};
+
+// 派生类：圆形
+class Circle : public Shape {
+private:
+    double radius;
+
+public:
+    Circle(const string&amp; c, double r)
+        : Shape(c), radius(r) {}
+
+    double area() const override {  // C++11: override关键字
+        return 3.14159 * radius * radius;
+    }
+
+    void draw() const override {
+        cout &lt;&lt; "Drawing a " &lt;&lt; color &lt;&lt; " circle" &lt;&lt; endl;
+    }
+};
+
+// 派生类：矩形
+class Rectangle : public Shape {
+private:
+    double width, height;
+
+public:
+    Rectangle(const string&amp; c, double w, double h)
+        : Shape(c), width(w), height(h) {}
+
+    double area() const override {
+        return width * height;
+    }
+
+    void draw() const override {
+        cout &lt;&lt; "Drawing a " &lt;&lt; color &lt;&lt; " rectangle" &lt;&lt; endl;
+    }
+};
+
+// 多态示例
+void polymorphism_demo() {
+    vector&lt;unique_ptr&lt;Shape&gt;&gt; shapes;
+    shapes.push_back(make_unique&lt;Circle&gt;("red", 5.0));
+    shapes.push_back(make_unique&lt;Rectangle&gt;("blue", 4.0, 6.0));
+
+    for (const auto&amp; shape : shapes) {
+        shape-&gt;draw();
+        cout &lt;&lt; "Area: " &lt;&lt; shape-&gt;area() &lt;&lt; endl;
+    }
+}
+</code></pre>
+<h4 id="222-运算符重载"><a class="header" href="#222-运算符重载">2.2.2 运算符重载</a></h4>
+<pre><code class="language-cpp">class Complex {
+private:
+    double real, imag;
+
+public:
+    Complex(double r = 0, double i = 0) : real(r), imag(i) {}
+
+    // 算术运算符重载
+    Complex operator+(const Complex&amp; other) const {
+        return Complex(real + other.real, imag + other.imag);
+    }
+
+    Complex operator-(const Complex&amp; other) const {
+        return Complex(real - other.real, imag - other.imag);
+    }
+
+    Complex operator*(const Complex&amp; other) const {
+        return Complex(
+            real * other.real - imag * other.imag,
+            real * other.imag + imag * other.real
+        );
+    }
+
+    // 复合赋值运算符
+    Complex&amp; operator+=(const Complex&amp; other) {
+        real += other.real;
+        imag += other.imag;
+        return *this;
+    }
+
+    // 比较运算符
+    bool operator==(const Complex&amp; other) const {
+        return real == other.real &amp;&amp; imag == other.imag;
+    }
+
+    // 流操作符重载（友元函数）
+    friend ostream&amp; operator&lt;&lt;(ostream&amp; os, const Complex&amp; c) {
+        os &lt;&lt; c.real;
+        if (c.imag &gt;= 0) os &lt;&lt; "+";
+        os &lt;&lt; c.imag &lt;&lt; "i";
+        return os;
+    }
+
+    friend istream&amp; operator&gt;&gt;(istream&amp; is, Complex&amp; c) {
+        is &gt;&gt; c.real &gt;&gt; c.imag;
+        return is;
+    }
+};
+
+// 使用示例
+void complex_demo() {
+    Complex c1(3, 4);
+    Complex c2(1, 2);
+
+    Complex c3 = c1 + c2;
+    cout &lt;&lt; c1 &lt;&lt; " + " &lt;&lt; c2 &lt;&lt; " = " &lt;&lt; c3 &lt;&lt; endl;
+
+    c1 += c2;
+    cout &lt;&lt; "After +=: " &lt;&lt; c1 &lt;&lt; endl;
+}
+</code></pre>
+<hr />
+<h2 id="第三模块stl标准模板库"><a class="header" href="#第三模块stl标准模板库">第三模块：STL（标准模板库）</a></h2>
+<h3 id="31-容器详解"><a class="header" href="#31-容器详解">3.1 容器详解</a></h3>
+<h4 id="311-序列容器"><a class="header" href="#311-序列容器">3.1.1 序列容器</a></h4>
+<pre><code class="language-cpp">void vector_demo() {
+    // vector: 动态数组
+    vector&lt;int&gt; vec = {1, 2, 3, 4, 5};
+
+    vec.push_back(6);           // 尾部添加
+    vec.pop_back();             // 尾部删除
+    vec.insert(vec.begin(), 0); // 指定位置插入
+    vec.erase(vec.begin());     // 删除元素
+
+    // 访问元素
+    cout &lt;&lt; vec[0] &lt;&lt; endl;     // 不检查边界
+    cout &lt;&lt; vec.at(0) &lt;&lt; endl;  // 检查边界，抛出异常
+
+    // 容量管理
+    vec.reserve(100);           // 预分配容量
+    vec.shrink_to_fit();        // 释放多余容量
+
+    // 遍历
+    for (int x : vec) {
+        cout &lt;&lt; x &lt;&lt; " ";
+    }
+}
+
+void list_demo() {
+    // list: 双向链表
+    list&lt;int&gt; lst = {1, 2, 3, 4, 5};
+
+    lst.push_front(0);    // 头部添加
+    lst.push_back(6);     // 尾部添加
+    lst.pop_front();      // 头部删除
+    lst.pop_back();       // 尾部删除
+
+    // 排序和去重
+    lst.sort();
+    lst.unique();         // 删除连续重复元素
+
+    // 合并两个有序链表
+    list&lt;int&gt; lst2 = {10, 20, 30};
+    lst.merge(lst2);
+}
+
+void deque_demo() {
+    // deque: 双端队列
+    deque&lt;int&gt; dq = {1, 2, 3};
+
+    dq.push_front(0);     // 头部添加 O(1)
+    dq.push_back(4);      // 尾部添加 O(1)
+    dq.pop_front();       // 头部删除 O(1)
+    dq.pop_back();        // 尾部删除 O(1)
+
+    // 随机访问 O(1)
+    cout &lt;&lt; dq[1] &lt;&lt; endl;
+}
+</code></pre>
+<h4 id="312-关联容器"><a class="header" href="#312-关联容器">3.1.2 关联容器</a></h4>
+<pre><code class="language-cpp">void map_demo() {
+    // map: 有序键值对容器（红黑树实现）
+    map&lt;string, int&gt; age_map;
+
+    // 插入
+    age_map["Alice"] = 25;
+    age_map["Bob"] = 30;
+    age_map.insert({"Charlie", 28});
+    age_map.emplace("David", 35);  // C++11: 直接构造
+
+    // 查找
+    if (age_map.count("Alice") &gt; 0) {
+        cout &lt;&lt; "Alice's age: " &lt;&lt; age_map["Alice"] &lt;&lt; endl;
+    }
+
+    auto it = age_map.find("Bob");
+    if (it != age_map.end()) {
+        cout &lt;&lt; it-&gt;first &lt;&lt; ": " &lt;&lt; it-&gt;second &lt;&lt; endl;
+    }
+
+    // 遍历（按键排序）
+    for (const auto&amp; [name, age] : age_map) {  // C++17结构化绑定
+        cout &lt;&lt; name &lt;&lt; ": " &lt;&lt; age &lt;&lt; endl;
+    }
+}
+
+void unordered_map_demo() {
+    // unordered_map: 无序键值对容器（哈希表实现）
+    unordered_map&lt;string, int&gt; word_count;
+
+    string text = "hello world hello";
+    istringstream iss(text);
+    string word;
+
+    while (iss &gt;&gt; word) {
+        word_count[word]++;  // 自动初始化为0
+    }
+
+    for (const auto&amp; [word, count] : word_count) {
+        cout &lt;&lt; word &lt;&lt; ": " &lt;&lt; count &lt;&lt; endl;
+    }
+}
+
+void set_demo() {
+    // set: 有序唯一元素集合
+    set&lt;int&gt; s = {3, 1, 4, 1, 5, 9, 2, 6};  // 自动去重并排序
+
+    s.insert(7);
+    s.erase(1);
+
+    // 查找
+    if (s.find(4) != s.end()) {
+        cout &lt;&lt; "4 exists" &lt;&lt; endl;
+    }
+
+    // 范围查找
+    auto lower = s.lower_bound(4);  // &gt;= 4的第一个元素
+    auto upper = s.upper_bound(6);  // &gt; 6的第一个元素
+}
+</code></pre>
+<h4 id="313-容器适配器"><a class="header" href="#313-容器适配器">3.1.3 容器适配器</a></h4>
+<pre><code class="language-cpp">void stack_demo() {
+    stack&lt;int&gt; stk;
+
+    stk.push(1);
+    stk.push(2);
+    stk.push(3);
+
+    while (!stk.empty()) {
+        cout &lt;&lt; stk.top() &lt;&lt; " ";  // 访问栈顶
+        stk.pop();                 // 弹出
+    }
+}
+
+void queue_demo() {
+    queue&lt;int&gt; q;
+
+    q.push(1);
+    q.push(2);
+    q.push(3);
+
+    while (!q.empty()) {
+        cout &lt;&lt; q.front() &lt;&lt; " ";  // 访问队首
+        q.pop();                   // 弹出
+    }
+}
+
+void priority_queue_demo() {
+    // 优先队列（默认大顶堆）
+    priority_queue&lt;int&gt; pq;
+
+    pq.push(3);
+    pq.push(1);
+    pq.push(4);
+    pq.push(2);
+
+    while (!pq.empty()) {
+        cout &lt;&lt; pq.top() &lt;&lt; " ";  // 4 3 2 1
+        pq.pop();
+    }
+
+    // 小顶堆
+    priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; min_pq;
+    min_pq.push(3);
+    min_pq.push(1);
+    min_pq.push(4);
+    // top() 返回 1
+}
+</code></pre>
+<h3 id="32-算法库"><a class="header" href="#32-算法库">3.2 算法库</a></h3>
+<h4 id="321-常用算法"><a class="header" href="#321-常用算法">3.2.1 常用算法</a></h4>
+<pre><code class="language-cpp">void algorithm_demo() {
+    vector&lt;int&gt; vec = {3, 1, 4, 1, 5, 9, 2, 6};
+
+    // 查找
+    auto it = find(vec.begin(), vec.end(), 5);
+    if (it != vec.end()) {
+        cout &lt;&lt; "Found: " &lt;&lt; *it &lt;&lt; endl;
+    }
+
+    // 计数
+    int count = count_if(vec.begin(), vec.end(),
+                         [](int x) { return x &gt; 3; });
+
+    // 排序
+    sort(vec.begin(), vec.end());               // 升序
+    sort(vec.begin(), vec.end(), greater&lt;&gt;());  // 降序
+
+    // 去重（需先排序）
+    auto last = unique(vec.begin(), vec.end());
+    vec.erase(last, vec.end());
+
+    // 反转
+    reverse(vec.begin(), vec.end());
+
+    // 累加
+    int sum = accumulate(vec.begin(), vec.end(), 0);
+
+    // 转换
+    vector&lt;int&gt; squared;
+    transform(vec.begin(), vec.end(), back_inserter(squared),
+              [](int x) { return x * x; });
+
+    // 拷贝
+    vector&lt;int&gt; vec_copy;
+    copy(vec.begin(), vec.end(), back_inserter(vec_copy));
+
+    // 填充
+    fill(vec.begin(), vec.end(), 0);
+}
+
+// 二分查找（需要有序容器）
+void binary_search_demo() {
+    vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+    // 判断是否存在
+    if (binary_search(vec.begin(), vec.end(), 5)) {
+        cout &lt;&lt; "5 exists" &lt;&lt; endl;
+    }
+
+    // 找到第一个不小于5的位置
+    auto it = lower_bound(vec.begin(), vec.end(), 5);
+
+    // 找到第一个大于5的位置
+    auto it2 = upper_bound(vec.begin(), vec.end(), 5);
+}
+</code></pre>
+<hr />
+<h2 id="第四模块模板编程"><a class="header" href="#第四模块模板编程">第四模块：模板编程</a></h2>
+<h3 id="41-函数模板"><a class="header" href="#41-函数模板">4.1 函数模板</a></h3>
+<pre><code class="language-cpp">// 基础函数模板
+template&lt;typename T&gt;
+T max_value(T a, T b) {
+    return (a &gt; b) ? a : b;
+}
+
+// 多个类型参数
+template&lt;typename T1, typename T2&gt;
+auto add(T1 a, T2 b) -&gt; decltype(a + b) {  // C++11尾置返回类型
+    return a + b;
+}
+
+// C++14: 自动推导返回类型
+template&lt;typename T1, typename T2&gt;
+auto multiply(T1 a, T2 b) {
+    return a * b;
+}
+
+// 模板特化
+template&lt;typename T&gt;
+T max_value(T a, T b) {
+    return (a &gt; b) ? a : b;
+}
+
+// 针对const char*的特化
+template&lt;&gt;
+const char* max_value&lt;const char*&gt;(const char* a, const char* b) {
+    return (strcmp(a, b) &gt; 0) ? a : b;
+}
+
+// 使用示例
+void template_demo() {
+    cout &lt;&lt; max_value(10, 20) &lt;&lt; endl;           // int版本
+    cout &lt;&lt; max_value(3.14, 2.71) &lt;&lt; endl;       // double版本
+    cout &lt;&lt; max_value("hello", "world") &lt;&lt; endl; // 特化版本
+}
+</code></pre>
+<h3 id="42-类模板"><a class="header" href="#42-类模板">4.2 类模板</a></h3>
+<pre><code class="language-cpp">// 基础类模板
+template&lt;typename T&gt;
+class Stack {
+private:
+    vector&lt;T&gt; elements;
+
+public:
+    void push(const T&amp; elem) {
+        elements.push_back(elem);
+    }
+
+    void pop() {
+        if (elements.empty()) {
+            throw runtime_error("Stack is empty");
+        }
+        elements.pop_back();
+    }
+
+    T top() const {
+        if (elements.empty()) {
+            throw runtime_error("Stack is empty");
+        }
+        return elements.back();
+    }
+
+    bool empty() const {
+        return elements.empty();
+    }
+};
+
+// 使用示例
+void class_template_demo() {
+    Stack&lt;int&gt; int_stack;
+    int_stack.push(1);
+    int_stack.push(2);
+    cout &lt;&lt; int_stack.top() &lt;&lt; endl;
+
+    Stack&lt;string&gt; str_stack;
+    str_stack.push("hello");
+    str_stack.push("world");
+    cout &lt;&lt; str_stack.top() &lt;&lt; endl;
+}
+
+// 类模板特化
+template&lt;typename T&gt;
+class Container {
+    T data;
+public:
+    void print() { cout &lt;&lt; data &lt;&lt; endl; }
+};
+
+// 针对bool的特化
+template&lt;&gt;
+class Container&lt;bool&gt; {
+    bool data;
+public:
+    void print() {
+        cout &lt;&lt; (data ? "true" : "false") &lt;&lt; endl;
+    }
+};
+</code></pre>
+<h3 id="43-变参模板c11"><a class="header" href="#43-变参模板c11">4.3 变参模板（C++11）</a></h3>
+<pre><code class="language-cpp">// 递归展开变参模板
+template&lt;typename T&gt;
+void print(const T&amp; t) {
+    cout &lt;&lt; t &lt;&lt; endl;  // 递归终止
+}
+
+template&lt;typename T, typename... Args&gt;
+void print(const T&amp; t, const Args&amp;... args) {
+    cout &lt;&lt; t &lt;&lt; " ";
+    print(args...);     // 递归调用
+}
+
+// 使用示例
+void variadic_template_demo() {
+    print(1, 2, 3, 4, 5);
+    print("hello", 3.14, 'A', true);
+}
+
+// C++17: 折叠表达式
+template&lt;typename... Args&gt;
+auto sum(Args... args) {
+    return (args + ...);  // 一元右折叠
+}
+
+// 使用示例
+void fold_expression_demo() {
+    cout &lt;&lt; sum(1, 2, 3, 4, 5) &lt;&lt; endl;  // 15
+}
+</code></pre>
+<hr />
+<h2 id="第五模块内存管理"><a class="header" href="#第五模块内存管理">第五模块：内存管理</a></h2>
+<h3 id="51-raii与智能指针"><a class="header" href="#51-raii与智能指针">5.1 RAII与智能指针</a></h3>
+<h4 id="511-智能指针"><a class="header" href="#511-智能指针">5.1.1 智能指针</a></h4>
+<pre><code class="language-cpp">void unique_ptr_demo() {
+    // unique_ptr: 独占所有权
+    unique_ptr&lt;int&gt; ptr1 = make_unique&lt;int&gt;(42);
+    cout &lt;&lt; *ptr1 &lt;&lt; endl;
+
+    // unique_ptr&lt;int&gt; ptr2 = ptr1;  // ❌ 错误：不能拷贝
+    unique_ptr&lt;int&gt; ptr2 = std::move(ptr1);  // ✅ 转移所有权
+
+    // ptr1现在为空
+    if (!ptr1) {
+        cout &lt;&lt; "ptr1 is null" &lt;&lt; endl;
+    }
+
+    // 数组版本
+    unique_ptr&lt;int[]&gt; arr = make_unique&lt;int[]&gt;(10);
+    arr[0] = 1;
+}
+
+void shared_ptr_demo() {
+    // shared_ptr: 共享所有权（引用计数）
+    shared_ptr&lt;int&gt; ptr1 = make_shared&lt;int&gt;(42);
+    cout &lt;&lt; "Use count: " &lt;&lt; ptr1.use_count() &lt;&lt; endl;  // 1
+
+    {
+        shared_ptr&lt;int&gt; ptr2 = ptr1;  // 引用计数+1
+        cout &lt;&lt; "Use count: " &lt;&lt; ptr1.use_count() &lt;&lt; endl;  // 2
+    }  // ptr2析构，引用计数-1
+
+    cout &lt;&lt; "Use count: " &lt;&lt; ptr1.use_count() &lt;&lt; endl;  // 1
+}
+
+void weak_ptr_demo() {
+    // weak_ptr: 弱引用，不增加引用计数
+    shared_ptr&lt;int&gt; shared = make_shared&lt;int&gt;(42);
+    weak_ptr&lt;int&gt; weak = shared;
+
+    cout &lt;&lt; "Shared count: " &lt;&lt; shared.use_count() &lt;&lt; endl;  // 1
+
+    // 使用weak_ptr访问对象
+    if (auto locked = weak.lock()) {
+        cout &lt;&lt; *locked &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "Object has been destroyed" &lt;&lt; endl;
+    }
+}
+
+// 实战：解决循环引用
+class Node {
+public:
+    shared_ptr&lt;Node&gt; next;
+    weak_ptr&lt;Node&gt; prev;  // 使用weak_ptr避免循环引用
+    int data;
+
+    Node(int d) : data(d) {}
+    ~Node() { cout &lt;&lt; "Node " &lt;&lt; data &lt;&lt; " destroyed" &lt;&lt; endl; }
+};
+
+void circular_reference_demo() {
+    auto node1 = make_shared&lt;Node&gt;(1);
+    auto node2 = make_shared&lt;Node&gt;(2);
+
+    node1-&gt;next = node2;
+    node2-&gt;prev = node1;  // weak_ptr不会增加引用计数
+
+    // 正常析构，不会内存泄漏
+}
+</code></pre>
+<h4 id="512-raii模式"><a class="header" href="#512-raii模式">5.1.2 RAII模式</a></h4>
+<pre><code class="language-cpp">// 资源获取即初始化
+class FileHandler {
+private:
+    FILE* file;
+
+public:
+    FileHandler(const char* filename, const char* mode) {
+        file = fopen(filename, mode);
+        if (!file) {
+            throw runtime_error("Failed to open file");
+        }
+    }
+
+    ~FileHandler() {
+        if (file) {
+            fclose(file);
+            cout &lt;&lt; "File closed" &lt;&lt; endl;
+        }
+    }
+
+    // 禁止拷贝
+    FileHandler(const FileHandler&amp;) = delete;
+    FileHandler&amp; operator=(const FileHandler&amp;) = delete;
+
+    FILE* get() { return file; }
+};
+
+// 使用示例
+void raii_demo() {
+    try {
+        FileHandler fh("test.txt", "w");
+        fprintf(fh.get(), "Hello, RAII!\n");
+        // 异常安全：即使抛出异常，析构函数也会被调用
+    } catch (const exception&amp; e) {
+        cerr &lt;&lt; e.what() &lt;&lt; endl;
+    }
+    // 文件自动关闭
+}
+</code></pre>
+<h3 id="52-内存管理最佳实践"><a class="header" href="#52-内存管理最佳实践">5.2 内存管理最佳实践</a></h3>
+<pre><code class="language-cpp">// ❌ 常见错误
+void bad_practices() {
+    // 1. 内存泄漏
+    int* ptr = new int(10);
+    // 忘记delete
+
+    // 2. 野指针
+    int* p = new int(10);
+    delete p;
+    *p = 20;  // 使用已释放的内存
+
+    // 3. 重复释放
+    int* q = new int(10);
+    delete q;
+    delete q;  // 重复释放
+}
+
+// ✅ 最佳实践
+void good_practices() {
+    // 1. 使用智能指针
+    auto ptr = make_unique&lt;int&gt;(10);
+    // 自动释放
+
+    // 2. 使用容器代替原始数组
+    vector&lt;int&gt; vec(10);
+    // 自动管理内存
+
+    // 3. 使用RAII管理资源
+    {
+        lock_guard&lt;mutex&gt; lock(mtx);  // RAII锁
+        // 临界区代码
+    }  // 自动解锁
+}
+</code></pre>
+<hr />
+<h2 id="第六模块并发编程"><a class="header" href="#第六模块并发编程">第六模块：并发编程</a></h2>
+<h3 id="61-多线程基础"><a class="header" href="#61-多线程基础">6.1 多线程基础</a></h3>
+<pre><code class="language-cpp">#include &lt;thread&gt;
+#include &lt;mutex&gt;
+#include &lt;condition_variable&gt;
+
+// 基础线程创建
+void thread_function(int id) {
+    cout &lt;&lt; "Thread " &lt;&lt; id &lt;&lt; " running" &lt;&lt; endl;
+    this_thread::sleep_for(chrono::seconds(1));
+}
+
+void basic_thread_demo() {
+    thread t1(thread_function, 1);
+    thread t2(thread_function, 2);
+
+    t1.join();  // 等待t1完成
+    t2.join();  // 等待t2完成
+
+    // 使用Lambda
+    thread t3([](){ cout &lt;&lt; "Lambda thread" &lt;&lt; endl; });
+    t3.join();
+}
+
+// 互斥锁
+mutex mtx;
+int shared_counter = 0;
+
+void increment_counter() {
+    for (int i = 0; i &lt; 1000; ++i) {
+        lock_guard&lt;mutex&gt; lock(mtx);  // RAII锁
+        ++shared_counter;
+    }
+}
+
+void mutex_demo() {
+    thread t1(increment_counter);
+    thread t2(increment_counter);
+
+    t1.join();
+    t2.join();
+
+    cout &lt;&lt; "Counter: " &lt;&lt; shared_counter &lt;&lt; endl;  // 2000
+}
+
+// 条件变量：生产者-消费者
+queue&lt;int&gt; data_queue;
+mutex queue_mutex;
+condition_variable cv;
+
+void producer() {
+    for (int i = 0; i &lt; 10; ++i) {
+        this_thread::sleep_for(chrono::milliseconds(100));
+
+        lock_guard&lt;mutex&gt; lock(queue_mutex);
+        data_queue.push(i);
+        cout &lt;&lt; "Produced: " &lt;&lt; i &lt;&lt; endl;
+        cv.notify_one();  // 通知消费者
+    }
+}
+
+void consumer() {
+    while (true) {
+        unique_lock&lt;mutex&gt; lock(queue_mutex);
+        cv.wait(lock, []{ return !data_queue.empty(); });
+
+        int value = data_queue.front();
+        data_queue.pop();
+        lock.unlock();
+
+        cout &lt;&lt; "Consumed: " &lt;&lt; value &lt;&lt; endl;
+
+        if (value == 9) break;
+    }
+}
+
+void producer_consumer_demo() {
+    thread prod(producer);
+    thread cons(consumer);
+
+    prod.join();
+    cons.join();
+}
+</code></pre>
+<h3 id="62-异步编程"><a class="header" href="#62-异步编程">6.2 异步编程</a></h3>
+<pre><code class="language-cpp">#include &lt;future&gt;
+
+// async: 异步执行函数
+int async_task(int x) {
+    this_thread::sleep_for(chrono::seconds(2));
+    return x * x;
+}
+
+void async_demo() {
+    // 启动异步任务
+    future&lt;int&gt; result = async(launch::async, async_task, 10);
+
+    cout &lt;&lt; "Doing other work..." &lt;&lt; endl;
+
+    // 获取结果（阻塞）
+    cout &lt;&lt; "Result: " &lt;&lt; result.get() &lt;&lt; endl;
+}
+
+// promise: 手动设置异步结果
+void promise_demo() {
+    promise&lt;int&gt; prom;
+    future&lt;int&gt; fut = prom.get_future();
+
+    thread t([](promise&lt;int&gt; p) {
+        this_thread::sleep_for(chrono::seconds(1));
+        p.set_value(42);  // 设置结果
+    }, std::move(prom));
+
+    cout &lt;&lt; "Waiting for result..." &lt;&lt; endl;
+    cout &lt;&lt; "Result: " &lt;&lt; fut.get() &lt;&lt; endl;
+
+    t.join();
+}
+</code></pre>
+<h3 id="63-原子操作"><a class="header" href="#63-原子操作">6.3 原子操作</a></h3>
+<pre><code class="language-cpp">#include &lt;atomic&gt;
+
+atomic&lt;int&gt; atomic_counter(0);
+
+void atomic_increment() {
+    for (int i = 0; i &lt; 1000; ++i) {
+        ++atomic_counter;  // 原子操作，无需锁
+    }
+}
+
+void atomic_demo() {
+    thread t1(atomic_increment);
+    thread t2(atomic_increment);
+
+    t1.join();
+    t2.join();
+
+    cout &lt;&lt; "Atomic counter: " &lt;&lt; atomic_counter &lt;&lt; endl;  // 2000
+}
+</code></pre>
+<hr />
+<h2 id="学习验证标准"><a class="header" href="#学习验证标准">学习验证标准</a></h2>
+<h3 id="基础验证week-1-4"><a class="header" href="#基础验证week-1-4">基础验证（Week 1-4）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+掌握auto、引用、Lambda表达式</li>
+<li><input disabled="" type="checkbox"/>
+能够设计和实现类（构造、析构、拷贝、移动）</li>
+<li><input disabled="" type="checkbox"/>
+理解虚函数和多态机制</li>
+<li><input disabled="" type="checkbox"/>
+熟练使用运算符重载</li>
+</ul>
+<h3 id="stl验证week-5-6"><a class="header" href="#stl验证week-5-6">STL验证（Week 5-6）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+熟练使用vector、map、set等容器</li>
+<li><input disabled="" type="checkbox"/>
+能够使用STL算法解决实际问题</li>
+<li><input disabled="" type="checkbox"/>
+理解迭代器概念</li>
+</ul>
+<h3 id="模板验证week-7-8"><a class="header" href="#模板验证week-7-8">模板验证（Week 7-8）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+编写函数模板和类模板</li>
+<li><input disabled="" type="checkbox"/>
+理解模板特化</li>
+<li><input disabled="" type="checkbox"/>
+使用变参模板</li>
+</ul>
+<h3 id="内存验证week-9-10"><a class="header" href="#内存验证week-9-10">内存验证（Week 9-10）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+正确使用智能指针</li>
+<li><input disabled="" type="checkbox"/>
+理解RAII原则</li>
+<li><input disabled="" type="checkbox"/>
+避免内存泄漏和悬空指针</li>
+</ul>
+<h3 id="并发验证week-11-12"><a class="header" href="#并发验证week-11-12">并发验证（Week 11-12）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+创建和管理多线程</li>
+<li><input disabled="" type="checkbox"/>
+正确使用互斥锁和条件变量</li>
+<li><input disabled="" type="checkbox"/>
+理解原子操作</li>
+</ul>
+<h3 id="综合项目验证week-13-16"><a class="header" href="#综合项目验证week-13-16">综合项目验证（Week 13-16）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+完成包含以下特性的项目：
+<ul>
+<li>OOP设计（继承、多态）</li>
+<li>STL容器和算法</li>
+<li>智能指针管理资源</li>
+<li>多线程并发处理</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="常见错误与解决"><a class="header" href="#常见错误与解决">常见错误与解决</a></h2>
+<h3 id="1-内存错误"><a class="header" href="#1-内存错误">1. 内存错误</a></h3>
+<pre><code class="language-cpp">// ❌ 返回局部变量引用
+int&amp; bad_function() {
+    int x = 10;
+    return x;  // 危险！
+}
+
+// ✅ 返回值或使用static
+int good_function() {
+    int x = 10;
+    return x;
+}
+
+// ❌ 迭代器失效
+vector&lt;int&gt; vec = {1, 2, 3};
+for (auto it = vec.begin(); it != vec.end(); ++it) {
+    vec.push_back(*it);  // ❌ 可能导致迭代器失效
+}
+
+// ✅ 正确做法
+vector&lt;int&gt; vec = {1, 2, 3};
+size_t size = vec.size();
+for (size_t i = 0; i &lt; size; ++i) {
+    vec.push_back(vec[i]);
+}
+</code></pre>
+<h3 id="2-多线程错误"><a class="header" href="#2-多线程错误">2. 多线程错误</a></h3>
+<pre><code class="language-cpp">// ❌ 忘记加锁
+int counter = 0;
+void increment() {
+    ++counter;  // 竞争条件
+}
+
+// ✅ 使用互斥锁或原子操作
+mutex mtx;
+void safe_increment() {
+    lock_guard&lt;mutex&gt; lock(mtx);
+    ++counter;
+}
+</code></pre>
+<hr />
+<h2 id="推荐学习资源"><a class="header" href="#推荐学习资源">推荐学习资源</a></h2>
+<h3 id="书籍"><a class="header" href="#书籍">书籍</a></h3>
+<ol>
+<li><strong>《C++ Primer》</strong> - Stanley Lippman（入门经典）</li>
+<li><strong>《Effective Modern C++》</strong> - Scott Meyers（现代C++最佳实践）</li>
+<li><strong>《深度探索C++对象模型》</strong> - Stanley Lippman</li>
+</ol>
+<h3 id="在线资源"><a class="header" href="#在线资源">在线资源</a></h3>
+<ul>
+<li>cppreference.com（权威参考）</li>
+<li>learncpp.com（系统教程）</li>
+<li>CppCon视频（前沿技术）</li>
+</ul>
+<h3 id="实践项目"><a class="header" href="#实践项目">实践项目</a></h3>
+<ol>
+<li><strong>命令行工具</strong>: 文件管理、日志分析</li>
+<li><strong>多线程下载器</strong>: 网络编程+并发</li>
+<li><strong>简易数据库</strong>: STL容器+文件I/O</li>
+<li><strong>游戏引擎</strong>: OOP+模板+性能优化</li>
+</ol>
+<hr />
+<p><strong>学习建议</strong>:</p>
+<ol>
+<li>每天编写代码，动手实践</li>
+<li>阅读优秀开源项目源码</li>
+<li>参与代码审查和讨论</li>
+<li>关注C++新标准发展</li>
+<li>重视代码质量和性能优化</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/00-LinuxC.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/02-QT.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/00-LinuxC.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/02-QT.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

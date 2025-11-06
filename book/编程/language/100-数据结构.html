@@ -1,0 +1,1946 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>数据结构完整学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="数据结构完整学习笔记"><a class="header" href="#数据结构完整学习笔记">数据结构完整学习笔记</a></h1>
+<h2 id="学习目标定位"><a class="header" href="#学习目标定位">学习目标定位</a></h2>
+<ul>
+<li><strong>目标群体</strong>: 计算机专业学生、准备技术面试的开发者</li>
+<li><strong>学习周期</strong>: 8-12周</li>
+<li><strong>前置要求</strong>: 基础编程能力（Python/Java/C++）</li>
+<li><strong>学习成果</strong>: 掌握常用数据结构，能够分析算法复杂度，解决实际问题</li>
+</ul>
+<h2 id="学习路径"><a class="header" href="#学习路径">学习路径</a></h2>
+<pre><code>基础数据结构(Week 1-2) → 线性结构(Week 3-4) → 树结构(Week 5-6)
+→ 图结构(Week 7-8) → 高级数据结构(Week 9-10) → 算法综合(Week 11-12)
+</code></pre>
+<hr />
+<h2 id="第一模块基础数据结构"><a class="header" href="#第一模块基础数据结构">第一模块：基础数据结构</a></h2>
+<h3 id="11-数组array"><a class="header" href="#11-数组array">1.1 数组(Array)</a></h3>
+<h4 id="概念与特点"><a class="header" href="#概念与特点">概念与特点</a></h4>
+<ul>
+<li><strong>定义</strong>: 存储相同类型元素的连续内存空间</li>
+<li><strong>特点</strong>: 随机访问O(1)，插入删除O(n)</li>
+<li><strong>优势</strong>: 访问速度快，缓存友好</li>
+<li><strong>劣势</strong>: 大小固定，插入删除效率低</li>
+</ul>
+<h4 id="python实现"><a class="header" href="#python实现">Python实现</a></h4>
+<pre><code class="language-python"># 一维数组基础操作
+class Array:
+    def __init__(self, capacity=10):
+        self.data = [None] * capacity
+        self.size = 0
+        self.capacity = capacity
+
+    def __len__(self):
+        return self.size
+
+    def __getitem__(self, index):
+        if not 0 &lt;= index &lt; self.size:
+            raise IndexError("Index out of range")
+        return self.data[index]
+
+    def __setitem__(self, index, value):
+        if not 0 &lt;= index &lt; self.size:
+            raise IndexError("Index out of range")
+        self.data[index] = value
+
+    def append(self, value):
+        """尾部添加元素 - O(1)"""
+        if self.size == self.capacity:
+            self._resize(self.capacity * 2)
+        self.data[self.size] = value
+        self.size += 1
+
+    def insert(self, index, value):
+        """指定位置插入 - O(n)"""
+        if not 0 &lt;= index &lt;= self.size:
+            raise IndexError("Index out of range")
+
+        if self.size == self.capacity:
+            self._resize(self.capacity * 2)
+
+        # 移动元素
+        for i in range(self.size, index, -1):
+            self.data[i] = self.data[i-1]
+
+        self.data[index] = value
+        self.size += 1
+
+    def remove(self, index):
+        """删除指定位置元素 - O(n)"""
+        if not 0 &lt;= index &lt; self.size:
+            raise IndexError("Index out of range")
+
+        value = self.data[index]
+
+        # 移动元素
+        for i in range(index, self.size - 1):
+            self.data[i] = self.data[i+1]
+
+        self.size -= 1
+        self.data[self.size] = None
+
+        # 缩容
+        if self.size &lt; self.capacity // 4 and self.capacity &gt; 10:
+            self._resize(self.capacity // 2)
+
+        return value
+
+    def _resize(self, new_capacity):
+        """动态扩容/缩容"""
+        new_data = [None] * new_capacity
+        for i in range(self.size):
+            new_data[i] = self.data[i]
+        self.data = new_data
+        self.capacity = new_capacity
+
+    def find(self, value):
+        """查找元素 - O(n)"""
+        for i in range(self.size):
+            if self.data[i] == value:
+                return i
+        return -1
+
+# 使用示例
+arr = Array()
+arr.append(1)
+arr.append(2)
+arr.append(3)
+arr.insert(1, 10)  # [1, 10, 2, 3]
+print(arr[1])  # 10
+arr.remove(1)  # [1, 2, 3]
+</code></pre>
+<h4 id="多维数组"><a class="header" href="#多维数组">多维数组</a></h4>
+<pre><code class="language-python"># 二维数组（矩阵）操作
+def create_matrix(rows, cols, default=0):
+    """创建矩阵"""
+    return [[default for _ in range(cols)] for _ in range(rows)]
+
+def transpose(matrix):
+    """矩阵转置"""
+    rows = len(matrix)
+    cols = len(matrix[0])
+    result = create_matrix(cols, rows)
+
+    for i in range(rows):
+        for j in range(cols):
+            result[j][i] = matrix[i][j]
+
+    return result
+
+def matrix_multiply(A, B):
+    """矩阵乘法"""
+    rows_a, cols_a = len(A), len(A[0])
+    rows_b, cols_b = len(B), len(B[0])
+
+    if cols_a != rows_b:
+        raise ValueError("矩阵维度不匹配")
+
+    result = create_matrix(rows_a, cols_b)
+
+    for i in range(rows_a):
+        for j in range(cols_b):
+            for k in range(cols_a):
+                result[i][j] += A[i][k] * B[k][j]
+
+    return result
+
+# 使用示例
+matrix = [[1, 2, 3],
+          [4, 5, 6]]
+
+transposed = transpose(matrix)
+# [[1, 4],
+#  [2, 5],
+#  [3, 6]]
+</code></pre>
+<h3 id="12-字符串string"><a class="header" href="#12-字符串string">1.2 字符串(String)</a></h3>
+<h4 id="常用字符串算法"><a class="header" href="#常用字符串算法">常用字符串算法</a></h4>
+<pre><code class="language-python"># 1. KMP字符串匹配算法
+def kmp_search(text, pattern):
+    """KMP算法 - O(n+m)"""
+    if not pattern:
+        return 0
+
+    # 构建next数组（部分匹配表）
+    def build_next(pattern):
+        m = len(pattern)
+        next_arr = [0] * m
+        j = 0
+
+        for i in range(1, m):
+            while j &gt; 0 and pattern[i] != pattern[j]:
+                j = next_arr[j-1]
+
+            if pattern[i] == pattern[j]:
+                j += 1
+
+            next_arr[i] = j
+
+        return next_arr
+
+    next_arr = build_next(pattern)
+    n, m = len(text), len(pattern)
+    j = 0
+
+    for i in range(n):
+        while j &gt; 0 and text[i] != pattern[j]:
+            j = next_arr[j-1]
+
+        if text[i] == pattern[j]:
+            j += 1
+
+        if j == m:
+            return i - m + 1  # 找到匹配
+
+    return -1  # 未找到
+
+# 2. 最长公共子串
+def longest_common_substring(s1, s2):
+    """动态规划 - O(mn)"""
+    m, n = len(s1), len(s2)
+    dp = [[0] * (n + 1) for _ in range(m + 1)]
+    max_len = 0
+    end_pos = 0
+
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if s1[i-1] == s2[j-1]:
+                dp[i][j] = dp[i-1][j-1] + 1
+                if dp[i][j] &gt; max_len:
+                    max_len = dp[i][j]
+                    end_pos = i
+
+    return s1[end_pos - max_len:end_pos]
+
+# 3. 字符串反转（各种方式）
+def reverse_string(s):
+    # 方式1: Python切片
+    return s[::-1]
+
+    # 方式2: 双指针
+    chars = list(s)
+    left, right = 0, len(chars) - 1
+    while left &lt; right:
+        chars[left], chars[right] = chars[right], chars[left]
+        left += 1
+        right -= 1
+    return ''.join(chars)
+
+# 4. 回文串判断
+def is_palindrome(s):
+    """双指针 - O(n)"""
+    left, right = 0, len(s) - 1
+    while left &lt; right:
+        if s[left] != s[right]:
+            return False
+        left += 1
+        right -= 1
+    return True
+
+# 使用示例
+print(kmp_search("hello world", "world"))  # 6
+print(longest_common_substring("abcde", "ace"))  # "a" 或 "c" 或 "e"
+print(is_palindrome("racecar"))  # True
+</code></pre>
+<h3 id="13-链表linked-list"><a class="header" href="#13-链表linked-list">1.3 链表(Linked List)</a></h3>
+<h4 id="单链表实现"><a class="header" href="#单链表实现">单链表实现</a></h4>
+<pre><code class="language-python">class ListNode:
+    """链表节点"""
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class LinkedList:
+    """单链表"""
+    def __init__(self):
+        self.head = None
+        self.size = 0
+
+    def __len__(self):
+        return self.size
+
+    def is_empty(self):
+        return self.size == 0
+
+    def append(self, val):
+        """尾部添加 - O(n)"""
+        new_node = ListNode(val)
+
+        if not self.head:
+            self.head = new_node
+        else:
+            current = self.head
+            while current.next:
+                current = current.next
+            current.next = new_node
+
+        self.size += 1
+
+    def prepend(self, val):
+        """头部添加 - O(1)"""
+        new_node = ListNode(val)
+        new_node.next = self.head
+        self.head = new_node
+        self.size += 1
+
+    def insert(self, index, val):
+        """指定位置插入 - O(n)"""
+        if index &lt; 0 or index &gt; self.size:
+            raise IndexError("Index out of range")
+
+        if index == 0:
+            self.prepend(val)
+            return
+
+        new_node = ListNode(val)
+        current = self.head
+
+        for _ in range(index - 1):
+            current = current.next
+
+        new_node.next = current.next
+        current.next = new_node
+        self.size += 1
+
+    def remove(self, val):
+        """删除首个匹配值 - O(n)"""
+        if not self.head:
+            return False
+
+        if self.head.val == val:
+            self.head = self.head.next
+            self.size -= 1
+            return True
+
+        current = self.head
+        while current.next:
+            if current.next.val == val:
+                current.next = current.next.next
+                self.size -= 1
+                return True
+            current = current.next
+
+        return False
+
+    def reverse(self):
+        """反转链表 - O(n)"""
+        prev = None
+        current = self.head
+
+        while current:
+            next_node = current.next
+            current.next = prev
+            prev = current
+            current = next_node
+
+        self.head = prev
+
+    def get_middle(self):
+        """获取中间节点（快慢指针）- O(n)"""
+        if not self.head:
+            return None
+
+        slow = fast = self.head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+
+        return slow.val
+
+    def has_cycle(self):
+        """检测环（Floyd判圈算法）- O(n)"""
+        if not self.head:
+            return False
+
+        slow = fast = self.head
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            if slow == fast:
+                return True
+
+        return False
+
+    def to_list(self):
+        """转换为Python列表"""
+        result = []
+        current = self.head
+        while current:
+            result.append(current.val)
+            current = current.next
+        return result
+
+# 使用示例
+ll = LinkedList()
+ll.append(1)
+ll.append(2)
+ll.append(3)
+ll.prepend(0)  # [0, 1, 2, 3]
+ll.insert(2, 99)  # [0, 1, 99, 2, 3]
+ll.reverse()  # [3, 2, 99, 1, 0]
+print(ll.to_list())
+</code></pre>
+<h4 id="双链表实现"><a class="header" href="#双链表实现">双链表实现</a></h4>
+<pre><code class="language-python">class DNode:
+    """双向链表节点"""
+    def __init__(self, val=0, prev=None, next=None):
+        self.val = val
+        self.prev = prev
+        self.next = next
+
+class DoublyLinkedList:
+    """双向链表"""
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.size = 0
+
+    def append(self, val):
+        """尾部添加 - O(1)"""
+        new_node = DNode(val)
+
+        if not self.head:
+            self.head = self.tail = new_node
+        else:
+            new_node.prev = self.tail
+            self.tail.next = new_node
+            self.tail = new_node
+
+        self.size += 1
+
+    def prepend(self, val):
+        """头部添加 - O(1)"""
+        new_node = DNode(val)
+
+        if not self.head:
+            self.head = self.tail = new_node
+        else:
+            new_node.next = self.head
+            self.head.prev = new_node
+            self.head = new_node
+
+        self.size += 1
+
+    def remove(self, val):
+        """删除节点 - O(n)"""
+        current = self.head
+
+        while current:
+            if current.val == val:
+                if current.prev:
+                    current.prev.next = current.next
+                else:
+                    self.head = current.next
+
+                if current.next:
+                    current.next.prev = current.prev
+                else:
+                    self.tail = current.prev
+
+                self.size -= 1
+                return True
+
+            current = current.next
+
+        return False
+</code></pre>
+<hr />
+<h2 id="第二模块线性数据结构"><a class="header" href="#第二模块线性数据结构">第二模块：线性数据结构</a></h2>
+<h3 id="21-栈stack"><a class="header" href="#21-栈stack">2.1 栈(Stack)</a></h3>
+<h4 id="栈的概念"><a class="header" href="#栈的概念">栈的概念</a></h4>
+<ul>
+<li><strong>特点</strong>: 后进先出(LIFO - Last In First Out)</li>
+<li><strong>操作</strong>: push(入栈), pop(出栈), peek(查看栈顶), is_empty(判空)</li>
+<li><strong>应用</strong>: 函数调用栈、表达式求值、括号匹配、浏览器历史</li>
+</ul>
+<h4 id="python实现-1"><a class="header" href="#python实现-1">Python实现</a></h4>
+<pre><code class="language-python"># 方式1: 基于列表
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def push(self, item):
+        """入栈 - O(1)"""
+        self.items.append(item)
+
+    def pop(self):
+        """出栈 - O(1)"""
+        if self.is_empty():
+            raise IndexError("Stack is empty")
+        return self.items.pop()
+
+    def peek(self):
+        """查看栈顶 - O(1)"""
+        if self.is_empty():
+            raise IndexError("Stack is empty")
+        return self.items[-1]
+
+    def is_empty(self):
+        return len(self.items) == 0
+
+    def size(self):
+        return len(self.items)
+
+# 方式2: 基于链表
+class StackNode:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+
+class LinkedStack:
+    def __init__(self):
+        self.top = None
+        self._size = 0
+
+    def push(self, val):
+        """入栈 - O(1)"""
+        self.top = StackNode(val, self.top)
+        self._size += 1
+
+    def pop(self):
+        """出栈 - O(1)"""
+        if self.is_empty():
+            raise IndexError("Stack is empty")
+        val = self.top.val
+        self.top = self.top.next
+        self._size -= 1
+        return val
+
+    def peek(self):
+        if self.is_empty():
+            raise IndexError("Stack is empty")
+        return self.top.val
+
+    def is_empty(self):
+        return self.top is None
+
+    def size(self):
+        return self._size
+</code></pre>
+<h4 id="栈的经典应用"><a class="header" href="#栈的经典应用">栈的经典应用</a></h4>
+<pre><code class="language-python"># 1. 括号匹配
+def is_valid_parentheses(s):
+    """检查括号是否匹配 - O(n)"""
+    stack = []
+    pairs = {'(': ')', '[': ']', '{': '}'}
+
+    for char in s:
+        if char in pairs:
+            stack.append(char)
+        elif char in pairs.values():
+            if not stack or pairs[stack.pop()] != char:
+                return False
+
+    return len(stack) == 0
+
+# 2. 逆波兰表达式求值
+def eval_rpn(tokens):
+    """后缀表达式求值 - O(n)"""
+    stack = []
+
+    for token in tokens:
+        if token in ['+', '-', '*', '/']:
+            b = stack.pop()
+            a = stack.pop()
+
+            if token == '+':
+                stack.append(a + b)
+            elif token == '-':
+                stack.append(a - b)
+            elif token == '*':
+                stack.append(a * b)
+            else:
+                stack.append(int(a / b))
+        else:
+            stack.append(int(token))
+
+    return stack[0]
+
+# 3. 简化路径（Unix风格）
+def simplify_path(path):
+    """简化文件路径 - O(n)"""
+    stack = []
+
+    for part in path.split('/'):
+        if part == '..':
+            if stack:
+                stack.pop()
+        elif part and part != '.':
+            stack.append(part)
+
+    return '/' + '/'.join(stack)
+
+# 使用示例
+print(is_valid_parentheses("()[]{}"))  # True
+print(eval_rpn(["2", "1", "+", "3", "*"]))  # 9 ((2+1)*3)
+print(simplify_path("/a/./b/../../c/"))  # "/c"
+</code></pre>
+<h3 id="22-队列queue"><a class="header" href="#22-队列queue">2.2 队列(Queue)</a></h3>
+<h4 id="队列的概念"><a class="header" href="#队列的概念">队列的概念</a></h4>
+<ul>
+<li><strong>特点</strong>: 先进先出(FIFO - First In First Out)</li>
+<li><strong>操作</strong>: enqueue(入队), dequeue(出队), front(查看队首)</li>
+<li><strong>应用</strong>: BFS遍历、任务调度、消息队列</li>
+</ul>
+<h4 id="python实现-2"><a class="header" href="#python实现-2">Python实现</a></h4>
+<pre><code class="language-python"># 1. 普通队列（基于列表）
+class Queue:
+    def __init__(self):
+        self.items = []
+
+    def enqueue(self, item):
+        """入队 - O(1)"""
+        self.items.append(item)
+
+    def dequeue(self):
+        """出队 - O(n)"""
+        if self.is_empty():
+            raise IndexError("Queue is empty")
+        return self.items.pop(0)
+
+    def front(self):
+        if self.is_empty():
+            raise IndexError("Queue is empty")
+        return self.items[0]
+
+    def is_empty(self):
+        return len(self.items) == 0
+
+    def size(self):
+        return len(self.items)
+
+# 2. 循环队列（高效实现）
+class CircularQueue:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.items = [None] * capacity
+        self.front_idx = 0
+        self.rear_idx = -1
+        self.count = 0
+
+    def enqueue(self, item):
+        """入队 - O(1)"""
+        if self.is_full():
+            raise OverflowError("Queue is full")
+
+        self.rear_idx = (self.rear_idx + 1) % self.capacity
+        self.items[self.rear_idx] = item
+        self.count += 1
+
+    def dequeue(self):
+        """出队 - O(1)"""
+        if self.is_empty():
+            raise IndexError("Queue is empty")
+
+        item = self.items[self.front_idx]
+        self.front_idx = (self.front_idx + 1) % self.capacity
+        self.count -= 1
+        return item
+
+    def is_empty(self):
+        return self.count == 0
+
+    def is_full(self):
+        return self.count == self.capacity
+
+# 3. 双端队列（使用collections.deque）
+from collections import deque
+
+class Deque:
+    def __init__(self):
+        self.items = deque()
+
+    def add_front(self, item):
+        """前端添加 - O(1)"""
+        self.items.appendleft(item)
+
+    def add_rear(self, item):
+        """后端添加 - O(1)"""
+        self.items.append(item)
+
+    def remove_front(self):
+        """前端移除 - O(1)"""
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.items.popleft()
+
+    def remove_rear(self):
+        """后端移除 - O(1)"""
+        if self.is_empty():
+            raise IndexError("Deque is empty")
+        return self.items.pop()
+
+    def is_empty(self):
+        return len(self.items) == 0
+
+# 4. 优先队列（基于堆）
+import heapq
+
+class PriorityQueue:
+    def __init__(self):
+        self.heap = []
+        self.count = 0
+
+    def push(self, item, priority):
+        """入队（优先级越小越优先）- O(log n)"""
+        heapq.heappush(self.heap, (priority, self.count, item))
+        self.count += 1
+
+    def pop(self):
+        """出队 - O(log n)"""
+        if self.is_empty():
+            raise IndexError("PriorityQueue is empty")
+        return heapq.heappop(self.heap)[2]
+
+    def is_empty(self):
+        return len(self.heap) == 0
+
+# 使用示例
+pq = PriorityQueue()
+pq.push("task1", priority=3)
+pq.push("task2", priority=1)
+pq.push("task3", priority=2)
+print(pq.pop())  # task2 (优先级最高)
+print(pq.pop())  # task3
+</code></pre>
+<h4 id="队列的经典应用"><a class="header" href="#队列的经典应用">队列的经典应用</a></h4>
+<pre><code class="language-python"># 1. 滑动窗口最大值
+def max_sliding_window(nums, k):
+    """单调队列 - O(n)"""
+    from collections import deque
+
+    dq = deque()  # 存储下标
+    result = []
+
+    for i, num in enumerate(nums):
+        # 移除超出窗口的元素
+        if dq and dq[0] &lt; i - k + 1:
+            dq.popleft()
+
+        # 移除比当前元素小的元素
+        while dq and nums[dq[-1]] &lt; num:
+            dq.pop()
+
+        dq.append(i)
+
+        # 窗口形成后记录最大值
+        if i &gt;= k - 1:
+            result.append(nums[dq[0]])
+
+    return result
+
+# 使用示例
+print(max_sliding_window([1,3,-1,-3,5,3,6,7], 3))  # [3,3,5,5,6,7]
+</code></pre>
+<hr />
+<h2 id="第三模块树结构"><a class="header" href="#第三模块树结构">第三模块：树结构</a></h2>
+<h3 id="31-二叉树binary-tree"><a class="header" href="#31-二叉树binary-tree">3.1 二叉树(Binary Tree)</a></h3>
+<h4 id="二叉树节点定义"><a class="header" href="#二叉树节点定义">二叉树节点定义</a></h4>
+<pre><code class="language-python">class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+</code></pre>
+<h4 id="二叉树遍历"><a class="header" href="#二叉树遍历">二叉树遍历</a></h4>
+<pre><code class="language-python"># 1. 前序遍历（根-左-右）
+def preorder_traversal(root):
+    """递归 - O(n)"""
+    result = []
+
+    def traverse(node):
+        if not node:
+            return
+        result.append(node.val)
+        traverse(node.left)
+        traverse(node.right)
+
+    traverse(root)
+    return result
+
+def preorder_iterative(root):
+    """迭代（使用栈）- O(n)"""
+    if not root:
+        return []
+
+    result = []
+    stack = [root]
+
+    while stack:
+        node = stack.pop()
+        result.append(node.val)
+
+        if node.right:
+            stack.append(node.right)
+        if node.left:
+            stack.append(node.left)
+
+    return result
+
+# 2. 中序遍历（左-根-右）
+def inorder_traversal(root):
+    """递归 - O(n)"""
+    result = []
+
+    def traverse(node):
+        if not node:
+            return
+        traverse(node.left)
+        result.append(node.val)
+        traverse(node.right)
+
+    traverse(root)
+    return result
+
+def inorder_iterative(root):
+    """迭代 - O(n)"""
+    result = []
+    stack = []
+    current = root
+
+    while current or stack:
+        while current:
+            stack.append(current)
+            current = current.left
+
+        current = stack.pop()
+        result.append(current.val)
+        current = current.right
+
+    return result
+
+# 3. 后序遍历（左-右-根）
+def postorder_traversal(root):
+    """递归 - O(n)"""
+    result = []
+
+    def traverse(node):
+        if not node:
+            return
+        traverse(node.left)
+        traverse(node.right)
+        result.append(node.val)
+
+    traverse(root)
+    return result
+
+# 4. 层序遍历（BFS）
+def level_order_traversal(root):
+    """广度优先 - O(n)"""
+    if not root:
+        return []
+
+    from collections import deque
+    result = []
+    queue = deque([root])
+
+    while queue:
+        level_size = len(queue)
+        level = []
+
+        for _ in range(level_size):
+            node = queue.popleft()
+            level.append(node.val)
+
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+
+        result.append(level)
+
+    return result
+</code></pre>
+<h4 id="二叉树常见操作"><a class="header" href="#二叉树常见操作">二叉树常见操作</a></h4>
+<pre><code class="language-python"># 1. 计算树的深度
+def max_depth(root):
+    """递归 - O(n)"""
+    if not root:
+        return 0
+    return 1 + max(max_depth(root.left), max_depth(root.right))
+
+# 2. 判断是否为平衡二叉树
+def is_balanced(root):
+    """O(n)"""
+    def height(node):
+        if not node:
+            return 0
+
+        left_height = height(node.left)
+        right_height = height(node.right)
+
+        if left_height == -1 or right_height == -1:
+            return -1
+
+        if abs(left_height - right_height) &gt; 1:
+            return -1
+
+        return 1 + max(left_height, right_height)
+
+    return height(root) != -1
+
+# 3. 翻转二叉树
+def invert_tree(root):
+    """递归 - O(n)"""
+    if not root:
+        return None
+
+    root.left, root.right = root.right, root.left
+    invert_tree(root.left)
+    invert_tree(root.right)
+
+    return root
+
+# 4. 二叉树的直径
+def diameter_of_binary_tree(root):
+    """O(n)"""
+    diameter = 0
+
+    def depth(node):
+        nonlocal diameter
+        if not node:
+            return 0
+
+        left = depth(node.left)
+        right = depth(node.right)
+
+        diameter = max(diameter, left + right)
+
+        return 1 + max(left, right)
+
+    depth(root)
+    return diameter
+
+# 5. 最近公共祖先
+def lowest_common_ancestor(root, p, q):
+    """O(n)"""
+    if not root or root == p or root == q:
+        return root
+
+    left = lowest_common_ancestor(root.left, p, q)
+    right = lowest_common_ancestor(root.right, p, q)
+
+    if left and right:
+        return root
+
+    return left if left else right
+</code></pre>
+<h3 id="32-二叉搜索树bst"><a class="header" href="#32-二叉搜索树bst">3.2 二叉搜索树(BST)</a></h3>
+<h4 id="bst实现"><a class="header" href="#bst实现">BST实现</a></h4>
+<pre><code class="language-python">class BST:
+    def __init__(self):
+        self.root = None
+
+    def insert(self, val):
+        """插入节点 - 平均O(log n), 最坏O(n)"""
+        def _insert(node, val):
+            if not node:
+                return TreeNode(val)
+
+            if val &lt; node.val:
+                node.left = _insert(node.left, val)
+            elif val &gt; node.val:
+                node.right = _insert(node.right, val)
+
+            return node
+
+        self.root = _insert(self.root, val)
+
+    def search(self, val):
+        """查找节点 - 平均O(log n), 最坏O(n)"""
+        def _search(node, val):
+            if not node or node.val == val:
+                return node
+
+            if val &lt; node.val:
+                return _search(node.left, val)
+            return _search(node.right, val)
+
+        return _search(self.root, val)
+
+    def delete(self, val):
+        """删除节点 - 平均O(log n), 最坏O(n)"""
+        def _min_node(node):
+            current = node
+            while current.left:
+                current = current.left
+            return current
+
+        def _delete(node, val):
+            if not node:
+                return None
+
+            if val &lt; node.val:
+                node.left = _delete(node.left, val)
+            elif val &gt; node.val:
+                node.right = _delete(node.right, val)
+            else:
+                # 找到要删除的节点
+                if not node.left:
+                    return node.right
+                elif not node.right:
+                    return node.left
+
+                # 节点有两个子节点
+                min_node = _min_node(node.right)
+                node.val = min_node.val
+                node.right = _delete(node.right, min_node.val)
+
+            return node
+
+        self.root = _delete(self.root, val)
+
+    def inorder(self):
+        """中序遍历（有序）"""
+        result = []
+
+        def _inorder(node):
+            if node:
+                _inorder(node.left)
+                result.append(node.val)
+                _inorder(node.right)
+
+        _inorder(self.root)
+        return result
+
+# 使用示例
+bst = BST()
+for val in [5, 3, 7, 2, 4, 6, 8]:
+    bst.insert(val)
+
+print(bst.inorder())  # [2, 3, 4, 5, 6, 7, 8]
+print(bst.search(4) is not None)  # True
+bst.delete(3)
+print(bst.inorder())  # [2, 4, 5, 6, 7, 8]
+</code></pre>
+<h4 id="bst经典问题"><a class="header" href="#bst经典问题">BST经典问题</a></h4>
+<pre><code class="language-python"># 1. 验证二叉搜索树
+def is_valid_bst(root):
+    """O(n)"""
+    def validate(node, min_val, max_val):
+        if not node:
+            return True
+
+        if node.val &lt;= min_val or node.val &gt;= max_val:
+            return False
+
+        return (validate(node.left, min_val, node.val) and
+                validate(node.right, node.val, max_val))
+
+    return validate(root, float('-inf'), float('inf'))
+
+# 2. BST中第K小的元素
+def kth_smallest(root, k):
+    """中序遍历 - O(n)"""
+    result = []
+
+    def inorder(node):
+        if not node or len(result) &gt;= k:
+            return
+
+        inorder(node.left)
+        result.append(node.val)
+        inorder(node.right)
+
+    inorder(root)
+    return result[k-1] if k &lt;= len(result) else None
+</code></pre>
+<h3 id="33-堆heap"><a class="header" href="#33-堆heap">3.3 堆(Heap)</a></h3>
+<h4 id="最小堆实现"><a class="header" href="#最小堆实现">最小堆实现</a></h4>
+<pre><code class="language-python">class MinHeap:
+    def __init__(self):
+        self.heap = []
+
+    def parent(self, i):
+        return (i - 1) // 2
+
+    def left_child(self, i):
+        return 2 * i + 1
+
+    def right_child(self, i):
+        return 2 * i + 2
+
+    def push(self, val):
+        """插入元素 - O(log n)"""
+        self.heap.append(val)
+        self._heapify_up(len(self.heap) - 1)
+
+    def pop(self):
+        """弹出最小元素 - O(log n)"""
+        if not self.heap:
+            raise IndexError("Heap is empty")
+
+        if len(self.heap) == 1:
+            return self.heap.pop()
+
+        root = self.heap[0]
+        self.heap[0] = self.heap.pop()
+        self._heapify_down(0)
+
+        return root
+
+    def peek(self):
+        """查看最小元素 - O(1)"""
+        if not self.heap:
+            raise IndexError("Heap is empty")
+        return self.heap[0]
+
+    def _heapify_up(self, i):
+        """向上调整"""
+        parent = self.parent(i)
+
+        if i &gt; 0 and self.heap[i] &lt; self.heap[parent]:
+            self.heap[i], self.heap[parent] = self.heap[parent], self.heap[i]
+            self._heapify_up(parent)
+
+    def _heapify_down(self, i):
+        """向下调整"""
+        min_idx = i
+        left = self.left_child(i)
+        right = self.right_child(i)
+
+        if left &lt; len(self.heap) and self.heap[left] &lt; self.heap[min_idx]:
+            min_idx = left
+
+        if right &lt; len(self.heap) and self.heap[right] &lt; self.heap[min_idx]:
+            min_idx = right
+
+        if min_idx != i:
+            self.heap[i], self.heap[min_idx] = self.heap[min_idx], self.heap[i]
+            self._heapify_down(min_idx)
+
+# 使用Python的heapq模块
+import heapq
+
+# 最小堆
+min_heap = []
+heapq.heappush(min_heap, 3)
+heapq.heappush(min_heap, 1)
+heapq.heappush(min_heap, 2)
+print(heapq.heappop(min_heap))  # 1
+
+# 最大堆（取负数）
+max_heap = []
+heapq.heappush(max_heap, -3)
+heapq.heappush(max_heap, -1)
+heapq.heappush(max_heap, -2)
+print(-heapq.heappop(max_heap))  # 3
+</code></pre>
+<h4 id="堆的经典应用"><a class="header" href="#堆的经典应用">堆的经典应用</a></h4>
+<pre><code class="language-python"># 1. Top K问题
+def find_kth_largest(nums, k):
+    """找第K大的元素 - O(n log k)"""
+    import heapq
+    min_heap = []
+
+    for num in nums:
+        heapq.heappush(min_heap, num)
+        if len(min_heap) &gt; k:
+            heapq.heappop(min_heap)
+
+    return min_heap[0]
+
+# 2. 合并K个有序链表
+def merge_k_lists(lists):
+    """O(N log k), N为所有节点总数"""
+    import heapq
+
+    heap = []
+    for i, lst in enumerate(lists):
+        if lst:
+            heapq.heappush(heap, (lst.val, i, lst))
+
+    dummy = TreeNode(0)
+    current = dummy
+
+    while heap:
+        val, i, node = heapq.heappop(heap)
+        current.next = node
+        current = current.next
+
+        if node.next:
+            heapq.heappush(heap, (node.next.val, i, node.next))
+
+    return dummy.next
+
+# 3. 数据流的中位数
+class MedianFinder:
+    def __init__(self):
+        self.small = []  # 最大堆（存较小的一半）
+        self.large = []  # 最小堆（存较大的一半）
+
+    def add_num(self, num):
+        """添加数字 - O(log n)"""
+        import heapq
+
+        heapq.heappush(self.small, -num)
+
+        # 平衡两个堆
+        if (self.small and self.large and
+            -self.small[0] &gt; self.large[0]):
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+
+        # 保持大小差不超过1
+        if len(self.small) &gt; len(self.large) + 1:
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+
+        if len(self.large) &gt; len(self.small):
+            val = heapq.heappop(self.large)
+            heapq.heappush(self.small, -val)
+
+    def find_median(self):
+        """获取中位数 - O(1)"""
+        if len(self.small) &gt; len(self.large):
+            return -self.small[0]
+        return (-self.small[0] + self.large[0]) / 2
+</code></pre>
+<hr />
+<h2 id="第四模块图结构"><a class="header" href="#第四模块图结构">第四模块：图结构</a></h2>
+<h3 id="41-图的表示"><a class="header" href="#41-图的表示">4.1 图的表示</a></h3>
+<pre><code class="language-python"># 1. 邻接矩阵
+class GraphMatrix:
+    def __init__(self, num_vertices):
+        self.num_vertices = num_vertices
+        self.matrix = [[0] * num_vertices for _ in range(num_vertices)]
+
+    def add_edge(self, u, v, weight=1):
+        """添加边"""
+        self.matrix[u][v] = weight
+        self.matrix[v][u] = weight  # 无向图
+
+# 2. 邻接表
+class GraphList:
+    def __init__(self):
+        self.graph = {}
+
+    def add_vertex(self, vertex):
+        """添加顶点"""
+        if vertex not in self.graph:
+            self.graph[vertex] = []
+
+    def add_edge(self, u, v, weight=1):
+        """添加边"""
+        if u not in self.graph:
+            self.add_vertex(u)
+        if v not in self.graph:
+            self.add_vertex(v)
+
+        self.graph[u].append((v, weight))
+        self.graph[v].append((u, weight))  # 无向图
+
+    def get_neighbors(self, vertex):
+        """获取邻居"""
+        return self.graph.get(vertex, [])
+</code></pre>
+<h3 id="42-图的遍历"><a class="header" href="#42-图的遍历">4.2 图的遍历</a></h3>
+<pre><code class="language-python"># 1. 深度优先搜索(DFS)
+def dfs(graph, start):
+    """递归DFS - O(V+E)"""
+    visited = set()
+    result = []
+
+    def dfs_helper(vertex):
+        visited.add(vertex)
+        result.append(vertex)
+
+        for neighbor, _ in graph.get_neighbors(vertex):
+            if neighbor not in visited:
+                dfs_helper(neighbor)
+
+    dfs_helper(start)
+    return result
+
+def dfs_iterative(graph, start):
+    """迭代DFS - O(V+E)"""
+    visited = set()
+    result = []
+    stack = [start]
+
+    while stack:
+        vertex = stack.pop()
+
+        if vertex not in visited:
+            visited.add(vertex)
+            result.append(vertex)
+
+            for neighbor, _ in graph.get_neighbors(vertex):
+                if neighbor not in visited:
+                    stack.append(neighbor)
+
+    return result
+
+# 2. 广度优先搜索(BFS)
+def bfs(graph, start):
+    """BFS - O(V+E)"""
+    from collections import deque
+
+    visited = set([start])
+    result = []
+    queue = deque([start])
+
+    while queue:
+        vertex = queue.popleft()
+        result.append(vertex)
+
+        for neighbor, _ in graph.get_neighbors(vertex):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
+
+    return result
+</code></pre>
+<h3 id="43-最短路径算法"><a class="header" href="#43-最短路径算法">4.3 最短路径算法</a></h3>
+<pre><code class="language-python"># 1. Dijkstra算法（单源最短路径）
+def dijkstra(graph, start):
+    """Dijkstra算法 - O((V+E) log V)"""
+    import heapq
+
+    distances = {vertex: float('inf') for vertex in graph.graph}
+    distances[start] = 0
+
+    pq = [(0, start)]
+    visited = set()
+
+    while pq:
+        current_dist, current = heapq.heappop(pq)
+
+        if current in visited:
+            continue
+
+        visited.add(current)
+
+        for neighbor, weight in graph.get_neighbors(current):
+            distance = current_dist + weight
+
+            if distance &lt; distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+
+    return distances
+
+# 2. Floyd-Warshall算法（所有点对最短路径）
+def floyd_warshall(graph, num_vertices):
+    """Floyd-Warshall算法 - O(V^3)"""
+    # 初始化距离矩阵
+    dist = [[float('inf')] * num_vertices for _ in range(num_vertices)]
+
+    for i in range(num_vertices):
+        dist[i][i] = 0
+
+    # 填充已知边
+    for u in graph.graph:
+        for v, weight in graph.graph[u]:
+            dist[u][v] = weight
+
+    # 动态规划
+    for k in range(num_vertices):
+        for i in range(num_vertices):
+            for j in range(num_vertices):
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+    return dist
+
+# 3. Bellman-Ford算法（允许负权边）
+def bellman_ford(graph, start, num_vertices):
+    """Bellman-Ford算法 - O(VE)"""
+    distances = {i: float('inf') for i in range(num_vertices)}
+    distances[start] = 0
+
+    # 松弛V-1次
+    for _ in range(num_vertices - 1):
+        for u in graph.graph:
+            for v, weight in graph.graph[u]:
+                if distances[u] + weight &lt; distances[v]:
+                    distances[v] = distances[u] + weight
+
+    # 检测负权环
+    for u in graph.graph:
+        for v, weight in graph.graph[u]:
+            if distances[u] + weight &lt; distances[v]:
+                return None  # 存在负权环
+
+    return distances
+</code></pre>
+<h3 id="44-拓扑排序"><a class="header" href="#44-拓扑排序">4.4 拓扑排序</a></h3>
+<pre><code class="language-python">def topological_sort(graph):
+    """拓扑排序（Kahn算法）- O(V+E)"""
+    from collections import deque
+
+    # 计算入度
+    in_degree = {vertex: 0 for vertex in graph.graph}
+
+    for vertex in graph.graph:
+        for neighbor, _ in graph.graph[vertex]:
+            in_degree[neighbor] += 1
+
+    # 将入度为0的顶点加入队列
+    queue = deque([v for v in in_degree if in_degree[v] == 0])
+    result = []
+
+    while queue:
+        vertex = queue.popleft()
+        result.append(vertex)
+
+        for neighbor, _ in graph.graph[vertex]:
+            in_degree[neighbor] -= 1
+            if in_degree[neighbor] == 0:
+                queue.append(neighbor)
+
+    # 检测环
+    if len(result) != len(graph.graph):
+        return None  # 存在环
+
+    return result
+</code></pre>
+<hr />
+<h2 id="第五模块高级数据结构"><a class="header" href="#第五模块高级数据结构">第五模块：高级数据结构</a></h2>
+<h3 id="51-并查集union-find"><a class="header" href="#51-并查集union-find">5.1 并查集(Union-Find)</a></h3>
+<pre><code class="language-python">class UnionFind:
+    """并查集（路径压缩 + 按秩合并）"""
+
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+        self.count = n  # 连通分量数
+
+    def find(self, x):
+        """查找根节点（路径压缩）- 平均O(α(n))"""
+        if self.parent[x] != x:
+            self.parent[x] = self.find(self.parent[x])
+        return self.parent[x]
+
+    def union(self, x, y):
+        """合并两个集合（按秩合并）- 平均O(α(n))"""
+        root_x = self.find(x)
+        root_y = self.find(y)
+
+        if root_x == root_y:
+            return False
+
+        if self.rank[root_x] &lt; self.rank[root_y]:
+            self.parent[root_x] = root_y
+        elif self.rank[root_x] &gt; self.rank[root_y]:
+            self.parent[root_y] = root_x
+        else:
+            self.parent[root_y] = root_x
+            self.rank[root_x] += 1
+
+        self.count -= 1
+        return True
+
+    def connected(self, x, y):
+        """判断是否连通 - 平均O(α(n))"""
+        return self.find(x) == self.find(y)
+
+# 应用：求连通分量数
+def count_components(n, edges):
+    """O(Eα(n))"""
+    uf = UnionFind(n)
+
+    for u, v in edges:
+        uf.union(u, v)
+
+    return uf.count
+</code></pre>
+<h3 id="52-字典树trie"><a class="header" href="#52-字典树trie">5.2 字典树(Trie)</a></h3>
+<pre><code class="language-python">class TrieNode:
+    def __init__(self):
+        self.children = {}
+        self.is_end = False
+
+class Trie:
+    """前缀树"""
+
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        """插入单词 - O(m), m为单词长度"""
+        node = self.root
+
+        for char in word:
+            if char not in node.children:
+                node.children[char] = TrieNode()
+            node = node.children[char]
+
+        node.is_end = True
+
+    def search(self, word):
+        """搜索单词 - O(m)"""
+        node = self.root
+
+        for char in word:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+
+        return node.is_end
+
+    def starts_with(self, prefix):
+        """搜索前缀 - O(m)"""
+        node = self.root
+
+        for char in prefix:
+            if char not in node.children:
+                return False
+            node = node.children[char]
+
+        return True
+
+# 使用示例
+trie = Trie()
+trie.insert("apple")
+print(trie.search("apple"))    # True
+print(trie.search("app"))      # False
+print(trie.starts_with("app")) # True
+</code></pre>
+<h3 id="53-lru缓存"><a class="header" href="#53-lru缓存">5.3 LRU缓存</a></h3>
+<pre><code class="language-python">class LRUCache:
+    """最近最少使用缓存"""
+
+    class Node:
+        def __init__(self, key=0, val=0):
+            self.key = key
+            self.val = val
+            self.prev = None
+            self.next = None
+
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.cache = {}  # key -&gt; Node
+
+        # 虚拟头尾节点
+        self.head = self.Node()
+        self.tail = self.Node()
+        self.head.next = self.tail
+        self.tail.prev = self.head
+
+    def get(self, key):
+        """获取值 - O(1)"""
+        if key not in self.cache:
+            return -1
+
+        node = self.cache[key]
+        self._move_to_head(node)
+        return node.val
+
+    def put(self, key, value):
+        """放入键值对 - O(1)"""
+        if key in self.cache:
+            node = self.cache[key]
+            node.val = value
+            self._move_to_head(node)
+        else:
+            node = self.Node(key, value)
+            self.cache[key] = node
+            self._add_to_head(node)
+
+            if len(self.cache) &gt; self.capacity:
+                removed = self._remove_tail()
+                del self.cache[removed.key]
+
+    def _add_to_head(self, node):
+        """添加节点到头部"""
+        node.prev = self.head
+        node.next = self.head.next
+        self.head.next.prev = node
+        self.head.next = node
+
+    def _remove_node(self, node):
+        """移除节点"""
+        node.prev.next = node.next
+        node.next.prev = node.prev
+
+    def _move_to_head(self, node):
+        """移动节点到头部"""
+        self._remove_node(node)
+        self._add_to_head(node)
+
+    def _remove_tail(self):
+        """移除尾部节点"""
+        node = self.tail.prev
+        self._remove_node(node)
+        return node
+
+# 使用示例
+cache = LRUCache(2)
+cache.put(1, 1)
+cache.put(2, 2)
+print(cache.get(1))  # 1
+cache.put(3, 3)      # 移除key=2
+print(cache.get(2))  # -1
+</code></pre>
+<hr />
+<h2 id="第六模块算法复杂度分析"><a class="header" href="#第六模块算法复杂度分析">第六模块：算法复杂度分析</a></h2>
+<h3 id="61-时间复杂度对比"><a class="header" href="#61-时间复杂度对比">6.1 时间复杂度对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>复杂度</th><th>名称</th><th>示例算法</th></tr></thead><tbody>
+<tr><td>O(1)</td><td>常数</td><td>数组访问、哈希表查找</td></tr>
+<tr><td>O(log n)</td><td>对数</td><td>二分查找、平衡树操作</td></tr>
+<tr><td>O(n)</td><td>线性</td><td>线性搜索、遍历</td></tr>
+<tr><td>O(n log n)</td><td>线性对数</td><td>归并排序、快速排序</td></tr>
+<tr><td>O(n²)</td><td>平方</td><td>冒泡排序、选择排序</td></tr>
+<tr><td>O(2^n)</td><td>指数</td><td>递归斐波那契</td></tr>
+<tr><td>O(n!)</td><td>阶乘</td><td>全排列</td></tr>
+</tbody></table>
+</div>
+<h3 id="62-空间复杂度分析"><a class="header" href="#62-空间复杂度分析">6.2 空间复杂度分析</a></h3>
+<pre><code class="language-python"># O(1) 空间
+def reverse_array_inplace(arr):
+    left, right = 0, len(arr) - 1
+    while left &lt; right:
+        arr[left], arr[right] = arr[right], arr[left]
+        left += 1
+        right -= 1
+
+# O(n) 空间
+def reverse_array_new(arr):
+    return arr[::-1]
+
+# O(n) 递归空间（调用栈）
+def factorial(n):
+    if n &lt;= 1:
+        return 1
+    return n * factorial(n - 1)
+</code></pre>
+<hr />
+<h2 id="学习验证标准"><a class="header" href="#学习验证标准">学习验证标准</a></h2>
+<h3 id="基础验证week-1-4"><a class="header" href="#基础验证week-1-4">基础验证（Week 1-4）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够手写数组、链表、栈、队列的实现</li>
+<li><input disabled="" type="checkbox"/>
+理解各数据结构的时间空间复杂度</li>
+<li><input disabled="" type="checkbox"/>
+熟练使用Python内置数据结构</li>
+</ul>
+<h3 id="中级验证week-5-8"><a class="header" href="#中级验证week-5-8">中级验证（Week 5-8）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+掌握二叉树的各种遍历方式</li>
+<li><input disabled="" type="checkbox"/>
+能够实现BST的增删查改</li>
+<li><input disabled="" type="checkbox"/>
+理解图的表示和遍历算法</li>
+<li><input disabled="" type="checkbox"/>
+掌握Dijkstra和BFS最短路径</li>
+</ul>
+<h3 id="高级验证week-9-12"><a class="header" href="#高级验证week-9-12">高级验证（Week 9-12）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现并查集、Trie、LRU缓存</li>
+<li><input disabled="" type="checkbox"/>
+能够分析算法的复杂度</li>
+<li><input disabled="" type="checkbox"/>
+解决LeetCode中等难度题目</li>
+<li><input disabled="" type="checkbox"/>
+完成至少一个综合项目</li>
+</ul>
+<hr />
+<h2 id="常见面试题精选"><a class="header" href="#常见面试题精选">常见面试题精选</a></h2>
+<h3 id="1-数组与字符串"><a class="header" href="#1-数组与字符串">1. 数组与字符串</a></h3>
+<ul>
+<li>两数之和、三数之和</li>
+<li>最长回文子串</li>
+<li>字符串匹配（KMP）</li>
+<li>最大子数组和</li>
+</ul>
+<h3 id="2-链表"><a class="header" href="#2-链表">2. 链表</a></h3>
+<ul>
+<li>反转链表</li>
+<li>链表环检测</li>
+<li>合并两个有序链表</li>
+<li>两数相加（链表表示）</li>
+</ul>
+<h3 id="3-树"><a class="header" href="#3-树">3. 树</a></h3>
+<ul>
+<li>二叉树的层序遍历</li>
+<li>验证二叉搜索树</li>
+<li>最近公共祖先</li>
+<li>序列化与反序列化二叉树</li>
+</ul>
+<h3 id="4-图"><a class="header" href="#4-图">4. 图</a></h3>
+<ul>
+<li>岛屿数量</li>
+<li>课程表（拓扑排序）</li>
+<li>最短路径（Dijkstra/BFS）</li>
+<li>连通分量</li>
+</ul>
+<hr />
+<h2 id="推荐学习资源"><a class="header" href="#推荐学习资源">推荐学习资源</a></h2>
+<h3 id="在线平台"><a class="header" href="#在线平台">在线平台</a></h3>
+<ul>
+<li><strong>LeetCode</strong>: https://leetcode.com/</li>
+<li><strong>HackerRank</strong>: https://www.hackerrank.com/</li>
+<li><strong>Codeforces</strong>: https://codeforces.com/</li>
+</ul>
+<h3 id="推荐书籍"><a class="header" href="#推荐书籍">推荐书籍</a></h3>
+<ol>
+<li><strong>《算法导论》</strong> - CLRS（权威教材）</li>
+<li><strong>《数据结构与算法分析》</strong> - Mark Allen Weiss</li>
+<li><strong>《剑指Offer》</strong> - 何海涛（面试必备）</li>
+<li><strong>《编程珠玑》</strong> - Jon Bentley</li>
+</ol>
+<h3 id="学习建议"><a class="header" href="#学习建议">学习建议</a></h3>
+<ol>
+<li>每天至少做1-2道算法题</li>
+<li>注重理解原理，不要死记硬背</li>
+<li>复杂度分析要成为习惯</li>
+<li>多做总结，归纳题型</li>
+<li>参与算法竞赛和讨论</li>
+</ol>
+<hr />
+<p><strong>最后总结</strong>：</p>
+<p>数据结构是编程的基础，掌握数据结构能够：</p>
+<ul>
+<li><strong>提升编码能力</strong>: 选择合适的数据结构解决问题</li>
+<li><strong>优化程序性能</strong>: 理解复杂度，写出高效代码</li>
+<li><strong>通过技术面试</strong>: 大厂面试必考内容</li>
+<li><strong>深入理解原理</strong>: 了解计算机底层实现</li>
+</ul>
+<p>通过系统学习和大量练习，你将能够：</p>
+<ol>
+<li>快速识别问题类型</li>
+<li>选择最优数据结构</li>
+<li>分析算法复杂度</li>
+<li>实现高效解决方案</li>
+</ol>
+<p>坚持练习，祝你学习进步！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/90-Lua.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/101-设计模式.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/90-Lua.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/101-设计模式.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

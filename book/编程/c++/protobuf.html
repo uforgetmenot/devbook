@@ -1,0 +1,532 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Protocol Buffers 技术笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="protocol-buffers-技术笔记"><a class="header" href="#protocol-buffers-技术笔记">Protocol Buffers 技术笔记</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>Protocol Buffers（protobuf）是Google开发的一种语言中立、平台中立、可扩展的序列化结构数据的方法。它类似于XML，但更小、更快、更简单。你定义一次数据结构，然后可以使用生成的代码在各种语言中轻松读写结构化数据。</p>
+<h3 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h3>
+<ul>
+<li>语言无关的数据序列化格式</li>
+<li>高效的二进制编码</li>
+<li>向前和向后兼容性</li>
+<li>自动代码生成</li>
+<li>跨平台支持</li>
+<li>丰富的数据类型支持</li>
+</ul>
+<h2 id="基本用法"><a class="header" href="#基本用法">基本用法</a></h2>
+<h3 id="1-定义proto文件"><a class="header" href="#1-定义proto文件">1. 定义.proto文件</a></h3>
+<pre><code class="language-protobuf">// person.proto
+syntax = "proto3";
+
+package tutorial;
+
+message Person {
+  string name = 1;
+  int32 id = 2;
+  string email = 3;
+
+  enum PhoneType {
+    MOBILE = 0;
+    HOME = 1;
+    WORK = 2;
+  }
+
+  message PhoneNumber {
+    string number = 1;
+    PhoneType type = 2;
+  }
+
+  repeated PhoneNumber phones = 4;
+
+  google.protobuf.Timestamp last_updated = 5;
+}
+
+message AddressBook {
+  repeated Person people = 1;
+}
+</code></pre>
+<h3 id="2-c代码生成和使用"><a class="header" href="#2-c代码生成和使用">2. C++代码生成和使用</a></h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;fstream&gt;
+#include &lt;string&gt;
+#include "person.pb.h"
+
+using namespace std;
+
+// 添加人员信息
+void AddPerson(tutorial::AddressBook* address_book) {
+  tutorial::Person* person = address_book-&gt;add_people();
+
+  cout &lt;&lt; "Enter person ID: ";
+  int id;
+  cin &gt;&gt; id;
+  person-&gt;set_id(id);
+  cin.ignore(256, '\n');
+
+  cout &lt;&lt; "Enter name: ";
+  getline(cin, *person-&gt;mutable_name());
+
+  cout &lt;&lt; "Enter email (blank for none): ";
+  string email;
+  getline(cin, email);
+  if (!email.empty()) {
+    person-&gt;set_email(email);
+  }
+
+  while (true) {
+    cout &lt;&lt; "Enter a phone number (or leave blank to finish): ";
+    string number;
+    getline(cin, number);
+    if (number.empty()) {
+      break;
+    }
+
+    tutorial::Person::PhoneNumber* phone_number = person-&gt;add_phones();
+    phone_number-&gt;set_number(number);
+
+    cout &lt;&lt; "Is this a mobile, home, or work phone? ";
+    string type;
+    getline(cin, type);
+    if (type == "mobile") {
+      phone_number-&gt;set_type(tutorial::Person::MOBILE);
+    } else if (type == "home") {
+      phone_number-&gt;set_type(tutorial::Person::HOME);
+    } else if (type == "work") {
+      phone_number-&gt;set_type(tutorial::Person::WORK);
+    } else {
+      cout &lt;&lt; "Unknown phone type. Using default." &lt;&lt; endl;
+    }
+  }
+}
+
+// 列出所有人员
+void ListPeople(const tutorial::AddressBook&amp; address_book) {
+  for (int i = 0; i &lt; address_book.people_size(); i++) {
+    const tutorial::Person&amp; person = address_book.people(i);
+
+    cout &lt;&lt; "Person ID: " &lt;&lt; person.id() &lt;&lt; endl;
+    cout &lt;&lt; "  Name: " &lt;&lt; person.name() &lt;&lt; endl;
+    if (!person.email().empty()) {
+      cout &lt;&lt; "  E-mail address: " &lt;&lt; person.email() &lt;&lt; endl;
+    }
+
+    for (int j = 0; j &lt; person.phones_size(); j++) {
+      const tutorial::Person::PhoneNumber&amp; phone_number = person.phones(j);
+
+      switch (phone_number.type()) {
+        case tutorial::Person::MOBILE:
+          cout &lt;&lt; "  Mobile phone #: ";
+          break;
+        case tutorial::Person::HOME:
+          cout &lt;&lt; "  Home phone #: ";
+          break;
+        case tutorial::Person::WORK:
+          cout &lt;&lt; "  Work phone #: ";
+          break;
+      }
+      cout &lt;&lt; phone_number.number() &lt;&lt; endl;
+    }
+  }
+}
+
+int main() {
+  // 验证protobuf库版本兼容性
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  tutorial::AddressBook address_book;
+
+  // 从文件读取现有数据
+  {
+    fstream input("addressbook.data", ios::in | ios::binary);
+    if (!input) {
+      cout &lt;&lt; "File not found. Creating new file." &lt;&lt; endl;
+    } else if (!address_book.ParseFromIstream(&amp;input)) {
+      cerr &lt;&lt; "Failed to parse address book." &lt;&lt; endl;
+      return -1;
+    }
+  }
+
+  // 添加地址
+  AddPerson(&amp;address_book);
+
+  // 写回文件
+  {
+    fstream output("addressbook.data", ios::out | ios::trunc | ios::binary);
+    if (!address_book.SerializeToOstream(&amp;output)) {
+      cerr &lt;&lt; "Failed to write address book." &lt;&lt; endl;
+      return -1;
+    }
+  }
+
+  // 列出所有人员
+  ListPeople(address_book);
+
+  // 清理protobuf库
+  google::protobuf::ShutdownProtobufLibrary();
+
+  return 0;
+}
+</code></pre>
+<h2 id="高级特性"><a class="header" href="#高级特性">高级特性</a></h2>
+<h3 id="1-json互操作"><a class="header" href="#1-json互操作">1. JSON互操作</a></h3>
+<pre><code class="language-cpp">#include &lt;google/protobuf/util/json_util.h&gt;
+
+class ProtobufJsonConverter {
+public:
+    // Protobuf转JSON
+    static std::string MessageToJson(const google::protobuf::Message&amp; message) {
+        std::string json_output;
+        google::protobuf::util::JsonPrintOptions options;
+        options.add_whitespace = true;
+        options.always_print_primitive_fields = true;
+
+        google::protobuf::util::Status status =
+            google::protobuf::util::MessageToJsonString(message, &amp;json_output, options);
+
+        if (!status.ok()) {
+            std::cerr &lt;&lt; "Failed to convert to JSON: " &lt;&lt; status.ToString() &lt;&lt; std::endl;
+            return "";
+        }
+
+        return json_output;
+    }
+
+    // JSON转Protobuf
+    static bool JsonToMessage(const std::string&amp; json, google::protobuf::Message* message) {
+        google::protobuf::util::JsonParseOptions options;
+        options.ignore_unknown_fields = true;
+
+        google::protobuf::util::Status status =
+            google::protobuf::util::JsonStringToMessage(json, message, options);
+
+        if (!status.ok()) {
+            std::cerr &lt;&lt; "Failed to parse JSON: " &lt;&lt; status.ToString() &lt;&lt; std::endl;
+            return false;
+        }
+
+        return true;
+    }
+};
+</code></pre>
+<h3 id="2-反射机制"><a class="header" href="#2-反射机制">2. 反射机制</a></h3>
+<pre><code class="language-cpp">#include &lt;google/protobuf/descriptor.h&gt;
+#include &lt;google/protobuf/message.h&gt;
+
+class ProtobufReflection {
+public:
+    static void PrintMessageInfo(const google::protobuf::Message&amp; message) {
+        const google::protobuf::Descriptor* descriptor = message.GetDescriptor();
+        const google::protobuf::Reflection* reflection = message.GetReflection();
+
+        std::cout &lt;&lt; "Message type: " &lt;&lt; descriptor-&gt;name() &lt;&lt; std::endl;
+
+        for (int i = 0; i &lt; descriptor-&gt;field_count(); ++i) {
+            const google::protobuf::FieldDescriptor* field = descriptor-&gt;field(i);
+
+            std::cout &lt;&lt; "Field " &lt;&lt; field-&gt;name() &lt;&lt; ": ";
+
+            if (field-&gt;is_repeated()) {
+                int size = reflection-&gt;FieldSize(message, field);
+                std::cout &lt;&lt; "[" &lt;&lt; size &lt;&lt; " elements]";
+            } else if (reflection-&gt;HasField(message, field)) {
+                switch (field-&gt;type()) {
+                    case google::protobuf::FieldDescriptor::TYPE_STRING:
+                        std::cout &lt;&lt; reflection-&gt;GetString(message, field);
+                        break;
+                    case google::protobuf::FieldDescriptor::TYPE_INT32:
+                        std::cout &lt;&lt; reflection-&gt;GetInt32(message, field);
+                        break;
+                    // 添加其他类型...
+                    default:
+                        std::cout &lt;&lt; "[complex type]";
+                        break;
+                }
+            } else {
+                std::cout &lt;&lt; "[not set]";
+            }
+            std::cout &lt;&lt; std::endl;
+        }
+    }
+};
+</code></pre>
+<h2 id="编译和集成"><a class="header" href="#编译和集成">编译和集成</a></h2>
+<h3 id="cmake配置"><a class="header" href="#cmake配置">CMake配置</a></h3>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.12)
+project(ProtobufExample)
+
+set(CMAKE_CXX_STANDARD 17)
+
+# 查找Protobuf
+find_package(Protobuf REQUIRED)
+
+# 生成protobuf代码
+set(PROTO_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/person.proto
+)
+
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${PROTO_FILES})
+
+# 创建可执行文件
+add_executable(${PROJECT_NAME}
+    main.cpp
+    ${PROTO_SRCS}
+    ${PROTO_HDRS}
+)
+
+# 链接protobuf库
+target_link_libraries(${PROJECT_NAME}
+    ${Protobuf_LIBRARIES}
+)
+
+# 包含目录
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${Protobuf_INCLUDE_DIRS}
+)
+</code></pre>
+<h2 id="技术要点总结"><a class="header" href="#技术要点总结">技术要点总结</a></h2>
+<ol>
+<li><strong>高效序列化</strong>：二进制格式，体积小，速度快</li>
+<li><strong>向后兼容性</strong>：支持版本演进，字段可选和默认值</li>
+<li><strong>跨语言支持</strong>：自动生成多种语言的代码</li>
+<li><strong>类型安全</strong>：强类型系统，编译时检查</li>
+<li><strong>可扩展性</strong>：支持反射和动态消息处理</li>
+<li><strong>工业级标准</strong>：Google内部大量使用，成熟稳定</li>
+</ol>
+<p>Protocol Buffers是现代分布式系统中数据序列化的首选方案，在RPC通信、配置管理、数据存储等场景中得到广泛应用。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/openmp.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/webrtc.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/openmp.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/webrtc.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

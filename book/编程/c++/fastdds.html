@@ -1,0 +1,863 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Fast DDS 技术笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="fast-dds-技术笔记"><a class="header" href="#fast-dds-技术笔记">Fast DDS 技术笔记</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>Fast DDS（原名Fast RTPS）是eProsima开发的高性能实时发布订阅（DDS）中间件实现，遵循OMG DDS标准。它提供了分布式系统中的数据通信服务，支持实时、可靠、高性能的数据交换，广泛应用于机器人、自动驾驶、工业4.0等领域。</p>
+<h2 id="核心架构"><a class="header" href="#核心架构">核心架构</a></h2>
+<h3 id="1-dds基础概念"><a class="header" href="#1-dds基础概念">1. DDS基础概念</a></h3>
+<ul>
+<li><strong>Domain</strong>: 通信域，隔离不同应用的数据通信</li>
+<li><strong>Participant</strong>: 域参与者，应用程序在域中的代理</li>
+<li><strong>Publisher</strong>: 发布者，管理一个或多个DataWriter</li>
+<li><strong>Subscriber</strong>: 订阅者，管理一个或多个DataReader</li>
+<li><strong>DataWriter</strong>: 数据写入器，发布特定类型的数据</li>
+<li><strong>DataReader</strong>: 数据读取器，订阅特定类型的数据</li>
+<li><strong>Topic</strong>: 主题，定义数据的类型和名称</li>
+</ul>
+<h3 id="2-系统架构"><a class="header" href="#2-系统架构">2. 系统架构</a></h3>
+<pre><code>Application Layer
+├── DDS API Layer
+├── RTPS Protocol Layer
+├── Transport Layer (UDP/TCP/SHM)
+└── Operating System Layer
+</code></pre>
+<h2 id="基础数据结构和api"><a class="header" href="#基础数据结构和api">基础数据结构和API</a></h2>
+<h3 id="1-核心头文件"><a class="header" href="#1-核心头文件">1. 核心头文件</a></h3>
+<pre><code class="language-cpp">#include &lt;fastdds/dds/domain/DomainParticipant.hpp&gt;
+#include &lt;fastdds/dds/domain/DomainParticipantFactory.hpp&gt;
+#include &lt;fastdds/dds/topic/TypeSupport.hpp&gt;
+#include &lt;fastdds/dds/topic/Topic.hpp&gt;
+#include &lt;fastdds/dds/publisher/Publisher.hpp&gt;
+#include &lt;fastdds/dds/publisher/DataWriter.hpp&gt;
+#include &lt;fastdds/dds/subscriber/Subscriber.hpp&gt;
+#include &lt;fastdds/dds/subscriber/DataReader.hpp&gt;
+#include &lt;fastdds/dds/subscriber/DataReaderListener.hpp&gt;
+
+using namespace eprosima::fastdds::dds;
+</code></pre>
+<h3 id="2-数据类型定义"><a class="header" href="#2-数据类型定义">2. 数据类型定义</a></h3>
+<pre><code class="language-cpp">// 使用IDL定义数据结构
+// HelloWorld.idl
+struct HelloWorld {
+    unsigned long index;
+    string message;
+};
+
+// 生成的C++代码将包含：
+// - HelloWorld.h: 数据结构定义
+// - HelloWorldPubSubTypes.h: 序列化支持
+</code></pre>
+<h3 id="3-基础初始化"><a class="header" href="#3-基础初始化">3. 基础初始化</a></h3>
+<pre><code class="language-cpp">// 创建参与者工厂
+DomainParticipantFactory* factory = DomainParticipantFactory::get_instance();
+
+// 创建域参与者
+DomainParticipant* participant = factory-&gt;create_participant(0, PARTICIPANT_QOS_DEFAULT);
+if (participant == nullptr) {
+    std::cerr &lt;&lt; "Failed to create participant" &lt;&lt; std::endl;
+    return -1;
+}
+
+// 注册数据类型
+TypeSupport type(new HelloWorldPubSubType());
+type.register_type(participant);
+
+// 创建主题
+Topic* topic = participant-&gt;create_topic("HelloWorldTopic", "HelloWorld", TOPIC_QOS_DEFAULT);
+if (topic == nullptr) {
+    std::cerr &lt;&lt; "Failed to create topic" &lt;&lt; std::endl;
+    return -1;
+}
+</code></pre>
+<h2 id="发布者实现"><a class="header" href="#发布者实现">发布者实现</a></h2>
+<h3 id="1-创建发布者和数据写入器"><a class="header" href="#1-创建发布者和数据写入器">1. 创建发布者和数据写入器</a></h3>
+<pre><code class="language-cpp">class HelloWorldPublisher {
+private:
+    DomainParticipant* participant_;
+    Publisher* publisher_;
+    Topic* topic_;
+    DataWriter* writer_;
+    TypeSupport type_;
+    HelloWorld hello_;
+
+public:
+    HelloWorldPublisher() : participant_(nullptr), publisher_(nullptr),
+                           topic_(nullptr), writer_(nullptr), type_(new HelloWorldPubSubType()) {}
+
+    bool init() {
+        // 创建域参与者
+        DomainParticipantQos participantQos;
+        participant_ = DomainParticipantFactory::get_instance()-&gt;create_participant(0, participantQos);
+
+        if (participant_ == nullptr) {
+            return false;
+        }
+
+        // 注册类型
+        type_.register_type(participant_);
+
+        // 创建主题
+        topic_ = participant_-&gt;create_topic("HelloWorldTopic", type_.get_type_name(), TOPIC_QOS_DEFAULT);
+
+        if (topic_ == nullptr) {
+            return false;
+        }
+
+        // 创建发布者
+        publisher_ = participant_-&gt;create_publisher(PUBLISHER_QOS_DEFAULT, nullptr);
+
+        if (publisher_ == nullptr) {
+            return false;
+        }
+
+        // 创建数据写入器
+        DataWriterQos writer_qos = DATAWRITER_QOS_DEFAULT;
+        writer_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        writer_qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+
+        writer_ = publisher_-&gt;create_datawriter(topic_, writer_qos, nullptr);
+
+        if (writer_ == nullptr) {
+            return false;
+        }
+
+        return true;
+    }
+
+    bool publish() {
+        hello_.index(hello_.index() + 1);
+        hello_.message("Hello world " + std::to_string(hello_.index()));
+
+        return writer_-&gt;write(&amp;hello_);
+    }
+
+    void run(uint32_t samples) {
+        for (uint32_t i = 0; i &lt; samples; ++i) {
+            if (!publish()) {
+                std::cerr &lt;&lt; "Failed to write sample " &lt;&lt; i &lt;&lt; std::endl;
+                break;
+            }
+            std::cout &lt;&lt; "Sample " &lt;&lt; i &lt;&lt; " sent" &lt;&lt; std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        }
+    }
+};
+</code></pre>
+<h3 id="2-qos策略配置"><a class="header" href="#2-qos策略配置">2. QoS策略配置</a></h3>
+<pre><code class="language-cpp">void configure_writer_qos(DataWriterQos&amp; qos) {
+    // 可靠性设置
+    qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+    qos.reliability().max_blocking_time.seconds = 1;
+    qos.reliability().max_blocking_time.nanosec = 0;
+
+    // 持久性设置
+    qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+
+    // 历史设置
+    qos.history().kind = KEEP_LAST_HISTORY_QOS;
+    qos.history().depth = 30;
+
+    // 资源限制
+    qos.resource_limits().max_samples = 50;
+    qos.resource_limits().allocated_samples = 20;
+    qos.resource_limits().max_instances = 10;
+
+    // 截止时间
+    qos.deadline().period.seconds = 2;
+    qos.deadline().period.nanosec = 0;
+
+    // 生命周期
+    qos.lifespan().duration.seconds = 5;
+    qos.lifespan().duration.nanosec = 0;
+}
+</code></pre>
+<h2 id="订阅者实现"><a class="header" href="#订阅者实现">订阅者实现</a></h2>
+<h3 id="1-数据读取器监听器"><a class="header" href="#1-数据读取器监听器">1. 数据读取器监听器</a></h3>
+<pre><code class="language-cpp">class HelloWorldListener : public DataReaderListener {
+public:
+    HelloWorldListener() : samples_(0) {}
+
+    ~HelloWorldListener() override {}
+
+    void on_data_available(DataReader* reader) override {
+        SampleInfo info;
+        if (reader-&gt;take_next_sample(&amp;hello_, &amp;info) == ReturnCode_t::RETCODE_OK) {
+            if (info.valid_data) {
+                samples_++;
+                std::cout &lt;&lt; "Message: " &lt;&lt; hello_.message() &lt;&lt; " with index: "
+                         &lt;&lt; hello_.index() &lt;&lt; " RECEIVED." &lt;&lt; std::endl;
+            }
+        }
+    }
+
+    void on_subscription_matched(DataReader*, const SubscriptionMatchedStatus&amp; info) override {
+        if (info.current_count_change == 1) {
+            std::cout &lt;&lt; "Subscriber matched." &lt;&lt; std::endl;
+        } else if (info.current_count_change == -1) {
+            std::cout &lt;&lt; "Subscriber unmatched." &lt;&lt; std::endl;
+        }
+    }
+
+private:
+    HelloWorld hello_;
+    std::atomic_int samples_;
+};
+</code></pre>
+<h3 id="2-创建订阅者和数据读取器"><a class="header" href="#2-创建订阅者和数据读取器">2. 创建订阅者和数据读取器</a></h3>
+<pre><code class="language-cpp">class HelloWorldSubscriber {
+private:
+    DomainParticipant* participant_;
+    Subscriber* subscriber_;
+    DataReader* reader_;
+    Topic* topic_;
+    TypeSupport type_;
+    HelloWorldListener listener_;
+
+public:
+    HelloWorldSubscriber() : participant_(nullptr), subscriber_(nullptr),
+                            reader_(nullptr), topic_(nullptr), type_(new HelloWorldPubSubType()) {}
+
+    bool init() {
+        // 创建域参与者
+        DomainParticipantQos participantQos;
+        participant_ = DomainParticipantFactory::get_instance()-&gt;create_participant(0, participantQos);
+
+        if (participant_ == nullptr) {
+            return false;
+        }
+
+        // 注册类型
+        type_.register_type(participant_);
+
+        // 创建主题
+        topic_ = participant_-&gt;create_topic("HelloWorldTopic", type_.get_type_name(), TOPIC_QOS_DEFAULT);
+
+        if (topic_ == nullptr) {
+            return false;
+        }
+
+        // 创建订阅者
+        subscriber_ = participant_-&gt;create_subscriber(SUBSCRIBER_QOS_DEFAULT, nullptr);
+
+        if (subscriber_ == nullptr) {
+            return false;
+        }
+
+        // 创建数据读取器
+        DataReaderQos reader_qos = DATAREADER_QOS_DEFAULT;
+        reader_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        reader_qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+
+        reader_ = subscriber_-&gt;create_datareader(topic_, reader_qos, &amp;listener_);
+
+        if (reader_ == nullptr) {
+            return false;
+        }
+
+        return true;
+    }
+
+    void run(uint32_t samples) {
+        std::cout &lt;&lt; "Subscriber running. Please press enter to stop the Subscriber" &lt;&lt; std::endl;
+        std::cin.ignore();
+    }
+};
+</code></pre>
+<h2 id="高级特性"><a class="header" href="#高级特性">高级特性</a></h2>
+<h3 id="1-内容过滤主题"><a class="header" href="#1-内容过滤主题">1. 内容过滤主题</a></h3>
+<pre><code class="language-cpp">// 创建内容过滤主题
+ContentFilteredTopic* filtered_topic = participant_-&gt;create_contentfilteredtopic(
+    "HelloWorldFilteredTopic",
+    topic_,
+    "index &gt; 5",  // 过滤表达式
+    std::vector&lt;std::string&gt;()  // 参数
+);
+
+// 使用过滤主题创建数据读取器
+DataReader* filtered_reader = subscriber_-&gt;create_datareader(filtered_topic, reader_qos, &amp;listener_);
+</code></pre>
+<h3 id="2-多播传输"><a class="header" href="#2-多播传输">2. 多播传输</a></h3>
+<pre><code class="language-cpp">// 配置多播传输
+DomainParticipantQos participant_qos;
+participant_qos.transport().use_builtin_transports = false;
+
+// 添加UDP多播传输
+auto udp_transport = std::make_shared&lt;UDPv4TransportDescriptor&gt;();
+udp_transport-&gt;sendBufferSize = 9216;
+udp_transport-&gt;receiveBufferSize = 9216;
+udp_transport-&gt;non_blocking_send = true;
+
+participant_qos.transport().user_transports.push_back(udp_transport);
+
+// 设置多播地址
+Locator_t multicast_locator;
+multicast_locator.kind = LOCATOR_KIND_UDPv4;
+multicast_locator.port = 7400;
+IPLocator::setIPv4(multicast_locator, "239.255.1.4");
+
+DataWriterQos writer_qos;
+writer_qos.endpoint().multicast_locator_list.push_back(multicast_locator);
+</code></pre>
+<h3 id="3-安全传输"><a class="header" href="#3-安全传输">3. 安全传输</a></h3>
+<pre><code class="language-cpp">#include &lt;fastdds/rtps/security/exceptions/SecurityException.h&gt;
+
+// 配置DDS安全
+DomainParticipantQos participant_qos;
+participant_qos.properties().properties().emplace_back("dds.sec.auth.plugin",
+    "builtin.PKI-DH");
+participant_qos.properties().properties().emplace_back("dds.sec.auth.builtin.PKI-DH.identity_ca",
+    "file://ca_cert.pem");
+participant_qos.properties().properties().emplace_back("dds.sec.auth.builtin.PKI-DH.identity_certificate",
+    "file://cert.pem");
+participant_qos.properties().properties().emplace_back("dds.sec.auth.builtin.PKI-DH.private_key",
+    "file://private_key.pem");
+
+// 访问控制
+participant_qos.properties().properties().emplace_back("dds.sec.access.plugin",
+    "builtin.Access-Permissions");
+participant_qos.properties().properties().emplace_back("dds.sec.access.builtin.Access-Permissions.permissions_ca",
+    "file://permissions_ca_cert.pem");
+participant_qos.properties().properties().emplace_back("dds.sec.access.builtin.Access-Permissions.governance",
+    "file://governance.p7s");
+participant_qos.properties().properties().emplace_back("dds.sec.access.builtin.Access-Permissions.permissions",
+    "file://permissions.p7s");
+
+// 加密
+participant_qos.properties().properties().emplace_back("dds.sec.crypto.plugin",
+    "builtin.AES-GCM-GMAC");
+</code></pre>
+<h2 id="性能优化"><a class="header" href="#性能优化">性能优化</a></h2>
+<h3 id="1-零拷贝传输"><a class="header" href="#1-零拷贝传输">1. 零拷贝传输</a></h3>
+<pre><code class="language-cpp">// 配置共享内存传输
+DomainParticipantQos participant_qos;
+participant_qos.transport().use_builtin_transports = false;
+
+auto shm_transport = std::make_shared&lt;SharedMemTransportDescriptor&gt;();
+shm_transport-&gt;segment_size(2 * 1024 * 1024);  // 2MB段大小
+shm_transport-&gt;port_queue_capacity(512);        // 端口队列容量
+shm_transport-&gt;healthy_check_timeout_ms(1000);  // 健康检查超时
+
+participant_qos.transport().user_transports.push_back(shm_transport);
+
+// 配置数据写入器使用零拷贝
+DataWriterQos writer_qos;
+writer_qos.publish_mode().kind = ASYNCHRONOUS_PUBLISH_MODE;
+writer_qos.endpoint().history_memory_policy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
+</code></pre>
+<h3 id="2-批量传输"><a class="header" href="#2-批量传输">2. 批量传输</a></h3>
+<pre><code class="language-cpp">// 配置批量传输
+PublisherQos publisher_qos;
+publisher_qos.batch().enable = true;
+publisher_qos.batch().max_messages = 10;
+publisher_qos.batch().max_latency_ms = 100;
+publisher_qos.batch().max_bytes = 8192;
+
+Publisher* batch_publisher = participant_-&gt;create_publisher(publisher_qos);
+</code></pre>
+<h3 id="3-内存池优化"><a class="header" href="#3-内存池优化">3. 内存池优化</a></h3>
+<pre><code class="language-cpp">// 配置资源限制和内存分配
+DataWriterQos writer_qos;
+writer_qos.resource_limits().max_samples = 5000;
+writer_qos.resource_limits().max_instances = 10;
+writer_qos.resource_limits().max_samples_per_instance = 400;
+
+// 预分配内存
+writer_qos.endpoint().history_memory_policy = PREALLOCATED_MEMORY_MODE;
+
+// 配置写入器数据生命周期
+writer_qos.writer_data_lifecycle().autodispose_unregistered_instances = false;
+</code></pre>
+<h2 id="发现机制"><a class="header" href="#发现机制">发现机制</a></h2>
+<h3 id="1-简单发现协议"><a class="header" href="#1-简单发现协议">1. 简单发现协议</a></h3>
+<pre><code class="language-cpp">// 配置内置发现
+DomainParticipantQos participant_qos;
+
+// 设置发现服务器
+RemoteServerAttributes server;
+server.ReadguidPrefix("44.53.00.5f.45.50.52.4f.53.49.4d.41");
+
+Locator_t server_locator;
+server_locator.kind = LOCATOR_KIND_UDPv4;
+server_locator.port = 11811;
+IPLocator::setIPv4(server_locator, "192.168.1.100");
+server.metatrafficUnicastLocatorList.push_back(server_locator);
+
+participant_qos.wire_protocol().builtin.discovery_config.discoveryProtocol =
+    DiscoveryProtocol_t::SERVER;
+participant_qos.wire_protocol().builtin.discovery_config.m_DiscoveryServers.push_back(server);
+</code></pre>
+<h3 id="2-静态发现"><a class="header" href="#2-静态发现">2. 静态发现</a></h3>
+<pre><code class="language-cpp">// 使用XML配置静态发现
+const char* xml_config = R"(
+&lt;profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles"&gt;
+    &lt;participant profile_name="static_discovery_profile"&gt;
+        &lt;rtps&gt;
+            &lt;builtin&gt;
+                &lt;discovery_config&gt;
+                    &lt;discoveryProtocol&gt;SIMPLE&lt;/discoveryProtocol&gt;
+                    &lt;use_SIMPLE_EndpointDiscoveryProtocol&gt;false&lt;/use_SIMPLE_EndpointDiscoveryProtocol&gt;
+                    &lt;use_STATIC_EndpointDiscoveryProtocol&gt;true&lt;/use_STATIC_EndpointDiscoveryProtocol&gt;
+                    &lt;static_edp_xml_config&gt;static_discovery.xml&lt;/static_edp_xml_config&gt;
+                &lt;/discovery_config&gt;
+            &lt;/builtin&gt;
+        &lt;/rtps&gt;
+    &lt;/participant&gt;
+&lt;/profiles&gt;
+)";
+
+DomainParticipantFactory::get_instance()-&gt;load_XML_profiles_string(xml_config, strlen(xml_config));
+
+DomainParticipantQos participant_qos;
+DomainParticipantFactory::get_instance()-&gt;get_participant_qos_from_profile(
+    "static_discovery_profile", participant_qos);
+</code></pre>
+<h2 id="监控和诊断"><a class="header" href="#监控和诊断">监控和诊断</a></h2>
+<h3 id="1-统计信息收集"><a class="header" href="#1-统计信息收集">1. 统计信息收集</a></h3>
+<pre><code class="language-cpp">#include &lt;fastdds/statistics/dds/subscriber/qos/DataReaderQos.hpp&gt;
+
+// 启用统计信息收集
+DomainParticipantQos participant_qos;
+participant_qos.properties().properties().emplace_back(
+    "fastdds.statistics", "HISTORY_LATENCY_TOPIC;NETWORK_LATENCY_TOPIC");
+
+// 创建统计信息订阅者
+using namespace eprosima::fastdds::statistics::dds;
+
+class StatisticsListener : public DataReaderListener {
+public:
+    void on_data_available(DataReader* reader) override {
+        WriterReaderData statistics_sample;
+        SampleInfo info;
+        if (reader-&gt;take_next_sample(&amp;statistics_sample, &amp;info) == ReturnCode_t::RETCODE_OK) {
+            if (info.valid_data) {
+                std::cout &lt;&lt; "Statistics: " &lt;&lt; statistics_sample.src_ts()
+                         &lt;&lt; " -&gt; " &lt;&lt; statistics_sample.data() &lt;&lt; std::endl;
+            }
+        }
+    }
+};
+
+StatisticsListener stats_listener;
+DataReader* stats_reader = subscriber_-&gt;create_datareader(stats_topic, reader_qos, &amp;stats_listener);
+</code></pre>
+<h3 id="2-日志系统"><a class="header" href="#2-日志系统">2. 日志系统</a></h3>
+<pre><code class="language-cpp">#include &lt;fastdds/dds/log/Log.hpp&gt;
+
+// 配置日志级别
+eprosima::fastdds::dds::Log::SetVerbosity(eprosima::fastdds::dds::Log::Kind::Warning);
+
+// 设置日志过滤器
+eprosima::fastdds::dds::Log::SetCategoryFilter(std::regex("(SECURITY|DISCOVERY)"));
+
+// 自定义日志消费者
+class CustomLogConsumer : public eprosima::fastdds::dds::LogConsumer {
+public:
+    virtual void Consume(const eprosima::fastdds::dds::Log::Entry&amp; entry) override {
+        std::string timestamp = std::to_string(entry.timestamp.time_since_epoch().count());
+        std::cout &lt;&lt; timestamp &lt;&lt; " [" &lt;&lt; entry.kind &lt;&lt; "] " &lt;&lt; entry.message &lt;&lt; std::endl;
+    }
+};
+
+CustomLogConsumer log_consumer;
+eprosima::fastdds::dds::Log::RegisterConsumer(&amp;log_consumer);
+</code></pre>
+<h2 id="实际应用示例"><a class="header" href="#实际应用示例">实际应用示例</a></h2>
+<h3 id="1-机器人遥测系统"><a class="header" href="#1-机器人遥测系统">1. 机器人遥测系统</a></h3>
+<pre><code class="language-cpp">struct RobotTelemetry {
+    double x, y, z;           // 位置
+    double roll, pitch, yaw;  // 姿态
+    double battery_level;     // 电量
+    uint64_t timestamp;       // 时间戳
+};
+
+class RobotTelemetryPublisher {
+private:
+    DomainParticipant* participant_;
+    DataWriter* writer_;
+    RobotTelemetry telemetry_;
+
+public:
+    bool init() {
+        // 初始化DDS组件
+        // ...
+
+        // 配置高频实时传输
+        DataWriterQos writer_qos;
+        writer_qos.reliability().kind = BEST_EFFORT_RELIABILITY_QOS;  // 最佳努力
+        writer_qos.deadline().period.seconds = 0;
+        writer_qos.deadline().period.nanosec = 100000000;  // 100ms截止时间
+
+        writer_ = publisher_-&gt;create_datawriter(topic_, writer_qos, nullptr);
+        return writer_ != nullptr;
+    }
+
+    void publish_telemetry(double x, double y, double z,
+                          double roll, double pitch, double yaw,
+                          double battery) {
+        telemetry_.x = x;
+        telemetry_.y = y;
+        telemetry_.z = z;
+        telemetry_.roll = roll;
+        telemetry_.pitch = pitch;
+        telemetry_.yaw = yaw;
+        telemetry_.battery_level = battery;
+        telemetry_.timestamp = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(
+            std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+
+        writer_-&gt;write(&amp;telemetry_);
+    }
+};
+</code></pre>
+<h3 id="2-分布式传感器网络"><a class="header" href="#2-分布式传感器网络">2. 分布式传感器网络</a></h3>
+<pre><code class="language-cpp">class SensorDataCollector {
+private:
+    std::map&lt;std::string, DataReader*&gt; sensor_readers_;
+    std::map&lt;std::string, std::shared_ptr&lt;SensorDataListener&gt;&gt; listeners_;
+
+public:
+    void add_sensor(const std::string&amp; sensor_id, const std::string&amp; topic_name) {
+        // 为每个传感器创建独立的数据读取器
+        Topic* sensor_topic = participant_-&gt;create_topic(topic_name, "SensorData", TOPIC_QOS_DEFAULT);
+
+        auto listener = std::make_shared&lt;SensorDataListener&gt;(sensor_id);
+        listeners_[sensor_id] = listener;
+
+        DataReaderQos reader_qos;
+        reader_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        reader_qos.durability().kind = VOLATILE_DURABILITY_QOS;
+
+        DataReader* reader = subscriber_-&gt;create_datareader(sensor_topic, reader_qos, listener.get());
+        sensor_readers_[sensor_id] = reader;
+    }
+
+    void process_all_sensors() {
+        // 处理来自所有传感器的数据
+        for (auto&amp; [sensor_id, listener] : listeners_) {
+            auto data = listener-&gt;get_latest_data();
+            if (data.has_value()) {
+                process_sensor_data(sensor_id, data.value());
+            }
+        }
+    }
+};
+</code></pre>
+<h3 id="3-实时控制系统"><a class="header" href="#3-实时控制系统">3. 实时控制系统</a></h3>
+<pre><code class="language-cpp">class RealTimeController {
+private:
+    DataWriter* command_writer_;
+    DataReader* feedback_reader_;
+    std::mutex control_mutex_;
+    std::condition_variable control_cv_;
+    bool feedback_received_ = false;
+
+public:
+    bool send_command_and_wait_feedback(const ControlCommand&amp; command,
+                                       ControlFeedback&amp; feedback,
+                                       std::chrono::milliseconds timeout) {
+        std::unique_lock&lt;std::mutex&gt; lock(control_mutex_);
+
+        // 发送控制命令
+        feedback_received_ = false;
+        if (command_writer_-&gt;write(&amp;command) != ReturnCode_t::RETCODE_OK) {
+            return false;
+        }
+
+        // 等待反馈
+        return control_cv_.wait_for(lock, timeout, [this] { return feedback_received_; });
+    }
+
+    void on_feedback_received(const ControlFeedback&amp; feedback) {
+        std::lock_guard&lt;std::mutex&gt; lock(control_mutex_);
+        feedback_received_ = true;
+        control_cv_.notify_all();
+    }
+};
+</code></pre>
+<h2 id="错误处理和调试"><a class="header" href="#错误处理和调试">错误处理和调试</a></h2>
+<h3 id="1-返回码处理"><a class="header" href="#1-返回码处理">1. 返回码处理</a></h3>
+<pre><code class="language-cpp">ReturnCode_t check_dds_operation(ReturnCode_t return_code, const std::string&amp; operation) {
+    switch (return_code) {
+        case ReturnCode_t::RETCODE_OK:
+            break;
+        case ReturnCode_t::RETCODE_ERROR:
+            std::cerr &lt;&lt; "Generic error in " &lt;&lt; operation &lt;&lt; std::endl;
+            break;
+        case ReturnCode_t::RETCODE_TIMEOUT:
+            std::cerr &lt;&lt; "Timeout in " &lt;&lt; operation &lt;&lt; std::endl;
+            break;
+        case ReturnCode_t::RETCODE_NO_DATA:
+            std::cerr &lt;&lt; "No data available in " &lt;&lt; operation &lt;&lt; std::endl;
+            break;
+        default:
+            std::cerr &lt;&lt; "Unknown error in " &lt;&lt; operation &lt;&lt; std::endl;
+            break;
+    }
+    return return_code;
+}
+
+// 使用示例
+ReturnCode_t ret = writer_-&gt;write(&amp;sample);
+check_dds_operation(ret, "DataWriter::write");
+</code></pre>
+<h3 id="2-连接状态监控"><a class="header" href="#2-连接状态监控">2. 连接状态监控</a></h3>
+<pre><code class="language-cpp">class ConnectionMonitor : public DataWriterListener, public DataReaderListener {
+public:
+    void on_publication_matched(DataWriter* writer, const PublicationMatchedStatus&amp; info) override {
+        if (info.current_count_change &gt; 0) {
+            std::cout &lt;&lt; "New subscriber connected. Total: " &lt;&lt; info.current_count &lt;&lt; std::endl;
+        } else if (info.current_count_change &lt; 0) {
+            std::cout &lt;&lt; "Subscriber disconnected. Total: " &lt;&lt; info.current_count &lt;&lt; std::endl;
+        }
+    }
+
+    void on_subscription_matched(DataReader* reader, const SubscriptionMatchedStatus&amp; info) override {
+        if (info.current_count_change &gt; 0) {
+            std::cout &lt;&lt; "New publisher connected. Total: " &lt;&lt; info.current_count &lt;&lt; std::endl;
+        } else if (info.current_count_change &lt; 0) {
+            std::cout &lt;&lt; "Publisher disconnected. Total: " &lt;&lt; info.current_count &lt;&lt; std::endl;
+        }
+    }
+
+    void on_offered_deadline_missed(DataWriter* writer, const OfferedDeadlineMissedStatus&amp; status) override {
+        std::cout &lt;&lt; "Deadline missed: " &lt;&lt; status.total_count &lt;&lt; " times" &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<p>Fast DDS是一个功能强大、性能优异的实时通信中间件，特别适用于对实时性、可靠性要求较高的分布式系统。通过合理配置QoS策略、优化传输机制和监控系统状态，可以构建出高效、稳定的分布式应用系统。掌握Fast DDS的核心概念和编程模式，对于开发现代分布式实时系统至关重要。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/eigen.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/ffmepg.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/eigen.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/ffmepg.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

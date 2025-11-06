@@ -1,0 +1,1772 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>自制C++游戏引擎完全指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="自制c游戏引擎完全指南"><a class="header" href="#自制c游戏引擎完全指南">自制C++游戏引擎完全指南</a></h1>
+<h2 id="学习者角色定位"><a class="header" href="#学习者角色定位">学习者角色定位</a></h2>
+<ul>
+<li><strong>目标群体</strong>: 有C++基础的开发者、游戏引擎爱好者、计算机图形学学习者、想深入理解引擎原理的开发者</li>
+<li><strong>前置知识</strong>: C++11/14基础、数据结构与算法、线性代数、计算机图形学基础概念</li>
+<li><strong>学习目标</strong>: 从零开始构建一个功能完整的2D/3D游戏引擎，深入理解引擎架构和底层实现原理</li>
+</ul>
+<h2 id="技术概述"><a class="header" href="#技术概述">技术概述</a></h2>
+<h3 id="为什么要自制游戏引擎"><a class="header" href="#为什么要自制游戏引擎">为什么要自制游戏引擎</a></h3>
+<h4 id="学习价值"><a class="header" href="#学习价值">学习价值</a></h4>
+<ul>
+<li><strong>深入理解原理</strong>: 理解商业引擎（Unity、Unreal）的底层实现</li>
+<li><strong>技术能力提升</strong>: 综合运用C++、图形学、架构设计等知识</li>
+<li><strong>优化能力</strong>: 掌握性能优化的本质，而非仅依赖引擎设置</li>
+<li><strong>定制化控制</strong>: 完全掌控引擎的每一个细节</li>
+</ul>
+<h4 id="实际应用场景"><a class="header" href="#实际应用场景">实际应用场景</a></h4>
+<ul>
+<li>独立游戏开发（需要特殊功能）</li>
+<li>教育和研究项目</li>
+<li>嵌入式游戏引擎</li>
+<li>特定领域的仿真系统</li>
+<li>技术Demo和原型验证</li>
+</ul>
+<h3 id="游戏引擎核心架构"><a class="header" href="#游戏引擎核心架构">游戏引擎核心架构</a></h3>
+<pre><code>游戏引擎层级架构
+┌────────────────────────────────────────┐
+│     游戏层（Game Layer）                │
+│  - 游戏逻辑、关卡、玩法系统              │
+└────────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│   框架层（Framework Layer）             │
+│  - 场景管理、实体组件系统、脚本系统      │
+└────────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│   核心系统层（Core Systems Layer）      │
+│  - 渲染、物理、音频、输入、资源管理      │
+└────────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│   平台抽象层（Platform Layer）          │
+│  - 窗口系统、文件IO、线程、网络          │
+└────────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│   第三方库（Third-Party Libraries）     │
+│  - SDL/GLFW、OpenGL/Vulkan、PhysX等    │
+└────────────────────────────────────────┘
+</code></pre>
+<h3 id="技术栈选择"><a class="header" href="#技术栈选择">技术栈选择</a></h3>
+<h4 id="核心库推荐"><a class="header" href="#核心库推荐">核心库推荐</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>功能模块</th><th>推荐库</th><th>说明</th></tr></thead><tbody>
+<tr><td>窗口/输入</td><td>GLFW/SDL2</td><td>跨平台窗口和输入处理</td></tr>
+<tr><td>图形API</td><td>OpenGL 3.3+</td><td>易学，跨平台</td></tr>
+<tr><td>数学库</td><td>GLM</td><td>OpenGL数学库</td></tr>
+<tr><td>图像加载</td><td>stb_image</td><td>轻量级，仅头文件</td></tr>
+<tr><td>物理引擎</td><td>Box2D/Bullet</td><td>2D用Box2D，3D用Bullet</td></tr>
+<tr><td>音频</td><td>OpenAL/miniaudio</td><td>3D音频支持</td></tr>
+<tr><td>脚本</td><td>Lua/ChaiScript</td><td>轻量级脚本语言</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="模块一引擎基础架构设计"><a class="header" href="#模块一引擎基础架构设计">模块一：引擎基础架构设计</a></h2>
+<h3 id="11-项目结构规划"><a class="header" href="#11-项目结构规划">1.1 项目结构规划</a></h3>
+<h4 id="推荐目录结构"><a class="header" href="#推荐目录结构">推荐目录结构</a></h4>
+<pre><code>GameEngine/
+├── Engine/                  # 引擎核心代码
+│   ├── Core/               # 核心系统
+│   │   ├── Application.h/cpp
+│   │   ├── Window.h/cpp
+│   │   ├── Time.h/cpp
+│   │   └── Logger.h/cpp
+│   ├── Renderer/           # 渲染系统
+│   │   ├── Renderer.h/cpp
+│   │   ├── Shader.h/cpp
+│   │   ├── Texture.h/cpp
+│   │   └── Camera.h/cpp
+│   ├── Physics/            # 物理系统
+│   ├── Audio/              # 音频系统
+│   ├── Input/              # 输入系统
+│   └── Scene/              # 场景管理
+├── Game/                   # 游戏层代码
+├── Assets/                 # 资源文件
+│   ├── Textures/
+│   ├── Shaders/
+│   ├── Models/
+│   └── Sounds/
+├── ThirdParty/             # 第三方库
+└── Build/                  # 构建输出
+</code></pre>
+<h3 id="12-核心基类设计"><a class="header" href="#12-核心基类设计">1.2 核心基类设计</a></h3>
+<h4 id="application-类引擎入口"><a class="header" href="#application-类引擎入口">Application 类（引擎入口）</a></h4>
+<pre><code class="language-cpp">// Application.h
+#pragma once
+#include &lt;memory&gt;
+#include "Window.h"
+#include "Renderer/Renderer.h"
+
+namespace Engine {
+
+class Application {
+public:
+    Application(const std::string&amp; name = "Game Engine");
+    virtual ~Application();
+
+    void Run();
+    void Close();
+
+    Window&amp; GetWindow() { return *m_Window; }
+    static Application&amp; Get() { return *s_Instance; }
+
+protected:
+    virtual void OnInit() {}
+    virtual void OnUpdate(float deltaTime) {}
+    virtual void OnRender() {}
+    virtual void OnShutdown() {}
+
+private:
+    void Init();
+    void Shutdown();
+
+    std::unique_ptr&lt;Window&gt; m_Window;
+    std::unique_ptr&lt;Renderer&gt; m_Renderer;
+    
+    bool m_Running = true;
+    float m_LastFrameTime = 0.0f;
+
+    static Application* s_Instance;
+};
+
+// 在客户端定义
+Application* CreateApplication();
+
+} // namespace Engine
+</code></pre>
+<pre><code class="language-cpp">// Application.cpp
+#include "Application.h"
+#include "Time.h"
+#include &lt;GLFW/glfw3.h&gt;
+
+namespace Engine {
+
+Application* Application::s_Instance = nullptr;
+
+Application::Application(const std::string&amp; name) {
+    s_Instance = this;
+    
+    // 初始化GLFW
+    if (!glfwInit()) {
+        throw std::runtime_error("Failed to initialize GLFW");
+    }
+
+    // 创建窗口
+    m_Window = std::make_unique&lt;Window&gt;(name, 1280, 720);
+    
+    // 初始化渲染器
+    m_Renderer = std::make_unique&lt;Renderer&gt;();
+    
+    // 调用用户初始化
+    OnInit();
+}
+
+Application::~Application() {
+    OnShutdown();
+    m_Renderer.reset();
+    m_Window.reset();
+    glfwTerminate();
+}
+
+void Application::Run() {
+    while (m_Running &amp;&amp; !m_Window-&gt;ShouldClose()) {
+        float time = static_cast&lt;float&gt;(glfwGetTime());
+        float deltaTime = time - m_LastFrameTime;
+        m_LastFrameTime = time;
+
+        // 更新逻辑
+        OnUpdate(deltaTime);
+
+        // 渲染
+        m_Renderer-&gt;Clear();
+        OnRender();
+        
+        // 交换缓冲区
+        m_Window-&gt;SwapBuffers();
+        m_Window-&gt;PollEvents();
+    }
+}
+
+void Application::Close() {
+    m_Running = false;
+}
+
+} // namespace Engine
+</code></pre>
+<h4 id="window-类窗口管理"><a class="header" href="#window-类窗口管理">Window 类（窗口管理）</a></h4>
+<pre><code class="language-cpp">// Window.h
+#pragma once
+#include &lt;string&gt;
+#include &lt;functional&gt;
+
+struct GLFWwindow;
+
+namespace Engine {
+
+struct WindowProps {
+    std::string Title;
+    unsigned int Width;
+    unsigned int Height;
+    bool VSync;
+
+    WindowProps(const std::string&amp; title = "Game Engine",
+                unsigned int width = 1280,
+                unsigned int height = 720)
+        : Title(title), Width(width), Height(height), VSync(true) {}
+};
+
+class Window {
+public:
+    using EventCallbackFn = std::function&lt;void(class Event&amp;)&gt;;
+
+    Window(const std::string&amp; title, unsigned int width, unsigned int height);
+    ~Window();
+
+    void SwapBuffers();
+    void PollEvents();
+    
+    unsigned int GetWidth() const { return m_Data.Width; }
+    unsigned int GetHeight() const { return m_Data.Height; }
+    
+    bool ShouldClose() const;
+    void SetVSync(bool enabled);
+    bool IsVSync() const { return m_Data.VSync; }
+
+    GLFWwindow* GetNativeWindow() const { return m_Window; }
+
+private:
+    void Init(const WindowProps&amp; props);
+    void Shutdown();
+
+    GLFWwindow* m_Window;
+
+    struct WindowData {
+        std::string Title;
+        unsigned int Width, Height;
+        bool VSync;
+    };
+
+    WindowData m_Data;
+};
+
+} // namespace Engine
+</code></pre>
+<pre><code class="language-cpp">// Window.cpp
+#include "Window.h"
+#include &lt;GLFW/glfw3.h&gt;
+#include &lt;glad/glad.h&gt;
+#include &lt;stdexcept&gt;
+
+namespace Engine {
+
+Window::Window(const std::string&amp; title, unsigned int width, unsigned int height) {
+    WindowProps props(title, width, height);
+    Init(props);
+}
+
+Window::~Window() {
+    Shutdown();
+}
+
+void Window::Init(const WindowProps&amp; props) {
+    m_Data.Title = props.Title;
+    m_Data.Width = props.Width;
+    m_Data.Height = props.Height;
+    m_Data.VSync = props.VSync;
+
+    // 设置OpenGL版本
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    // 创建窗口
+    m_Window = glfwCreateWindow(m_Data.Width, m_Data.Height, 
+                                 m_Data.Title.c_str(), nullptr, nullptr);
+    
+    if (!m_Window) {
+        throw std::runtime_error("Failed to create GLFW window");
+    }
+
+    glfwMakeContextCurrent(m_Window);
+
+    // 初始化GLAD
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        throw std::runtime_error("Failed to initialize GLAD");
+    }
+
+    // 设置视口
+    glViewport(0, 0, m_Data.Width, m_Data.Height);
+
+    // 设置回调
+    glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+    });
+
+    SetVSync(m_Data.VSync);
+}
+
+void Window::Shutdown() {
+    if (m_Window) {
+        glfwDestroyWindow(m_Window);
+        m_Window = nullptr;
+    }
+}
+
+void Window::SwapBuffers() {
+    glfwSwapBuffers(m_Window);
+}
+
+void Window::PollEvents() {
+    glfwPollEvents();
+}
+
+bool Window::ShouldClose() const {
+    return glfwWindowShouldClose(m_Window);
+}
+
+void Window::SetVSync(bool enabled) {
+    glfwSwapInterval(enabled ? 1 : 0);
+    m_Data.VSync = enabled;
+}
+
+} // namespace Engine
+</code></pre>
+<h3 id="13-主函数入口设计"><a class="header" href="#13-主函数入口设计">1.3 主函数入口设计</a></h3>
+<pre><code class="language-cpp">// Main.cpp
+#include "Engine/Core/Application.h"
+
+// 游戏应用类
+class MyGame : public Engine::Application {
+public:
+    MyGame() : Application("My Game") {}
+
+    void OnInit() override {
+        // 初始化游戏资源
+    }
+
+    void OnUpdate(float deltaTime) override {
+        // 更新游戏逻辑
+    }
+
+    void OnRender() override {
+        // 渲染游戏画面
+    }
+
+    void OnShutdown() override {
+        // 清理游戏资源
+    }
+};
+
+// 创建应用实例
+Engine::Application* Engine::CreateApplication() {
+    return new MyGame();
+}
+
+// 主函数
+int main(int argc, char** argv) {
+    auto app = Engine::CreateApplication();
+    app-&gt;Run();
+    delete app;
+    return 0;
+}
+</code></pre>
+<hr />
+<h2 id="模块二渲染系统实现"><a class="header" href="#模块二渲染系统实现">模块二：渲染系统实现</a></h2>
+<h3 id="21-shader-着色器管理"><a class="header" href="#21-shader-着色器管理">2.1 Shader 着色器管理</a></h3>
+<h4 id="shader-类设计"><a class="header" href="#shader-类设计">Shader 类设计</a></h4>
+<pre><code class="language-cpp">// Shader.h
+#pragma once
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+#include &lt;glm/glm.hpp&gt;
+
+namespace Engine {
+
+class Shader {
+public:
+    Shader(const std::string&amp; vertexSrc, const std::string&amp; fragmentSrc);
+    ~Shader();
+
+    void Bind() const;
+    void Unbind() const;
+
+    // Uniform设置
+    void SetInt(const std::string&amp; name, int value);
+    void SetFloat(const std::string&amp; name, float value);
+    void SetVec2(const std::string&amp; name, const glm::vec2&amp; value);
+    void SetVec3(const std::string&amp; name, const glm::vec3&amp; value);
+    void SetVec4(const std::string&amp; name, const glm::vec4&amp; value);
+    void SetMat3(const std::string&amp; name, const glm::mat3&amp; value);
+    void SetMat4(const std::string&amp; name, const glm::mat4&amp; value);
+
+    static std::shared_ptr&lt;Shader&gt; Create(const std::string&amp; vertexSrc, 
+                                           const std::string&amp; fragmentSrc);
+    static std::shared_ptr&lt;Shader&gt; CreateFromFile(const std::string&amp; filepath);
+
+private:
+    unsigned int CompileShader(unsigned int type, const std::string&amp; source);
+    int GetUniformLocation(const std::string&amp; name);
+
+    unsigned int m_RendererID;
+    std::unordered_map&lt;std::string, int&gt; m_UniformLocationCache;
+};
+
+} // namespace Engine
+</code></pre>
+<pre><code class="language-cpp">// Shader.cpp
+#include "Shader.h"
+#include &lt;glad/glad.h&gt;
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;iostream&gt;
+
+namespace Engine {
+
+Shader::Shader(const std::string&amp; vertexSrc, const std::string&amp; fragmentSrc) {
+    // 编译着色器
+    unsigned int vertex = CompileShader(GL_VERTEX_SHADER, vertexSrc);
+    unsigned int fragment = CompileShader(GL_FRAGMENT_SHADER, fragmentSrc);
+
+    // 链接程序
+    m_RendererID = glCreateProgram();
+    glAttachShader(m_RendererID, vertex);
+    glAttachShader(m_RendererID, fragment);
+    glLinkProgram(m_RendererID);
+
+    // 检查链接错误
+    int success;
+    char infoLog[512];
+    glGetProgramiv(m_RendererID, GL_LINK_STATUS, &amp;success);
+    if (!success) {
+        glGetProgramInfoLog(m_RendererID, 512, nullptr, infoLog);
+        std::cerr &lt;&lt; "Shader linking failed: " &lt;&lt; infoLog &lt;&lt; std::endl;
+    }
+
+    // 删除着色器
+    glDeleteShader(vertex);
+    glDeleteShader(fragment);
+}
+
+Shader::~Shader() {
+    glDeleteProgram(m_RendererID);
+}
+
+unsigned int Shader::CompileShader(unsigned int type, const std::string&amp; source) {
+    unsigned int shader = glCreateShader(type);
+    const char* src = source.c_str();
+    glShaderSource(shader, 1, &amp;src, nullptr);
+    glCompileShader(shader);
+
+    // 检查编译错误
+    int success;
+    char infoLog[512];
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &amp;success);
+    if (!success) {
+        glGetShaderInfoLog(shader, 512, nullptr, infoLog);
+        std::cerr &lt;&lt; "Shader compilation failed: " &lt;&lt; infoLog &lt;&lt; std::endl;
+    }
+
+    return shader;
+}
+
+void Shader::Bind() const {
+    glUseProgram(m_RendererID);
+}
+
+void Shader::Unbind() const {
+    glUseProgram(0);
+}
+
+int Shader::GetUniformLocation(const std::string&amp; name) {
+    if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
+        return m_UniformLocationCache[name];
+    }
+
+    int location = glGetUniformLocation(m_RendererID, name.c_str());
+    m_UniformLocationCache[name] = location;
+    return location;
+}
+
+void Shader::SetInt(const std::string&amp; name, int value) {
+    glUniform1i(GetUniformLocation(name), value);
+}
+
+void Shader::SetFloat(const std::string&amp; name, float value) {
+    glUniform1f(GetUniformLocation(name), value);
+}
+
+void Shader::SetVec3(const std::string&amp; name, const glm::vec3&amp; value) {
+    glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
+}
+
+void Shader::SetMat4(const std::string&amp; name, const glm::mat4&amp; value) {
+    glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &amp;value[0][0]);
+}
+
+std::shared_ptr&lt;Shader&gt; Shader::Create(const std::string&amp; vertexSrc, 
+                                        const std::string&amp; fragmentSrc) {
+    return std::make_shared&lt;Shader&gt;(vertexSrc, fragmentSrc);
+}
+
+} // namespace Engine
+</code></pre>
+<h4 id="基础着色器示例"><a class="header" href="#基础着色器示例">基础着色器示例</a></h4>
+<pre><code class="language-cpp">// 顶点着色器
+const char* vertexShaderSrc = R"(
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
+
+out vec2 TexCoord;
+
+uniform mat4 u_ViewProjection;
+uniform mat4 u_Transform;
+
+void main() {
+    gl_Position = u_ViewProjection * u_Transform * vec4(aPos, 1.0);
+    TexCoord = aTexCoord;
+}
+)";
+
+// 片段着色器
+const char* fragmentShaderSrc = R"(
+#version 330 core
+out vec4 FragColor;
+
+in vec2 TexCoord;
+
+uniform vec4 u_Color;
+uniform sampler2D u_Texture;
+
+void main() {
+    FragColor = texture(u_Texture, TexCoord) * u_Color;
+}
+)";
+</code></pre>
+<h3 id="22-texture-纹理管理"><a class="header" href="#22-texture-纹理管理">2.2 Texture 纹理管理</a></h3>
+<pre><code class="language-cpp">// Texture.h
+#pragma once
+#include &lt;string&gt;
+#include &lt;memory&gt;
+
+namespace Engine {
+
+class Texture {
+public:
+    virtual ~Texture() = default;
+
+    virtual unsigned int GetWidth() const = 0;
+    virtual unsigned int GetHeight() const = 0;
+    virtual unsigned int GetRendererID() const = 0;
+
+    virtual void Bind(unsigned int slot = 0) const = 0;
+    virtual void Unbind() const = 0;
+};
+
+class Texture2D : public Texture {
+public:
+    Texture2D(const std::string&amp; path);
+    Texture2D(unsigned int width, unsigned int height);
+    virtual ~Texture2D();
+
+    unsigned int GetWidth() const override { return m_Width; }
+    unsigned int GetHeight() const override { return m_Height; }
+    unsigned int GetRendererID() const override { return m_RendererID; }
+
+    void SetData(void* data, unsigned int size);
+
+    void Bind(unsigned int slot = 0) const override;
+    void Unbind() const override;
+
+    static std::shared_ptr&lt;Texture2D&gt; Create(const std::string&amp; path);
+    static std::shared_ptr&lt;Texture2D&gt; Create(unsigned int width, unsigned int height);
+
+private:
+    std::string m_Path;
+    unsigned int m_Width, m_Height;
+    unsigned int m_RendererID;
+    unsigned int m_InternalFormat, m_DataFormat;
+};
+
+} // namespace Engine
+</code></pre>
+<pre><code class="language-cpp">// Texture.cpp
+#include "Texture.h"
+#include &lt;glad/glad.h&gt;
+#include &lt;stb_image.h&gt;
+
+namespace Engine {
+
+Texture2D::Texture2D(const std::string&amp; path) : m_Path(path) {
+    int width, height, channels;
+    stbi_set_flip_vertically_on_load(1);
+    stbi_uc* data = stbi_load(path.c_str(), &amp;width, &amp;height, &amp;channels, 0);
+
+    if (!data) {
+        throw std::runtime_error("Failed to load texture: " + path);
+    }
+
+    m_Width = width;
+    m_Height = height;
+
+    // 确定格式
+    GLenum internalFormat = 0, dataFormat = 0;
+    if (channels == 4) {
+        internalFormat = GL_RGBA8;
+        dataFormat = GL_RGBA;
+    } else if (channels == 3) {
+        internalFormat = GL_RGB8;
+        dataFormat = GL_RGB;
+    }
+
+    m_InternalFormat = internalFormat;
+    m_DataFormat = dataFormat;
+
+    // 创建纹理
+    glGenTextures(1, &amp;m_RendererID);
+    glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 
+                 0, dataFormat, GL_UNSIGNED_BYTE, data);
+
+    stbi_image_free(data);
+}
+
+Texture2D::Texture2D(unsigned int width, unsigned int height)
+    : m_Width(width), m_Height(height) {
+    m_InternalFormat = GL_RGBA8;
+    m_DataFormat = GL_RGBA;
+
+    glGenTextures(1, &amp;m_RendererID);
+    glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+}
+
+Texture2D::~Texture2D() {
+    glDeleteTextures(1, &amp;m_RendererID);
+}
+
+void Texture2D::SetData(void* data, unsigned int size) {
+    unsigned int bpp = m_DataFormat == GL_RGBA ? 4 : 3;
+    if (size != m_Width * m_Height * bpp) {
+        throw std::runtime_error("Data must cover entire texture");
+    }
+
+    glBindTexture(GL_TEXTURE_2D, m_RendererID);
+    glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height,
+                 0, m_DataFormat, GL_UNSIGNED_BYTE, data);
+}
+
+void Texture2D::Bind(unsigned int slot) const {
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_2D, m_RendererID);
+}
+
+void Texture2D::Unbind() const {
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+std::shared_ptr&lt;Texture2D&gt; Texture2D::Create(const std::string&amp; path) {
+    return std::make_shared&lt;Texture2D&gt;(path);
+}
+
+std::shared_ptr&lt;Texture2D&gt; Texture2D::Create(unsigned int width, unsigned int height) {
+    return std::make_shared&lt;Texture2D&gt;(width, height);
+}
+
+} // namespace Engine
+</code></pre>
+<h3 id="23-camera-摄像机系统"><a class="header" href="#23-camera-摄像机系统">2.3 Camera 摄像机系统</a></h3>
+<pre><code class="language-cpp">// Camera.h
+#pragma once
+#include &lt;glm/glm.hpp&gt;
+#include &lt;glm/gtc/matrix_transform.hpp&gt;
+
+namespace Engine {
+
+class Camera {
+public:
+    Camera(float left, float right, float bottom, float top);
+
+    void SetProjection(float left, float right, float bottom, float top);
+    void SetPosition(const glm::vec3&amp; position);
+    void SetRotation(float rotation);
+
+    const glm::vec3&amp; GetPosition() const { return m_Position; }
+    float GetRotation() const { return m_Rotation; }
+
+    const glm::mat4&amp; GetProjectionMatrix() const { return m_ProjectionMatrix; }
+    const glm::mat4&amp; GetViewMatrix() const { return m_ViewMatrix; }
+    const glm::mat4&amp; GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
+
+private:
+    void RecalculateViewMatrix();
+
+    glm::mat4 m_ProjectionMatrix;
+    glm::mat4 m_ViewMatrix;
+    glm::mat4 m_ViewProjectionMatrix;
+
+    glm::vec3 m_Position = {0.0f, 0.0f, 0.0f};
+    float m_Rotation = 0.0f;
+};
+
+// 透视摄像机（3D）
+class PerspectiveCamera {
+public:
+    PerspectiveCamera(float fov, float aspectRatio, float nearClip, float farClip);
+
+    void SetPosition(const glm::vec3&amp; position);
+    void SetRotation(const glm::vec3&amp; rotation);
+
+    const glm::mat4&amp; GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
+
+private:
+    void RecalculateViewMatrix();
+
+    glm::mat4 m_ProjectionMatrix;
+    glm::mat4 m_ViewMatrix;
+    glm::mat4 m_ViewProjectionMatrix;
+
+    glm::vec3 m_Position = {0.0f, 0.0f, 0.0f};
+    glm::vec3 m_Rotation = {0.0f, 0.0f, 0.0f};
+};
+
+} // namespace Engine
+</code></pre>
+<pre><code class="language-cpp">// Camera.cpp
+#include "Camera.h"
+
+namespace Engine {
+
+// 正交摄像机（2D）
+Camera::Camera(float left, float right, float bottom, float top)
+    : m_ProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)),
+      m_ViewMatrix(1.0f) {
+    m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+}
+
+void Camera::SetProjection(float left, float right, float bottom, float top) {
+    m_ProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
+    m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+}
+
+void Camera::SetPosition(const glm::vec3&amp; position) {
+    m_Position = position;
+    RecalculateViewMatrix();
+}
+
+void Camera::SetRotation(float rotation) {
+    m_Rotation = rotation;
+    RecalculateViewMatrix();
+}
+
+void Camera::RecalculateViewMatrix() {
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) *
+                          glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation), 
+                                      glm::vec3(0, 0, 1));
+
+    m_ViewMatrix = glm::inverse(transform);
+    m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+}
+
+// 透视摄像机（3D）
+PerspectiveCamera::PerspectiveCamera(float fov, float aspectRatio, 
+                                     float nearClip, float farClip)
+    : m_ProjectionMatrix(glm::perspective(glm::radians(fov), aspectRatio, 
+                                          nearClip, farClip)),
+      m_ViewMatrix(1.0f) {
+    m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+}
+
+void PerspectiveCamera::SetPosition(const glm::vec3&amp; position) {
+    m_Position = position;
+    RecalculateViewMatrix();
+}
+
+void PerspectiveCamera::SetRotation(const glm::vec3&amp; rotation) {
+    m_Rotation = rotation;
+    RecalculateViewMatrix();
+}
+
+void PerspectiveCamera::RecalculateViewMatrix() {
+    glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position);
+    transform = glm::rotate(transform, glm::radians(m_Rotation.x), glm::vec3(1, 0, 0));
+    transform = glm::rotate(transform, glm::radians(m_Rotation.y), glm::vec3(0, 1, 0));
+    transform = glm::rotate(transform, glm::radians(m_Rotation.z), glm::vec3(0, 0, 1));
+
+    m_ViewMatrix = glm::inverse(transform);
+    m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+}
+
+} // namespace Engine
+</code></pre>
+<hr />
+<h2 id="模块三实体组件系统ecs"><a class="header" href="#模块三实体组件系统ecs">模块三：实体组件系统（ECS）</a></h2>
+<h3 id="31-ecs-架构设计"><a class="header" href="#31-ecs-架构设计">3.1 ECS 架构设计</a></h3>
+<h4 id="核心概念"><a class="header" href="#核心概念">核心概念</a></h4>
+<pre><code class="language-cpp">// Entity: 唯一ID
+using Entity = uint32_t;
+
+// Component: 纯数据结构
+struct TransformComponent {
+    glm::vec3 Position = {0.0f, 0.0f, 0.0f};
+    glm::vec3 Rotation = {0.0f, 0.0f, 0.0f};
+    glm::vec3 Scale = {1.0f, 1.0f, 1.0f};
+
+    glm::mat4 GetTransform() const {
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), Position);
+        transform = glm::rotate(transform, Rotation.x, glm::vec3(1, 0, 0));
+        transform = glm::rotate(transform, Rotation.y, glm::vec3(0, 1, 0));
+        transform = glm::rotate(transform, Rotation.z, glm::vec3(0, 0, 1));
+        transform = glm::scale(transform, Scale);
+        return transform;
+    }
+};
+
+struct SpriteComponent {
+    glm::vec4 Color = {1.0f, 1.0f, 1.0f, 1.0f};
+    std::shared_ptr&lt;Texture2D&gt; Texture;
+};
+
+struct CameraComponent {
+    Camera Camera;
+    bool Primary = true;
+    bool FixedAspectRatio = false;
+
+    CameraComponent() = default;
+    CameraComponent(const CameraComponent&amp;) = default;
+};
+
+// System: 处理拥有特定组件的实体
+class RenderSystem {
+public:
+    void Update(EntityManager&amp; entities) {
+        // 遍历所有拥有 Transform 和 Sprite 组件的实体
+        for (auto entity : entities.GetEntitiesWith&lt;TransformComponent, SpriteComponent&gt;()) {
+            auto&amp; transform = entities.GetComponent&lt;TransformComponent&gt;(entity);
+            auto&amp; sprite = entities.GetComponent&lt;SpriteComponent&gt;(entity);
+            
+            // 渲染逻辑
+            Renderer::DrawQuad(transform.GetTransform(), sprite.Color, sprite.Texture);
+        }
+    }
+};
+</code></pre>
+<h3 id="32-简化的-ecs-实现"><a class="header" href="#32-简化的-ecs-实现">3.2 简化的 ECS 实现</a></h3>
+<pre><code class="language-cpp">// Scene.h
+#pragma once
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+#include &lt;unordered_map&gt;
+#include &lt;typeindex&gt;
+
+namespace Engine {
+
+class Scene;
+
+class Entity {
+public:
+    Entity() = default;
+    Entity(uint32_t handle, Scene* scene) : m_EntityHandle(handle), m_Scene(scene) {}
+
+    template&lt;typename T, typename... Args&gt;
+    T&amp; AddComponent(Args&amp;&amp;... args);
+
+    template&lt;typename T&gt;
+    T&amp; GetComponent();
+
+    template&lt;typename T&gt;
+    bool HasComponent();
+
+    template&lt;typename T&gt;
+    void RemoveComponent();
+
+    operator bool() const { return m_EntityHandle != 0; }
+    operator uint32_t() const { return m_EntityHandle; }
+
+private:
+    uint32_t m_EntityHandle = 0;
+    Scene* m_Scene = nullptr;
+};
+
+class Scene {
+public:
+    Scene() = default;
+    ~Scene() = default;
+
+    Entity CreateEntity(const std::string&amp; name = "Entity");
+    void DestroyEntity(Entity entity);
+
+    void Update(float deltaTime);
+    void Render();
+
+private:
+    std::unordered_map&lt;std::type_index, std::shared_ptr&lt;void&gt;&gt; m_ComponentArrays;
+    std::vector&lt;uint32_t&gt; m_Entities;
+    uint32_t m_EntityCounter = 0;
+
+    friend class Entity;
+};
+
+} // namespace Engine
+</code></pre>
+<hr />
+<h2 id="模块四资源管理系统"><a class="header" href="#模块四资源管理系统">模块四：资源管理系统</a></h2>
+<h3 id="41-资源管理器设计"><a class="header" href="#41-资源管理器设计">4.1 资源管理器设计</a></h3>
+<pre><code class="language-cpp">// ResourceManager.h
+#pragma once
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+#include &lt;memory&gt;
+#include "Shader.h"
+#include "Texture.h"
+
+namespace Engine {
+
+class ResourceManager {
+public:
+    // 着色器管理
+    static std::shared_ptr&lt;Shader&gt; LoadShader(const std::string&amp; name, 
+                                                const std::string&amp; vertexPath,
+                                                const std::string&amp; fragmentPath);
+    static std::shared_ptr&lt;Shader&gt; GetShader(const std::string&amp; name);
+
+    // 纹理管理
+    static std::shared_ptr&lt;Texture2D&gt; LoadTexture(const std::string&amp; name, 
+                                                    const std::string&amp; path);
+    static std::shared_ptr&lt;Texture2D&gt; GetTexture(const std::string&amp; name);
+
+    // 清理资源
+    static void Clear();
+
+private:
+    static std::unordered_map&lt;std::string, std::shared_ptr&lt;Shader&gt;&gt; s_Shaders;
+    static std::unordered_map&lt;std::string, std::shared_ptr&lt;Texture2D&gt;&gt; s_Textures;
+};
+
+} // namespace Engine
+</code></pre>
+<pre><code class="language-cpp">// ResourceManager.cpp
+#include "ResourceManager.h"
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+
+namespace Engine {
+
+std::unordered_map&lt;std::string, std::shared_ptr&lt;Shader&gt;&gt; ResourceManager::s_Shaders;
+std::unordered_map&lt;std::string, std::shared_ptr&lt;Texture2D&gt;&gt; ResourceManager::s_Textures;
+
+std::shared_ptr&lt;Shader&gt; ResourceManager::LoadShader(const std::string&amp; name,
+                                                      const std::string&amp; vertexPath,
+                                                      const std::string&amp; fragmentPath) {
+    // 读取着色器源码
+    std::string vertexCode, fragmentCode;
+    std::ifstream vShaderFile, fShaderFile;
+
+    vShaderFile.open(vertexPath);
+    fShaderFile.open(fragmentPath);
+
+    std::stringstream vShaderStream, fShaderStream;
+    vShaderStream &lt;&lt; vShaderFile.rdbuf();
+    fShaderStream &lt;&lt; fShaderFile.rdbuf();
+
+    vShaderFile.close();
+    fShaderFile.close();
+
+    vertexCode = vShaderStream.str();
+    fragmentCode = fShaderStream.str();
+
+    // 创建着色器
+    auto shader = Shader::Create(vertexCode, fragmentCode);
+    s_Shaders[name] = shader;
+    return shader;
+}
+
+std::shared_ptr&lt;Shader&gt; ResourceManager::GetShader(const std::string&amp; name) {
+    return s_Shaders[name];
+}
+
+std::shared_ptr&lt;Texture2D&gt; ResourceManager::LoadTexture(const std::string&amp; name,
+                                                          const std::string&amp; path) {
+    auto texture = Texture2D::Create(path);
+    s_Textures[name] = texture;
+    return texture;
+}
+
+std::shared_ptr&lt;Texture2D&gt; ResourceManager::GetTexture(const std::string&amp; name) {
+    return s_Textures[name];
+}
+
+void ResourceManager::Clear() {
+    s_Shaders.clear();
+    s_Textures.clear();
+}
+
+} // namespace Engine
+</code></pre>
+<hr />
+<h2 id="模块五完整示例项目"><a class="header" href="#模块五完整示例项目">模块五：完整示例项目</a></h2>
+<h3 id="51-2d-游戏示例打砖块"><a class="header" href="#51-2d-游戏示例打砖块">5.1 2D 游戏示例：打砖块</a></h3>
+<pre><code class="language-cpp">// BreakoutGame.cpp
+#include "Engine/Core/Application.h"
+#include "Engine/Renderer/Renderer.h"
+#include "Engine/Renderer/Shader.h"
+#include "Engine/Renderer/Texture.h"
+#include "Engine/Core/ResourceManager.h"
+#include &lt;glm/gtc/matrix_transform.hpp&gt;
+
+using namespace Engine;
+
+class BreakoutGame : public Application {
+public:
+    BreakoutGame() : Application("Breakout") {}
+
+    void OnInit() override {
+        // 加载资源
+        ResourceManager::LoadShader("sprite", 
+                                     "assets/shaders/sprite.vert", 
+                                     "assets/shaders/sprite.frag");
+        ResourceManager::LoadTexture("paddle", "assets/textures/paddle.png");
+        ResourceManager::LoadTexture("ball", "assets/textures/ball.png");
+        ResourceManager::LoadTexture("brick", "assets/textures/brick.png");
+
+        // 初始化游戏对象
+        m_PaddlePos = glm::vec2(350.0f, 550.0f);
+        m_BallPos = glm::vec2(400.0f, 500.0f);
+        m_BallVelocity = glm::vec2(100.0f, -350.0f);
+
+        // 创建砖块
+        InitBricks();
+    }
+
+    void OnUpdate(float deltaTime) override {
+        // 移动挡板
+        float velocity = 500.0f * deltaTime;
+        if (Input::IsKeyPressed(Key::Left)) {
+            m_PaddlePos.x -= velocity;
+            if (m_PaddlePos.x &lt; 0.0f)
+                m_PaddlePos.x = 0.0f;
+        }
+        if (Input::IsKeyPressed(Key::Right)) {
+            m_PaddlePos.x += velocity;
+            if (m_PaddlePos.x &gt; 700.0f)
+                m_PaddlePos.x = 700.0f;
+        }
+
+        // 移动球
+        m_BallPos += m_BallVelocity * deltaTime;
+
+        // 球的碰撞检测
+        CheckCollisions();
+    }
+
+    void OnRender() override {
+        Renderer::BeginScene(m_Camera);
+
+        auto shader = ResourceManager::GetShader("sprite");
+        shader-&gt;Bind();
+
+        // 渲染砖块
+        for (auto&amp; brick : m_Bricks) {
+            if (!brick.Destroyed) {
+                RenderSprite(ResourceManager::GetTexture("brick"), 
+                             brick.Position, 
+                             glm::vec2(100.0f, 30.0f),
+                             0.0f,
+                             brick.Color);
+            }
+        }
+
+        // 渲染挡板
+        RenderSprite(ResourceManager::GetTexture("paddle"),
+                     m_PaddlePos,
+                     glm::vec2(100.0f, 20.0f),
+                     0.0f);
+
+        // 渲染球
+        RenderSprite(ResourceManager::GetTexture("ball"),
+                     m_BallPos,
+                     glm::vec2(20.0f, 20.0f),
+                     0.0f);
+
+        Renderer::EndScene();
+    }
+
+private:
+    struct Brick {
+        glm::vec2 Position;
+        glm::vec4 Color;
+        bool Destroyed = false;
+    };
+
+    void InitBricks() {
+        // 创建5行12列的砖块
+        for (int row = 0; row &lt; 5; row++) {
+            for (int col = 0; col &lt; 12; col++) {
+                Brick brick;
+                brick.Position = glm::vec2(col * 110.0f + 5.0f, row * 40.0f + 5.0f);
+                
+                // 不同行不同颜色
+                if (row == 0)
+                    brick.Color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+                else if (row == 1)
+                    brick.Color = glm::vec4(1.0f, 0.5f, 0.0f, 1.0f);
+                else if (row == 2)
+                    brick.Color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f);
+                else if (row == 3)
+                    brick.Color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+                else
+                    brick.Color = glm::vec4(0.0f, 0.5f, 1.0f, 1.0f);
+
+                m_Bricks.push_back(brick);
+            }
+        }
+    }
+
+    void CheckCollisions() {
+        // 墙壁碰撞
+        if (m_BallPos.x &lt;= 0.0f) {
+            m_BallVelocity.x = -m_BallVelocity.x;
+            m_BallPos.x = 0.0f;
+        }
+        if (m_BallPos.x &gt;= 780.0f) {
+            m_BallVelocity.x = -m_BallVelocity.x;
+            m_BallPos.x = 780.0f;
+        }
+        if (m_BallPos.y &lt;= 0.0f) {
+            m_BallVelocity.y = -m_BallVelocity.y;
+            m_BallPos.y = 0.0f;
+        }
+
+        // 挡板碰撞
+        if (CheckCollision(m_BallPos, glm::vec2(20.0f), m_PaddlePos, glm::vec2(100.0f, 20.0f))) {
+            m_BallVelocity.y = -std::abs(m_BallVelocity.y);
+        }
+
+        // 砖块碰撞
+        for (auto&amp; brick : m_Bricks) {
+            if (!brick.Destroyed) {
+                if (CheckCollision(m_BallPos, glm::vec2(20.0f), brick.Position, glm::vec2(100.0f, 30.0f))) {
+                    brick.Destroyed = true;
+                    m_BallVelocity.y = -m_BallVelocity.y;
+                }
+            }
+        }
+    }
+
+    bool CheckCollision(glm::vec2 posA, glm::vec2 sizeA, glm::vec2 posB, glm::vec2 sizeB) {
+        bool collisionX = posA.x + sizeA.x &gt;= posB.x &amp;&amp; posB.x + sizeB.x &gt;= posA.x;
+        bool collisionY = posA.y + sizeA.y &gt;= posB.y &amp;&amp; posB.y + sizeB.y &gt;= posA.y;
+        return collisionX &amp;&amp; collisionY;
+    }
+
+    void RenderSprite(std::shared_ptr&lt;Texture2D&gt; texture, 
+                      glm::vec2 position, 
+                      glm::vec2 size,
+                      float rotation,
+                      glm::vec4 color = glm::vec4(1.0f)) {
+        // 渲染精灵的代码
+        // 使用 Renderer::DrawQuad 或自定义渲染逻辑
+    }
+
+    Camera m_Camera;
+    glm::vec2 m_PaddlePos;
+    glm::vec2 m_BallPos;
+    glm::vec2 m_BallVelocity;
+    std::vector&lt;Brick&gt; m_Bricks;
+};
+
+Application* CreateApplication() {
+    return new BreakoutGame();
+}
+</code></pre>
+<hr />
+<h2 id="学习效果验证标准"><a class="header" href="#学习效果验证标准">学习效果验证标准</a></h2>
+<h3 id="1-基础能力验证"><a class="header" href="#1-基础能力验证">1. 基础能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够搭建完整的C++游戏引擎项目结构</li>
+<li><input disabled="" type="checkbox"/>
+理解游戏引擎的层级架构和模块划分</li>
+<li><input disabled="" type="checkbox"/>
+掌握OpenGL/GLFW的基础使用</li>
+<li><input disabled="" type="checkbox"/>
+能够实现窗口、输入、渲染的基础框架</li>
+</ul>
+<h3 id="2-核心系统验证"><a class="header" href="#2-核心系统验证">2. 核心系统验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现Shader、Texture管理系统</li>
+<li><input disabled="" type="checkbox"/>
+实现2D/3D摄像机系统</li>
+<li><input disabled="" type="checkbox"/>
+实现基础的渲染器（支持绘制基本图形）</li>
+<li><input disabled="" type="checkbox"/>
+实现资源管理系统（纹理、着色器）</li>
+</ul>
+<h3 id="3-高级功能验证"><a class="header" href="#3-高级功能验证">3. 高级功能验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现实体组件系统（ECS）</li>
+<li><input disabled="" type="checkbox"/>
+集成物理引擎（Box2D或Bullet）</li>
+<li><input disabled="" type="checkbox"/>
+实现场景管理和序列化</li>
+<li><input disabled="" type="checkbox"/>
+实现脚本系统集成（Lua/ChaiScript）</li>
+</ul>
+<h3 id="4-项目实战验证"><a class="header" href="#4-项目实战验证">4. 项目实战验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+开发完整的2D游戏（如打砖块、贪吃蛇）</li>
+<li><input disabled="" type="checkbox"/>
+开发简单的3D演示程序</li>
+<li><input disabled="" type="checkbox"/>
+实现游戏编辑器基础功能</li>
+<li><input disabled="" type="checkbox"/>
+性能分析和优化实践</li>
+</ul>
+<h3 id="5-综合能力验证"><a class="header" href="#5-综合能力验证">5. 综合能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够独立设计引擎架构</li>
+<li><input disabled="" type="checkbox"/>
+掌握现代C++特性应用（智能指针、模板、lambda）</li>
+<li><input disabled="" type="checkbox"/>
+理解图形管线和渲染优化</li>
+<li><input disabled="" type="checkbox"/>
+能够阅读和理解商业引擎源码</li>
+</ul>
+<hr />
+<h2 id="进阶学习路径"><a class="header" href="#进阶学习路径">进阶学习路径</a></h2>
+<h3 id="阶段一基础架构1-2月"><a class="header" href="#阶段一基础架构1-2月">阶段一：基础架构（1-2月）</a></h3>
+<ol>
+<li>
+<p><strong>C++现代特性</strong></p>
+<ul>
+<li>智能指针（unique_ptr、shared_ptr）</li>
+<li>RAII资源管理</li>
+<li>模板编程</li>
+<li>Lambda表达式</li>
+</ul>
+</li>
+<li>
+<p><strong>引擎框架搭建</strong></p>
+<ul>
+<li>Application层设计</li>
+<li>窗口和输入系统</li>
+<li>基础渲染器</li>
+<li>资源管理器</li>
+</ul>
+</li>
+</ol>
+<h3 id="阶段二核心系统2-4月"><a class="header" href="#阶段二核心系统2-4月">阶段二：核心系统（2-4月）</a></h3>
+<ol>
+<li>
+<p><strong>渲染系统</strong></p>
+<ul>
+<li>OpenGL深入学习</li>
+<li>着色器编程（GLSL）</li>
+<li>纹理和材质系统</li>
+<li>批渲染优化</li>
+</ul>
+</li>
+<li>
+<p><strong>场景管理</strong></p>
+<ul>
+<li>ECS架构实现</li>
+<li>场景图（Scene Graph）</li>
+<li>空间分区（四叉树、八叉树）</li>
+</ul>
+</li>
+</ol>
+<h3 id="阶段三高级功能4-6月"><a class="header" href="#阶段三高级功能4-6月">阶段三：高级功能（4-6月）</a></h3>
+<ol>
+<li>
+<p><strong>物理集成</strong></p>
+<ul>
+<li>Box2D/Bullet集成</li>
+<li>碰撞检测优化</li>
+<li>物理材质系统</li>
+</ul>
+</li>
+<li>
+<p><strong>脚本系统</strong></p>
+<ul>
+<li>Lua/ChaiScript集成</li>
+<li>热重载支持</li>
+<li>调试接口</li>
+</ul>
+</li>
+</ol>
+<h3 id="阶段四工具链6-9月"><a class="header" href="#阶段四工具链6-9月">阶段四：工具链（6-9月）</a></h3>
+<ol>
+<li>
+<p><strong>编辑器开发</strong></p>
+<ul>
+<li>ImGui集成</li>
+<li>场景编辑器</li>
+<li>资源浏览器</li>
+<li>属性面板</li>
+</ul>
+</li>
+<li>
+<p><strong>序列化系统</strong></p>
+<ul>
+<li>场景保存/加载</li>
+<li>资源打包</li>
+<li>配置文件管理</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="扩展资源"><a class="header" href="#扩展资源">扩展资源</a></h2>
+<h3 id="开源引擎学习"><a class="header" href="#开源引擎学习">开源引擎学习</a></h3>
+<ul>
+<li>
+<p><strong>Hazel Engine</strong> (https://github.com/TheCherno/Hazel)</p>
+<ul>
+<li>优秀的C++游戏引擎教程项目</li>
+<li>YouTube频道：The Cherno</li>
+</ul>
+</li>
+<li>
+<p><strong>Sparky Engine</strong> (https://github.com/TheCherno/Sparky)</p>
+<ul>
+<li>2D游戏引擎示例</li>
+</ul>
+</li>
+<li>
+<p><strong>Godot Engine</strong> (https://github.com/godotengine/godot)</p>
+<ul>
+<li>开源3D引擎，学习生产级代码</li>
+</ul>
+</li>
+</ul>
+<h3 id="图形编程资源"><a class="header" href="#图形编程资源">图形编程资源</a></h3>
+<ul>
+<li>
+<p><strong>LearnOpenGL</strong> (https://learnopengl.com/)</p>
+<ul>
+<li>OpenGL权威教程，中文版：learnopengl-cn.github.io</li>
+</ul>
+</li>
+<li>
+<p><strong>OpenGL SuperBible</strong></p>
+<ul>
+<li>OpenGL编程圣经</li>
+</ul>
+</li>
+<li>
+<p><strong>Real-Time Rendering</strong></p>
+<ul>
+<li>实时渲染理论书籍</li>
+</ul>
+</li>
+</ul>
+<h3 id="c资源"><a class="header" href="#c资源">C++资源</a></h3>
+<ul>
+<li>
+<p><strong>Effective Modern C++</strong></p>
+<ul>
+<li>现代C++最佳实践</li>
+</ul>
+</li>
+<li>
+<p><strong>C++ Primer Plus</strong></p>
+<ul>
+<li>C++入门经典</li>
+</ul>
+</li>
+</ul>
+<h3 id="游戏引擎架构"><a class="header" href="#游戏引擎架构">游戏引擎架构</a></h3>
+<ul>
+<li>
+<p><strong>Game Engine Architecture</strong> (Jason Gregory)</p>
+<ul>
+<li>游戏引擎架构圣经</li>
+</ul>
+</li>
+<li>
+<p><strong>Game Programming Patterns</strong> (Robert Nystrom)</p>
+<ul>
+<li>游戏编程模式</li>
+</ul>
+</li>
+</ul>
+<h3 id="在线课程"><a class="header" href="#在线课程">在线课程</a></h3>
+<ul>
+<li><strong>Udemy</strong>: C++ Game Engine Programming</li>
+<li><strong>Coursera</strong>: Computer Graphics</li>
+<li><strong>YouTube</strong>: The Cherno Game Engine Series</li>
+</ul>
+<hr />
+<h2 id="常见问题解答"><a class="header" href="#常见问题解答">常见问题解答</a></h2>
+<h3 id="q1-需要什么级别的c知识"><a class="header" href="#q1-需要什么级别的c知识">Q1: 需要什么级别的C++知识？</a></h3>
+<p><strong>答</strong>:</p>
+<ul>
+<li>基础：类、继承、多态、模板基础</li>
+<li>进阶：智能指针、RAII、移动语义</li>
+<li>推荐先学习现代C++（C++11/14）</li>
+</ul>
+<h3 id="q2-选择opengl还是directx"><a class="header" href="#q2-选择opengl还是directx">Q2: 选择OpenGL还是DirectX？</a></h3>
+<p><strong>答</strong>:</p>
+<ul>
+<li><strong>OpenGL</strong>: 跨平台，易学，资料丰富（推荐初学）</li>
+<li><strong>DirectX</strong>: Windows平台性能更好，但仅限Windows</li>
+<li><strong>Vulkan</strong>: 现代API，性能最佳，但学习曲线陡</li>
+</ul>
+<h3 id="q3-从2d还是3d开始"><a class="header" href="#q3-从2d还是3d开始">Q3: 从2D还是3D开始？</a></h3>
+<p><strong>答</strong>:</p>
+<ul>
+<li>推荐从2D开始：
+<ul>
+<li>概念更简单（无Z轴、无复杂光照）</li>
+<li>渲染更简单（正交投影）</li>
+<li>更快看到成果</li>
+</ul>
+</li>
+<li>2D引擎基础同样适用于3D</li>
+</ul>
+<h3 id="q4-需要多长时间"><a class="header" href="#q4-需要多长时间">Q4: 需要多长时间？</a></h3>
+<p><strong>答</strong>:</p>
+<ul>
+<li>基础框架：1-2月</li>
+<li>可用引擎：3-6月</li>
+<li>功能完善：6-12月</li>
+<li>取决于每天投入时间和C++基础</li>
+</ul>
+<h3 id="q5-是否要全部从零实现"><a class="header" href="#q5-是否要全部从零实现">Q5: 是否要全部从零实现？</a></h3>
+<p><strong>答</strong>:</p>
+<ul>
+<li><strong>不推荐</strong>全部从零实现</li>
+<li>使用成熟第三方库：
+<ul>
+<li>窗口：GLFW/SDL</li>
+<li>图像：stb_image</li>
+<li>数学：GLM</li>
+<li>物理：Box2D/Bullet</li>
+</ul>
+</li>
+<li>重点放在引擎架构设计和集成</li>
+</ul>
+<hr />
+<h2 id="实战项目建议"><a class="header" href="#实战项目建议">实战项目建议</a></h2>
+<h3 id="项目1-2d精灵引擎难度"><a class="header" href="#项目1-2d精灵引擎难度">项目1: 2D精灵引擎（难度：★★☆☆☆）</a></h3>
+<p><strong>功能</strong>:</p>
+<ul>
+<li>精灵渲染</li>
+<li>动画系统</li>
+<li>碰撞检测</li>
+<li>简单粒子系统</li>
+</ul>
+<p><strong>参考游戏</strong>: 打砖块、贪吃蛇</p>
+<h3 id="项目2-2d平台游戏引擎难度"><a class="header" href="#项目2-2d平台游戏引擎难度">项目2: 2D平台游戏引擎（难度：★★★☆☆）</a></h3>
+<p><strong>功能</strong>:</p>
+<ul>
+<li>瓦片地图</li>
+<li>物理引擎集成</li>
+<li>相机跟随</li>
+<li>关卡编辑器</li>
+</ul>
+<p><strong>参考游戏</strong>: 马里奥、Celeste</p>
+<h3 id="项目3-简单3d引擎难度"><a class="header" href="#项目3-简单3d引擎难度">项目3: 简单3D引擎（难度：★★★★☆）</a></h3>
+<p><strong>功能</strong>:</p>
+<ul>
+<li>3D模型加载</li>
+<li>光照系统</li>
+<li>材质系统</li>
+<li>阴影</li>
+</ul>
+<p><strong>参考</strong>: Minecraft风格渲染</p>
+<h3 id="项目4-ecs架构引擎难度"><a class="header" href="#项目4-ecs架构引擎难度">项目4: ECS架构引擎（难度：★★★★★）</a></h3>
+<p><strong>功能</strong>:</p>
+<ul>
+<li>完整ECS实现</li>
+<li>场景序列化</li>
+<li>脚本集成</li>
+<li>多线程渲染</li>
+</ul>
+<hr />
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>自制C++游戏引擎是一个充满挑战但极具价值的学习过程：</p>
+<p><strong>核心收获</strong>:</p>
+<ul>
+<li>深入理解游戏引擎原理</li>
+<li>掌握现代C++编程</li>
+<li>图形编程实战能力</li>
+<li>软件架构设计经验</li>
+</ul>
+<p><strong>学习策略</strong>:</p>
+<ol>
+<li>循序渐进，先2D后3D</li>
+<li>重视架构设计，避免过早优化</li>
+<li>参考优秀开源项目</li>
+<li>多做项目实践</li>
+</ol>
+<p><strong>适合人群</strong>:</p>
+<ul>
+<li>想深入理解引擎的开发者</li>
+<li>追求技术深度的学习者</li>
+<li>有充足时间投入的学生</li>
+<li>独立游戏开发者</li>
+</ul>
+<p>记住：制作引擎不是目的，通过制作引擎学习底层技术、提升编程能力才是核心价值！</p>
+<p><strong>下一步行动</strong>:</p>
+<ol>
+<li>搭建基础项目框架（CMake + GLFW + GLAD）</li>
+<li>实现窗口和基础渲染</li>
+<li>完成一个简单的2D游戏（如打砖块）</li>
+<li>逐步添加更多系统（物理、音频、脚本）</li>
+<li>开发自己的完整游戏作品</li>
+</ol>
+<p>祝你在游戏引擎开发之旅中收获满满！🚀</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/game/PyGame.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/00-LinuxC.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/game/PyGame.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/00-LinuxC.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,1343 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>OpenMP 技术笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="openmp-技术笔记"><a class="header" href="#openmp-技术笔记">OpenMP 技术笔记</a></h1>
+<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
+<p>OpenMP（Open Multi-Processing）是一个用于共享内存并行编程的API规范，支持C、C++和Fortran语言。它通过编译器指导语句（pragma directives）、运行时库例程和环境变量的结合，为程序员提供了简单易用的并行编程接口。OpenMP特别适合于循环并行化和任务并行化，是高性能计算领域广泛使用的并行编程标准。</p>
+<h3 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h3>
+<ul>
+<li>编译器指导的并行化（pragma指令）</li>
+<li>共享内存并行编程模型</li>
+<li>增量并行化，支持渐进式优化</li>
+<li>线程管理和同步机制</li>
+<li>数据共享控制</li>
+<li>任务并行和循环并行</li>
+<li>NUMA感知的线程绑定</li>
+<li>可扩展的性能调优</li>
+</ul>
+<h2 id="系统架构"><a class="header" href="#系统架构">系统架构</a></h2>
+<h3 id="openmp编程模型"><a class="header" href="#openmp编程模型">OpenMP编程模型</a></h3>
+<pre><code>主线程（Master Thread）
+    |
+    | #pragma omp parallel
+    |
++---+---+---+---+  并行区域开始
+|   |   |   |   |
+| 工作线程组    |  并行执行
+|   |   |   |   |
++---+---+---+---+  并行区域结束
+    |
+    | 汇聚点
+    |
+主线程继续执行
+</code></pre>
+<h3 id="核心组件"><a class="header" href="#核心组件">核心组件</a></h3>
+<ol>
+<li><strong>编译器指导语句</strong> - #pragma omp指令</li>
+<li><strong>运行时库函数</strong> - omp_*函数族</li>
+<li><strong>环境变量</strong> - OMP_*环境变量</li>
+<li><strong>线程管理</strong> - 线程创建、销毁、同步</li>
+<li><strong>数据环境</strong> - 变量共享和私有化</li>
+</ol>
+<h2 id="关键组件详解"><a class="header" href="#关键组件详解">关键组件详解</a></h2>
+<h3 id="1-基础并行构造"><a class="header" href="#1-基础并行构造">1. 基础并行构造</a></h3>
+<pre><code class="language-cpp">#include &lt;omp.h&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;chrono&gt;
+#include &lt;algorithm&gt;
+
+class OpenMPBasics {
+public:
+    // 基本并行区域
+    static void basicParallelRegion() {
+        std::cout &lt;&lt; "Sequential section - Thread ID: " &lt;&lt; omp_get_thread_num() &lt;&lt; std::endl;
+
+        #pragma omp parallel
+        {
+            int thread_id = omp_get_thread_num();
+            int num_threads = omp_get_num_threads();
+
+            std::cout &lt;&lt; "Hello from thread " &lt;&lt; thread_id
+                     &lt;&lt; " of " &lt;&lt; num_threads &lt;&lt; " threads" &lt;&lt; std::endl;
+        }
+
+        std::cout &lt;&lt; "Back to sequential section" &lt;&lt; std::endl;
+    }
+
+    // 指定线程数的并行区域
+    static void parallelWithThreads(int num_threads) {
+        #pragma omp parallel num_threads(num_threads)
+        {
+            int thread_id = omp_get_thread_num();
+            int total_threads = omp_get_num_threads();
+
+            #pragma omp critical
+            {
+                std::cout &lt;&lt; "Thread " &lt;&lt; thread_id &lt;&lt; " of " &lt;&lt; total_threads
+                         &lt;&lt; " threads" &lt;&lt; std::endl;
+            }
+        }
+    }
+
+    // 条件并行
+    static void conditionalParallel(bool use_parallel) {
+        #pragma omp parallel if(use_parallel)
+        {
+            int thread_id = omp_get_thread_num();
+            std::cout &lt;&lt; "Thread ID: " &lt;&lt; thread_id &lt;&lt; std::endl;
+        }
+    }
+
+    // 私有变量和共享变量
+    static void variableScopes() {
+        int shared_var = 10;
+        int private_var = 20;
+
+        #pragma omp parallel private(private_var) shared(shared_var)
+        {
+            private_var = omp_get_thread_num(); // 每个线程有自己的副本
+
+            #pragma omp critical
+            {
+                std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                         &lt;&lt; ": private_var = " &lt;&lt; private_var
+                         &lt;&lt; ", shared_var = " &lt;&lt; shared_var &lt;&lt; std::endl;
+                shared_var++; // 所有线程共享
+            }
+        }
+
+        std::cout &lt;&lt; "Final shared_var = " &lt;&lt; shared_var &lt;&lt; std::endl;
+    }
+
+    // firstprivate和lastprivate
+    static void firstLastPrivate() {
+        int value = 100;
+
+        std::cout &lt;&lt; "Initial value: " &lt;&lt; value &lt;&lt; std::endl;
+
+        #pragma omp parallel for firstprivate(value) lastprivate(value)
+        for (int i = 0; i &lt; 10; ++i) {
+            value = i * 10; // 每个线程从100开始，各自修改
+            std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                     &lt;&lt; ", iteration " &lt;&lt; i &lt;&lt; ", value = " &lt;&lt; value &lt;&lt; std::endl;
+        }
+
+        std::cout &lt;&lt; "Final value (from last iteration): " &lt;&lt; value &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h3 id="2-并行循环"><a class="header" href="#2-并行循环">2. 并行循环</a></h3>
+<pre><code class="language-cpp">class ParallelLoops {
+public:
+    // 基本并行for循环
+    static void basicParallelFor() {
+        const int N = 10;
+        std::vector&lt;int&gt; data(N);
+
+        #pragma omp parallel for
+        for (int i = 0; i &lt; N; ++i) {
+            data[i] = i * i;
+            std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                     &lt;&lt; " processing element " &lt;&lt; i &lt;&lt; std::endl;
+        }
+
+        std::cout &lt;&lt; "Results: ";
+        for (int val : data) {
+            std::cout &lt;&lt; val &lt;&lt; " ";
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+
+    // 调度策略
+    static void schedulingStrategies() {
+        const int N = 16;
+
+        std::cout &lt;&lt; "Static scheduling (default):" &lt;&lt; std::endl;
+        #pragma omp parallel for schedule(static)
+        for (int i = 0; i &lt; N; ++i) {
+            std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num() &lt;&lt; " -&gt; " &lt;&lt; i &lt;&lt; std::endl;
+        }
+
+        std::cout &lt;&lt; "\nStatic scheduling with chunk size 2:" &lt;&lt; std::endl;
+        #pragma omp parallel for schedule(static, 2)
+        for (int i = 0; i &lt; N; ++i) {
+            std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num() &lt;&lt; " -&gt; " &lt;&lt; i &lt;&lt; std::endl;
+        }
+
+        std::cout &lt;&lt; "\nDynamic scheduling:" &lt;&lt; std::endl;
+        #pragma omp parallel for schedule(dynamic, 2)
+        for (int i = 0; i &lt; N; ++i) {
+            std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num() &lt;&lt; " -&gt; " &lt;&lt; i &lt;&lt; std::endl;
+        }
+
+        std::cout &lt;&lt; "\nGuided scheduling:" &lt;&lt; std::endl;
+        #pragma omp parallel for schedule(guided)
+        for (int i = 0; i &lt; N; ++i) {
+            std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num() &lt;&lt; " -&gt; " &lt;&lt; i &lt;&lt; std::endl;
+        }
+    }
+
+    // 归约操作
+    static void reductionOperations() {
+        const int N = 1000000;
+        std::vector&lt;double&gt; data(N);
+
+        // 初始化数据
+        #pragma omp parallel for
+        for (int i = 0; i &lt; N; ++i) {
+            data[i] = 1.0 / (i + 1);
+        }
+
+        // 求和归约
+        double sum = 0.0;
+        auto start = std::chrono::high_resolution_clock::now();
+
+        #pragma omp parallel for reduction(+:sum)
+        for (int i = 0; i &lt; N; ++i) {
+            sum += data[i];
+        }
+
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - start);
+
+        std::cout &lt;&lt; "Sum: " &lt;&lt; sum &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Parallel time: " &lt;&lt; duration.count() &lt;&lt; " ms" &lt;&lt; std::endl;
+
+        // 串行版本比较
+        double serial_sum = 0.0;
+        start = std::chrono::high_resolution_clock::now();
+
+        for (int i = 0; i &lt; N; ++i) {
+            serial_sum += data[i];
+        }
+
+        end = std::chrono::high_resolution_clock::now();
+        duration = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - start);
+
+        std::cout &lt;&lt; "Serial sum: " &lt;&lt; serial_sum &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Serial time: " &lt;&lt; duration.count() &lt;&lt; " ms" &lt;&lt; std::endl;
+    }
+
+    // 多种归约操作
+    static void multipleReductions() {
+        const int N = 100;
+        std::vector&lt;int&gt; data(N);
+
+        // 初始化数据
+        for (int i = 0; i &lt; N; ++i) {
+            data[i] = i + 1;
+        }
+
+        int sum = 0, product = 1, max_val = 0, min_val = INT_MAX;
+
+        #pragma omp parallel for reduction(+:sum) reduction(*:product) \
+                                 reduction(max:max_val) reduction(min:min_val)
+        for (int i = 0; i &lt; N; ++i) {
+            sum += data[i];
+            product *= (data[i] % 10); // 避免溢出
+            max_val = std::max(max_val, data[i]);
+            min_val = std::min(min_val, data[i]);
+        }
+
+        std::cout &lt;&lt; "Sum: " &lt;&lt; sum &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Product (mod 10): " &lt;&lt; product &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Max: " &lt;&lt; max_val &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Min: " &lt;&lt; min_val &lt;&lt; std::endl;
+    }
+
+    // 嵌套循环并行化
+    static void nestedLoopParallel() {
+        const int ROWS = 8, COLS = 8;
+        std::vector&lt;std::vector&lt;int&gt;&gt; matrix(ROWS, std::vector&lt;int&gt;(COLS));
+
+        // 外层循环并行化
+        #pragma omp parallel for
+        for (int i = 0; i &lt; ROWS; ++i) {
+            for (int j = 0; j &lt; COLS; ++j) {
+                matrix[i][j] = i * COLS + j;
+                std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                         &lt;&lt; " processing (" &lt;&lt; i &lt;&lt; "," &lt;&lt; j &lt;&lt; ")" &lt;&lt; std::endl;
+            }
+        }
+
+        // 使用collapse合并循环
+        std::cout &lt;&lt; "\nUsing collapse:" &lt;&lt; std::endl;
+        #pragma omp parallel for collapse(2)
+        for (int i = 0; i &lt; ROWS; ++i) {
+            for (int j = 0; j &lt; COLS; ++j) {
+                matrix[i][j] *= 2;
+                std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                         &lt;&lt; " processing (" &lt;&lt; i &lt;&lt; "," &lt;&lt; j &lt;&lt; ")" &lt;&lt; std::endl;
+            }
+        }
+    }
+};
+</code></pre>
+<h3 id="3-同步机制"><a class="header" href="#3-同步机制">3. 同步机制</a></h3>
+<pre><code class="language-cpp">class Synchronization {
+public:
+    // critical区域
+    static void criticalSection() {
+        int shared_counter = 0;
+
+        #pragma omp parallel num_threads(4)
+        {
+            for (int i = 0; i &lt; 5; ++i) {
+                #pragma omp critical
+                {
+                    shared_counter++;
+                    std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                             &lt;&lt; " incremented counter to " &lt;&lt; shared_counter &lt;&lt; std::endl;
+                }
+            }
+        }
+
+        std::cout &lt;&lt; "Final counter value: " &lt;&lt; shared_counter &lt;&lt; std::endl;
+    }
+
+    // 命名critical区域
+    static void namedCritical() {
+        int counter1 = 0, counter2 = 0;
+
+        #pragma omp parallel num_threads(4)
+        {
+            // 不同的critical区域可以并行执行
+            if (omp_get_thread_num() % 2 == 0) {
+                #pragma omp critical(counter1_update)
+                {
+                    counter1++;
+                    std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                             &lt;&lt; " updated counter1: " &lt;&lt; counter1 &lt;&lt; std::endl;
+                }
+            } else {
+                #pragma omp critical(counter2_update)
+                {
+                    counter2++;
+                    std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                             &lt;&lt; " updated counter2: " &lt;&lt; counter2 &lt;&lt; std::endl;
+                }
+            }
+        }
+
+        std::cout &lt;&lt; "Counter1: " &lt;&lt; counter1 &lt;&lt; ", Counter2: " &lt;&lt; counter2 &lt;&lt; std::endl;
+    }
+
+    // atomic操作
+    static void atomicOperations() {
+        int shared_counter = 0;
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+        #pragma omp parallel num_threads(4)
+        {
+            for (int i = 0; i &lt; 10000; ++i) {
+                #pragma omp atomic
+                shared_counter++;
+            }
+        }
+
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(end - start);
+
+        std::cout &lt;&lt; "Atomic counter: " &lt;&lt; shared_counter &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Atomic time: " &lt;&lt; duration.count() &lt;&lt; " μs" &lt;&lt; std::endl;
+
+        // 使用critical比较
+        shared_counter = 0;
+        start = std::chrono::high_resolution_clock::now();
+
+        #pragma omp parallel num_threads(4)
+        {
+            for (int i = 0; i &lt; 10000; ++i) {
+                #pragma omp critical
+                shared_counter++;
+            }
+        }
+
+        end = std::chrono::high_resolution_clock::now();
+        duration = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(end - start);
+
+        std::cout &lt;&lt; "Critical counter: " &lt;&lt; shared_counter &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Critical time: " &lt;&lt; duration.count() &lt;&lt; " μs" &lt;&lt; std::endl;
+    }
+
+    // barrier同步
+    static void barrierSync() {
+        const int N = 8;
+        std::vector&lt;int&gt; data(N);
+
+        #pragma omp parallel num_threads(4)
+        {
+            int thread_id = omp_get_thread_num();
+
+            // 第一阶段：初始化
+            #pragma omp for
+            for (int i = 0; i &lt; N; ++i) {
+                data[i] = i;
+                std::cout &lt;&lt; "Thread " &lt;&lt; thread_id &lt;&lt; " initialized data[" &lt;&lt; i &lt;&lt; "]" &lt;&lt; std::endl;
+            }
+
+            // 隐式barrier确保所有线程完成初始化
+            #pragma omp barrier
+
+            // 第二阶段：处理
+            #pragma omp for
+            for (int i = 0; i &lt; N; ++i) {
+                data[i] *= 2;
+                std::cout &lt;&lt; "Thread " &lt;&lt; thread_id &lt;&lt; " processed data[" &lt;&lt; i &lt;&lt; "]" &lt;&lt; std::endl;
+            }
+
+            // 输出结果前同步
+            #pragma omp barrier
+
+            #pragma omp single
+            {
+                std::cout &lt;&lt; "Final results: ";
+                for (int val : data) {
+                    std::cout &lt;&lt; val &lt;&lt; " ";
+                }
+                std::cout &lt;&lt; std::endl;
+            }
+        }
+    }
+
+    // master和single指令
+    static void masterSingleDirectives() {
+        #pragma omp parallel num_threads(4)
+        {
+            // master指令：只有主线程执行，其他线程不等待
+            #pragma omp master
+            {
+                std::cout &lt;&lt; "Master thread " &lt;&lt; omp_get_thread_num()
+                         &lt;&lt; " executing master block" &lt;&lt; std::endl;
+            }
+
+            // single指令：只有一个线程执行，其他线程等待
+            #pragma omp single
+            {
+                std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                         &lt;&lt; " executing single block" &lt;&lt; std::endl;
+            }
+
+            // 所有线程都会执行这里
+            std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                     &lt;&lt; " after single block" &lt;&lt; std::endl;
+        }
+    }
+
+    // 自定义锁
+    static void customLocks() {
+        omp_lock_t lock;
+        omp_init_lock(&amp;lock);
+
+        int shared_resource = 0;
+
+        #pragma omp parallel num_threads(4)
+        {
+            for (int i = 0; i &lt; 3; ++i) {
+                omp_set_lock(&amp;lock);
+
+                // 临界区
+                shared_resource++;
+                std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                         &lt;&lt; " accessed shared resource: " &lt;&lt; shared_resource &lt;&lt; std::endl;
+
+                omp_unset_lock(&amp;lock);
+
+                // 做一些其他工作
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            }
+        }
+
+        omp_destroy_lock(&amp;lock);
+        std::cout &lt;&lt; "Final shared resource value: " &lt;&lt; shared_resource &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h3 id="4-任务并行"><a class="header" href="#4-任务并行">4. 任务并行</a></h3>
+<pre><code class="language-cpp">class TaskParallelism {
+public:
+    // 基本任务并行
+    static void basicTasks() {
+        #pragma omp parallel
+        {
+            #pragma omp single
+            {
+                for (int i = 0; i &lt; 8; ++i) {
+                    #pragma omp task
+                    {
+                        std::cout &lt;&lt; "Task " &lt;&lt; i &lt;&lt; " executed by thread "
+                                 &lt;&lt; omp_get_thread_num() &lt;&lt; std::endl;
+
+                        // 模拟工作
+                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    }
+                }
+            } // 隐式taskwait
+        }
+    }
+
+    // 递归任务：斐波那契数列
+    static int fibonacci_parallel(int n) {
+        if (n &lt; 2) return n;
+
+        int x, y;
+
+        #pragma omp task shared(x)
+        x = fibonacci_parallel(n - 1);
+
+        #pragma omp task shared(y)
+        y = fibonacci_parallel(n - 2);
+
+        #pragma omp taskwait
+        return x + y;
+    }
+
+    static void fibonacciExample() {
+        int n = 10;
+        int result;
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+        #pragma omp parallel
+        {
+            #pragma omp single
+            {
+                result = fibonacci_parallel(n);
+            }
+        }
+
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - start);
+
+        std::cout &lt;&lt; "Fibonacci(" &lt;&lt; n &lt;&lt; ") = " &lt;&lt; result &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Parallel time: " &lt;&lt; duration.count() &lt;&lt; " ms" &lt;&lt; std::endl;
+
+        // 串行版本比较
+        start = std::chrono::high_resolution_clock::now();
+        int serial_result = fibonacci_serial(n);
+        end = std::chrono::high_resolution_clock::now();
+        duration = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - start);
+
+        std::cout &lt;&lt; "Serial result: " &lt;&lt; serial_result &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Serial time: " &lt;&lt; duration.count() &lt;&lt; " ms" &lt;&lt; std::endl;
+    }
+
+private:
+    static int fibonacci_serial(int n) {
+        if (n &lt; 2) return n;
+        return fibonacci_serial(n - 1) + fibonacci_serial(n - 2);
+    }
+
+public:
+    // 任务依赖
+    static void taskDependencies() {
+        int a = 1, b = 2, c = 3, result;
+
+        #pragma omp parallel
+        {
+            #pragma omp single
+            {
+                // 任务A：计算a*2
+                #pragma omp task depend(out:a)
+                {
+                    std::cout &lt;&lt; "Task A starting" &lt;&lt; std::endl;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    a = a * 2;
+                    std::cout &lt;&lt; "Task A completed: a = " &lt;&lt; a &lt;&lt; std::endl;
+                }
+
+                // 任务B：计算b*3
+                #pragma omp task depend(out:b)
+                {
+                    std::cout &lt;&lt; "Task B starting" &lt;&lt; std::endl;
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                    b = b * 3;
+                    std::cout &lt;&lt; "Task B completed: b = " &lt;&lt; b &lt;&lt; std::endl;
+                }
+
+                // 任务C：依赖A和B的结果
+                #pragma omp task depend(in:a,b) depend(out:result)
+                {
+                    std::cout &lt;&lt; "Task C starting (depends on A and B)" &lt;&lt; std::endl;
+                    result = a + b + c;
+                    std::cout &lt;&lt; "Task C completed: result = " &lt;&lt; result &lt;&lt; std::endl;
+                }
+
+                // 最终任务：输出结果
+                #pragma omp task depend(in:result)
+                {
+                    std::cout &lt;&lt; "Final task: The result is " &lt;&lt; result &lt;&lt; std::endl;
+                }
+            }
+        }
+    }
+
+    // 任务循环
+    static void taskloop() {
+        std::vector&lt;int&gt; data(20);
+
+        // 初始化数据
+        for (size_t i = 0; i &lt; data.size(); ++i) {
+            data[i] = i;
+        }
+
+        #pragma omp parallel
+        {
+            #pragma omp single
+            {
+                // 使用taskloop代替手动创建多个任务
+                #pragma omp taskloop grainsize(2)
+                for (size_t i = 0; i &lt; data.size(); ++i) {
+                    data[i] = data[i] * data[i];
+                    std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                             &lt;&lt; " processed element " &lt;&lt; i &lt;&lt; std::endl;
+                }
+            }
+        }
+
+        std::cout &lt;&lt; "Results: ";
+        for (int val : data) {
+            std::cout &lt;&lt; val &lt;&lt; " ";
+        }
+        std::cout &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h3 id="5-数据环境和numa优化"><a class="header" href="#5-数据环境和numa优化">5. 数据环境和NUMA优化</a></h3>
+<pre><code class="language-cpp">class DataEnvironmentAndNUMA {
+public:
+    // 数据共享控制
+    static void dataSharing() {
+        int global_var = 100;
+        int shared_var = 200;
+        int firstprivate_var = 300;
+
+        #pragma omp parallel shared(shared_var) firstprivate(firstprivate_var) private(global_var)
+        {
+            int thread_id = omp_get_thread_num();
+
+            // 每个线程的private变量是未初始化的
+            global_var = thread_id * 10;
+
+            // firstprivate变量从主线程复制而来
+            firstprivate_var += thread_id;
+
+            // shared变量被所有线程共享
+            #pragma omp critical
+            {
+                shared_var += thread_id;
+
+                std::cout &lt;&lt; "Thread " &lt;&lt; thread_id
+                         &lt;&lt; ": global_var=" &lt;&lt; global_var
+                         &lt;&lt; ", firstprivate_var=" &lt;&lt; firstprivate_var
+                         &lt;&lt; ", shared_var=" &lt;&lt; shared_var &lt;&lt; std::endl;
+            }
+        }
+
+        std::cout &lt;&lt; "After parallel region:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "global_var=" &lt;&lt; global_var &lt;&lt; " (unchanged)" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "shared_var=" &lt;&lt; shared_var &lt;&lt; std::endl;
+    }
+
+    // 线程亲和性和绑定
+    static void threadAffinity() {
+        std::cout &lt;&lt; "Available processors: " &lt;&lt; omp_get_num_procs() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Max threads: " &lt;&lt; omp_get_max_threads() &lt;&lt; std::endl;
+
+        // 设置线程亲和性
+        omp_set_nested(1);
+
+        #pragma omp parallel proc_bind(spread) num_threads(4)
+        {
+            int thread_id = omp_get_thread_num();
+
+            // 获取线程运行的处理器ID
+            #pragma omp critical
+            {
+                std::cout &lt;&lt; "Thread " &lt;&lt; thread_id
+                         &lt;&lt; " is running on processor " &lt;&lt; sched_getcpu() &lt;&lt; std::endl;
+            }
+
+            // 嵌套并行区域
+            #pragma omp parallel proc_bind(close) num_threads(2)
+            {
+                int nested_id = omp_get_thread_num();
+                int parent_id = omp_get_ancestor_thread_num(1);
+
+                #pragma omp critical
+                {
+                    std::cout &lt;&lt; "  Nested thread " &lt;&lt; nested_id
+                             &lt;&lt; " (parent " &lt;&lt; parent_id &lt;&lt; ") on processor "
+                             &lt;&lt; sched_getcpu() &lt;&lt; std::endl;
+                }
+            }
+        }
+    }
+
+    // 内存分配和NUMA感知
+    static void numaAwareAllocation() {
+        const size_t N = 1000000;
+        std::vector&lt;double&gt; data(N);
+
+        // First-touch策略：让每个线程初始化自己要处理的数据
+        #pragma omp parallel for
+        for (size_t i = 0; i &lt; N; ++i) {
+            data[i] = 0.0; // 触发页面分配到当前线程的NUMA节点
+        }
+
+        // 并行处理，利用局部性
+        auto start = std::chrono::high_resolution_clock::now();
+
+        #pragma omp parallel for
+        for (size_t i = 0; i &lt; N; ++i) {
+            data[i] = std::sin(i * 0.001);
+        }
+
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - start);
+
+        std::cout &lt;&lt; "NUMA-aware processing time: " &lt;&lt; duration.count() &lt;&lt; " ms" &lt;&lt; std::endl;
+
+        // 验证结果
+        double sum = 0.0;
+        #pragma omp parallel for reduction(+:sum)
+        for (size_t i = 0; i &lt; N; ++i) {
+            sum += data[i];
+        }
+
+        std::cout &lt;&lt; "Sum: " &lt;&lt; sum &lt;&lt; std::endl;
+    }
+
+    // 动态线程数调整
+    static void dynamicThreads() {
+        omp_set_dynamic(1); // 启用动态线程数调整
+
+        for (int desired_threads = 2; desired_threads &lt;= 8; desired_threads += 2) {
+            std::cout &lt;&lt; "\nRequesting " &lt;&lt; desired_threads &lt;&lt; " threads:" &lt;&lt; std::endl;
+
+            #pragma omp parallel num_threads(desired_threads)
+            {
+                #pragma omp single
+                {
+                    std::cout &lt;&lt; "Actually got " &lt;&lt; omp_get_num_threads() &lt;&lt; " threads" &lt;&lt; std::endl;
+                }
+
+                #pragma omp for
+                for (int i = 0; i &lt; 8; ++i) {
+                    std::cout &lt;&lt; "Thread " &lt;&lt; omp_get_thread_num()
+                             &lt;&lt; " processing item " &lt;&lt; i &lt;&lt; std::endl;
+                }
+            }
+        }
+    }
+};
+</code></pre>
+<h3 id="6-性能优化和调试"><a class="header" href="#6-性能优化和调试">6. 性能优化和调试</a></h3>
+<pre><code class="language-cpp">class PerformanceAndDebugging {
+public:
+    // 性能测量
+    static void performanceMeasurement() {
+        const int N = 10000000;
+        std::vector&lt;double&gt; a(N, 1.0), b(N, 2.0), c(N);
+
+        // 测量串行性能
+        auto start = omp_get_wtime();
+
+        for (int i = 0; i &lt; N; ++i) {
+            c[i] = a[i] + b[i];
+        }
+
+        double serial_time = omp_get_wtime() - start;
+        std::cout &lt;&lt; "Serial time: " &lt;&lt; serial_time * 1000 &lt;&lt; " ms" &lt;&lt; std::endl;
+
+        // 测量并行性能
+        start = omp_get_wtime();
+
+        #pragma omp parallel for
+        for (int i = 0; i &lt; N; ++i) {
+            c[i] = a[i] + b[i];
+        }
+
+        double parallel_time = omp_get_wtime() - start;
+        std::cout &lt;&lt; "Parallel time: " &lt;&lt; parallel_time * 1000 &lt;&lt; " ms" &lt;&lt; std::endl;
+
+        double speedup = serial_time / parallel_time;
+        double efficiency = speedup / omp_get_max_threads();
+
+        std::cout &lt;&lt; "Speedup: " &lt;&lt; speedup &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Efficiency: " &lt;&lt; efficiency * 100 &lt;&lt; "%" &lt;&lt; std::endl;
+    }
+
+    // 负载均衡分析
+    static void loadBalanceAnalysis() {
+        const int N = 100;
+        std::vector&lt;int&gt; work_distribution(omp_get_max_threads(), 0);
+
+        // 不平衡的工作负载
+        #pragma omp parallel for
+        for (int i = 0; i &lt; N; ++i) {
+            int thread_id = omp_get_thread_num();
+
+            // 模拟不同的工作量
+            for (int j = 0; j &lt; i; ++j) {
+                work_distribution[thread_id]++;
+            }
+        }
+
+        std::cout &lt;&lt; "Work distribution (unbalanced):" &lt;&lt; std::endl;
+        for (size_t i = 0; i &lt; work_distribution.size(); ++i) {
+            std::cout &lt;&lt; "Thread " &lt;&lt; i &lt;&lt; ": " &lt;&lt; work_distribution[i] &lt;&lt; " units" &lt;&lt; std::endl;
+        }
+
+        // 使用动态调度改善负载均衡
+        std::fill(work_distribution.begin(), work_distribution.end(), 0);
+
+        #pragma omp parallel for schedule(dynamic)
+        for (int i = 0; i &lt; N; ++i) {
+            int thread_id = omp_get_thread_num();
+
+            // 同样的不平衡工作负载
+            for (int j = 0; j &lt; i; ++j) {
+                work_distribution[thread_id]++;
+            }
+        }
+
+        std::cout &lt;&lt; "\nWork distribution (dynamic scheduling):" &lt;&lt; std::endl;
+        for (size_t i = 0; i &lt; work_distribution.size(); ++i) {
+            std::cout &lt;&lt; "Thread " &lt;&lt; i &lt;&lt; ": " &lt;&lt; work_distribution[i] &lt;&lt; " units" &lt;&lt; std::endl;
+        }
+    }
+
+    // 缓存优化
+    static void cacheOptimization() {
+        const int N = 1000;
+        std::vector&lt;std::vector&lt;double&gt;&gt; matrix(N, std::vector&lt;double&gt;(N, 1.0));
+
+        // 行优先访问（缓存友好）
+        auto start = omp_get_wtime();
+
+        #pragma omp parallel for
+        for (int i = 0; i &lt; N; ++i) {
+            for (int j = 0; j &lt; N; ++j) {
+                matrix[i][j] *= 2.0;
+            }
+        }
+
+        double row_major_time = omp_get_wtime() - start;
+        std::cout &lt;&lt; "Row-major access time: " &lt;&lt; row_major_time * 1000 &lt;&lt; " ms" &lt;&lt; std::endl;
+
+        // 列优先访问（缓存不友好）
+        start = omp_get_wtime();
+
+        #pragma omp parallel for
+        for (int j = 0; j &lt; N; ++j) {
+            for (int i = 0; i &lt; N; ++i) {
+                matrix[i][j] *= 2.0;
+            }
+        }
+
+        double col_major_time = omp_get_wtime() - start;
+        std::cout &lt;&lt; "Column-major access time: " &lt;&lt; col_major_time * 1000 &lt;&lt; " ms" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "Performance ratio: " &lt;&lt; col_major_time / row_major_time &lt;&lt; std::endl;
+    }
+
+    // 错误检测
+    static void errorDetection() {
+        int shared_var = 0;
+
+        std::cout &lt;&lt; "This may cause race condition:" &lt;&lt; std::endl;
+
+        #pragma omp parallel for
+        for (int i = 0; i &lt; 1000; ++i) {
+            // 竞争条件！应该使用atomic或critical
+            shared_var++;
+        }
+
+        std::cout &lt;&lt; "Expected: 1000, Actual: " &lt;&lt; shared_var &lt;&lt; std::endl;
+
+        // 正确的版本
+        shared_var = 0;
+
+        #pragma omp parallel for
+        for (int i = 0; i &lt; 1000; ++i) {
+            #pragma omp atomic
+            shared_var++;
+        }
+
+        std::cout &lt;&lt; "With atomic - Expected: 1000, Actual: " &lt;&lt; shared_var &lt;&lt; std::endl;
+    }
+
+    // 环境变量检查
+    static void checkEnvironment() {
+        std::cout &lt;&lt; "OpenMP Environment Variables:" &lt;&lt; std::endl;
+
+        char* omp_num_threads = getenv("OMP_NUM_THREADS");
+        if (omp_num_threads) {
+            std::cout &lt;&lt; "OMP_NUM_THREADS: " &lt;&lt; omp_num_threads &lt;&lt; std::endl;
+        }
+
+        char* omp_schedule = getenv("OMP_SCHEDULE");
+        if (omp_schedule) {
+            std::cout &lt;&lt; "OMP_SCHEDULE: " &lt;&lt; omp_schedule &lt;&lt; std::endl;
+        }
+
+        char* omp_proc_bind = getenv("OMP_PROC_BIND");
+        if (omp_proc_bind) {
+            std::cout &lt;&lt; "OMP_PROC_BIND: " &lt;&lt; omp_proc_bind &lt;&lt; std::endl;
+        }
+
+        char* omp_places = getenv("OMP_PLACES");
+        if (omp_places) {
+            std::cout &lt;&lt; "OMP_PLACES: " &lt;&lt; omp_places &lt;&lt; std::endl;
+        }
+
+        std::cout &lt;&lt; "\nRuntime Information:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Max threads: " &lt;&lt; omp_get_max_threads() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Num processors: " &lt;&lt; omp_get_num_procs() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Dynamic threads: " &lt;&lt; (omp_get_dynamic() ? "enabled" : "disabled") &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Nested parallelism: " &lt;&lt; (omp_get_nested() ? "enabled" : "disabled") &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h2 id="实际应用示例"><a class="header" href="#实际应用示例">实际应用示例</a></h2>
+<h3 id="1-矩阵乘法优化"><a class="header" href="#1-矩阵乘法优化">1. 矩阵乘法优化</a></h3>
+<pre><code class="language-cpp">class MatrixMultiplication {
+public:
+    static void parallelMatrixMultiply(const std::vector&lt;std::vector&lt;double&gt;&gt;&amp; A,
+                                     const std::vector&lt;std::vector&lt;double&gt;&gt;&amp; B,
+                                     std::vector&lt;std::vector&lt;double&gt;&gt;&amp; C) {
+        int n = A.size();
+
+        #pragma omp parallel for collapse(2) schedule(dynamic)
+        for (int i = 0; i &lt; n; ++i) {
+            for (int j = 0; j &lt; n; ++j) {
+                C[i][j] = 0.0;
+                for (int k = 0; k &lt; n; ++k) {
+                    C[i][j] += A[i][k] * B[k][j];
+                }
+            }
+        }
+    }
+
+    static void benchmarkMatrixMultiply() {
+        const int N = 512;
+
+        // 初始化矩阵
+        std::vector&lt;std::vector&lt;double&gt;&gt; A(N, std::vector&lt;double&gt;(N, 1.0));
+        std::vector&lt;std::vector&lt;double&gt;&gt; B(N, std::vector&lt;double&gt;(N, 2.0));
+        std::vector&lt;std::vector&lt;double&gt;&gt; C(N, std::vector&lt;double&gt;(N, 0.0));
+
+        auto start = omp_get_wtime();
+        parallelMatrixMultiply(A, B, C);
+        double time = omp_get_wtime() - start;
+
+        std::cout &lt;&lt; "Matrix multiplication (" &lt;&lt; N &lt;&lt; "x" &lt;&lt; N &lt;&lt; ") time: "
+                 &lt;&lt; time * 1000 &lt;&lt; " ms" &lt;&lt; std::endl;
+
+        // 验证结果
+        std::cout &lt;&lt; "Result sample: C[0][0] = " &lt;&lt; C[0][0] &lt;&lt; " (expected: " &lt;&lt; N * 2.0 &lt;&lt; ")" &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h3 id="2-蒙特卡罗积分"><a class="header" href="#2-蒙特卡罗积分">2. 蒙特卡罗积分</a></h3>
+<pre><code class="language-cpp">class MonteCarloIntegration {
+public:
+    static double calculatePi(long long num_samples) {
+        long long count = 0;
+
+        #pragma omp parallel
+        {
+            // 每个线程使用不同的随机种子
+            unsigned int seed = omp_get_thread_num() + time(nullptr);
+            long long local_count = 0;
+
+            #pragma omp for
+            for (long long i = 0; i &lt; num_samples; ++i) {
+                double x = static_cast&lt;double&gt;(rand_r(&amp;seed)) / RAND_MAX;
+                double y = static_cast&lt;double&gt;(rand_r(&amp;seed)) / RAND_MAX;
+
+                if (x * x + y * y &lt;= 1.0) {
+                    local_count++;
+                }
+            }
+
+            #pragma omp atomic
+            count += local_count;
+        }
+
+        return 4.0 * count / num_samples;
+    }
+
+    static void benchmarkPiCalculation() {
+        long long samples = 100000000;
+
+        auto start = omp_get_wtime();
+        double pi_estimate = calculatePi(samples);
+        double time = omp_get_wtime() - start;
+
+        std::cout &lt;&lt; "Pi estimation with " &lt;&lt; samples &lt;&lt; " samples:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Estimated Pi: " &lt;&lt; pi_estimate &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Actual Pi: " &lt;&lt; M_PI &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Error: " &lt;&lt; std::abs(pi_estimate - M_PI) &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Time: " &lt;&lt; time * 1000 &lt;&lt; " ms" &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h2 id="编译和部署"><a class="header" href="#编译和部署">编译和部署</a></h2>
+<h3 id="1-编译选项"><a class="header" href="#1-编译选项">1. 编译选项</a></h3>
+<pre><code class="language-makefile"># Makefile示例
+CXX = g++
+CXXFLAGS = -std=c++17 -O3 -fopenmp -Wall -Wextra
+
+# 不同编译器的OpenMP选项
+# GCC: -fopenmp
+# Clang: -fopenmp 或 -Xpreprocessor -fopenmp -lomp
+# Intel: -qopenmp
+# MSVC: /openmp
+
+SOURCES = main.cpp
+TARGET = openmp_example
+
+$(TARGET): $(SOURCES)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCES)
+
+clean:
+	rm -f $(TARGET)
+
+# 运行时环境变量设置
+run:
+	OMP_NUM_THREADS=4 OMP_SCHEDULE=dynamic,2 ./$(TARGET)
+
+.PHONY: clean run
+</code></pre>
+<h3 id="2-cmake配置"><a class="header" href="#2-cmake配置">2. CMake配置</a></h3>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.12)
+project(OpenMPExample)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 查找OpenMP
+find_package(OpenMP REQUIRED)
+
+if(OpenMP_CXX_FOUND)
+    message(STATUS "OpenMP found")
+    message(STATUS "OpenMP version: ${OpenMP_CXX_VERSION}")
+    message(STATUS "OpenMP flags: ${OpenMP_CXX_FLAGS}")
+endif()
+
+# 创建可执行文件
+add_executable(${PROJECT_NAME} main.cpp)
+
+# 链接OpenMP
+target_link_libraries(${PROJECT_NAME} OpenMP::OpenMP_CXX)
+
+# 编译器特定优化
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(${PROJECT_NAME} PRIVATE -O3 -march=native)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(${PROJECT_NAME} PRIVATE -O3 -march=native)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+    target_compile_options(${PROJECT_NAME} PRIVATE -O3 -xHost)
+endif()
+</code></pre>
+<h3 id="3-完整应用示例"><a class="header" href="#3-完整应用示例">3. 完整应用示例</a></h3>
+<pre><code class="language-cpp">#include &lt;omp.h&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;chrono&gt;
+#include &lt;cmath&gt;
+#include &lt;algorithm&gt;
+
+int main() {
+    std::cout &lt;&lt; "OpenMP Demonstration Program" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "============================" &lt;&lt; std::endl;
+
+    // 检查OpenMP环境
+    std::cout &lt;&lt; "OpenMP version: " &lt;&lt; _OPENMP &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Available processors: " &lt;&lt; omp_get_num_procs() &lt;&lt; std::endl;
+    std::cout &lt;&lt; "Max threads: " &lt;&lt; omp_get_max_threads() &lt;&lt; std::endl;
+
+    // 基础并行示例
+    std::cout &lt;&lt; "\n1. Basic Parallel Region:" &lt;&lt; std::endl;
+    OpenMPBasics::basicParallelRegion();
+
+    // 并行循环示例
+    std::cout &lt;&lt; "\n2. Parallel For Loop:" &lt;&lt; std::endl;
+    ParallelLoops::basicParallelFor();
+
+    // 归约操作示例
+    std::cout &lt;&lt; "\n3. Reduction Operations:" &lt;&lt; std::endl;
+    ParallelLoops::reductionOperations();
+
+    // 同步机制示例
+    std::cout &lt;&lt; "\n4. Synchronization:" &lt;&lt; std::endl;
+    Synchronization::criticalSection();
+
+    // 任务并行示例
+    std::cout &lt;&lt; "\n5. Task Parallelism:" &lt;&lt; std::endl;
+    TaskParallelism::fibonacciExample();
+
+    // 性能测量
+    std::cout &lt;&lt; "\n6. Performance Measurement:" &lt;&lt; std::endl;
+    PerformanceAndDebugging::performanceMeasurement();
+
+    // 应用示例
+    std::cout &lt;&lt; "\n7. Matrix Multiplication:" &lt;&lt; std::endl;
+    MatrixMultiplication::benchmarkMatrixMultiply();
+
+    std::cout &lt;&lt; "\n8. Monte Carlo Pi Estimation:" &lt;&lt; std::endl;
+    MonteCarloIntegration::benchmarkPiCalculation();
+
+    return 0;
+}
+</code></pre>
+<h2 id="技术要点总结"><a class="header" href="#技术要点总结">技术要点总结</a></h2>
+<ol>
+<li><strong>简单易用</strong>：通过pragma指令实现渐进式并行化</li>
+<li><strong>高性能</strong>：充分利用多核处理器和共享内存架构</li>
+<li><strong>灵活的并行模式</strong>：支持循环并行、任务并行、数据并行</li>
+<li><strong>丰富的同步机制</strong>：critical、atomic、barrier等同步原语</li>
+<li><strong>NUMA感知</strong>：支持线程绑定和内存局部性优化</li>
+<li><strong>标准化</strong>：工业标准，得到主流编译器支持</li>
+</ol>
+<p>OpenMP是共享内存并行编程的重要工具，其简洁的语法和强大的功能使其成为高性能计算和多核优化的首选方案。通过合理使用OpenMP的各种特性，开发者可以显著提升程序的并行性能和可扩展性。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/opengl.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/protobuf.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/opengl.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/protobuf.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

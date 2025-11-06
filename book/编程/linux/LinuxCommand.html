@@ -1,0 +1,1266 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Linux 命令行学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="linux-命令行学习笔记"><a class="header" href="#linux-命令行学习笔记">Linux 命令行学习笔记</a></h1>
+<blockquote>
+<p><strong>学习者定位</strong>: 适合Linux初学者、运维工程师、开发人员及希望提升命令行技能的所有技术人员
+<strong>预期学习时长</strong>: 15-25 小时（基础到熟练）
+<strong>前置知识</strong>: 基本计算机操作、文件系统概念</p>
+</blockquote>
+<hr />
+<h2 id="一学习路径与技能树"><a class="header" href="#一学习路径与技能树">一、学习路径与技能树</a></h2>
+<h3 id="11-学习路径"><a class="header" href="#11-学习路径">1.1 学习路径</a></h3>
+<pre><code>阶段1: 基础入门（5-8小时）
+├── 文件系统导航（ls, cd, pwd, mkdir, rm, cp, mv)
+├── 文件查看编辑（cat, less, head, tail, vi/vim）
+├── 文件权限管理（chmod, chown, chgrp）
+└── 基本输入输出（重定向、管道）
+
+阶段2: 进阶应用（6-10小时）
+├── 文本处理三剑客（grep, awk, sed）
+├── 查找与搜索（find, locate, which）
+├── 进程管理（ps, top, kill, jobs）
+├── 系统监控（df, du, free, vmstat）
+└── 网络工具（ping, curl, wget, ssh, scp）
+
+阶段3: 高级技巧（6-8小时）
+├── Shell脚本基础
+├── 系统管理命令（systemctl, crontab, journalctl）
+├── 性能分析（strace, lsof, iostat, sar）
+├── 包管理（apt/yum, dpkg/rpm）
+└── 实战综合案例
+</code></pre>
+<h3 id="12-技能重点分级"><a class="header" href="#12-技能重点分级">1.2 技能重点分级</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>优先级</th><th>技能类别</th><th>核心命令</th><th>使用频率</th></tr></thead><tbody>
+<tr><td><strong>P0（必须掌握）</strong></td><td>文件操作</td><td>ls, cd, pwd, cp, mv, rm, mkdir</td><td>每天</td></tr>
+<tr><td><strong>P0（必须掌握）</strong></td><td>文件查看</td><td>cat, less, head, tail, grep</td><td>每天</td></tr>
+<tr><td><strong>P1（熟练使用）</strong></td><td>文本处理</td><td>awk, sed, sort, uniq, wc</td><td>每周</td></tr>
+<tr><td><strong>P1（熟练使用）</strong></td><td>系统监控</td><td>ps, top, df, du, free</td><td>每天</td></tr>
+<tr><td><strong>P2（了解使用）</strong></td><td>性能分析</td><td>strace, lsof, sar, iostat</td><td>按需</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="二文件系统操作精讲"><a class="header" href="#二文件系统操作精讲">二、文件系统操作精讲</a></h2>
+<h3 id="21-目录导航"><a class="header" href="#21-目录导航">2.1 目录导航</a></h3>
+<h4 id="ls---列出目录内容"><a class="header" href="#ls---列出目录内容">ls - 列出目录内容</a></h4>
+<p><strong>基本用法</strong>:</p>
+<pre><code class="language-bash"># 列出当前目录
+ls
+
+# 列出详细信息
+ls -l
+
+# 显示隐藏文件
+ls -a
+
+# 人类可读的文件大小
+ls -lh
+
+# 按时间排序
+ls -lt
+
+# 递归列出子目录
+ls -R
+
+# 组合使用（最常用）
+ls -lah
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 查找最近修改的5个文件
+ls -lt | head -5
+
+# 查找最大的5个文件
+ls -lhS | head -5
+
+# 只列出目录
+ls -d */
+
+# 按文件大小排序
+ls -lhS
+
+# 显示文件的inode号
+ls -i
+</code></pre>
+<h4 id="cd---切换目录"><a class="header" href="#cd---切换目录">cd - 切换目录</a></h4>
+<pre><code class="language-bash"># 切换到指定目录
+cd /path/to/directory
+
+# 切换到家目录
+cd ~
+# 或
+cd
+
+# 切换到上一级目录
+cd ..
+
+# 切换到上两级目录
+cd ../..
+
+# 返回上一次所在目录
+cd -
+
+# 切换到根目录
+cd /
+</code></pre>
+<p><strong>实战技巧</strong>:</p>
+<pre><code class="language-bash"># 使用CDPATH环境变量快速跳转
+export CDPATH=/var/log:/etc:/home
+
+# 结合mkdir创建并进入目录
+mkdir -p /tmp/test/subdir &amp;&amp; cd $_
+
+# 快速进入深层目录
+cd /var/log/nginx
+cd -  # 返回
+</code></pre>
+<h4 id="pwd---显示当前目录"><a class="header" href="#pwd---显示当前目录">pwd - 显示当前目录</a></h4>
+<pre><code class="language-bash"># 显示当前目录
+pwd
+
+# 显示物理路径（解析符号链接）
+pwd -P
+</code></pre>
+<h3 id="22-文件操作"><a class="header" href="#22-文件操作">2.2 文件操作</a></h3>
+<h4 id="cp---复制文件"><a class="header" href="#cp---复制文件">cp - 复制文件</a></h4>
+<pre><code class="language-bash"># 复制文件
+cp source.txt dest.txt
+
+# 复制目录（递归）
+cp -r source_dir dest_dir
+
+# 保留文件属性
+cp -p source.txt dest.txt
+
+# 交互式复制（覆盖前确认）
+cp -i source.txt dest.txt
+
+# 仅复制更新的文件
+cp -u source.txt dest.txt
+
+# 详细输出
+cp -v source.txt dest.txt
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 备份文件（添加时间戳）
+cp file.txt file.txt.$(date +%Y%m%d_%H%M%S)
+
+# 复制并保留所有属性
+cp -a /source/dir /backup/dir
+
+# 复制多个文件到目录
+cp file1.txt file2.txt file3.txt /dest/dir/
+
+# 备份整个目录结构
+cp -a /etc /backup/etc.$(date +%Y%m%d)
+</code></pre>
+<h4 id="mv---移动重命名"><a class="header" href="#mv---移动重命名">mv - 移动/重命名</a></h4>
+<pre><code class="language-bash"># 重命名文件
+mv old_name.txt new_name.txt
+
+# 移动文件到目录
+mv file.txt /dest/dir/
+
+# 移动多个文件
+mv file1.txt file2.txt file3.txt /dest/dir/
+
+# 交互式移动
+mv -i source.txt dest.txt
+
+# 强制覆盖
+mv -f source.txt dest.txt
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 批量重命名（添加前缀）
+for file in *.txt; do mv "$file" "backup_$file"; done
+
+# 移动指定日期的文件
+find /source -type f -mtime +30 -exec mv {} /archive/ \;
+
+# 整理文件到按日期分类的目录
+for file in *.log; do
+    dir=$(date -r "$file" +%Y%m%d)
+    mkdir -p "$dir"
+    mv "$file" "$dir/"
+done
+</code></pre>
+<h4 id="rm---删除文件"><a class="header" href="#rm---删除文件">rm - 删除文件</a></h4>
+<pre><code class="language-bash"># 删除文件
+rm file.txt
+
+# 删除目录（递归）
+rm -r directory
+
+# 强制删除（不提示）
+rm -f file.txt
+
+# 交互式删除
+rm -i file.txt
+
+# 详细输出
+rm -v file.txt
+
+# 组合使用（最常用）
+rm -rf directory
+</code></pre>
+<p><strong>安全删除技巧</strong>:</p>
+<pre><code class="language-bash"># 安全删除（移到回收站）
+mkdir -p ~/.trash
+alias rm='mv -t ~/.trash'
+
+# 删除前确认
+rm -i important_file.txt
+
+# 删除特定模式的文件
+rm -f *.tmp
+
+# 删除空目录
+rmdir empty_dir
+
+# 删除7天前的日志
+find /var/log -name "*.log" -mtime +7 -delete
+</code></pre>
+<h3 id="23-文件权限管理"><a class="header" href="#23-文件权限管理">2.3 文件权限管理</a></h3>
+<h4 id="chmod---修改权限"><a class="header" href="#chmod---修改权限">chmod - 修改权限</a></h4>
+<p><strong>权限说明</strong>:</p>
+<ul>
+<li>r (read) = 4</li>
+<li>w (write) = 2</li>
+<li>x (execute) = 1</li>
+</ul>
+<pre><code class="language-bash"># 数字模式
+chmod 755 file.txt    # rwxr-xr-x
+chmod 644 file.txt    # rw-r--r--
+chmod 600 file.txt    # rw-------
+chmod 777 file.txt    # rwxrwxrwx（不推荐）
+
+# 符号模式
+chmod u+x file.txt    # 所有者添加执行权限
+chmod g-w file.txt    # 组移除写权限
+chmod o=r file.txt    # 其他人只读
+chmod a+r file.txt    # 所有人添加读权限
+
+# 递归修改
+chmod -R 755 directory
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 批量修改脚本权限
+find /scripts -name "*.sh" -exec chmod +x {} \;
+
+# 设置目录权限（目录需要x权限才能进入）
+chmod 755 /var/www/html    # 目录
+chmod 644 /var/www/html/*   # 文件
+
+# 修改web目录权限
+find /var/www -type d -exec chmod 755 {} \;
+find /var/www -type f -exec chmod 644 {} \;
+
+# 设置SUID（以文件所有者身份执行）
+chmod u+s /usr/bin/passwd
+
+# 设置粘滞位（只有所有者可删除）
+chmod +t /tmp
+</code></pre>
+<h4 id="chown---修改所有者"><a class="header" href="#chown---修改所有者">chown - 修改所有者</a></h4>
+<pre><code class="language-bash"># 修改文件所有者
+sudo chown user file.txt
+
+# 修改所有者和组
+sudo chown user:group file.txt
+
+# 递归修改
+sudo chown -R user:group directory
+
+# 只修改组
+sudo chown :group file.txt
+# 或
+sudo chgrp group file.txt
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 修改web目录所有者
+sudo chown -R www-data:www-data /var/www/html
+
+# 修改用户home目录
+sudo chown -R john:john /home/john
+
+# 修改日志文件权限
+sudo chown syslog:adm /var/log/syslog
+</code></pre>
+<hr />
+<h2 id="三文件查看与文本处理"><a class="header" href="#三文件查看与文本处理">三、文件查看与文本处理</a></h2>
+<h3 id="31-文件查看"><a class="header" href="#31-文件查看">3.1 文件查看</a></h3>
+<h4 id="cat---显示文件内容"><a class="header" href="#cat---显示文件内容">cat - 显示文件内容</a></h4>
+<pre><code class="language-bash"># 显示文件内容
+cat file.txt
+
+# 显示多个文件
+cat file1.txt file2.txt
+
+# 合并文件
+cat file1.txt file2.txt &gt; merged.txt
+
+# 显示行号
+cat -n file.txt
+
+# 显示非空行行号
+cat -b file.txt
+
+# 显示特殊字符
+cat -A file.txt
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 创建文件（EOF）
+cat &gt; file.txt &lt;&lt;EOF
+Line 1
+Line 2
+Line 3
+EOF
+
+# 追加内容
+cat &gt;&gt; file.txt &lt;&lt;EOF
+Line 4
+EOF
+
+# 查看配置文件（去除注释和空行）
+cat /etc/ssh/sshd_config | grep -v '^#' | grep -v '^$'
+</code></pre>
+<h4 id="less--more---分页查看"><a class="header" href="#less--more---分页查看">less / more - 分页查看</a></h4>
+<pre><code class="language-bash"># less（推荐，功能更强大）
+less file.txt
+
+# more（简单分页）
+more file.txt
+</code></pre>
+<p><strong>less 快捷键</strong>:</p>
+<ul>
+<li><code>空格</code> - 下一页</li>
+<li><code>b</code> - 上一页</li>
+<li><code>g</code> - 文件开头</li>
+<li><code>G</code> - 文件结尾</li>
+<li><code>/pattern</code> - 向下搜索</li>
+<li><code>?pattern</code> - 向上搜索</li>
+<li><code>n</code> - 下一个匹配</li>
+<li><code>q</code> - 退出</li>
+</ul>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 实时查看日志（类似tail -f）
+less +F /var/log/syslog
+
+# 查看压缩文件
+zless file.gz
+
+# 查看多个文件
+less file1.txt file2.txt
+# :n 下一个文件
+# :p 上一个文件
+</code></pre>
+<h4 id="head--tail---查看文件头尾"><a class="header" href="#head--tail---查看文件头尾">head / tail - 查看文件头尾</a></h4>
+<pre><code class="language-bash"># 显示前10行（默认）
+head file.txt
+
+# 显示前20行
+head -n 20 file.txt
+
+# 显示后10行
+tail file.txt
+
+# 显示后20行
+tail -n 20 file.txt
+
+# 实时查看文件更新（最常用）
+tail -f /var/log/syslog
+
+# 从第100行开始显示
+tail -n +100 file.txt
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 查看日志最新100行
+tail -n 100 /var/log/nginx/access.log
+
+# 实时查看多个日志文件
+tail -f /var/log/nginx/access.log /var/log/nginx/error.log
+
+# 查看日志中的错误
+tail -n 1000 /var/log/syslog | grep -i error
+
+# 监控日志并过滤
+tail -f /var/log/application.log | grep --line-buffered "ERROR"
+</code></pre>
+<h3 id="32-文本搜索---grep"><a class="header" href="#32-文本搜索---grep">3.2 文本搜索 - grep</a></h3>
+<pre><code class="language-bash"># 基本搜索
+grep "pattern" file.txt
+
+# 忽略大小写
+grep -i "pattern" file.txt
+
+# 显示行号
+grep -n "pattern" file.txt
+
+# 递归搜索目录
+grep -r "pattern" /path/to/dir
+
+# 反向匹配（不包含pattern）
+grep -v "pattern" file.txt
+
+# 显示匹配行的前后几行
+grep -A 3 "pattern" file.txt  # 后3行
+grep -B 3 "pattern" file.txt  # 前3行
+grep -C 3 "pattern" file.txt  # 前后各3行
+
+# 只显示匹配的文件名
+grep -l "pattern" *.txt
+
+# 统计匹配行数
+grep -c "pattern" file.txt
+
+# 使用正则表达式
+grep -E "pattern1|pattern2" file.txt
+
+# 精确匹配整个单词
+grep -w "word" file.txt
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 搜索IP地址
+grep -E "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b" file.txt
+
+# 搜索错误日志
+grep -i "error\|fail\|fatal" /var/log/syslog
+
+# 搜索并高亮显示
+grep --color=auto "pattern" file.txt
+
+# 搜索PHP文件中的函数
+grep -rn "function.*(" --include="*.php" /var/www
+
+# 排除特定目录
+grep -r "pattern" --exclude-dir={.git,.svn} /path
+
+# 统计代码行数（排除空行和注释）
+grep -v -e '^$' -e '^#' file.sh | wc -l
+</code></pre>
+<h3 id="33-文本处理三剑客"><a class="header" href="#33-文本处理三剑客">3.3 文本处理三剑客</a></h3>
+<h4 id="awk---强大的文本处理工具"><a class="header" href="#awk---强大的文本处理工具">awk - 强大的文本处理工具</a></h4>
+<pre><code class="language-bash"># 打印特定列
+awk '{print $1}' file.txt
+
+# 打印第1列和第3列
+awk '{print $1, $3}' file.txt
+
+# 使用分隔符
+awk -F: '{print $1}' /etc/passwd
+
+# 条件过滤
+awk '$3 &gt; 100 {print $1, $3}' file.txt
+
+# 计算总和
+awk '{sum += $1} END {print sum}' file.txt
+
+# 打印行号
+awk '{print NR, $0}' file.txt
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 分析访问日志（统计IP访问次数）
+awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -rn | head -10
+
+# 计算磁盘使用总和
+df -h | awk 'NR&gt;1 {sum+=$3} END {print sum}'
+
+# 提取进程信息
+ps aux | awk '$3 &gt; 50 {print $2, $3, $11}'
+
+# 格式化输出
+awk 'BEGIN {printf "%-10s %-10s\n", "Name", "Size"} {printf "%-10s %-10s\n", $1, $2}' file.txt
+
+# 处理CSV文件
+awk -F, '{sum+=$3} END {print "Total:", sum}' data.csv
+</code></pre>
+<h4 id="sed---流编辑器"><a class="header" href="#sed---流编辑器">sed - 流编辑器</a></h4>
+<pre><code class="language-bash"># 替换文本（仅显示，不修改文件）
+sed 's/old/new/' file.txt
+
+# 替换所有匹配（不仅第一个）
+sed 's/old/new/g' file.txt
+
+# 直接修改文件
+sed -i 's/old/new/g' file.txt
+
+# 删除行
+sed '3d' file.txt              # 删除第3行
+sed '1,5d' file.txt            # 删除1-5行
+sed '/pattern/d' file.txt      # 删除匹配行
+
+# 插入文本
+sed '2i\inserted line' file.txt   # 在第2行前插入
+sed '2a\appended line' file.txt   # 在第2行后追加
+
+# 打印特定行
+sed -n '10,20p' file.txt       # 打印10-20行
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 批量替换配置文件
+sed -i 's/localhost/192.168.1.100/g' /etc/nginx/nginx.conf
+
+# 删除空行
+sed '/^$/d' file.txt
+
+# 删除注释行
+sed '/^#/d' file.txt
+
+# 在每行前添加前缀
+sed 's/^/prefix: /' file.txt
+
+# 在每行后添加后缀
+sed 's/$/ - suffix/' file.txt
+
+# 批量修改文件扩展名（配合find）
+find . -name "*.txt" -exec sed -i 's/\.txt$/.md/' {} \;
+
+# 修改配置文件中的端口
+sed -i 's/port=3306/port=3307/g' config.ini
+</code></pre>
+<hr />
+<h2 id="四系统监控与管理"><a class="header" href="#四系统监控与管理">四、系统监控与管理</a></h2>
+<h3 id="41-进程管理"><a class="header" href="#41-进程管理">4.1 进程管理</a></h3>
+<h4 id="ps---查看进程"><a class="header" href="#ps---查看进程">ps - 查看进程</a></h4>
+<pre><code class="language-bash"># 显示当前用户进程
+ps
+
+# 显示所有进程（BSD风格）
+ps aux
+
+# 显示所有进程（System V风格）
+ps -ef
+
+# 显示进程树
+ps auxf
+# 或
+pstree
+
+# 查找特定进程
+ps aux | grep nginx
+
+# 按内存使用排序
+ps aux --sort=-%mem | head -10
+
+# 按CPU使用排序
+ps aux --sort=-%cpu | head -10
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 查看进程详细信息
+ps -p &lt;PID&gt; -o pid,ppid,cmd,%cpu,%mem,etime
+
+# 查看线程
+ps -eLf | grep java
+
+# 监控特定进程
+watch -n 1 'ps aux | grep apache'
+
+# 查看进程打开的文件数
+lsof -p &lt;PID&gt; | wc -l
+</code></pre>
+<h4 id="top---实时系统监控"><a class="header" href="#top---实时系统监控">top - 实时系统监控</a></h4>
+<pre><code class="language-bash"># 启动top
+top
+
+# 指定刷新间隔（秒）
+top -d 2
+
+# 显示特定用户的进程
+top -u username
+</code></pre>
+<p><strong>top 快捷键</strong>:</p>
+<ul>
+<li><code>h</code> - 帮助</li>
+<li><code>1</code> - 显示所有CPU核心</li>
+<li><code>M</code> - 按内存排序</li>
+<li><code>P</code> - 按CPU排序</li>
+<li><code>k</code> - 终止进程</li>
+<li><code>r</code> - 重新设置nice值</li>
+<li><code>q</code> - 退出</li>
+</ul>
+<p><strong>htop（更友好的top）</strong>:</p>
+<pre><code class="language-bash"># 安装htop
+sudo apt install htop  # Debian/Ubuntu
+sudo yum install htop  # CentOS/RHEL
+
+# 启动
+htop
+</code></pre>
+<h4 id="kill---终止进程"><a class="header" href="#kill---终止进程">kill - 终止进程</a></h4>
+<pre><code class="language-bash"># 终止进程（SIGTERM）
+kill &lt;PID&gt;
+
+# 强制终止（SIGKILL）
+kill -9 &lt;PID&gt;
+
+# 按名称终止进程
+killall nginx
+
+# 按名称终止（使用模式匹配）
+pkill -f "python.*app.py"
+
+# 向进程发送信号
+kill -HUP &lt;PID&gt;    # 重新加载配置
+kill -USR1 &lt;PID&gt;   # 用户自定义信号
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 优雅重启Nginx
+kill -HUP $(cat /var/run/nginx.pid)
+
+# 终止所有Python进程
+killall python3
+
+# 终止占用端口的进程
+kill $(lsof -t -i:8080)
+
+# 批量终止进程
+ps aux | grep zombie | awk '{print $2}' | xargs kill -9
+</code></pre>
+<h3 id="42-系统资源监控"><a class="header" href="#42-系统资源监控">4.2 系统资源监控</a></h3>
+<h4 id="df---磁盘使用情况"><a class="header" href="#df---磁盘使用情况">df - 磁盘使用情况</a></h4>
+<pre><code class="language-bash"># 显示磁盘使用情况
+df -h
+
+# 显示inode使用情况
+df -i
+
+# 显示文件系统类型
+df -T
+
+# 只显示本地文件系统
+df -h --local
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 查找使用率超过80%的分区
+df -h | awk '$5+0 &gt; 80 {print $0}'
+
+# 按使用率排序
+df -h | sort -k5 -rn
+
+# 监控特定分区
+watch -n 5 'df -h /'
+</code></pre>
+<h4 id="du---目录大小"><a class="header" href="#du---目录大小">du - 目录大小</a></h4>
+<pre><code class="language-bash"># 显示当前目录大小
+du -sh .
+
+# 显示子目录大小
+du -h --max-depth=1
+
+# 排序显示（按大小）
+du -h --max-depth=1 | sort -hr
+
+# 排除特定目录
+du -h --exclude=node_modules
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 查找最大的10个目录
+du -h /var | sort -hr | head -10
+
+# 查找超过1GB的目录
+du -h /home | grep '[0-9\.]\+G'
+
+# 清理日志（查找大文件）
+find /var/log -type f -size +100M -exec du -h {} \; | sort -hr
+</code></pre>
+<h4 id="free---内存使用"><a class="header" href="#free---内存使用">free - 内存使用</a></h4>
+<pre><code class="language-bash"># 显示内存使用（人类可读）
+free -h
+
+# 持续监控（每2秒刷新）
+free -h -s 2
+
+# 显示总计
+free -h -t
+</code></pre>
+<hr />
+<h2 id="五网络工具"><a class="header" href="#五网络工具">五、网络工具</a></h2>
+<h3 id="51-网络测试"><a class="header" href="#51-网络测试">5.1 网络测试</a></h3>
+<h4 id="ping---测试网络连通性"><a class="header" href="#ping---测试网络连通性">ping - 测试网络连通性</a></h4>
+<pre><code class="language-bash"># ping主机
+ping google.com
+
+# ping指定次数
+ping -c 4 google.com
+
+# 设置ping间隔（秒）
+ping -i 2 google.com
+
+# 设置超时时间
+ping -W 2 google.com
+</code></pre>
+<h4 id="curl---网络请求工具"><a class="header" href="#curl---网络请求工具">curl - 网络请求工具</a></h4>
+<pre><code class="language-bash"># GET请求
+curl https://api.example.com
+
+# POST请求
+curl -X POST -d "param1=value1" https://api.example.com
+
+# 发送JSON数据
+curl -X POST -H "Content-Type: application/json" \
+     -d '{"key":"value"}' https://api.example.com
+
+# 下载文件
+curl -O https://example.com/file.tar.gz
+
+# 保存到指定文件
+curl -o filename.tar.gz https://example.com/file.tar.gz
+
+# 显示详细信息
+curl -v https://example.com
+
+# 跟随重定向
+curl -L https://example.com
+
+# 设置超时
+curl --connect-timeout 10 https://example.com
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 测试API响应时间
+curl -w "@curl-format.txt" -o /dev/null -s https://api.example.com
+
+# curl-format.txt内容：
+# time_namelookup: %{time_namelookup}
+# time_connect: %{time_connect}
+# time_total: %{time_total}
+
+# 上传文件
+curl -F "file=@/path/to/file" https://upload.example.com
+
+# Basic认证
+curl -u username:password https://api.example.com
+
+# 保存和使用Cookie
+curl -c cookies.txt https://example.com
+curl -b cookies.txt https://example.com
+</code></pre>
+<h4 id="wget---文件下载工具"><a class="header" href="#wget---文件下载工具">wget - 文件下载工具</a></h4>
+<pre><code class="language-bash"># 下载文件
+wget https://example.com/file.tar.gz
+
+# 断点续传
+wget -c https://example.com/largefile.iso
+
+# 后台下载
+wget -b https://example.com/file.tar.gz
+
+# 限速下载
+wget --limit-rate=200k https://example.com/file.tar.gz
+
+# 镜像整个网站
+wget -m https://example.com
+
+# 下载多个文件
+wget -i urls.txt
+</code></pre>
+<hr />
+<h2 id="六查找与搜索"><a class="header" href="#六查找与搜索">六、查找与搜索</a></h2>
+<h3 id="61-find---查找文件"><a class="header" href="#61-find---查找文件">6.1 find - 查找文件</a></h3>
+<pre><code class="language-bash"># 按名称查找
+find /path -name "*.txt"
+
+# 忽略大小写
+find /path -iname "*.txt"
+
+# 按类型查找
+find /path -type f    # 文件
+find /path -type d    # 目录
+find /path -type l    # 符号链接
+
+# 按大小查找
+find /path -size +100M    # 大于100MB
+find /path -size -1M      # 小于1MB
+
+# 按时间查找
+find /path -mtime -7      # 7天内修改
+find /path -mtime +30     # 30天前修改
+find /path -atime -1      # 1天内访问
+
+# 按权限查找
+find /path -perm 777
+
+# 查找并执行命令
+find /path -name "*.log" -exec rm {} \;
+
+# 查找空文件/目录
+find /path -empty
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 查找并删除临时文件
+find /tmp -name "*.tmp" -mtime +7 -delete
+
+# 查找大文件
+find / -type f -size +1G -exec du -h {} \; | sort -hr
+
+# 查找并压缩日志文件
+find /var/log -name "*.log" -mtime +30 -exec gzip {} \;
+
+# 查找并修改权限
+find /var/www -type d -exec chmod 755 {} \;
+find /var/www -type f -exec chmod 644 {} \;
+
+# 查找重复文件
+find /path -type f -exec md5sum {} \; | sort | uniq -w32 -dD
+</code></pre>
+<hr />
+<h2 id="七压缩与归档"><a class="header" href="#七压缩与归档">七、压缩与归档</a></h2>
+<h3 id="71-tar---归档工具"><a class="header" href="#71-tar---归档工具">7.1 tar - 归档工具</a></h3>
+<pre><code class="language-bash"># 创建tar归档
+tar -cf archive.tar files/
+
+# 创建gzip压缩的tar归档
+tar -czf archive.tar.gz files/
+
+# 创建bzip2压缩的tar归档
+tar -cjf archive.tar.bz2 files/
+
+# 解压tar归档
+tar -xf archive.tar
+
+# 解压到指定目录
+tar -xf archive.tar -C /dest/path
+
+# 查看归档内容
+tar -tf archive.tar
+
+# 追加文件到归档
+tar -rf archive.tar newfile.txt
+
+# 排除特定文件
+tar -czf backup.tar.gz --exclude="*.log" /data
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code class="language-bash"># 备份home目录
+tar -czf /backup/home_$(date +%Y%m%d).tar.gz /home
+
+# 备份并排除特定目录
+tar -czf backup.tar.gz \
+    --exclude='node_modules' \
+    --exclude='.git' \
+    /project
+
+# 增量备份
+tar -czf backup_full.tar.gz /data
+# 第二天
+tar -czf backup_incr.tar.gz --listed-incremental=snapshot.file /data
+
+# 远程备份
+tar -czf - /data | ssh user@remote 'cat &gt; /backup/data.tar.gz'
+</code></pre>
+<h3 id="72-gzip--gunzip---压缩工具"><a class="header" href="#72-gzip--gunzip---压缩工具">7.2 gzip / gunzip - 压缩工具</a></h3>
+<pre><code class="language-bash"># 压缩文件
+gzip file.txt    # 生成file.txt.gz，删除原文件
+
+# 保留原文件
+gzip -k file.txt
+
+# 解压文件
+gunzip file.txt.gz
+
+# 查看压缩文件内容
+zcat file.txt.gz
+zless file.txt.gz
+zgrep "pattern" file.txt.gz
+</code></pre>
+<hr />
+<h2 id="八学习验证标准"><a class="header" href="#八学习验证标准">八、学习验证标准</a></h2>
+<h3 id="81-基础能力验证必须掌握"><a class="header" href="#81-基础能力验证必须掌握">8.1 基础能力验证（必须掌握）</a></h3>
+<p><strong>验证项 1</strong>: 文件系统操作</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+熟练使用 ls 查看文件</li>
+<li><input disabled="" type="checkbox"/>
+使用 cd、pwd 导航目录</li>
+<li><input disabled="" type="checkbox"/>
+使用 cp、mv、rm 管理文件</li>
+<li><input disabled="" type="checkbox"/>
+使用 mkdir 创建目录结构</li>
+</ul>
+<p><strong>验证项 2</strong>: 文件查看与编辑</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用 cat、less、head、tail 查看文件</li>
+<li><input disabled="" type="checkbox"/>
+使用 grep 搜索文本</li>
+<li><input disabled="" type="checkbox"/>
+掌握基本的 vi/vim 操作</li>
+<li><input disabled="" type="checkbox"/>
+理解重定向和管道</li>
+</ul>
+<p><strong>验证项 3</strong>: 权限管理</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+理解Linux权限模型（rwx）</li>
+<li><input disabled="" type="checkbox"/>
+使用 chmod 修改文件权限</li>
+<li><input disabled="" type="checkbox"/>
+使用 chown 修改文件所有者</li>
+</ul>
+<h3 id="82-进阶能力验证熟练运用"><a class="header" href="#82-进阶能力验证熟练运用">8.2 进阶能力验证（熟练运用）</a></h3>
+<p><strong>验证项 4</strong>: 文本处理</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用 grep 进行复杂搜索</li>
+<li><input disabled="" type="checkbox"/>
+使用 awk 处理结构化文本</li>
+<li><input disabled="" type="checkbox"/>
+使用 sed 进行文本替换</li>
+<li><input disabled="" type="checkbox"/>
+掌握正则表达式基础</li>
+</ul>
+<p><strong>验证项 5</strong>: 系统监控</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用 ps、top 查看进程</li>
+<li><input disabled="" type="checkbox"/>
+使用 df、du 监控磁盘</li>
+<li><input disabled="" type="checkbox"/>
+使用 free 查看内存</li>
+<li><input disabled="" type="checkbox"/>
+使用 kill 管理进程</li>
+</ul>
+<p><strong>验证项 6</strong>: 网络工具</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用 ping 测试网络</li>
+<li><input disabled="" type="checkbox"/>
+使用 curl 发送HTTP请求</li>
+<li><input disabled="" type="checkbox"/>
+使用 wget 下载文件</li>
+<li><input disabled="" type="checkbox"/>
+使用 ssh、scp 远程操作</li>
+</ul>
+<h3 id="83-高级能力验证生产级别"><a class="header" href="#83-高级能力验证生产级别">8.3 高级能力验证（生产级别）</a></h3>
+<p><strong>验证项 7</strong>: 高级文件操作</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用 find 进行复杂文件查找</li>
+<li><input disabled="" type="checkbox"/>
+掌握 tar 归档和压缩</li>
+<li><input disabled="" type="checkbox"/>
+编写简单的 Shell 脚本</li>
+<li><input disabled="" type="checkbox"/>
+使用管道组合多个命令</li>
+</ul>
+<p><strong>验证项 8</strong>: 系统管理</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用 systemctl 管理服务</li>
+<li><input disabled="" type="checkbox"/>
+使用 crontab 设置定时任务</li>
+<li><input disabled="" type="checkbox"/>
+使用 journalctl 查看日志</li>
+<li><input disabled="" type="checkbox"/>
+掌握基本的故障排查流程</li>
+</ul>
+<hr />
+<h2 id="九实战综合案例"><a class="header" href="#九实战综合案例">九、实战综合案例</a></h2>
+<h3 id="91-日志分析"><a class="header" href="#91-日志分析">9.1 日志分析</a></h3>
+<pre><code class="language-bash"># 统计访问最多的IP
+awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -rn | head -10
+
+# 统计HTTP状态码
+awk '{print $9}' /var/log/nginx/access.log | sort | uniq -c | sort -rn
+
+# 分析访问时间分布
+awk '{print $4}' /var/log/nginx/access.log | cut -d: -f2 | sort | uniq -c
+
+# 查找错误请求
+grep " 50[0-9] " /var/log/nginx/access.log
+</code></pre>
+<h3 id="92-系统维护"><a class="header" href="#92-系统维护">9.2 系统维护</a></h3>
+<pre><code class="language-bash"># 清理日志文件
+find /var/log -name "*.log" -mtime +30 -exec gzip {} \;
+
+# 磁盘空间告警
+df -h | awk '$5+0 &gt; 90 {print "Alert: "$0}' | mail -s "Disk Alert" admin@example.com
+
+# 备份数据库
+mysqldump -u root -p database &gt; /backup/db_$(date +%Y%m%d).sql
+gzip /backup/db_$(date +%Y%m%d).sql
+
+# 清理临时文件
+find /tmp -type f -atime +7 -delete
+</code></pre>
+<h3 id="93-批量处理"><a class="header" href="#93-批量处理">9.3 批量处理</a></h3>
+<pre><code class="language-bash"># 批量重命名文件
+for file in *.jpeg; do mv "$file" "${file%.jpeg}.jpg"; done
+
+# 批量转换图片格式
+for img in *.png; do convert "$img" "${img%.png}.jpg"; done
+
+# 批量下载文件
+while read url; do wget "$url"; done &lt; urls.txt
+</code></pre>
+<hr />
+<h2 id="十扩展资源"><a class="header" href="#十扩展资源">十、扩展资源</a></h2>
+<h3 id="101-学习资源"><a class="header" href="#101-学习资源">10.1 学习资源</a></h3>
+<p><strong>在线资源</strong>:</p>
+<ul>
+<li><a href="https://man.linuxde.net/">Linux命令大全</a></li>
+<li><a href="http://billie66.github.io/TLCL/">The Linux Command Line (中文版)</a></li>
+<li><a href="https://linuxtools-rst.readthedocs.io/">Linux工具快速教程</a></li>
+</ul>
+<p><strong>推荐书籍</strong>:</p>
+<ul>
+<li>《Linux命令行与Shell脚本编程大全》</li>
+<li>《鸟哥的Linux私房菜》</li>
+<li>《Linux Shell脚本攻略》</li>
+</ul>
+<h3 id="102-实践建议"><a class="header" href="#102-实践建议">10.2 实践建议</a></h3>
+<ol>
+<li><strong>每天练习</strong>: 每天至少使用30分钟命令行</li>
+<li><strong>实战为主</strong>: 在实际项目中应用命令</li>
+<li><strong>阅读man手册</strong>: <code>man command</code> 查看详细文档</li>
+<li><strong>记录笔记</strong>: 记录常用命令和参数</li>
+<li><strong>编写脚本</strong>: 将重复操作自动化</li>
+</ol>
+<h3 id="103-常见快捷键"><a class="header" href="#103-常见快捷键">10.3 常见快捷键</a></h3>
+<pre><code class="language-bash">Ctrl + A  # 光标移到行首
+Ctrl + E  # 光标移到行尾
+Ctrl + U  # 删除光标前的内容
+Ctrl + K  # 删除光标后的内容
+Ctrl + L  # 清屏
+Ctrl + R  # 搜索历史命令
+Ctrl + C  # 终止当前命令
+Ctrl + Z  # 暂停当前命令
+!!        # 执行上一条命令
+!$        # 上一条命令的最后一个参数
+</code></pre>
+<hr />
+<p><strong>祝学习顺利！熟练掌握Linux命令行，提升工作效率！</strong> 🚀</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/linux/KVM.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/linux/LinuxKernel.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/linux/KVM.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/linux/LinuxKernel.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

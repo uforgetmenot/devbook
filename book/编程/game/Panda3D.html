@@ -1,0 +1,803 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Panda3D 游戏引擎学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="panda3d-游戏引擎学习笔记"><a class="header" href="#panda3d-游戏引擎学习笔记">Panda3D 游戏引擎学习笔记</a></h1>
+<h2 id="学习者角色定位"><a class="header" href="#学习者角色定位">学习者角色定位</a></h2>
+<ul>
+<li><strong>目标群体</strong>: Python开发者、游戏开发入门者、独立游戏开发者</li>
+<li><strong>前置知识</strong>: Python基础、面向对象编程、基础数学知识</li>
+<li><strong>学习目标</strong>: 掌握Panda3D引擎核心功能，能够独立开发3D游戏原型</li>
+</ul>
+<h2 id="技术概述"><a class="header" href="#技术概述">技术概述</a></h2>
+<h3 id="panda3d是什么"><a class="header" href="#panda3d是什么">Panda3D是什么</a></h3>
+<p>Panda3D是一个开源、免费的3D游戏引擎，由迪士尼和卡内基梅隆大学开发。它使用Python作为主要开发语言，也支持C++，特别适合快速原型开发和教育用途。</p>
+<h3 id="核心特性"><a class="header" href="#核心特性">核心特性</a></h3>
+<ul>
+<li><strong>Python优先</strong>: 完全基于Python的API，易学易用</li>
+<li><strong>跨平台</strong>: 支持Windows、Linux、macOS</li>
+<li><strong>完整功能</strong>: 包含渲染、物理、音频、输入处理等完整游戏开发功能</li>
+<li><strong>开源免费</strong>: MIT许可证，完全免费无限制</li>
+<li><strong>性能优良</strong>: 底层使用C++实现，性能出色</li>
+</ul>
+<h3 id="适用场景"><a class="header" href="#适用场景">适用场景</a></h3>
+<ul>
+<li>独立游戏开发</li>
+<li>游戏原型快速迭代</li>
+<li>3D可视化应用</li>
+<li>教育培训项目</li>
+<li>虚拟现实应用</li>
+</ul>
+<hr />
+<h2 id="模块一环境搭建与基础概念"><a class="header" href="#模块一环境搭建与基础概念">模块一：环境搭建与基础概念</a></h2>
+<h3 id="11-安装与配置"><a class="header" href="#11-安装与配置">1.1 安装与配置</a></h3>
+<h4 id="安装panda3d"><a class="header" href="#安装panda3d">安装Panda3D</a></h4>
+<pre><code class="language-bash"># 使用pip安装（推荐）
+pip install panda3d
+
+# 验证安装
+python -c "import panda3d; print(panda3d.__version__)"
+
+# 安装开发工具
+pip install panda3d-tools
+</code></pre>
+<h4 id="开发环境推荐"><a class="header" href="#开发环境推荐">开发环境推荐</a></h4>
+<ul>
+<li><strong>IDE</strong>: VS Code + Python扩展、PyCharm</li>
+<li><strong>调试工具</strong>: Panda3D内置的PStats性能分析器</li>
+<li><strong>资源工具</strong>: Blender（3D建模）、GIMP（纹理编辑）</li>
+</ul>
+<h3 id="12-第一个panda3d程序"><a class="header" href="#12-第一个panda3d程序">1.2 第一个Panda3D程序</a></h3>
+<h4 id="最小示例显示3d模型"><a class="header" href="#最小示例显示3d模型">最小示例：显示3D模型</a></h4>
+<pre><code class="language-python">from direct.showbase.ShowBase import ShowBase
+
+class MyApp(ShowBase):
+    def __init__(self):
+        # 初始化引擎
+        ShowBase.__init__(self)
+
+        # 加载环境模型（Panda3D自带）
+        self.environ = self.loader.loadModel("models/environment")
+        # 将模型添加到场景
+        self.environ.reparentTo(self.render)
+        # 设置模型位置
+        self.environ.setScale(0.25, 0.25, 0.25)
+        self.environ.setPos(-8, 42, 0)
+
+# 创建应用实例并运行
+app = MyApp()
+app.run()
+</code></pre>
+<p><strong>执行步骤</strong>:</p>
+<ol>
+<li>保存为<code>hello_panda.py</code></li>
+<li>运行：<code>python hello_panda.py</code></li>
+<li>使用鼠标拖拽旋转视角</li>
+</ol>
+<h3 id="13-核心概念"><a class="header" href="#13-核心概念">1.3 核心概念</a></h3>
+<h4 id="scene-graph场景图"><a class="header" href="#scene-graph场景图">Scene Graph（场景图）</a></h4>
+<pre><code class="language-python"># 场景图层级结构
+render (根节点)
+├── camera (摄像机)
+├── environ (环境模型)
+└── character (角色模型)
+    ├── head (头部)
+    └── body (身体)
+</code></pre>
+<p><strong>关键方法</strong>:</p>
+<ul>
+<li><code>reparentTo(parent)</code>: 将节点挂载到父节点</li>
+<li><code>detachNode()</code>: 从场景图移除节点</li>
+<li><code>removeNode()</code>: 永久删除节点</li>
+</ul>
+<h4 id="坐标系统"><a class="header" href="#坐标系统">坐标系统</a></h4>
+<pre><code class="language-python"># Panda3D使用右手坐标系
+# X轴：向右
+# Y轴：向前（深度）
+# Z轴：向上
+
+# 位置设置
+model.setPos(x, y, z)        # 绝对位置
+model.setX(10)               # 仅设置X坐标
+model.setY(20)
+model.setZ(5)
+
+# 旋转设置（度数）
+model.setHpr(heading, pitch, roll)  # 航向、俯仰、翻滚
+model.setH(45)  # 绕Z轴旋转45度
+
+# 缩放设置
+model.setScale(2)            # 均匀缩放
+model.setScale(2, 1, 1)      # 仅X轴缩放2倍
+</code></pre>
+<h3 id="14-实战案例太阳系模拟"><a class="header" href="#14-实战案例太阳系模拟">1.4 实战案例：太阳系模拟</a></h3>
+<pre><code class="language-python">from direct.showbase.ShowBase import ShowBase
+from direct.task import Task
+import math
+
+class SolarSystem(ShowBase):
+    def __init__(self):
+        ShowBase.__init__(self)
+
+        # 禁用默认鼠标控制
+        self.disableMouse()
+
+        # 设置摄像机位置
+        self.camera.setPos(0, -50, 30)
+        self.camera.lookAt(0, 0, 0)
+
+        # 创建太阳（使用球体模型）
+        self.sun = self.loader.loadModel("models/misc/sphere")
+        self.sun.reparentTo(self.render)
+        self.sun.setScale(3)
+        self.sun.setColor(1, 1, 0, 1)  # 黄色
+
+        # 创建地球
+        self.earth = self.loader.loadModel("models/misc/sphere")
+        self.earth.reparentTo(self.render)
+        self.earth.setScale(1)
+        self.earth.setColor(0, 0, 1, 1)  # 蓝色
+        self.earth.setPos(20, 0, 0)
+
+        # 创建月球
+        self.moon = self.loader.loadModel("models/misc/sphere")
+        self.moon.reparentTo(self.earth)  # 挂载到地球
+        self.moon.setScale(0.3)
+        self.moon.setColor(0.7, 0.7, 0.7, 1)  # 灰色
+        self.moon.setPos(3, 0, 0)
+
+        # 添加旋转任务
+        self.taskMgr.add(self.rotateTask, "RotateTask")
+
+    def rotateTask(self, task):
+        # 地球公转
+        angle = task.time * 30  # 旋转速度
+        rad = math.radians(angle)
+        self.earth.setPos(
+            math.cos(rad) * 20,
+            math.sin(rad) * 20,
+            0
+        )
+
+        # 地球自转
+        self.earth.setH(angle * 2)
+
+        # 月球公转（相对地球）
+        self.moon.setH(angle * 5)
+
+        return Task.cont  # 继续执行任务
+
+app = SolarSystem()
+app.run()
+</code></pre>
+<p><strong>学习要点</strong>:</p>
+<ul>
+<li>场景图的父子关系（月球跟随地球）</li>
+<li>任务系统的使用</li>
+<li>数学计算实现轨道运动</li>
+</ul>
+<hr />
+<h2 id="模块二输入处理与交互"><a class="header" href="#模块二输入处理与交互">模块二：输入处理与交互</a></h2>
+<h3 id="21-键盘输入"><a class="header" href="#21-键盘输入">2.1 键盘输入</a></h3>
+<h4 id="基础键盘事件"><a class="header" href="#基础键盘事件">基础键盘事件</a></h4>
+<pre><code class="language-python">from direct.showbase.ShowBase import ShowBase
+
+class InputDemo(ShowBase):
+    def __init__(self):
+        ShowBase.__init__(self)
+
+        # 加载模型
+        self.player = self.loader.loadModel("models/box")
+        self.player.reparentTo(self.render)
+        self.player.setPos(0, 20, 0)
+
+        # 绑定键盘事件
+        self.accept("arrow_up", self.moveForward)
+        self.accept("arrow_down", self.moveBackward)
+        self.accept("arrow_left", self.turnLeft)
+        self.accept("arrow_right", self.turnRight)
+        self.accept("escape", self.quit)
+
+        # 移动速度
+        self.speed = 5
+
+    def moveForward(self):
+        # 向前移动（相对于当前朝向）
+        self.player.setY(self.player, self.speed)
+
+    def moveBackward(self):
+        self.player.setY(self.player, -self.speed)
+
+    def turnLeft(self):
+        self.player.setH(self.player.getH() + 10)
+
+    def turnRight(self):
+        self.player.setH(self.player.getH() - 10)
+
+    def quit(self):
+        exit()
+
+app = InputDemo()
+app.run()
+</code></pre>
+<h4 id="持续按键检测"><a class="header" href="#持续按键检测">持续按键检测</a></h4>
+<pre><code class="language-python">from direct.showbase.ShowBase import ShowBase
+from direct.task import Task
+from panda3d.core import ClockObject
+
+globalClock = ClockObject.getGlobalClock()
+
+class ContinuousInput(ShowBase):
+    def __init__(self):
+        ShowBase.__init__(self)
+
+        self.player = self.loader.loadModel("models/box")
+        self.player.reparentTo(self.render)
+        self.player.setPos(0, 20, 0)
+
+        # 设置摄像机
+        self.camera.setPos(0, -30, 10)
+        self.camera.lookAt(self.player)
+
+        # 键盘状态字典
+        self.keys = {
+            "w": False,
+            "s": False,
+            "a": False,
+            "d": False
+        }
+
+        # 绑定按下和释放事件
+        self.accept("w", self.setKey, ["w", True])
+        self.accept("w-up", self.setKey, ["w", False])
+        self.accept("s", self.setKey, ["s", True])
+        self.accept("s-up", self.setKey, ["s", False])
+        self.accept("a", self.setKey, ["a", True])
+        self.accept("a-up", self.setKey, ["a", False])
+        self.accept("d", self.setKey, ["d", True])
+        self.accept("d-up", self.setKey, ["d", False])
+
+        # 添加更新任务
+        self.taskMgr.add(self.updatePlayer, "UpdatePlayer")
+
+    def setKey(self, key, state):
+        self.keys[key] = state
+
+    def updatePlayer(self, task):
+        dt = globalClock.getDt()  # 帧间隔时间
+        speed = 10
+
+        if self.keys["w"]:
+            self.player.setY(self.player, speed * dt)
+        if self.keys["s"]:
+            self.player.setY(self.player, -speed * dt)
+        if self.keys["a"]:
+            self.player.setH(self.player.getH() + 100 * dt)
+        if self.keys["d"]:
+            self.player.setH(self.player.getH() - 100 * dt)
+
+        # 摄像机跟随
+        self.camera.setPos(
+            self.player.getX(),
+            self.player.getY() - 30,
+            10
+        )
+        self.camera.lookAt(self.player)
+
+        return Task.cont
+
+app = ContinuousInput()
+app.run()
+</code></pre>
+<h3 id="22-鼠标输入"><a class="header" href="#22-鼠标输入">2.2 鼠标输入</a></h3>
+<h4 id="鼠标点击检测"><a class="header" href="#鼠标点击检测">鼠标点击检测</a></h4>
+<pre><code class="language-python">from direct.showbase.ShowBase import ShowBase
+from panda3d.core import CollisionTraverser, CollisionNode
+from panda3d.core import CollisionHandlerQueue, CollisionRay
+from panda3d.core import GeomNode
+import random
+
+class MousePicking(ShowBase):
+    def __init__(self):
+        ShowBase.__init__(self)
+
+        # 创建多个可点击对象
+        self.boxes = []
+        for i in range(5):
+            box = self.loader.loadModel("models/box")
+            box.reparentTo(self.render)
+            box.setPos(i * 4 - 8, 20, 0)
+            box.setTag("clickable", str(i))
+            self.boxes.append(box)
+
+        # 设置碰撞检测
+        self.picker = CollisionTraverser()
+        self.pq = CollisionHandlerQueue()
+
+        self.pickerNode = CollisionNode('mouseRay')
+        self.pickerNP = self.camera.attachNewNode(self.pickerNode)
+        self.pickerNode.setFromCollideMask(GeomNode.getDefaultCollideMask())
+        self.pickerRay = CollisionRay()
+        self.pickerNode.addSolid(self.pickerRay)
+        self.picker.addCollider(self.pickerNP, self.pq)
+
+        # 绑定鼠标点击
+        self.accept('mouse1', self.onMouseClick)
+
+        # 设置摄像机
+        self.camera.setPos(0, -30, 10)
+        self.camera.lookAt(0, 20, 0)
+
+    def onMouseClick(self):
+        # 获取鼠标位置
+        if not self.mouseWatcherNode.hasMouse():
+            return
+
+        mpos = self.mouseWatcherNode.getMouse()
+
+        # 设置射线从摄像机到鼠标位置
+        self.pickerRay.setFromLens(self.camNode, mpos.getX(), mpos.getY())
+
+        # 执行碰撞检测
+        self.picker.traverse(self.render)
+
+        if self.pq.getNumEntries() &gt; 0:
+            # 按距离排序
+            self.pq.sortEntries()
+            pickedObj = self.pq.getEntry(0).getIntoNodePath()
+            # 找到最顶层的模型节点
+            pickedObj = pickedObj.findNetTag('clickable')
+            if not pickedObj.isEmpty():
+                index = pickedObj.getTag('clickable')
+                print(f"点击了第 {index} 个方块")
+                # 改变颜色
+                pickedObj.setColor(
+                    random.random(),
+                    random.random(),
+                    random.random(),
+                    1
+                )
+
+app = MousePicking()
+app.run()
+</code></pre>
+<hr />
+<h2 id="模块三物理引擎集成"><a class="header" href="#模块三物理引擎集成">模块三：物理引擎集成</a></h2>
+<h3 id="31-bullet物理引擎"><a class="header" href="#31-bullet物理引擎">3.1 Bullet物理引擎</a></h3>
+<h4 id="启用bullet物理"><a class="header" href="#启用bullet物理">启用Bullet物理</a></h4>
+<pre><code class="language-python">from direct.showbase.ShowBase import ShowBase
+from panda3d.core import Vec3
+from panda3d.bullet import BulletWorld, BulletRigidBodyNode
+from panda3d.bullet import BulletBoxShape, BulletSphereShape, BulletPlaneShape
+from direct.task import Task
+from panda3d.core import ClockObject
+
+globalClock = ClockObject.getGlobalClock()
+
+class BulletPhysicsDemo(ShowBase):
+    def __init__(self):
+        ShowBase.__init__(self)
+
+        # 创建物理世界
+        self.world = BulletWorld()
+        self.world.setGravity(Vec3(0, 0, -9.81))
+
+        # 创建地面（静态）
+        groundShape = BulletPlaneShape(Vec3(0, 0, 1), 0)
+        groundNode = BulletRigidBodyNode('Ground')
+        groundNode.addShape(groundShape)
+        groundNP = self.render.attachNewNode(groundNode)
+        groundNP.setPos(0, 0, 0)
+        self.world.attachRigidBody(groundNode)
+
+        # 创建地面视觉模型
+        groundModel = self.loader.loadModel("models/box")
+        groundModel.reparentTo(groundNP)
+        groundModel.setScale(20, 20, 0.1)
+        groundModel.setPos(0, 0, -0.1)
+        groundModel.setColor(0.3, 0.7, 0.3, 1)
+
+        # 创建动态物体（盒子）
+        self.createBox(Vec3(0, 0, 10))
+        self.createBox(Vec3(1, 0, 15))
+
+        # 创建球体
+        self.createSphere(Vec3(3, 0, 20))
+
+        # 更新物理
+        self.taskMgr.add(self.updatePhysics, 'UpdatePhysics')
+
+        # 摄像机设置
+        self.camera.setPos(0, -30, 10)
+        self.camera.lookAt(0, 0, 5)
+
+    def createBox(self, pos):
+        # 物理形状
+        shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
+
+        # 刚体节点
+        bodyNode = BulletRigidBodyNode('Box')
+        bodyNode.setMass(1.0)  # 质量
+        bodyNode.addShape(shape)
+        bodyNP = self.render.attachNewNode(bodyNode)
+        bodyNP.setPos(pos)
+
+        # 添加到物理世界
+        self.world.attachRigidBody(bodyNode)
+
+        # 视觉模型
+        model = self.loader.loadModel("models/box")
+        model.reparentTo(bodyNP)
+        model.setColor(1, 0, 0, 1)
+
+    def createSphere(self, pos):
+        shape = BulletSphereShape(0.5)
+
+        bodyNode = BulletRigidBodyNode('Sphere')
+        bodyNode.setMass(1.0)
+        bodyNode.addShape(shape)
+        bodyNP = self.render.attachNewNode(bodyNode)
+        bodyNP.setPos(pos)
+
+        self.world.attachRigidBody(bodyNode)
+
+        model = self.loader.loadModel("models/misc/sphere")
+        model.reparentTo(bodyNP)
+        model.setScale(0.5)
+        model.setColor(0, 0, 1, 1)
+
+    def updatePhysics(self, task):
+        dt = globalClock.getDt()
+        self.world.doPhysics(dt)
+        return Task.cont
+
+app = BulletPhysicsDemo()
+app.run()
+</code></pre>
+<hr />
+<h2 id="学习效果验证标准"><a class="header" href="#学习效果验证标准">学习效果验证标准</a></h2>
+<h3 id="1-基础能力验证"><a class="header" href="#1-基础能力验证">1. 基础能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够独立搭建Panda3D开发环境</li>
+<li><input disabled="" type="checkbox"/>
+理解场景图（Scene Graph）概念并能操作节点</li>
+<li><input disabled="" type="checkbox"/>
+掌握坐标系统，能够精确控制对象位置、旋转、缩放</li>
+<li><input disabled="" type="checkbox"/>
+能够加载3D模型并正确显示</li>
+</ul>
+<h3 id="2-交互能力验证"><a class="header" href="#2-交互能力验证">2. 交互能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现完整的键盘输入处理（单次和持续按键）</li>
+<li><input disabled="" type="checkbox"/>
+实现鼠标交互（点击、射线检测、对象选择）</li>
+<li><input disabled="" type="checkbox"/>
+创建第三人称或第一人称摄像机控制器</li>
+</ul>
+<h3 id="3-物理能力验证"><a class="header" href="#3-物理能力验证">3. 物理能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+集成Bullet物理引擎实现真实物理模拟</li>
+<li><input disabled="" type="checkbox"/>
+创建物理约束（铰链、滑块等）</li>
+<li><input disabled="" type="checkbox"/>
+实现基于物理的游戏机制</li>
+</ul>
+<h3 id="4-综合项目验证"><a class="header" href="#4-综合项目验证">4. 综合项目验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+开发完整的小游戏原型（包含菜单、游戏循环、计分）</li>
+<li><input disabled="" type="checkbox"/>
+实现音频系统（背景音乐、音效）</li>
+<li><input disabled="" type="checkbox"/>
+能够独立debug和优化性能</li>
+</ul>
+<hr />
+<h2 id="进阶学习路径"><a class="header" href="#进阶学习路径">进阶学习路径</a></h2>
+<h3 id="阶段一深入核心功能1-2月"><a class="header" href="#阶段一深入核心功能1-2月">阶段一：深入核心功能（1-2月）</a></h3>
+<ol>
+<li>
+<p><strong>高级渲染技术</strong></p>
+<ul>
+<li>着色器编程（GLSL）</li>
+<li>后期处理效果</li>
+<li>粒子系统</li>
+<li>地形系统</li>
+</ul>
+</li>
+<li>
+<p><strong>性能优化</strong></p>
+<ul>
+<li>LOD（细节层次）技术</li>
+<li>场景剔除</li>
+<li>纹理优化</li>
+<li>性能分析工具PStats使用</li>
+</ul>
+</li>
+</ol>
+<h3 id="阶段二游戏系统开发2-3月"><a class="header" href="#阶段二游戏系统开发2-3月">阶段二：游戏系统开发（2-3月）</a></h3>
+<ol>
+<li>
+<p><strong>AI系统</strong></p>
+<ul>
+<li>路径查找（A*算法）</li>
+<li>行为树</li>
+<li>状态机</li>
+</ul>
+</li>
+<li>
+<p><strong>网络多人游戏</strong></p>
+<ul>
+<li>Panda3D网络模块</li>
+<li>客户端-服务器架构</li>
+<li>状态同步</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="扩展资源"><a class="header" href="#扩展资源">扩展资源</a></h2>
+<h3 id="官方资源"><a class="header" href="#官方资源">官方资源</a></h3>
+<ul>
+<li><strong>官方文档</strong>: https://docs.panda3d.org/</li>
+<li><strong>官方教程</strong>: https://docs.panda3d.org/1.10/python/introduction/</li>
+<li><strong>API参考</strong>: https://docs.panda3d.org/1.10/python/reference/</li>
+<li><strong>官方论坛</strong>: https://discourse.panda3d.org/</li>
+</ul>
+<h3 id="示例项目"><a class="header" href="#示例项目">示例项目</a></h3>
+<ul>
+<li><strong>官方示例</strong>: https://github.com/panda3d/panda3d/tree/master/samples</li>
+<li><strong>社区项目</strong>: https://www.panda3d.org/gallery/</li>
+</ul>
+<h3 id="工具与插件"><a class="header" href="#工具与插件">工具与插件</a></h3>
+<ul>
+<li><strong>Blender</strong>: 3D建模（配合YABEE插件导出.egg）</li>
+<li><strong>GIMP/Photoshop</strong>: 纹理制作</li>
+<li><strong>Audacity</strong>: 音频编辑</li>
+</ul>
+<hr />
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>Panda3D是一个功能完整、易于学习的3D游戏引擎，特别适合：</p>
+<ul>
+<li>Python开发者快速上手3D开发</li>
+<li>独立游戏开发者进行原型开发</li>
+<li>教育培训和学术研究</li>
+<li>中小型3D项目快速迭代</li>
+</ul>
+<p>通过系统学习本笔记的核心模块，配合实战案例练习，你将能够独立开发完整的3D游戏和应用。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/embbed/vxworks.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/game/PyGame.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/embbed/vxworks.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/game/PyGame.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

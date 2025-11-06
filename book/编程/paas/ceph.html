@@ -1,0 +1,1502 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Ceph 分布式存储系统学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="ceph-分布式存储系统学习笔记"><a class="header" href="#ceph-分布式存储系统学习笔记">Ceph 分布式存储系统学习笔记</a></h1>
+<blockquote>
+<p><strong>学习目标</strong>: 掌握Ceph分布式存储系统的核心原理、部署运维、性能调优，能够在生产环境搭建高可用存储集群</p>
+<p><strong>适用人群</strong>: 云平台运维工程师、存储架构师、Kubernetes管理员</p>
+<p><strong>前置知识</strong>: Linux系统管理、分布式系统基础、网络存储概念</p>
+</blockquote>
+<hr />
+<h2 id="1-ceph-基础概念"><a class="header" href="#1-ceph-基础概念">1. Ceph 基础概念</a></h2>
+<h3 id="11-什么是-ceph"><a class="header" href="#11-什么是-ceph">1.1 什么是 Ceph</a></h3>
+<p>Ceph 是一个统一的分布式存储系统,设计初衷是提供高性能、高可靠性和可扩展性的存储解决方案。</p>
+<p><strong>核心设计目标</strong>:</p>
+<ul>
+<li><strong>统一存储</strong>: 同时提供对象、块、文件三种存储接口</li>
+<li><strong>无单点故障</strong>: 完全分布式架构,无中心节点</li>
+<li><strong>自动扩展</strong>: 线性扩展到PB级甚至EB级</li>
+<li><strong>自我修复</strong>: 自动检测和修复故障</li>
+</ul>
+<p><strong>应用场景</strong>:</p>
+<pre><code>云计算平台 → OpenStack/Kubernetes存储后端
+大数据平台 → Hadoop/Spark数据存储
+私有云存储 → 企业数据中心统一存储
+视频监控 → 海量视频数据存储
+</code></pre>
+<h3 id="12-ceph-的特点和优势"><a class="header" href="#12-ceph-的特点和优势">1.2 Ceph 的特点和优势</a></h3>
+<p><strong>1. 统一存储平台</strong></p>
+<pre><code>┌─────────────────────────────────────┐
+│         应用层接口                   │
+├──────────┬──────────┬───────────────┤
+│ RGW      │   RBD    │    CephFS     │
+│(对象存储) │ (块存储)  │  (文件存储)   │
+├──────────┴──────────┴───────────────┤
+│          RADOS 对象存储层            │
+└─────────────────────────────────────┘
+</code></pre>
+<p><strong>2. CRUSH 算法</strong></p>
+<ul>
+<li>无需中心化元数据服务器</li>
+<li>客户端直接计算数据位置</li>
+<li>支持多副本和纠删码</li>
+</ul>
+<p><strong>3. 强一致性</strong></p>
+<ul>
+<li>保证数据一致性</li>
+<li>支持原子操作</li>
+<li>实时数据同步</li>
+</ul>
+<p><strong>4. 高可用性</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>说明</th></tr></thead><tbody>
+<tr><td>副本机制</td><td>默认3副本,可配置</td></tr>
+<tr><td>故障检测</td><td>秒级故障检测</td></tr>
+<tr><td>自动恢复</td><td>无需人工干预</td></tr>
+<tr><td>无单点</td><td>任意节点可故障</td></tr>
+</tbody></table>
+</div>
+<h3 id="13-ceph-架构概述"><a class="header" href="#13-ceph-架构概述">1.3 Ceph 架构概述</a></h3>
+<p><strong>完整架构图</strong>:</p>
+<pre><code>┌─────────────────────────────────────────────────┐
+│                  客户端层                        │
+│  librados  │  RBD Client  │  CephFS Client      │
+└─────────────────┬───────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────┐
+│                 RADOS 层                         │
+│  Monitor  │  Manager  │  OSD  │  MDS  │  RGW   │
+└─────────────────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────┐
+│              物理存储层                          │
+│        SSD  │  HDD  │  NVMe                     │
+└─────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>数据流</strong>:</p>
+<pre><code>客户端写入 → 计算PG → 通过CRUSH定位OSD → 写入主OSD →
+复制到副本OSD → 确认写入成功 → 返回客户端
+</code></pre>
+<h3 id="14-存储类型"><a class="header" href="#14-存储类型">1.4 存储类型</a></h3>
+<p><strong>1. 对象存储 (RGW - RADOS Gateway)</strong></p>
+<pre><code class="language-bash"># S3 API示例
+aws s3 cp file.txt s3://my-bucket/
+aws s3 ls s3://my-bucket/
+</code></pre>
+<ul>
+<li>兼容Amazon S3 / OpenStack Swift API</li>
+<li>适合海量非结构化数据</li>
+<li>无限扩展能力</li>
+</ul>
+<p><strong>2. 块存储 (RBD - RADOS Block Device)</strong></p>
+<pre><code class="language-bash"># 创建10GB块设备
+rbd create mypool/myimage --size 10240
+
+# 映射到本地
+rbd map mypool/myimage
+
+# 格式化并挂载
+mkfs.xfs /dev/rbd0
+mount /dev/rbd0 /mnt/ceph-volume
+</code></pre>
+<ul>
+<li>提供块设备接口</li>
+<li>支持快照和克隆</li>
+<li>适合虚拟机磁盘、数据库</li>
+</ul>
+<p><strong>3. 文件存储 (CephFS - Ceph File System)</strong></p>
+<pre><code class="language-bash"># 挂载CephFS
+mount -t ceph mon1:6789:/ /mnt/cephfs -o name=admin,secret=AQD...
+
+# 或使用ceph-fuse
+ceph-fuse -m mon1:6789 /mnt/cephfs
+</code></pre>
+<ul>
+<li>POSIX兼容文件系统</li>
+<li>支持多客户端并发访问</li>
+<li>适合共享文件存储</li>
+</ul>
+<hr />
+<h2 id="2-ceph-核心组件"><a class="header" href="#2-ceph-核心组件">2. Ceph 核心组件</a></h2>
+<h3 id="21-monitor-mon"><a class="header" href="#21-monitor-mon">2.1 Monitor (MON)</a></h3>
+<p>Monitor维护集群状态映射表(cluster map)。</p>
+<p><strong>功能</strong>:</p>
+<ul>
+<li>维护OSD Map、Monitor Map、PG Map、CRUSH Map、MDS Map</li>
+<li>集群成员管理</li>
+<li>时钟同步服务</li>
+<li>提供集群状态查询</li>
+</ul>
+<p><strong>高可用配置</strong>:</p>
+<pre><code class="language-bash"># 推荐部署奇数个MON (3或5个)
+# 查看MON状态
+ceph mon stat
+
+# 预期输出:
+# e2: 3 mons at {mon1=10.0.0.1:6789,mon2=10.0.0.2:6789,mon3=10.0.0.3:6789}
+</code></pre>
+<p><strong>关键参数</strong>:</p>
+<pre><code class="language-ini">[mon]
+mon_allow_pool_delete = true
+mon_osd_down_out_interval = 600  # OSD标记为out的时间间隔
+mon_osd_min_down_reporters = 2   # 最少需要多少个OSD报告某OSD down
+</code></pre>
+<h3 id="22-object-storage-daemon-osd"><a class="header" href="#22-object-storage-daemon-osd">2.2 Object Storage Daemon (OSD)</a></h3>
+<p>OSD负责存储数据、处理数据复制、恢复、再平衡。</p>
+<p><strong>一个OSD对应一个物理磁盘</strong>:</p>
+<pre><code>服务器1: OSD.0(sda), OSD.1(sdb), OSD.2(sdc)
+服务器2: OSD.3(sda), OSD.4(sdb), OSD.5(sdc)
+服务器3: OSD.6(sda), OSD.7(sdb), OSD.8(sdc)
+</code></pre>
+<p><strong>OSD工作流程</strong>:</p>
+<pre><code>接收IO请求 → 计算对象存储位置 → 执行读写操作 →
+副本同步 → 数据校验 → 响应客户端
+</code></pre>
+<p><strong>常用命令</strong>:</p>
+<pre><code class="language-bash"># 查看OSD状态
+ceph osd stat
+ceph osd tree
+
+# OSD性能统计
+ceph osd perf
+
+# 标记OSD out/in
+ceph osd out 0
+ceph osd in 0
+
+# 移除OSD
+ceph osd purge 0 --yes-i-really-mean-it
+</code></pre>
+<h3 id="23-manager-mgr"><a class="header" href="#23-manager-mgr">2.3 Manager (MGR)</a></h3>
+<p>Manager负责收集集群指标和运行时状态。</p>
+<p><strong>内置模块</strong>:</p>
+<pre><code class="language-bash"># 启用dashboard模块
+ceph mgr module enable dashboard
+
+# 启用prometheus模块
+ceph mgr module enable prometheus
+
+# 查看所有模块
+ceph mgr module ls
+
+# 输出示例:
+# {
+#   "enabled_modules": ["dashboard", "prometheus", "restful"],
+#   "disabled_modules": ["balancer", "pg_autoscaler"]
+# }
+</code></pre>
+<p><strong>Dashboard访问</strong>:</p>
+<pre><code class="language-bash"># 创建管理员用户
+ceph dashboard ac-user-create admin password administrator
+
+# 获取访问地址
+ceph mgr services
+# 输出: dashboard: https://10.0.0.1:8443/
+</code></pre>
+<h3 id="24-metadata-server-mds"><a class="header" href="#24-metadata-server-mds">2.4 Metadata Server (MDS)</a></h3>
+<p>MDS为CephFS管理元数据。</p>
+<p><strong>MDS架构</strong>:</p>
+<pre><code>Active MDS ← 处理客户端请求
+Standby MDS ← 热备份,故障接管
+</code></pre>
+<p><strong>创建MDS</strong>:</p>
+<pre><code class="language-bash"># 部署MDS
+ceph-deploy mds create node1 node2
+
+# 查看MDS状态
+ceph mds stat
+ceph fs status
+</code></pre>
+<p><strong>关键配置</strong>:</p>
+<pre><code class="language-ini">[mds]
+mds_cache_memory_limit = 4294967296  # 4GB缓存
+mds_max_file_size = 1099511627776    # 最大单文件1TB
+</code></pre>
+<h3 id="25-rados-gateway-rgw"><a class="header" href="#25-rados-gateway-rgw">2.5 RADOS Gateway (RGW)</a></h3>
+<p>RGW提供RESTful对象存储接口。</p>
+<p><strong>部署RGW</strong>:</p>
+<pre><code class="language-bash"># 安装radosgw包
+apt install radosgw
+
+# 创建RGW实例
+radosgw-admin realm create --rgw-realm=default --default
+radosgw-admin zonegroup create --rgw-zonegroup=default --master --default
+radosgw-admin zone create --rgw-zone=default --rgw-zonegroup=default --master --default
+
+# 启动RGW服务
+systemctl start ceph-radosgw@rgw.node1
+</code></pre>
+<p><strong>创建用户</strong>:</p>
+<pre><code class="language-bash"># 创建S3用户
+radosgw-admin user create --uid=testuser --display-name="Test User"
+
+# 输出包含access_key和secret_key
+# {
+#   "user_id": "testuser",
+#   "display_name": "Test User",
+#   "keys": [{
+#     "access_key": "ABC123...",
+#     "secret_key": "XYZ789..."
+#   }]
+# }
+</code></pre>
+<hr />
+<h2 id="3-ceph-核心算法和机制"><a class="header" href="#3-ceph-核心算法和机制">3. Ceph 核心算法和机制</a></h2>
+<h3 id="31-crush-算法"><a class="header" href="#31-crush-算法">3.1 CRUSH 算法</a></h3>
+<p>CRUSH (Controlled Replication Under Scalable Hashing) 是Ceph的核心数据分布算法。</p>
+<p><strong>CRUSH工作原理</strong>:</p>
+<pre><code>对象名 → Hash → PG ID → CRUSH算法 → OSD列表
+</code></pre>
+<p><strong>CRUSH Map结构</strong>:</p>
+<pre><code>root default
+├── datacenter dc1
+│   ├── rack rack1
+│   │   ├── host node1
+│   │   │   ├── osd.0
+│   │   │   └── osd.1
+│   │   └── host node2
+│   │       ├── osd.2
+│   │       └── osd.3
+│   └── rack rack2
+│       ├── host node3
+│       │   ├── osd.4
+│       │   └── osd.5
+│       └── host node4
+│           ├── osd.6
+│           └── osd.7
+</code></pre>
+<p><strong>查看和编辑CRUSH Map</strong>:</p>
+<pre><code class="language-bash"># 导出CRUSH map
+ceph osd getcrushmap -o crushmap.bin
+crushtool -d crushmap.bin -o crushmap.txt
+
+# 编辑crushmap.txt后重新导入
+crushtool -c crushmap.txt -o crushmap-new.bin
+ceph osd setcrushmap -i crushmap-new.bin
+</code></pre>
+<h3 id="32-pg-placement-group"><a class="header" href="#32-pg-placement-group">3.2 PG (Placement Group)</a></h3>
+<p>PG是对象到OSD之间的逻辑映射层。</p>
+<p><strong>PG数量计算公式</strong>:</p>
+<pre><code>PG总数 = (OSD数量 × 100) / 副本数
+然后向上取到最接近的2的幂次方
+</code></pre>
+<p><strong>示例</strong>:</p>
+<pre><code>10个OSD, 3副本
+PG数 = (10 × 100) / 3 = 333 → 向上取到512
+</code></pre>
+<p><strong>查看PG状态</strong>:</p>
+<pre><code class="language-bash"># 查看PG统计
+ceph pg stat
+
+# 预期输出:
+# 512 pgs: 512 active+clean; 10 GiB data, 30 GiB used, 270 GiB avail
+
+# 查看某个PG详情
+ceph pg dump | grep ^1.0
+
+# PG状态说明:
+# active+clean: 正常状态
+# active+degraded: 副本不足
+# active+recovering: 数据恢复中
+# peering: 正在建立一致性
+</code></pre>
+<h3 id="33-数据分布和副本机制"><a class="header" href="#33-数据分布和副本机制">3.3 数据分布和副本机制</a></h3>
+<p><strong>写入流程</strong>:</p>
+<pre><code>1. 客户端写入对象
+2. 计算对象所属PG: hash(object_name) % pg_num
+3. CRUSH计算PG映射到哪些OSD: [OSD.2, OSD.5, OSD.8]
+4. 写入主OSD (OSD.2)
+5. 主OSD复制到副本OSD (OSD.5, OSD.8)
+6. 所有OSD确认写入
+7. 返回成功给客户端
+</code></pre>
+<p><strong>副本策略</strong>:</p>
+<pre><code class="language-yaml"># 3副本策略
+size: 3          # 总副本数
+min_size: 2      # 最小可用副本数
+
+# 纠删码策略 (4+2)
+erasure-code-profile:
+  k: 4  # 数据块
+  m: 2  # 校验块
+</code></pre>
+<p><strong>配置示例</strong>:</p>
+<pre><code class="language-bash"># 创建3副本存储池
+ceph osd pool create mypool 128 128 replicated
+
+# 设置副本数
+ceph osd pool set mypool size 3
+ceph osd pool set mypool min_size 2
+
+# 创建纠删码存储池
+ceph osd erasure-code-profile set myprofile k=4 m=2
+ceph osd pool create ecpool 128 128 erasure myprofile
+</code></pre>
+<h3 id="34-一致性哈希"><a class="header" href="#34-一致性哈希">3.4 一致性哈希</a></h3>
+<p>Ceph使用一致性哈希确保:</p>
+<ul>
+<li>节点增删时最小化数据迁移</li>
+<li>数据均匀分布</li>
+<li>可预测的数据位置</li>
+</ul>
+<hr />
+<h2 id="4-ceph-部署和安装"><a class="header" href="#4-ceph-部署和安装">4. Ceph 部署和安装</a></h2>
+<h3 id="41-系统要求"><a class="header" href="#41-系统要求">4.1 系统要求</a></h3>
+<p><strong>硬件要求</strong>:</p>
+<pre><code class="language-yaml">最小配置:
+  CPU: 2核 (MON/MGR), 4核 (OSD)
+  内存: 4GB (MON/MGR), 8GB (OSD, 每个OSD 2GB)
+  网络: 1Gbps
+
+推荐配置:
+  CPU: 4核 (MON/MGR), 8核+ (OSD)
+  内存: 8GB (MON/MGR), 16GB+ (OSD)
+  网络: 10Gbps (公共+集群双网络)
+  存储: SSD用于WAL/DB, HDD用于数据
+</code></pre>
+<p><strong>软件要求</strong>:</p>
+<pre><code class="language-bash">操作系统: Ubuntu 20.04 / CentOS 8 / RHEL 8
+内核版本: 4.14+
+文件系统: XFS (推荐) / ext4
+时间同步: NTP/Chrony
+</code></pre>
+<h3 id="42-部署方式"><a class="header" href="#42-部署方式">4.2 部署方式</a></h3>
+<h4 id="方式1-cephadm-推荐"><a class="header" href="#方式1-cephadm-推荐">方式1: cephadm (推荐)</a></h4>
+<p><strong>步骤1: 准备环境</strong></p>
+<pre><code class="language-bash"># 所有节点配置主机名解析
+cat &gt;&gt; /etc/hosts &lt;&lt;EOF
+10.0.0.1 ceph-mon1
+10.0.0.2 ceph-mon2
+10.0.0.3 ceph-mon3
+10.0.0.4 ceph-osd1
+10.0.0.5 ceph-osd2
+EOF
+
+# 配置SSH免密登录
+ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa
+ssh-copy-id root@ceph-mon1
+ssh-copy-id root@ceph-mon2
+# ...
+</code></pre>
+<p><strong>步骤2: 安装cephadm</strong></p>
+<pre><code class="language-bash"># 下载cephadm
+curl --silent --remote-name --location \
+  https://github.com/ceph/ceph/raw/pacific/src/cephadm/cephadm
+
+chmod +x cephadm
+mv cephadm /usr/local/bin/
+
+# 安装依赖
+cephadm install
+</code></pre>
+<p><strong>步骤3: 引导集群</strong></p>
+<pre><code class="language-bash"># 在第一个MON节点执行
+cephadm bootstrap --mon-ip 10.0.0.1
+
+# 输出包含:
+# Ceph Dashboard: https://10.0.0.1:8443/
+# User: admin
+# Password: &lt;随机密码&gt;
+</code></pre>
+<p><strong>步骤4: 添加节点</strong></p>
+<pre><code class="language-bash"># 添加其他MON节点
+ceph orch host add ceph-mon2 10.0.0.2
+ceph orch host add ceph-mon3 10.0.0.3
+
+# 添加OSD节点
+ceph orch host add ceph-osd1 10.0.0.4
+ceph orch host add ceph-osd2 10.0.0.5
+</code></pre>
+<p><strong>步骤5: 添加OSD</strong></p>
+<pre><code class="language-bash"># 列出可用磁盘
+ceph orch device ls
+
+# 自动添加所有可用磁盘
+ceph orch apply osd --all-available-devices
+
+# 或手动指定
+ceph orch daemon add osd ceph-osd1:/dev/sdb
+ceph orch daemon add osd ceph-osd1:/dev/sdc
+</code></pre>
+<h4 id="方式2-rook-kubernetes环境"><a class="header" href="#方式2-rook-kubernetes环境">方式2: Rook (Kubernetes环境)</a></h4>
+<pre><code class="language-yaml"># 安装Rook Operator
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/master/deploy/examples/crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/master/deploy/examples/operator.yaml
+
+# 创建Ceph集群
+cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v17.2.5
+  dataDirHostPath: /var/lib/rook
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+  storage:
+    useAllNodes: true
+    useAllDevices: true
+EOF
+</code></pre>
+<h3 id="43-集群初始化"><a class="header" href="#43-集群初始化">4.3 集群初始化</a></h3>
+<p><strong>验证集群状态</strong>:</p>
+<pre><code class="language-bash"># 检查集群健康状态
+ceph -s
+
+# 预期输出:
+#   cluster:
+#     id:     12345678-1234-1234-1234-123456789abc
+#     health: HEALTH_OK
+#
+#   services:
+#     mon: 3 daemons, quorum mon1,mon2,mon3
+#     mgr: mon1(active), standbys: mon2, mon3
+#     osd: 6 osds: 6 up, 6 in
+#
+#   data:
+#     pools:   0 pools, 0 pgs
+#     objects: 0 objects, 0 B
+#     usage:   6 GiB used, 594 GiB / 600 GiB avail
+#     pgs:
+</code></pre>
+<p><strong>创建存储池</strong>:</p>
+<pre><code class="language-bash"># 创建RBD存储池
+ceph osd pool create rbd 128
+
+# 初始化池
+rbd pool init rbd
+
+# 创建CephFS存储池
+ceph osd pool create cephfs_data 128
+ceph osd pool create cephfs_metadata 64
+ceph fs new cephfs cephfs_metadata cephfs_data
+</code></pre>
+<h3 id="44-节点添加和配置"><a class="header" href="#44-节点添加和配置">4.4 节点添加和配置</a></h3>
+<p><strong>添加OSD节点</strong>:</p>
+<pre><code class="language-bash"># 准备磁盘
+ceph-volume lvm zap /dev/sdb --destroy
+
+# 创建OSD
+ceph-volume lvm create --data /dev/sdb
+
+# 验证
+ceph osd tree
+</code></pre>
+<p><strong>扩展MON节点</strong>:</p>
+<pre><code class="language-bash"># 添加新MON
+ceph mon add mon4 10.0.0.6
+
+# 或使用cephadm
+ceph orch daemon add mon node4
+</code></pre>
+<hr />
+<h2 id="5-ceph-存储池管理"><a class="header" href="#5-ceph-存储池管理">5. Ceph 存储池管理</a></h2>
+<h3 id="51-pool-概念和类型"><a class="header" href="#51-pool-概念和类型">5.1 Pool 概念和类型</a></h3>
+<p><strong>Pool类型</strong>:</p>
+<p><strong>1. 副本池 (Replicated Pool)</strong></p>
+<pre><code class="language-bash"># 特点: 完整数据副本
+# 空间效率: 1/N (N为副本数)
+# 可靠性: 高
+# 适用: 高性能要求,小文件
+</code></pre>
+<p><strong>2. 纠删码池 (Erasure Code Pool)</strong></p>
+<pre><code class="language-bash"># 特点: 数据分片+校验
+# 空间效率: k/(k+m)
+# 可靠性: 高
+# 适用: 大文件,归档数据
+</code></pre>
+<h3 id="52-创建和配置存储池"><a class="header" href="#52-创建和配置存储池">5.2 创建和配置存储池</a></h3>
+<p><strong>创建副本池</strong>:</p>
+<pre><code class="language-bash"># 语法: ceph osd pool create &lt;pool-name&gt; &lt;pg-num&gt; &lt;pgp-num&gt; replicated
+ceph osd pool create mypool 128 128 replicated
+
+# 设置副本数
+ceph osd pool set mypool size 3
+ceph osd pool set mypool min_size 2
+
+# 设置应用类型
+ceph osd pool application enable mypool rbd
+</code></pre>
+<p><strong>创建纠删码池</strong>:</p>
+<pre><code class="language-bash"># 创建纠删码配置文件
+ceph osd erasure-code-profile set myec k=4 m=2 plugin=jerasure
+
+# 创建EC池
+ceph osd pool create ecpool 128 128 erasure myec
+
+# 查看配置
+ceph osd erasure-code-profile get myec
+</code></pre>
+<h3 id="53-pg-数量规划"><a class="header" href="#53-pg-数量规划">5.3 PG 数量规划</a></h3>
+<p><strong>推荐PG数量</strong>:</p>
+<pre><code>OSD数量    Pool数量    每个Pool的PG数
+&lt; 5        1           128
+5-10       1           512
+10-50      多个        1024 / Pool数量
+&gt; 50       多个        2048 / Pool数量
+</code></pre>
+<p><strong>调整PG数量</strong>:</p>
+<pre><code class="language-bash"># 增加PG数 (只能增加不能减少)
+ceph osd pool set mypool pg_num 256
+ceph osd pool set mypool pgp_num 256
+
+# 启用pg自动伸缩
+ceph osd pool set mypool pg_autoscale_mode on
+</code></pre>
+<h3 id="54-副本和纠删码"><a class="header" href="#54-副本和纠删码">5.4 副本和纠删码</a></h3>
+<p><strong>副本策略对比</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>策略</th><th>存储开销</th><th>性能</th><th>可靠性</th><th>适用场景</th></tr></thead><tbody>
+<tr><td>2副本</td><td>2x</td><td>高</td><td>一般</td><td>开发测试</td></tr>
+<tr><td>3副本</td><td>3x</td><td>高</td><td>高</td><td>生产环境</td></tr>
+<tr><td>EC 4+2</td><td>1.5x</td><td>中</td><td>高</td><td>冷数据</td></tr>
+<tr><td>EC 8+3</td><td>1.375x</td><td>低</td><td>很高</td><td>归档数据</td></tr>
+</tbody></table>
+</div>
+<p><strong>EC配置示例</strong>:</p>
+<pre><code class="language-bash"># 8+3配置: 8个数据块 + 3个校验块
+# 可容忍3个OSD同时故障
+# 空间利用率: 8/11 = 72.7%
+ceph osd erasure-code-profile set ec83 k=8 m=3
+ceph osd pool create archivepool 128 erasure ec83
+</code></pre>
+<hr />
+<h2 id="6-ceph-块存储-rbd"><a class="header" href="#6-ceph-块存储-rbd">6. Ceph 块存储 (RBD)</a></h2>
+<h3 id="61-rbd-基本概念"><a class="header" href="#61-rbd-基本概念">6.1 RBD 基本概念</a></h3>
+<p>RBD (RADOS Block Device) 提供块设备接口,类似传统SAN存储。</p>
+<p><strong>特性</strong>:</p>
+<ul>
+<li>精简配置 (Thin Provisioning)</li>
+<li>快照和克隆</li>
+<li>增量备份</li>
+<li>读写缓存</li>
+<li>支持多路径</li>
+</ul>
+<h3 id="62-镜像管理"><a class="header" href="#62-镜像管理">6.2 镜像管理</a></h3>
+<p><strong>创建RBD镜像</strong>:</p>
+<pre><code class="language-bash"># 创建10GB镜像
+rbd create mypool/myimage --size 10240
+
+# 创建时指定特性
+rbd create mypool/myimage --size 10240 \
+  --image-feature layering,exclusive-lock,object-map,fast-diff
+
+# 查看镜像
+rbd ls mypool
+rbd info mypool/myimage
+</code></pre>
+<p><strong>调整镜像大小</strong>:</p>
+<pre><code class="language-bash"># 扩容到20GB
+rbd resize mypool/myimage --size 20480
+
+# 缩容到5GB (危险操作!)
+rbd resize mypool/myimage --size 5120 --allow-shrink
+</code></pre>
+<p><strong>删除镜像</strong>:</p>
+<pre><code class="language-bash"># 删除镜像
+rbd rm mypool/myimage
+
+# 移到回收站
+rbd trash mv mypool/myimage
+
+# 恢复
+rbd trash restore mypool/&lt;image-id&gt;
+</code></pre>
+<h3 id="63-快照和克隆"><a class="header" href="#63-快照和克隆">6.3 快照和克隆</a></h3>
+<p><strong>创建快照</strong>:</p>
+<pre><code class="language-bash"># 创建快照
+rbd snap create mypool/myimage@snap1
+
+# 列出快照
+rbd snap ls mypool/myimage
+
+# 回滚快照
+rbd snap rollback mypool/myimage@snap1
+
+# 删除快照
+rbd snap rm mypool/myimage@snap1
+</code></pre>
+<p><strong>克隆镜像</strong>:</p>
+<pre><code class="language-bash"># 保护快照 (克隆前必须)
+rbd snap protect mypool/myimage@snap1
+
+# 克隆
+rbd clone mypool/myimage@snap1 mypool/clone1
+
+# 查看克隆关系
+rbd children mypool/myimage@snap1
+
+# 扁平化克隆 (脱离父镜像)
+rbd flatten mypool/clone1
+</code></pre>
+<h3 id="64-rbd-映射和挂载"><a class="header" href="#64-rbd-映射和挂载">6.4 RBD 映射和挂载</a></h3>
+<p><strong>内核模块映射</strong>:</p>
+<pre><code class="language-bash"># 映射RBD设备
+rbd map mypool/myimage
+
+# 查看映射
+rbd showmapped
+
+# 格式化并挂载
+mkfs.xfs /dev/rbd0
+mount /dev/rbd0 /mnt/rbd
+
+# 卸载和取消映射
+umount /mnt/rbd
+rbd unmap /dev/rbd0
+</code></pre>
+<p><strong>持久化挂载</strong>:</p>
+<pre><code class="language-bash"># /etc/ceph/rbdmap
+mypool/myimage id=admin,keyring=/etc/ceph/ceph.client.admin.keyring
+
+# 开机自动映射
+systemctl enable rbdmap
+</code></pre>
+<h3 id="65-性能调优"><a class="header" href="#65-性能调优">6.5 性能调优</a></h3>
+<p><strong>客户端缓存</strong>:</p>
+<pre><code class="language-ini">[client]
+rbd_cache = true
+rbd_cache_size = 33554432              # 32MB
+rbd_cache_max_dirty = 25165824         # 24MB
+rbd_cache_target_dirty = 16777216      # 16MB
+rbd_cache_writethrough_until_flush = true
+</code></pre>
+<p><strong>并发参数</strong>:</p>
+<pre><code class="language-bash"># 条带化配置
+rbd create mypool/myimage --size 10240 \
+  --stripe-unit 65536 \
+  --stripe-count 16
+</code></pre>
+<hr />
+<h2 id="7-ceph-文件系统-cephfs"><a class="header" href="#7-ceph-文件系统-cephfs">7. Ceph 文件系统 (CephFS)</a></h2>
+<h3 id="71-cephfs-架构"><a class="header" href="#71-cephfs-架构">7.1 CephFS 架构</a></h3>
+<pre><code>客户端 ← 元数据操作 → MDS集群 ← 元数据池
+客户端 ← 数据操作   → OSD集群 ← 数据池
+</code></pre>
+<h3 id="72-mds-集群配置"><a class="header" href="#72-mds-集群配置">7.2 MDS 集群配置</a></h3>
+<p><strong>部署MDS</strong>:</p>
+<pre><code class="language-bash"># cephadm方式
+ceph orch apply mds cephfs --placement="3 node1 node2 node3"
+
+# 查看MDS状态
+ceph fs status
+ceph mds stat
+</code></pre>
+<p><strong>MDS故障转移</strong>:</p>
+<pre><code class="language-bash"># 配置active-standby
+ceph fs set cephfs max_mds 1
+
+# 配置active-active (多活)
+ceph fs set cephfs max_mds 2
+ceph fs set cephfs allow_standby_replay true
+</code></pre>
+<h3 id="73-文件系统创建和挂载"><a class="header" href="#73-文件系统创建和挂载">7.3 文件系统创建和挂载</a></h3>
+<p><strong>创建CephFS</strong>:</p>
+<pre><code class="language-bash"># 创建数据和元数据池
+ceph osd pool create cephfs_data 128
+ceph osd pool create cephfs_metadata 64
+
+# 创建文件系统
+ceph fs new cephfs cephfs_metadata cephfs_data
+
+# 验证
+ceph fs ls
+</code></pre>
+<p><strong>客户端挂载</strong>:</p>
+<p><strong>方式1: 内核驱动</strong></p>
+<pre><code class="language-bash"># 挂载整个文件系统
+mount -t ceph mon1:6789,mon2:6789,mon3:6789:/ /mnt/cephfs \
+  -o name=admin,secret=AQD...
+
+# 挂载子目录
+mount -t ceph mon1:6789:/mydir /mnt/cephfs \
+  -o name=admin,secretfile=/etc/ceph/admin.secret
+</code></pre>
+<p><strong>方式2: ceph-fuse</strong></p>
+<pre><code class="language-bash"># 使用FUSE挂载
+ceph-fuse -m mon1:6789 /mnt/cephfs
+
+# 指定配置文件
+ceph-fuse -m mon1:6789 -c /etc/ceph/ceph.conf /mnt/cephfs
+</code></pre>
+<p><strong>持久化挂载 (/etc/fstab)</strong>:</p>
+<pre><code class="language-bash">mon1:6789,mon2:6789,mon3:6789:/    /mnt/cephfs    ceph    name=admin,secretfile=/etc/ceph/admin.secret,noatime,_netdev    0 2
+</code></pre>
+<h3 id="74-目录分片"><a class="header" href="#74-目录分片">7.4 目录分片</a></h3>
+<p><strong>配置目录分片</strong>:</p>
+<pre><code class="language-bash"># 对大目录启用分片
+setfattr -n ceph.dir.layout.pool_namespace -v myns /mnt/cephfs/largedir
+
+# 设置子目录分布到不同OSD
+setfattr -n ceph.dir.pin -v 0 /mnt/cephfs/dir1
+setfattr -n ceph.dir.pin -v 1 /mnt/cephfs/dir2
+</code></pre>
+<h3 id="75-客户端配置"><a class="header" href="#75-客户端配置">7.5 客户端配置</a></h3>
+<p><strong>配额管理</strong>:</p>
+<pre><code class="language-bash"># 设置目录配额 (100GB)
+setfattr -n ceph.quota.max_bytes -v 107374182400 /mnt/cephfs/project
+
+# 设置文件数量配额
+setfattr -n ceph.quota.max_files -v 10000 /mnt/cephfs/project
+
+# 查看配额
+getfattr -n ceph.quota.max_bytes /mnt/cephfs/project
+</code></pre>
+<hr />
+<h2 id="8-kubernetes-集成-重点"><a class="header" href="#8-kubernetes-集成-重点">8. Kubernetes 集成 (重点)</a></h2>
+<h3 id="81-ceph-csi-driver"><a class="header" href="#81-ceph-csi-driver">8.1 Ceph CSI Driver</a></h3>
+<h4 id="811-csi-驱动安装和配置"><a class="header" href="#811-csi-驱动安装和配置">8.1.1 CSI 驱动安装和配置</a></h4>
+<p><strong>步骤1: 准备Ceph集群</strong></p>
+<pre><code class="language-bash"># 在Ceph集群创建存储池
+ceph osd pool create kubernetes 128
+
+# 初始化RBD池
+rbd pool init kubernetes
+
+# 创建Kubernetes专用用户
+ceph auth get-or-create client.kubernetes \
+  mon 'profile rbd' \
+  osd 'profile rbd pool=kubernetes' \
+  mgr 'profile rbd pool=kubernetes'
+
+# 获取密钥
+ceph auth get client.kubernetes
+</code></pre>
+<p><strong>步骤2: 部署CSI驱动</strong></p>
+<pre><code class="language-bash"># 克隆CSI仓库
+git clone https://github.com/ceph/ceph-csi.git
+cd ceph-csi/deploy/rbd/kubernetes
+
+# 部署RBAC
+kubectl apply -f csi-provisioner-rbac.yaml
+kubectl apply -f csi-nodeplugin-rbac.yaml
+
+# 部署CSI Controller
+kubectl apply -f csi-rbdplugin-provisioner.yaml
+
+# 部署CSI Node Plugin
+kubectl apply -f csi-rbdplugin.yaml
+</code></pre>
+<p><strong>步骤3: 创建ConfigMap</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-csi-config
+  namespace: default
+data:
+  config.json: |-
+    [
+      {
+        "clusterID": "b9127830-b0cc-4e34-aa47-9d1a2e9949a8",
+        "monitors": [
+          "10.0.0.1:6789",
+          "10.0.0.2:6789",
+          "10.0.0.3:6789"
+        ]
+      }
+    ]
+</code></pre>
+<p><strong>步骤4: 创建Secret</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: csi-rbd-secret
+  namespace: default
+stringData:
+  userID: kubernetes
+  userKey: AQD...== # ceph auth get client.kubernetes 的key
+</code></pre>
+<h4 id="812-rbd-storageclass配置"><a class="header" href="#812-rbd-storageclass配置">8.1.2 RBD StorageClass配置</a></h4>
+<pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ceph-rbd
+provisioner: rbd.csi.ceph.com
+parameters:
+  clusterID: b9127830-b0cc-4e34-aa47-9d1a2e9949a8
+  pool: kubernetes
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: csi-rbd-secret
+  csi.storage.k8s.io/provisioner-secret-namespace: default
+  csi.storage.k8s.io/controller-expand-secret-name: csi-rbd-secret
+  csi.storage.k8s.io/controller-expand-secret-namespace: default
+  csi.storage.k8s.io/node-stage-secret-name: csi-rbd-secret
+  csi.storage.k8s.io/node-stage-secret-namespace: default
+  csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+mountOptions:
+  - discard
+</code></pre>
+<h4 id="813-cephfs-storageclass配置"><a class="header" href="#813-cephfs-storageclass配置">8.1.3 CephFS StorageClass配置</a></h4>
+<pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ceph-cephfs
+provisioner: cephfs.csi.ceph.com
+parameters:
+  clusterID: b9127830-b0cc-4e34-aa47-9d1a2e9949a8
+  fsName: cephfs
+  pool: cephfs_data
+  csi.storage.k8s.io/provisioner-secret-name: csi-cephfs-secret
+  csi.storage.k8s.io/provisioner-secret-namespace: default
+  csi.storage.k8s.io/controller-expand-secret-name: csi-cephfs-secret
+  csi.storage.k8s.io/controller-expand-secret-namespace: default
+  csi.storage.k8s.io/node-stage-secret-name: csi-cephfs-secret
+  csi.storage.k8s.io/node-stage-secret-namespace: default
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+</code></pre>
+<h3 id="82-动态存储供应"><a class="header" href="#82-动态存储供应">8.2 动态存储供应</a></h3>
+<p><strong>创建PVC</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rbd-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd
+  resources:
+    requests:
+      storage: 10Gi
+</code></pre>
+<p><strong>使用PVC</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+    - name: nginx
+      image: nginx:latest
+      volumeMounts:
+        - name: data
+          mountPath: /usr/share/nginx/html
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: rbd-pvc
+</code></pre>
+<p><strong>卷扩容</strong>:</p>
+<pre><code class="language-bash"># 编辑PVC,修改storage大小
+kubectl edit pvc rbd-pvc
+# 将 10Gi 改为 20Gi
+
+# 查看扩容状态
+kubectl get pvc rbd-pvc
+</code></pre>
+<p><strong>卷快照</strong>:</p>
+<pre><code class="language-yaml">apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: rbd-snapshot
+spec:
+  volumeSnapshotClassName: csi-rbdplugin-snapclass
+  source:
+    persistentVolumeClaimName: rbd-pvc
+</code></pre>
+<h3 id="83-rook-部署方式"><a class="header" href="#83-rook-部署方式">8.3 Rook 部署方式</a></h3>
+<p><strong>步骤1: 部署Rook Operator</strong></p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.10/deploy/examples/crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.10/deploy/examples/common.yaml
+kubectl apply -f https://raw.githubusercontent.com/rook/rook/release-1.10/deploy/examples/operator.yaml
+
+# 验证Operator
+kubectl -n rook-ceph get pod
+</code></pre>
+<p><strong>步骤2: 创建Ceph集群</strong></p>
+<pre><code class="language-yaml">apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    image: quay.io/ceph/ceph:v17.2.5
+  dataDirHostPath: /var/lib/rook
+  mon:
+    count: 3
+    allowMultiplePerNode: false
+  mgr:
+    count: 2
+    allowMultiplePerNode: false
+  dashboard:
+    enabled: true
+    ssl: true
+  storage:
+    useAllNodes: true
+    useAllDevices: true
+    config:
+      osdsPerDevice: "1"
+</code></pre>
+<p><strong>步骤3: 创建存储类</strong></p>
+<pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: rook-ceph-block
+provisioner: rook-ceph.rbd.csi.ceph.com
+parameters:
+  clusterID: rook-ceph
+  pool: replicapool
+  imageFormat: "2"
+  imageFeatures: layering
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+  csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+  csi.storage.k8s.io/fstype: ext4
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+</code></pre>
+<p><strong>步骤4: 访问Dashboard</strong></p>
+<pre><code class="language-bash"># 获取Dashboard密码
+kubectl -n rook-ceph get secret rook-ceph-dashboard-password \
+  -o jsonpath="{['data']['password']}" | base64 --decode
+
+# 端口转发
+kubectl -n rook-ceph port-forward service/rook-ceph-mgr-dashboard 8443:8443
+
+# 浏览器访问 https://localhost:8443
+# 用户名: admin
+</code></pre>
+<h3 id="84-性能和调优"><a class="header" href="#84-性能和调优">8.4 性能和调优</a></h3>
+<p><strong>存储性能测试</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: fio-test
+spec:
+  containers:
+    - name: fio
+      image: nixery.dev/shell/fio
+      command: ["fio"]
+      args:
+        - "--name=randrw"
+        - "--rw=randrw"
+        - "--bs=4k"
+        - "--size=1G"
+        - "--numjobs=4"
+        - "--runtime=60"
+        - "--group_reporting"
+        - "--filename=/data/testfile"
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: test-pvc
+</code></pre>
+<p><strong>I/O调优参数</strong>:</p>
+<pre><code class="language-yaml"># StorageClass调优
+parameters:
+  # 启用discard (TRIM)
+  mapOptions: "discard"
+
+  # 挂载选项
+  mountOptions: "noatime,nodiratime,discard"
+
+  # RBD缓存
+  mounter: "rbd-nbd"  # 使用rbd-nbd代替默认的krbd
+</code></pre>
+<hr />
+<h2 id="9-监控和运维"><a class="header" href="#9-监控和运维">9. 监控和运维</a></h2>
+<h3 id="91-集群状态监控"><a class="header" href="#91-集群状态监控">9.1 集群状态监控</a></h3>
+<p><strong>核心命令</strong>:</p>
+<pre><code class="language-bash"># 集群整体状态
+ceph -s
+ceph health detail
+
+# OSD状态
+ceph osd stat
+ceph osd df
+ceph osd tree
+
+# PG状态
+ceph pg stat
+ceph pg dump
+
+# 存储池状态
+ceph df
+ceph osd pool stats
+</code></pre>
+<h3 id="92-性能指标"><a class="header" href="#92-性能指标">9.2 性能指标</a></h3>
+<p><strong>Prometheus集成</strong>:</p>
+<pre><code class="language-bash"># 启用prometheus模块
+ceph mgr module enable prometheus
+
+# 访问指标
+curl http://mgr-node:9283/metrics
+</code></pre>
+<p><strong>关键指标</strong>:</p>
+<pre><code>ceph_health_status          # 集群健康状态
+ceph_osd_up                 # OSD在线数量
+ceph_osd_in                 # OSD使用中数量
+ceph_pool_wr_bytes          # 写入速率
+ceph_pool_rd_bytes          # 读取速率
+ceph_cluster_total_bytes    # 总容量
+ceph_cluster_total_used_bytes  # 已使用容量
+</code></pre>
+<p><strong>Grafana Dashboard</strong>:</p>
+<pre><code class="language-bash"># 导入Ceph官方Dashboard
+Dashboard ID: 2842, 7056, 9628
+</code></pre>
+<h3 id="93-日志管理"><a class="header" href="#93-日志管理">9.3 日志管理</a></h3>
+<p><strong>查看日志</strong>:</p>
+<pre><code class="language-bash"># MON日志
+journalctl -u ceph-mon@$(hostname) -f
+
+# OSD日志
+journalctl -u ceph-osd@0 -f
+
+# 调整日志级别
+ceph tell osd.* config set debug_osd 20/20
+ceph tell mon.* config set debug_mon 20/20
+</code></pre>
+<h3 id="94-故障诊断"><a class="header" href="#94-故障诊断">9.4 故障诊断</a></h3>
+<p><strong>常见问题排查</strong>:</p>
+<p><strong>1. HEALTH_WARN: too many PGs per OSD</strong></p>
+<pre><code class="language-bash"># 减少PG数量或增加OSD
+ceph osd pool set mypool pg_num 64
+
+# 或启用自动伸缩
+ceph osd pool set mypool pg_autoscale_mode on
+</code></pre>
+<p><strong>2. HEALTH_WARN: clock skew detected</strong></p>
+<pre><code class="language-bash"># 同步时间
+ntpdate -u ntp.server.com
+
+# 或调整时钟偏移容忍度
+ceph config set mon mon_clock_drift_allowed 0.1
+</code></pre>
+<p><strong>3. OSD down/out</strong></p>
+<pre><code class="language-bash"># 查看OSD日志
+ceph osd metadata 0
+journalctl -u ceph-osd@0 -n 100
+
+# 尝试启动OSD
+systemctl start ceph-osd@0
+
+# 如果无法修复,标记out并移除
+ceph osd out 0
+ceph osd crush remove osd.0
+ceph auth del osd.0
+ceph osd rm 0
+</code></pre>
+<h3 id="95-告警配置"><a class="header" href="#95-告警配置">9.5 告警配置</a></h3>
+<p><strong>告警规则示例 (Prometheus)</strong>:</p>
+<pre><code class="language-yaml">groups:
+  - name: ceph_alerts
+    rules:
+      - alert: CephHealthError
+        expr: ceph_health_status == 2
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Ceph集群健康状态为ERROR"
+
+      - alert: CephOSDDown
+        expr: ceph_osd_up &lt; ceph_osd_in
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "有OSD处于Down状态"
+
+      - alert: CephDiskNearFull
+        expr: ceph_cluster_total_used_bytes / ceph_cluster_total_bytes &gt; 0.85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "集群磁盘使用率超过85%"
+</code></pre>
+<hr />
+<h2 id="10-最佳实践和性能优化"><a class="header" href="#10-最佳实践和性能优化">10. 最佳实践和性能优化</a></h2>
+<h3 id="101-硬件选型建议"><a class="header" href="#101-硬件选型建议">10.1 硬件选型建议</a></h3>
+<p><strong>OSD节点</strong>:</p>
+<pre><code class="language-yaml">CPU: 0.5-1核 per OSD
+内存: 2GB per OSD (BlueStore)
+网络: 10Gbps+ (公共网+集群网分离)
+存储:
+  - 数据盘: HDD (SATA/SAS 7200rpm)
+  - WAL/DB: SSD/NVMe (10% OSD容量)
+</code></pre>
+<p><strong>MON节点</strong>:</p>
+<pre><code class="language-yaml">CPU: 4核+
+内存: 8GB+
+存储: SSD 100GB+
+网络: 10Gbps
+</code></pre>
+<h3 id="102-网络优化"><a class="header" href="#102-网络优化">10.2 网络优化</a></h3>
+<p><strong>双网络架构</strong>:</p>
+<pre><code class="language-ini">[global]
+public_network = 10.0.1.0/24    # 客户端访问网络
+cluster_network = 10.0.2.0/24   # OSD间复制网络
+</code></pre>
+<p><strong>网络参数调优</strong>:</p>
+<pre><code class="language-bash"># /etc/sysctl.conf
+net.core.rmem_max = 134217728
+net.core.wmem_max = 134217728
+net.ipv4.tcp_rmem = 4096 87380 134217728
+net.ipv4.tcp_wmem = 4096 65536 134217728
+net.core.netdev_max_backlog = 300000
+net.ipv4.tcp_no_metrics_save = 1
+
+sysctl -p
+</code></pre>
+<h3 id="103-bluestore调优"><a class="header" href="#103-bluestore调优">10.3 BlueStore调优</a></h3>
+<pre><code class="language-ini">[osd]
+osd_memory_target = 4294967296          # 4GB per OSD
+bluestore_cache_autotune = true
+bluestore_cache_kv_ratio = 0.2
+bluestore_cache_meta_ratio = 0.8
+bluestore_min_alloc_size_hdd = 65536    # 64KB for HDD
+bluestore_min_alloc_size_ssd = 16384    # 16KB for SSD
+</code></pre>
+<h3 id="104-生产环境检查清单"><a class="header" href="#104-生产环境检查清单">10.4 生产环境检查清单</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+MON节点部署为奇数 (3或5)</li>
+<li><input disabled="" type="checkbox"/>
+公共网和集群网分离</li>
+<li><input disabled="" type="checkbox"/>
+NTP时间同步配置</li>
+<li><input disabled="" type="checkbox"/>
+所有节点关闭防火墙或正确配置规则</li>
+<li><input disabled="" type="checkbox"/>
+OSD使用BlueStore (而非FileStore)</li>
+<li><input disabled="" type="checkbox"/>
+配置CRUSH故障域 (机架级别)</li>
+<li><input disabled="" type="checkbox"/>
+启用Prometheus和Grafana监控</li>
+<li><input disabled="" type="checkbox"/>
+配置告警通知</li>
+<li><input disabled="" type="checkbox"/>
+定期备份MON数据和配置</li>
+<li><input disabled="" type="checkbox"/>
+制定故障恢复预案</li>
+</ul>
+<hr />
+<h2 id="11-学习验证"><a class="header" href="#11-学习验证">11. 学习验证</a></h2>
+<h3 id="验证任务1-集群部署"><a class="header" href="#验证任务1-集群部署">验证任务1: 集群部署</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+成功部署3节点Ceph集群 (3 MON + 6 OSD)</li>
+<li><input disabled="" type="checkbox"/>
+集群状态为HEALTH_OK</li>
+<li><input disabled="" type="checkbox"/>
+能够通过Dashboard访问集群</li>
+</ul>
+<h3 id="验证任务2-rbd使用"><a class="header" href="#验证任务2-rbd使用">验证任务2: RBD使用</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+创建RBD存储池和镜像</li>
+<li><input disabled="" type="checkbox"/>
+映射RBD设备并格式化挂载</li>
+<li><input disabled="" type="checkbox"/>
+创建快照并成功恢复</li>
+</ul>
+<h3 id="验证任务3-cephfs使用"><a class="header" href="#验证任务3-cephfs使用">验证任务3: CephFS使用</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+创建CephFS文件系统</li>
+<li><input disabled="" type="checkbox"/>
+在客户端成功挂载</li>
+<li><input disabled="" type="checkbox"/>
+验证多客户端并发读写</li>
+</ul>
+<h3 id="验证任务4-kubernetes集成"><a class="header" href="#验证任务4-kubernetes集成">验证任务4: Kubernetes集成</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+部署Ceph CSI驱动</li>
+<li><input disabled="" type="checkbox"/>
+创建StorageClass和PVC</li>
+<li><input disabled="" type="checkbox"/>
+Pod成功使用Ceph存储</li>
+<li><input disabled="" type="checkbox"/>
+验证卷扩容功能</li>
+</ul>
+<h3 id="验证任务5-监控和故障处理"><a class="header" href="#验证任务5-监控和故障处理">验证任务5: 监控和故障处理</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置Prometheus监控</li>
+<li><input disabled="" type="checkbox"/>
+模拟OSD故障并验证自动恢复</li>
+<li><input disabled="" type="checkbox"/>
+查看并分析集群性能指标</li>
+</ul>
+<hr />
+<h2 id="12-扩展资源"><a class="header" href="#12-扩展资源">12. 扩展资源</a></h2>
+<h3 id="官方文档"><a class="header" href="#官方文档">官方文档</a></h3>
+<ul>
+<li>官方文档: https://docs.ceph.com/</li>
+<li>GitHub: https://github.com/ceph/ceph</li>
+<li>Rook文档: https://rook.io/docs/</li>
+</ul>
+<h3 id="社区资源"><a class="header" href="#社区资源">社区资源</a></h3>
+<ul>
+<li>Ceph中国社区: http://ceph.org.cn/</li>
+<li>Ceph邮件列表: ceph-users@ceph.io</li>
+<li>Slack: https://ceph.io/slack</li>
+</ul>
+<h3 id="学习路径"><a class="header" href="#学习路径">学习路径</a></h3>
+<ol>
+<li><strong>基础阶段(1周)</strong>: 理解Ceph架构和核心概念</li>
+<li><strong>实践阶段(2周)</strong>: 部署测试集群,熟悉RBD/CephFS</li>
+<li><strong>集成阶段(1-2周)</strong>: Kubernetes集成,动态存储供应</li>
+<li><strong>进阶阶段(2-3周)</strong>: 性能调优、故障处理、生产部署</li>
+</ol>
+<h3 id="常见问题faq"><a class="header" href="#常见问题faq">常见问题FAQ</a></h3>
+<p><strong>Q1: Ceph适合什么场景?</strong>
+A: 云平台存储、虚拟化存储、容器存储、对象存储、大数据存储等需要高可用、可扩展的场景。</p>
+<p><strong>Q2: 最小生产环境配置?</strong>
+A: 至少3个MON节点 + 3个OSD节点 (每节点2+块磁盘), 10Gbps网络。</p>
+<p><strong>Q3: 如何选择副本数还是纠删码?</strong>
+A: 高性能场景用3副本,冷数据归档用纠删码(如8+3)可节省空间。</p>
+<p><strong>Q4: Ceph性能瓶颈在哪?</strong>
+A: 通常在网络带宽、磁盘IOPS、PG数量配置。使用SSD做WAL/DB可显著提升性能。</p>
+<p><strong>Q5: 如何安全删除OSD?</strong>
+A: 先标记out等待数据迁移完成,再stop服务,最后purge删除。</p>
+<hr />
+<p><strong>学习建议</strong>: Ceph是复杂的分布式系统,建议从小规模测试环境开始,逐步理解CRUSH、PG等核心概念。在Kubernetes环境中,推荐使用Rook简化部署管理。重点关注监控和故障处理,确保生产环境稳定性。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/network/三层交换机.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/paas/docker.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/network/三层交换机.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/paas/docker.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

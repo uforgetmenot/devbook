@@ -1,0 +1,1058 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ClickHouse 学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="clickhouse-学习笔记"><a class="header" href="#clickhouse-学习笔记">ClickHouse 学习笔记</a></h1>
+<h2 id="-学习目标"><a class="header" href="#-学习目标">📋 学习目标</a></h2>
+<ul>
+<li>深入理解ClickHouse列式存储原理</li>
+<li>掌握ClickHouse表引擎和索引机制</li>
+<li>熟练使用ClickHouse SQL查询</li>
+<li>理解ClickHouse分布式架构</li>
+<li>掌握ClickHouse性能优化技巧</li>
+<li>具备ClickHouse运维和监控能力</li>
+</ul>
+<h2 id="1-clickhouse-基础概念"><a class="header" href="#1-clickhouse-基础概念">1. ClickHouse 基础概念</a></h2>
+<h3 id="11-什么是-clickhouse"><a class="header" href="#11-什么是-clickhouse">1.1 什么是 ClickHouse</a></h3>
+<p>ClickHouse是一个开源的列式数据库管理系统（DBMS），专为在线分析处理（OLAP）而设计。</p>
+<p><strong>核心特点:</strong></p>
+<ul>
+<li>真正的列式存储</li>
+<li>向量化查询执行</li>
+<li>数据压缩比高（10-100倍）</li>
+<li>支持SQL标准</li>
+<li>分布式查询</li>
+<li>实时数据更新</li>
+</ul>
+<p><strong>应用场景:</strong></p>
+<ul>
+<li>实时数据分析</li>
+<li>用户行为分析</li>
+<li>日志分析</li>
+<li>广告统计</li>
+<li>监控系统</li>
+<li>商业智能（BI）</li>
+</ul>
+<h3 id="12-clickhouse-vs-传统数据库"><a class="header" href="#12-clickhouse-vs-传统数据库">1.2 ClickHouse vs 传统数据库</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>ClickHouse</th><th>MySQL</th><th>PostgreSQL</th></tr></thead><tbody>
+<tr><td>存储模型</td><td>列式存储</td><td>行式存储</td><td>行式存储</td></tr>
+<tr><td>查询性能</td><td>极快(OLAP)</td><td>中等</td><td>中等</td></tr>
+<tr><td>写入性能</td><td>批量快</td><td>单条快</td><td>单条快</td></tr>
+<tr><td>压缩比</td><td>10-100x</td><td>2-5x</td><td>2-5x</td></tr>
+<tr><td>适用场景</td><td>OLAP</td><td>OLTP</td><td>OLTP</td></tr>
+<tr><td>事务支持</td><td>弱</td><td>强</td><td>强</td></tr>
+</tbody></table>
+</div>
+<h3 id="13-列式存储优势"><a class="header" href="#13-列式存储优势">1.3 列式存储优势</a></h3>
+<p><strong>行式存储 vs 列式存储:</strong></p>
+<pre><code>行式存储 (MySQL):
+Row1: [id=1, name="Alice", age=25, city="Beijing"]
+Row2: [id=2, name="Bob",   age=30, city="Shanghai"]
+Row3: [id=3, name="Carol", age=28, city="Beijing"]
+
+列式存储 (ClickHouse):
+Column[id]:   [1, 2, 3]
+Column[name]: ["Alice", "Bob", "Carol"]
+Column[age]:  [25, 30, 28]
+Column[city]: ["Beijing", "Shanghai", "Beijing"]
+</code></pre>
+<p><strong>优势:</strong></p>
+<ul>
+<li>只读取需要的列</li>
+<li>更高的压缩比</li>
+<li>向量化执行</li>
+<li>CPU缓存友好</li>
+</ul>
+<h2 id="2-clickhouse-架构"><a class="header" href="#2-clickhouse-架构">2. ClickHouse 架构</a></h2>
+<h3 id="21-单节点架构"><a class="header" href="#21-单节点架构">2.1 单节点架构</a></h3>
+<pre><code>┌─────────────────────────────────┐
+│      ClickHouse Server          │
+├─────────────────────────────────┤
+│  Query Processor                │
+│  ┌──────────┐  ┌──────────┐    │
+│  │ Parser   │  │ Analyzer │    │
+│  └──────────┘  └──────────┘    │
+│  ┌──────────┐  ┌──────────┐    │
+│  │Optimizer │  │ Executor │    │
+│  └──────────┘  └──────────┘    │
+├─────────────────────────────────┤
+│  Storage Engine                 │
+│  ┌──────────────────────────┐  │
+│  │ MergeTree Family         │  │
+│  │ - MergeTree              │  │
+│  │ - ReplacingMergeTree     │  │
+│  │ - SummingMergeTree       │  │
+│  │ - AggregatingMergeTree   │  │
+│  └──────────────────────────┘  │
+└─────────────────────────────────┘
+</code></pre>
+<h3 id="22-分布式架构"><a class="header" href="#22-分布式架构">2.2 分布式架构</a></h3>
+<pre><code>          ┌────────────┐
+          │   Client   │
+          └─────┬──────┘
+                │
+    ┌───────────┼───────────┐
+    │           │           │
+┌───▼──┐    ┌──▼───┐    ┌──▼───┐
+│Shard1│    │Shard2│    │Shard3│
+│Rep1  │    │Rep1  │    │Rep1  │
+│Rep2  │    │Rep2  │    │Rep2  │
+└──────┘    └──────┘    └──────┘
+</code></pre>
+<p><strong>核心概念:</strong></p>
+<ul>
+<li><strong>Shard</strong>: 数据分片</li>
+<li><strong>Replica</strong>: 数据副本</li>
+<li><strong>Distributed Table</strong>: 分布式表</li>
+<li><strong>Local Table</strong>: 本地表</li>
+<li><strong>ZooKeeper</strong>: 协调服务</li>
+</ul>
+<h2 id="3-表引擎"><a class="header" href="#3-表引擎">3. 表引擎</a></h2>
+<h3 id="31-mergetree-引擎族"><a class="header" href="#31-mergetree-引擎族">3.1 MergeTree 引擎族</a></h3>
+<p><strong>MergeTree (最常用):</strong></p>
+<pre><code class="language-sql">CREATE TABLE events (
+    date Date,
+    user_id UInt32,
+    event_type String,
+    value Float64
+) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(date)
+ORDER BY (user_id, date)
+SETTINGS index_granularity = 8192;
+</code></pre>
+<p><strong>关键参数:</strong></p>
+<ul>
+<li><code>PARTITION BY</code>: 分区键（按月、按天等）</li>
+<li><code>ORDER BY</code>: 排序键（主键）</li>
+<li><code>index_granularity</code>: 索引粒度（默认8192行）</li>
+</ul>
+<p><strong>ReplacingMergeTree (数据去重):</strong></p>
+<pre><code class="language-sql">CREATE TABLE user_profile (
+    user_id UInt32,
+    name String,
+    age UInt8,
+    update_time DateTime
+) ENGINE = ReplacingMergeTree(update_time)
+PARTITION BY toYYYYMM(update_time)
+ORDER BY user_id;
+</code></pre>
+<p><strong>SummingMergeTree (自动求和):</strong></p>
+<pre><code class="language-sql">CREATE TABLE analytics (
+    date Date,
+    user_id UInt32,
+    clicks UInt32,
+    cost Float64
+) ENGINE = SummingMergeTree()
+PARTITION BY toYYYYMM(date)
+ORDER BY (user_id, date);
+</code></pre>
+<p><strong>AggregatingMergeTree (预聚合):</strong></p>
+<pre><code class="language-sql">CREATE TABLE analytics_agg (
+    date Date,
+    user_id UInt32,
+    clicks AggregateFunction(sum, UInt32),
+    avg_value AggregateFunction(avg, Float64)
+) ENGINE = AggregatingMergeTree()
+PARTITION BY toYYYYMM(date)
+ORDER BY (user_id, date);
+</code></pre>
+<h3 id="32-其他常用引擎"><a class="header" href="#32-其他常用引擎">3.2 其他常用引擎</a></h3>
+<p><strong>Memory (内存表):</strong></p>
+<pre><code class="language-sql">CREATE TABLE temp_data (
+    id UInt32,
+    value String
+) ENGINE = Memory;
+</code></pre>
+<p><strong>Distributed (分布式表):</strong></p>
+<pre><code class="language-sql">CREATE TABLE events_dist AS events
+ENGINE = Distributed(
+    cluster_name,      -- 集群名称
+    database_name,     -- 数据库名
+    events,            -- 本地表名
+    rand()             -- 分片键
+);
+</code></pre>
+<p><strong>Dictionary (字典):</strong></p>
+<pre><code class="language-sql">CREATE DICTIONARY user_dict (
+    user_id UInt32,
+    name String,
+    age UInt8
+) PRIMARY KEY user_id
+SOURCE(CLICKHOUSE(
+    HOST 'localhost'
+    PORT 9000
+    USER 'default'
+    PASSWORD ''
+    DB 'default'
+    TABLE 'users'
+))
+LAYOUT(FLAT())
+LIFETIME(300);
+</code></pre>
+<h2 id="4-数据类型"><a class="header" href="#4-数据类型">4. 数据类型</a></h2>
+<h3 id="41-基础数据类型"><a class="header" href="#41-基础数据类型">4.1 基础数据类型</a></h3>
+<pre><code class="language-sql">-- 整数类型
+Int8, Int16, Int32, Int64
+UInt8, UInt16, UInt32, UInt64
+
+-- 浮点类型
+Float32, Float64
+Decimal(P, S)  -- Decimal(18, 2)
+
+-- 字符串类型
+String         -- 任意长度
+FixedString(N) -- 固定长度
+
+-- 日期时间类型
+Date           -- 日期 (YYYY-MM-DD)
+DateTime       -- 日期时间
+DateTime64(3)  -- 毫秒精度
+
+-- 布尔类型
+UInt8          -- 0或1表示布尔值
+</code></pre>
+<h3 id="42-复合数据类型"><a class="header" href="#42-复合数据类型">4.2 复合数据类型</a></h3>
+<pre><code class="language-sql">-- 数组
+Array(T)
+-- 示例
+column_name Array(String)
+column_name Array(UInt32)
+
+-- 元组
+Tuple(T1, T2, ...)
+-- 示例
+column_name Tuple(String, UInt32)
+
+-- 嵌套
+Nested(
+    name1 Type1,
+    name2 Type2
+)
+-- 示例
+user_events Nested(
+    event_type String,
+    timestamp DateTime
+)
+</code></pre>
+<h3 id="43-特殊数据类型"><a class="header" href="#43-特殊数据类型">4.3 特殊数据类型</a></h3>
+<pre><code class="language-sql">-- Nullable (允许NULL)
+Nullable(String)
+Nullable(UInt32)
+
+-- Enum (枚举)
+Enum8('active' = 1, 'inactive' = 2)
+Enum16('status1' = 1, 'status2' = 2)
+
+-- LowCardinality (低基数优化)
+LowCardinality(String)  -- 适合重复值多的列
+
+-- UUID
+UUID
+
+-- IPv4/IPv6
+IPv4
+IPv6
+</code></pre>
+<h2 id="5-sql-查询"><a class="header" href="#5-sql-查询">5. SQL 查询</a></h2>
+<h3 id="51-基础查询"><a class="header" href="#51-基础查询">5.1 基础查询</a></h3>
+<pre><code class="language-sql">-- 基本查询
+SELECT user_id, count() as cnt
+FROM events
+WHERE date &gt;= '2024-01-01'
+GROUP BY user_id
+ORDER BY cnt DESC
+LIMIT 10;
+
+-- 多表JOIN
+SELECT
+    e.user_id,
+    u.name,
+    count() as event_count
+FROM events e
+INNER JOIN users u ON e.user_id = u.user_id
+WHERE e.date &gt;= '2024-01-01'
+GROUP BY e.user_id, u.name;
+
+-- 子查询
+SELECT user_id, total
+FROM (
+    SELECT user_id, sum(value) as total
+    FROM events
+    GROUP BY user_id
+)
+WHERE total &gt; 1000;
+</code></pre>
+<h3 id="52-聚合函数"><a class="header" href="#52-聚合函数">5.2 聚合函数</a></h3>
+<pre><code class="language-sql">-- 基础聚合
+SELECT
+    count() as total,           -- 计数
+    sum(value) as total_value,  -- 求和
+    avg(value) as avg_value,    -- 平均值
+    min(value) as min_value,    -- 最小值
+    max(value) as max_value     -- 最大值
+FROM events;
+
+-- 去重计数
+SELECT
+    uniq(user_id) as unique_users,           -- 精确去重
+    uniqExact(user_id) as exact_unique,      -- 精确去重
+    uniqCombined(user_id) as combined_unique -- HyperLogLog近似
+FROM events;
+
+-- 分位数
+SELECT
+    quantile(0.5)(value) as median,      -- 中位数
+    quantile(0.95)(value) as p95,        -- 95分位数
+    quantiles(0.5, 0.95, 0.99)(value)    -- 多个分位数
+FROM events;
+
+-- TopK
+SELECT
+    topK(10)(user_id) as top_users,      -- Top 10用户
+    topKWeighted(10)(user_id, value)     -- 带权重的Top 10
+FROM events;
+</code></pre>
+<h3 id="53-窗口函数"><a class="header" href="#53-窗口函数">5.3 窗口函数</a></h3>
+<pre><code class="language-sql">-- ROW_NUMBER
+SELECT
+    user_id,
+    date,
+    value,
+    ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY date) as rn
+FROM events;
+
+-- RANK/DENSE_RANK
+SELECT
+    user_id,
+    value,
+    RANK() OVER (ORDER BY value DESC) as rank,
+    DENSE_RANK() OVER (ORDER BY value DESC) as dense_rank
+FROM events;
+
+-- LAG/LEAD
+SELECT
+    date,
+    value,
+    LAG(value, 1) OVER (ORDER BY date) as prev_value,
+    LEAD(value, 1) OVER (ORDER BY date) as next_value
+FROM events;
+
+-- 移动平均
+SELECT
+    date,
+    value,
+    AVG(value) OVER (
+        ORDER BY date
+        ROWS BETWEEN 2 PRECEDING AND CURRENT ROW
+    ) as moving_avg_3
+FROM events;
+</code></pre>
+<h3 id="54-数组函数"><a class="header" href="#54-数组函数">5.4 数组函数</a></h3>
+<pre><code class="language-sql">-- 数组操作
+SELECT
+    arrayMap(x -&gt; x * 2, [1,2,3]) as doubled,          -- [2,4,6]
+    arrayFilter(x -&gt; x &gt; 2, [1,2,3,4]) as filtered,    -- [3,4]
+    arrayReduce('sum', [1,2,3,4]) as sum_array,        -- 10
+    arrayJoin([1,2,3]) as element;                     -- 展开数组
+
+-- 数组聚合
+SELECT
+    groupArray(user_id) as user_list,      -- 收集为数组
+    groupUniqArray(user_id) as unique_users -- 去重收集
+FROM events
+GROUP BY date;
+</code></pre>
+<h2 id="6-数据操作"><a class="header" href="#6-数据操作">6. 数据操作</a></h2>
+<h3 id="61-插入数据"><a class="header" href="#61-插入数据">6.1 插入数据</a></h3>
+<pre><code class="language-sql">-- 单行插入
+INSERT INTO events VALUES
+    ('2024-01-01', 100, 'click', 1.5);
+
+-- 批量插入
+INSERT INTO events VALUES
+    ('2024-01-01', 100, 'click', 1.5),
+    ('2024-01-01', 101, 'view', 2.0),
+    ('2024-01-01', 102, 'purchase', 50.0);
+
+-- 从查询插入
+INSERT INTO events
+SELECT * FROM temp_events WHERE date &gt;= '2024-01-01';
+
+-- 从文件导入
+cat data.csv | clickhouse-client --query="INSERT INTO events FORMAT CSV"
+</code></pre>
+<h3 id="62-更新和删除"><a class="header" href="#62-更新和删除">6.2 更新和删除</a></h3>
+<p><strong>轻量级删除 (Lightweight Delete):</strong></p>
+<pre><code class="language-sql">-- ClickHouse 22.8+支持
+DELETE FROM events WHERE date &lt; '2023-01-01';
+</code></pre>
+<p><strong>传统方式 (ALTER DELETE):</strong></p>
+<pre><code class="language-sql">-- 异步删除，生成新的数据部分
+ALTER TABLE events DELETE WHERE date &lt; '2023-01-01';
+</code></pre>
+<p><strong>轻量级更新:</strong></p>
+<pre><code class="language-sql">-- ClickHouse 22.8+支持
+UPDATE events SET value = value * 2 WHERE user_id = 100;
+</code></pre>
+<p><strong>传统方式 (ALTER UPDATE):</strong></p>
+<pre><code class="language-sql">ALTER TABLE events UPDATE value = value * 2 WHERE user_id = 100;
+</code></pre>
+<h3 id="63-数据导入导出"><a class="header" href="#63-数据导入导出">6.3 数据导入导出</a></h3>
+<p><strong>导出数据:</strong></p>
+<pre><code class="language-bash"># 导出为CSV
+clickhouse-client --query="SELECT * FROM events FORMAT CSV" &gt; events.csv
+
+# 导出为JSON
+clickhouse-client --query="SELECT * FROM events FORMAT JSONEachRow" &gt; events.json
+
+# 导出为Parquet
+clickhouse-client --query="SELECT * FROM events FORMAT Parquet" &gt; events.parquet
+</code></pre>
+<p><strong>导入数据:</strong></p>
+<pre><code class="language-bash"># 从CSV导入
+cat events.csv | clickhouse-client --query="INSERT INTO events FORMAT CSV"
+
+# 从JSON导入
+cat events.json | clickhouse-client --query="INSERT INTO events FORMAT JSONEachRow"
+</code></pre>
+<h2 id="7-分布式部署"><a class="header" href="#7-分布式部署">7. 分布式部署</a></h2>
+<h3 id="71-集群配置"><a class="header" href="#71-集群配置">7.1 集群配置</a></h3>
+<p><strong>config.xml配置:</strong></p>
+<pre><code class="language-xml">&lt;clickhouse&gt;
+    &lt;remote_servers&gt;
+        &lt;my_cluster&gt;
+            &lt;shard&gt;
+                &lt;replica&gt;
+                    &lt;host&gt;node1&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+                &lt;replica&gt;
+                    &lt;host&gt;node2&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+            &lt;/shard&gt;
+            &lt;shard&gt;
+                &lt;replica&gt;
+                    &lt;host&gt;node3&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+                &lt;replica&gt;
+                    &lt;host&gt;node4&lt;/host&gt;
+                    &lt;port&gt;9000&lt;/port&gt;
+                &lt;/replica&gt;
+            &lt;/shard&gt;
+        &lt;/my_cluster&gt;
+    &lt;/remote_servers&gt;
+
+    &lt;zookeeper&gt;
+        &lt;node&gt;
+            &lt;host&gt;zk1&lt;/host&gt;
+            &lt;port&gt;2181&lt;/port&gt;
+        &lt;/node&gt;
+        &lt;node&gt;
+            &lt;host&gt;zk2&lt;/host&gt;
+            &lt;port&gt;2181&lt;/port&gt;
+        &lt;/node&gt;
+        &lt;node&gt;
+            &lt;host&gt;zk3&lt;/host&gt;
+            &lt;port&gt;2181&lt;/port&gt;
+        &lt;/node&gt;
+    &lt;/zookeeper&gt;
+
+    &lt;macros&gt;
+        &lt;shard&gt;01&lt;/shard&gt;
+        &lt;replica&gt;replica1&lt;/replica&gt;
+    &lt;/macros&gt;
+&lt;/clickhouse&gt;
+</code></pre>
+<h3 id="72-创建分布式表"><a class="header" href="#72-创建分布式表">7.2 创建分布式表</a></h3>
+<pre><code class="language-sql">-- 1. 创建本地表
+CREATE TABLE events_local ON CLUSTER my_cluster (
+    date Date,
+    user_id UInt32,
+    event_type String,
+    value Float64
+) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/events', '{replica}')
+PARTITION BY toYYYYMM(date)
+ORDER BY (user_id, date);
+
+-- 2. 创建分布式表
+CREATE TABLE events_dist ON CLUSTER my_cluster AS events_local
+ENGINE = Distributed(my_cluster, default, events_local, rand());
+
+-- 3. 写入分布式表
+INSERT INTO events_dist VALUES ('2024-01-01', 100, 'click', 1.5);
+
+-- 4. 查询分布式表
+SELECT count() FROM events_dist;
+</code></pre>
+<h3 id="73-副本同步"><a class="header" href="#73-副本同步">7.3 副本同步</a></h3>
+<p><strong>检查副本状态:</strong></p>
+<pre><code class="language-sql">SELECT
+    database,
+    table,
+    is_leader,
+    total_replicas,
+    active_replicas
+FROM system.replicas;
+</code></pre>
+<p><strong>同步副本:</strong></p>
+<pre><code class="language-sql">-- 同步指定表
+SYSTEM SYNC REPLICA events_local;
+
+-- 同步所有副本
+SYSTEM SYNC REPLICA;
+</code></pre>
+<h2 id="8-性能优化"><a class="header" href="#8-性能优化">8. 性能优化</a></h2>
+<h3 id="81-表设计优化"><a class="header" href="#81-表设计优化">8.1 表设计优化</a></h3>
+<p><strong>选择合适的排序键:</strong></p>
+<pre><code class="language-sql">-- 好的排序键：高基数在前
+ORDER BY (user_id, date, event_type)
+
+-- 不好的排序键：低基数在前
+ORDER BY (event_type, date, user_id)
+</code></pre>
+<p><strong>使用分区:</strong></p>
+<pre><code class="language-sql">-- 按月分区
+PARTITION BY toYYYYMM(date)
+
+-- 按天分区（数据量大时）
+PARTITION BY toYYYYMMDD(date)
+
+-- 多级分区
+PARTITION BY (toYear(date), toMonth(date))
+</code></pre>
+<p><strong>使用低基数类型:</strong></p>
+<pre><code class="language-sql">CREATE TABLE events (
+    date Date,
+    user_id UInt32,
+    country LowCardinality(String),  -- 国家代码（重复多）
+    city LowCardinality(String),     -- 城市（重复多）
+    event_type Enum8('click'=1, 'view'=2, 'purchase'=3)
+) ENGINE = MergeTree()
+ORDER BY (user_id, date);
+</code></pre>
+<h3 id="82-查询优化"><a class="header" href="#82-查询优化">8.2 查询优化</a></h3>
+<p><strong>使用PREWHERE:</strong></p>
+<pre><code class="language-sql">-- PREWHERE在WHERE之前过滤，减少数据读取
+SELECT user_id, sum(value)
+FROM events
+PREWHERE date &gt;= '2024-01-01'  -- 先过滤日期
+WHERE event_type = 'purchase'   -- 再过滤类型
+GROUP BY user_id;
+</code></pre>
+<p>*<em>避免SELECT <em>:</em></em></p>
+<pre><code class="language-sql">-- 不好
+SELECT * FROM events WHERE date = '2024-01-01';
+
+-- 好
+SELECT user_id, event_type FROM events WHERE date = '2024-01-01';
+</code></pre>
+<p><strong>使用物化视图:</strong></p>
+<pre><code class="language-sql">-- 创建物化视图
+CREATE MATERIALIZED VIEW events_daily
+ENGINE = SummingMergeTree()
+PARTITION BY toYYYYMM(date)
+ORDER BY (date, user_id)
+AS SELECT
+    date,
+    user_id,
+    count() as event_count,
+    sum(value) as total_value
+FROM events
+GROUP BY date, user_id;
+
+-- 查询物化视图（速度快）
+SELECT * FROM events_daily WHERE date = '2024-01-01';
+</code></pre>
+<h3 id="83-配置优化"><a class="header" href="#83-配置优化">8.3 配置优化</a></h3>
+<p><strong>config.xml优化:</strong></p>
+<pre><code class="language-xml">&lt;clickhouse&gt;
+    &lt;!-- 最大内存使用 --&gt;
+    &lt;max_memory_usage&gt;10000000000&lt;/max_memory_usage&gt;
+
+    &lt;!-- 最大线程数 --&gt;
+    &lt;max_threads&gt;8&lt;/max_threads&gt;
+
+    &lt;!-- 后台任务线程 --&gt;
+    &lt;background_pool_size&gt;16&lt;/background_pool_size&gt;
+    &lt;background_schedule_pool_size&gt;16&lt;/background_schedule_pool_size&gt;
+
+    &lt;!-- 合并设置 --&gt;
+    &lt;merge_tree&gt;
+        &lt;max_bytes_to_merge_at_max_space_in_pool&gt;161061273600&lt;/max_bytes_to_merge_at_max_space_in_pool&gt;
+        &lt;parts_to_throw_insert&gt;300&lt;/parts_to_throw_insert&gt;
+    &lt;/merge_tree&gt;
+
+    &lt;!-- 查询缓存 --&gt;
+    &lt;mark_cache_size&gt;5368709120&lt;/mark_cache_size&gt;
+    &lt;uncompressed_cache_size&gt;8589934592&lt;/uncompressed_cache_size&gt;
+&lt;/clickhouse&gt;
+</code></pre>
+<h2 id="9-监控与运维"><a class="header" href="#9-监控与运维">9. 监控与运维</a></h2>
+<h3 id="91-系统表"><a class="header" href="#91-系统表">9.1 系统表</a></h3>
+<p><strong>查询统计:</strong></p>
+<pre><code class="language-sql">-- 查看当前查询
+SELECT query_id, user, query, elapsed
+FROM system.processes;
+
+-- 查看慢查询
+SELECT
+    query,
+    query_duration_ms,
+    read_rows,
+    result_rows
+FROM system.query_log
+WHERE query_duration_ms &gt; 1000
+ORDER BY query_duration_ms DESC
+LIMIT 10;
+
+-- 查看表大小
+SELECT
+    database,
+    table,
+    formatReadableSize(sum(bytes)) as size,
+    sum(rows) as rows
+FROM system.parts
+WHERE active
+GROUP BY database, table
+ORDER BY sum(bytes) DESC;
+</code></pre>
+<p><strong>集群状态:</strong></p>
+<pre><code class="language-sql">-- 查看副本状态
+SELECT * FROM system.replicas;
+
+-- 查看分布式表信息
+SELECT * FROM system.clusters;
+
+-- 查看磁盘使用
+SELECT
+    name,
+    path,
+    formatReadableSize(free_space) as free,
+    formatReadableSize(total_space) as total
+FROM system.disks;
+</code></pre>
+<h3 id="92-性能指标"><a class="header" href="#92-性能指标">9.2 性能指标</a></h3>
+<pre><code class="language-sql">-- 查询性能指标
+SELECT
+    event_time,
+    ProfileEvent_Query,
+    ProfileEvent_SelectQuery,
+    ProfileEvent_InsertQuery
+FROM system.metric_log
+WHERE event_time &gt; now() - INTERVAL 1 HOUR
+ORDER BY event_time;
+
+-- 资源使用
+SELECT
+    metric,
+    value
+FROM system.metrics
+WHERE metric IN (
+    'MemoryTracking',
+    'BackgroundPoolTask',
+    'TCPConnection'
+);
+</code></pre>
+<h3 id="93-日志分析"><a class="header" href="#93-日志分析">9.3 日志分析</a></h3>
+<pre><code class="language-bash"># 查看ClickHouse日志
+tail -f /var/log/clickhouse-server/clickhouse-server.log
+
+# 查看错误日志
+tail -f /var/log/clickhouse-server/clickhouse-server.err.log
+
+# 查询日志
+tail -f /var/log/clickhouse-server/query_log.log
+</code></pre>
+<h2 id="10-实战案例"><a class="header" href="#10-实战案例">10. 实战案例</a></h2>
+<h3 id="101-用户行为分析"><a class="header" href="#101-用户行为分析">10.1 用户行为分析</a></h3>
+<pre><code class="language-sql">-- 创建用户行为表
+CREATE TABLE user_behavior (
+    user_id UInt32,
+    item_id UInt32,
+    category_id UInt16,
+    behavior LowCardinality(String),
+    timestamp DateTime
+) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(timestamp)
+ORDER BY (user_id, timestamp);
+
+-- 统计日活用户
+SELECT
+    toDate(timestamp) as date,
+    uniq(user_id) as dau
+FROM user_behavior
+WHERE timestamp &gt;= today() - 7
+GROUP BY date
+ORDER BY date;
+
+-- 用户留存分析
+SELECT
+    registration_date,
+    day_diff,
+    count(DISTINCT user_id) as retained_users,
+    retained_users / first_value(retained_users) OVER (
+        PARTITION BY registration_date ORDER BY day_diff
+    ) as retention_rate
+FROM (
+    SELECT
+        toDate(min(timestamp)) OVER (PARTITION BY user_id) as registration_date,
+        user_id,
+        dateDiff('day', registration_date, toDate(timestamp)) as day_diff
+    FROM user_behavior
+)
+GROUP BY registration_date, day_diff
+ORDER BY registration_date, day_diff;
+</code></pre>
+<h3 id="102-实时看板"><a class="header" href="#102-实时看板">10.2 实时看板</a></h3>
+<pre><code class="language-sql">-- 创建实时统计物化视图
+CREATE MATERIALIZED VIEW realtime_stats
+ENGINE = AggregatingMergeTree()
+PARTITION BY toYYYYMMDD(timestamp)
+ORDER BY (minute, category_id)
+AS SELECT
+    toStartOfMinute(timestamp) as minute,
+    category_id,
+    uniqState(user_id) as unique_users,
+    countState() as event_count,
+    sumState(price) as total_revenue
+FROM user_behavior
+GROUP BY minute, category_id;
+
+-- 查询最近1小时数据
+SELECT
+    minute,
+    category_id,
+    uniqMerge(unique_users) as users,
+    countMerge(event_count) as events,
+    sumMerge(total_revenue) as revenue
+FROM realtime_stats
+WHERE minute &gt;= now() - INTERVAL 1 HOUR
+GROUP BY minute, category_id
+ORDER BY minute DESC;
+</code></pre>
+<h3 id="103-漏斗分析"><a class="header" href="#103-漏斗分析">10.3 漏斗分析</a></h3>
+<pre><code class="language-sql">-- 转化漏斗
+SELECT
+    sum(step &gt;= 1) as view,
+    sum(step &gt;= 2) as click,
+    sum(step &gt;= 3) as cart,
+    sum(step &gt;= 4) as purchase,
+    click / view as view_to_click,
+    cart / click as click_to_cart,
+    purchase / cart as cart_to_purchase
+FROM (
+    SELECT
+        user_id,
+        max(multiIf(
+            behavior = 'view', 1,
+            behavior = 'click', 2,
+            behavior = 'cart', 3,
+            behavior = 'purchase', 4,
+            0
+        )) as step
+    FROM user_behavior
+    WHERE timestamp &gt;= today()
+    GROUP BY user_id
+);
+</code></pre>
+<h2 id="11-学习验证标准"><a class="header" href="#11-学习验证标准">11. 学习验证标准</a></h2>
+<h3 id="-基础能力验证"><a class="header" href="#-基础能力验证">✅ 基础能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+理解ClickHouse列式存储原理</li>
+<li><input disabled="" type="checkbox"/>
+能够创建和使用MergeTree表</li>
+<li><input disabled="" type="checkbox"/>
+掌握基本SQL查询和聚合</li>
+<li><input disabled="" type="checkbox"/>
+理解分区和排序键的作用</li>
+</ul>
+<h3 id="-进阶能力验证"><a class="header" href="#-进阶能力验证">✅ 进阶能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够设计高效的表结构</li>
+<li><input disabled="" type="checkbox"/>
+掌握各种表引擎的使用场景</li>
+<li><input disabled="" type="checkbox"/>
+能够使用物化视图优化查询</li>
+<li><input disabled="" type="checkbox"/>
+理解分布式表的工作原理</li>
+</ul>
+<h3 id="-高级能力验证"><a class="header" href="#-高级能力验证">✅ 高级能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够部署和管理ClickHouse集群</li>
+<li><input disabled="" type="checkbox"/>
+能够进行性能调优和故障排查</li>
+<li><input disabled="" type="checkbox"/>
+掌握复杂的分析查询编写</li>
+<li><input disabled="" type="checkbox"/>
+具备生产环境运维能力</li>
+</ul>
+<h2 id="12-扩展资源"><a class="header" href="#12-扩展资源">12. 扩展资源</a></h2>
+<h3 id="官方资源"><a class="header" href="#官方资源">官方资源</a></h3>
+<ul>
+<li>官网: https://clickhouse.com/</li>
+<li>文档: https://clickhouse.com/docs/</li>
+<li>GitHub: https://github.com/ClickHouse/ClickHouse</li>
+</ul>
+<h3 id="学习建议"><a class="header" href="#学习建议">学习建议</a></h3>
+<ol>
+<li>从单机环境开始学习</li>
+<li>理解列式存储和MergeTree原理</li>
+<li>实践各种查询和聚合</li>
+<li>学习表设计和性能优化</li>
+<li>掌握分布式部署</li>
+</ol>
+<h3 id="进阶方向"><a class="header" href="#进阶方向">进阶方向</a></h3>
+<ul>
+<li>ClickHouse内核原理</li>
+<li>自定义函数开发</li>
+<li>实时数据分析架构</li>
+<li>与其他系统集成</li>
+<li>大规模集群运维</li>
+</ul>
+<h3 id="相关工具"><a class="header" href="#相关工具">相关工具</a></h3>
+<ul>
+<li>ClickHouse Operator for Kubernetes</li>
+<li>Tabix - Web界面</li>
+<li>DBeaver - 数据库客户端</li>
+<li>Grafana - 监控可视化</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/bigdata/3-Spark.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/bigdata/4-Hive.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/bigdata/3-Spark.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/bigdata/4-Hive.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,1072 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>KVM（Kernel-based Virtual Machine）学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="kvmkernel-based-virtual-machine学习笔记"><a class="header" href="#kvmkernel-based-virtual-machine学习笔记">KVM（Kernel-based Virtual Machine）学习笔记</a></h1>
+<blockquote>
+<p>面向 0-5 年经验的虚拟化、云平台、DevOps 与运维工程师，系统掌握 KVM 技术栈、生态工具、部署运维、性能调优与企业级实践。</p>
+</blockquote>
+<hr />
+<h2 id="学习定位与总体目标"><a class="header" href="#学习定位与总体目标">学习定位与总体目标</a></h2>
+<ul>
+<li><strong>学习者画像</strong>：熟悉 Linux 基础、掌握常用命令行与网络知识，希望构建或维护虚拟化平台、私有云、公有云节点、虚拟化容器混合环境的工程师。</li>
+<li><strong>技术定位</strong>：KVM 将 Linux 内核转换为裸机级虚拟化管理程序（Hypervisor），配合 QEMU、libvirt、OVS、Ceph 等组件构建完整虚拟化与云计算解决方案，是 OpenStack、oVirt、Harvester、OpenNebula、CloudStack 等平台的核心。</li>
+<li><strong>学习目标</strong>：
+<ol>
+<li>理解 KVM 架构、虚拟化技术原理（VT-x/AMD-V、EPT/NPT、SR-IOV、NUMA）；</li>
+<li>自主部署并管理 KVM 主机、虚拟机生命周期，掌握 libvirt、virt-install、virsh、virt-manager 等工具；</li>
+<li>熟悉存储、网络、高可用、性能调优、安全加固、自动化编排、故障诊断；</li>
+<li>能够设计企业级虚拟化/云平台架构，制定运维流程与监控策略；</li>
+<li>编写自动化脚本、封装标准模板、建立知识体系与培训材料。</li>
+</ol>
+</li>
+<li><strong>成果要求</strong>：
+<ul>
+<li>搭建至少两套不同规模的 KVM 实验环境（单机 + 集群）；</li>
+<li>完成部署文档、性能报告、故障排查流程；</li>
+<li>形成自动化脚本/Ansible Role；</li>
+<li>输出安全策略、监控指标、备份恢复方案；</li>
+<li>通过团队评审，纳入企业技术栈。</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="核心模块结构"><a class="header" href="#核心模块结构">核心模块结构</a></h2>
+<ol>
+<li><strong>模块一：KVM 虚拟化原理与生态架构</strong> —— 硬件虚拟化、内核模块、QEMU/Libvirt、生态组件。</li>
+<li><strong>模块二：基础部署与虚拟机生命周期管理</strong> —— 安装、配置、镜像、网络、存储、常用命令。</li>
+<li><strong>模块三：高级功能与企业级能力</strong> —— NUMA、HugePages、CPU Pinning、SR-IOV、GPU、大规模管理、热迁移。</li>
+<li><strong>模块四：自动化、可观测性与平台集成</strong> —— Ansible、Terraform、OpenStack、Harvester、监控、日志、备份。</li>
+<li><strong>模块五：性能调优与安全治理</strong> —— 性能测试、调优策略、安全硬化、隔离方案、补丁管理。</li>
+<li><strong>模块六：故障诊断、最佳实践与学习路径</strong> —— 排错流程、案例复盘、学习路径、项目实践、验证标准、资源拓展。</li>
+</ol>
+<hr />
+<h2 id="模块一kvm-虚拟化原理与生态架构"><a class="header" href="#模块一kvm-虚拟化原理与生态架构">模块一：KVM 虚拟化原理与生态架构</a></h2>
+<h3 id="11-虚拟化技术演进"><a class="header" href="#11-虚拟化技术演进">1.1 虚拟化技术演进</a></h3>
+<ul>
+<li><strong>纯软件虚拟化</strong>：依赖模拟（如 Bochs、QEMU 全软件）；性能低。</li>
+<li><strong>半虚拟化</strong>：Xen Paravirtualization；需改造系统。</li>
+<li><strong>硬件辅助虚拟化</strong>：Intel VT-x、AMD-V 提供 VMX/SVM 指令；显著提高性能。</li>
+<li>KVM 于 2007 年并入 Linux 内核（2.6.20），利用 VT-x/AMD-V 提供 Type-1 Hypervisor 能力。</li>
+</ul>
+<h3 id="12-硬件要求"><a class="header" href="#12-硬件要求">1.2 硬件要求</a></h3>
+<ul>
+<li>CPU：Intel VT-x + EPT，或 AMD-V + RVI/NPT。</li>
+<li>BIOS/UEFI：启用 VT-x/VT-d、AMD SVM/AMD-Vi；</li>
+<li>内存：建议 ≥16GB 用于宿主+虚拟机；</li>
+<li>网卡：支持 virtio、SR-IOV、DPDK；</li>
+<li>存储：SSD/NVMe 提升 I/O；</li>
+<li>GPU：需要 GPU Passthrough 或 vGPU 支持时参考 GPU 模块。</li>
+</ul>
+<h3 id="13-kvm-架构组成"><a class="header" href="#13-kvm-架构组成">1.3 KVM 架构组成</a></h3>
+<ul>
+<li><strong>KVM 内核模块</strong>：<code>kvm.ko</code>, <code>kvm_intel.ko</code>, <code>kvm_amd.ko</code>；负责 CPU、内存虚拟化。</li>
+<li><strong>QEMU</strong>：用户态仿真器，提供 I/O 模拟设备，配合 KVM 加速；</li>
+<li><strong>Libvirt</strong>：虚拟化 API/守护进程（<code>libvirtd</code>），提供统一管理接口和 XML 定义；</li>
+<li><strong>Virtio</strong>：半虚拟化驱动（网卡、磁盘、SCSI、GPU、输入）；</li>
+<li><strong>网络组件</strong>：Linux Bridge、Open vSwitch、macvtap、SR-IOV；</li>
+<li><strong>存储组件</strong>：LVM、iSCSI、NFS、Ceph、GlusterFS、S3；</li>
+<li><strong>管理工具</strong>：<code>virsh</code>, <code>virt-install</code>, <code>virt-manager</code>, <code>cockpit</code>, oVirt/Harvester。</li>
+</ul>
+<h3 id="14-虚拟化关键概念"><a class="header" href="#14-虚拟化关键概念">1.4 虚拟化关键概念</a></h3>
+<ul>
+<li><strong>VMCS（Virtual Machine Control Structure）</strong>：Intel VT-x 的虚拟机上下文，KVM 管理；</li>
+<li><strong>vCPU</strong>：虚拟 CPU，映射到 host CPU 或调度；</li>
+<li><strong>Virtio</strong>：高性能半虚拟化设备；</li>
+<li><strong>IOThread</strong>：独立线程处理 I/O；</li>
+<li><strong>Nested Virtualization</strong>：虚拟机内运行 KVM（嵌套虚拟化）；</li>
+<li><strong>Live Migration</strong>：在不停机状态下迁移虚拟机；</li>
+<li><strong>HugePages</strong>：大页内存，提高内存效率；</li>
+<li><strong>NUMA</strong>：非一致内存访问，需要配置亲和。</li>
+</ul>
+<h3 id="15-生态组件"><a class="header" href="#15-生态组件">1.5 生态组件</a></h3>
+<ul>
+<li><strong>libvirt</strong>：提供 XML 定义、API、CLI；</li>
+<li><strong>QEMU/KVM</strong>：底层执行；</li>
+<li><strong>SPICE/VNC</strong>：图形控制台；</li>
+<li><strong>virtiofs/9pfs</strong>：文件共享；</li>
+<li><strong>OVS/OVN</strong>：虚拟交换机与网络虚拟化；</li>
+<li><strong>Ceph RBD/Gluster</strong>：分布式存储；</li>
+<li><strong>Cloud-init</strong>：虚拟机初始化；</li>
+<li><strong>OpenStack/Harvester</strong>：IaaS 平台。</li>
+</ul>
+<h3 id="16-学习重点与易错点"><a class="header" href="#16-学习重点与易错点">1.6 学习重点与易错点</a></h3>
+<ul>
+<li><strong>重点</strong>：KVM + QEMU + libvirt 协作方式；硬件虚拟化基础；virtio 驱动；</li>
+<li><strong>易错点</strong>：
+<ol>
+<li>BIOS 未启用虚拟化 → <code>kvm: disabled by bios</code>；</li>
+<li>未安装 <code>qemu-kvm</code> → 无法创建 VM；</li>
+<li>混淆 libvirt 网络（bridge/nat/macvtap）；</li>
+<li>忽略 virtio 驱动 → 性能低；</li>
+<li>使用默认 <code>qemu</code> 用户导致权限不足；</li>
+<li>未规划存储/网络 → 生产瓶颈。</li>
+</ol>
+</li>
+</ul>
+<h3 id="17-入门实验验证-kvm-支持"><a class="header" href="#17-入门实验验证-kvm-支持">1.7 入门实验：验证 KVM 支持</a></h3>
+<pre><code class="language-bash"># CPU 支持检测
+lscpu | grep Virtualization
+kvm-ok  # Ubuntu; 输出 'KVM acceleration can be used'
+
+# 检查内核模块
+lsmod | grep kvm
+
+# 确认 libvirtd 状态
+sudo systemctl status libvirtd
+</code></pre>
+<hr />
+<h2 id="模块二基础部署与虚拟机生命周期管理"><a class="header" href="#模块二基础部署与虚拟机生命周期管理">模块二：基础部署与虚拟机生命周期管理</a></h2>
+<h3 id="21-环境准备与安装"><a class="header" href="#21-环境准备与安装">2.1 环境准备与安装</a></h3>
+<ul>
+<li><strong>Ubuntu/Debian</strong>：
+<pre><code class="language-bash">sudo apt install qemu-kvm libvirt-daemon-system libvirt-clients virtinst bridge-utils virt-manager
+</code></pre>
+</li>
+<li><strong>RHEL/CentOS/Rocky</strong>：
+<pre><code class="language-bash">sudo dnf install @virtualization
+sudo systemctl enable --now libvirtd
+</code></pre>
+</li>
+<li><strong>Fedora</strong>：类似，使用 <code>dnf group install "Virtualization"</code>。</li>
+<li><strong>验证</strong>：<code>virsh list --all</code>；<code>virsh version</code>；<code>virt-host-validate</code>。</li>
+</ul>
+<h3 id="22-libvirt-网络模式"><a class="header" href="#22-libvirt-网络模式">2.2 libvirt 网络模式</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>描述</th><th>适用场景</th></tr></thead><tbody>
+<tr><td>NAT (<code>virbr0</code>)</td><td>默认，使用 <code>dnsmasq</code> + NAT</td><td>测试环境、无需外部访问</td></tr>
+<tr><td>Bridge</td><td>绑定物理网卡，VM 获取 LAN IP</td><td>生产环境、可访问网络</td></tr>
+<tr><td>macvtap</td><td>VM 与宿主共享 MAC/接口</td><td>简化配置，限制 VM 与 host 互通</td></tr>
+<tr><td>OVS</td><td>Open vSwitch 虚拟交换机</td><td>SDN、OpenStack、复杂拓扑</td></tr>
+</tbody></table>
+</div>
+<ul>
+<li>创建 Bridge：
+<pre><code class="language-bash">nmcli connection add type bridge autoconnect yes con-name br0 ifname br0
+nmcli connection add type ethernet autoconnect yes con-name br0-slave ifname eno1 master br0
+</code></pre>
+</li>
+<li>libvirt 定义：<code>/etc/libvirt/qemu/networks/br0.xml</code>.</li>
+</ul>
+<h3 id="23-存储后端"><a class="header" href="#23-存储后端">2.3 存储后端</a></h3>
+<ul>
+<li><strong>目录/文件</strong>：QCOW2、RAW；</li>
+<li><strong>LVM</strong>：快速 snapshot；</li>
+<li><strong>iSCSI/NFS</strong>：共享存储；</li>
+<li><strong>Ceph RBD</strong>：云平台常用；</li>
+<li><strong>GlusterFS</strong>：分布式文件系统；</li>
+<li>libvirt storage pool 命令：<code>virsh pool-define</code>, <code>pool-start</code>, <code>pool-autostart</code>；</li>
+<li>Storage volume：<code>virsh vol-create-as</code>, <code>vol-clone</code>。</li>
+</ul>
+<h3 id="24-虚拟机创建工具"><a class="header" href="#24-虚拟机创建工具">2.4 虚拟机创建工具</a></h3>
+<ul>
+<li><strong>virt-install</strong>：CLI 快速创建；
+<pre><code class="language-bash">virt-install \
+  --name kvm-lab \
+  --memory 4096 --vcpus 2 \
+  --os-variant ubuntu22.04 \
+  --disk size=40,backing_store=/var/lib/libvirt/images/base.qcow2,bus=virtio \
+  --cdrom /iso/ubuntu-22.04.iso \
+  --network network=default,model=virtio \
+  --graphics spice \
+  --controller type=scsi,model=virtio-scsi \
+  --check all=off
+</code></pre>
+</li>
+<li><strong>virt-manager</strong>：图形界面；</li>
+<li><strong>cloud-init + virt-install</strong>：实现无交互安装；</li>
+<li><strong>virt-builder/virt-sysprep</strong>：快速构建镜像；</li>
+<li><strong>virt-install --import</strong>：利用现有镜像。</li>
+</ul>
+<h3 id="25-虚拟机生命周期管理"><a class="header" href="#25-虚拟机生命周期管理">2.5 虚拟机生命周期管理</a></h3>
+<ul>
+<li><code>virsh list</code>, <code>virsh start</code>, <code>virsh shutdown</code>, <code>virsh destroy</code>, <code>virsh undefine</code>, <code>virsh suspend</code>, <code>virsh resume</code>；</li>
+<li><code>virsh console &lt;vm&gt;</code> 连接串口；</li>
+<li><code>virsh domiflist</code>, <code>virsh domblklist</code> 查看网卡/磁盘；</li>
+<li><code>virsh dominfo</code>, <code>virsh vcpuinfo</code>；</li>
+<li><code>virsh edit &lt;vm&gt;</code> 修改 XML（保留备份）；</li>
+<li>快照：<code>virsh snapshot-create-as</code>；</li>
+<li>克隆：<code>virt-clone --original vm1 --name vm1-clone --auto-clone</code>。</li>
+</ul>
+<h3 id="26-虚拟磁盘管理"><a class="header" href="#26-虚拟磁盘管理">2.6 虚拟磁盘管理</a></h3>
+<ul>
+<li>镜像格式：<code>raw</code>（性能好），<code>qcow2</code>（支持快照、压缩）；</li>
+<li><code>qemu-img create -f qcow2 vm1.qcow2 40G</code>；</li>
+<li><code>qemu-img convert -f raw -O qcow2 disk.raw disk.qcow2</code>；</li>
+<li><code>virt-resize</code> 扩容；</li>
+<li><code>virt-filesystems</code> 查看内部结构；</li>
+<li><code>virt-customize</code> 注入文件、定制镜像；</li>
+<li><code>virt-sparsify</code> 精简镜像。</li>
+</ul>
+<h3 id="27-网络配置与调试"><a class="header" href="#27-网络配置与调试">2.7 网络配置与调试</a></h3>
+<ul>
+<li><code>ip addr</code>、<code>brctl show</code>、<code>ovs-vsctl list-br</code>；</li>
+<li>libvirt 网络 XML 关键字段（<code>forward mode=bridge</code>、<code>mac</code>, <code>ip</code>, <code>dhcp</code>）；</li>
+<li>VLAN：<code>&lt;interface type='bridge'&gt;&lt;vlan&gt;&lt;tag id='100'/&gt;&lt;/vlan&gt;&lt;/interface&gt;</code>；</li>
+<li><code>ethtool</code>, <code>tcpdump -i tapX</code> 调试；</li>
+<li>通过 <code>virsh domif-setlink</code> 修改网卡状态；</li>
+<li>Multi queue：<code>&lt;driver name='vhost' queues='4'/&gt;</code>。</li>
+</ul>
+<h3 id="28-linux-与-windows-虚拟机差异"><a class="header" href="#28-linux-与-windows-虚拟机差异">2.8 Linux 与 Windows 虚拟机差异</a></h3>
+<ul>
+<li>Windows 需安装 <code>virtio</code> 驱动（磁盘、网络、Balloon、SCSI）；</li>
+<li>可使用 <code>virtio-win ISO</code>；</li>
+<li>启用 <code>hv_*</code> Hyper-V 兼容特性；</li>
+<li>Windows 启动：使用 <code>UEFI + OVMF</code> 支持安全启动；</li>
+<li>注意：Windows 许可证、激活方式。</li>
+</ul>
+<h3 id="29-常用图形访问方式"><a class="header" href="#29-常用图形访问方式">2.9 常用图形访问方式</a></h3>
+<ul>
+<li><code>virt-viewer</code>, <code>spicy</code>, <code>remote-viewer</code>；</li>
+<li>SPICE vs VNC；</li>
+<li>加密：<code>tlsPort</code>, <code>password</code>;</li>
+<li>Web 控制台：Cockpit、noVNC、Guacamole；</li>
+<li>RDP/Freerdp 结合 VDI。</li>
+</ul>
+<h3 id="210-实践练习"><a class="header" href="#210-实践练习">2.10 实践练习</a></h3>
+<ul>
+<li>使用 <code>virt-install</code> 创建 Ubuntu cloud-init 虚拟机；</li>
+<li>定义一个 bridge 网络并让 VM 使用；</li>
+<li>创建 LVM 存储池并克隆 VM；</li>
+<li>利用 <code>virt-manager</code> 批量导入镜像；</li>
+<li>记录虚拟机 XML 与创建步骤。</li>
+</ul>
+<hr />
+<h2 id="模块三高级功能与企业级能力"><a class="header" href="#模块三高级功能与企业级能力">模块三：高级功能与企业级能力</a></h2>
+<h3 id="31-cpu-与-numa-优化"><a class="header" href="#31-cpu-与-numa-优化">3.1 CPU 与 NUMA 优化</a></h3>
+<ul>
+<li><code>cpu mode='host-passthrough'</code> 启用完整功能；</li>
+<li>vCPU 拓扑：<code>&lt;topology sockets='1' cores='4' threads='2'/&gt;</code>；</li>
+<li>NUMA：<code>&lt;numa&gt;&lt;cell id='0' cpus='0-3' memory='8192'/&gt;&lt;/numa&gt;</code>；</li>
+<li><code>numatune</code>：<code>&lt;memory mode='strict' nodeset='0'/&gt;</code>；</li>
+<li>CPU Pinning：<code>&lt;cputune&gt;&lt;vcpupin vcpu='0' cpuset='2'/&gt;&lt;/cputune&gt;</code>；</li>
+<li><code>virsh vcpupin</code>, <code>virsh emulatorpin</code>, <code>virsh iothreadpin</code>；</li>
+<li>结合 HugePages、GPU、DPDK 场景。</li>
+</ul>
+<h3 id="32-内存管理"><a class="header" href="#32-内存管理">3.2 内存管理</a></h3>
+<ul>
+<li>Balloon：<code>&lt;memballoon model='virtio'/&gt;</code> 实现动态内存回收；</li>
+<li>HugePages：<code>&lt;memoryBacking&gt;&lt;hugepages/&gt;&lt;/memoryBacking&gt;</code>；</li>
+<li>NUMA-aware HugePages；</li>
+<li>内存过订阅 vs 性能；</li>
+<li>THP 对虚拟化影响：建议 <code>madvise</code>；</li>
+<li>KSM（Kernel Samepage Merging）节省内存，需权衡性能与安全。</li>
+</ul>
+<h3 id="33-存储优化"><a class="header" href="#33-存储优化">3.3 存储优化</a></h3>
+<ul>
+<li>virtio-blk vs virtio-scsi vs IDE vs SATA；</li>
+<li>多队列：<code>&lt;driver name='qemu' queues='4'/&gt;</code>；</li>
+<li>iothreads：<code>&lt;iothreads&gt;2&lt;/iothreads&gt;</code>；</li>
+<li>Cache 模式：<code>none</code>, <code>writeback</code>, <code>unsafe</code>, <code>directsync</code>, <code>writethrough</code>；</li>
+<li>AIO：<code>native</code>, <code>threads</code>；</li>
+<li><code>virtio-scsi</code> + SCSI 多队列；</li>
+<li>使用 NVMe passthrough；</li>
+<li>Ceph RBD：<code>rbd cache</code>、<code>krbd</code> vs <code>librbd</code>；</li>
+<li>QCOW2 性能优化：<code>qcow2</code> preallocation (<code>qemu-img create -f qcow2 -o preallocation=falloc</code>)；</li>
+<li>Snapshots：<code>virsh snapshot</code> vs <code>external</code>。</li>
+</ul>
+<h3 id="34-网络高级功能"><a class="header" href="#34-网络高级功能">3.4 网络高级功能</a></h3>
+<ul>
+<li>vhost-net、vhost-user（DPDK）；</li>
+<li>Open vSwitch、OVN；</li>
+<li>SR-IOV VF Passthrough；</li>
+<li>Macvtap、PCI Passthrough；</li>
+<li>多队列 virtio-net：<code>&lt;driver name='vhost' queues='4'/&gt;</code>；</li>
+<li>带宽与 QoS：<code>&lt;bandwidth&gt;&lt;inbound average='1000'/&gt;&lt;/bandwidth&gt;</code>；</li>
+<li>VLAN trunk：<code>&lt;vlan&gt;&lt;tag id='100'/&gt;&lt;tag id='200'/&gt;&lt;/vlan&gt;</code>；</li>
+<li>Security group/firewall：iptables/nftables、Open vSwitch FLOW。</li>
+</ul>
+<h3 id="35-设备直通与加速"><a class="header" href="#35-设备直通与加速">3.5 设备直通与加速</a></h3>
+<ul>
+<li>PCI Passthrough：<code>&lt;hostdev mode='subsystem' type='pci' managed='yes'&gt;...&lt;/hostdev&gt;</code>；</li>
+<li>GPU 直通（详见 GPU 模块）；</li>
+<li>USB 直通：<code>&lt;hostdev mode='subsystem' type='usb' bus='0x001' device='0x002'/&gt;</code>；</li>
+<li>SR-IOV VF：预配置 <code>echo 4 &gt; /sys/bus/pci/devices/.../sriov_numvfs</code>；</li>
+<li>NVMe 直通；</li>
+<li>vGPU：NVIDIA vGPU, Intel GVT-g；</li>
+<li>使用 <code>virtiofs</code> 提供高性能文件共享。</li>
+</ul>
+<h3 id="36-热迁移live-migration"><a class="header" href="#36-热迁移live-migration">3.6 热迁移（Live Migration）</a></h3>
+<ul>
+<li>依赖共享存储（NFS, Ceph RBD, Gluster）；</li>
+<li>网络：确保目标 host 可访问；</li>
+<li><code>virsh migrate --live --persistent --undefinesource &lt;domain&gt; qemu+ssh://dst/system</code>；</li>
+<li>前提：CPU 指令集兼容，libvirt 版本匹配；</li>
+<li>优化：<code>post-copy</code>、<code>auto-converge</code>；</li>
+<li>迁移前准备：<code>virsh domxml-to-native</code>、<code>cgroup</code> 设置；</li>
+<li>迁移日志：<code>/var/log/libvirt/qemu/&lt;vm&gt;.log</code>。</li>
+</ul>
+<h3 id="37-高可用与集群"><a class="header" href="#37-高可用与集群">3.7 高可用与集群</a></h3>
+<ul>
+<li>Pacemaker/Corosync + libvirt；</li>
+<li>oVirt/RHV, Harvester；</li>
+<li>OpenStack Nova + Controller；</li>
+<li>Shared storage + Fencing；</li>
+<li>更高层：Kubernetes + KubeVirt；</li>
+<li>使用 <code>virsh</code> hooks 自动化。</li>
+</ul>
+<h3 id="38-镜像管理"><a class="header" href="#38-镜像管理">3.8 镜像管理</a></h3>
+<ul>
+<li>Glance (OpenStack)；</li>
+<li>virt-builder 模板库；</li>
+<li>Packer + QEMU builder；</li>
+<li>Cloud-init + cloud-localds；</li>
+<li>ISO 自动化生成。</li>
+</ul>
+<h3 id="39-备份与还原"><a class="header" href="#39-备份与还原">3.9 备份与还原</a></h3>
+<ul>
+<li><code>virsh snapshot</code>、<code>qemu-img snapshot</code>；</li>
+<li>熔合 <code>libvirt</code> 与备份工具（Borg, restic）；</li>
+<li><code>virsh blockpull</code>、<code>blockcommit</code>；</li>
+<li>冷备份：停机后复制 QCOW2；</li>
+<li>Ceph RBD snapshot；</li>
+<li>使用 <code>kubevirt</code>/<code>Velero</code> 备份；</li>
+<li>虚拟机应用层备份（数据库 dump + file-level）。</li>
+</ul>
+<h3 id="310-实践练习"><a class="header" href="#310-实践练习">3.10 实践练习</a></h3>
+<ul>
+<li>配置 NUMA + CPU Pinning + HugePages 的高性能 VM；</li>
+<li>配置 SR-IOV 网卡直通；</li>
+<li>实现 live migration 并验证；</li>
+<li>设置 Ceph RBD 存储池并创建 VM；</li>
+<li>完成 libvirt hook 脚本，实现 VM 启动日志记录。</li>
+</ul>
+<hr />
+<h2 id="模块四自动化可观测性与平台集成"><a class="header" href="#模块四自动化可观测性与平台集成">模块四：自动化、可观测性与平台集成</a></h2>
+<h3 id="41-自动化工具链"><a class="header" href="#41-自动化工具链">4.1 自动化工具链</a></h3>
+<ul>
+<li><strong>Ansible</strong>：<code>community.libvirt.virt</code>, <code>virt</code> 模块，管理虚拟机、网络、存储；</li>
+<li><strong>Terraform</strong>：<code>terraform-provider-libvirt</code>；</li>
+<li><strong>Packer</strong>：自动化镜像制作；</li>
+<li><strong>Python</strong>：<code>libvirt-python</code> API；</li>
+<li><strong>Bash</strong>：<code>virsh</code>, <code>virt-install</code>;</li>
+<li><strong>SaltStack</strong>, <strong>Chef</strong>；</li>
+<li>结合 GitOps：版本控制 XML/模板。</li>
+</ul>
+<h3 id="42-ansible-示例"><a class="header" href="#42-ansible-示例">4.2 Ansible 示例</a></h3>
+<pre><code class="language-yaml">- name: 创建 KVM 虚拟机
+  hosts: kvm_hosts
+  vars:
+    vm_name: web-01
+    vm_memory: 4096
+    vm_vcpus: 2
+  tasks:
+    - name: 创建虚拟机
+      community.libvirt.virt:
+        name: "{{ vm_name }}"
+        state: running
+        xml: "{{ lookup('template', 'vm.xml.j2') }}"
+</code></pre>
+<ul>
+<li>模板包含磁盘、网络、cloud-init；</li>
+<li>结合 <code>virt-sysprep</code> 预处理镜像。</li>
+</ul>
+<h3 id="43-terraform-流程"><a class="header" href="#43-terraform-流程">4.3 Terraform 流程</a></h3>
+<ul>
+<li>Provider 连接 libvirt；</li>
+<li>定义资源：<code>libvirt_domain</code>, <code>libvirt_volume</code>, <code>libvirt_network</code>；</li>
+<li>Cloud-init：<code>cloudinit = file("cloud-init.cfg")</code>；</li>
+<li>状态管理 + CI/CD；</li>
+<li>适合 IaaS 基础设施编排。</li>
+</ul>
+<h3 id="44-openstack-集成"><a class="header" href="#44-openstack-集成">4.4 OpenStack 集成</a></h3>
+<ul>
+<li>Nova compute 节点基于 KVM；</li>
+<li>配置 <code>nova.conf</code>、<code>libvirtd.conf</code>；</li>
+<li>网络：Neutron + OVS/OVN；</li>
+<li>存储：Cinder + RBD；</li>
+<li>调度：Placement, Filter Scheduler；</li>
+<li>关注 CPU 政策、NUMA；</li>
+<li>使用云平台 API 自动化；</li>
+<li>结合 Cloud-init + Heat 模板。</li>
+</ul>
+<h3 id="45-harvester--rancherkvm"><a class="header" href="#45-harvester--rancherkvm">4.5 Harvester / RancherKVM</a></h3>
+<ul>
+<li>基于 KubeVirt + Longhorn；</li>
+<li>提供 HCI（超融合基础设施）；</li>
+<li>Kubernetes CRD 管理虚拟机；</li>
+<li>支持 Helm/监控/备份；</li>
+<li>与 Rancher 集成；</li>
+<li>适合边缘云场景。</li>
+</ul>
+<h3 id="46-监控与日志"><a class="header" href="#46-监控与日志">4.6 监控与日志</a></h3>
+<ul>
+<li><strong>Prometheus</strong>：
+<ul>
+<li><code>node_exporter</code>（CPU/Mem/Disk）;</li>
+<li><code>libvirt_exporter</code>：虚拟机状态；</li>
+<li>Ceph exporter；</li>
+<li>Grafana 仪表板（资源利用、迁移、失败率）；</li>
+</ul>
+</li>
+<li><strong>日志</strong>：
+<ul>
+<li><code>/var/log/libvirt/libvirtd.log</code>;</li>
+<li><code>/var/log/libvirt/qemu/&lt;vm&gt;.log</code>;</li>
+<li>journald (<code>journalctl -u libvirtd</code>)；</li>
+<li>QEMU monitor (<code>virsh qemu-monitor-command</code>)；</li>
+</ul>
+</li>
+<li><strong>Tracing</strong>：<code>perf</code>, <code>ftrace</code>, <code>systemtap</code>;</li>
+<li><strong>性能</strong>：<code>virt-top</code>、<code>virt-df</code>, <code>virt-inspector</code>。</li>
+</ul>
+<h3 id="47-备份与恢复自动化"><a class="header" href="#47-备份与恢复自动化">4.7 备份与恢复自动化</a></h3>
+<ul>
+<li>Ansible/cron 调度 snapshot；</li>
+<li>使用 <code>qemu-img</code> convert + rsync；</li>
+<li><code>barman</code>/<code>wal-g</code> 处理数据库；</li>
+<li>Ceph snapshot + rbd export；</li>
+<li><code>libvirt</code> hooks 触发备份脚本；</li>
+<li>灾备：跨数据中心复制（DRBD, Ceph mirroring）。</li>
+</ul>
+<h3 id="48-devops-流程"><a class="header" href="#48-devops-流程">4.8 DevOps 流程</a></h3>
+<ul>
+<li>CI/CD（Jenkins/GitLab）自动部署环境；</li>
+<li>Infra-as-Code：Terraform + Ansible；</li>
+<li>Pipeline：构建镜像 → 测试 → 部署；</li>
+<li>ChatOps：Slack/Teams 触发 <code>virsh</code> 操作；</li>
+<li>API：<code>virsh</code> + <code>libvirt-python</code> + REST 接口（如 <code>kimchi</code>）。</li>
+</ul>
+<h3 id="49-容器融合"><a class="header" href="#49-容器融合">4.9 容器融合</a></h3>
+<ul>
+<li>KubeVirt：在 Kubernetes 中运行虚拟机（VM + Pod 混合）；</li>
+<li>Kata Containers：轻量 VM 作为容器 runtime；</li>
+<li>OpenShift + CNV；</li>
+<li>Firecracker（AWS Lambda）基于 KVM；</li>
+<li>服务器无服务器；</li>
+<li>配置 virtiofs、SR-IOV；</li>
+<li>监控 Pod/VM 整体资源。</li>
+</ul>
+<h3 id="410-实践练习"><a class="header" href="#410-实践练习">4.10 实践练习</a></h3>
+<ul>
+<li>使用 Terraform + Ansible 自动创建虚拟机集群；</li>
+<li>部署 <code>libvirt_exporter</code>, 配置 Grafana；</li>
+<li>搭建 OpenStack 单节点实验；</li>
+<li>尝试 KubeVirt 部署并运行虚拟机；</li>
+<li>构建 Jenkins Pipeline 自动创建测试 VM。</li>
+</ul>
+<hr />
+<h2 id="模块五性能调优与安全治理"><a class="header" href="#模块五性能调优与安全治理">模块五：性能调优与安全治理</a></h2>
+<h3 id="51-性能评估指标"><a class="header" href="#51-性能评估指标">5.1 性能评估指标</a></h3>
+<ul>
+<li>CPU：<code>vcpu</code> 利用、steal time、上下文切换；</li>
+<li>内存：使用率、Balloon、HugePages；</li>
+<li>存储：IOPS、吞吐、延迟、queue depth；</li>
+<li>网络：带宽、pps、latency；</li>
+<li>启动时间、热迁移耗时；</li>
+<li>应用指标：数据库 TPS、延迟；</li>
+<li>资源密度：每主机 VM 数量。</li>
+</ul>
+<h3 id="52-调优策略"><a class="header" href="#52-调优策略">5.2 调优策略</a></h3>
+<ul>
+<li>CPU：使用 <code>host-passthrough</code>，配置 Pinning、隔离 housekeeping CPU；</li>
+<li>内存：HugePages + NUMA + Balloon；</li>
+<li>存储：选择合适 cache/AIO；使用 virtio-scsi + iothreads；</li>
+<li>网络：vhost-net、multiqueue、SR-IOV；</li>
+<li>磁盘格式：raw + direct I/O；</li>
+<li>使用 <code>tuned-profiles-virtual-host</code>；</li>
+<li>监控 <code>schedstat</code>, <code>perf</code>, <code>fio</code>, <code>iperf</code>；</li>
+<li>调整 <code>libvirtd</code> 性能参数（<code>max_clients</code>, <code>max_queued_clients</code>）。</li>
+</ul>
+<h3 id="53-性能测试工具"><a class="header" href="#53-性能测试工具">5.3 性能测试工具</a></h3>
+<ul>
+<li><code>virt-what</code>, <code>virt-top</code>, <code>virsh domstats</code>；</li>
+<li><code>perf</code>, <code>pmu-tools</code>, <code>pmdisk</code>;</li>
+<li><code>fio</code>, <code>sysbench</code>, <code>pgbench</code>;</li>
+<li><code>netperf</code>, <code>iperf3</code>, <code>DPDK testpmd</code>;</li>
+<li>SPECvirt, Phoronix Test Suite ;</li>
+<li><code>cyclictest</code>（实时）；</li>
+<li>结合 Grafana/Tick stack 可视化。</li>
+</ul>
+<h3 id="54-安全加固"><a class="header" href="#54-安全加固">5.4 安全加固</a></h3>
+<ul>
+<li>最小化宿主机服务、及时更新内核/QEMU；</li>
+<li>SELinux/AppArmor：libvirt 默认使用；</li>
+<li>sVirt：基于 SELinux 的虚拟机隔离；</li>
+<li>安全策略：虚拟机与宿主网络隔离；</li>
+<li>TLS 加密远程连接（libvirt TLS）；</li>
+<li>管理用户权限：<code>/etc/libvirt/qemu.conf</code> 配置；</li>
+<li>使用 <code>virt-sandbox</code>、<code>kata</code>；</li>
+<li>CVE 管理：关注 QEMU/libvirt/KVM 漏洞（VENOM、Spectre、Meltdown）；</li>
+<li>BIOS/UEFI Secure Boot；</li>
+<li>虚拟机安全：防火墙、补丁、杀毒；</li>
+<li>虚拟机逃逸风险控制；</li>
+<li>日志审计：记录 <code>virsh</code> 操作。</li>
+</ul>
+<h3 id="55-网络安全"><a class="header" href="#55-网络安全">5.5 网络安全</a></h3>
+<ul>
+<li>控制台访问安全：SPICE/VNC 使用密码+TLS；</li>
+<li>管理网络隔离；</li>
+<li>使用防火墙（Firewalld/nftables）；</li>
+<li>安全组/ACL（OpenStack）；</li>
+<li>IDS/IPS 集成；</li>
+<li>漏洞扫描、基线检查。</li>
+</ul>
+<h3 id="56-合规与多租户隔离"><a class="header" href="#56-合规与多租户隔离">5.6 合规与多租户隔离</a></h3>
+<ul>
+<li>cgroup 限制：CPU, Memory, I/O；</li>
+<li>SELinux label：<code>system_u:system_r:svirt_t:s0:c123,c456</code>；</li>
+<li>eBPF 安全监控；</li>
+<li>日志审计满足 ISO/SOC2；</li>
+<li>RBAC：libvirt ACL、OpenStack Keystone；</li>
+<li>资源配额、计费；</li>
+<li>数据加密（磁盘加密 LUKS）；</li>
+<li>密钥管理（KMIP, Vault）。</li>
+</ul>
+<h3 id="57-补丁与版本管理"><a class="header" href="#57-补丁与版本管理">5.7 补丁与版本管理</a></h3>
+<ul>
+<li>定期更新内核、QEMU、libvirt、OVS；</li>
+<li>评估升级影响，执行灰度；</li>
+<li>使用 <code>virt-host-validate</code> 检查；</li>
+<li>记录版本矩阵，测试兼容性；</li>
+<li>订阅发行版 errata；</li>
+<li>维护回滚计划。</li>
+</ul>
+<h3 id="58-节能与资源优化"><a class="header" href="#58-节能与资源优化">5.8 节能与资源优化</a></h3>
+<ul>
+<li>CPU 鲁棒性 vs 节能（<code>intel_pstate</code>, <code>cpupower</code>）；</li>
+<li>实施自动关机、按需启动；</li>
+<li>利用 <code>virsh domblkstats</code>, <code>domifstat</code> 分析资源；</li>
+<li>集群调度：OpenStack、oVirt balancing；</li>
+<li>过度配置警惕；</li>
+<li>备用资源预留。</li>
+</ul>
+<h3 id="59-案例性能调优实践"><a class="header" href="#59-案例性能调优实践">5.9 案例：性能调优实践</a></h3>
+<ul>
+<li>数据库 VM：CPU Pinning + HugePages + virtio-scsi 多队列 → TPS 提升 25%；</li>
+<li>高性能网络：SR-IOV + CPU Pinning + DPDK；</li>
+<li>热迁移优化：pre-copy + auto converge；</li>
+<li>Ceph 存储：enable RBD cache + writeback + SSD journal；</li>
+<li>多租户隔离：sVirt + cgroup + OVS security group。</li>
+</ul>
+<h3 id="510-实践练习"><a class="header" href="#510-实践练习">5.10 实践练习</a></h3>
+<ul>
+<li>使用 <code>fio</code> 测试不同缓存策略；</li>
+<li>配置 <code>libvirt</code> TLS 远程访问；</li>
+<li>实现 <code>virt-sandbox</code> 运行轻量容器；</li>
+<li>设计安全基线（SELinux + iptables）；</li>
+<li>执行 <code>virt-host-validate</code> 并修复警告。</li>
+</ul>
+<hr />
+<h2 id="模块六故障诊断最佳实践与学习路径"><a class="header" href="#模块六故障诊断最佳实践与学习路径">模块六：故障诊断、最佳实践与学习路径</a></h2>
+<h3 id="61-常见故障分类"><a class="header" href="#61-常见故障分类">6.1 常见故障分类</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>分类</th><th>现象</th><th>排查路径</th></tr></thead><tbody>
+<tr><td>虚拟化不可用</td><td><code>kvm: disabled by bios</code></td><td>BIOS 设置，<code>lscpu</code> 验证</td></tr>
+<tr><td>VM 启动失败</td><td><code>qemu: could not allocate</code></td><td>检查内存、HugePages、日志</td></tr>
+<tr><td>网络中断</td><td>无法访问</td><td><code>virsh domiflist</code>, <code>brctl show</code>, <code>iptables</code></td></tr>
+<tr><td>磁盘性能差</td><td>IOPS 低</td><td>检查缓存模式、队列、多队列</td></tr>
+<tr><td>热迁移失败</td><td>错误 1</td><td>检查共享存储、CPU 兼容</td></tr>
+<tr><td>SR-IOV/VF 无法使用</td><td>VF 不存在</td><td><code>lspci</code>, <code>dmesg</code></td></tr>
+<tr><td>Windows 蓝屏</td><td><code>STOP 0x000...</code></td><td>更新驱动、Hyper-V 选项</td></tr>
+<tr><td>libvirtd 不稳定</td><td><code>libvirtd: error</code></td><td><code>journalctl -u libvirtd</code></td></tr>
+<tr><td>VM 时间漂移</td><td>时钟偏差</td><td>开启 <code>virtio-timer</code>, <code>qemu-guest-agent</code></td></tr>
+<tr><td>备份失败</td><td>snapshot error</td><td>检查 qcow2 chain、磁盘锁</td></tr>
+</tbody></table>
+</div>
+<h3 id="62-排错流程"><a class="header" href="#62-排错流程">6.2 排错流程</a></h3>
+<ol>
+<li><strong>收集信息</strong>：<code>journalctl</code>, <code>libvirt</code> 日志、<code>virsh dominfo</code>；</li>
+<li><strong>分析配置</strong>：<code>virsh dumpxml &lt;vm&gt;</code>；</li>
+<li><strong>资源检查</strong>：CPU/MEM/IO/网络；</li>
+<li><strong>尝试最小化</strong>：使用最小设备启动；</li>
+<li><strong>比较基线</strong>：与正常 VM 对比；</li>
+<li><strong>查阅文档/社区</strong>：libvirt/QEMU release notes；</li>
+<li><strong>编写 RCA</strong>，记录问题与预防；</li>
+<li><strong>回归测试</strong>：确保修复有效。</li>
+</ol>
+<h3 id="63-工具与命令速查"><a class="header" href="#63-工具与命令速查">6.3 工具与命令速查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>工具</th><th>用途</th></tr></thead><tbody>
+<tr><td><code>virsh domxml-from-native</code></td><td>将命令转换为 XML</td></tr>
+<tr><td><code>virsh domxml-to-native</code></td><td>XML 转命令</td></tr>
+<tr><td><code>qemu-system-x86_64 -machine help</code></td><td>查看机器类型</td></tr>
+<tr><td><code>virsh domstate</code>, <code>dominfo</code></td><td>状态检查</td></tr>
+<tr><td><code>virt-what</code></td><td>检测虚拟化环境</td></tr>
+<tr><td><code>virt-p2v</code></td><td>物理机到虚拟机转换</td></tr>
+<tr><td><code>virt-v2v</code></td><td>VMware → KVM 转换</td></tr>
+<tr><td><code>virt-inspector</code></td><td>分析虚拟机系统信息</td></tr>
+<tr><td><code>virt-log</code></td><td>查看虚拟机日志</td></tr>
+</tbody></table>
+</div>
+<h3 id="64-最佳实践清单"><a class="header" href="#64-最佳实践清单">6.4 最佳实践清单</a></h3>
+<ul>
+<li><strong>部署前评估</strong>：硬件/网络/存储规划；</li>
+<li><strong>模板化</strong>：统一 XML/Cloud-init 模板；</li>
+<li><strong>自动化</strong>：IAAC, CI/CD；</li>
+<li><strong>监控告警</strong>：Prometheus + Grafana；</li>
+<li><strong>安全</strong>：SELinux/sVirt, TLS, RBAC；</li>
+<li><strong>备份恢复</strong>：定期测试恢复；</li>
+<li><strong>性能基线</strong>：定期测试，记录数据；</li>
+<li><strong>知识库</strong>：建立 Wiki、FAQ；</li>
+<li><strong>版本管理</strong>：计划升级、灰度；</li>
+<li><strong>合规</strong>：审计/日志/访问控制；</li>
+<li><strong>团队协作</strong>：培训、演练；</li>
+<li><strong>文档化</strong>：架构图、流程、SOP。</li>
+</ul>
+<h3 id="65-学习路径设计"><a class="header" href="#65-学习路径设计">6.5 学习路径设计</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>时间</th><th>目标</th><th>行动</th><th>产出</th></tr></thead><tbody>
+<tr><td>阶段 0：准备</td><td>1 天</td><td>了解架构、搭建实验环境</td><td>阅读本文、验证 KVM 支持</td><td>环境评估表</td></tr>
+<tr><td>阶段 1：基础实践</td><td>3 天</td><td>掌握虚拟机创建与管理</td><td>创建 VM、网络、存储</td><td>VM 操作手册</td></tr>
+<tr><td>阶段 2：高级能力</td><td>4-5 天</td><td>NUMA、Pinning、SR-IOV、Live Migration</td><td>完成性能与迁移实验</td><td>高级配置指南</td></tr>
+<tr><td>阶段 3：自动化与平台</td><td>5 天</td><td>Ansible/Terraform、OpenStack/KubeVirt</td><td>自动化代码、集成报告</td><td>自动化脚本、平台评估</td></tr>
+<tr><td>阶段 4：性能与安全</td><td>5-7 天</td><td>调优、监控、安全治理</td><td>压测、多维监控、安全基线</td><td>性能报告、安全策略</td></tr>
+<tr><td>阶段 5：运维沉淀</td><td>持续</td><td>故障排查、知识库、培训</td><td>编写 SOP、RCA、培训</td><td>知识库、培训材料</td></tr>
+</tbody></table>
+</div>
+<h3 id="66-实战项目建议"><a class="header" href="#66-实战项目建议">6.6 实战项目建议</a></h3>
+<h4 id="项目一企业私有云基础架构部署"><a class="header" href="#项目一企业私有云基础架构部署">项目一：企业私有云基础架构部署</a></h4>
+<ul>
+<li><strong>目标</strong>：基于 KVM + OpenStack 构建多租户私有云。</li>
+<li><strong>步骤</strong>：
+<ol>
+<li>部署控制节点（Keystone, Glance, Nova, Neutron）；</li>
+<li>配置计算节点 KVM，启用 CPU pinning、NUMA；</li>
+<li>集成 Ceph RBD 存储；</li>
+<li>配置 Heat 模板、自动化部署；</li>
+<li>建立监控与告警；</li>
+</ol>
+</li>
+<li><strong>成果</strong>：架构文档、部署脚本、监控面板、性能报告。</li>
+</ul>
+<h4 id="项目二边缘云-hci-集群"><a class="header" href="#项目二边缘云-hci-集群">项目二：边缘云 HCI 集群</a></h4>
+<ul>
+<li><strong>目标</strong>：使用 Harvester / KubeVirt 统一管理 VM + 容器。</li>
+<li><strong>步骤</strong>：
+<ol>
+<li>部署多节点 KubeVirt；</li>
+<li>配置 Longhorn 存储；</li>
+<li>创建虚拟机模板；</li>
+<li>集成 Prometheus + Grafana；</li>
+<li>实现 GitOps 部署流程；</li>
+</ol>
+</li>
+<li><strong>成果</strong>：集群手册、自动化仓库、运维指南。</li>
+</ul>
+<h4 id="项目三高性能数据库虚拟化平台"><a class="header" href="#项目三高性能数据库虚拟化平台">项目三：高性能数据库虚拟化平台</a></h4>
+<ul>
+<li><strong>目标</strong>：为数据库提供虚拟化环境同时保证性能。</li>
+<li><strong>步骤</strong>：
+<ol>
+<li>规划 NUMA、HugePages；</li>
+<li>设置 CPU Pinning、SR-IOV 网卡；</li>
+<li>使用 NVMe 直通或 Ceph RBD；</li>
+<li>运行基准测试（TPC-C, sysbench）；</li>
+<li>建立备份恢复流程；</li>
+</ol>
+</li>
+<li><strong>成果</strong>：性能报告、调优指南、备份文档。</li>
+</ul>
+<h4 id="项目四虚拟桌面vdi服务"><a class="header" href="#项目四虚拟桌面vdi服务">项目四：虚拟桌面（VDI）服务</a></h4>
+<ul>
+<li><strong>目标</strong>：提供 GPU 加速虚拟桌面。</li>
+<li><strong>步骤</strong>：
+<ol>
+<li>GPU Passthrough 配置（RTX/Quadro）；</li>
+<li>使用 SPICE/FreeRDP 提供访问；</li>
+<li>设计模板（Windows 10/11）；</li>
+<li>自动化部署脚本；</li>
+<li>安全策略（MFA、审计）；</li>
+</ol>
+</li>
+<li><strong>成果</strong>：VDI 架构、部署脚本、运维手册。</li>
+</ul>
+<h4 id="项目五devops-自动化测试平台"><a class="header" href="#项目五devops-自动化测试平台">项目五：DevOps 自动化测试平台</a></h4>
+<ul>
+<li><strong>目标</strong>：使用 KVM 快速构建测试环境。</li>
+<li><strong>步骤</strong>：
+<ol>
+<li>Terraform 创建多个 VM；</li>
+<li>Ansible 进行应用部署；</li>
+<li>Jenkins Pipeline 自动触发；</li>
+<li>使用 <code>virt-sysprep</code> 清理；</li>
+<li>对接 monitoring &amp; alerting；</li>
+</ol>
+</li>
+<li><strong>成果</strong>：CI/CD 平台、测试报告、回滚策略。</li>
+</ul>
+<h3 id="67-学习成果验证标准"><a class="header" href="#67-学习成果验证标准">6.7 学习成果验证标准</a></h3>
+<ol>
+<li><strong>部署能力</strong>：成功部署至少两个 KVM 环境（单机 + 集群），验证虚拟机生命周期；</li>
+<li><strong>自动化脚本</strong>：提交 Ansible/Terraform 脚本，支持重复执行；</li>
+<li><strong>性能报告</strong>：完成至少两组性能基准（CPU/存储/网络），给出调优策略与数据；</li>
+<li><strong>安全策略</strong>：制定并实施安全基线（TLS、SELinux、权限）；</li>
+<li><strong>监控告警</strong>：部署 Prometheus/Grafana，配置虚拟机资源告警；</li>
+<li><strong>故障演练</strong>：模拟并解决 3 种典型故障，输出 RCA；</li>
+<li><strong>文档沉淀</strong>：完成操作手册、FAQ、培训资料；</li>
+<li><strong>迭代计划</strong>：形成升级、补丁、容量规划路线图。</li>
+</ol>
+<h3 id="68-扩展资源与进阶建议"><a class="header" href="#68-扩展资源与进阶建议">6.8 扩展资源与进阶建议</a></h3>
+<ul>
+<li><strong>官方文档</strong>：
+<ul>
+<li>https://www.linux-kvm.org</li>
+<li>Libvirt Docs: https://libvirt.org/</li>
+<li>QEMU Docs: https://qemu.org/docs/</li>
+<li>Red Hat Virtualization Guide</li>
+<li>OpenStack Docs (Nova, Neutron)</li>
+</ul>
+</li>
+<li><strong>社区与博客</strong>：
+<ul>
+<li>Virtio 论文、KVM 开发者会议；</li>
+<li>Red Hat Developer, IBM developerWorks；</li>
+<li>Level1Techs, ServerFault, StackOverflow；</li>
+</ul>
+</li>
+<li><strong>工具与项目</strong>：
+<ul>
+<li><code>Kimchi</code>, <code>Cockpit</code>, <code>oVirt</code>, <code>Proxmox</code>;</li>
+<li><code>Open vSwitch</code>, <code>OVN</code>;</li>
+<li><code>Ceph</code>, <code>Gluster</code>, <code>Longhorn</code>;</li>
+<li><code>Ansible</code>, <code>Terraform</code>, <code>Packer</code>;</li>
+<li><code>libguestfs</code> 工具集；</li>
+</ul>
+</li>
+<li><strong>进阶建议</strong>：
+<ol>
+<li>深入阅读 KVM 内核源码，研究 VMX/SVM；</li>
+<li>参与社区讨论、关注补丁；</li>
+<li>探索 KVM + DPDK/SDN/Cloud-native 混合架构；</li>
+<li>对接硬件加速（FPGA, SmartNIC）；</li>
+<li>研究高可用（HA）、灾备（DR）策略；</li>
+<li>构建自研云平台，实践 DevOps/GitOps。</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="附录"><a class="header" href="#附录">附录</a></h2>
+<h3 id="a-常用命令速查"><a class="header" href="#a-常用命令速查">A. 常用命令速查</a></h3>
+<pre><code class="language-bash"># 虚拟机管理
+virsh list --all
+virsh start vm1
+virsh shutdown vm1
+virsh destroy vm1
+virsh undefine vm1
+
+# XML 操作
+virsh edit vm1
+virsh dumpxml vm1 &gt; vm1.xml
+virsh define vm1.xml
+
+# 快照
+virsh snapshot-list vm1
+dirsh snapshot-create-as vm1 snap1
+
+# 存储
+virsh pool-list --all
+virsh vol-list default
+
+# 网络
+virsh net-list --all
+virsh net-define br0.xml
+
+# 主机验证
+virt-host-validate
+
+# 镜像工具
+qemu-img info disk.qcow2
+virt-customize -a disk.qcow2 --install nginx
+virt-sysprep -a disk.qcow2
+</code></pre>
+<h3 id="b-目录结构参考"><a class="header" href="#b-目录结构参考">B. 目录结构参考</a></h3>
+<pre><code>/kvm-lab
+├── docs/
+│   ├── architecture.md
+│   ├── operations-guide.md
+│   └── troubleshooting.md
+├── terraform/
+│   ├── main.tf
+│   └── variables.tf
+├── ansible/
+│   ├── inventory
+│   ├── roles/kvm-host
+│   └── roles/kvm-vm
+├── images/
+│   ├── base.qcow2
+│   └── cloud-init/
+└── monitoring/
+    ├── prometheus.yml
+    └── grafana-dashboard.json
+</code></pre>
+<h3 id="c-cloud-init-样例"><a class="header" href="#c-cloud-init-样例">C. Cloud-init 样例</a></h3>
+<pre><code class="language-yaml">#cloud-config
+hostname: kvm-node
+manage_etc_hosts: true
+users:
+  - name: devops
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ssh-rsa AAAA...
+packages:
+  - qemu-guest-agent
+runcmd:
+  - systemctl enable --now qemu-guest-agent
+</code></pre>
+<h3 id="d-性能测试脚本模板"><a class="header" href="#d-性能测试脚本模板">D. 性能测试脚本模板</a></h3>
+<pre><code class="language-bash">#!/bin/bash
+VM_NAME=$1
+OUTPUT_DIR=$2
+
+mkdir -p "$OUTPUT_DIR"
+
+# CPU Benchmark
+echo "Running sysbench CPU" &gt; "$OUTPUT_DIR/cpu.log"
+virt-ssh $VM_NAME "sysbench cpu --threads=$(nproc) --time=60 run" &gt;&gt; "$OUTPUT_DIR/cpu.log"
+
+# Disk Benchmark
+echo "Running fio" &gt; "$OUTPUT_DIR/disk.log"
+virt-ssh $VM_NAME "fio --name=randrw --filename=/tmp/testfile --size=4G --bs=4k --rw=randrw --iodepth=32 --runtime=60 --numjobs=4 --time_based" &gt;&gt; "$OUTPUT_DIR/disk.log"
+</code></pre>
+<h3 id="e-故障记录模板"><a class="header" href="#e-故障记录模板">E. 故障记录模板</a></h3>
+<pre><code>事件编号：KVM-2024-07
+时间：2024-08-02 14:35
+环境：KVM 集群（RHEL 9 + Ceph）
+现象：虚拟机迁移失败，报错 "Unable to relabel to SELinux context"
+排查：
+1. 检查 /var/log/libvirt/qemu/vm.log -&gt; SELinux AV
+2. 查看 `audit.log`, 存在拒绝记录
+3. 发现目标节点缺失 SELinux policy
+处理：
+1. 同步自定义 policy
+2. 重新执行 `semanage fcontext`
+3. 迁移成功
+预防：
+- 在配置管理中同步 SELinux 策略
+- 迁移前执行验证脚本
+</code></pre>
+<blockquote>
+<p>KVM 为现代云基础设施提供了灵活而强大的虚拟化能力。深入理解其架构、持续优化性能、安全、运维与自动化流程，是构建稳定高效私有云和虚拟化平台的关键。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/云计算/hugepages.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/云计算/libguestfs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/云计算/hugepages.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/云计算/libguestfs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

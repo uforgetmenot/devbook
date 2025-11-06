@@ -1,0 +1,1957 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>OpenFunction 云原生函数计算平台学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="openfunction-云原生函数计算平台学习笔记"><a class="header" href="#openfunction-云原生函数计算平台学习笔记">OpenFunction 云原生函数计算平台学习笔记</a></h1>
+<blockquote>
+<p><strong>学习目标</strong>: 掌握OpenFunction函数计算平台的核心概念、开发部署流程，能够独立构建事件驱动的Serverless应用</p>
+<p><strong>适用人群</strong>: 具备Kubernetes基础的云原生开发者、希望构建Serverless应用的后端工程师</p>
+<p><strong>前置知识</strong>: Kubernetes基础、容器技术、微服务架构</p>
+</blockquote>
+<hr />
+<h2 id="1-概述"><a class="header" href="#1-概述">1. 概述</a></h2>
+<h3 id="11-什么是-openfunction"><a class="header" href="#11-什么是-openfunction">1.1 什么是 OpenFunction</a></h3>
+<p>OpenFunction 是一个开源的云原生函数即服务(FaaS)框架,构建在Kubernetes之上,旨在让开发者专注于业务逻辑而无需关心底层基础设施。</p>
+<p><strong>核心价值</strong>:</p>
+<ul>
+<li><strong>简化开发</strong>: 使用函数作为最小部署单元,降低开发复杂度</li>
+<li><strong>事件驱动</strong>: 原生支持多种事件源,构建响应式应用</li>
+<li><strong>自动伸缩</strong>: 基于负载自动扩缩容,按需付费</li>
+<li><strong>云原生</strong>: 深度集成Kubernetes生态,充分利用云原生能力</li>
+</ul>
+<p><strong>与传统应用对比</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>维度</th><th>传统应用</th><th>OpenFunction</th></tr></thead><tbody>
+<tr><td>部署单元</td><td>完整应用</td><td>单个函数</td></tr>
+<tr><td>运维复杂度</td><td>需要管理服务器、网络等</td><td>无需关心基础设施</td></tr>
+<tr><td>伸缩方式</td><td>手动或基于CPU/内存</td><td>事件驱动自动伸缩</td></tr>
+<tr><td>成本模型</td><td>按实例时长付费</td><td>按实际调用次数付费</td></tr>
+</tbody></table>
+</div>
+<h3 id="12-核心特性"><a class="header" href="#12-核心特性">1.2 核心特性</a></h3>
+<p><strong>1. 多语言运行时支持</strong></p>
+<pre><code>Node.js | Python | Go | Java | .NET
+</code></pre>
+<p><strong>2. 源码到镜像(Source-to-Image)</strong></p>
+<ul>
+<li>自动将源码构建为容器镜像</li>
+<li>基于Cloud Native Buildpacks</li>
+<li>支持自定义构建策略</li>
+</ul>
+<p><strong>3. 事件驱动架构</strong></p>
+<pre><code>HTTP触发器 → Kafka消息 → Cron定时任务 → Redis发布订阅
+</code></pre>
+<p><strong>4. 灵活的服务模式</strong></p>
+<ul>
+<li><strong>同步函数</strong>: HTTP请求/响应模式</li>
+<li><strong>异步函数</strong>: 事件驱动消息处理</li>
+</ul>
+<p><strong>5. 生产级特性</strong></p>
+<ul>
+<li>自动伸缩(HPA + KEDA)</li>
+<li>灰度发布与流量管理</li>
+<li>完善的可观测性(指标、日志、追踪)</li>
+</ul>
+<h3 id="13-架构设计"><a class="header" href="#13-架构设计">1.3 架构设计</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                      OpenFunction 架构                       │
+├─────────────────────────────────────────────────────────────┤
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│  │   Function   │  │    Events    │  │   Gateway    │     │
+│  │   (CRD)      │  │   (Trigger)  │  │   (Ingress)  │     │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘     │
+│         │                  │                  │              │
+│  ┌──────▼───────┐  ┌──────▼───────┐  ┌──────▼───────┐     │
+│  │   Builder    │  │   Serving    │  │   Domain     │     │
+│  │ (Tekton/     │  │  (Knative/   │  │   (路由管理)  │     │
+│  │  Shipwright) │  │   Dapr)      │  │              │     │
+│  └──────────────┘  └──────────────┘  └──────────────┘     │
+├─────────────────────────────────────────────────────────────┤
+│                   Kubernetes 平台                            │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>核心组件说明</strong>:</p>
+<ol>
+<li><strong>Function CRD</strong>: 函数定义的核心资源</li>
+<li><strong>Builder</strong>: 负责源码构建(集成Tekton/Shipwright)</li>
+<li><strong>Serving</strong>: 函数运行时管理(基于Knative Serving或OpenFunctionAsync)</li>
+<li><strong>Events</strong>: 事件源管理(集成Dapr)</li>
+<li><strong>Gateway</strong>: 流量入口与路由</li>
+</ol>
+<h3 id="14-应用场景"><a class="header" href="#14-应用场景">1.4 应用场景</a></h3>
+<p><strong>场景1: 数据处理管道</strong></p>
+<pre><code>对象存储上传 → 触发函数 → 图片压缩 → 存储到CDN
+</code></pre>
+<p><strong>场景2: API网关后端</strong></p>
+<pre><code>HTTP请求 → OpenFunction路由 → 业务函数 → 返回结果
+</code></pre>
+<p><strong>场景3: 事件响应</strong></p>
+<pre><code>Kafka消息 → 异步函数 → 数据处理 → 写入数据库
+</code></pre>
+<p><strong>场景4: 定时任务</strong></p>
+<pre><code>Cron触发 → 数据统计函数 → 生成报表 → 发送邮件
+</code></pre>
+<hr />
+<h2 id="2-安装部署"><a class="header" href="#2-安装部署">2. 安装部署</a></h2>
+<h3 id="21-系统要求"><a class="header" href="#21-系统要求">2.1 系统要求</a></h3>
+<p><strong>硬件要求</strong>:</p>
+<ul>
+<li>CPU: 至少 4核</li>
+<li>内存: 至少 8GB</li>
+<li>存储: 至少 50GB</li>
+</ul>
+<p><strong>软件依赖</strong>:</p>
+<pre><code class="language-yaml">Kubernetes: v1.21+
+Helm: v3.6+
+kubectl: v1.21+
+Docker: 19.03+ (可选,用于本地测试)
+</code></pre>
+<h3 id="22-kubernetes-环境准备"><a class="header" href="#22-kubernetes-环境准备">2.2 Kubernetes 环境准备</a></h3>
+<p><strong>方式1: 本地开发环境(Minikube)</strong></p>
+<pre><code class="language-bash"># 启动Minikube集群
+minikube start --cpus=4 --memory=8192 --kubernetes-version=v1.25.0
+
+# 启用必要的插件
+minikube addons enable ingress
+minikube addons enable metrics-server
+
+# 验证集群状态
+kubectl cluster-info
+kubectl get nodes
+</code></pre>
+<p><strong>方式2: 生产环境要求</strong></p>
+<pre><code class="language-bash"># 确保集群满足以下条件
+# 1. 支持LoadBalancer服务类型
+# 2. 已部署默认StorageClass
+# 3. 网络插件正常工作(Calico/Flannel等)
+
+# 验证StorageClass
+kubectl get storageclass
+
+# 验证节点就绪
+kubectl get nodes -o wide
+</code></pre>
+<h3 id="23-helm-安装方式"><a class="header" href="#23-helm-安装方式">2.3 Helm 安装方式</a></h3>
+<p><strong>步骤1: 添加Helm仓库</strong></p>
+<pre><code class="language-bash"># 添加OpenFunction Helm仓库
+helm repo add openfunction https://openfunction.github.io/charts/
+helm repo update
+
+# 查看可用版本
+helm search repo openfunction
+</code></pre>
+<p><strong>步骤2: 创建命名空间</strong></p>
+<pre><code class="language-bash"># 创建openfunction-system命名空间
+kubectl create namespace openfunction-system
+</code></pre>
+<p><strong>步骤3: 安装OpenFunction</strong></p>
+<pre><code class="language-bash"># 使用默认配置安装
+helm install openfunction openfunction/openfunction \
+  --namespace openfunction-system \
+  --create-namespace
+
+# 自定义配置安装
+helm install openfunction openfunction/openfunction \
+  --namespace openfunction-system \
+  --set global.Keda.enabled=true \
+  --set global.ShipwrightBuild.enabled=true \
+  --set global.TektonPipelines.enabled=false
+</code></pre>
+<p><strong>配置参数说明</strong>:</p>
+<pre><code class="language-yaml"># values.yaml 关键配置
+global:
+  # KEDA事件驱动伸缩
+  Keda:
+    enabled: true
+
+  # Shipwright构建框架
+  ShipwrightBuild:
+    enabled: true
+
+  # Knative Serving
+  KnativeServing:
+    enabled: true
+
+  # Dapr事件总线
+  Dapr:
+    enabled: true
+
+# 构建器配置
+builder:
+  shipwright:
+    strategy: "buildpacks-v3"  # 构建策略
+</code></pre>
+<h3 id="24-kubectl-安装方式"><a class="header" href="#24-kubectl-安装方式">2.4 Kubectl 安装方式</a></h3>
+<p><strong>步骤1: 安装依赖组件</strong></p>
+<pre><code class="language-bash"># 安装Knative Serving
+kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.8.0/serving-crds.yaml
+kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.8.0/serving-core.yaml
+
+# 安装Kourier网络层
+kubectl apply -f https://github.com/knative/net-kourier/releases/download/knative-v1.8.0/kourier.yaml
+
+# 安装KEDA
+kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.9.0/keda-2.9.0.yaml
+
+# 安装Dapr
+helm repo add dapr https://dapr.github.io/helm-charts/
+helm install dapr dapr/dapr --namespace dapr-system --create-namespace
+</code></pre>
+<p><strong>步骤2: 安装OpenFunction</strong></p>
+<pre><code class="language-bash"># 安装OpenFunction CRDs
+kubectl apply -f https://github.com/OpenFunction/OpenFunction/releases/download/v1.0.0/bundle.yaml
+
+# 验证安装
+kubectl get pods -n openfunction-system
+</code></pre>
+<h3 id="25-配置验证"><a class="header" href="#25-配置验证">2.5 配置验证</a></h3>
+<p><strong>验证安装状态</strong></p>
+<pre><code class="language-bash"># 检查所有Pod状态
+kubectl get pods -n openfunction-system
+
+# 预期输出:
+# NAME                                      READY   STATUS    RESTARTS   AGE
+# openfunction-controller-manager-xxx       2/2     Running   0          2m
+# openfunction-webhook-xxx                  2/2     Running   0          2m
+
+# 检查CRD安装
+kubectl get crd | grep openfunction
+
+# 预期输出包含:
+# functions.core.openfunction.io
+# builders.core.openfunction.io
+# servings.core.openfunction.io
+</code></pre>
+<p><strong>部署测试函数</strong></p>
+<pre><code class="language-bash"># 创建测试函数
+cat &lt;&lt;EOF | kubectl apply -f -
+apiVersion: core.openfunction.io/v1beta2
+kind: Function
+metadata:
+  name: hello-world
+spec:
+  version: "v1.0.0"
+  image: "openfunctiondev/hello-world:latest"
+  port: 8080
+  serving:
+    runtime: "knative"
+    template:
+      containers:
+        - name: function
+          imagePullPolicy: Always
+EOF
+
+# 等待函数就绪
+kubectl get function hello-world
+
+# 查看函数URL
+kubectl get ksvc hello-world -o jsonpath='{.status.url}'
+</code></pre>
+<p><strong>测试函数调用</strong></p>
+<pre><code class="language-bash"># 获取函数访问地址
+FUNC_URL=$(kubectl get ksvc hello-world -o jsonpath='{.status.url}')
+
+# 发送测试请求
+curl $FUNC_URL
+
+# 预期输出:
+# Hello, World!
+</code></pre>
+<hr />
+<h2 id="3-核心概念"><a class="header" href="#3-核心概念">3. 核心概念</a></h2>
+<h3 id="31-function-函数"><a class="header" href="#31-function-函数">3.1 Function 函数</a></h3>
+<p>Function是OpenFunction的核心资源,定义了函数的完整生命周期。</p>
+<p><strong>Function资源结构</strong>:</p>
+<pre><code class="language-yaml">apiVersion: core.openfunction.io/v1beta2
+kind: Function
+metadata:
+  name: sample-function
+  namespace: default
+spec:
+  # 版本标识
+  version: "v1.0.0"
+
+  # 镜像配置(可选,与build二选一)
+  image: "username/function:tag"
+
+  # 构建配置(从源码构建)
+  build:
+    builder: "openfunction/builder-go:latest"
+    srcRepo:
+      url: "https://github.com/user/repo"
+      sourceSubPath: "functions/hello"
+    dockerfile: "Dockerfile"  # 可选
+
+  # 服务配置
+  serving:
+    runtime: "knative"  # knative 或 async
+    template:
+      containers:
+        - name: function
+          imagePullPolicy: IfNotPresent
+
+    # 触发器配置
+    triggers:
+      http:
+        port: 8080
+</code></pre>
+<p><strong>函数生命周期</strong>:</p>
+<pre><code>创建 → 构建(可选) → 部署 → 运行 → 扩缩容 → 更新/删除
+</code></pre>
+<h3 id="32-builder-构建器"><a class="header" href="#32-builder-构建器">3.2 Builder 构建器</a></h3>
+<p>Builder负责将源代码转换为容器镜像。</p>
+<p><strong>构建策略对比</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>策略</th><th>描述</th><th>适用场景</th></tr></thead><tbody>
+<tr><td>Buildpacks</td><td>自动检测语言和依赖</td><td>快速原型开发</td></tr>
+<tr><td>Dockerfile</td><td>完全自定义构建过程</td><td>特殊依赖或优化需求</td></tr>
+<tr><td>Buildah</td><td>无守护进程构建</td><td>安全性要求高的环境</td></tr>
+</tbody></table>
+</div>
+<p><strong>Buildpacks构建示例</strong>:</p>
+<pre><code class="language-yaml">spec:
+  build:
+    builder: "openfunction/builder-go:v2.4.0-1.17"
+    srcRepo:
+      url: "https://github.com/OpenFunction/samples"
+      sourceSubPath: "functions/knative/hello-world-go"
+      revision: "main"
+
+    # 环境变量
+    env:
+      FUNC_NAME: "HelloWorld"
+      FUNC_CLEAR_SOURCE: "true"
+
+    # 超时设置
+    timeout: 10m
+</code></pre>
+<p><strong>Dockerfile构建示例</strong>:</p>
+<pre><code class="language-yaml">spec:
+  build:
+    dockerfile: "Dockerfile"
+    srcRepo:
+      url: "https://github.com/user/custom-function"
+
+    # 构建参数
+    params:
+      - name: "GO_VERSION"
+        value: "1.19"
+</code></pre>
+<h3 id="33-serving-服务"><a class="header" href="#33-serving-服务">3.3 Serving 服务</a></h3>
+<p>Serving定义了函数的运行时行为和流量管理。</p>
+<p><strong>运行时模式</strong>:</p>
+<p><strong>1. Knative模式(同步函数)</strong></p>
+<pre><code class="language-yaml">spec:
+  serving:
+    runtime: "knative"
+    template:
+      containers:
+        - name: function
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+    # 自动伸缩配置
+    scaleOptions:
+      minReplicas: 0      # 支持缩容到0
+      maxReplicas: 10
+      metric:
+        type: "cpu"
+        value: "75"       # CPU使用率75%触发扩容
+</code></pre>
+<p><strong>2. Async模式(异步函数)</strong></p>
+<pre><code class="language-yaml">spec:
+  serving:
+    runtime: "async"
+    template:
+      containers:
+        - name: function
+
+    # 异步配置
+    bindings:
+      kafka-receiver:
+        type: "bindings.kafka"
+        version: "v1"
+        metadata:
+          - name: "brokers"
+            value: "kafka-broker:9092"
+          - name: "topics"
+            value: "orders"
+          - name: "consumerGroup"
+            value: "order-processor"
+
+    # KEDA自动伸缩
+    scaleOptions:
+      keda:
+        scaledObject:
+          triggers:
+            - type: "kafka"
+              metadata:
+                bootstrapServers: "kafka-broker:9092"
+                topic: "orders"
+                lagThreshold: "10"
+</code></pre>
+<h3 id="34-events-事件"><a class="header" href="#34-events-事件">3.4 Events 事件</a></h3>
+<p>Events定义了触发函数执行的事件源。</p>
+<p><strong>支持的事件类型</strong>:</p>
+<p><strong>1. HTTP事件</strong></p>
+<pre><code class="language-yaml">spec:
+  serving:
+    triggers:
+      http:
+        port: 8080
+        route:
+          rules:
+            - matches:
+                - path:
+                    type: "PathPrefix"
+                    value: "/api"
+</code></pre>
+<p><strong>2. Kafka事件</strong></p>
+<pre><code class="language-yaml">spec:
+  serving:
+    bindings:
+      kafka-input:
+        type: "bindings.kafka"
+        metadata:
+          - name: "brokers"
+            value: "kafka:9092"
+          - name: "topics"
+            value: "user-events"
+          - name: "consumerGroup"
+            value: "event-handler"
+</code></pre>
+<p><strong>3. Cron定时任务</strong></p>
+<pre><code class="language-yaml">spec:
+  serving:
+    bindings:
+      cron-trigger:
+        type: "bindings.cron"
+        metadata:
+          - name: "schedule"
+            value: "0 */6 * * *"  # 每6小时执行
+</code></pre>
+<p><strong>4. Redis发布订阅</strong></p>
+<pre><code class="language-yaml">spec:
+  serving:
+    bindings:
+      redis-pubsub:
+        type: "pubsub.redis"
+        metadata:
+          - name: "redisHost"
+            value: "redis-master:6379"
+          - name: "redisPassword"
+            value: "password"
+</code></pre>
+<h3 id="35-domain-域名"><a class="header" href="#35-domain-域名">3.5 Domain 域名</a></h3>
+<p>Domain管理函数的访问域名和路由规则。</p>
+<p><strong>域名配置示例</strong>:</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: function-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: "api.example.com"
+      http:
+        paths:
+          - path: "/v1/users"
+            pathType: "Prefix"
+            backend:
+              service:
+                name: user-function
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - "api.example.com"
+      secretName: "tls-secret"
+</code></pre>
+<hr />
+<h2 id="4-函数开发"><a class="header" href="#4-函数开发">4. 函数开发</a></h2>
+<h3 id="41-支持的运行时"><a class="header" href="#41-支持的运行时">4.1 支持的运行时</a></h3>
+<h4 id="411-nodejs"><a class="header" href="#411-nodejs">4.1.1 Node.js</a></h4>
+<p><strong>函数模板</strong>:</p>
+<pre><code class="language-javascript">// index.js
+module.exports = async function (context, data) {
+    // context: 上下文对象
+    // data: 请求数据
+
+    console.log('Received data:', data);
+
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            message: 'Hello from Node.js',
+            input: data
+        })
+    };
+};
+</code></pre>
+<p><strong>package.json配置</strong>:</p>
+<pre><code class="language-json">{
+  "name": "nodejs-function",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^1.3.0",
+    "lodash": "^4.17.21"
+  }
+}
+</code></pre>
+<p><strong>Function定义</strong>:</p>
+<pre><code class="language-yaml">apiVersion: core.openfunction.io/v1beta2
+kind: Function
+metadata:
+  name: nodejs-sample
+spec:
+  version: "v1.0.0"
+  build:
+    builder: "openfunction/builder-node:v2-16"
+    srcRepo:
+      url: "https://github.com/user/nodejs-function"
+      sourceSubPath: "."
+  serving:
+    runtime: "knative"
+</code></pre>
+<h4 id="412-python"><a class="header" href="#412-python">4.1.2 Python</a></h4>
+<p><strong>函数模板</strong>:</p>
+<pre><code class="language-python"># handler.py
+import json
+
+def main(context, data):
+    """
+    函数入口点
+
+    Args:
+        context: 上下文对象
+        data: 输入数据(dict或bytes)
+
+    Returns:
+        响应数据(dict或str)
+    """
+    print(f"Received: {data}")
+
+    # 处理JSON数据
+    if isinstance(data, bytes):
+        data = json.loads(data.decode('utf-8'))
+
+    result = {
+        "message": "Hello from Python",
+        "input": data
+    }
+
+    return json.dumps(result)
+</code></pre>
+<p><strong>requirements.txt</strong>:</p>
+<pre><code>flask==2.2.3
+requests==2.28.2
+numpy==1.24.2
+</code></pre>
+<p><strong>Function定义</strong>:</p>
+<pre><code class="language-yaml">spec:
+  build:
+    builder: "openfunction/builder-python:v2-3.9"
+    env:
+      FUNC_NAME: "main"
+      FUNC_SRC: "handler.py"
+</code></pre>
+<h4 id="413-go"><a class="header" href="#413-go">4.1.3 Go</a></h4>
+<p><strong>函数模板</strong>:</p>
+<pre><code class="language-go">// function.go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "net/http"
+
+    ofctx "github.com/OpenFunction/functions-framework-go/context"
+)
+
+func HelloWorld(w http.ResponseWriter, r *http.Request) {
+    // 解析请求
+    var data map[string]interface{}
+    if err := json.NewDecoder(r.Body).Decode(&amp;data); err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    // 构建响应
+    response := map[string]interface{}{
+        "message": "Hello from Go",
+        "input":   data,
+    }
+
+    // 返回JSON响应
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+
+func main() {
+    ctx := ofctx.NewContext()
+    ctx.HTTPHandler(HelloWorld)
+}
+</code></pre>
+<p><strong>go.mod</strong>:</p>
+<pre><code class="language-go">module function
+
+go 1.19
+
+require (
+    github.com/OpenFunction/functions-framework-go v0.4.0
+)
+</code></pre>
+<p><strong>Function定义</strong>:</p>
+<pre><code class="language-yaml">spec:
+  build:
+    builder: "openfunction/builder-go:v2.4.0-1.19"
+    env:
+      FUNC_NAME: "HelloWorld"
+      FUNC_CLEAR_SOURCE: "true"
+</code></pre>
+<h4 id="414-java"><a class="header" href="#414-java">4.1.4 Java</a></h4>
+<p><strong>函数模板</strong>:</p>
+<pre><code class="language-java">// HelloWorld.java
+package io.openfunction.samples;
+
+import org.springframework.cloud.function.adapter.aws.FunctionInvoker;
+import java.util.Map;
+import java.util.HashMap;
+
+public class HelloWorld implements java.util.function.Function&lt;Map&lt;String, Object&gt;, Map&lt;String, Object&gt;&gt; {
+
+    @Override
+    public Map&lt;String, Object&gt; apply(Map&lt;String, Object&gt; input) {
+        Map&lt;String, Object&gt; response = new HashMap&lt;&gt;();
+        response.put("message", "Hello from Java");
+        response.put("input", input);
+        return response;
+    }
+}
+</code></pre>
+<p><strong>pom.xml</strong>:</p>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-function-adapter-aws&lt;/artifactId&gt;
+        &lt;version&gt;3.2.9&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<h3 id="42-函数签名"><a class="header" href="#42-函数签名">4.2 函数签名</a></h3>
+<p><strong>标准函数签名规范</strong>:</p>
+<p><strong>HTTP函数</strong>:</p>
+<pre><code class="language-python">def handler(request: dict, context: Context) -&gt; dict:
+    """
+    request: {
+        "body": "...",        # 请求体
+        "headers": {...},     # 请求头
+        "method": "POST",     # HTTP方法
+        "path": "/api/user",  # 路径
+        "query": {...}        # 查询参数
+    }
+    """
+    pass
+</code></pre>
+<p><strong>事件函数</strong>:</p>
+<pre><code class="language-python">def event_handler(event: dict, context: Context) -&gt; None:
+    """
+    event: {
+        "data": {...},        # 事件数据
+        "source": "kafka",    # 事件源
+        "type": "order.created",  # 事件类型
+        "timestamp": "..."    # 时间戳
+    }
+    """
+    pass
+</code></pre>
+<h3 id="43-本地开发"><a class="header" href="#43-本地开发">4.3 本地开发</a></h3>
+<p><strong>使用functions-framework本地测试</strong>:</p>
+<p><strong>步骤1: 安装框架</strong></p>
+<pre><code class="language-bash"># Python
+pip install functions-framework
+
+# Node.js
+npm install @openfunction/functions-framework
+
+# Go
+go get github.com/OpenFunction/functions-framework-go
+</code></pre>
+<p><strong>步骤2: 本地运行</strong></p>
+<pre><code class="language-bash"># Python
+functions-framework --target=main --port=8080
+
+# Node.js
+npx functions-framework --target=helloWorld --port=8080
+
+# Go
+go run function.go
+</code></pre>
+<p><strong>步骤3: 测试调用</strong></p>
+<pre><code class="language-bash">curl -X POST http://localhost:8080 \
+  -H "Content-Type: application/json" \
+  -d '{"name": "OpenFunction"}'
+</code></pre>
+<h3 id="44-依赖管理"><a class="header" href="#44-依赖管理">4.4 依赖管理</a></h3>
+<p><strong>Python依赖锁定</strong>:</p>
+<pre><code class="language-bash"># 生成requirements.txt
+pip freeze &gt; requirements.txt
+
+# 使用pip-tools
+pip install pip-tools
+pip-compile requirements.in
+</code></pre>
+<p><strong>Node.js依赖管理</strong>:</p>
+<pre><code class="language-bash"># 使用npm
+npm install --save axios
+
+# 锁定版本
+npm shrinkwrap
+
+# 使用yarn
+yarn add axios
+</code></pre>
+<p><strong>Go模块管理</strong>:</p>
+<pre><code class="language-bash"># 初始化模块
+go mod init function
+
+# 添加依赖
+go get github.com/gin-gonic/gin@v1.9.0
+
+# 整理依赖
+go mod tidy
+</code></pre>
+<hr />
+<h2 id="5-函数构建"><a class="header" href="#5-函数构建">5. 函数构建</a></h2>
+<h3 id="51-源码构建"><a class="header" href="#51-源码构建">5.1 源码构建</a></h3>
+<p><strong>完整构建配置示例</strong>:</p>
+<pre><code class="language-yaml">apiVersion: core.openfunction.io/v1beta2
+kind: Function
+metadata:
+  name: build-from-source
+spec:
+  version: "v1.0.0"
+
+  build:
+    # 构建器镜像
+    builder: "openfunction/builder-go:v2.4.0-1.19"
+
+    # 源码仓库
+    srcRepo:
+      url: "https://github.com/OpenFunction/samples"
+      sourceSubPath: "functions/knative/hello-world-go"
+      revision: "main"
+
+      # Git认证(私有仓库)
+      credentials:
+        name: "git-credentials"
+
+    # 构建环境变量
+    env:
+      FUNC_NAME: "HelloWorld"
+      FUNC_CLEAR_SOURCE: "true"
+      GO_FLAGS: "-ldflags=-s -w"
+
+    # 构建超时
+    timeout: "10m"
+
+    # 输出镜像
+    output:
+      image: "myregistry/myfunction:v1"
+      credentials:
+        name: "registry-credentials"
+</code></pre>
+<p><strong>创建Git凭证</strong>:</p>
+<pre><code class="language-bash"># 使用SSH密钥
+kubectl create secret generic git-credentials \
+  --from-file=ssh-privatekey=$HOME/.ssh/id_rsa \
+  --type=kubernetes.io/ssh-auth
+
+# 使用用户名密码
+kubectl create secret generic git-credentials \
+  --from-literal=username=myuser \
+  --from-literal=password=mytoken \
+  --type=kubernetes.io/basic-auth
+</code></pre>
+<p><strong>创建镜像仓库凭证</strong>:</p>
+<pre><code class="language-bash">kubectl create secret docker-registry registry-credentials \
+  --docker-server=myregistry.io \
+  --docker-username=myuser \
+  --docker-password=mypassword \
+  --docker-email=myemail@example.com
+</code></pre>
+<h3 id="52-镜像构建"><a class="header" href="#52-镜像构建">5.2 镜像构建</a></h3>
+<p><strong>使用预构建镜像</strong>:</p>
+<pre><code class="language-yaml">spec:
+  # 直接使用现有镜像,跳过构建阶段
+  image: "openfunction/sample-go-func:v1.0.0"
+  imageCredentials:
+    name: "registry-credentials"
+
+  serving:
+    runtime: "knative"
+</code></pre>
+<h3 id="53-buildpacks-集成"><a class="header" href="#53-buildpacks-集成">5.3 Buildpacks 集成</a></h3>
+<p><strong>Buildpacks工作原理</strong>:</p>
+<pre><code>检测语言 → 安装依赖 → 编译代码 → 优化镜像 → 生成元数据
+</code></pre>
+<p><strong>自定义Buildpacks</strong>:</p>
+<pre><code class="language-yaml">spec:
+  build:
+    builder: "openfunction/builder-go:v2.4.0-1.19"
+
+    # 指定buildpacks
+    buildpacks:
+      - id: "paketo-buildpacks/go-dist"
+        version: "1.2.3"
+      - id: "paketo-buildpacks/go-build"
+        version: "0.5.0"
+
+    # buildpack环境变量
+    env:
+      BP_GO_VERSION: "1.19.*"
+      BP_KEEP_FILES: "static/*:templates/*"
+</code></pre>
+<h3 id="54-自定义构建器"><a class="header" href="#54-自定义构建器">5.4 自定义构建器</a></h3>
+<p><strong>创建自定义Builder镜像</strong>:</p>
+<pre><code class="language-dockerfile"># Dockerfile
+FROM openfunction/builder-go:v2.4.0-1.19
+
+# 安装额外工具
+RUN apt-get update &amp;&amp; \
+    apt-get install -y protobuf-compiler &amp;&amp; \
+    rm -rf /var/lib/apt/lists/*
+
+# 添加自定义脚本
+COPY custom-build.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/custom-build.sh
+
+USER cnb
+</code></pre>
+<p><strong>构建并推送</strong>:</p>
+<pre><code class="language-bash">docker build -t myregistry/custom-builder:v1 .
+docker push myregistry/custom-builder:v1
+</code></pre>
+<p><strong>使用自定义Builder</strong>:</p>
+<pre><code class="language-yaml">spec:
+  build:
+    builder: "myregistry/custom-builder:v1"
+</code></pre>
+<h3 id="55-构建策略"><a class="header" href="#55-构建策略">5.5 构建策略</a></h3>
+<p><strong>多阶段构建优化</strong>:</p>
+<pre><code class="language-yaml">spec:
+  build:
+    dockerfile: |
+      # 第一阶段: 构建
+      FROM golang:1.19 AS builder
+      WORKDIR /app
+      COPY . .
+      RUN CGO_ENABLED=0 go build -o function
+
+      # 第二阶段: 运行
+      FROM gcr.io/distroless/static-debian11
+      COPY --from=builder /app/function /function
+      CMD ["/function"]
+</code></pre>
+<p><strong>缓存优化</strong>:</p>
+<pre><code class="language-yaml">spec:
+  build:
+    # 启用缓存层
+    cache:
+      enabled: true
+      volume:
+        name: build-cache
+        size: 5Gi
+</code></pre>
+<hr />
+<h2 id="6-函数部署"><a class="header" href="#6-函数部署">6. 函数部署</a></h2>
+<h3 id="61-同步函数"><a class="header" href="#61-同步函数">6.1 同步函数</a></h3>
+<p><strong>HTTP触发函数示例</strong>:</p>
+<pre><code class="language-yaml">apiVersion: core.openfunction.io/v1beta2
+kind: Function
+metadata:
+  name: sync-http-function
+spec:
+  version: "v1.0.0"
+  image: "openfunction/sample-node-func:latest"
+
+  serving:
+    runtime: "knative"
+
+    template:
+      containers:
+        - name: function
+          imagePullPolicy: Always
+
+          # 资源限制
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+    # HTTP触发器
+    triggers:
+      http:
+        port: 8080
+
+    # 自动伸缩
+    scaleOptions:
+      minReplicas: 1
+      maxReplicas: 10
+</code></pre>
+<p><strong>测试同步函数</strong>:</p>
+<pre><code class="language-bash"># 获取函数URL
+kubectl get ksvc sync-http-function -o jsonpath='{.status.url}'
+
+# 发送请求
+curl -X POST https://sync-http-function.default.example.com \
+  -H "Content-Type: application/json" \
+  -d '{"key": "value"}'
+</code></pre>
+<h3 id="62-异步函数"><a class="header" href="#62-异步函数">6.2 异步函数</a></h3>
+<p><strong>Kafka事件驱动函数</strong>:</p>
+<pre><code class="language-yaml">apiVersion: core.openfunction.io/v1beta2
+kind: Function
+metadata:
+  name: async-kafka-function
+spec:
+  version: "v1.0.0"
+  image: "openfunction/async-processor:latest"
+
+  serving:
+    runtime: "async"
+
+    template:
+      containers:
+        - name: function
+          env:
+            - name: KAFKA_BROKERS
+              value: "kafka-broker:9092"
+
+    # 输入绑定(Kafka消费)
+    bindings:
+      kafka-input:
+        type: "bindings.kafka"
+        version: "v1"
+        metadata:
+          - name: "brokers"
+            value: "kafka-broker:9092"
+          - name: "topics"
+            value: "input-topic"
+          - name: "consumerGroup"
+            value: "async-function-group"
+          - name: "authRequired"
+            value: "false"
+
+    # 输出绑定(Kafka生产)
+    outputs:
+      - name: "kafka-output"
+        component: "kafka-output"
+        operation: "create"
+
+    # KEDA自动伸缩
+    scaleOptions:
+      keda:
+        scaledObject:
+          pollingInterval: 30
+          minReplicaCount: 0
+          maxReplicaCount: 10
+          triggers:
+            - type: "kafka"
+              metadata:
+                bootstrapServers: "kafka-broker:9092"
+                consumerGroup: "async-function-group"
+                topic: "input-topic"
+                lagThreshold: "10"
+</code></pre>
+<p><strong>Kafka输出组件定义</strong>:</p>
+<pre><code class="language-yaml">apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: kafka-output
+spec:
+  type: bindings.kafka
+  version: v1
+  metadata:
+    - name: brokers
+      value: "kafka-broker:9092"
+    - name: topics
+      value: "output-topic"
+    - name: authRequired
+      value: "false"
+</code></pre>
+<h3 id="63-部署配置"><a class="header" href="#63-部署配置">6.3 部署配置</a></h3>
+<p><strong>环境变量配置</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    template:
+      containers:
+        - name: function
+          env:
+            # 直接配置
+            - name: LOG_LEVEL
+              value: "INFO"
+
+            # 从ConfigMap读取
+            - name: APP_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: config.json
+
+            # 从Secret读取
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
+</code></pre>
+<p><strong>Volume挂载</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    template:
+      containers:
+        - name: function
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+            - name: data-volume
+              mountPath: /data
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: function-config
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: function-data-pvc
+</code></pre>
+<h3 id="64-环境变量"><a class="header" href="#64-环境变量">6.4 环境变量</a></h3>
+<p><strong>内置环境变量</strong>:</p>
+<pre><code class="language-bash"># OpenFunction自动注入的环境变量
+FUNC_CONTEXT="runtime-context"
+POD_NAME="function-pod-xxx"
+POD_NAMESPACE="default"
+</code></pre>
+<p><strong>在函数中使用</strong>:</p>
+<pre><code class="language-python">import os
+
+def handler(request, context):
+    log_level = os.getenv('LOG_LEVEL', 'INFO')
+    pod_name = os.getenv('POD_NAME')
+
+    return {
+        'pod': pod_name,
+        'level': log_level
+    }
+</code></pre>
+<h3 id="65-资源限制"><a class="header" href="#65-资源限制">6.5 资源限制</a></h3>
+<p><strong>CPU和内存限制</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    template:
+      containers:
+        - name: function
+          resources:
+            limits:
+              cpu: "2"           # 最大2核
+              memory: "2Gi"      # 最大2GB内存
+            requests:
+              cpu: "500m"        # 请求0.5核
+              memory: "512Mi"    # 请求512MB内存
+</code></pre>
+<p><strong>资源配额(Namespace级别)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: function-quota
+  namespace: default
+spec:
+  hard:
+    requests.cpu: "10"
+    requests.memory: "20Gi"
+    limits.cpu: "20"
+    limits.memory: "40Gi"
+    count/functions.core.openfunction.io: "50"
+</code></pre>
+<hr />
+<h2 id="7-事件驱动"><a class="header" href="#7-事件驱动">7. 事件驱动</a></h2>
+<h3 id="71-事件源类型"><a class="header" href="#71-事件源类型">7.1 事件源类型</a></h3>
+<h4 id="711-http-事件"><a class="header" href="#711-http-事件">7.1.1 HTTP 事件</a></h4>
+<p><strong>基本HTTP函数</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    runtime: "knative"
+    triggers:
+      http:
+        port: 8080
+        route:
+          rules:
+            - matches:
+                - path:
+                    type: "PathPrefix"
+                    value: "/api/v1"
+</code></pre>
+<p><strong>处理HTTP请求</strong>:</p>
+<pre><code class="language-python">def http_handler(request, context):
+    method = request['method']
+    path = request['path']
+    headers = request['headers']
+    body = request.get('body', '')
+
+    if method == 'GET':
+        return {'status': 200, 'data': 'GET response'}
+    elif method == 'POST':
+        return {'status': 201, 'data': f'Created: {body}'}
+</code></pre>
+<h4 id="712-kafka-事件"><a class="header" href="#712-kafka-事件">7.1.2 Kafka 事件</a></h4>
+<p><strong>Kafka消费者函数</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    runtime: "async"
+    bindings:
+      kafka-receiver:
+        type: "bindings.kafka"
+        version: "v1"
+        metadata:
+          - name: "brokers"
+            value: "kafka:9092"
+          - name: "topics"
+            value: "user-events,order-events"
+          - name: "consumerGroup"
+            value: "event-processor"
+          - name: "initialOffset"
+            value: "latest"
+</code></pre>
+<p><strong>处理Kafka消息</strong>:</p>
+<pre><code class="language-python">import json
+
+def kafka_handler(event, context):
+    # 解析Kafka消息
+    topic = event.get('topic')
+    partition = event.get('partition')
+    offset = event.get('offset')
+    value = json.loads(event['data'])
+
+    print(f"Received from {topic}[{partition}]@{offset}: {value}")
+
+    # 处理业务逻辑
+    process_event(value)
+</code></pre>
+<h4 id="713-redis-事件"><a class="header" href="#713-redis-事件">7.1.3 Redis 事件</a></h4>
+<p><strong>Redis发布订阅</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    runtime: "async"
+    bindings:
+      redis-pubsub:
+        type: "pubsub.redis"
+        version: "v1"
+        metadata:
+          - name: "redisHost"
+            value: "redis-master:6379"
+          - name: "redisPassword"
+            valueFrom:
+              secretKeyRef:
+                name: redis-secret
+                key: password
+
+    pubsub:
+      redis-pubsub:
+        topic: "notifications"
+</code></pre>
+<h4 id="714-cron-事件"><a class="header" href="#714-cron-事件">7.1.4 Cron 事件</a></h4>
+<p><strong>定时任务函数</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    runtime: "async"
+    bindings:
+      cron-trigger:
+        type: "bindings.cron"
+        version: "v1"
+        metadata:
+          - name: "schedule"
+            value: "0 2 * * *"  # 每天凌晨2点执行
+          - name: "direction"
+            value: "input"
+</code></pre>
+<p><strong>Cron表达式示例</strong>:</p>
+<pre><code>*/5 * * * *     # 每5分钟
+0 */2 * * *     # 每2小时
+0 0 * * 0       # 每周日午夜
+0 0 1 * *       # 每月1号午夜
+</code></pre>
+<h3 id="72-事件绑定"><a class="header" href="#72-事件绑定">7.2 事件绑定</a></h3>
+<p><strong>输入输出绑定示例</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    # 输入绑定
+    bindings:
+      input-kafka:
+        type: "bindings.kafka"
+        metadata:
+          - name: "topics"
+            value: "input-topic"
+
+    # 输出绑定
+    outputs:
+      - name: "output-kafka"
+        component: "kafka-output"
+        operation: "create"
+
+      - name: "output-db"
+        component: "postgresql"
+        operation: "exec"
+</code></pre>
+<h3 id="73-事件过滤"><a class="header" href="#73-事件过滤">7.3 事件过滤</a></h3>
+<p><strong>基于内容的过滤</strong>:</p>
+<pre><code class="language-python">def filtered_handler(event, context):
+    # 只处理特定类型的事件
+    if event.get('type') != 'order.created':
+        return  # 跳过非订单创建事件
+
+    # 只处理金额大于100的订单
+    amount = event.get('data', {}).get('amount', 0)
+    if amount &lt; 100:
+        return
+
+    # 处理高价值订单
+    process_high_value_order(event['data'])
+</code></pre>
+<h3 id="74-事件路由"><a class="header" href="#74-事件路由">7.4 事件路由</a></h3>
+<p><strong>多函数编排</strong>:</p>
+<pre><code class="language-yaml"># 主函数接收事件并路由
+apiVersion: core.openfunction.io/v1beta2
+kind: Function
+metadata:
+  name: event-router
+spec:
+  serving:
+    runtime: "async"
+    bindings:
+      kafka-input:
+        type: "bindings.kafka"
+        metadata:
+          - name: "topics"
+            value: "all-events"
+
+    outputs:
+      - name: "order-topic"
+        component: "kafka-orders"
+      - name: "user-topic"
+        component: "kafka-users"
+</code></pre>
+<p><strong>路由逻辑</strong>:</p>
+<pre><code class="language-python">def route_event(event, context):
+    event_type = event.get('type')
+
+    if event_type.startswith('order.'):
+        # 发送到订单处理函数
+        context.send('order-topic', event)
+    elif event_type.startswith('user.'):
+        # 发送到用户处理函数
+        context.send('user-topic', event)
+</code></pre>
+<hr />
+<h2 id="8-实战案例"><a class="header" href="#8-实战案例">8. 实战案例</a></h2>
+<h3 id="案例1-图片处理服务"><a class="header" href="#案例1-图片处理服务">案例1: 图片处理服务</a></h3>
+<p><strong>需求</strong>: 用户上传图片后,自动生成缩略图并存储</p>
+<p><strong>步骤1: 创建函数代码</strong></p>
+<pre><code class="language-python"># image_processor.py
+from PIL import Image
+import io
+import boto3
+import base64
+
+s3_client = boto3.client('s3')
+
+def process_image(event, context):
+    # 解析上传的图片
+    image_data = base64.b64decode(event['data'])
+    image = Image.open(io.BytesIO(image_data))
+
+    # 生成缩略图
+    image.thumbnail((200, 200))
+
+    # 保存到缓冲区
+    buffer = io.BytesIO()
+    image.save(buffer, format='JPEG')
+    buffer.seek(0)
+
+    # 上传到S3
+    filename = event.get('filename', 'thumbnail.jpg')
+    s3_client.upload_fileobj(
+        buffer,
+        'my-bucket',
+        f'thumbnails/{filename}'
+    )
+
+    return {
+        'status': 'success',
+        'thumbnail_url': f'https://my-bucket.s3.amazonaws.com/thumbnails/{filename}'
+    }
+</code></pre>
+<p><strong>步骤2: 部署函数</strong></p>
+<pre><code class="language-yaml">apiVersion: core.openfunction.io/v1beta2
+kind: Function
+metadata:
+  name: image-processor
+spec:
+  version: "v1.0.0"
+  build:
+    builder: "openfunction/builder-python:v2-3.9"
+    srcRepo:
+      url: "https://github.com/user/image-processor"
+    env:
+      FUNC_NAME: "process_image"
+
+  serving:
+    runtime: "knative"
+    template:
+      containers:
+        - name: function
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: access_key
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: secret_key
+</code></pre>
+<p><strong>步骤3: 测试</strong></p>
+<pre><code class="language-bash"># 上传图片
+curl -X POST https://image-processor.example.com \
+  -H "Content-Type: application/json" \
+  -d '{
+    "data": "'$(base64 -w 0 image.jpg)'",
+    "filename": "my-photo.jpg"
+  }'
+</code></pre>
+<h3 id="案例2-订单处理流水线"><a class="header" href="#案例2-订单处理流水线">案例2: 订单处理流水线</a></h3>
+<p><strong>需求</strong>: Kafka接收订单消息 → 验证 → 库存检查 → 发送确认邮件</p>
+<p><strong>步骤1: 订单处理函数</strong></p>
+<pre><code class="language-python"># order_processor.py
+import json
+import smtplib
+from email.mime.text import MIMEText
+
+def validate_order(order):
+    required_fields = ['order_id', 'user_id', 'items', 'total']
+    return all(field in order for field in required_fields)
+
+def check_inventory(items):
+    # 模拟库存检查
+    for item in items:
+        if item['quantity'] &gt; item.get('stock', 0):
+            return False
+    return True
+
+def send_confirmation_email(order):
+    msg = MIMEText(f"订单 {order['order_id']} 已确认")
+    msg['Subject'] = '订单确认'
+    msg['From'] = 'noreply@example.com'
+    msg['To'] = order['email']
+
+    with smtplib.SMTP('smtp.example.com') as server:
+        server.send_message(msg)
+
+def process_order(event, context):
+    order = json.loads(event['data'])
+
+    # 1. 验证订单
+    if not validate_order(order):
+        return {'status': 'error', 'message': 'Invalid order'}
+
+    # 2. 检查库存
+    if not check_inventory(order['items']):
+        return {'status': 'error', 'message': 'Out of stock'}
+
+    # 3. 发送确认邮件
+    send_confirmation_email(order)
+
+    # 4. 发送到下一步处理(支付)
+    context.send('payment-topic', order)
+
+    return {'status': 'success', 'order_id': order['order_id']}
+</code></pre>
+<p><strong>步骤2: 函数定义</strong></p>
+<pre><code class="language-yaml">apiVersion: core.openfunction.io/v1beta2
+kind: Function
+metadata:
+  name: order-processor
+spec:
+  version: "v1.0.0"
+  image: "myregistry/order-processor:v1"
+
+  serving:
+    runtime: "async"
+
+    bindings:
+      kafka-input:
+        type: "bindings.kafka"
+        version: "v1"
+        metadata:
+          - name: "brokers"
+            value: "kafka:9092"
+          - name: "topics"
+            value: "orders"
+          - name: "consumerGroup"
+            value: "order-processors"
+
+    outputs:
+      - name: "payment-topic"
+        component: "kafka-payment"
+
+    scaleOptions:
+      keda:
+        scaledObject:
+          minReplicaCount: 1
+          maxReplicaCount: 20
+          triggers:
+            - type: "kafka"
+              metadata:
+                topic: "orders"
+                lagThreshold: "5"
+</code></pre>
+<hr />
+<h2 id="9-监控和日志"><a class="header" href="#9-监控和日志">9. 监控和日志</a></h2>
+<h3 id="91-prometheus-集成"><a class="header" href="#91-prometheus-集成">9.1 Prometheus 集成</a></h3>
+<p><strong>启用Prometheus监控</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9090"
+      prometheus.io/path: "/metrics"
+</code></pre>
+<p><strong>自定义指标</strong>:</p>
+<pre><code class="language-python">from prometheus_client import Counter, Histogram
+import time
+
+# 定义指标
+request_count = Counter('function_requests_total', 'Total requests')
+request_duration = Histogram('function_request_duration_seconds', 'Request duration')
+
+def handler(request, context):
+    request_count.inc()
+
+    start_time = time.time()
+    try:
+        result = process_request(request)
+        return result
+    finally:
+        duration = time.time() - start_time
+        request_duration.observe(duration)
+</code></pre>
+<h3 id="92-grafana-仪表板"><a class="header" href="#92-grafana-仪表板">9.2 Grafana 仪表板</a></h3>
+<p><strong>关键指标面板</strong>:</p>
+<pre><code class="language-json">{
+  "dashboard": {
+    "title": "OpenFunction监控",
+    "panels": [
+      {
+        "title": "请求速率",
+        "targets": [
+          {
+            "expr": "rate(function_requests_total[5m])"
+          }
+        ]
+      },
+      {
+        "title": "P95延迟",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, function_request_duration_seconds_bucket)"
+          }
+        ]
+      },
+      {
+        "title": "副本数",
+        "targets": [
+          {
+            "expr": "kube_deployment_spec_replicas{deployment=~'.*-function-.*'}"
+          }
+        ]
+      }
+    ]
+  }
+}
+</code></pre>
+<h3 id="93-日志收集"><a class="header" href="#93-日志收集">9.3 日志收集</a></h3>
+<p><strong>结构化日志</strong>:</p>
+<pre><code class="language-python">import logging
+import json
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+def handler(event, context):
+    # 结构化日志输出
+    log_entry = {
+        'timestamp': time.time(),
+        'level': 'INFO',
+        'function': 'order-processor',
+        'event_type': event.get('type'),
+        'trace_id': context.trace_id
+    }
+
+    print(json.dumps(log_entry))
+</code></pre>
+<p><strong>FluentBit配置(收集到ElasticSearch)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+data:
+  fluent-bit.conf: |
+    [INPUT]
+        Name tail
+        Path /var/log/containers/*function*.log
+        Parser docker
+        Tag kube.*
+
+    [OUTPUT]
+        Name es
+        Match kube.*
+        Host elasticsearch
+        Port 9200
+        Index openfunction-logs
+</code></pre>
+<h3 id="94-链路追踪"><a class="header" href="#94-链路追踪">9.4 链路追踪</a></h3>
+<p><strong>启用Jaeger追踪</strong>:</p>
+<pre><code class="language-yaml">spec:
+  serving:
+    template:
+      containers:
+        - name: function
+          env:
+            - name: JAEGER_AGENT_HOST
+              value: "jaeger-agent"
+            - name: JAEGER_AGENT_PORT
+              value: "6831"
+</code></pre>
+<p><strong>在代码中添加Span</strong>:</p>
+<pre><code class="language-python">from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.exporter.jaeger.thrift import JaegerExporter
+
+# 初始化追踪
+trace.set_tracer_provider(TracerProvider())
+tracer = trace.get_tracer(__name__)
+
+jaeger_exporter = JaegerExporter(
+    agent_host_name='jaeger-agent',
+    agent_port=6831
+)
+trace.get_tracer_provider().add_span_processor(
+    BatchSpanProcessor(jaeger_exporter)
+)
+
+def handler(event, context):
+    with tracer.start_as_current_span("process_order"):
+        # 添加子Span
+        with tracer.start_as_current_span("validate"):
+            validate_order(event)
+
+        with tracer.start_as_current_span("save_db"):
+            save_to_database(event)
+</code></pre>
+<h3 id="95-告警配置"><a class="header" href="#95-告警配置">9.5 告警配置</a></h3>
+<p><strong>Prometheus告警规则</strong>:</p>
+<pre><code class="language-yaml">apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: function-alerts
+spec:
+  groups:
+    - name: function
+      interval: 30s
+      rules:
+        # 错误率告警
+        - alert: HighErrorRate
+          expr: |
+            rate(function_errors_total[5m]) / rate(function_requests_total[5m]) &gt; 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "函数错误率过高"
+            description: "{{ $labels.function }} 错误率超过5%"
+
+        # 延迟告警
+        - alert: HighLatency
+          expr: |
+            histogram_quantile(0.95, function_request_duration_seconds_bucket) &gt; 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "函数延迟过高"
+            description: "{{ $labels.function }} P95延迟超过1秒"
+
+        # 扩容失败告警
+        - alert: ScalingFailure
+          expr: |
+            kube_deployment_status_replicas_unavailable &gt; 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "函数副本不可用"
+</code></pre>
+<hr />
+<h2 id="10-学习验证"><a class="header" href="#10-学习验证">10. 学习验证</a></h2>
+<h3 id="验证任务1-部署第一个函数"><a class="header" href="#验证任务1-部署第一个函数">验证任务1: 部署第一个函数</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+在Kubernetes集群中成功安装OpenFunction</li>
+<li><input disabled="" type="checkbox"/>
+创建并部署一个HTTP触发的Hello World函数</li>
+<li><input disabled="" type="checkbox"/>
+通过curl成功调用函数并获得响应</li>
+</ul>
+<h3 id="验证任务2-事件驱动应用"><a class="header" href="#验证任务2-事件驱动应用">验证任务2: 事件驱动应用</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+部署Kafka环境</li>
+<li><input disabled="" type="checkbox"/>
+创建Kafka事件驱动的异步函数</li>
+<li><input disabled="" type="checkbox"/>
+向Kafka发送消息并验证函数正确处理</li>
+</ul>
+<h3 id="验证任务3-完整应用开发"><a class="header" href="#验证任务3-完整应用开发">验证任务3: 完整应用开发</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用源码构建方式部署函数(包含依赖管理)</li>
+<li><input disabled="" type="checkbox"/>
+配置函数的环境变量和资源限制</li>
+<li><input disabled="" type="checkbox"/>
+实现自动伸缩(验证从0扩容和缩容到0)</li>
+</ul>
+<h3 id="验证任务4-生产级配置"><a class="header" href="#验证任务4-生产级配置">验证任务4: 生产级配置</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置Prometheus监控并查看函数指标</li>
+<li><input disabled="" type="checkbox"/>
+配置日志收集系统</li>
+<li><input disabled="" type="checkbox"/>
+设置告警规则并触发测试告警</li>
+</ul>
+<h3 id="验证任务5-高级特性"><a class="header" href="#验证任务5-高级特性">验证任务5: 高级特性</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现多函数编排(一个函数调用另一个函数)</li>
+<li><input disabled="" type="checkbox"/>
+配置灰度发布(流量分割)</li>
+<li><input disabled="" type="checkbox"/>
+实现CI/CD自动部署流程</li>
+</ul>
+<hr />
+<h2 id="11-扩展资源"><a class="header" href="#11-扩展资源">11. 扩展资源</a></h2>
+<h3 id="官方资源"><a class="header" href="#官方资源">官方资源</a></h3>
+<ul>
+<li>官方文档: https://openfunction.dev/docs/</li>
+<li>GitHub仓库: https://github.com/OpenFunction/OpenFunction</li>
+<li>示例代码: https://github.com/OpenFunction/samples</li>
+</ul>
+<h3 id="相关技术"><a class="header" href="#相关技术">相关技术</a></h3>
+<ul>
+<li>Kubernetes: https://kubernetes.io/docs/</li>
+<li>Knative: https://knative.dev/docs/</li>
+<li>Dapr: https://docs.dapr.io/</li>
+<li>KEDA: https://keda.sh/docs/</li>
+</ul>
+<h3 id="学习路径"><a class="header" href="#学习路径">学习路径</a></h3>
+<ol>
+<li><strong>基础阶段(1-2周)</strong>: Kubernetes基础 + 容器技术</li>
+<li><strong>入门阶段(1周)</strong>: OpenFunction核心概念 + 简单函数开发</li>
+<li><strong>进阶阶段(2-3周)</strong>: 事件驱动架构 + 生产级配置</li>
+<li><strong>实战阶段(2-4周)</strong>: 完整项目开发 + 性能优化</li>
+</ol>
+<h3 id="常见问题faq"><a class="header" href="#常见问题faq">常见问题FAQ</a></h3>
+<p><strong>Q1: OpenFunction与AWS Lambda的区别?</strong>
+A: OpenFunction是开源的、运行在Kubernetes上,可以部署在任何云或本地;Lambda是AWS专有服务。</p>
+<p><strong>Q2: 如何选择同步函数还是异步函数?</strong>
+A: 需要实时响应用HTTP同步函数;处理消息队列、定时任务用异步函数。</p>
+<p><strong>Q3: 函数冷启动时间多长?</strong>
+A: 取决于运行时和镜像大小,通常在1-5秒之间。可通过预热、镜像优化降低。</p>
+<p><strong>Q4: 如何调试函数?</strong>
+A: 本地使用functions-framework运行;生产环境查看日志和链路追踪。</p>
+<p><strong>Q5: 支持哪些事件源?</strong>
+A: 支持HTTP、Kafka、Redis、Cron等,通过Dapr可扩展更多事件源。</p>
+<hr />
+<h2 id="12-最佳实践总结"><a class="header" href="#12-最佳实践总结">12. 最佳实践总结</a></h2>
+<h3 id="开发最佳实践"><a class="header" href="#开发最佳实践">开发最佳实践</a></h3>
+<ol>
+<li><strong>保持函数简单</strong>: 单一职责,避免复杂逻辑</li>
+<li><strong>无状态设计</strong>: 不依赖本地文件系统,使用外部存储</li>
+<li><strong>快速启动</strong>: 优化依赖,减少初始化时间</li>
+<li><strong>幂等性</strong>: 确保重复调用不会产生副作用</li>
+<li><strong>错误处理</strong>: 完善的异常捕获和日志记录</li>
+</ol>
+<h3 id="部署最佳实践"><a class="header" href="#部署最佳实践">部署最佳实践</a></h3>
+<ol>
+<li><strong>资源限制</strong>: 合理设置CPU和内存限制</li>
+<li><strong>版本管理</strong>: 使用语义化版本号</li>
+<li><strong>灰度发布</strong>: 重要变更先小流量测试</li>
+<li><strong>监控告警</strong>: 覆盖关键指标</li>
+<li><strong>文档完善</strong>: 维护函数说明和API文档</li>
+</ol>
+<h3 id="安全最佳实践"><a class="header" href="#安全最佳实践">安全最佳实践</a></h3>
+<ol>
+<li><strong>最小权限</strong>: 函数只授予必需的权限</li>
+<li><strong>密钥管理</strong>: 使用Kubernetes Secret存储敏感信息</li>
+<li><strong>网络隔离</strong>: 使用NetworkPolicy限制流量</li>
+<li><strong>镜像安全</strong>: 定期扫描漏洞,使用可信镜像源</li>
+<li><strong>认证授权</strong>: 对外暴露的函数添加身份验证</li>
+</ol>
+<hr />
+<p><strong>学习建议</strong>: 从简单的HTTP函数开始,逐步探索事件驱动、自动伸缩等高级特性。多动手实践,参考官方示例,加入社区交流。祝学习愉快!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/paas/kvm.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/script/bash.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/paas/kvm.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/script/bash.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

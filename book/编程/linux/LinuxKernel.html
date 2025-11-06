@@ -1,0 +1,1001 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Linux 内核开发学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="linux-内核开发学习笔记"><a class="header" href="#linux-内核开发学习笔记">Linux 内核开发学习笔记</a></h1>
+<blockquote>
+<p><strong>学习者定位</strong>: 适合有C语言基础、希望深入Linux底层原理的系统工程师、驱动开发人员和内核研究者
+<strong>预期学习时长</strong>: 40-60 小时（入门到进阶）
+<strong>前置知识</strong>: C语言、数据结构、操作系统原理、Linux命令行基础</p>
+</blockquote>
+<hr />
+<h2 id="一学习路径规划"><a class="header" href="#一学习路径规划">一、学习路径规划</a></h2>
+<h3 id="11-学习路线图"><a class="header" href="#11-学习路线图">1.1 学习路线图</a></h3>
+<pre><code>阶段1: 内核基础（15-20小时）
+├── 内核架构理解
+├── 开发环境搭建
+├── 第一个内核模块
+├── 内核日志和调试
+└── 内核构建系统
+
+阶段2: 核心子系统（15-20小时）
+├── 进程管理
+├── 内存管理
+├── 文件系统
+└── 设备驱动基础
+
+阶段3: 高级主题（10-20小时）
+├── 字符设备驱动开发
+├── 内核同步机制
+├── 中断与定时器
+└── 内核调试与性能分析
+</code></pre>
+<h3 id="12-学习重点分级"><a class="header" href="#12-学习重点分级">1.2 学习重点分级</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>优先级</th><th>主题</th><th>核心内容</th><th>难度</th></tr></thead><tbody>
+<tr><td><strong>P0</strong></td><td>内核模块开发</td><td>模块编写、加载、卸载</td><td>⭐⭐</td></tr>
+<tr><td><strong>P0</strong></td><td>字符设备驱动</td><td>文件操作、设备号管理</td><td>⭐⭐⭐</td></tr>
+<tr><td><strong>P1</strong></td><td>内核同步</td><td>锁机制、原子操作</td><td>⭐⭐⭐⭐</td></tr>
+<tr><td><strong>P1</strong></td><td>中断处理</td><td>中断注册、处理函数</td><td>⭐⭐⭐⭐</td></tr>
+<tr><td><strong>P2</strong></td><td>内核调试</td><td>printk、ftrace、KGDB</td><td>⭐⭐⭐</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="二linux-内核架构概览"><a class="header" href="#二linux-内核架构概览">二、Linux 内核架构概览</a></h2>
+<h3 id="21-内核空间-vs-用户空间"><a class="header" href="#21-内核空间-vs-用户空间">2.1 内核空间 vs 用户空间</a></h3>
+<pre><code>┌─────────────────────────────────────────────┐
+│          用户空间 (User Space)               │
+│  ┌──────────┬──────────┬──────────────┐    │
+│  │应用程序  │  Shell   │  库函数      │    │
+│  └──────────┴──────────┴──────────────┘    │
+├─────────────────────────────────────────────┤
+│            系统调用接口 (System Call)        │
+├─────────────────────────────────────────────┤
+│          内核空间 (Kernel Space)             │
+│  ┌─────────────────────────────────────┐   │
+│  │  进程调度 │ 内存管理 │ 文件系统    │   │
+│  │  网络协议栈 │ 设备驱动 │ IPC      │   │
+│  └─────────────────────────────────────┘   │
+├─────────────────────────────────────────────┤
+│              硬件层 (Hardware)               │
+└─────────────────────────────────────────────┘
+</code></pre>
+<h3 id="22-内核主要子系统"><a class="header" href="#22-内核主要子系统">2.2 内核主要子系统</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>子系统</th><th>功能</th><th>核心数据结构</th></tr></thead><tbody>
+<tr><td><strong>进程管理</strong></td><td>进程调度、创建、销毁</td><td>task_struct</td></tr>
+<tr><td><strong>内存管理</strong></td><td>虚拟内存、物理内存分配</td><td>mm_struct, page</td></tr>
+<tr><td><strong>文件系统</strong></td><td>VFS、具体文件系统</td><td>inode, dentry, file</td></tr>
+<tr><td><strong>网络子系统</strong></td><td>网络协议栈、Socket</td><td>sk_buff, sock</td></tr>
+<tr><td><strong>设备驱动</strong></td><td>字符、块、网络设备</td><td>file_operations, cdev</td></tr>
+</tbody></table>
+</div>
+<h3 id="23-系统调用机制"><a class="header" href="#23-系统调用机制">2.3 系统调用机制</a></h3>
+<pre><code class="language-c">// 用户空间调用
+int fd = open("/dev/mydev", O_RDWR);
+
+// 系统调用接口
+SYSCALL_DEFINE3(open, ...)
+
+// 内核空间处理
+// VFS层 -&gt; 具体文件系统/设备驱动
+</code></pre>
+<hr />
+<h2 id="三开发环境搭建"><a class="header" href="#三开发环境搭建">三、开发环境搭建</a></h2>
+<h3 id="31-安装开发工具"><a class="header" href="#31-安装开发工具">3.1 安装开发工具</a></h3>
+<pre><code class="language-bash"># Ubuntu/Debian
+sudo apt update
+sudo apt install -y build-essential \
+                    libncurses-dev \
+                    bison \
+                    flex \
+                    libssl-dev \
+                    libelf-dev \
+                    bc \
+                    git
+
+# CentOS/RHEL
+sudo yum groupinstall "Development Tools"
+sudo yum install -y ncurses-devel \
+                    bison \
+                    flex \
+                    openssl-devel \
+                    elfutils-libelf-devel \
+                    bc
+</code></pre>
+<h3 id="32-获取内核源码"><a class="header" href="#32-获取内核源码">3.2 获取内核源码</a></h3>
+<pre><code class="language-bash"># 方法1: 下载官方源码
+cd /usr/src
+wget https://cdn.kernel.org/pub/linux/kernel/v5.x/linux-5.15.tar.xz
+tar -xf linux-5.15.tar.xz
+cd linux-5.15
+
+# 方法2: 使用Git克隆
+git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+cd linux
+git checkout v5.15
+
+# 方法3: 使用发行版源码
+apt source linux-image-$(uname -r)
+</code></pre>
+<h3 id="33-配置和编译内核"><a class="header" href="#33-配置和编译内核">3.3 配置和编译内核</a></h3>
+<pre><code class="language-bash"># 使用当前内核配置
+cp /boot/config-$(uname -r) .config
+
+# 或者使用默认配置
+make defconfig
+
+# 图形化配置（可选）
+make menuconfig
+
+# 编译内核（使用所有CPU核心）
+make -j$(nproc)
+
+# 编译内核模块
+make modules
+
+# 安装内核模块（可选）
+sudo make modules_install
+
+# 安装内核（可选）
+sudo make install
+</code></pre>
+<hr />
+<h2 id="四第一个内核模块"><a class="header" href="#四第一个内核模块">四、第一个内核模块</a></h2>
+<h3 id="41-hello-world-模块"><a class="header" href="#41-hello-world-模块">4.1 Hello World 模块</a></h3>
+<p><strong>文件: hello.c</strong></p>
+<pre><code class="language-c">#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/init.h&gt;
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Your Name");
+MODULE_DESCRIPTION("A simple Hello World kernel module");
+MODULE_VERSION("1.0");
+
+// 模块初始化函数
+static int __init hello_init(void)
+{
+    printk(KERN_INFO "Hello World: Module loaded\n");
+    return 0;  // 返回0表示成功
+}
+
+// 模块退出函数
+static void __exit hello_exit(void)
+{
+    printk(KERN_INFO "Hello World: Module unloaded\n");
+}
+
+// 注册模块初始化和退出函数
+module_init(hello_init);
+module_exit(hello_exit);
+</code></pre>
+<p><strong>Makefile</strong></p>
+<pre><code class="language-makefile">obj-m += hello.o
+
+# 内核源码路径
+KDIR := /lib/modules/$(shell uname -r)/build
+
+# 当前目录
+PWD := $(shell pwd)
+
+all:
+	$(MAKE) -C $(KDIR) M=$(PWD) modules
+
+clean:
+	$(MAKE) -C $(KDIR) M=$(PWD) clean
+</code></pre>
+<h3 id="42-编译和加载模块"><a class="header" href="#42-编译和加载模块">4.2 编译和加载模块</a></h3>
+<pre><code class="language-bash"># 编译模块
+make
+
+# 查看生成的模块
+ls -l *.ko
+
+# 加载模块
+sudo insmod hello.ko
+
+# 查看模块信息
+lsmod | grep hello
+modinfo hello.ko
+
+# 查看内核日志
+dmesg | tail
+# 或
+sudo journalctl -k | tail
+
+# 卸载模块
+sudo rmmod hello
+
+# 再次查看日志
+dmesg | tail
+</code></pre>
+<h3 id="43-模块参数"><a class="header" href="#43-模块参数">4.3 模块参数</a></h3>
+<p><strong>文件: param_module.c</strong></p>
+<pre><code class="language-c">#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/init.h&gt;
+#include &lt;linux/moduleparam.h&gt;
+
+MODULE_LICENSE("GPL");
+
+// 定义模块参数
+static int count = 1;
+static char *name = "World";
+
+// 注册模块参数
+module_param(count, int, 0644);
+module_param(name, charp, 0644);
+
+MODULE_PARM_DESC(count, "Number of greetings");
+MODULE_PARM_DESC(name, "Name to greet");
+
+static int __init param_init(void)
+{
+    int i;
+    for (i = 0; i &lt; count; i++) {
+        printk(KERN_INFO "Hello %s! (%d/%d)\n", name, i+1, count);
+    }
+    return 0;
+}
+
+static void __exit param_exit(void)
+{
+    printk(KERN_INFO "Goodbye %s!\n", name);
+}
+
+module_init(param_init);
+module_exit(param_exit);
+</code></pre>
+<p><strong>使用方法</strong>:</p>
+<pre><code class="language-bash"># 编译
+make
+
+# 加载时传递参数
+sudo insmod param_module.ko count=3 name="Linux"
+
+# 通过sysfs修改参数（如果权限允许）
+echo 5 | sudo tee /sys/module/param_module/parameters/count
+
+# 卸载
+sudo rmmod param_module
+</code></pre>
+<hr />
+<h2 id="五字符设备驱动开发"><a class="header" href="#五字符设备驱动开发">五、字符设备驱动开发</a></h2>
+<h3 id="51-字符设备基础"><a class="header" href="#51-字符设备基础">5.1 字符设备基础</a></h3>
+<p><strong>核心概念</strong>:</p>
+<ul>
+<li><strong>设备号</strong>: 主设备号（标识驱动）+ 次设备号（标识设备）</li>
+<li><strong>file_operations</strong>: 设备文件操作接口</li>
+<li><strong>cdev</strong>: 字符设备结构体</li>
+</ul>
+<h3 id="52-简单字符设备驱动"><a class="header" href="#52-简单字符设备驱动">5.2 简单字符设备驱动</a></h3>
+<p><strong>文件: chardev.c</strong></p>
+<pre><code class="language-c">#include &lt;linux/module.h&gt;
+#include &lt;linux/kernel.h&gt;
+#include &lt;linux/fs.h&gt;
+#include &lt;linux/cdev.h&gt;
+#include &lt;linux/uaccess.h&gt;
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Your Name");
+
+#define DEVICE_NAME "mychardev"
+#define BUF_SIZE 1024
+
+static dev_t dev_num;           // 设备号
+static struct cdev my_cdev;     // 字符设备结构
+static struct class *my_class;  // 设备类
+static char kernel_buffer[BUF_SIZE];
+
+// open 函数
+static int my_open(struct inode *inode, struct file *file)
+{
+    printk(KERN_INFO "mychardev: Device opened\n");
+    return 0;
+}
+
+// release 函数
+static int my_release(struct inode *inode, struct file *file)
+{
+    printk(KERN_INFO "mychardev: Device closed\n");
+    return 0;
+}
+
+// read 函数
+static ssize_t my_read(struct file *file, char __user *buf,
+                       size_t len, loff_t *offset)
+{
+    size_t to_read = min(len, (size_t)(BUF_SIZE - *offset));
+
+    if (to_read == 0)
+        return 0;
+
+    if (copy_to_user(buf, kernel_buffer + *offset, to_read))
+        return -EFAULT;
+
+    *offset += to_read;
+    printk(KERN_INFO "mychardev: Read %zu bytes\n", to_read);
+    return to_read;
+}
+
+// write 函数
+static ssize_t my_write(struct file *file, const char __user *buf,
+                        size_t len, loff_t *offset)
+{
+    size_t to_write = min(len, (size_t)(BUF_SIZE - *offset));
+
+    if (to_write == 0)
+        return -ENOSPC;
+
+    if (copy_from_user(kernel_buffer + *offset, buf, to_write))
+        return -EFAULT;
+
+    *offset += to_write;
+    printk(KERN_INFO "mychardev: Wrote %zu bytes\n", to_write);
+    return to_write;
+}
+
+// 文件操作结构体
+static struct file_operations fops = {
+    .owner = THIS_MODULE,
+    .open = my_open,
+    .release = my_release,
+    .read = my_read,
+    .write = my_write,
+};
+
+// 模块初始化
+static int __init chardev_init(void)
+{
+    // 动态分配设备号
+    if (alloc_chrdev_region(&amp;dev_num, 0, 1, DEVICE_NAME) &lt; 0) {
+        printk(KERN_ALERT "Failed to allocate device number\n");
+        return -1;
+    }
+    printk(KERN_INFO "mychardev: Major = %d, Minor = %d\n",
+           MAJOR(dev_num), MINOR(dev_num));
+
+    // 初始化cdev
+    cdev_init(&amp;my_cdev, &amp;fops);
+    my_cdev.owner = THIS_MODULE;
+
+    // 添加cdev到系统
+    if (cdev_add(&amp;my_cdev, dev_num, 1) &lt; 0) {
+        unregister_chrdev_region(dev_num, 1);
+        printk(KERN_ALERT "Failed to add cdev\n");
+        return -1;
+    }
+
+    // 创建设备类
+    my_class = class_create(THIS_MODULE, DEVICE_NAME);
+    if (IS_ERR(my_class)) {
+        cdev_del(&amp;my_cdev);
+        unregister_chrdev_region(dev_num, 1);
+        printk(KERN_ALERT "Failed to create class\n");
+        return PTR_ERR(my_class);
+    }
+
+    // 创建设备文件
+    if (IS_ERR(device_create(my_class, NULL, dev_num, NULL, DEVICE_NAME))) {
+        class_destroy(my_class);
+        cdev_del(&amp;my_cdev);
+        unregister_chrdev_region(dev_num, 1);
+        printk(KERN_ALERT "Failed to create device\n");
+        return -1;
+    }
+
+    printk(KERN_INFO "mychardev: Device created successfully\n");
+    return 0;
+}
+
+// 模块退出
+static void __exit chardev_exit(void)
+{
+    device_destroy(my_class, dev_num);
+    class_destroy(my_class);
+    cdev_del(&amp;my_cdev);
+    unregister_chrdev_region(dev_num, 1);
+    printk(KERN_INFO "mychardev: Device removed\n");
+}
+
+module_init(chardev_init);
+module_exit(chardev_exit);
+</code></pre>
+<h3 id="53-测试字符设备"><a class="header" href="#53-测试字符设备">5.3 测试字符设备</a></h3>
+<pre><code class="language-bash"># 编译并加载
+make
+sudo insmod chardev.ko
+
+# 查看设备
+ls -l /dev/mychardev
+
+# 写入数据
+echo "Hello Kernel" | sudo tee /dev/mychardev
+
+# 读取数据
+sudo cat /dev/mychardev
+
+# 使用C程序测试
+cat &gt; test_chardev.c &lt;&lt;'EOF'
+#include &lt;stdio.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;string.h&gt;
+
+int main() {
+    int fd;
+    char write_buf[] = "Hello from userspace!";
+    char read_buf[100];
+
+    // 打开设备
+    fd = open("/dev/mychardev", O_RDWR);
+    if (fd &lt; 0) {
+        perror("open");
+        return 1;
+    }
+
+    // 写入数据
+    write(fd, write_buf, strlen(write_buf));
+
+    // 重置文件位置
+    lseek(fd, 0, SEEK_SET);
+
+    // 读取数据
+    read(fd, read_buf, sizeof(read_buf));
+    printf("Read: %s\n", read_buf);
+
+    close(fd);
+    return 0;
+}
+EOF
+
+gcc test_chardev.c -o test_chardev
+sudo ./test_chardev
+
+# 卸载模块
+sudo rmmod chardev
+</code></pre>
+<hr />
+<h2 id="六内核同步机制"><a class="header" href="#六内核同步机制">六、内核同步机制</a></h2>
+<h3 id="61-自旋锁-spinlock"><a class="header" href="#61-自旋锁-spinlock">6.1 自旋锁 (Spinlock)</a></h3>
+<pre><code class="language-c">#include &lt;linux/spinlock.h&gt;
+
+static DEFINE_SPINLOCK(my_lock);
+
+// 使用自旋锁
+spin_lock(&amp;my_lock);
+// 临界区代码
+spin_unlock(&amp;my_lock);
+
+// 中断安全版本
+unsigned long flags;
+spin_lock_irqsave(&amp;my_lock, flags);
+// 临界区代码
+spin_unlock_irqrestore(&amp;my_lock, flags);
+</code></pre>
+<h3 id="62-互斥锁-mutex"><a class="header" href="#62-互斥锁-mutex">6.2 互斥锁 (Mutex)</a></h3>
+<pre><code class="language-c">#include &lt;linux/mutex.h&gt;
+
+static DEFINE_MUTEX(my_mutex);
+
+// 使用互斥锁
+mutex_lock(&amp;my_mutex);
+// 临界区代码（可以睡眠）
+mutex_unlock(&amp;my_mutex);
+
+// 可中断版本
+if (mutex_lock_interruptible(&amp;my_mutex))
+    return -ERESTARTSYS;
+// 临界区代码
+mutex_unlock(&amp;my_mutex);
+</code></pre>
+<h3 id="63-信号量-semaphore"><a class="header" href="#63-信号量-semaphore">6.3 信号量 (Semaphore)</a></h3>
+<pre><code class="language-c">#include &lt;linux/semaphore.h&gt;
+
+static DEFINE_SEMAPHORE(my_sem);
+
+// P操作（减1）
+down(&amp;my_sem);
+// 临界区代码
+// V操作（加1）
+up(&amp;my_sem);
+</code></pre>
+<h3 id="64-原子操作"><a class="header" href="#64-原子操作">6.4 原子操作</a></h3>
+<pre><code class="language-c">#include &lt;linux/atomic.h&gt;
+
+static atomic_t counter = ATOMIC_INIT(0);
+
+// 原子操作
+atomic_inc(&amp;counter);              // 加1
+atomic_dec(&amp;counter);              // 减1
+atomic_add(5, &amp;counter);           // 加5
+int val = atomic_read(&amp;counter);   // 读取
+atomic_set(&amp;counter, 10);          // 设置
+</code></pre>
+<hr />
+<h2 id="七中断处理"><a class="header" href="#七中断处理">七、中断处理</a></h2>
+<h3 id="71-中断处理基础"><a class="header" href="#71-中断处理基础">7.1 中断处理基础</a></h3>
+<pre><code class="language-c">#include &lt;linux/interrupt.h&gt;
+
+// 中断处理函数
+static irqreturn_t my_interrupt_handler(int irq, void *dev_id)
+{
+    // 快速处理中断
+    printk(KERN_INFO "Interrupt occurred!\n");
+
+    // 返回值
+    return IRQ_HANDLED;  // 中断已处理
+    // return IRQ_NONE;  // 不是我们的中断
+}
+
+// 注册中断
+int irq_num = 17;  // 示例IRQ号
+if (request_irq(irq_num, my_interrupt_handler,
+                IRQF_SHARED, "mydevice", &amp;my_device)) {
+    printk(KERN_ERR "Failed to request IRQ\n");
+    return -EIO;
+}
+
+// 释放中断
+free_irq(irq_num, &amp;my_device);
+</code></pre>
+<h3 id="72-工作队列-workqueue"><a class="header" href="#72-工作队列-workqueue">7.2 工作队列 (Workqueue)</a></h3>
+<pre><code class="language-c">#include &lt;linux/workqueue.h&gt;
+
+static struct work_struct my_work;
+
+// 工作函数
+static void my_work_handler(struct work_struct *work)
+{
+    // 延迟处理的工作
+    printk(KERN_INFO "Work handler executed\n");
+}
+
+// 初始化工作
+INIT_WORK(&amp;my_work, my_work_handler);
+
+// 调度工作
+schedule_work(&amp;my_work);
+</code></pre>
+<h3 id="73-定时器-timer"><a class="header" href="#73-定时器-timer">7.3 定时器 (Timer)</a></h3>
+<pre><code class="language-c">#include &lt;linux/timer.h&gt;
+
+static struct timer_list my_timer;
+
+// 定时器回调函数
+static void my_timer_callback(struct timer_list *t)
+{
+    printk(KERN_INFO "Timer expired!\n");
+
+    // 重新设置定时器（周期性）
+    mod_timer(&amp;my_timer, jiffies + msecs_to_jiffies(1000));
+}
+
+// 初始化定时器
+timer_setup(&amp;my_timer, my_timer_callback, 0);
+
+// 启动定时器（1秒后）
+mod_timer(&amp;my_timer, jiffies + msecs_to_jiffies(1000));
+
+// 删除定时器
+del_timer(&amp;my_timer);
+</code></pre>
+<hr />
+<h2 id="八内核调试技巧"><a class="header" href="#八内核调试技巧">八、内核调试技巧</a></h2>
+<h3 id="81-printk-调试"><a class="header" href="#81-printk-调试">8.1 printk 调试</a></h3>
+<pre><code class="language-c">// printk 日志级别
+printk(KERN_EMERG "Emergency message\n");    // 0
+printk(KERN_ALERT "Alert message\n");        // 1
+printk(KERN_CRIT "Critical message\n");      // 2
+printk(KERN_ERR "Error message\n");          // 3
+printk(KERN_WARNING "Warning message\n");    // 4
+printk(KERN_NOTICE "Notice message\n");      // 5
+printk(KERN_INFO "Info message\n");          // 6
+printk(KERN_DEBUG "Debug message\n");        // 7
+
+// 动态调试
+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+pr_info("Info message with prefix\n");
+pr_debug("Debug message\n");
+</code></pre>
+<p><strong>查看日志</strong>:</p>
+<pre><code class="language-bash"># 查看内核日志
+dmesg
+dmesg | tail -50
+dmesg | grep mymodule
+
+# 实时查看
+dmesg -w
+
+# 使用journalctl
+journalctl -k
+journalctl -k -f
+</code></pre>
+<h3 id="82-proc-文件系统"><a class="header" href="#82-proc-文件系统">8.2 /proc 文件系统</a></h3>
+<pre><code class="language-c">#include &lt;linux/proc_fs.h&gt;
+#include &lt;linux/seq_file.h&gt;
+
+// 读取函数
+static int my_proc_show(struct seq_file *m, void *v)
+{
+    seq_printf(m, "Hello from /proc/mymodule\n");
+    seq_printf(m, "Counter: %d\n", counter);
+    return 0;
+}
+
+// 打开函数
+static int my_proc_open(struct inode *inode, struct file *file)
+{
+    return single_open(file, my_proc_show, NULL);
+}
+
+// 文件操作
+static const struct proc_ops my_proc_fops = {
+    .proc_open = my_proc_open,
+    .proc_read = seq_read,
+    .proc_lseek = seq_lseek,
+    .proc_release = single_release,
+};
+
+// 创建proc文件
+static int __init my_init(void)
+{
+    proc_create("mymodule", 0, NULL, &amp;my_proc_fops);
+    return 0;
+}
+
+// 删除proc文件
+static void __exit my_exit(void)
+{
+    remove_proc_entry("mymodule", NULL);
+}
+</code></pre>
+<h3 id="83-ftrace-追踪"><a class="header" href="#83-ftrace-追踪">8.3 ftrace 追踪</a></h3>
+<pre><code class="language-bash"># 启用ftrace
+echo 1 &gt; /sys/kernel/debug/tracing/tracing_on
+
+# 设置追踪器
+echo function &gt; /sys/kernel/debug/tracing/current_tracer
+
+# 设置过滤器
+echo my_function &gt; /sys/kernel/debug/tracing/set_ftrace_filter
+
+# 查看追踪结果
+cat /sys/kernel/debug/tracing/trace
+
+# 清空追踪
+echo &gt; /sys/kernel/debug/tracing/trace
+
+# 禁用ftrace
+echo 0 &gt; /sys/kernel/debug/tracing/tracing_on
+</code></pre>
+<hr />
+<h2 id="九学习验证标准"><a class="header" href="#九学习验证标准">九、学习验证标准</a></h2>
+<h3 id="91-基础能力验证"><a class="header" href="#91-基础能力验证">9.1 基础能力验证</a></h3>
+<p><strong>验证项 1</strong>: 内核模块开发</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+编写并编译简单的内核模块</li>
+<li><input disabled="" type="checkbox"/>
+理解模块加载和卸载流程</li>
+<li><input disabled="" type="checkbox"/>
+使用模块参数</li>
+<li><input disabled="" type="checkbox"/>
+查看内核日志</li>
+</ul>
+<p><strong>验证项 2</strong>: 字符设备驱动</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现基本的字符设备驱动</li>
+<li><input disabled="" type="checkbox"/>
+理解设备号分配机制</li>
+<li><input disabled="" type="checkbox"/>
+实现 open、read、write、release 操作</li>
+<li><input disabled="" type="checkbox"/>
+在用户空间测试设备</li>
+</ul>
+<h3 id="92-进阶能力验证"><a class="header" href="#92-进阶能力验证">9.2 进阶能力验证</a></h3>
+<p><strong>验证项 3</strong>: 内核同步</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+理解不同锁机制的使用场景</li>
+<li><input disabled="" type="checkbox"/>
+正确使用自旋锁和互斥锁</li>
+<li><input disabled="" type="checkbox"/>
+避免死锁问题</li>
+<li><input disabled="" type="checkbox"/>
+使用原子操作</li>
+</ul>
+<p><strong>验证项 4</strong>: 中断和定时器</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+注册和处理中断</li>
+<li><input disabled="" type="checkbox"/>
+使用工作队列延迟处理</li>
+<li><input disabled="" type="checkbox"/>
+实现定时器功能</li>
+<li><input disabled="" type="checkbox"/>
+理解上下文限制</li>
+</ul>
+<h3 id="93-高级能力验证"><a class="header" href="#93-高级能力验证">9.3 高级能力验证</a></h3>
+<p><strong>验证项 5</strong>: 内核调试</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用 printk 调试</li>
+<li><input disabled="" type="checkbox"/>
+使用 /proc 文件系统</li>
+<li><input disabled="" type="checkbox"/>
+使用 ftrace 追踪</li>
+<li><input disabled="" type="checkbox"/>
+分析内核崩溃日志</li>
+</ul>
+<p><strong>验证项 6</strong>: 性能优化</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+识别性能瓶颈</li>
+<li><input disabled="" type="checkbox"/>
+优化热路径代码</li>
+<li><input disabled="" type="checkbox"/>
+减少锁争用</li>
+<li><input disabled="" type="checkbox"/>
+使用合适的数据结构</li>
+</ul>
+<hr />
+<h2 id="十扩展资源"><a class="header" href="#十扩展资源">十、扩展资源</a></h2>
+<h3 id="101-推荐书籍"><a class="header" href="#101-推荐书籍">10.1 推荐书籍</a></h3>
+<ul>
+<li>《Linux设备驱动程序》（LDD3）</li>
+<li>《深入理解Linux内核》</li>
+<li>《Linux内核设计与实现》</li>
+<li>《深入Linux内核架构》</li>
+</ul>
+<h3 id="102-在线资源"><a class="header" href="#102-在线资源">10.2 在线资源</a></h3>
+<ul>
+<li><a href="https://www.kernel.org/doc/">Linux Kernel Documentation</a></li>
+<li><a href="https://www.kernel.org/doc/html/latest/driver-api/">Linux Driver Tutorial</a></li>
+<li><a href="https://bootlin.com/docs/">Bootlin (Free Electrons) Training</a></li>
+</ul>
+<h3 id="103-实践建议"><a class="header" href="#103-实践建议">10.3 实践建议</a></h3>
+<ol>
+<li><strong>循序渐进</strong>: 从简单模块开始，逐步深入</li>
+<li><strong>阅读源码</strong>: 参考内核现有驱动代码</li>
+<li><strong>动手实践</strong>: 每个知识点都要编写代码验证</li>
+<li><strong>使用虚拟机</strong>: 避免破坏主系统</li>
+<li><strong>参与社区</strong>: 订阅邮件列表，参与讨论</li>
+</ol>
+<hr />
+<p><strong>祝学习顺利！掌握Linux内核，探索系统底层奥秘！</strong> 🚀</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/linux/LinuxCommand.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/linux/OpenEuler.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/linux/LinuxCommand.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/linux/OpenEuler.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,1295 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Apache Flink 学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="apache-flink-学习笔记"><a class="header" href="#apache-flink-学习笔记">Apache Flink 学习笔记</a></h1>
+<h2 id="-学习目标"><a class="header" href="#-学习目标">📋 学习目标</a></h2>
+<ul>
+<li>深入理解Flink流处理和批处理架构</li>
+<li>掌握Flink DataStream API编程</li>
+<li>熟练使用Flink SQL和Table API</li>
+<li>理解Flink时间语义和窗口机制</li>
+<li>掌握Flink状态管理和容错机制</li>
+<li>具备Flink性能调优和运维能力</li>
+</ul>
+<h2 id="1-flink-基础概念"><a class="header" href="#1-flink-基础概念">1. Flink 基础概念</a></h2>
+<h3 id="11-什么是-apache-flink"><a class="header" href="#11-什么是-apache-flink">1.1 什么是 Apache Flink</a></h3>
+<p>Apache Flink是一个框架和分布式处理引擎，用于对无界和有界数据流进行有状态计算。</p>
+<p><strong>核心特点:</strong></p>
+<ul>
+<li>真正的流处理引擎：事件驱动，低延迟</li>
+<li>精确一次(Exactly-Once)语义保证</li>
+<li>高吞吐量和低延迟</li>
+<li>强大的窗口机制</li>
+<li>有状态的流处理</li>
+<li>支持事件时间(Event Time)</li>
+</ul>
+<p><strong>应用场景:</strong></p>
+<ul>
+<li>实时数据分析</li>
+<li>实时数据仓库</li>
+<li>实时风控系统</li>
+<li>实时推荐系统</li>
+<li>IoT实时监控</li>
+</ul>
+<h3 id="12-flink-vs-spark-streaming"><a class="header" href="#12-flink-vs-spark-streaming">1.2 Flink vs Spark Streaming</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>Flink</th><th>Spark Streaming</th></tr></thead><tbody>
+<tr><td>处理模型</td><td>真正流处理</td><td>微批处理</td></tr>
+<tr><td>延迟</td><td>毫秒级</td><td>秒级</td></tr>
+<tr><td>吞吐量</td><td>高</td><td>很高</td></tr>
+<tr><td>状态管理</td><td>原生支持</td><td>需要外部存储</td></tr>
+<tr><td>容错机制</td><td>Checkpoint</td><td>RDD血缘</td></tr>
+<tr><td>SQL支持</td><td>原生支持</td><td>Structured Streaming</td></tr>
+</tbody></table>
+</div>
+<h3 id="13-核心概念"><a class="header" href="#13-核心概念">1.3 核心概念</a></h3>
+<p><strong>流与批:</strong></p>
+<pre><code>有界流(Bounded Stream): 批处理
+无界流(Unbounded Stream): 流处理
+
+Flink将批处理视为流处理的特例
+</code></pre>
+<p><strong>程序结构:</strong></p>
+<pre><code class="language-java">Environment → Source → Transformation → Sink
+</code></pre>
+<h2 id="2-flink-架构"><a class="header" href="#2-flink-架构">2. Flink 架构</a></h2>
+<h3 id="21-核心组件"><a class="header" href="#21-核心组件">2.1 核心组件</a></h3>
+<pre><code>┌─────────────────────────────────────┐
+│         Client (客户端)              │
+└──────────────┬──────────────────────┘
+               │ 提交作业
+┌──────────────▼──────────────────────┐
+│         JobManager                   │
+│  - JobMaster (作业管理)              │
+│  - ResourceManager (资源管理)        │
+│  - Dispatcher (任务分发)             │
+└──────────────┬──────────────────────┘
+               │ 调度任务
+┌──────────────▼──────────────────────┐
+│         TaskManager                  │
+│  - Task Slot (任务槽)                │
+│  - Network Manager (网络管理)        │
+│  - Memory Manager (内存管理)         │
+└─────────────────────────────────────┘
+</code></pre>
+<p><strong>JobManager职责:</strong></p>
+<ul>
+<li>接收作业提交</li>
+<li>调度任务执行</li>
+<li>协调检查点</li>
+<li>故障恢复</li>
+</ul>
+<p><strong>TaskManager职责:</strong></p>
+<ul>
+<li>执行具体任务</li>
+<li>管理Task Slot</li>
+<li>数据交换</li>
+<li>状态管理</li>
+</ul>
+<h3 id="22-部署模式"><a class="header" href="#22-部署模式">2.2 部署模式</a></h3>
+<p><strong>Standalone模式:</strong></p>
+<pre><code class="language-bash"># 启动集群
+./bin/start-cluster.sh
+
+# 停止集群
+./bin/stop-cluster.sh
+</code></pre>
+<p><strong>YARN模式:</strong></p>
+<pre><code class="language-bash"># Session模式
+./bin/yarn-session.sh -n 2 -tm 4096 -s 4
+
+# Per-Job模式
+./bin/flink run -m yarn-cluster \
+  -ynm MyFlinkJob \
+  -p 4 \
+  ./MyJob.jar
+</code></pre>
+<p><strong>Kubernetes模式:</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: flink-jobmanager
+spec:
+  type: ClusterIP
+  ports:
+  - name: rpc
+    port: 6123
+  - name: webui
+    port: 8081
+  selector:
+    app: flink
+    component: jobmanager
+</code></pre>
+<h2 id="3-datastream-api"><a class="header" href="#3-datastream-api">3. DataStream API</a></h2>
+<h3 id="31-执行环境"><a class="header" href="#31-执行环境">3.1 执行环境</a></h3>
+<pre><code class="language-java">// 获取执行环境
+StreamExecutionEnvironment env =
+    StreamExecutionEnvironment.getExecutionEnvironment();
+
+// 设置并行度
+env.setParallelism(4);
+
+// 启用Checkpoint
+env.enableCheckpointing(5000);
+
+// 设置时间特性
+env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+</code></pre>
+<h3 id="32-数据源-source"><a class="header" href="#32-数据源-source">3.2 数据源 (Source)</a></h3>
+<p><strong>内置Source:</strong></p>
+<pre><code class="language-java">// 1. 从集合读取
+DataStream&lt;String&gt; stream = env.fromElements("a", "b", "c");
+
+// 2. 从文件读取
+DataStream&lt;String&gt; stream = env.readTextFile("file:///path/to/file");
+
+// 3. Socket Source
+DataStream&lt;String&gt; stream = env.socketTextStream("localhost", 9999);
+
+// 4. Kafka Source
+Properties props = new Properties();
+props.setProperty("bootstrap.servers", "localhost:9092");
+props.setProperty("group.id", "flink-consumer");
+
+FlinkKafkaConsumer&lt;String&gt; consumer = new FlinkKafkaConsumer&lt;&gt;(
+    "topic",
+    new SimpleStringSchema(),
+    props
+);
+
+DataStream&lt;String&gt; stream = env.addSource(consumer);
+</code></pre>
+<p><strong>自定义Source:</strong></p>
+<pre><code class="language-java">public class CustomSource implements SourceFunction&lt;Event&gt; {
+    private volatile boolean running = true;
+
+    @Override
+    public void run(SourceContext&lt;Event&gt; ctx) throws Exception {
+        while (running) {
+            Event event = generateEvent();
+            ctx.collect(event);
+            Thread.sleep(1000);
+        }
+    }
+
+    @Override
+    public void cancel() {
+        running = false;
+    }
+
+    private Event generateEvent() {
+        return new Event(
+            System.currentTimeMillis(),
+            "user-" + new Random().nextInt(100),
+            "action-" + new Random().nextInt(10)
+        );
+    }
+}
+
+// 使用自定义Source
+DataStream&lt;Event&gt; stream = env.addSource(new CustomSource());
+</code></pre>
+<h3 id="33-转换操作-transformation"><a class="header" href="#33-转换操作-transformation">3.3 转换操作 (Transformation)</a></h3>
+<p><strong>基础转换:</strong></p>
+<pre><code class="language-java">// Map: 一对一转换
+DataStream&lt;Integer&gt; mapStream = stream.map(x -&gt; x * 2);
+
+// FlatMap: 一对多转换
+DataStream&lt;String&gt; flatMapStream = stream.flatMap(
+    (String line, Collector&lt;String&gt; out) -&gt; {
+        for (String word : line.split(" ")) {
+            out.collect(word);
+        }
+    }
+);
+
+// Filter: 过滤
+DataStream&lt;Integer&gt; filterStream = stream.filter(x -&gt; x &gt; 10);
+
+// KeyBy: 按键分组
+KeyedStream&lt;Event, String&gt; keyedStream = stream.keyBy(event -&gt; event.userId);
+</code></pre>
+<p><strong>聚合操作:</strong></p>
+<pre><code class="language-java">// Sum: 求和
+keyedStream.sum("amount");
+
+// Min/Max: 最小/最大值
+keyedStream.min("timestamp");
+keyedStream.max("value");
+
+// Reduce: 归约
+keyedStream.reduce((v1, v2) -&gt; new Event(
+    v1.timestamp,
+    v1.userId,
+    v1.value + v2.value
+));
+
+// Aggregate: 自定义聚合
+keyedStream.aggregate(new AverageAggregate());
+</code></pre>
+<p><strong>窗口操作:</strong></p>
+<pre><code class="language-java">// 滚动窗口
+stream
+    .keyBy(event -&gt; event.userId)
+    .window(TumblingEventTimeWindows.of(Time.seconds(10)))
+    .sum("amount");
+
+// 滑动窗口
+stream
+    .keyBy(event -&gt; event.userId)
+    .window(SlidingEventTimeWindows.of(Time.seconds(10), Time.seconds(5)))
+    .sum("amount");
+
+// 会话窗口
+stream
+    .keyBy(event -&gt; event.userId)
+    .window(EventTimeSessionWindows.withGap(Time.minutes(5)))
+    .sum("amount");
+</code></pre>
+<p><strong>连接操作:</strong></p>
+<pre><code class="language-java">// Union: 合并多个流
+DataStream&lt;Event&gt; unionStream = stream1.union(stream2, stream3);
+
+// Connect: 连接两个流
+ConnectedStreams&lt;Event1, Event2&gt; connected = stream1.connect(stream2);
+
+DataStream&lt;Result&gt; result = connected.map(new CoMapFunction&lt;Event1, Event2, Result&gt;() {
+    @Override
+    public Result map1(Event1 value) { return process(value); }
+
+    @Override
+    public Result map2(Event2 value) { return process(value); }
+});
+
+// Join: 流连接
+stream1.join(stream2)
+    .where(event1 -&gt; event1.userId)
+    .equalTo(event2 -&gt; event2.userId)
+    .window(TumblingEventTimeWindows.of(Time.seconds(10)))
+    .apply((event1, event2) -&gt; merge(event1, event2));
+</code></pre>
+<h3 id="34-数据输出-sink"><a class="header" href="#34-数据输出-sink">3.4 数据输出 (Sink)</a></h3>
+<p><strong>内置Sink:</strong></p>
+<pre><code class="language-java">// 1. 打印输出
+stream.print();
+
+// 2. 写入文件
+stream.writeAsText("file:///path/to/output");
+
+// 3. Kafka Sink
+FlinkKafkaProducer&lt;String&gt; producer = new FlinkKafkaProducer&lt;&gt;(
+    "localhost:9092",
+    "topic",
+    new SimpleStringSchema()
+);
+stream.addSink(producer);
+
+// 4. JDBC Sink
+stream.addSink(JdbcSink.sink(
+    "INSERT INTO table (id, name) VALUES (?, ?)",
+    (ps, event) -&gt; {
+        ps.setLong(1, event.id);
+        ps.setString(2, event.name);
+    },
+    new JdbcConnectionOptions.JdbcConnectionOptionsBuilder()
+        .withUrl("jdbc:mysql://localhost:3306/test")
+        .withDriverName("com.mysql.jdbc.Driver")
+        .withUsername("root")
+        .withPassword("password")
+        .build()
+));
+</code></pre>
+<p><strong>自定义Sink:</strong></p>
+<pre><code class="language-java">public class CustomSink extends RichSinkFunction&lt;Event&gt; {
+    private Connection connection;
+
+    @Override
+    public void open(Configuration parameters) throws Exception {
+        connection = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/test",
+            "root",
+            "password"
+        );
+    }
+
+    @Override
+    public void invoke(Event event, Context context) throws Exception {
+        PreparedStatement ps = connection.prepareStatement(
+            "INSERT INTO events VALUES (?, ?, ?)"
+        );
+        ps.setLong(1, event.timestamp);
+        ps.setString(2, event.userId);
+        ps.setDouble(3, event.value);
+        ps.executeUpdate();
+        ps.close();
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (connection != null) {
+            connection.close();
+        }
+    }
+}
+
+stream.addSink(new CustomSink());
+</code></pre>
+<h2 id="4-时间与窗口"><a class="header" href="#4-时间与窗口">4. 时间与窗口</a></h2>
+<h3 id="41-时间语义"><a class="header" href="#41-时间语义">4.1 时间语义</a></h3>
+<p><strong>三种时间:</strong></p>
+<pre><code>Event Time: 事件发生的时间
+Processing Time: 事件被处理的时间
+Ingestion Time: 事件进入Flink的时间
+</code></pre>
+<p><strong>设置时间特性:</strong></p>
+<pre><code class="language-java">env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+</code></pre>
+<p><strong>水位线(Watermark):</strong></p>
+<pre><code class="language-java">// 周期性水位线
+DataStream&lt;Event&gt; withWatermarks = stream.assignTimestampsAndWatermarks(
+    WatermarkStrategy
+        .&lt;Event&gt;forBoundedOutOfOrderness(Duration.ofSeconds(5))
+        .withTimestampAssigner((event, timestamp) -&gt; event.timestamp)
+);
+
+// 自定义水位线
+public class CustomWatermarkStrategy
+        implements WatermarkStrategy&lt;Event&gt; {
+
+    @Override
+    public WatermarkGenerator&lt;Event&gt; createWatermarkGenerator(
+            WatermarkGeneratorSupplier.Context context) {
+        return new CustomWatermarkGenerator();
+    }
+
+    @Override
+    public TimestampAssigner&lt;Event&gt; createTimestampAssigner(
+            TimestampAssignerSupplier.Context context) {
+        return (event, recordTimestamp) -&gt; event.timestamp;
+    }
+}
+
+class CustomWatermarkGenerator implements WatermarkGenerator&lt;Event&gt; {
+    private long maxTimestamp = Long.MIN_VALUE;
+    private long delay = 5000L;
+
+    @Override
+    public void onEvent(Event event, long eventTimestamp,
+                        WatermarkOutput output) {
+        maxTimestamp = Math.max(maxTimestamp, event.timestamp);
+    }
+
+    @Override
+    public void onPeriodicEmit(WatermarkOutput output) {
+        output.emitWatermark(new Watermark(maxTimestamp - delay));
+    }
+}
+</code></pre>
+<h3 id="42-窗口类型"><a class="header" href="#42-窗口类型">4.2 窗口类型</a></h3>
+<p><strong>时间窗口:</strong></p>
+<pre><code class="language-java">// 滚动时间窗口
+stream.keyBy(...)
+    .window(TumblingEventTimeWindows.of(Time.seconds(10)));
+
+// 滑动时间窗口
+stream.keyBy(...)
+    .window(SlidingEventTimeWindows.of(Time.seconds(10), Time.seconds(5)));
+
+// 会话窗口
+stream.keyBy(...)
+    .window(EventTimeSessionWindows.withGap(Time.minutes(5)));
+</code></pre>
+<p><strong>计数窗口:</strong></p>
+<pre><code class="language-java">// 滚动计数窗口
+stream.keyBy(...)
+    .countWindow(100);
+
+// 滑动计数窗口
+stream.keyBy(...)
+    .countWindow(100, 10);
+</code></pre>
+<p><strong>窗口函数:</strong></p>
+<pre><code class="language-java">// ReduceFunction
+stream.keyBy(...)
+    .window(...)
+    .reduce((v1, v2) -&gt; new Event(v1.timestamp, v1.userId, v1.value + v2.value));
+
+// AggregateFunction
+stream.keyBy(...)
+    .window(...)
+    .aggregate(new AggregateFunction&lt;Event, Tuple2&lt;Long, Integer&gt;, Double&gt;() {
+        @Override
+        public Tuple2&lt;Long, Integer&gt; createAccumulator() {
+            return Tuple2.of(0L, 0);
+        }
+
+        @Override
+        public Tuple2&lt;Long, Integer&gt; add(Event value, Tuple2&lt;Long, Integer&gt; acc) {
+            return Tuple2.of(acc.f0 + value.value, acc.f1 + 1);
+        }
+
+        @Override
+        public Double getResult(Tuple2&lt;Long, Integer&gt; acc) {
+            return (double) acc.f0 / acc.f1;
+        }
+
+        @Override
+        public Tuple2&lt;Long, Integer&gt; merge(Tuple2&lt;Long, Integer&gt; a,
+                                           Tuple2&lt;Long, Integer&gt; b) {
+            return Tuple2.of(a.f0 + b.f0, a.f1 + b.f1);
+        }
+    });
+
+// ProcessWindowFunction
+stream.keyBy(...)
+    .window(...)
+    .process(new ProcessWindowFunction&lt;Event, String, String, TimeWindow&gt;() {
+        @Override
+        public void process(String key, Context context,
+                          Iterable&lt;Event&gt; elements, Collector&lt;String&gt; out) {
+            long count = 0;
+            for (Event e : elements) count++;
+
+            out.collect("Window: " + context.window() +
+                       " Key: " + key +
+                       " Count: " + count);
+        }
+    });
+</code></pre>
+<h2 id="5-状态管理"><a class="header" href="#5-状态管理">5. 状态管理</a></h2>
+<h3 id="51-keyed-state"><a class="header" href="#51-keyed-state">5.1 Keyed State</a></h3>
+<p><strong>ValueState:</strong></p>
+<pre><code class="language-java">public class StatefulMap extends RichMapFunction&lt;Event, String&gt; {
+    private transient ValueState&lt;Long&gt; countState;
+
+    @Override
+    public void open(Configuration parameters) {
+        ValueStateDescriptor&lt;Long&gt; descriptor =
+            new ValueStateDescriptor&lt;&gt;("count", Long.class);
+        countState = getRuntimeContext().getState(descriptor);
+    }
+
+    @Override
+    public String map(Event event) throws Exception {
+        Long count = countState.value();
+        if (count == null) count = 0L;
+        count++;
+        countState.update(count);
+        return event.userId + " count: " + count;
+    }
+}
+</code></pre>
+<p><strong>ListState:</strong></p>
+<pre><code class="language-java">public class BufferingSink extends RichSinkFunction&lt;Event&gt; {
+    private transient ListState&lt;Event&gt; bufferedElements;
+
+    @Override
+    public void open(Configuration parameters) {
+        ListStateDescriptor&lt;Event&gt; descriptor =
+            new ListStateDescriptor&lt;&gt;("buffered-elements", Event.class);
+        bufferedElements = getRuntimeContext().getListState(descriptor);
+    }
+
+    @Override
+    public void invoke(Event event, Context context) throws Exception {
+        bufferedElements.add(event);
+
+        List&lt;Event&gt; events = new ArrayList&lt;&gt;();
+        for (Event e : bufferedElements.get()) {
+            events.add(e);
+        }
+
+        if (events.size() &gt;= 100) {
+            // 批量写入
+            batchWrite(events);
+            bufferedElements.clear();
+        }
+    }
+}
+</code></pre>
+<p><strong>MapState:</strong></p>
+<pre><code class="language-java">public class UserBehaviorAnalysis
+        extends KeyedProcessFunction&lt;String, Event, String&gt; {
+    private transient MapState&lt;String, Long&gt; actionCounts;
+
+    @Override
+    public void open(Configuration parameters) {
+        MapStateDescriptor&lt;String, Long&gt; descriptor =
+            new MapStateDescriptor&lt;&gt;("action-counts", String.class, Long.class);
+        actionCounts = getRuntimeContext().getMapState(descriptor);
+    }
+
+    @Override
+    public void processElement(Event event, Context ctx,
+                              Collector&lt;String&gt; out) throws Exception {
+        String action = event.action;
+        Long count = actionCounts.get(action);
+        if (count == null) count = 0L;
+        count++;
+        actionCounts.put(action, count);
+    }
+}
+</code></pre>
+<h3 id="52-operator-state"><a class="header" href="#52-operator-state">5.2 Operator State</a></h3>
+<pre><code class="language-java">public class BufferingSource
+        implements SourceFunction&lt;Event&gt;, CheckpointedFunction {
+
+    private volatile boolean running = true;
+    private ListState&lt;Event&gt; checkpointedState;
+    private List&lt;Event&gt; bufferedElements;
+
+    @Override
+    public void run(SourceContext&lt;Event&gt; ctx) throws Exception {
+        while (running) {
+            Event event = generateEvent();
+            synchronized (ctx.getCheckpointLock()) {
+                ctx.collect(event);
+                bufferedElements.add(event);
+            }
+        }
+    }
+
+    @Override
+    public void snapshotState(FunctionSnapshotContext context)
+            throws Exception {
+        checkpointedState.clear();
+        for (Event event : bufferedElements) {
+            checkpointedState.add(event);
+        }
+    }
+
+    @Override
+    public void initializeState(FunctionInitializationContext context)
+            throws Exception {
+        ListStateDescriptor&lt;Event&gt; descriptor =
+            new ListStateDescriptor&lt;&gt;("buffered-elements", Event.class);
+
+        checkpointedState = context.getOperatorStateStore()
+            .getListState(descriptor);
+
+        bufferedElements = new ArrayList&lt;&gt;();
+
+        if (context.isRestored()) {
+            for (Event event : checkpointedState.get()) {
+                bufferedElements.add(event);
+            }
+        }
+    }
+
+    @Override
+    public void cancel() {
+        running = false;
+    }
+}
+</code></pre>
+<h3 id="53-状态后端"><a class="header" href="#53-状态后端">5.3 状态后端</a></h3>
+<p><strong>配置状态后端:</strong></p>
+<pre><code class="language-java">// MemoryStateBackend
+env.setStateBackend(new MemoryStateBackend());
+
+// FsStateBackend
+env.setStateBackend(new FsStateBackend("hdfs://namenode:9000/flink/checkpoints"));
+
+// RocksDBStateBackend
+env.setStateBackend(new RocksDBStateBackend("hdfs://namenode:9000/flink/checkpoints"));
+</code></pre>
+<p><strong>flink-conf.yaml配置:</strong></p>
+<pre><code class="language-yaml"># 状态后端
+state.backend: rocksdb
+
+# Checkpoint目录
+state.checkpoints.dir: hdfs://namenode:9000/flink/checkpoints
+
+# Savepoint目录
+state.savepoints.dir: hdfs://namenode:9000/flink/savepoints
+</code></pre>
+<h2 id="6-容错机制"><a class="header" href="#6-容错机制">6. 容错机制</a></h2>
+<h3 id="61-checkpoint配置"><a class="header" href="#61-checkpoint配置">6.1 Checkpoint配置</a></h3>
+<pre><code class="language-java">// 启用Checkpoint
+env.enableCheckpointing(60000); // 每60秒
+
+// 配置Checkpoint
+CheckpointConfig config = env.getCheckpointConfig();
+
+// 设置模式
+config.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
+
+// 设置超时时间
+config.setCheckpointTimeout(600000);
+
+// 设置最小间隔
+config.setMinPauseBetweenCheckpoints(500);
+
+// 设置最大并发Checkpoint数
+config.setMaxConcurrentCheckpoints(1);
+
+// 启用外部化Checkpoint
+config.enableExternalizedCheckpoints(
+    ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION
+);
+
+// 容忍Checkpoint失败次数
+config.setTolerableCheckpointFailureNumber(3);
+</code></pre>
+<h3 id="62-savepoint操作"><a class="header" href="#62-savepoint操作">6.2 Savepoint操作</a></h3>
+<pre><code class="language-bash"># 触发Savepoint
+bin/flink savepoint &lt;jobId&gt; [savepointDirectory]
+
+# 从Savepoint恢复
+bin/flink run -s &lt;savepointPath&gt; &lt;jobJar&gt;
+
+# 取消作业并保存Savepoint
+bin/flink cancel -s [savepointDirectory] &lt;jobId&gt;
+
+# 删除Savepoint
+bin/flink savepoint -d &lt;savepointPath&gt;
+</code></pre>
+<h3 id="63-故障恢复策略"><a class="header" href="#63-故障恢复策略">6.3 故障恢复策略</a></h3>
+<pre><code class="language-java">// 固定延迟重启
+env.setRestartStrategy(RestartStrategies.fixedDelayRestart(
+    3,  // 重启次数
+    Time.of(10, TimeUnit.SECONDS)  // 延迟时间
+));
+
+// 失败率重启
+env.setRestartStrategy(RestartStrategies.failureRateRestart(
+    3,  // 时间间隔内的最大失败次数
+    Time.of(5, TimeUnit.MINUTES),  // 测量失败率的时间间隔
+    Time.of(10, TimeUnit.SECONDS)  // 延迟时间
+));
+
+// 无重启
+env.setRestartStrategy(RestartStrategies.noRestart());
+</code></pre>
+<h2 id="7-table-api--sql"><a class="header" href="#7-table-api--sql">7. Table API &amp; SQL</a></h2>
+<h3 id="71-环境配置"><a class="header" href="#71-环境配置">7.1 环境配置</a></h3>
+<pre><code class="language-java">// 创建Table环境
+StreamTableEnvironment tableEnv =
+    StreamTableEnvironment.create(env);
+
+// 配置
+Configuration config = tableEnv.getConfig().getConfiguration();
+config.setString("table.exec.state.ttl", "1 h");
+</code></pre>
+<h3 id="72-创建表"><a class="header" href="#72-创建表">7.2 创建表</a></h3>
+<pre><code class="language-java">// 从DataStream创建表
+DataStream&lt;Event&gt; stream = ...;
+Table table = tableEnv.fromDataStream(stream,
+    $("timestamp").rowtime(),
+    $("userId"),
+    $("value")
+);
+
+// DDL创建表
+tableEnv.executeSql(
+    "CREATE TABLE events (" +
+    "  user_id STRING," +
+    "  action STRING," +
+    "  ts TIMESTAMP(3)," +
+    "  WATERMARK FOR ts AS ts - INTERVAL '5' SECOND" +
+    ") WITH (" +
+    "  'connector' = 'kafka'," +
+    "  'topic' = 'events'," +
+    "  'properties.bootstrap.servers' = 'localhost:9092'," +
+    "  'format' = 'json'" +
+    ")"
+);
+</code></pre>
+<h3 id="73-查询操作"><a class="header" href="#73-查询操作">7.3 查询操作</a></h3>
+<p><strong>Table API:</strong></p>
+<pre><code class="language-java">Table result = table
+    .where($("value").isGreater(100))
+    .groupBy($("userId"))
+    .select($("userId"), $("value").sum().as("total"));
+</code></pre>
+<p><strong>SQL查询:</strong></p>
+<pre><code class="language-java">// 注册表
+tableEnv.createTemporaryView("events", stream);
+
+// SQL查询
+Table result = tableEnv.sqlQuery(
+    "SELECT userId, COUNT(*) as cnt " +
+    "FROM events " +
+    "WHERE value &gt; 100 " +
+    "GROUP BY userId"
+);
+
+// 转换为DataStream
+DataStream&lt;Row&gt; resultStream = tableEnv.toDataStream(result);
+</code></pre>
+<p><strong>窗口聚合:</strong></p>
+<pre><code class="language-java">// Tumbling Window
+tableEnv.sqlQuery(
+    "SELECT " +
+    "  userId," +
+    "  TUMBLE_END(ts, INTERVAL '10' SECOND) as window_end," +
+    "  SUM(value) as total " +
+    "FROM events " +
+    "GROUP BY userId, TUMBLE(ts, INTERVAL '10' SECOND)"
+);
+
+// Sliding Window
+tableEnv.sqlQuery(
+    "SELECT " +
+    "  userId," +
+    "  HOP_END(ts, INTERVAL '5' SECOND, INTERVAL '10' SECOND) as window_end," +
+    "  SUM(value) as total " +
+    "FROM events " +
+    "GROUP BY userId, HOP(ts, INTERVAL '5' SECOND, INTERVAL '10' SECOND)"
+);
+</code></pre>
+<h3 id="74-连接器"><a class="header" href="#74-连接器">7.4 连接器</a></h3>
+<p><strong>Kafka连接器:</strong></p>
+<pre><code class="language-sql">CREATE TABLE kafka_source (
+  user_id STRING,
+  action STRING,
+  ts TIMESTAMP(3),
+  WATERMARK FOR ts AS ts - INTERVAL '5' SECOND
+) WITH (
+  'connector' = 'kafka',
+  'topic' = 'input-topic',
+  'properties.bootstrap.servers' = 'localhost:9092',
+  'properties.group.id' = 'flink-group',
+  'scan.startup.mode' = 'earliest-offset',
+  'format' = 'json'
+);
+</code></pre>
+<p><strong>JDBC连接器:</strong></p>
+<pre><code class="language-sql">CREATE TABLE jdbc_sink (
+  user_id STRING,
+  total_value BIGINT,
+  PRIMARY KEY (user_id) NOT ENFORCED
+) WITH (
+  'connector' = 'jdbc',
+  'url' = 'jdbc:mysql://localhost:3306/test',
+  'table-name' = 'user_stats',
+  'username' = 'root',
+  'password' = 'password'
+);
+</code></pre>
+<h2 id="8-性能优化"><a class="header" href="#8-性能优化">8. 性能优化</a></h2>
+<h3 id="81-并行度设置"><a class="header" href="#81-并行度设置">8.1 并行度设置</a></h3>
+<pre><code class="language-java">// 全局并行度
+env.setParallelism(4);
+
+// 算子级别并行度
+stream.map(x -&gt; x * 2).setParallelism(8);
+
+// 禁用算子链
+stream.map(x -&gt; x).disableChaining();
+
+// 开始新链
+stream.map(x -&gt; x).startNewChain();
+</code></pre>
+<h3 id="82-内存配置"><a class="header" href="#82-内存配置">8.2 内存配置</a></h3>
+<p><strong>flink-conf.yaml:</strong></p>
+<pre><code class="language-yaml"># TaskManager内存
+taskmanager.memory.process.size: 4g
+taskmanager.memory.flink.size: 3g
+
+# 网络缓冲区
+taskmanager.network.memory.fraction: 0.1
+taskmanager.network.memory.min: 64mb
+taskmanager.network.memory.max: 1gb
+
+# JVM配置
+env.java.opts: -XX:+UseG1GC
+</code></pre>
+<h3 id="83-背压处理"><a class="header" href="#83-背压处理">8.3 背压处理</a></h3>
+<pre><code class="language-java">// 配置缓冲超时
+env.setBufferTimeout(100);
+
+// 异步IO
+AsyncDataStream.unorderedWait(
+    stream,
+    new AsyncDatabaseRequest(),
+    1000,  // 超时时间
+    TimeUnit.MILLISECONDS,
+    100    // 容量
+);
+</code></pre>
+<h3 id="84-数据倾斜处理"><a class="header" href="#84-数据倾斜处理">8.4 数据倾斜处理</a></h3>
+<pre><code class="language-java">// 添加随机前缀
+stream
+    .map(event -&gt; Tuple2.of(
+        event.userId + "_" + new Random().nextInt(10),
+        event
+    ))
+    .keyBy(t -&gt; t.f0)
+    .window(...)
+    .reduce(...)
+    .map(result -&gt; {
+        // 移除随机前缀
+        String originalKey = result.f0.split("_")[0];
+        return new Result(originalKey, result.f1);
+    })
+    .keyBy(result -&gt; result.userId)
+    .reduce(...);
+</code></pre>
+<h2 id="9-实战案例"><a class="header" href="#9-实战案例">9. 实战案例</a></h2>
+<h3 id="91-实时pvuv统计"><a class="header" href="#91-实时pvuv统计">9.1 实时PV/UV统计</a></h3>
+<pre><code class="language-java">public class PvUvAnalysis {
+    public static void main(String[] args) throws Exception {
+        StreamExecutionEnvironment env =
+            StreamExecutionEnvironment.getExecutionEnvironment();
+
+        // 从Kafka读取数据
+        FlinkKafkaConsumer&lt;UserBehavior&gt; consumer = new FlinkKafkaConsumer&lt;&gt;(
+            "user-behavior",
+            new UserBehaviorSchema(),
+            properties
+        );
+
+        DataStream&lt;UserBehavior&gt; stream = env.addSource(consumer)
+            .assignTimestampsAndWatermarks(
+                WatermarkStrategy
+                    .&lt;UserBehavior&gt;forBoundedOutOfOrderness(Duration.ofSeconds(5))
+                    .withTimestampAssigner((event, ts) -&gt; event.timestamp)
+            );
+
+        // PV统计
+        DataStream&lt;Tuple2&lt;String, Long&gt;&gt; pvStream = stream
+            .filter(behavior -&gt; "pv".equals(behavior.behavior))
+            .map(behavior -&gt; Tuple2.of("pv", 1L))
+            .keyBy(t -&gt; t.f0)
+            .timeWindow(Time.hours(1))
+            .sum(1);
+
+        // UV统计
+        DataStream&lt;Tuple2&lt;String, Long&gt;&gt; uvStream = stream
+            .filter(behavior -&gt; "pv".equals(behavior.behavior))
+            .keyBy(behavior -&gt; behavior.userId)
+            .timeWindow(Time.hours(1))
+            .aggregate(new CountAgg(), new WindowResult());
+
+        pvStream.print("PV");
+        uvStream.print("UV");
+
+        env.execute("PV UV Analysis");
+    }
+}
+</code></pre>
+<h3 id="92-实时热门商品"><a class="header" href="#92-实时热门商品">9.2 实时热门商品</a></h3>
+<pre><code class="language-java">public class HotItemsAnalysis {
+    public static void main(String[] args) throws Exception {
+        StreamExecutionEnvironment env =
+            StreamExecutionEnvironment.getExecutionEnvironment();
+
+        DataStream&lt;ItemViewCount&gt; itemCounts = stream
+            .filter(behavior -&gt; "pv".equals(behavior.behavior))
+            .keyBy(behavior -&gt; behavior.itemId)
+            .timeWindow(Time.hours(1), Time.minutes(5))
+            .aggregate(new CountAgg(), new ItemViewWindowResult());
+
+        DataStream&lt;String&gt; topItems = itemCounts
+            .keyBy(ItemViewCount::getWindowEnd)
+            .process(new TopNHotItems(5));
+
+        topItems.print();
+        env.execute("Hot Items");
+    }
+}
+
+class TopNHotItems extends KeyedProcessFunction&lt;Long, ItemViewCount, String&gt; {
+    private int topSize;
+    private ListState&lt;ItemViewCount&gt; itemState;
+
+    public TopNHotItems(int topSize) {
+        this.topSize = topSize;
+    }
+
+    @Override
+    public void open(Configuration parameters) {
+        itemState = getRuntimeContext().getListState(
+            new ListStateDescriptor&lt;&gt;("item-state", ItemViewCount.class)
+        );
+    }
+
+    @Override
+    public void processElement(ItemViewCount value, Context ctx,
+                              Collector&lt;String&gt; out) throws Exception {
+        itemState.add(value);
+        ctx.timerService().registerEventTimeTimer(value.windowEnd + 1);
+    }
+
+    @Override
+    public void onTimer(long timestamp, OnTimerContext ctx,
+                       Collector&lt;String&gt; out) throws Exception {
+        List&lt;ItemViewCount&gt; allItems = new ArrayList&lt;&gt;();
+        for (ItemViewCount item : itemState.get()) {
+            allItems.add(item);
+        }
+        itemState.clear();
+
+        allItems.sort((a, b) -&gt; Long.compare(b.count, a.count));
+
+        StringBuilder result = new StringBuilder();
+        result.append("=========================\n");
+        result.append("时间: ").append(new Timestamp(timestamp - 1)).append("\n");
+
+        for (int i = 0; i &lt; Math.min(topSize, allItems.size()); i++) {
+            ItemViewCount item = allItems.get(i);
+            result.append("No.").append(i + 1).append(":")
+                  .append(" 商品ID=").append(item.itemId)
+                  .append(" 浏览量=").append(item.count)
+                  .append("\n");
+        }
+        result.append("=========================\n");
+
+        out.collect(result.toString());
+    }
+}
+</code></pre>
+<h3 id="93-实时订单监控"><a class="header" href="#93-实时订单监控">9.3 实时订单监控</a></h3>
+<pre><code class="language-java">public class OrderTimeoutMonitor {
+    public static void main(String[] args) throws Exception {
+        StreamExecutionEnvironment env =
+            StreamExecutionEnvironment.getExecutionEnvironment();
+
+        DataStream&lt;OrderEvent&gt; orderStream = env
+            .fromElements(
+                new OrderEvent("order-1", "create", 1000L),
+                new OrderEvent("order-1", "pay", 3000L),
+                new OrderEvent("order-2", "create", 2000L)
+            )
+            .assignTimestampsAndWatermarks(
+                WatermarkStrategy
+                    .&lt;OrderEvent&gt;forMonotonousTimestamps()
+                    .withTimestampAssigner((event, ts) -&gt; event.timestamp)
+            );
+
+        Pattern&lt;OrderEvent, ?&gt; pattern = Pattern
+            .&lt;OrderEvent&gt;begin("create")
+            .where(new SimpleCondition&lt;OrderEvent&gt;() {
+                @Override
+                public boolean filter(OrderEvent event) {
+                    return "create".equals(event.eventType);
+                }
+            })
+            .followedBy("pay")
+            .where(new SimpleCondition&lt;OrderEvent&gt;() {
+                @Override
+                public boolean filter(OrderEvent event) {
+                    return "pay".equals(event.eventType);
+                }
+            })
+            .within(Time.minutes(15));
+
+        PatternStream&lt;OrderEvent&gt; patternStream = CEP.pattern(
+            orderStream.keyBy(OrderEvent::getOrderId),
+            pattern
+        );
+
+        DataStream&lt;String&gt; result = patternStream.select(
+            new PatternTimeoutFunction&lt;OrderEvent, String&gt;() {
+                @Override
+                public String timeout(Map&lt;String, List&lt;OrderEvent&gt;&gt; pattern,
+                                     long timeoutTimestamp) {
+                    return "订单超时: " + pattern.get("create").get(0).orderId;
+                }
+            },
+            new PatternSelectFunction&lt;OrderEvent, String&gt;() {
+                @Override
+                public String select(Map&lt;String, List&lt;OrderEvent&gt;&gt; pattern) {
+                    return "订单完成: " + pattern.get("pay").get(0).orderId;
+                }
+            }
+        );
+
+        result.print();
+        env.execute("Order Timeout Monitor");
+    }
+}
+</code></pre>
+<h2 id="10-学习验证标准"><a class="header" href="#10-学习验证标准">10. 学习验证标准</a></h2>
+<h3 id="-基础能力验证"><a class="header" href="#-基础能力验证">✅ 基础能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+理解Flink架构和核心概念</li>
+<li><input disabled="" type="checkbox"/>
+能够使用DataStream API编写简单程序</li>
+<li><input disabled="" type="checkbox"/>
+理解时间语义和水位线机制</li>
+<li><input disabled="" type="checkbox"/>
+掌握基本的窗口操作</li>
+</ul>
+<h3 id="-进阶能力验证"><a class="header" href="#-进阶能力验证">✅ 进阶能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够使用状态管理API</li>
+<li><input disabled="" type="checkbox"/>
+能够配置和使用Checkpoint</li>
+<li><input disabled="" type="checkbox"/>
+能够使用Table API和SQL</li>
+<li><input disabled="" type="checkbox"/>
+能够进行基本的性能调优</li>
+</ul>
+<h3 id="-高级能力验证"><a class="header" href="#-高级能力验证">✅ 高级能力验证</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能够处理复杂的CEP模式匹配</li>
+<li><input disabled="" type="checkbox"/>
+能够设计生产级Flink应用</li>
+<li><input disabled="" type="checkbox"/>
+能够进行故障排查和调优</li>
+<li><input disabled="" type="checkbox"/>
+能够实现自定义Source/Sink</li>
+</ul>
+<h2 id="11-扩展资源"><a class="header" href="#11-扩展资源">11. 扩展资源</a></h2>
+<h3 id="官方资源"><a class="header" href="#官方资源">官方资源</a></h3>
+<ul>
+<li>官网: https://flink.apache.org/</li>
+<li>文档: https://flink.apache.org/docs/stable/</li>
+<li>GitHub: https://github.com/apache/flink</li>
+</ul>
+<h3 id="学习建议"><a class="header" href="#学习建议">学习建议</a></h3>
+<ol>
+<li>从简单的WordCount开始</li>
+<li>理解时间和水位线概念</li>
+<li>掌握状态管理和容错</li>
+<li>学习Table API和SQL</li>
+<li>实践生产级应用开发</li>
+</ol>
+<h3 id="进阶方向"><a class="header" href="#进阶方向">进阶方向</a></h3>
+<ul>
+<li>Flink ML机器学习</li>
+<li>Flink CDC实时数据同步</li>
+<li>Flink Stateful Functions</li>
+<li>Flink on Kubernetes</li>
+<li>实时数仓架构设计</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/bigdata/2-HDFS.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/bigdata/3-Spark.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/bigdata/2-HDFS.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/bigdata/3-Spark.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,2126 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Tailwind CSS 实战学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="tailwind-css-实战学习笔记"><a class="header" href="#tailwind-css-实战学习笔记">Tailwind CSS 实战学习笔记</a></h1>
+<blockquote>
+<p>面向 0-5 年经验的前端开发者、全栈工程师、产品技术负责人，聚焦于 <strong>系统化掌握 Tailwind CSS 的原子化思维、设计体系构建能力与工程化落地能力</strong>。笔记强调循序渐进、实战导向、验证可行。</p>
+</blockquote>
+<hr />
+<h2 id="学习者画像与目标设定"><a class="header" href="#学习者画像与目标设定">学习者画像与目标设定</a></h2>
+<ul>
+<li><strong>目标读者</strong>：已有 HTML/CSS/JS 基础、希望快速构建风格统一的界面或搭建设计系统的开发者；需要与后端或设计协作的全栈、产品技术负责人。</li>
+<li><strong>先修能力</strong>：
+<ul>
+<li>熟悉 CSS 盒模型、Flexbox、Grid、媒体查询等布局基础；</li>
+<li>能够使用 npm、Node.js 基础 CLI，理解现代前端构建工具（Vite、Webpack、Next.js 等）的基本概念；</li>
+<li>对设计规范、设计 tokens 有初步认识更佳。</li>
+</ul>
+</li>
+<li><strong>学习目标</strong>：
+<ol>
+<li>理解 Tailwind CSS 原子化理念、设计哲学与适用场景；</li>
+<li>快速搭建 Tailwind CSS 开发环境并掌握常用开发工具链；</li>
+<li>熟练运用核心原子类构建响应式与可访问的界面；</li>
+<li>能够定制主题、构建组件库、维护设计系统；</li>
+<li>掌握暗黑模式、状态变体、交互动效等进阶用法；</li>
+<li>具备工程化整合能力（与 React/Vue/Next.js/Laravel 等框架结合）、性能优化与部署经验；</li>
+<li>完成至少一个带有设计系统与组件库的实战项目，并通过量化指标验证学习成果。</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="笔记结构总览"><a class="header" href="#笔记结构总览">笔记结构总览</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>模块</th><th>名称</th><th>核心问题</th><th>实战聚焦</th></tr></thead><tbody>
+<tr><td>模块 0</td><td>学习导引与路线图</td><td>为什么选择 Tailwind？如何规划学习？</td><td>设定学习目标、环境清单、资源导航</td></tr>
+<tr><td>模块 1</td><td>Tailwind CSS 原子化理念与环境搭建</td><td>原子化 CSS 有何优势、如何快速启动项目？</td><td>CLI 初始化、PlayCDN、IDE 插件、生产构建</td></tr>
+<tr><td>模块 2</td><td>核心原子类与布局体系实践</td><td>如何高效构建复杂布局、排版结构？</td><td>Flex/Grid 布局、间距、排版、可访问性</td></tr>
+<tr><td>模块 3</td><td>设计系统与主题定制</td><td>如何建立品牌视觉、复用组件、管理 tokens？</td><td><code>tailwind.config.js</code> 扩展、CSS 变量、组件约束</td></tr>
+<tr><td>模块 4</td><td>状态变体、响应式与交互增强</td><td>响应式、交互状态如何管理？动画如何设计？</td><td>Variant 机制、暗黑模式、交互反馈、Transiton</td></tr>
+<tr><td>模块 5</td><td>工程化整合与生产部署</td><td>如何与框架集成，保证性能与可维护性？</td><td>Tree-shaking、Purging、JIT、CI/CD 集成</td></tr>
+<tr><td>模块 6</td><td>综合实战项目：SaaS 控制台设计系统</td><td>如何从 0 到 1 构建完整真实场景？</td><td>需求分析、组件库建设、无障碍与测试</td></tr>
+<tr><td>附录</td><td>验证标准、扩展资源、术语表</td><td>如何检验学习成果？如何继续进阶？</td><td>Checklist、资源索引、常见问答</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="学习路径规划"><a class="header" href="#学习路径规划">学习路径规划</a></h2>
+<blockquote>
+<p><strong>总耗时建议：4~6 周，每周投入 8~12 小时</strong>。每个阶段都配有实践任务和检验指标。</p>
+</blockquote>
+<ol>
+<li><strong>准备阶段（第 0 周）</strong>：环境搭建 + 原子化理念理解
+<ul>
+<li>任务：阅读官方文档 Getting Started；安装 VS Code + Tailwind CSS IntelliSense 插件；完成 <code>tailwind.config.js</code> 初始化。</li>
+<li>成果：可运行的最小项目（使用 Vite/Next.js 任一）。</li>
+</ul>
+</li>
+<li><strong>核心能力构建（第 1-2 周）</strong>：原子类、布局、排版、响应式基础
+<ul>
+<li>任务：完成 Module 2 中的布局挑战（仪表盘 + 博客排版）。</li>
+<li>成果：通过 <code>flex/grid</code> 与 <code>typography</code> 创建两个页面，得出组件截图或 Storybook 演示。</li>
+</ul>
+</li>
+<li><strong>设计系统进阶（第 3 周）</strong>：主题定制、组件化模式、Utility-First 设计思维
+<ul>
+<li>任务：Module 3 实战 — 搭建品牌主题与基础组件库（按钮、输入框、导航）。</li>
+<li>成果：形成 <code>tailwind.config.js</code> 定制文件，建立 design tokens 清单 + 组件文档。</li>
+</ul>
+</li>
+<li><strong>交互与暗黑模式（第 4 周）</strong>：Variant 策略、状态管理、动画
+<ul>
+<li>任务：Module 4 实战 — 实现响应式导航、暗黑模式切换、互动反馈。</li>
+<li>成果：生成具备可访问性（键盘导航、ARIA）的交互组件。</li>
+</ul>
+</li>
+<li><strong>工程化与部署（第 5 周）</strong>：框架整合、性能优化、测试与部署
+<ul>
+<li>任务：Module 5 实战 — 将项目部署到 Vercel/Netlify，配置 Purge、CI、视觉回归测试。</li>
+<li>成果：可访问公网的应用链接，部署流水线通过。</li>
+</ul>
+</li>
+<li><strong>综合项目（第 6 周）</strong>：SaaS 控制台设计系统重构
+<ul>
+<li>任务：Module 6 完整项目 — 从用户故事到组件库整合，交付设计系统文档。</li>
+<li>成果：项目仓库 + Storybook/Playroom 展示 + 可量化指标报告。</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="模块-0学习导引与策略"><a class="header" href="#模块-0学习导引与策略">模块 0：学习导引与策略</a></h2>
+<h3 id="01-tailwind-css-的定位"><a class="header" href="#01-tailwind-css-的定位">0.1 Tailwind CSS 的定位</a></h3>
+<ul>
+<li><strong>原子化 CSS（Atomic CSS）</strong>：以单一职责的原子类组合构建界面，相较于语义化 CSS class，其优势在于高度可组合、无需命名、降低 CSS 冲突。</li>
+<li><strong>JIT（Just-in-Time）编译模式</strong>：按需生成所用样式，构建速度更快、产物更小。</li>
+<li><strong>设计系统友好</strong>：与设计 tokens、组件库搭配，易于统一视觉与交互规范。</li>
+<li><strong>团队协作优势</strong>：
+<ul>
+<li>设计交付 → 代码映射直接：设计师可以直接使用 Tailwind 语法描述界面。</li>
+<li>代码审查更易：类名即样式，无需跳转 CSS 文件。</li>
+<li>样式变更影响范围明确，避免全局样式污染。</li>
+</ul>
+</li>
+</ul>
+<h3 id="02-tailwind-与其他方案比较"><a class="header" href="#02-tailwind-与其他方案比较">0.2 Tailwind 与其他方案比较</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>方案</th><th>特点</th><th>Tailwind 优势</th><th>适用场景</th></tr></thead><tbody>
+<tr><td>传统手写 CSS/Sass</td><td>灵活、可读性强，但命名成本高、易冲突</td><td>Tailwind 类名约束、自动 Tree-shaking</td><td>新项目、快速迭代产品</td></tr>
+<tr><td>CSS-in-JS（styled-components 等）</td><td>组件化强、动态样式友好</td><td>Tailwind 无运行时开销、统一原子类</td><td>需要高性能、SSR 的项目</td></tr>
+<tr><td>UI 组件库（Antd、ElementUI）</td><td>可即用组件，学习成本低</td><td>Tailwind 可自定义品牌、无额外依赖</td><td>需要高自由度的定制化产品</td></tr>
+</tbody></table>
+</div>
+<h3 id="03-环境准备清单"><a class="header" href="#03-环境准备清单">0.3 环境准备清单</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>工具</th><th>版本建议</th><th>用途</th><th>安装命令</th></tr></thead><tbody>
+<tr><td>Node.js</td><td>≥ 18 LTS</td><td>Tailwind CLI、包管理</td><td><code>nvm install 20 &amp;&amp; nvm use 20</code></td></tr>
+<tr><td>包管理器</td><td>pnpm / npm / yarn</td><td>依赖管理</td><td><code>corepack enable pnpm</code></td></tr>
+<tr><td>构建工具</td><td>Vite / Next.js / Laravel Mix 等</td><td>用于整合 Tailwind</td><td><code>pnpm create vite my-app --template react</code></td></tr>
+<tr><td>编辑器</td><td>VS Code</td><td>Tailwind Intellisense、ESLint</td><td>安装插件 <code>Tailwind CSS IntelliSense</code></td></tr>
+<tr><td>浏览器扩展</td><td>Tailwind DevTools（Chrome 扩展）</td><td>快速调试类名</td><td>Chrome Web Store</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>📌 <strong>建议</strong>：在笔记的综合项目中使用与日常工作接近的框架，保证学习成果可迁移。</p>
+</blockquote>
+<h3 id="04-学习策略"><a class="header" href="#04-学习策略">0.4 学习策略</a></h3>
+<ol>
+<li><strong>先搭框架再填细节</strong>：先建立模块整体结构，再深入各子模块，防止知识碎片化。</li>
+<li><strong>以案例驱动学习</strong>：每掌握一个概念，就在实战项目中找到对应用例立即实践。</li>
+<li><strong>记录类名组合</strong>：整理常用类名模式（如 <code>.flex items-center gap-4</code>），形成个人速查表。</li>
+<li><strong>关注可访问性</strong>：Tailwind 提供了许多有利于可访问性的原子类（如 <code>sr-only</code>），在实践中刻意使用。</li>
+<li><strong>版本更新跟进</strong>：Tailwind 迭代快，关注官方 release note，常见的新特性包括 CSS 容器查询、<code>@layer</code> 扩展等。</li>
+</ol>
+<hr />
+<h2 id="模块-1tailwind-css-原子化理念与环境搭建"><a class="header" href="#模块-1tailwind-css-原子化理念与环境搭建">模块 1：Tailwind CSS 原子化理念与环境搭建</a></h2>
+<blockquote>
+<p>目标：理解 Tailwind 背后的原子化思维，掌握多种启动方式（CLI、框架整合、Play CDN），保证开发体验顺畅。</p>
+</blockquote>
+<h3 id="11-模块学习目标"><a class="header" href="#11-模块学习目标">1.1 模块学习目标</a></h3>
+<ul>
+<li>能够解释原子化 CSS、Utility-first 的核心概念，并比较其与 BEM/Sass 的区别；</li>
+<li>掌握 Tailwind CLI 启动流程，理解 <code>tailwind.config.js</code> 的基本结构；</li>
+<li>了解基于 CDN、CLI、框架（如 Next.js、Laravel）等多种集成方式，并清楚各自优劣；</li>
+<li>熟悉 JIT 模式、<code>content</code> 配置、<code>@tailwind</code> 指令的作用；</li>
+<li>可使用 VS Code Intellisense、Prettier 插件提升开发效率。</li>
+</ul>
+<h3 id="12-原子化-css-深入理解"><a class="header" href="#12-原子化-css-深入理解">1.2 原子化 CSS 深入理解</a></h3>
+<ol>
+<li><strong>原子类命名规律</strong>：
+<ul>
+<li>结构：<code>{属性缩写}-{取值}</code>，例如 <code>text-lg</code>、<code>bg-slate-900</code>。</li>
+<li>变体前缀：<code>{variant}:{class}</code>，如 <code>hover:bg-blue-500</code>、<code>lg:flex</code>。</li>
+</ul>
+</li>
+<li><strong>构建模式演进</strong>：
+<ul>
+<li>静态预编译模式（Tailwind 2.x）：预先生成所有类 → 输出文件巨大。</li>
+<li>JIT 模式（Tailwind 3.x 默认）：根据模板中使用的类即时生成 → 构建更快。</li>
+</ul>
+</li>
+<li><strong>设计哲学</strong>：
+<ul>
+<li>优先组合：通过组合原子类表达组件的结构与样式；</li>
+<li>样式即文档：类名即样式，无需跳转 CSS 文件查找；</li>
+<li>配置驱动：<code>tailwind.config.js</code> 中集中维护设计系统变量。</li>
+</ul>
+</li>
+<li><strong>与 BEM/Sass 的差异</strong>：
+<ul>
+<li>BEM 强调语义化类名，与结构耦合；Tailwind 强调功能类，结构保持轻量。</li>
+<li>Sass 通过变量、混入共享样式；Tailwind 通过配置与原子类组合满足需求。</li>
+</ul>
+</li>
+<li><strong>团队协作优势</strong>：
+<ul>
+<li>设计稿到代码映射更清晰；</li>
+<li>PR 审查时能快速识别组件变更；</li>
+<li>样式冲突概率低，避免 Cascade 问题。</li>
+</ul>
+</li>
+</ol>
+<h3 id="13-安装与项目初始化"><a class="header" href="#13-安装与项目初始化">1.3 安装与项目初始化</a></h3>
+<h4 id="131-使用-tailwind-cli最小示例"><a class="header" href="#131-使用-tailwind-cli最小示例">1.3.1 使用 Tailwind CLI（最小示例）</a></h4>
+<pre><code class="language-bash">pnpm create vite tailwind-starter --template react
+cd tailwind-starter
+pnpm install tailwindcss postcss autoprefixer -D
+npx tailwindcss init -p
+</code></pre>
+<p>生成的 <code>tailwind.config.js</code> 与 <code>postcss.config.js</code> 用于配置 Tailwind 和 PostCSS。编辑 <code>tailwind.config.js</code>：</p>
+<pre><code class="language-js">/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+</code></pre>
+<p>在 <code>src/index.css</code> 中引入 Tailwind 指令：</p>
+<pre><code class="language-css">@tailwind base;
+@tailwind components;
+@tailwind utilities;
+</code></pre>
+<p>在 <code>App.tsx</code> 中测试：</p>
+<pre><code class="language-tsx">export default function App() {
+  return (
+    &lt;main className="min-h-screen bg-slate-900 text-slate-100 flex flex-col items-center justify-center gap-6"&gt;
+      &lt;h1 className="text-4xl font-bold tracking-tight"&gt;Tailwind CSS 初体验&lt;/h1&gt;
+      &lt;p className="text-lg text-slate-300 max-w-xl text-center"&gt;
+        使用原子化类快速构建漂亮的界面，无需手写 CSS。
+      &lt;/p&gt;
+      &lt;button className="px-6 py-3 rounded-lg bg-indigo-500 hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 transition"&gt;
+        开始探索
+      &lt;/button&gt;
+    &lt;/main&gt;
+  );
+}
+</code></pre>
+<p>运行 <code>pnpm dev</code>，验证 Tailwind 是否生效。</p>
+<h4 id="132-使用-play-cdn-快速试验"><a class="header" href="#132-使用-play-cdn-快速试验">1.3.2 使用 Play CDN 快速试验</a></h4>
+<p>Tailwind 提供 CDN 版本，适合快速原型或教学演示。但注意：</p>
+<ul>
+<li>仅用于开发；生产环境需使用 CLI 进行 Purge 与构建；</li>
+<li>无法按需裁剪，输出文件过大；</li>
+<li>不支持 <code>@apply</code>、<code>theme()</code> 等高级特性。</li>
+</ul>
+<p>示例 HTML：</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Tailwind Play&lt;/title&gt;
+    &lt;script src="https://cdn.tailwindcss.com?plugins=forms,typography"&gt;&lt;/script&gt;
+    &lt;script&gt;
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              display: ["Inter", "ui-sans-serif", "system-ui"],
+            },
+          },
+        },
+      };
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body class="min-h-screen bg-slate-950 text-slate-100"&gt;
+    &lt;section class="mx-auto mt-16 max-w-4xl px-6"&gt;
+      &lt;header class="flex flex-col gap-2"&gt;
+        &lt;span class="text-sm font-semibold text-indigo-400 uppercase tracking-wide"&gt;Workshop&lt;/span&gt;
+        &lt;h1 class="text-4xl font-bold leading-tight tracking-tight"&gt;使用 Tailwind CSS 构建仪表盘&lt;/h1&gt;
+        &lt;p class="text-lg text-slate-300"&gt;
+          快速体验原子化 CSS 带来的组合自由与开发效率提升。
+        &lt;/p&gt;
+      &lt;/header&gt;
+    &lt;/section&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4 id="133-与流行框架整合要点"><a class="header" href="#133-与流行框架整合要点">1.3.3 与流行框架整合要点</a></h4>
+<ul>
+<li><strong>Next.js</strong>：使用 <code>postcss.config.js</code> + <code>tailwind.config.js</code>；结合 <code>app/</code> 目录，注意 <code>content</code> 路径包含 <code>app</code> 与 <code>pages</code>。</li>
+<li><strong>Vue (Vite)</strong>：<code>content</code> 指向 <code>.vue</code> 文件；注意 <code>@apply</code> 在 <code>&lt;style scoped&gt;</code> 中的使用与限制。</li>
+<li><strong>Laravel</strong>：使用 <code>laravel-mix</code> 或 Vite 集成；Blade 模板中使用 <code>@vite('resources/css/app.css')</code>。</li>
+<li><strong>SvelteKit</strong>：需要 <code>postcss-load-config</code>；<code>content</code> 包含 <code>.svelte</code>。</li>
+</ul>
+<p>示例：Next.js 13 (App Router) 集成</p>
+<pre><code class="language-bash">npx create-next-app@latest tailwind-next-demo --typescript --eslint --app
+cd tailwind-next-demo
+npx tailwindcss init -p
+</code></pre>
+<p>在 <code>tailwind.config.js</code> 中配置 <code>content</code>：</p>
+<pre><code class="language-js">  content: [
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+</code></pre>
+<p>更新 <code>src/app/globals.css</code> 引入 Tailwind：</p>
+<pre><code class="language-css">@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark light;
+}
+</code></pre>
+<h3 id="14-开发工具与生产力提升"><a class="header" href="#14-开发工具与生产力提升">1.4 开发工具与生产力提升</a></h3>
+<ol>
+<li><strong>Tailwind CSS IntelliSense</strong>：提供类名自动补全、预览、lint 提示。</li>
+<li><strong>Headless UI / Radix UI</strong>：提供无样式组件，与 Tailwind 搭配构建交互组件。</li>
+<li><strong>Heroicons / Lucide</strong>：SVG 图标库，与 Tailwind 组合。</li>
+<li><strong>Prettier 插件</strong>：安装 <code>prettier-plugin-tailwindcss</code> 自动排序类名，保持一致性。</li>
+</ol>
+<p>配置 <code>.prettierrc</code>：</p>
+<pre><code class="language-json">{
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "all"
+}
+</code></pre>
+<ol start="5">
+<li><strong>调试技巧</strong>：
+<ul>
+<li>使用 <code>outline</code> 类快速定位元素；</li>
+<li>利用浏览器 DevTools 的 “Tailwind Inspector” 插件；</li>
+<li>配合 VS Code Snippet（自定义 <code>tw-</code> 前缀）。</li>
+</ul>
+</li>
+</ol>
+<h3 id="15-模块实战从-figma-到-tailwind-的最小流程"><a class="header" href="#15-模块实战从-figma-到-tailwind-的最小流程">1.5 模块实战：从 Figma 到 Tailwind 的最小流程</a></h3>
+<blockquote>
+<p>目标：将设计稿中的 Hero Section 转化为 Tailwind 代码，体验类名组合。</p>
+</blockquote>
+<ol>
+<li><strong>分析设计稿</strong>：识别主要布局（例如 <code>flex</code>, <code>grid</code>）、颜色（使用 Figma Inspect 获取十六进制，映射到 Tailwind 颜色）。</li>
+<li><strong>拆分组件结构</strong>：头部区域 → 标题、描述、按钮、截图。</li>
+<li><strong>映射类名</strong>：
+<ul>
+<li>字体：<code>text-6xl font-bold tracking-tight</code>;</li>
+<li>颜色：<code>bg-slate-950</code>、<code>text-slate-300</code>;</li>
+<li>间距：<code>py-24</code>, <code>px-6</code>, <code>gap-8</code>.</li>
+</ul>
+</li>
+<li><strong>实现代码</strong>：</li>
+</ol>
+<pre><code class="language-tsx">const Hero = () =&gt; (
+  &lt;section className="relative overflow-hidden bg-slate-950"&gt;
+    &lt;div className="mx-auto flex max-w-6xl flex-col items-center gap-12 px-6 py-24 lg:flex-row lg:items-start lg:py-32"&gt;
+      &lt;div className="flex max-w-2xl flex-col items-center text-center lg:items-start lg:text-left"&gt;
+        &lt;span className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900/80 px-4 py-1 text-sm font-semibold uppercase tracking-widest text-indigo-400"&gt;
+          新品发布
+        &lt;/span&gt;
+        &lt;h1 className="mt-6 text-5xl font-bold tracking-tight text-white sm:text-6xl"&gt;
+          用 Tailwind CSS 构建你的下一代 SaaS 控制台
+        &lt;/h1&gt;
+        &lt;p className="mt-6 text-lg leading-8 text-slate-300"&gt;
+          从设计到上线只需数小时，统一的设计系统保证团队协作效率，原子类让样式调整更加可靠。
+        &lt;/p&gt;
+        &lt;div className="mt-8 flex flex-col gap-3 sm:flex-row"&gt;
+          &lt;a
+            href="#"
+            className="inline-flex items-center justify-center rounded-lg bg-indigo-500 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 transition hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+          &gt;
+            免费体验
+          &lt;/a&gt;
+          &lt;a
+            href="#"
+            className="inline-flex items-center justify-center rounded-lg border border-slate-700 px-6 py-3 text-base font-semibold text-slate-100 transition hover:border-slate-500 hover:text-white"
+          &gt;
+            查看文档
+          &lt;/a&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div className="relative isolate -mx-8 mt-12 aspect-[3/2] w-full max-w-3xl overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-2xl shadow-indigo-500/20 ring-1 ring-white/10 sm:mx-0 lg:mt-0"&gt;
+        &lt;div className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-500/20 via-sky-500/10 to-purple-500/20 blur-3xl" /&gt;
+        &lt;img
+          src="/dashboard-preview.png"
+          alt="SaaS 控制台预览"
+          className="h-full w-full rounded-2xl object-cover object-top"
+        /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+);
+</code></pre>
+<ol start="5">
+<li><strong>代码检查</strong>：
+<ul>
+<li>使用 <code>pnpm lint</code> 确保 ESLint 通过；</li>
+<li>使用 <code>pnpm format</code> 统一类名顺序；</li>
+<li>使用 Lighthouse 检查可访问性（目标 A11y ≥ 90）。</li>
+</ul>
+</li>
+</ol>
+<h3 id="16-常见错误与排查"><a class="header" href="#16-常见错误与排查">1.6 常见错误与排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>根因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>Tailwind 类名未生效</td><td><code>content</code> 配置遗漏路径或模板语法生成的类名未被静态分析捕捉</td><td>确保 <code>content</code> 包含所有文件；动态类名使用 safelist；JIT 中使用 <code>className</code> 字面量字符串</td></tr>
+<tr><td>构建产物过大</td><td>未开启 Purge 或 <code>content</code> 配置过宽泛</td><td>清理 <code>content</code> 路径、避免 <code>./src/**/*</code> 指向未使用文件；生产环境使用 <code>NODE_ENV=production</code></td></tr>
+<tr><td>IntelliSense 不工作</td><td>VS Code 插件未安装或 Tailwind 配置路径非默认</td><td>检查 <code>.vscode/settings.json</code>，添加 <code>"tailwindCSS.includeLanguages"</code></td></tr>
+<tr><td>自定义颜色未生效</td><td><code>theme.extend</code> 配置错误或拼写错误</td><td>确保在 <code>extend</code> 下补充而非覆盖；检查 <code>bg-brand-primary</code> 拼写</td></tr>
+</tbody></table>
+</div>
+<h3 id="17-模块小结与自测"><a class="header" href="#17-模块小结与自测">1.7 模块小结与自测</a></h3>
+<ul>
+<li>能否在 15 分钟内创建带 Tailwind 的 Vite/Next 应用并提交到 GitHub？</li>
+<li>能否解释 Tailwind JIT 的工作流程并指出 <code>content</code> 配置的作用？</li>
+<li>能否根据设计稿快速拆分出所需的原子类组合？</li>
+<li>是否掌握 VS Code 中自动排序类名与快速补全的技巧？</li>
+</ul>
+<hr />
+<h2 id="模块-2核心原子类与布局体系实践"><a class="header" href="#模块-2核心原子类与布局体系实践">模块 2：核心原子类与布局体系实践</a></h2>
+<blockquote>
+<p>目标：构建扎实的布局与排版基础，掌握 Tailwind 提供的核心原子类（Spacing、Sizing、Typography、Flex/Grid 等）与实战组合套路。</p>
+</blockquote>
+<h3 id="21-模块学习目标"><a class="header" href="#21-模块学习目标">2.1 模块学习目标</a></h3>
+<ul>
+<li>理解 Tailwind 原子类的命名模式与分类体系；</li>
+<li>熟练使用 <code>flex</code>、<code>grid</code>、<code>gap</code>、<code>space-x/y</code> 构建复杂布局；</li>
+<li>熟悉排版类（<code>font</code>、<code>text</code>、<code>leading</code>、<code>tracking</code>）与颜色系统；</li>
+<li>使用 Utility 类实现响应式布局、断点控制、容器查询；</li>
+<li>在实战中构建仪表盘布局与内容营销页面，强调可访问性。</li>
+</ul>
+<h3 id="22-原子类速查映射"><a class="header" href="#22-原子类速查映射">2.2 原子类速查映射</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>分类</th><th>常用类</th><th>说明</th><th>实战建议</th></tr></thead><tbody>
+<tr><td>间距 Spacing</td><td><code>p-{n}</code>、<code>m-{n}</code>、<code>px</code>、<code>py</code>、<code>space-x</code></td><td>使用 0~96 或 <code>px</code> 精度</td><td>统一 spacing scale，避免 magic number</td></tr>
+<tr><td>尺寸 Sizing</td><td><code>w-{n}</code>、<code>h-{n}</code>、<code>min-h</code>、<code>max-w</code></td><td>支持 <code>full</code>、<code>screen</code>、<code>min</code>/<code>max</code></td><td>结合响应式断点控制宽度</td></tr>
+<tr><td>布局 Layout</td><td><code>flex</code>、<code>grid</code>、<code>col-span</code>、<code>order</code></td><td>支持 <code>lg:flex-row</code> 等</td><td>通过 <code>gap</code> 控制栅格间距</td></tr>
+<tr><td>排版 Typography</td><td><code>text-{size}</code>、<code>font-{weight}</code>、<code>leading</code></td><td>结合 <code>prose</code> 插件增强</td><td>定义基准 <code>rem</code>，保证响应式排版</td></tr>
+<tr><td>背景与边框</td><td><code>bg-{color}</code>、<code>border</code>、<code>rounded</code></td><td>Tailwind 默认提供 22 色系</td><td>使用 CSS 变量配合 <code>theme.extend.colors</code></td></tr>
+<tr><td>效果 Effects</td><td><code>shadow</code>、<code>ring</code>、<code>backdrop</code>、<code>blur</code></td><td>高级效果</td><td>注意性能，少量使用</td></tr>
+</tbody></table>
+</div>
+<h3 id="23-tailwind-断点与响应式策略"><a class="header" href="#23-tailwind-断点与响应式策略">2.3 Tailwind 断点与响应式策略</a></h3>
+<ul>
+<li>默认断点：<code>sm</code> (640px)、<code>md</code> (768px)、<code>lg</code> (1024px)、<code>xl</code> (1280px)、<code>2xl</code> (1536px)。</li>
+<li>响应式写法：<code>{断点}:{类名}</code>，例如 <code>md:grid-cols-2</code>, <code>lg:px-16</code>。</li>
+<li>建议自定义断点：在 <code>tailwind.config.js</code> 中定义 <code>screens</code>，使其符合产品需求。</li>
+</ul>
+<pre><code class="language-js">theme: {
+  extend: {
+    screens: {
+      xs: "480px",
+      "3xl": "1920px",
+    },
+  },
+}
+</code></pre>
+<ul>
+<li>容器查询（Tailwind CSS v3.2+ 支持）：使用 <code>@container</code> 与 <code>container-type</code> 类。</li>
+</ul>
+<pre><code class="language-html">&lt;article class="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 [container-type:inline-size]"&gt;
+  &lt;header class="@container"&gt;
+    &lt;div class="grid gap-4 @xl:grid-cols-[1fr_auto]"&gt;
+      &lt;h2 class="text-2xl font-semibold text-white"&gt;交互设计洞察&lt;/h2&gt;
+      &lt;button class="hidden rounded-full border border-slate-700 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-slate-500 hover:text-white @xl:block"&gt;
+        下载报告
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/header&gt;
+&lt;/article&gt;
+</code></pre>
+<h3 id="24-场景化原子类组合模式"><a class="header" href="#24-场景化原子类组合模式">2.4 场景化原子类组合模式</a></h3>
+<ul>
+<li><strong>水平居中卡片</strong>：<code>mx-auto max-w-3xl px-6 py-12 text-center</code></li>
+<li><strong>条目列表</strong>：<code>divide-y divide-slate-800</code> + <code>space-y-6</code></li>
+<li><strong>头像列表</strong>：<code>flex flex-wrap items-center gap-6</code></li>
+<li><strong>统计面板</strong>：<code>grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4</code></li>
+<li><strong>动态背景</strong>：<code>bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500</code></li>
+<li><strong>内嵌滚动区域</strong>：<code>overflow-y-auto max-h-[600px] scrollbar-thin scrollbar-thumb-slate-700</code></li>
+</ul>
+<p>将这些组合沉淀为代码片段或 VS Code Snippet，可大幅提升开发效率。</p>
+<h3 id="25-实战案例一admin-仪表盘布局"><a class="header" href="#25-实战案例一admin-仪表盘布局">2.5 实战案例一：Admin 仪表盘布局</a></h3>
+<blockquote>
+<p>目标：构建包含侧边导航、头部工具栏、四象限数据卡片、活动列表的仪表盘界面。</p>
+</blockquote>
+<p><strong>需求概述</strong></p>
+<ul>
+<li>固定侧栏宽度，提供 logo、菜单、用户信息；</li>
+<li>顶部工具栏包含搜索、通知、快速操作按钮；</li>
+<li>主内容区使用 Responsive Grid 布局；</li>
+<li>暗色主题视觉风格。</li>
+</ul>
+<p><strong>实现步骤</strong></p>
+<ol>
+<li><strong>布局骨架</strong></li>
+</ol>
+<pre><code class="language-tsx">export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;div className="grid min-h-screen grid-cols-[260px_1fr] bg-slate-950 text-slate-100"&gt;
+      &lt;aside className="flex flex-col border-r border-slate-900/80 bg-slate-900/60"&gt;
+        {/* Sidebar Content */}
+      &lt;/aside&gt;
+      &lt;section className="flex flex-col"&gt;
+        &lt;header className="flex items-center justify-between border-b border-slate-900/80 bg-slate-950/90 px-8 py-4 backdrop-blur supports-[backdrop-filter]:bg-slate-950/60"&gt;
+          {/* Toolbar */}
+        &lt;/header&gt;
+        &lt;main className="flex-1 overflow-y-auto px-8 py-10"&gt;{children}&lt;/main&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ol start="2">
+<li><strong>侧边导航</strong></li>
+</ol>
+<pre><code class="language-tsx">const Sidebar = () =&gt; (
+  &lt;aside className="flex h-full flex-col px-6 py-8"&gt;
+    &lt;div className="flex items-center gap-3"&gt;
+      &lt;span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/20 text-2xl font-bold text-indigo-400"&gt;
+        Σ
+      &lt;/span&gt;
+      &lt;div className="flex flex-col"&gt;
+        &lt;span className="text-lg font-semibold tracking-tight"&gt;SigmaCloud&lt;/span&gt;
+        &lt;span className="text-xs text-slate-400"&gt;Analytics Platform&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;nav className="mt-10 space-y-2 text-sm font-medium"&gt;
+      {[
+        { label: "总览", icon: "ri-dashboard-line" },
+        { label: "数据模型", icon: "ri-database-2-line" },
+        { label: "实时监控", icon: "ri-pulse-line" },
+        { label: "报告中心", icon: "ri-pie-chart-2-line" },
+        { label: "自动化工作流", icon: "ri-magic-line" },
+      ].map((item) =&gt; (
+        &lt;a
+          key={item.label}
+          className="flex items-center gap-3 rounded-lg px-3 py-2 text-slate-300 transition hover:bg-slate-800/40 hover:text-white"
+        &gt;
+          &lt;i className={`${item.icon} text-lg`} /&gt;
+          {item.label}
+        &lt;/a&gt;
+      ))}
+    &lt;/nav&gt;
+  &lt;/aside&gt;
+);
+</code></pre>
+<ol start="3">
+<li><strong>头部工具栏</strong></li>
+</ol>
+<pre><code class="language-tsx">const Toolbar = () =&gt; (
+  &lt;header className="flex items-center justify-between border-b border-slate-900/80 bg-slate-950/90 px-8 py-4 backdrop-blur"&gt;
+    &lt;div className="relative"&gt;
+      &lt;input
+        type="search"
+        placeholder="搜索仪表盘、客户、报告..."
+        className="w-80 rounded-xl border border-slate-800 bg-slate-900/70 px-4 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+      /&gt;
+      &lt;kbd className="pointer-events-none absolute inset-y-0 right-2 flex items-center rounded-md border border-slate-800 bg-slate-900/80 px-2 text-[11px] font-semibold text-slate-500"&gt;
+        ⌘K
+      &lt;/kbd&gt;
+    &lt;/div&gt;
+    &lt;div className="flex items-center gap-3"&gt;
+      &lt;button className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-800 bg-slate-900/70 text-slate-300 transition hover:border-slate-700 hover:text-white"&gt;
+        &lt;i className="ri-notification-3-line text-lg" /&gt;
+      &lt;/button&gt;
+      &lt;button className="flex items-center gap-3 rounded-full border border-slate-800 bg-slate-900/70 px-3 py-2 pr-4 text-sm text-slate-200 transition hover:border-slate-700 hover:text-white"&gt;
+        &lt;span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-sky-500 text-sm font-semibold text-white"&gt;
+          JL
+        &lt;/span&gt;
+        &lt;span className="flex flex-col"&gt;
+          &lt;span className="font-semibold"&gt;Joy Lin&lt;/span&gt;
+          &lt;span className="text-xs text-slate-400"&gt;产品负责人&lt;/span&gt;
+        &lt;/span&gt;
+        &lt;i className="ri-arrow-down-s-line text-lg text-slate-500" /&gt;
+      &lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/header&gt;
+);
+</code></pre>
+<ol start="4">
+<li><strong>数据统计卡片</strong></li>
+</ol>
+<pre><code class="language-tsx">const StatsCards = () =&gt; (
+  &lt;section className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4"&gt;
+    {[
+      { title: "活跃用户", value: "58,240", change: "+12.4%", trend: "up" },
+      { title: "MRR（月度持续营收）", value: "$284K", change: "+8.1%", trend: "up" },
+      { title: "客户留存率", value: "92.6%", change: "+2.8%", trend: "up" },
+      { title: "平均响应时间", value: "320ms", change: "-4.2%", trend: "down" },
+    ].map((item) =&gt; (
+      &lt;article
+        key={item.title}
+        className="rounded-2xl border border-slate-900/80 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/40 transition hover:border-slate-700 hover:shadow-indigo-500/10"
+      &gt;
+        &lt;header className="flex items-center justify-between"&gt;
+          &lt;h3 className="text-sm font-semibold uppercase tracking-widest text-slate-400"&gt;
+            {item.title}
+          &lt;/h3&gt;
+          &lt;span
+            className={`inline-flex items-center gap-1 text-xs font-semibold ${
+              item.trend === "up" ? "text-emerald-400" : "text-rose-400"
+            }`}
+          &gt;
+            &lt;i className={`ri-arrow-${item.trend === "up" ? "up" : "down"}-s-line text-base`} /&gt;
+            {item.change}
+          &lt;/span&gt;
+        &lt;/header&gt;
+        &lt;div className="mt-5 text-4xl font-bold tracking-tight text-white"&gt;{item.value}&lt;/div&gt;
+        &lt;p className="mt-3 text-sm text-slate-400"&gt;
+          与上周相比 {item.trend === "up" ? "增长" : "降低"}，建议持续观察。
+        &lt;/p&gt;
+      &lt;/article&gt;
+    ))}
+  &lt;/section&gt;
+);
+</code></pre>
+<ol start="5">
+<li><strong>活动时间线 &amp; 表格</strong></li>
+</ol>
+<pre><code class="language-tsx">const ActivityTimeline = () =&gt; (
+  &lt;section className="mt-10 grid grid-cols-1 gap-6 xl:grid-cols-[2fr_3fr]"&gt;
+    &lt;article className="rounded-2xl border border-slate-900/80 bg-slate-900/60 p-6"&gt;
+      &lt;header className="flex items-center justify-between"&gt;
+        &lt;h3 className="text-lg font-semibold text-white"&gt;活动时间线&lt;/h3&gt;
+        &lt;button className="text-sm font-medium text-indigo-400 hover:text-indigo-300"&gt;
+          查看全部
+        &lt;/button&gt;
+      &lt;/header&gt;
+      &lt;ol className="mt-6 space-y-6 border-l border-slate-800 pl-6"&gt;
+        {[
+          {
+            time: "09:20",
+            title: "API 错误率突增",
+            description: "对北美区域 API 请求进行限流，错误率恢复正常。",
+            badge: "重要",
+          },
+          {
+            time: "11:05",
+            title: "新的 SaaS 客户入驻",
+            description: "签署企业套餐合同，预计月度营收增长 20%。",
+            badge: "增长",
+          },
+          {
+            time: "13:45",
+            title: "发布 v2.5.0",
+            description: "新增工作流可视化功能，修复 12 个 bug。",
+            badge: "发布",
+          },
+        ].map((item) =&gt; (
+          &lt;li key={item.title} className="relative pl-6"&gt;
+            &lt;span className="absolute left-[-1.56rem] top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-indigo-500 bg-indigo-500/20"&gt;
+              &lt;span className="h-1.5 w-1.5 rounded-full bg-indigo-400" /&gt;
+            &lt;/span&gt;
+            &lt;div className="flex items-center gap-3"&gt;
+              &lt;time className="text-xs uppercase tracking-widest text-slate-500"&gt;{item.time}&lt;/time&gt;
+              &lt;span className="inline-flex items-center rounded-full border border-slate-800 px-2 py-0.5 text-[11px] font-semibold text-slate-400"&gt;
+                {item.badge}
+              &lt;/span&gt;
+            &lt;/div&gt;
+            &lt;h4 className="mt-2 text-base font-semibold text-slate-100"&gt;{item.title}&lt;/h4&gt;
+            &lt;p className="text-sm text-slate-400"&gt;{item.description}&lt;/p&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ol&gt;
+    &lt;/article&gt;
+    &lt;article className="rounded-2xl border border-slate-900/80 bg-slate-900/60 p-6"&gt;
+      &lt;header className="flex items-center justify-between"&gt;
+        &lt;h3 className="text-lg font-semibold text-white"&gt;客户活跃度表&lt;/h3&gt;
+        &lt;div className="flex items-center gap-2 text-xs text-slate-400"&gt;
+          &lt;span className="inline-flex h-3 w-3 rounded-full bg-emerald-400/80" /&gt;
+          活跃
+          &lt;span className="inline-flex h-3 w-3 rounded-full bg-amber-400/80" /&gt;
+          观察
+          &lt;span className="inline-flex h-3 w-3 rounded-full bg-rose-400/80" /&gt;
+          风险
+        &lt;/div&gt;
+      &lt;/header&gt;
+      &lt;div className="mt-6 overflow-hidden rounded-xl border border-slate-900/80"&gt;
+        &lt;table className="min-w-full divide-y divide-slate-900/80"&gt;
+          &lt;thead className="bg-slate-900/70 text-xs uppercase tracking-widest text-slate-400"&gt;
+            &lt;tr&gt;
+              &lt;th scope="col" className="px-4 py-3 text-left"&gt;
+                客户
+              &lt;/th&gt;
+              &lt;th scope="col" className="px-4 py-3 text-left"&gt;
+                活跃度
+              &lt;/th&gt;
+              &lt;th scope="col" className="px-4 py-3 text-right"&gt;
+                本月收入
+              &lt;/th&gt;
+              &lt;th scope="col" className="px-4 py-3 text-right"&gt;
+                趋势
+              &lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody className="divide-y divide-slate-900/60 text-sm"&gt;
+            {[
+              { name: "Northwind", revenue: "$84,600", trend: "+14.3%", status: "active" },
+              { name: "Acme Corp", revenue: "$56,280", trend: "-3.1%", status: "watch" },
+              { name: "Globex Inc", revenue: "$42,910", trend: "+5.8%", status: "active" },
+              { name: "Initech", revenue: "$18,750", trend: "-12.4%", status: "risk" },
+            ].map((item) =&gt; (
+              &lt;tr key={item.name} className="hover:bg-slate-900/60"&gt;
+                &lt;td className="px-4 py-3"&gt;
+                  &lt;div className="flex items-center gap-3"&gt;
+                    &lt;span className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-800 text-sm font-semibold text-slate-200"&gt;
+                      {item.name.slice(0, 2).toUpperCase()}
+                    &lt;/span&gt;
+                    &lt;div&gt;
+                      &lt;div className="font-semibold text-slate-100"&gt;{item.name}&lt;/div&gt;
+                      &lt;div className="text-xs text-slate-500"&gt;SaaS 企业客户&lt;/div&gt;
+                    &lt;/div&gt;
+                  &lt;/div&gt;
+                &lt;/td&gt;
+                &lt;td className="px-4 py-3"&gt;
+                  &lt;span
+                    className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${
+                      item.status === "active"
+                        ? "bg-emerald-500/15 text-emerald-300"
+                        : item.status === "watch"
+                        ? "bg-amber-500/15 text-amber-300"
+                        : "bg-rose-500/15 text-rose-300"
+                    }`}
+                  &gt;
+                    &lt;span className="inline-flex h-2 w-2 rounded-full bg-current" /&gt;
+                    {item.status === "active" ? "活跃" : item.status === "watch" ? "观察" : "风险"}
+                  &lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td className="px-4 py-3 text-right font-semibold text-slate-100"&gt;{item.revenue}&lt;/td&gt;
+                &lt;td
+                  className={`px-4 py-3 text-right text-sm font-semibold ${
+                    item.trend.startsWith("+") ? "text-emerald-400" : "text-rose-400"
+                  }`}
+                &gt;
+                  {item.trend}
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/div&gt;
+    &lt;/article&gt;
+  &lt;/section&gt;
+);
+</code></pre>
+<p><strong>可访问性与优化</strong></p>
+<ul>
+<li>为交互元素添加 <code>focus-visible</code> 样式，如 <code>focus-visible:outline</code>；</li>
+<li>使用 <code>aria-label</code> 提升可读性；</li>
+<li>通过 <code>prefers-reduced-motion</code> 变体控制动画；</li>
+<li>使用 <code>@apply</code> 精简类名，适度即可。</li>
+</ul>
+<h3 id="26-实战案例二内容营销落地页"><a class="header" href="#26-实战案例二内容营销落地页">2.6 实战案例二：内容营销落地页</a></h3>
+<blockquote>
+<p>目标：构建一个包含 Hero、功能亮点、客户案例、CTA 的营销页面，兼顾移动端体验。</p>
+</blockquote>
+<p><strong>设计要点</strong></p>
+<ul>
+<li>Hero 区使用 <code>grid</code> + <code>flex</code>，确保移动端优先；</li>
+<li>功能模块使用 <code>grid-cols-1 sm:grid-cols-2 lg:grid-cols-3</code>；</li>
+<li>客户案例采用 <code>card</code> + <code>shadow</code> 组合；</li>
+<li>CTA 区域使用渐变背景 + 玻璃质感。</li>
+</ul>
+<p><strong>核心代码片段</strong></p>
+<pre><code class="language-tsx">const FeatureHighlight = () =&gt; (
+  &lt;section className="mx-auto max-w-6xl px-6 py-24"&gt;
+    &lt;header className="mx-auto max-w-2xl text-center"&gt;
+      &lt;h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl"&gt;
+        面向增长团队的全栈分析平台
+      &lt;/h2&gt;
+      &lt;p className="mt-4 text-lg text-slate-600"&gt;
+        借助实时数据管道、行为洞察、自动化实验，帮助增长团队在数小时内验证策略。
+      &lt;/p&gt;
+    &lt;/header&gt;
+    &lt;div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"&gt;
+      {[
+        {
+          title: "即时数据洞察",
+          description: "内置 120+ 指标模板，实时监控业务健康度。",
+          icon: "ri-flashlight-line",
+        },
+        {
+          title: "自定义仪表盘",
+          description: "拖拽式配置，团队共享，自定义权限控制。",
+          icon: "ri-dashboard-3-line",
+        },
+        {
+          title: "全渠道归因",
+          description: "整合多渠道触点数据，识别高价值用户路径。",
+          icon: "ri-git-merge-line",
+        },
+        {
+          title: "自动化实验",
+          description: "支持 A/B、Mutli-armed Bandit、Feature flag。",
+          icon: "ri-flask-line",
+        },
+        {
+          title: "安全合规",
+          description: "通过 SOC 2 Type II、ISO 27001 等安全认证。",
+          icon: "ri-shield-check-line",
+        },
+        {
+          title: "开放 API",
+          description: "GraphQL + REST API，轻松整合现有堆栈。",
+          icon: "ri-plug-line",
+        },
+      ].map((item) =&gt; (
+        &lt;article key={item.title} className="group rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-sm transition hover:-translate-y-1 hover:border-indigo-200 hover:shadow-lg"&gt;
+          &lt;span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/10 text-2xl text-indigo-500"&gt;
+            &lt;i className={item.icon} /&gt;
+          &lt;/span&gt;
+          &lt;h3 className="mt-6 text-xl font-semibold text-slate-900"&gt;{item.title}&lt;/h3&gt;
+          &lt;p className="mt-3 text-sm text-slate-600"&gt;{item.description}&lt;/p&gt;
+          &lt;a href="#" className="mt-4 inline-flex items-center text-sm font-semibold text-indigo-500 hover:text-indigo-400"&gt;
+            了解详情 &lt;i className="ri-arrow-right-up-line ml-1 text-base" /&gt;
+          &lt;/a&gt;
+        &lt;/article&gt;
+      ))}
+    &lt;/div&gt;
+  &lt;/section&gt;
+);
+</code></pre>
+<p><strong>响应式策略</strong></p>
+<ul>
+<li>使用 <code>sm:</code>、<code>md:</code> 控制列数；</li>
+<li>使用 <code>order</code> 调整移动端顺序；</li>
+<li>使用 <code>aspect-[16/9]</code> 控制媒体比例；</li>
+<li>使用 <code>max-w-xl</code> 控制文本宽度，提高可读性。</li>
+</ul>
+<h3 id="27-模块进阶与实践建议"><a class="header" href="#27-模块进阶与实践建议">2.7 模块进阶与实践建议</a></h3>
+<ul>
+<li>建立个人 <code>utility</code> 速查表，将常用组合记录在 <code>docs/utility-cheatsheet.md</code>；</li>
+<li>将常用布局封装成 React/Vue 组件，或在 Storybook 作为 Layout Stories；</li>
+<li>实践：重构现有项目中的两页界面，使用 Tailwind 原子类替换传统 CSS；</li>
+<li>观察：构建后产物大小与原 CSS 对比，记录差异。</li>
+</ul>
+<h3 id="28-模块自测清单"><a class="header" href="#28-模块自测清单">2.8 模块自测清单</a></h3>
+<ul>
+<li>能否在 30 分钟内实现响应式仪表盘布局？</li>
+<li>是否理解 <code>space-x</code> 与 <code>gap</code> 的区别与适用场景？</li>
+<li>能否解释 <code>container queries</code> 的配置方式并提供示例？</li>
+<li>在 Lighthouse 中，布局页面的可访问性评分是否 ≥ 95？</li>
+</ul>
+<hr />
+<h2 id="模块-3设计系统与主题定制"><a class="header" href="#模块-3设计系统与主题定制">模块 3：设计系统与主题定制</a></h2>
+<blockquote>
+<p>目标：掌握如何通过 <code>tailwind.config.js</code> 构建统一的设计语言，建立可复用的组件体系，并通过插件扩展 Tailwind 功能。</p>
+</blockquote>
+<h3 id="31-模块学习目标"><a class="header" href="#31-模块学习目标">3.1 模块学习目标</a></h3>
+<ul>
+<li>理解 Tailwind 主题系统结构：<code>theme</code>, <code>extend</code>, <code>plugins</code>；</li>
+<li>能够定义品牌色板、字体、间距 scale，并与设计 tokens 映射；</li>
+<li>使用 <code>@layer</code>、<code>@apply</code>、<code>@variants</code> 构造复用组件；</li>
+<li>构建基础原子组件库：按钮、输入框、表单、导航条；</li>
+<li>掌握插件体系（官方插件 <code>forms</code>, <code>typography</code>, <code>aspect-ratio</code> 及自定义插件）。</li>
+</ul>
+<h3 id="32-tailwindconfigjs-主题扩展"><a class="header" href="#32-tailwindconfigjs-主题扩展">3.2 <code>tailwind.config.js</code> 主题扩展</a></h3>
+<p><strong>设计 tokens 建议</strong></p>
+<ul>
+<li>颜色：基于品牌色，覆盖 50-900 阶梯；</li>
+<li>字体：定义 <code>fontFamily</code>（display, body, mono）；</li>
+<li>间距：参考 4/8 模式，增加 <code>18</code>, <code>22</code>, <code>26</code> 等；</li>
+<li>阴影：定义自有 Shadow Scheme；</li>
+<li>动画：定义关键帧，作为 <code>animation</code>。</li>
+</ul>
+<pre><code class="language-js">const defaultTheme = require("tailwindcss/defaultTheme");
+
+module.exports = {
+  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          25: "#f5f8ff",
+          50: "#eef3ff",
+          100: "#dce5ff",
+          200: "#b8caff",
+          300: "#93afff",
+          400: "#6f94ff",
+          500: "#4a78ff",
+          600: "#375ddb",
+          700: "#2846a9",
+          800: "#1b3077",
+          900: "#0f1b45",
+        },
+      },
+      fontFamily: {
+        display: ["'SF Pro Display'", ...defaultTheme.fontFamily.sans],
+        sans: ["'Inter'", ...defaultTheme.fontFamily.sans],
+      },
+      spacing: {
+        18: "4.5rem",
+        22: "5.5rem",
+        26: "6.5rem",
+      },
+      boxShadow: {
+        brand: "0 24px 60px -12px rgba(74, 120, 255, 0.25)",
+        soft: "0 12px 40px -8px rgba(15, 27, 69, 0.25)",
+      },
+      borderRadius: {
+        xl: "1.25rem",
+        "3xl": "2rem",
+      },
+      keyframes: {
+        "fade-in-up": {
+          "0%": { opacity: 0, transform: "translateY(20px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
+        },
+      },
+      animation: {
+        "fade-in-up": "fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
+      },
+    },
+  },
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/aspect-ratio"),
+  ],
+};
+</code></pre>
+<h3 id="33-设计系统映射流程"><a class="header" href="#33-设计系统映射流程">3.3 设计系统映射流程</a></h3>
+<ol>
+<li><strong>收集设计 tokens</strong>：从设计稿（Figma/Sketch）导出颜色、字体、间距；</li>
+<li><strong>在 <code>tailwind.config.js</code> 中定义</strong>：使用 <code>extend</code> 占位；</li>
+<li><strong>建立 tokens 文档</strong>：<code>docs/design-tokens.md</code> 中记录 token 名称、用途；</li>
+<li><strong>同步设计与开发</strong>：通过 Figma Variables 与 Tailwind <code>theme()</code> 对齐；</li>
+<li><strong>建立组件规范</strong>：包含组件状态、交互说明、可访问性要求。</li>
+</ol>
+<h3 id="34-使用-layer-与-apply-构建组件"><a class="header" href="#34-使用-layer-与-apply-构建组件">3.4 使用 <code>@layer</code> 与 <code>@apply</code> 构建组件</a></h3>
+<p>Tailwind 建议少量使用 <code>@apply</code>，但在设计系统中可定义基础组件。</p>
+<pre><code class="language-css">@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn bg-brand-500 text-white shadow-brand hover:bg-brand-400;
+  }
+  .btn-secondary {
+    @apply btn border border-slate-200 bg-white text-slate-900 hover:border-brand-200 hover:text-brand-600;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-slate-600 hover:bg-slate-100;
+  }
+}
+</code></pre>
+<p><strong>表单控件样式（配合 <code>@tailwindcss/forms</code>）</strong></p>
+<pre><code class="language-css">@layer components {
+  .input {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-brand-400 focus:ring-4 focus:ring-brand-100;
+  }
+  .input-lg {
+    @apply input h-12 px-4 text-base;
+  }
+  .form-label {
+    @apply mb-2 block text-sm font-medium text-slate-700;
+  }
+  .form-description {
+    @apply mt-1 text-sm text-slate-500;
+  }
+}
+</code></pre>
+<h3 id="35-组件库落地步骤"><a class="header" href="#35-组件库落地步骤">3.5 组件库落地步骤</a></h3>
+<p><strong>步骤 1：定义色板与状态</strong></p>
+<ul>
+<li>标准状态：默认、悬停、聚焦、禁用、加载；</li>
+<li>语义状态：成功、警告、错误、信息；</li>
+<li>分组 tokens：<code>color-surface</code>, <code>color-border</code>, <code>color-text-primary</code>。</li>
+</ul>
+<p><strong>步骤 2：建立 Storybook</strong></p>
+<ul>
+<li>安装 <code>@storybook/react</code>；</li>
+<li>配置全局装饰器引入 Tailwind；</li>
+<li>为每个组件添加 Controls、Docs；</li>
+<li>记录交互状态：<code>hover</code>, <code>focus</code>, <code>disabled</code>。</li>
+</ul>
+<p><strong>步骤 3：可访问性</strong></p>
+<ul>
+<li>使用 <code>aria-*</code> 属性（<code>aria-expanded</code>, <code>aria-controls</code>）；</li>
+<li>封装 <code>VisuallyHidden</code> 组件 (<code>sr-only</code>)；</li>
+<li>添加键盘导航支持（<code>onKeyDown</code> + <code>focus-visible</code>）。</li>
+</ul>
+<p><strong>示例：按钮组件</strong></p>
+<pre><code class="language-tsx">import clsx from "clsx";
+
+type ButtonVariant = "primary" | "secondary" | "ghost";
+type ButtonSize = "sm" | "md" | "lg";
+
+const sizeClasses: Record&lt;ButtonSize, string&gt; = {
+  sm: "px-3 py-2 text-sm",
+  md: "px-4 py-2 text-sm",
+  lg: "px-5 py-3 text-base",
+};
+
+export function Button({
+  variant = "primary",
+  size = "md",
+  children,
+  className,
+  ...props
+}: React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt; &amp; {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+}) {
+  return (
+    &lt;button
+      className={clsx(
+        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 disabled:cursor-not-allowed disabled:opacity-60",
+        sizeClasses[size],
+        variant === "primary" &amp;&amp; "bg-brand-500 text-white shadow-brand hover:bg-brand-400",
+        variant === "secondary" &amp;&amp;
+          "border border-slate-200 bg-white text-slate-900 hover:border-brand-200 hover:text-brand-600",
+        variant === "ghost" &amp;&amp; "bg-transparent text-slate-600 hover:bg-slate-100",
+        className,
+      )}
+      {...props}
+    &gt;
+      {children}
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+<h3 id="36-插件体系与自定义插件"><a class="header" href="#36-插件体系与自定义插件">3.6 插件体系与自定义插件</a></h3>
+<p>Tailwind 插件用于扩展 <code>utilities</code>, <code>components</code>, <code>base</code> 层。</p>
+<p><strong>自定义渐变文字插件</strong></p>
+<pre><code class="language-js">// tailwind.config.js
+plugins: [
+  function ({ matchUtilities, theme }) {
+    matchUtilities(
+      {
+        "bg-grid": (value) =&gt; ({
+          backgroundSize: value,
+          backgroundImage:
+            "linear-gradient(to right, rgba(148, 163, 184, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(148, 163, 184, 0.1) 1px, transparent 1px)",
+        }),
+      },
+      {
+        values: theme("spacing"),
+      },
+    );
+  },
+];
+</code></pre>
+<p><strong>官方插件示例</strong></p>
+<ul>
+<li><code>@tailwindcss/forms</code>：优化表单控件样式；</li>
+<li><code>@tailwindcss/typography</code> (<code>prose</code>)：用于富文本排版；</li>
+<li><code>@tailwindcss/aspect-ratio</code>：控制媒体比例；</li>
+<li><code>@tailwindcss/container-queries</code>：容器查询支持。</li>
+</ul>
+<h3 id="37-实战案例打造品牌化组件库"><a class="header" href="#37-实战案例打造品牌化组件库">3.7 实战案例：打造品牌化组件库</a></h3>
+<blockquote>
+<p>目标：为 SaaS 产品构建基础组件库，包含 Button、Input、Badge、Card、Modal、导航菜单，并在 Storybook 中展示。</p>
+</blockquote>
+<ol>
+<li><strong>项目结构建议</strong></li>
+</ol>
+<pre><code>src/
+  components/
+    ui/
+      Button.tsx
+      Badge.tsx
+      Card.tsx
+      Modal.tsx
+      Navigation.tsx
+  styles/
+    tailwind.css
+  stories/
+    Button.stories.tsx
+</code></pre>
+<ol start="2">
+<li><strong>Badge 组件示例</strong></li>
+</ol>
+<pre><code class="language-tsx">const badgeVariants = {
+  subtle: "bg-brand-500/10 text-brand-600 ring-1 ring-inset ring-brand-500/20",
+  solid: "bg-brand-500 text-white shadow-brand",
+  outline: "border border-slate-800 text-slate-300",
+};
+
+export function Badge({
+  variant = "subtle",
+  children,
+  className,
+}: {
+  variant?: keyof typeof badgeVariants;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    &lt;span
+      className={clsx(
+        "inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wider",
+        badgeVariants[variant],
+        className,
+      )}
+    &gt;
+      {children}
+    &lt;/span&gt;
+  );
+}
+</code></pre>
+<ol start="3">
+<li><strong>Modal 组件结构</strong></li>
+</ol>
+<pre><code class="language-tsx">export function Modal({ open, onClose, title, description, children }: ModalProps) {
+  if (!open) return null;
+  return (
+    &lt;div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur"&gt;
+      &lt;div className="absolute inset-0" aria-hidden="true" onClick={onClose} /&gt;
+      &lt;div
+        role="dialog"
+        aria-modal="true"
+        className="relative z-10 w-full max-w-lg rounded-3xl border border-slate-800 bg-slate-950/95 p-8 shadow-2xl shadow-brand"
+      &gt;
+        &lt;header className="flex items-start justify-between gap-6"&gt;
+          &lt;div&gt;
+            &lt;h2 className="text-2xl font-semibold text-white"&gt;{title}&lt;/h2&gt;
+            {description &amp;&amp; &lt;p className="mt-2 text-sm text-slate-400"&gt;{description}&lt;/p&gt;}
+          &lt;/div&gt;
+          &lt;button
+            onClick={onClose}
+            aria-label="关闭"
+            className="rounded-full border border-slate-800 bg-slate-900/70 p-2 text-slate-400 transition hover:text-white"
+          &gt;
+            &lt;i className="ri-close-line text-lg" /&gt;
+          &lt;/button&gt;
+        &lt;/header&gt;
+        &lt;div className="mt-6 space-y-4 text-sm text-slate-200"&gt;{children}&lt;/div&gt;
+        &lt;footer className="mt-8 flex items-center justify-end gap-3"&gt;
+          &lt;button
+            onClick={onClose}
+            className="inline-flex items-center rounded-xl border border-slate-700 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-slate-500 hover:text-white"
+          &gt;
+            取消
+          &lt;/button&gt;
+          &lt;button className="inline-flex items-center gap-2 rounded-xl bg-brand-500 px-5 py-2 text-sm font-semibold text-white shadow-brand transition hover:bg-brand-400"&gt;
+            确认
+          &lt;/button&gt;
+        &lt;/footer&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<ol start="4">
+<li><strong>Storybook 文档</strong></li>
+</ol>
+<ul>
+<li>使用 <code>docsPage</code> 展示使用方式、Props 表；</li>
+<li>添加 <code>play</code> 函数用于交互测试；</li>
+<li>通过 <code>storybook-addon-a11y</code> 检测可访问性。</li>
+</ul>
+<pre><code class="language-tsx">import type { Meta, StoryObj } from "@storybook/react";
+import { Button } from "../components/ui/Button";
+
+const meta: Meta&lt;typeof Button&gt; = {
+  title: "UI/Button",
+  component: Button,
+  args: { children: "立即体验", variant: "primary" },
+  parameters: {
+    layout: "centered",
+    docs: {
+      description: {
+        component:
+          "Button 组件用于触发关键操作，提供 primary/secondary/ghost 多种视觉风格，对应不同层级的操作优先级。",
+      },
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj&lt;typeof Button&gt;;
+
+export const Primary: Story = {};
+export const Secondary: Story = { args: { variant: "secondary" } };
+export const Ghost: Story = { args: { variant: "ghost" } };
+</code></pre>
+<h3 id="38-主题多品牌支持"><a class="header" href="#38-主题多品牌支持">3.8 主题多品牌支持</a></h3>
+<ul>
+<li>使用 <code>data-theme</code> 切换主题；</li>
+<li>Tailwind 4.0 计划支持 CSS 变量主题化，可提前使用 PostCSS 变量；</li>
+<li>使用 <code>@property</code> 定义可动画的 CSS 自定义属性。</li>
+</ul>
+<pre><code class="language-css">:root {
+  --color-surface: 255 255 255;
+  --color-foreground: 15 23 42;
+}
+
+[data-theme="dark"] {
+  --color-surface: 15 23 42;
+  --color-foreground: 226 232 240;
+}
+
+.surface {
+  @apply bg-[rgb(var(--color-surface)/1)] text-[rgb(var(--color-foreground)/1)];
+}
+</code></pre>
+<h3 id="39-模块实践设计系统文档网站"><a class="header" href="#39-模块实践设计系统文档网站">3.9 模块实践：设计系统文档网站</a></h3>
+<blockquote>
+<p>构建一个 <code>Design System</code> 文档站（使用 Next.js + MDX），展示组件用法、tokens、示例。</p>
+</blockquote>
+<ul>
+<li>使用 <code>@next/mdx</code> + <code>contentlayer</code> 组织文档；</li>
+<li>为每个组件提供 Live Playground（使用 <code>@headlessui/react</code> + Tailwind）；</li>
+<li>集成 <code>chroma-js</code> 生成色板、显示对比度；</li>
+<li>提供「设计资源下载」与 <code>Figma</code> 链接。</li>
+</ul>
+<h3 id="310-模块自测清单"><a class="header" href="#310-模块自测清单">3.10 模块自测清单</a></h3>
+<ul>
+<li>是否能够独立定义品牌色板并在组件中复用？</li>
+<li>是否能通过 <code>@layer components</code> 创建按钮、输入框基础样式？</li>
+<li>是否编写至少 5 个 Storybook stories 并配置 Docs？</li>
+<li>是否知道如何在项目中引入 Tailwind 插件并验证生效？</li>
+</ul>
+<hr />
+<h2 id="模块-4状态变体响应式策略与交互增强"><a class="header" href="#模块-4状态变体响应式策略与交互增强">模块 4：状态变体、响应式策略与交互增强</a></h2>
+<blockquote>
+<p>目标：掌握 Tailwind 的 Variant 系统、暗黑模式、交互状态、动效与可访问性策略，使界面具备复杂交互能力。</p>
+</blockquote>
+<h3 id="41-模块学习目标"><a class="header" href="#41-模块学习目标">4.1 模块学习目标</a></h3>
+<ul>
+<li>熟练使用变体前缀：<code>hover</code>, <code>focus</code>, <code>active</code>, <code>disabled</code>, <code>group-hover</code>, <code>peer</code>, <code>aria-*</code>, <code>data-*</code>；</li>
+<li>实现响应式导航、动态面板、手风琴等交互；</li>
+<li>了解暗黑模式 (<code>dark:</code>)、高对比度 (<code>high-contrast:</code>)、<code>prefers-reduced-motion</code> 等；</li>
+<li>设计动效（<code>transition</code>, <code>animation</code>, <code>scroll-behavior</code>）并控制性能；</li>
+<li>提升可访问性：焦点管理、ARIA 属性、键盘交互。</li>
+</ul>
+<h3 id="42-variant-机制与使用模式"><a class="header" href="#42-variant-机制与使用模式">4.2 Variant 机制与使用模式</a></h3>
+<p>Tailwind 支持多种变体组合，写法为 <code>{variant}:{class}</code>，也可以串联 <code>lg:hover:bg-brand-500</code>。</p>
+<p><strong>常见 Variant 列表</strong></p>
+<ul>
+<li>状态：<code>hover</code>, <code>focus</code>, <code>focus-visible</code>, <code>active</code>, <code>disabled</code>, <code>checked</code>, <code>visited</code></li>
+<li>组：<code>group-hover</code>, <code>group-focus</code>, <code>group-[.class]:</code></li>
+<li>兄弟：<code>peer-hover</code>, <code>peer-checked</code>, <code>peer-disabled</code></li>
+<li>属性：<code>aria-expanded</code>, <code>data-state=open</code></li>
+<li>媒体：<code>sm</code>, <code>md</code>, <code>lg</code>, <code>xl</code>, <code>2xl</code></li>
+<li>条件：<code>supports-[backdrop-filter]</code>, <code>motion-safe</code>, <code>motion-reduce</code></li>
+</ul>
+<p><strong>示例：复杂按钮状态</strong></p>
+<pre><code class="language-tsx">&lt;button className="inline-flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/70 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-brand-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400 disabled:cursor-not-allowed disabled:opacity-60 data-[state=loading]:cursor-progress data-[state=loading]:text-slate-400"&gt;
+  &lt;span className="sr-only"&gt;提交&lt;/span&gt;
+  &lt;span className="motion-safe:transition-transform motion-safe:duration-200 group-data-[state=loading]:translate-x-2"&gt;
+    提交
+  &lt;/span&gt;
+  &lt;span className="hidden h-4 w-4 animate-spin rounded-full border-[3px] border-brand-300 border-t-transparent data-[state=loading]:inline-flex" /&gt;
+&lt;/button&gt;
+</code></pre>
+<h3 id="43-group--peer--data-state-实战"><a class="header" href="#43-group--peer--data-state-实战">4.3 group / peer / data-state 实战</a></h3>
+<p><strong>Hover 展开导航</strong></p>
+<pre><code class="language-tsx">&lt;nav className="group relative inline-flex"&gt;
+  &lt;button className="inline-flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/70 px-4 py-2 text-sm text-slate-300 transition group-hover:border-slate-700 group-hover:text-white"&gt;
+    产品
+    &lt;i className="ri-arrow-down-s-line text-base transition group-hover:rotate-180" /&gt;
+  &lt;/button&gt;
+  &lt;div className="invisible absolute left-0 top-full z-20 mt-2 w-72 rounded-2xl border border-slate-800 bg-slate-900/95 p-4 opacity-0 shadow-2xl shadow-slate-950/40 transition group-hover:visible group-hover:opacity-100"&gt;
+    &lt;ul className="space-y-3 text-sm"&gt;
+      &lt;li className="rounded-xl p-3 transition hover:bg-slate-800/60"&gt;
+        &lt;h4 className="font-semibold text-white"&gt;实时分析&lt;/h4&gt;
+        &lt;p className="mt-1 text-slate-400"&gt;实时监测关键指标，支持多维钻取。&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li className="rounded-xl p-3 transition hover:bg-slate-800/60"&gt;
+        &lt;h4 className="font-semibold text-white"&gt;行为洞察&lt;/h4&gt;
+        &lt;p className="mt-1 text-slate-400"&gt;可视化用户旅程，自动识别高转化路径。&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+&lt;/nav&gt;
+</code></pre>
+<p><strong>peer 控制表单校验状态</strong></p>
+<pre><code class="language-tsx">&lt;label className="flex flex-col gap-2 text-sm font-medium text-slate-300"&gt;
+  &lt;span&gt;邮箱&lt;/span&gt;
+  &lt;input
+    type="email"
+    required
+    className="peer w-full rounded-xl border border-slate-800 bg-slate-900/70 px-4 py-3 text-sm text-slate-100 placeholder:text-slate-500 focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-500/20 invalid:border-rose-500 invalid:text-rose-200"
+    placeholder="you@example.com"
+  /&gt;
+  &lt;span className="invisible text-xs font-normal text-rose-300 peer-invalid:visible"&gt;
+    请输入有效的邮箱地址
+  &lt;/span&gt;
+&lt;/label&gt;
+</code></pre>
+<p><strong>data-state 控制手风琴</strong></p>
+<pre><code class="language-tsx">const AccordionItem = ({ title, content, value, open, onToggle }: Props) =&gt; (
+  &lt;div data-state={open ? "open" : "collapsed"} className="rounded-2xl border border-slate-800 bg-slate-900/60"&gt;
+    &lt;button
+      onClick={() =&gt; onToggle(value)}
+      className="flex w-full items-center justify-between px-6 py-4 text-left text-base font-semibold text-slate-100 transition hover:bg-slate-900/80 data-[state=open]:rounded-t-2xl"
+    &gt;
+      {title}
+      &lt;i className="ri-add-line text-xl transition data-[state=open]:rotate-45" /&gt;
+    &lt;/button&gt;
+    &lt;div className="grid overflow-hidden transition-all duration-300 ease-in-out data-[state=open]:grid-rows-[1fr] data-[state=open]:opacity-100 data-[state=collapsed]:grid-rows-[0fr] data-[state=collapsed]:opacity-0"&gt;
+      &lt;div className="px-6 pb-6 text-sm text-slate-400"&gt;{content}&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+);
+</code></pre>
+<h3 id="44-暗黑模式与主题切换"><a class="header" href="#44-暗黑模式与主题切换">4.4 暗黑模式与主题切换</a></h3>
+<ul>
+<li>Tailwind 默认使用 <code>media</code> 策略，通过 <code>prefers-color-scheme</code> 检测；</li>
+<li>可配置 <code>darkMode: "class"</code>，通过添加 <code>class="dark"</code> 控制；</li>
+<li>处理图片、图标：使用亮/暗模式专用资源；SVG 通过 <code>currentColor</code>；</li>
+<li>与 CSS 变量结合：<code>bg-[rgb(var(--surface)/1)] dark:bg-[rgb(var(--surface-dark)/1)]</code>。</li>
+</ul>
+<p><strong>暗黑模式切换组件</strong></p>
+<pre><code class="language-tsx">import { useEffect, useState } from "react";
+
+const themes = [
+  { label: "系统", value: "system", icon: "ri-computer-line" },
+  { label: "明亮", value: "light", icon: "ri-sun-line" },
+  { label: "暗黑", value: "dark", icon: "ri-moon-line" },
+];
+
+export function ThemeToggle() {
+  const [theme, setTheme] = useState("system");
+
+  useEffect(() =&gt; {
+    const root = window.document.documentElement;
+    if (theme === "system") {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      root.classList.toggle("dark", isDark);
+    } else {
+      root.classList.toggle("dark", theme === "dark");
+    }
+  }, [theme]);
+
+  return (
+    &lt;div className="inline-flex items-center gap-1 rounded-full border border-slate-800 bg-slate-900/80 p-1 text-xs font-semibold text-slate-400"&gt;
+      {themes.map((item) =&gt; (
+        &lt;button
+          key={item.value}
+          onClick={() =&gt; setTheme(item.value)}
+          className={`inline-flex items-center gap-1 rounded-full px-3 py-1 transition ${
+            theme === item.value ? "bg-slate-800 text-white shadow-inner shadow-slate-950/60" : ""
+          }`}
+        &gt;
+          &lt;i className={`${item.icon} text-sm`} /&gt;
+          {item.label}
+        &lt;/button&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+<h3 id="45-动效与过渡"><a class="header" href="#45-动效与过渡">4.5 动效与过渡</a></h3>
+<ul>
+<li>使用 <code>transition-{property} duration-{time} ease-{curve}</code> 控制；</li>
+<li>Tailwind 提供 <code>animate-spin</code>, <code>animate-ping</code>, <code>animate-bounce</code>, <code>animate-pulse</code>；</li>
+<li>自定义关键帧：在 <code>theme.extend.keyframes</code> 中定义；</li>
+<li>注意性能：避免在大量 DOM 元素上使用 <code>box-shadow</code> 动画，使用 <code>transform</code> 替代；</li>
+<li><code>motion-safe:</code> 与 <code>motion-reduce:</code> 变体，尊重用户设置。</li>
+</ul>
+<p><strong>渐进增强的滑入面板</strong></p>
+<pre><code class="language-tsx">&lt;aside className="fixed right-6 top-1/2 z-40 -translate-y-1/2 space-y-4"&gt;
+  {["消息提醒", "待办事项", "系统状态"].map((panel, index) =&gt; (
+    &lt;button
+      key={panel}
+      className="group relative flex items-center gap-3 rounded-full border border-slate-800 bg-slate-900/80 px-5 py-3 text-sm font-semibold text-slate-300 transition hover:-translate-y-1 hover:border-slate-700 hover:text-white motion-reduce:transition-none"
+    &gt;
+      &lt;span className="inline-flex h-2 w-2 animate-ping rounded-full bg-emerald-400 motion-reduce:hidden" /&gt;
+      {panel}
+      &lt;span className="absolute left-full ml-3 hidden rounded-xl border border-slate-800 bg-slate-900/80 px-4 py-2 text-xs text-slate-400 shadow-xl group-hover:block"&gt;
+        即刻查看 {panel}
+      &lt;/span&gt;
+    &lt;/button&gt;
+  ))}
+&lt;/aside&gt;
+</code></pre>
+<h3 id="46-交互实战响应式导航--动态面板"><a class="header" href="#46-交互实战响应式导航--动态面板">4.6 交互实战：响应式导航 + 动态面板</a></h3>
+<p><strong>需求</strong></p>
+<ul>
+<li>桌面端显示全导航，移动端折叠；</li>
+<li>支持暗黑模式、滚动隐藏；</li>
+<li>支持键盘导航与焦点管理。</li>
+</ul>
+<p><strong>实现片段</strong></p>
+<pre><code class="language-tsx">const links = [
+  { label: "产品", href: "#product" },
+  { label: "解决方案", href: "#solutions" },
+  { label: "价格", href: "#pricing" },
+  { label: "资源", href: "#resources" },
+  { label: "联系我们", href: "#contact" },
+];
+
+export function ResponsiveNav() {
+  const [open, setOpen] = useState(false);
+  return (
+    &lt;header className="sticky top-0 z-50 border-b border-slate-900/80 bg-slate-950/90 px-6 py-4 backdrop-blur transition-all duration-200"&gt;
+      &lt;div className="mx-auto flex max-w-6xl items-center justify-between"&gt;
+        &lt;a className="flex items-center gap-3 text-lg font-semibold text-white"&gt;
+          &lt;span className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-500/20 text-xl text-brand-400"&gt;
+            Λ
+          &lt;/span&gt;
+          NexusOps
+        &lt;/a&gt;
+        &lt;nav className="hidden items-center gap-1 text-sm font-medium text-slate-300 lg:flex"&gt;
+          {links.map((link) =&gt; (
+            &lt;a
+              key={link.label}
+              href={link.href}
+              className="rounded-lg px-3 py-2 transition hover:bg-slate-800/50 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+            &gt;
+              {link.label}
+            &lt;/a&gt;
+          ))}
+        &lt;/nav&gt;
+        &lt;div className="flex items-center gap-3"&gt;
+          &lt;ThemeToggle /&gt;
+          &lt;button
+            onClick={() =&gt; setOpen((prev) =&gt; !prev)}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-800 bg-slate-900/70 text-slate-300 transition hover:border-slate-700 hover:text-white lg:hidden"
+          &gt;
+            &lt;i className={`ri-${open ? "close" : "menu"}-line text-xl`} /&gt;
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div
+        id="mobile-nav"
+        className="grid overflow-hidden transition-all duration-300 lg:hidden motion-reduce:duration-0 data-[open=true]:grid-rows-[1fr] data-[open=false]:grid-rows-[0fr]"
+        data-open={open}
+      &gt;
+        &lt;div className="mt-4 space-y-3 rounded-2xl border border-slate-900/80 bg-slate-900/70 p-4 text-sm font-medium text-slate-200"&gt;
+          {links.map((link) =&gt; (
+            &lt;a
+              key={link.label}
+              href={link.href}
+              className="block rounded-xl px-3 py-2 transition hover:bg-slate-800/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400"
+            &gt;
+              {link.label}
+            &lt;/a&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/header&gt;
+  );
+}
+</code></pre>
+<h3 id="47-模块自测清单"><a class="header" href="#47-模块自测清单">4.7 模块自测清单</a></h3>
+<ul>
+<li>是否能使用 <code>group</code>, <code>peer</code>, <code>data-state</code> 构建组件状态？</li>
+<li>能否完成暗黑模式切换，且支持系统偏好同步？</li>
+<li>是否在动效中考虑 <code>prefers-reduced-motion</code>？</li>
+<li>是否构建具备键盘导航、焦点管理的导航组件？</li>
+</ul>
+<hr />
+<h2 id="模块-5工程化整合性能优化与部署"><a class="header" href="#模块-5工程化整合性能优化与部署">模块 5：工程化整合、性能优化与部署</a></h2>
+<blockquote>
+<p>目标：掌握 Tailwind 在生产环境的工程化流程，包括构建优化、框架整合、CI/CD 与设计协同。</p>
+</blockquote>
+<h3 id="51-模块学习目标"><a class="header" href="#51-模块学习目标">5.1 模块学习目标</a></h3>
+<ul>
+<li>了解生产构建流程：Purge、压缩、代码拆分；</li>
+<li>与框架集成：React/Vue/Next.js/Nuxt/Svelte/Laravel；</li>
+<li>熟悉 <code>postcss</code> 管道、<code>@tailwind</code> 层级、<code>@apply</code>；</li>
+<li>掌握 Tree Shaking、动态类名 safelist；</li>
+<li>配置 CI/CD，完成自动化测试、视觉回归；</li>
+<li>处理国际化、RTL、可访问性测试。</li>
+</ul>
+<h3 id="52-构建优化策略"><a class="header" href="#52-构建优化策略">5.2 构建优化策略</a></h3>
+<ul>
+<li><strong>精确配置 <code>content</code></strong>：包含 <code>.tsx</code>, <code>.jsx</code>, <code>.mdx</code>, <code>.html</code>；</li>
+<li><strong>使用 <code>safelist</code></strong>：对于动态生成类名（如 <code>bg-${color}</code>）使用 <code>safelist</code>；</li>
+<li><strong>压缩 CSS</strong>：postcss <code>cssnano</code>、<code>@fullhuman/postcss-purgecss</code>（Tailwind 3+ 不推荐，JIT 自动裁剪）；</li>
+<li><strong>关键路径 CSS</strong>：可使用 <code>@tailwindcss/typography</code> + <code>preload</code>；</li>
+<li><strong>分析产物</strong>：使用 <code>npx tailwindcss -o build.css --minify --content "src/**/*.{ts,tsx,html}"</code> 查看大小；</li>
+<li><strong>拆分 CSS</strong>：通过 <code>@layer</code> 与 <code>@apply</code> 组织组件。</li>
+</ul>
+<p><strong>safelist 示例</strong></p>
+<pre><code class="language-js">// tailwind.config.js
+module.exports = {
+  content: ["./src/**/*.{ts,tsx}"],
+  safelist: [
+    {
+      pattern: /(bg|text|border)-(brand|emerald|rose)-(100|200|300|400|500|600)/,
+    },
+    "dark",
+    "lg:grid-cols-4",
+  ],
+};
+</code></pre>
+<h3 id="53-与框架整合注意事项"><a class="header" href="#53-与框架整合注意事项">5.3 与框架整合注意事项</a></h3>
+<ul>
+<li><strong>React</strong>：避免 <code>classnames</code> 中构造极度动态的类字符串；使用 <code>clsx</code>；</li>
+<li><strong>Next.js</strong>：SSR 需确保 <code>content</code> 包括 <code>app</code> 目录；结合 <code>next/font</code> 管理字体；</li>
+<li><strong>Vue</strong>：注意 <code>&lt;style scoped&gt;</code> 下 <code>@apply</code> 需要 <code>postcss</code>；</li>
+<li><strong>Nuxt 3</strong>：使用 <code>@nuxtjs/tailwindcss</code> 模块；</li>
+<li><strong>SvelteKit</strong>：Tailwind 通过 <code>@sveltejs/adapter-auto</code> + <code>svelte-preprocess</code>;</li>
+<li><strong>Laravel</strong>：利用 <code>php artisan ui vue --auth</code> + Tailwind；或使用 <a href="https://laravel.com/docs/starter-kits#breeze-and-blade">Laravel Breeze</a>。</li>
+</ul>
+<h3 id="54-单元测试与视觉回归"><a class="header" href="#54-单元测试与视觉回归">5.4 单元测试与视觉回归</a></h3>
+<ul>
+<li><strong>Jest/Vitest</strong>：测试组件 className 是否符合预期；</li>
+<li><strong>Playwright</strong>：截图测试，确保 UI 稳定；</li>
+<li><strong>Loki / Chromatic</strong>：Storybook 视觉回归；</li>
+<li><strong>ESLint</strong>：<code>eslint-plugin-tailwindcss</code> 检查类名顺序与合法性；</li>
+<li><strong>Accessibility 测试</strong>：<code>axe-core</code>、<code>@testing-library/react</code>。</li>
+</ul>
+<p><strong>示例：利用 Testing Library 检查类名</strong></p>
+<pre><code class="language-tsx">import { render, screen } from "@testing-library/react";
+import { Button } from "./Button";
+
+test("按钮在加载状态下应用正确的 Tailwind 类名", () =&gt; {
+  render(&lt;Button data-state="loading"&gt;提交&lt;/Button&gt;);
+  const button = screen.getByRole("button", { name: "提交" });
+  expect(button.className).toContain("data-[state=loading]");
+});
+</code></pre>
+<h3 id="55-cicd-集成"><a class="header" href="#55-cicd-集成">5.5 CI/CD 集成</a></h3>
+<p><strong>GitHub Actions 示例</strong></p>
+<pre><code class="language-yaml">name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "pnpm"
+      - run: corepack enable
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test -- --runInBand
+      - run: pnpm build
+      - name: Upload Production Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: .next
+</code></pre>
+<h3 id="56-性能与监控"><a class="header" href="#56-性能与监控">5.6 性能与监控</a></h3>
+<ul>
+<li>使用 Lighthouse、WebPageTest、Calibre 监控 bundle；</li>
+<li>使用 <code>@next/bundle-analyzer</code> 查看 CSS 体积；</li>
+<li>监控 FCP、LCP、CLS 指标；</li>
+<li>引入 RUM（真实用户监控）工具；</li>
+<li>通过 <code>prefetch</code>、<code>preload</code> 加速关键资源。</li>
+</ul>
+<h3 id="57-部署流程"><a class="header" href="#57-部署流程">5.7 部署流程</a></h3>
+<ul>
+<li><strong>Vercel</strong>：Next.js 原生支持，自动识别 Tailwind；</li>
+<li><strong>Netlify</strong>：使用 <code>npm run build</code> + <code>npm run preview</code>；</li>
+<li><strong>Cloudflare Pages</strong>：<code>wrangler pages publish dist</code>；</li>
+<li><strong>Docker</strong>：使用多阶段构建；</li>
+<li><strong>企业私有化部署</strong>：结合 Nginx、CI 管道。</li>
+</ul>
+<p><strong>Dockerfile 示例（Next.js + Tailwind）</strong></p>
+<pre><code class="language-Dockerfile">FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package.json pnpm-lock.yaml ./
+RUN corepack enable pnpm &amp;&amp; pnpm install --frozen-lockfile
+COPY . .
+RUN pnpm build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/package.json ./package.json
+RUN corepack enable pnpm &amp;&amp; pnpm install --prod --frozen-lockfile
+EXPOSE 3000
+CMD ["pnpm", "start"]
+</code></pre>
+<h3 id="58-模块实战nextjs--tailwind-企业级部署"><a class="header" href="#58-模块实战nextjs--tailwind-企业级部署">5.8 模块实战：Next.js + Tailwind 企业级部署</a></h3>
+<p><strong>任务</strong>：构建 SaaS 控制台，整合以下功能：</p>
+<ul>
+<li>设计系统 tokens 应用；</li>
+<li>国际化（Next.js <code>app/[locale]</code>）；</li>
+<li>Tailwind 动态主题；</li>
+<li>单元测试 + 视觉回归；</li>
+<li>Vercel 部署。</li>
+</ul>
+<p><strong>交付物</strong></p>
+<ul>
+<li><code>README</code> 包含环境配置、运行步骤；</li>
+<li><code>docs/architecture.md</code> 说明设计系统结构；</li>
+<li>Lighthouse 报告。</li>
+</ul>
+<h3 id="59-模块自测清单"><a class="header" href="#59-模块自测清单">5.9 模块自测清单</a></h3>
+<ul>
+<li>是否了解 <code>safelist</code> 的使用时机？</li>
+<li>是否能解释 Tailwind 构建流程：从模板扫描到 JIT 输出？</li>
+<li>是否配置 CI 流水线并通过所有任务？</li>
+<li>是否完成一次部署并验证可访问性评分？</li>
+</ul>
+<hr />
+<h2 id="模块-6综合实战项目--saas-控制台设计系统"><a class="header" href="#模块-6综合实战项目--saas-控制台设计系统">模块 6：综合实战项目 — SaaS 控制台设计系统</a></h2>
+<blockquote>
+<p>目标：将前面所有模块的知识整合到真实项目中，构建包含设计系统、组件库、暗黑模式、工程化部署的完整应用。</p>
+</blockquote>
+<h3 id="61-项目概述"><a class="header" href="#61-项目概述">6.1 项目概述</a></h3>
+<ul>
+<li><strong>项目背景</strong>：打造一套面向数据分析 SaaS 的控制台，支持多角色、多主题、响应式布局；</li>
+<li><strong>核心需求</strong>：
+<ul>
+<li>统一设计语言（色板、字体、spacing、shadow）；</li>
+<li>构建 15+ UI 组件（导航、表格、图表区、设置面板、通知）；</li>
+<li>支持暗黑模式、对比增强模式；</li>
+<li>提供仪表盘、客户管理、自动化工作流、系统设置多个页面；</li>
+<li>配置 CI/CD、部署到 Vercel；</li>
+<li>编写设计系统文档与 Storybook。</li>
+</ul>
+</li>
+</ul>
+<h3 id="62-项目分阶段计划"><a class="header" href="#62-项目分阶段计划">6.2 项目分阶段计划</a></h3>
+<ol>
+<li><strong>初始化（第 1 天）</strong>：
+<ul>
+<li>使用 Next.js + Tailwind 模板；</li>
+<li>配置 <code>tailwind.config.js</code> 主题扩展；</li>
+<li>初始化 Git 仓库，配置 Prettier + ESLint + Husky。</li>
+</ul>
+</li>
+<li><strong>信息架构设计（第 2-3 天）</strong>：
+<ul>
+<li>绘制 IA（Information Architecture）；</li>
+<li>定义导航结构、页面骨架；</li>
+<li>在 Figma 建立设计 tokens。</li>
+</ul>
+</li>
+<li><strong>基础组件搭建（第 4-6 天）</strong>：
+<ul>
+<li>构建按钮、输入、选择器、Badge、Avatar、Card 等；</li>
+<li>组件需覆盖状态（hover, active, focus, disabled）；</li>
+<li>编写 Storybook + 单元测试。</li>
+</ul>
+</li>
+<li><strong>页面构建（第 7-10 天）</strong>：
+<ul>
+<li>仪表盘：统计卡片、图表区（使用 <code>@headlessui/react</code> + Embla/Chart.js）；</li>
+<li>客户管理：表格、过滤器、侧栏；</li>
+<li>工作流：步骤图、手风琴；</li>
+<li>设置：表单、tabs。</li>
+</ul>
+</li>
+<li><strong>交互增强（第 11-12 天）</strong>：
+<ul>
+<li>暗黑模式、快捷键（使用 <code>cmdk</code> or <code>kbar</code>）；</li>
+<li>通知系统（Toast + Alerts）；</li>
+<li>无障碍支持（ARIA、焦点管理）。</li>
+</ul>
+</li>
+<li><strong>工程化与部署（第 13-14 天）</strong>：
+<ul>
+<li>配置 CI（GitHub Actions）；</li>
+<li>Lighthouse、axe-core 测试；</li>
+<li>部署到 Vercel。</li>
+</ul>
+</li>
+</ol>
+<h3 id="63-项目目录结构参考"><a class="header" href="#63-项目目录结构参考">6.3 项目目录结构参考</a></h3>
+<pre><code>apps/
+  web/
+    app/
+      layout.tsx
+      page.tsx
+      dashboard/
+      customers/
+      automations/
+      settings/
+    components/
+      layout/
+      ui/
+      charts/
+    styles/
+      globals.css
+      tailwind.css
+    lib/
+      analytics.ts
+      i18n.ts
+    hooks/
+      useTheme.ts
+      useCommandPalette.ts
+  docs/
+    pages/
+    components/
+packages/
+  ui/ (Tailwind + Radix UI 组件封装)
+  config/ (tailwind config, eslint, prettier)
+</code></pre>
+<h3 id="64-核心页面设计"><a class="header" href="#64-核心页面设计">6.4 核心页面设计</a></h3>
+<p><strong>仪表盘页面</strong></p>
+<ul>
+<li>顶部导航 + 侧栏；</li>
+<li>Summary 卡片；</li>
+<li>图表：使用 <code>@headlessui/react</code> + <code>@tailwindcss/forms</code>；</li>
+<li>最近活动时间线、团队协作日志。</li>
+</ul>
+<p><strong>客户管理</strong></p>
+<ul>
+<li>带有过滤器的表格；</li>
+<li>批量操作；</li>
+<li>详情侧栏。</li>
+</ul>
+<p><strong>自动化工作流</strong></p>
+<ul>
+<li>使用 <code>grid</code> + <code>border-dashed</code> 绘制流程图；</li>
+<li>通过 <code>@heroicons/react</code> 表示动作节点；</li>
+<li>支持拖拽（与 <code>dnd-kit</code> 合作）。</li>
+</ul>
+<p><strong>设置页面</strong></p>
+<ul>
+<li>使用 <code>Tabs</code> + <code>Cards</code>；</li>
+<li>表单验证（React Hook Form + Tailwind 表单样式）。</li>
+</ul>
+<h3 id="65-组件清单与要求"><a class="header" href="#65-组件清单与要求">6.5 组件清单与要求</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>组件</th><th>要求</th><th>Tailwind 重点</th></tr></thead><tbody>
+<tr><td>NavigationBar</td><td>支持暗黑、滚动缩放、用户菜单</td><td><code>backdrop-blur</code>, <code>sticky</code>, <code>transition</code></td></tr>
+<tr><td>Sidebar</td><td>可折叠、显示状态徽章</td><td><code>grid-cols-[auto_1fr]</code>, <code>data-state</code></td></tr>
+<tr><td>StatCard</td><td>支持语义状态、趋势标签</td><td><code>border</code>, <code>ring</code>, <code>shadow-brand</code></td></tr>
+<tr><td>DataTable</td><td>排序、过滤、批量操作</td><td><code>table</code>, <code>divide-y</code>, <code>sticky</code></td></tr>
+<tr><td>Command Palette</td><td>快捷键调用、搜索</td><td><code>cmdk</code> + Tailwind 类</td></tr>
+<tr><td>Modal</td><td>动画、焦点循环、ESC 关闭</td><td><code>motion-safe</code>, <code>focus-visible</code></td></tr>
+<tr><td>Toast</td><td>位置固定、堆叠、自动关闭</td><td><code>translate-x</code>, <code>opacity</code></td></tr>
+<tr><td>Stepper</td><td>展示流程状态</td><td><code>flex</code>, <code>gap</code>, <code>before:</code> 伪元素</td></tr>
+</tbody></table>
+</div>
+<h3 id="66-项目关键实现片段"><a class="header" href="#66-项目关键实现片段">6.6 项目关键实现片段</a></h3>
+<p><strong>命令面板（Command Palette）</strong></p>
+<pre><code class="language-tsx">import * as Command from "cmdk";
+
+export function CommandPalette({ open, setOpen }: { open: boolean; setOpen: (open: boolean) =&gt; void }) {
+  useKeyPress("mod+k", () =&gt; setOpen(true));
+
+  return (
+    &lt;Command.Dialog
+      open={open}
+      onOpenChange={setOpen}
+      label="快速操作"
+      className="fixed inset-0 z-50 flex items-start justify-center bg-slate-950/60 p-6"&gt;
+      &lt;div className="relative w-full max-w-2xl overflow-hidden rounded-3xl border border-slate-800 bg-slate-950/90 text-slate-200 shadow-2xl shadow-brand backdrop-blur"&gt;
+        &lt;Command.Input
+          placeholder="搜索操作或页面..."
+          className="w-full border-b border-slate-900/80 bg-transparent px-6 py-4 text-lg font-semibold text-slate-100 placeholder:text-slate-500 focus:outline-none"
+        /&gt;
+        &lt;Command.List className="max-h-[420px] overflow-y-auto p-4"&gt;
+          &lt;Command.Empty className="px-3 py-12 text-center text-sm text-slate-500"&gt;
+            未找到匹配项，尝试不同关键词。
+          &lt;/Command.Empty&gt;
+          &lt;Command.Group heading="快速导航" className="space-y-2"&gt;
+            {links.map((link) =&gt; (
+              &lt;Command.Item
+                key={link.label}
+                value={link.label}
+                className="flex items-center justify-between rounded-2xl px-3 py-3 text-sm transition data-[selected=true]:bg-brand-500/10 data-[selected=true]:text-brand-200"
+              &gt;
+                &lt;span&gt;{link.label}&lt;/span&gt;
+                &lt;kbd className="rounded border border-slate-800 bg-slate-900/70 px-2 py-1 text-[10px] uppercase tracking-widest text-slate-500"&gt;
+                  ↵
+                &lt;/kbd&gt;
+              &lt;/Command.Item&gt;
+            ))}
+          &lt;/Command.Group&gt;
+        &lt;/Command.List&gt;
+      &lt;/div&gt;
+    &lt;/Command.Dialog&gt;
+  );
+}
+</code></pre>
+<p><strong>图表容器</strong></p>
+<pre><code class="language-tsx">const ChartCard = ({ title, description, children }: Props) =&gt; (
+  &lt;section className="rounded-3xl border border-slate-900/80 bg-slate-900/70 p-6 shadow-2xl shadow-slate-950/40"&gt;
+    &lt;header className="flex items-start justify-between"&gt;
+      &lt;div&gt;
+        &lt;h3 className="text-lg font-semibold text-white"&gt;{title}&lt;/h3&gt;
+        &lt;p className="mt-1 text-sm text-slate-400"&gt;{description}&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;button className="rounded-full border border-slate-800 bg-slate-900/70 px-4 py-2 text-xs font-semibold text-slate-300 transition hover:border-slate-700 hover:text-white"&gt;
+        导出数据
+      &lt;/button&gt;
+    &lt;/header&gt;
+    &lt;div className="mt-6 h-64"&gt;{children}&lt;/div&gt;
+  &lt;/section&gt;
+);
+</code></pre>
+<h3 id="67-质量保障"><a class="header" href="#67-质量保障">6.7 质量保障</a></h3>
+<ul>
+<li>Lighthouse 分数：Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 90；</li>
+<li>单元测试覆盖率 ≥ 80%；</li>
+<li>视觉回归针对关键页面；</li>
+<li>文档齐全：README、Storybook Docs、设计系统指南。</li>
+</ul>
+<h3 id="68-项目验收清单"><a class="header" href="#68-项目验收清单">6.8 项目验收清单</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+完成设计 tokens 与主题配置；</li>
+<li><input disabled="" type="checkbox"/>
+Storybook 组件 ≥ 15 个，覆盖主要状态；</li>
+<li><input disabled="" type="checkbox"/>
+实现 4 个关键页面；</li>
+<li><input disabled="" type="checkbox"/>
+支持暗黑模式、命令面板、快捷键；</li>
+<li><input disabled="" type="checkbox"/>
+CI/CD 成功执行；</li>
+<li><input disabled="" type="checkbox"/>
+部署成功并提供访问链接；</li>
+<li><input disabled="" type="checkbox"/>
+产出项目回顾文档（挑战、经验、优化建议）。</li>
+</ul>
+<hr />
+<h2 id="常见问题排查faq"><a class="header" href="#常见问题排查faq">常见问题排查（FAQ）</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>症状</th><th>可能原因</th><th>排查步骤</th><th>解决建议</th></tr></thead><tbody>
+<tr><td>动态类名不起作用</td><td>类名由变量或拼接生成</td><td>检查模板是否能被 Tailwind 静态分析；使用 <code>clsx</code>/<code>cva</code> 约束；添加 <code>safelist</code></td><td>重构为特定字符串；利用 <code>variant</code> 工厂</td></tr>
+<tr><td>打包后样式缺失</td><td>构建环境 <code>NODE_ENV=production</code> 导致 Purge 裁剪</td><td>检查 <code>content</code> 配置；确认类名是否动态生成</td><td>使用 <code>safelist</code> 或 <code>@apply</code> 固定类名</td></tr>
+<tr><td>全局滚动条样式异常</td><td>Tailwind 默认 <code>preflight</code> 重置</td><td>关闭 <code>corePlugins.preflight</code> 或自定义 CSS</td><td>在 <code>globals.css</code> 中覆盖 <code>scrollbar</code></td></tr>
+<tr><td>插件不生效</td><td>插件未引入或配置错误</td><td>检查 <code>tailwind.config.js</code> 的 <code>plugins</code></td><td>导入正确模块；重启 dev server</td></tr>
+<tr><td>JIT 编译卡顿</td><td>模板文件过多、content 配置过宽泛</td><td>缩小 <code>content</code> 范围，使用 <code>experimental.optimizeUniversalDefaults</code></td><td>升级 Node 版本，裁剪不必要文件夹</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="学习成果验证标准35-项可量化指标"><a class="header" href="#学习成果验证标准35-项可量化指标">学习成果验证标准（3~5 项可量化指标）</a></h2>
+<ol>
+<li><strong>项目产出</strong>：完成综合项目，提供 GitHub 仓库 + 在线 Demo（Vercel/Netlify）。检验项：代码提交历史、部署日志。</li>
+<li><strong>设计系统文档</strong>：交付 <code>Design System</code> 站点，包含 tokens、组件指南、可访问性说明。检验项：Storybook/DocsSite 截图、实时链接。</li>
+<li><strong>性能指标</strong>：Lighthouse Performance ≥ 90，CSS 输出文件大小 ≤ 120 KB。检验项：Lighthouse 报告、<code>pnpm build</code> 输出日志。</li>
+<li><strong>可访问性评分</strong>：使用 <code>axe-core</code> 或 Lighthouse 检查 Accessibility ≥ 95。检验项：测试截图或报告。</li>
+<li><strong>团队协作流程</strong>：形成 PR 模板、代码规范、类名约束文档。检验项：<code>CONTRIBUTING.md</code>、PR 模板文件、类名清单。</li>
+</ol>
+<hr />
+<h2 id="扩展资源与进阶建议"><a class="header" href="#扩展资源与进阶建议">扩展资源与进阶建议</a></h2>
+<ul>
+<li><strong>官方文档</strong>：<a href="https://tailwindcss.com/docs">https://tailwindcss.com/docs</a>（关注 Release Notes、升级指南）。</li>
+<li><strong>官方博客</strong>：Tailwind Labs Blog，了解新特性、社区案例。</li>
+<li><strong>社区组件库</strong>：
+<ul>
+<li><a href="https://tailwindui.com/">Tailwind UI</a>：官方付费组件库；</li>
+<li><a href="https://ui.shadcn.com/">shadcn/ui</a>：与 Radix UI 结合；</li>
+<li><a href="https://daisyui.com/">DaisyUI</a>：多主题组件库。</li>
+</ul>
+</li>
+<li><strong>设计工具集</strong>：
+<ul>
+<li>Figma Tailwind CSS 插件；</li>
+<li>Locofy、Anima — 将设计稿转代码；</li>
+<li>LottieFiles — 动效整合。</li>
+</ul>
+</li>
+<li><strong>学习课程</strong>：
+<ul>
+<li>Tailwind Labs 官方课程；</li>
+<li>Egghead、Frontend Masters 专题课程；</li>
+<li>极客时间/慕课网 Tailwind 实战课。</li>
+</ul>
+</li>
+<li><strong>进阶实践</strong>：
+<ol>
+<li>构建企业级多品牌支持体系；</li>
+<li>结合 CSS 容器查询 + Tailwind；</li>
+<li>整合 <code>Framer Motion</code> 设计动画；</li>
+<li>与后端模板引擎（Rails, Phoenix, Laravel）结合；</li>
+<li>打造 Tailwind + Design Tokens CLI 生成器。</li>
+</ol>
+</li>
+</ul>
+<hr />
+<h2 id="附录"><a class="header" href="#附录">附录</a></h2>
+<h3 id="a-学习时间规划模板"><a class="header" href="#a-学习时间规划模板">A. 学习时间规划模板</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>周次</th><th>目标</th><th>核心任务</th><th>验证方式</th></tr></thead><tbody>
+<tr><td>Week 0</td><td>环境搭建</td><td>安装依赖，完成最小项目</td><td>提交仓库、截图</td></tr>
+<tr><td>Week 1</td><td>布局实践</td><td>完成仪表盘布局</td><td>提交页面截图，代码审查</td></tr>
+<tr><td>Week 2</td><td>设计系统</td><td>自定义主题、组件库</td><td>Storybook 链接</td></tr>
+<tr><td>Week 3</td><td>交互增强</td><td>响应式导航、暗黑模式</td><td>Lighthouse + axe 报告</td></tr>
+<tr><td>Week 4</td><td>工程化</td><td>部署、CI/CD</td><td>Vercel 链接、CI 通过</td></tr>
+<tr><td>Week 5</td><td>综合项目</td><td>完成 SaaS 控制台</td><td>Demo + 文档</td></tr>
+</tbody></table>
+</div>
+<h3 id="b-工具与插件清单"><a class="header" href="#b-工具与插件清单">B. 工具与插件清单</a></h3>
+<ul>
+<li><strong>浏览器扩展</strong>：Tailwind DevTools、VisBug、Axe DevTools；</li>
+<li><strong>设计协同</strong>：Figma Tailwind Export、Zeplin CSS Variables；</li>
+<li><strong>命令行工具</strong>：<code>twin.macro</code>（Tailwind + emotion/styled-components）、<code>windicss</code>；</li>
+<li><strong>样式整理</strong>：<code>prettier-plugin-tailwindcss</code>、<code>eslint-plugin-tailwindcss</code>；</li>
+<li><strong>调试脚本</strong>：<code>npx tailwind-config-viewer</code> 查看配置。</li>
+</ul>
+<h3 id="c-术语表"><a class="header" href="#c-术语表">C. 术语表</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>术语</th><th>解释</th></tr></thead><tbody>
+<tr><td>Utility-first</td><td>以功能类为中心的 CSS 编写方式</td></tr>
+<tr><td>Atomic CSS</td><td>每个类仅控制一个样式属性</td></tr>
+<tr><td>JIT Compiler</td><td>Just-in-Time 编译，按需生成类</td></tr>
+<tr><td>Design Tokens</td><td>描述设计系统基础视觉属性的命名键值对</td></tr>
+<tr><td>Variant</td><td>Tailwind 中的状态前缀</td></tr>
+<tr><td>Safelist</td><td>保留动态生成或难以静态分析的类名列表</td></tr>
+<tr><td>Preflight</td><td>Tailwind 提供的基础 CSS 重置</td></tr>
+</tbody></table>
+</div>
+<h3 id="d-自检问题"><a class="header" href="#d-自检问题">D. 自检问题</a></h3>
+<ol>
+<li>Tailwind JIT 如何决定生成哪些类名？是否需要手动配置 Purge？</li>
+<li>如何在 Tailwind 中管理组件间距，使得设计系统一致？</li>
+<li>如果需要根据 API 返回数据动态设置颜色，该如何避免类名被裁剪？</li>
+<li>在 Tailwind 中如何保证可访问性，尤其是对键盘导航的支持？</li>
+<li>Tailwind 的 <code>@layer</code> 与 <code>@apply</code> 有哪些约束？如何避免滥用？</li>
+</ol>
+<hr />
+<h2 id="学习总结与下一步"><a class="header" href="#学习总结与下一步">学习总结与下一步</a></h2>
+<ul>
+<li>Tailwind CSS 并非只是 CSS 框架，而是一套围绕 <strong>原子化思维、配置驱动、组件化协作</strong> 的完整方法论；</li>
+<li>掌握 Tailwind 的关键在于将<strong>设计系统</strong>与<strong>工程实践</strong>结合，形成团队统一语言；</li>
+<li>持续关注 Tailwind 版本更新（如未来的 Tailwind CSS 4.0 将重构底层架构、引入 CSS 变量）；</li>
+<li>下一步建议：
+<ol>
+<li>在真实项目中重构两页界面，验证性能与可维护性；</li>
+<li>与设计团队协作，建立从 Figma 到 Tailwind 的同步流程；</li>
+<li>研究 <code>twin.macro</code>, <code>cva</code> 等工具，探索原子类与组件抽象的平衡；</li>
+<li>关注 Tailwind 社区新插件、案例，持续迭代设计系统。</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>📘 <strong>提示</strong>：将本笔记拆分成可执行任务，逐周推进，并记录日志。定期回顾学习成果与问题，实现持续改进。</p>
+</blockquote>
+<hr />
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/22-Html5.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/24-DaisyUI.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/22-Html5.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/24-DaisyUI.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

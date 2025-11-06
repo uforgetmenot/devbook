@@ -1,0 +1,2284 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Prometheus 监控系统技术学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="prometheus-监控系统技术学习笔记"><a class="header" href="#prometheus-监控系统技术学习笔记">Prometheus 监控系统技术学习笔记</a></h1>
+<blockquote>
+<p><strong>学习者角色定位</strong>: 具备基础Linux和Docker操作能力的运维/开发人员
+<strong>目标群体</strong>: 0-3年工作经验的运维工程师、SRE工程师、后端开发
+<strong>预计学习周期</strong>: 2-3周（每天2-3小时）</p>
+</blockquote>
+<h2 id="一技术概述与核心价值"><a class="header" href="#一技术概述与核心价值">一、技术概述与核心价值</a></h2>
+<h3 id="11-什么是prometheus"><a class="header" href="#11-什么是prometheus">1.1 什么是Prometheus</a></h3>
+<p><strong>定义</strong>: Prometheus是一个开源的系统监控和告警工具包，最初由SoundCloud开发，现已成为CNCF毕业项目。</p>
+<p><strong>核心特性</strong>:</p>
+<ul>
+<li>多维数据模型（时间序列由metric名称和键值对标识）</li>
+<li>灵活的查询语言PromQL</li>
+<li>不依赖分布式存储，单节点自治</li>
+<li>通过HTTP的Pull模式采集时间序列数据</li>
+<li>支持Push模式（通过Pushgateway）</li>
+<li>通过服务发现或静态配置发现目标</li>
+<li>支持多种图形和仪表板模式</li>
+</ul>
+<h3 id="12-核心应用场景"><a class="header" href="#12-核心应用场景">1.2 核心应用场景</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>应用场景</th><th>监控对象</th><th>业务价值</th></tr></thead><tbody>
+<tr><td><strong>基础设施监控</strong></td><td>服务器CPU、内存、磁盘、网络</td><td>及时发现资源瓶颈</td></tr>
+<tr><td><strong>容器监控</strong></td><td>Docker、Kubernetes集群</td><td>云原生应用可观测性</td></tr>
+<tr><td><strong>应用监控</strong></td><td>QPS、延迟、错误率</td><td>应用性能优化</td></tr>
+<tr><td><strong>中间件监控</strong></td><td>MySQL、Redis、Kafka</td><td>数据库性能调优</td></tr>
+<tr><td><strong>业务监控</strong></td><td>订单量、支付成功率</td><td>业务指标实时追踪</td></tr>
+<tr><td><strong>告警通知</strong></td><td>自动化故障告警</td><td>降低MTTR</td></tr>
+</tbody></table>
+</div>
+<h3 id="13-架构设计"><a class="header" href="#13-架构设计">1.3 架构设计</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│                    Prometheus Server                     │
+│  ┌─────────────┐  ┌──────────────┐  ┌────────────────┐ │
+│  │  Retrieval  │→ │  TSDB (存储) │ ← │  HTTP Server  │ │
+│  │ (数据采集)   │  │              │   │  (API/Web UI) │ │
+│  └─────────────┘  └──────────────┘  └────────────────┘ │
+└────────────┬────────────────────────────────┬───────────┘
+             │                                │
+    ┌────────▼────────┐              ┌───────▼────────┐
+    │  Service        │              │  Alertmanager  │
+    │  Discovery      │              │  (告警管理)     │
+    │ (服务发现)       │              └────────────────┘
+    └────────┬────────┘                        │
+             │                          ┌──────▼──────┐
+    ┌────────▼──────────┐              │   Email     │
+    │   Exporters       │              │   WeChat    │
+    │ ┌──────────────┐  │              │   Webhook   │
+    │ │ Node Exporter│  │              └─────────────┘
+    │ │ MySQL Export │  │
+    │ │ Custom Export│  │
+    │ └──────────────┘  │
+    └───────────────────┘
+             │
+    ┌────────▼────────┐
+    │  Pushgateway    │  ← 短生命周期任务
+    └─────────────────┘
+             │
+    ┌────────▼────────┐
+    │   Grafana       │  ← 可视化
+    └─────────────────┘
+</code></pre>
+<h3 id="14-与其他监控系统对比"><a class="header" href="#14-与其他监控系统对比">1.4 与其他监控系统对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>Prometheus</th><th>Zabbix</th><th>InfluxDB</th><th>Datadog</th></tr></thead><tbody>
+<tr><td><strong>数据模型</strong></td><td>多维时间序列</td><td>传统监控项</td><td>时间序列</td><td>时间序列</td></tr>
+<tr><td><strong>存储</strong></td><td>本地TSDB</td><td>关系型数据库</td><td>自有TSDB</td><td>云端</td></tr>
+<tr><td><strong>采集方式</strong></td><td>Pull为主</td><td>Agent推送</td><td>Push</td><td>Agent</td></tr>
+<tr><td><strong>查询语言</strong></td><td>PromQL</td><td>弱</td><td>InfluxQL</td><td>强</td></tr>
+<tr><td><strong>云原生</strong></td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐⭐⭐</td></tr>
+<tr><td><strong>成本</strong></td><td>免费开源</td><td>免费/商业版</td><td>免费/商业版</td><td>付费SaaS</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="二环境搭建与快速启动"><a class="header" href="#二环境搭建与快速启动">二、环境搭建与快速启动</a></h2>
+<h3 id="21-使用docker快速部署"><a class="header" href="#21-使用docker快速部署">2.1 使用Docker快速部署</a></h3>
+<p><strong>步骤1: 启动Prometheus</strong></p>
+<pre><code class="language-bash"># 创建配置文件
+mkdir -p /opt/prometheus
+cd /opt/prometheus
+
+cat &gt; prometheus.yml &lt;&lt;EOF
+global:
+  scrape_interval: 15s      # 抓取间隔
+  evaluation_interval: 15s  # 规则评估间隔
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+EOF
+
+# 启动Prometheus容器
+docker run -d \
+  --name prometheus \
+  -p 9090:9090 \
+  -v /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
+  prom/prometheus:latest
+</code></pre>
+<p><strong>步骤2: 访问Web UI</strong></p>
+<pre><code class="language-bash"># 浏览器访问
+http://localhost:9090
+
+# 查看目标状态
+http://localhost:9090/targets
+
+# 查看配置
+http://localhost:9090/config
+</code></pre>
+<p><strong>步骤3: 启动Node Exporter（监控主机）</strong></p>
+<pre><code class="language-bash">docker run -d \
+  --name node-exporter \
+  --net="host" \
+  --pid="host" \
+  -v "/:/host:ro,rslave" \
+  prom/node-exporter:latest \
+  --path.rootfs=/host
+</code></pre>
+<p><strong>步骤4: 配置Prometheus采集Node Exporter</strong></p>
+<pre><code class="language-yaml"># 编辑 prometheus.yml
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['localhost:9100']
+</code></pre>
+<p><strong>步骤5: 重启Prometheus</strong></p>
+<pre><code class="language-bash">docker restart prometheus
+
+# 验证: 访问 http://localhost:9090/targets
+# 应该看到 prometheus 和 node 两个job
+</code></pre>
+<h3 id="22-使用docker-compose一键部署完整监控栈"><a class="header" href="#22-使用docker-compose一键部署完整监控栈">2.2 使用Docker Compose一键部署完整监控栈</a></h3>
+<p><strong>创建 docker-compose.yml</strong></p>
+<pre><code class="language-yaml">version: '3.8'
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'  # 数据保留30天
+      - '--web.enable-lifecycle'              # 支持热加载
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    ports:
+      - "9100:9100"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    ports:
+      - "9093:9093"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - monitoring
+    restart: unless-stopped
+</code></pre>
+<p><strong>创建Prometheus配置文件</strong></p>
+<pre><code class="language-bash">mkdir -p prometheus alertmanager grafana/provisioning/datasources
+
+cat &gt; prometheus/prometheus.yml &lt;&lt;EOF
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'my-cluster'
+    env: 'production'
+
+# 告警规则文件
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+# Alertmanager配置
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+# 监控目标配置
+scrape_configs:
+  # Prometheus自监控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # 主机监控
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+        labels:
+          instance: 'localhost'
+
+  # 容器监控
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+EOF
+</code></pre>
+<p><strong>创建Alertmanager配置</strong></p>
+<pre><code class="language-yaml">cat &gt; alertmanager/alertmanager.yml &lt;&lt;EOF
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'default'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'critical'
+      continue: true
+
+receivers:
+  - name: 'default'
+    webhook_configs:
+      - url: 'http://your-webhook-url'
+        send_resolved: true
+
+  - name: 'critical'
+    webhook_configs:
+      - url: 'http://your-critical-webhook-url'
+        send_resolved: true
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'cluster', 'service']
+EOF
+</code></pre>
+<p><strong>创建Grafana数据源配置</strong></p>
+<pre><code class="language-yaml">cat &gt; grafana/provisioning/datasources/prometheus.yml &lt;&lt;EOF
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+EOF
+</code></pre>
+<p><strong>启动监控栈</strong></p>
+<pre><code class="language-bash">docker-compose up -d
+
+# 验证服务状态
+docker-compose ps
+
+# 访问服务
+# Prometheus: http://localhost:9090
+# Grafana: http://localhost:3000 (admin/admin)
+# Alertmanager: http://localhost:9093
+</code></pre>
+<hr />
+<h2 id="三prometheus核心概念"><a class="header" href="#三prometheus核心概念">三、Prometheus核心概念</a></h2>
+<h3 id="31-数据模型"><a class="header" href="#31-数据模型">3.1 数据模型</a></h3>
+<p><strong>时间序列（Time Series）</strong></p>
+<pre><code>指标名{标签1="值1", 标签2="值2"} 值 时间戳
+
+示例:
+http_requests_total{method="GET", status="200"} 1234 1609459200000
+</code></pre>
+<p><strong>组成部分</strong>:</p>
+<ul>
+<li><strong>Metric Name</strong>: 指标名称，如 <code>http_requests_total</code></li>
+<li><strong>Labels</strong>: 标签键值对，用于多维度区分</li>
+<li><strong>Sample</strong>: 样本值（浮点数）</li>
+<li><strong>Timestamp</strong>: 时间戳（毫秒）</li>
+</ul>
+<p><strong>标签使用原则</strong>:</p>
+<pre><code>✅ 好的标签设计:
+http_requests_total{method="GET", status="200", path="/api"}
+
+❌ 不好的标签设计:
+http_requests_total{user_id="12345"}  # 高基数，会产生大量时间序列
+
+✅ 改进方案:
+http_requests_by_user{} 1  # 计数
+user_active_count{} 1000   # 活跃用户总数
+</code></pre>
+<h3 id="32-metrics类型"><a class="header" href="#32-metrics类型">3.2 Metrics类型</a></h3>
+<p><strong>1. Counter（计数器）</strong></p>
+<p><strong>特点</strong>: 单调递增的累计指标，只增不减（除非重启归零）</p>
+<p><strong>使用场景</strong>: 请求数、错误数、完成任务数</p>
+<p><strong>示例</strong>:</p>
+<pre><code>http_requests_total 1234
+http_requests_total 1235
+http_requests_total 1240
+
+# PromQL查询速率
+rate(http_requests_total[5m])  # 每秒请求速率
+</code></pre>
+<p><strong>2. Gauge（仪表盘）</strong></p>
+<p><strong>特点</strong>: 可以任意上下波动的瞬时值</p>
+<p><strong>使用场景</strong>: CPU使用率、内存使用量、温度、并发数</p>
+<p><strong>示例</strong>:</p>
+<pre><code>node_memory_MemAvailable_bytes 8589934592
+node_memory_MemAvailable_bytes 8489934592
+node_memory_MemAvailable_bytes 8689934592
+
+# PromQL查询当前值
+node_memory_MemAvailable_bytes
+</code></pre>
+<p><strong>3. Histogram（直方图）</strong></p>
+<p><strong>特点</strong>: 对观测值进行采样，并在可配置的bucket中计数</p>
+<p><strong>使用场景</strong>: 请求耗时分布、响应大小分布</p>
+<p><strong>示例</strong>:</p>
+<pre><code># 假设bucket配置为: [0.1, 0.5, 1.0, 2.0, 5.0]
+http_request_duration_seconds_bucket{le="0.1"} 100   # ≤0.1s的请求数
+http_request_duration_seconds_bucket{le="0.5"} 250   # ≤0.5s的请求数
+http_request_duration_seconds_bucket{le="1.0"} 400   # ≤1.0s的请求数
+http_request_duration_seconds_bucket{le="2.0"} 480   # ≤2.0s的请求数
+http_request_duration_seconds_bucket{le="5.0"} 500   # ≤5.0s的请求数
+http_request_duration_seconds_bucket{le="+Inf"} 500  # 所有请求数
+http_request_duration_seconds_sum 1250.5             # 总耗时
+http_request_duration_seconds_count 500              # 总请求数
+
+# PromQL查询99分位数
+histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[5m]))
+
+# 计算平均响应时间
+rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m])
+</code></pre>
+<p><strong>4. Summary（摘要）</strong></p>
+<p><strong>特点</strong>: 类似Histogram，但在客户端直接计算分位数</p>
+<p><strong>使用场景</strong>: 与Histogram类似，但计算在客户端</p>
+<p><strong>示例</strong>:</p>
+<pre><code>http_request_duration_seconds{quantile="0.5"} 0.232    # 中位数
+http_request_duration_seconds{quantile="0.9"} 0.821    # 90分位
+http_request_duration_seconds{quantile="0.99"} 1.528   # 99分位
+http_request_duration_seconds_sum 1250.5
+http_request_duration_seconds_count 500
+</code></pre>
+<p><strong>Histogram vs Summary对比</strong>:</p>
+<pre><code>┌────────────┬─────────────────┬──────────────────┐
+│   特性     │   Histogram     │     Summary      │
+├────────────┼─────────────────┼──────────────────┤
+│ 分位数计算 │   服务端PromQL  │    客户端        │
+│ 精度       │   近似值        │    精确值        │
+│ 聚合       │   可聚合        │    不可聚合      │
+│ 性能       │   客户端轻量    │    客户端计算量大│
+│ 推荐       │   ⭐⭐⭐⭐⭐   │    ⭐⭐⭐        │
+└────────────┴─────────────────┴──────────────────┘
+</code></pre>
+<h3 id="33-作业和实例"><a class="header" href="#33-作业和实例">3.3 作业和实例</a></h3>
+<p><strong>概念理解</strong>:</p>
+<pre><code>Job (作业)
+  ├── Instance (实例) 1: host1:9100
+  ├── Instance (实例) 2: host2:9100
+  └── Instance (实例) 3: host3:9100
+</code></pre>
+<p><strong>配置示例</strong>:</p>
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'node'
+    static_configs:
+      - targets:
+          - '192.168.1.10:9100'  # instance 1
+          - '192.168.1.11:9100'  # instance 2
+          - '192.168.1.12:9100'  # instance 3
+        labels:
+          env: 'production'
+</code></pre>
+<p><strong>自动添加的标签</strong>:</p>
+<pre><code>up{job="node", instance="192.168.1.10:9100"}
+up{job="node", instance="192.168.1.11:9100"}
+</code></pre>
+<hr />
+<h2 id="四promql查询语言"><a class="header" href="#四promql查询语言">四、PromQL查询语言</a></h2>
+<h3 id="41-基础查询"><a class="header" href="#41-基础查询">4.1 基础查询</a></h3>
+<p><strong>即时向量查询（Instant Vector）</strong></p>
+<pre><code class="language-promql"># 查询所有时间序列
+http_requests_total
+
+# 标签完全匹配
+http_requests_total{job="api-server", method="GET"}
+
+# 标签正则匹配
+http_requests_total{status=~"2.."}          # 200-299
+http_requests_total{path=~"/api/.*"}        # /api开头
+http_requests_total{method!="GET"}          # 不等于GET
+http_requests_total{status!~"4.."}          # 不是4xx
+</code></pre>
+<p><strong>区间向量查询（Range Vector）</strong></p>
+<pre><code class="language-promql"># 查询过去5分钟的数据
+http_requests_total[5m]
+
+# 支持的时间单位
+[5s]    # 5秒
+[1m]    # 1分钟
+[2h]    # 2小时
+[1d]    # 1天
+[1w]    # 1周
+</code></pre>
+<p><strong>时间偏移（Offset）</strong></p>
+<pre><code class="language-promql"># 查询1小时前的数据
+http_requests_total offset 1h
+
+# 查询昨天同一时刻的数据
+http_requests_total offset 1d
+
+# 区间向量 + 偏移
+rate(http_requests_total[5m] offset 1h)
+</code></pre>
+<h3 id="42-聚合操作"><a class="header" href="#42-聚合操作">4.2 聚合操作</a></h3>
+<p><strong>常用聚合函数</strong></p>
+<pre><code class="language-promql"># sum: 求和
+sum(http_requests_total)
+
+# avg: 平均值
+avg(node_cpu_seconds_total)
+
+# max/min: 最大/最小值
+max(node_memory_MemAvailable_bytes)
+min(node_memory_MemAvailable_bytes)
+
+# count: 计数
+count(up == 1)  # 在线实例数
+
+# topk/bottomk: Top K
+topk(5, http_requests_total)      # 前5个
+bottomk(3, node_memory_MemFree)   # 后3个
+
+# quantile: 分位数
+quantile(0.95, http_request_duration_seconds)
+</code></pre>
+<p><strong>按标签聚合（by/without）</strong></p>
+<pre><code class="language-promql"># by: 保留指定标签
+sum(http_requests_total) by (method, status)
+
+# without: 排除指定标签
+sum(http_requests_total) without (instance)
+
+# 示例: 按接口统计QPS
+sum(rate(http_requests_total[5m])) by (path)
+
+# 示例: 统计每个服务的总内存
+sum(node_memory_MemTotal_bytes) by (job)
+</code></pre>
+<h3 id="43-数学运算"><a class="header" href="#43-数学运算">4.3 数学运算</a></h3>
+<p><strong>四则运算</strong></p>
+<pre><code class="language-promql"># 加法: 计算总请求数
+http_requests_total{status="200"} + http_requests_total{status="201"}
+
+# 减法: 计算可用内存
+node_memory_MemTotal_bytes - node_memory_MemUsed_bytes
+
+# 乘法: 转换单位(字节→GB)
+node_memory_MemTotal_bytes / 1024 / 1024 / 1024
+
+# 除法: 计算CPU使用率
+100 - (avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+
+# 取模
+node_time_seconds % 60
+
+# 幂运算
+rate(http_requests_total[5m]) ^ 2
+</code></pre>
+<p><strong>比较运算</strong></p>
+<pre><code class="language-promql"># 等于
+http_requests_total == 100
+
+# 不等于
+http_requests_total != 0
+
+# 大于/小于
+node_memory_MemAvailable_bytes &gt; 1e9  # &gt; 1GB
+response_time_seconds &lt; 0.5
+
+# 大于等于/小于等于
+cpu_usage &gt;= 80
+disk_usage &lt;= 20
+</code></pre>
+<p><strong>逻辑运算</strong></p>
+<pre><code class="language-promql"># and: 交集
+(http_requests_total &gt; 100) and (http_errors_total &gt; 10)
+
+# or: 并集
+up{job="api"} or up{job="web"}
+
+# unless: 差集
+up{job="api"} unless up{instance="localhost:9090"}
+</code></pre>
+<h3 id="44-常用函数"><a class="header" href="#44-常用函数">4.4 常用函数</a></h3>
+<p><strong>速率函数</strong></p>
+<pre><code class="language-promql"># rate: 计算每秒增长率（Counter专用）
+rate(http_requests_total[5m])
+
+# irate: 瞬时增长率（更灵敏）
+irate(http_requests_total[5m])
+
+# increase: 区间内增长量
+increase(http_requests_total[1h])
+
+# rate vs irate
+rate()   →  适合告警和图表（平滑）
+irate()  →  适合快速变化的指标（灵敏）
+</code></pre>
+<p><strong>聚合函数</strong></p>
+<pre><code class="language-promql"># sum_over_time: 区间内求和
+sum_over_time(http_requests_total[1h])
+
+# avg_over_time: 区间内平均值
+avg_over_time(cpu_usage[5m])
+
+# max_over_time/min_over_time: 区间内最大/最小值
+max_over_time(response_time[10m])
+min_over_time(response_time[10m])
+
+# count_over_time: 区间内样本数
+count_over_time(up[1h])
+</code></pre>
+<p><strong>预测函数</strong></p>
+<pre><code class="language-promql"># predict_linear: 线性预测
+predict_linear(node_filesystem_free_bytes[1h], 4*3600)  # 预测4小时后的磁盘空间
+
+# deriv: 计算导数（变化速率）
+deriv(node_memory_MemAvailable_bytes[5m])
+</code></pre>
+<p><strong>时间函数</strong></p>
+<pre><code class="language-promql"># time(): 当前时间戳
+time()
+
+# hour(): 当前小时 (0-23)
+hour()
+
+# day_of_week(): 星期几 (0-6, 0=周日)
+day_of_week()
+
+# 示例: 工作时间告警
+hour() &gt;= 9 and hour() &lt;= 18 and day_of_week() &gt;= 1 and day_of_week() &lt;= 5
+</code></pre>
+<p><strong>标签操作函数</strong></p>
+<pre><code class="language-promql"># label_replace: 替换标签值
+label_replace(up, "new_label", "$1", "instance", "(.*):(.*)")
+
+# label_join: 合并标签
+label_join(up, "full_name", ",", "job", "instance")
+</code></pre>
+<h3 id="45-实战查询示例"><a class="header" href="#45-实战查询示例">4.5 实战查询示例</a></h3>
+<p><strong>系统监控</strong></p>
+<pre><code class="language-promql"># 1. CPU使用率
+100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+
+# 2. 内存使用率
+(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100
+
+# 3. 磁盘使用率
+(1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.*"} / node_filesystem_size_bytes)) * 100
+
+# 4. 网络流量（接收/发送）
+irate(node_network_receive_bytes_total[5m])
+irate(node_network_transmit_bytes_total[5m])
+
+# 5. 磁盘IO
+irate(node_disk_read_bytes_total[5m])
+irate(node_disk_written_bytes_total[5m])
+</code></pre>
+<p><strong>应用监控</strong></p>
+<pre><code class="language-promql"># 1. QPS (每秒请求数)
+sum(rate(http_requests_total[1m])) by (path)
+
+# 2. 错误率
+sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100
+
+# 3. 平均响应时间
+rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m])
+
+# 4. P99响应时间
+histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, path))
+
+# 5. 在线用户数
+sum(user_online_gauge) by (service)
+
+# 6. 接口成功率
+sum(rate(http_requests_total{status=~"2.."}[5m])) / sum(rate(http_requests_total[5m])) * 100
+</code></pre>
+<p><strong>业务监控</strong></p>
+<pre><code class="language-promql"># 1. 订单量趋势
+sum(increase(order_created_total[1h]))
+
+# 2. 支付成功率
+sum(rate(payment_total{status="success"}[5m])) / sum(rate(payment_total[5m])) * 100
+
+# 3. 每分钟成交额
+sum(increase(order_amount_total[1m]))
+
+# 4. 活跃用户数
+count(user_last_active_timestamp &gt; (time() - 300))  # 5分钟内活跃
+</code></pre>
+<hr />
+<h2 id="五exporter开发与集成"><a class="header" href="#五exporter开发与集成">五、Exporter开发与集成</a></h2>
+<h3 id="51-官方exporter使用"><a class="header" href="#51-官方exporter使用">5.1 官方Exporter使用</a></h3>
+<p><strong>Node Exporter（主机监控）</strong></p>
+<pre><code class="language-bash"># 安装
+wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+tar xvfz node_exporter-1.7.0.linux-amd64.tar.gz
+cd node_exporter-1.7.0.linux-amd64
+
+# 启动
+./node_exporter
+
+# 常用参数
+./node_exporter \
+  --collector.filesystem.mount-points-exclude="^/(dev|proc|sys|var/lib/docker/.+)($|/)" \
+  --collector.netclass.ignored-devices="^(veth.*|br-.*|docker.*)$"
+
+# 访问指标
+curl http://localhost:9100/metrics
+</code></pre>
+<p><strong>MySQL Exporter（数据库监控）</strong></p>
+<pre><code class="language-bash"># 创建监控用户
+CREATE USER 'exporter'@'localhost' IDENTIFIED BY 'password';
+GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'localhost';
+FLUSH PRIVILEGES;
+
+# 配置文件 .my.cnf
+[client]
+user=exporter
+password=password
+
+# 启动
+docker run -d \
+  --name mysql-exporter \
+  -p 9104:9104 \
+  -e DATA_SOURCE_NAME="exporter:password@(mysql:3306)/" \
+  prom/mysqld-exporter:latest
+
+# Prometheus配置
+scrape_configs:
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['localhost:9104']
+</code></pre>
+<p><strong>Redis Exporter</strong></p>
+<pre><code class="language-bash">docker run -d \
+  --name redis-exporter \
+  -p 9121:9121 \
+  oliver006/redis_exporter:latest \
+  --redis.addr=redis://redis:6379
+
+# Prometheus配置
+scrape_configs:
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['localhost:9121']
+</code></pre>
+<h3 id="52-使用python开发自定义exporter"><a class="header" href="#52-使用python开发自定义exporter">5.2 使用Python开发自定义Exporter</a></h3>
+<p><strong>安装依赖</strong></p>
+<pre><code class="language-bash">pip install prometheus_client
+</code></pre>
+<p><strong>示例1: 基础HTTP Exporter</strong></p>
+<pre><code class="language-python">from prometheus_client import start_http_server, Gauge, Counter
+import time
+import random
+
+# 定义指标
+# Gauge: 可变指标
+cpu_usage = Gauge('app_cpu_usage_percent', 'CPU使用率', ['hostname'])
+memory_usage = Gauge('app_memory_usage_bytes', '内存使用量', ['hostname'])
+
+# Counter: 累计指标
+request_count = Counter('app_request_total', '请求总数', ['method', 'endpoint', 'status'])
+
+def collect_metrics():
+    """模拟采集指标"""
+    hostname = 'server01'
+
+    # 设置Gauge指标
+    cpu_usage.labels(hostname=hostname).set(random.uniform(20, 80))
+    memory_usage.labels(hostname=hostname).set(random.randint(1000000000, 8000000000))
+
+    # 增加Counter指标
+    request_count.labels(method='GET', endpoint='/api/users', status='200').inc()
+
+if __name__ == '__main__':
+    # 启动HTTP服务器，端口8000
+    start_http_server(8000)
+    print("Exporter started on :8000")
+
+    # 持续采集指标
+    while True:
+        collect_metrics()
+        time.sleep(15)  # 每15秒采集一次
+</code></pre>
+<p><strong>示例2: 业务指标Exporter</strong></p>
+<pre><code class="language-python">from prometheus_client import start_http_server, Gauge, Counter, Histogram
+import time
+import psycopg2  # 假设使用PostgreSQL
+
+# 定义业务指标
+order_total = Counter('business_order_total', '订单总数', ['status'])
+order_amount = Counter('business_order_amount_total', '订单总金额')
+active_users = Gauge('business_active_users', '活跃用户数')
+payment_duration = Histogram('business_payment_duration_seconds', '支付耗时',
+                            buckets=[0.1, 0.5, 1.0, 2.0, 5.0, 10.0])
+
+def collect_business_metrics():
+    """从数据库采集业务指标"""
+    conn = psycopg2.connect(
+        host="localhost",
+        database="mydb",
+        user="user",
+        password="password"
+    )
+    cur = conn.cursor()
+
+    # 查询今日订单统计
+    cur.execute("""
+        SELECT status, COUNT(*), SUM(amount)
+        FROM orders
+        WHERE created_at &gt;= CURRENT_DATE
+        GROUP BY status
+    """)
+
+    for status, count, amount in cur.fetchall():
+        # 注意: Counter需要使用inc()增加，而不是set()
+        # 这里需要计算增量
+        pass
+
+    # 查询活跃用户数
+    cur.execute("""
+        SELECT COUNT(DISTINCT user_id)
+        FROM user_activity
+        WHERE last_active_at &gt;= NOW() - INTERVAL '5 minutes'
+    """)
+    active_count = cur.fetchone()[0]
+    active_users.set(active_count)
+
+    cur.close()
+    conn.close()
+
+if __name__ == '__main__':
+    start_http_server(8001)
+    print("Business Exporter started on :8001")
+
+    while True:
+        collect_business_metrics()
+        time.sleep(60)  # 每分钟采集一次
+</code></pre>
+<p><strong>示例3: 使用装饰器自动记录指标</strong></p>
+<pre><code class="language-python">from prometheus_client import start_http_server, Counter, Histogram
+from functools import wraps
+import time
+
+# 定义指标
+function_calls = Counter('app_function_calls_total', '函数调用次数', ['function_name'])
+function_duration = Histogram('app_function_duration_seconds', '函数执行时间',
+                             ['function_name'],
+                             buckets=[0.001, 0.01, 0.1, 0.5, 1.0, 5.0])
+
+def monitor(func):
+    """监控装饰器"""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # 记录调用次数
+        function_calls.labels(function_name=func.__name__).inc()
+
+        # 记录执行时间
+        start_time = time.time()
+        try:
+            result = func(*args, **kwargs)
+            return result
+        finally:
+            duration = time.time() - start_time
+            function_duration.labels(function_name=func.__name__).observe(duration)
+
+    return wrapper
+
+# 使用装饰器
+@monitor
+def process_order(order_id):
+    time.sleep(0.1)  # 模拟处理
+    print(f"Processing order {order_id}")
+
+@monitor
+def send_notification(user_id, message):
+    time.sleep(0.05)  # 模拟发送
+    print(f"Sending notification to {user_id}: {message}")
+
+if __name__ == '__main__':
+    start_http_server(8002)
+    print("App started on :8002")
+
+    # 模拟业务调用
+    while True:
+        process_order(12345)
+        send_notification(67890, "Your order is ready")
+        time.sleep(5)
+</code></pre>
+<h3 id="53-使用go开发高性能exporter"><a class="header" href="#53-使用go开发高性能exporter">5.3 使用Go开发高性能Exporter</a></h3>
+<pre><code class="language-go">package main
+
+import (
+    "net/http"
+    "math/rand"
+    "time"
+
+    "github.com/prometheus/client_golang/prometheus"
+    "github.com/prometheus/client_golang/prometheus/promhttp"
+)
+
+var (
+    // 定义Gauge指标
+    cpuUsage = prometheus.NewGaugeVec(
+        prometheus.GaugeOpts{
+            Name: "app_cpu_usage_percent",
+            Help: "CPU使用率",
+        },
+        []string{"hostname"},
+    )
+
+    // 定义Counter指标
+    requestTotal = prometheus.NewCounterVec(
+        prometheus.CounterOpts{
+            Name: "app_request_total",
+            Help: "请求总数",
+        },
+        []string{"method", "endpoint", "status"},
+    )
+
+    // 定义Histogram指标
+    requestDuration = prometheus.NewHistogramVec(
+        prometheus.HistogramOpts{
+            Name:    "app_request_duration_seconds",
+            Help:    "请求耗时",
+            Buckets: prometheus.DefBuckets,  // 默认bucket
+        },
+        []string{"endpoint"},
+    )
+)
+
+func init() {
+    // 注册指标
+    prometheus.MustRegister(cpuUsage)
+    prometheus.MustRegister(requestTotal)
+    prometheus.MustRegister(requestDuration)
+}
+
+func collectMetrics() {
+    for {
+        // 设置Gauge
+        cpuUsage.WithLabelValues("server01").Set(rand.Float64() * 100)
+
+        // 增加Counter
+        requestTotal.WithLabelValues("GET", "/api/users", "200").Inc()
+
+        // 记录Histogram
+        duration := rand.Float64() * 2
+        requestDuration.WithLabelValues("/api/users").Observe(duration)
+
+        time.Sleep(15 * time.Second)
+    }
+}
+
+func main() {
+    // 启动采集
+    go collectMetrics()
+
+    // 暴露metrics端点
+    http.Handle("/metrics", promhttp.Handler())
+
+    println("Exporter started on :8000")
+    http.ListenAndServe(":8000", nil)
+}
+</code></pre>
+<hr />
+<h2 id="六告警规则配置"><a class="header" href="#六告警规则配置">六、告警规则配置</a></h2>
+<h3 id="61-告警规则基础"><a class="header" href="#61-告警规则基础">6.1 告警规则基础</a></h3>
+<p><strong>规则文件结构</strong></p>
+<pre><code class="language-yaml">groups:
+  - name: example_group
+    interval: 30s  # 评估间隔
+    rules:
+      - alert: AlertName
+        expr: &lt;PromQL表达式&gt;
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "告警摘要"
+          description: "详细描述"
+</code></pre>
+<h3 id="62-系统告警规则"><a class="header" href="#62-系统告警规则">6.2 系统告警规则</a></h3>
+<p><strong>创建 rules/node_alerts.yml</strong></p>
+<pre><code class="language-yaml">groups:
+  - name: node_alerts
+    interval: 30s
+    rules:
+      # CPU使用率告警
+      - alert: HighCPUUsage
+        expr: |
+          100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) &gt; 80
+        for: 5m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "主机 {{ $labels.instance }} CPU使用率过高"
+          description: "CPU使用率为 {{ $value | humanizePercentage }}, 持续时间超过5分钟"
+
+      # 内存使用率告警
+      - alert: HighMemoryUsage
+        expr: |
+          (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 &gt; 85
+        for: 5m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "主机 {{ $labels.instance }} 内存使用率过高"
+          description: "内存使用率为 {{ $value | humanizePercentage }}"
+
+      # 磁盘空间告警
+      - alert: DiskSpaceLow
+        expr: |
+          (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.*"} / node_filesystem_size_bytes)) * 100 &gt; 80
+        for: 10m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "主机 {{ $labels.instance }} 磁盘空间不足"
+          description: "挂载点 {{ $labels.mountpoint }} 使用率为 {{ $value | humanizePercentage }}"
+
+      # 磁盘空间严重不足
+      - alert: DiskSpaceCritical
+        expr: |
+          (1 - (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.*"} / node_filesystem_size_bytes)) * 100 &gt; 90
+        for: 5m
+        labels:
+          severity: critical
+          category: system
+        annotations:
+          summary: "【严重】主机 {{ $labels.instance }} 磁盘空间严重不足"
+          description: "挂载点 {{ $labels.mountpoint }} 使用率为 {{ $value | humanizePercentage }}, 请立即清理"
+
+      # 主机宕机告警
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: system
+        annotations:
+          summary: "实例 {{ $labels.instance }} 已宕机"
+          description: "Job {{ $labels.job }} 的实例 {{ $labels.instance }} 无法访问, 持续时间超过1分钟"
+
+      # 磁盘IO过高
+      - alert: HighDiskIO
+        expr: |
+          irate(node_disk_io_time_seconds_total[5m]) &gt; 0.8
+        for: 10m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "主机 {{ $labels.instance }} 磁盘IO过高"
+          description: "磁盘 {{ $labels.device }} IO使用率为 {{ $value | humanizePercentage }}"
+</code></pre>
+<h3 id="63-应用告警规则"><a class="header" href="#63-应用告警规则">6.3 应用告警规则</a></h3>
+<p><strong>创建 rules/app_alerts.yml</strong></p>
+<pre><code class="language-yaml">groups:
+  - name: application_alerts
+    interval: 30s
+    rules:
+      # QPS异常
+      - alert: HighQPS
+        expr: |
+          sum(rate(http_requests_total[1m])) by (job) &gt; 1000
+        for: 5m
+        labels:
+          severity: warning
+          category: application
+        annotations:
+          summary: "应用 {{ $labels.job }} QPS过高"
+          description: "当前QPS为 {{ $value | humanize }}, 超过阈值1000"
+
+      # 错误率告警
+      - alert: HighErrorRate
+        expr: |
+          (sum(rate(http_requests_total{status=~"5.."}[5m])) by (job) /
+           sum(rate(http_requests_total[5m])) by (job)) * 100 &gt; 5
+        for: 3m
+        labels:
+          severity: critical
+          category: application
+        annotations:
+          summary: "应用 {{ $labels.job }} 错误率过高"
+          description: "5xx错误率为 {{ $value | humanizePercentage }}, 持续3分钟"
+
+      # 响应时间告警
+      - alert: HighResponseTime
+        expr: |
+          histogram_quantile(0.99,
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (le, job, path)
+          ) &gt; 1
+        for: 5m
+        labels:
+          severity: warning
+          category: application
+        annotations:
+          summary: "接口 {{ $labels.path }} 响应时间过长"
+          description: "P99响应时间为 {{ $value | humanizeDuration }}, 超过1秒"
+
+      # 服务不可用
+      - alert: ServiceUnavailable
+        expr: |
+          sum(rate(http_requests_total{status="503"}[5m])) by (job) &gt; 10
+        for: 2m
+        labels:
+          severity: critical
+          category: application
+        annotations:
+          summary: "服务 {{ $labels.job }} 出现503错误"
+          description: "503错误率为 {{ $value }}/s, 服务可能不可用"
+
+      # 慢查询告警
+      - alert: SlowQuery
+        expr: |
+          rate(mysql_slow_queries[5m]) &gt; 5
+        for: 5m
+        labels:
+          severity: warning
+          category: database
+        annotations:
+          summary: "MySQL慢查询过多"
+          description: "慢查询速率为 {{ $value }}/s"
+</code></pre>
+<h3 id="64-业务告警规则"><a class="header" href="#64-业务告警规则">6.4 业务告警规则</a></h3>
+<p><strong>创建 rules/business_alerts.yml</strong></p>
+<pre><code class="language-yaml">groups:
+  - name: business_alerts
+    interval: 1m
+    rules:
+      # 订单量异常下降
+      - alert: OrderCountDropped
+        expr: |
+          (sum(increase(order_created_total[5m])) &lt;
+           sum(increase(order_created_total[5m] offset 1h)) * 0.5)
+        for: 10m
+        labels:
+          severity: warning
+          category: business
+        annotations:
+          summary: "订单量异常下降"
+          description: "当前5分钟订单量为 {{ $value }}, 相比1小时前下降超过50%"
+
+      # 支付成功率告警
+      - alert: LowPaymentSuccessRate
+        expr: |
+          (sum(rate(payment_total{status="success"}[5m])) /
+           sum(rate(payment_total[5m]))) * 100 &lt; 95
+        for: 5m
+        labels:
+          severity: critical
+          category: business
+        annotations:
+          summary: "支付成功率过低"
+          description: "支付成功率为 {{ $value | humanizePercentage }}, 低于95%"
+
+      # 库存不足告警
+      - alert: LowInventory
+        expr: |
+          product_inventory_count &lt; 10
+        for: 5m
+        labels:
+          severity: warning
+          category: business
+        annotations:
+          summary: "商品 {{ $labels.product_id }} 库存不足"
+          description: "当前库存为 {{ $value }}, 请及时补货"
+
+      # 活跃用户数异常
+      - alert: LowActiveUsers
+        expr: |
+          business_active_users &lt; 100
+        for: 10m
+        labels:
+          severity: info
+          category: business
+        annotations:
+          summary: "活跃用户数过低"
+          description: "当前活跃用户数为 {{ $value }}, 低于正常水平"
+</code></pre>
+<h3 id="65-alertmanager配置"><a class="header" href="#65-alertmanager配置">6.5 Alertmanager配置</a></h3>
+<p><strong>完整的 alertmanager.yml</strong></p>
+<pre><code class="language-yaml">global:
+  resolve_timeout: 5m
+  # 邮件配置
+  smtp_smarthost: 'smtp.example.com:587'
+  smtp_from: 'alertmanager@example.com'
+  smtp_auth_username: 'alertmanager@example.com'
+  smtp_auth_password: 'password'
+
+# 模板文件
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+# 路由配置
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s       # 等待时间（收集同组告警）
+  group_interval: 10s   # 同组告警发送间隔
+  repeat_interval: 1h   # 重复告警间隔
+  receiver: 'default'
+
+  routes:
+    # 严重告警立即发送
+    - match:
+        severity: critical
+      receiver: 'critical-alerts'
+      continue: true      # 继续匹配其他路由
+
+    # 系统告警
+    - match:
+        category: system
+      receiver: 'system-team'
+      group_wait: 30s
+
+    # 应用告警
+    - match:
+        category: application
+      receiver: 'dev-team'
+
+    # 业务告警
+    - match:
+        category: business
+      receiver: 'business-team'
+
+    # 工作时间外的告警降级
+    - match:
+        severity: warning
+      receiver: 'low-priority'
+      # 仅在工作时间外生效
+      active_time_intervals:
+        - offhours
+
+# 接收者配置
+receivers:
+  - name: 'default'
+    webhook_configs:
+      - url: 'http://webhook-server:8080/alerts'
+        send_resolved: true
+
+  - name: 'critical-alerts'
+    email_configs:
+      - to: 'oncall@example.com'
+        headers:
+          Subject: '【严重告警】{{ .GroupLabels.alertname }}'
+    webhook_configs:
+      - url: 'http://webhook-server:8080/critical'
+        send_resolved: true
+
+  - name: 'system-team'
+    email_configs:
+      - to: 'ops-team@example.com'
+        headers:
+          Subject: '【系统告警】{{ .GroupLabels.alertname }}'
+
+  - name: 'dev-team'
+    email_configs:
+      - to: 'dev-team@example.com'
+        headers:
+          Subject: '【应用告警】{{ .GroupLabels.alertname }}'
+
+  - name: 'business-team'
+    email_configs:
+      - to: 'business@example.com'
+        headers:
+          Subject: '【业务告警】{{ .GroupLabels.alertname }}'
+
+  - name: 'low-priority'
+    webhook_configs:
+      - url: 'http://webhook-server:8080/low-priority'
+
+# 抑制规则
+inhibit_rules:
+  # 主机宕机时抑制其他告警
+  - source_match:
+      alertname: 'InstanceDown'
+    target_match_re:
+      alertname: '(HighCPUUsage|HighMemoryUsage|DiskSpaceLow).*'
+    equal: ['instance']
+
+  # 严重告警抑制同类warning告警
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']
+
+# 时间窗口定义
+time_intervals:
+  - name: offhours
+    time_intervals:
+      - weekdays: ['saturday', 'sunday']
+      - times:
+        - start_time: '00:00'
+          end_time: '09:00'
+        - start_time: '18:00'
+          end_time: '23:59'
+</code></pre>
+<p><strong>告警通知模板 templates/email.tmpl</strong></p>
+<pre><code class="language-html">{{ define "email.default.subject" }}
+[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }}
+{{ end }}
+
+{{ define "email.default.html" }}
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;style&gt;
+    body { font-family: Arial, sans-serif; }
+    .alert { border: 1px solid #ddd; padding: 10px; margin: 10px 0; }
+    .critical { background-color: #ffebee; }
+    .warning { background-color: #fff3e0; }
+    .info { background-color: #e3f2fd; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;告警通知&lt;/h2&gt;
+  {{ range .Alerts }}
+  &lt;div class="alert {{ .Labels.severity }}"&gt;
+    &lt;h3&gt;{{ .Labels.alertname }}&lt;/h3&gt;
+    &lt;p&gt;&lt;strong&gt;级别:&lt;/strong&gt; {{ .Labels.severity }}&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;实例:&lt;/strong&gt; {{ .Labels.instance }}&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;摘要:&lt;/strong&gt; {{ .Annotations.summary }}&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;描述:&lt;/strong&gt; {{ .Annotations.description }}&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;开始时间:&lt;/strong&gt; {{ .StartsAt.Format "2006-01-02 15:04:05" }}&lt;/p&gt;
+    {{ if .EndsAt }}
+    &lt;p&gt;&lt;strong&gt;结束时间:&lt;/strong&gt; {{ .EndsAt.Format "2006-01-02 15:04:05" }}&lt;/p&gt;
+    {{ end }}
+  &lt;/div&gt;
+  {{ end }}
+&lt;/body&gt;
+&lt;/html&gt;
+{{ end }}
+</code></pre>
+<hr />
+<h2 id="七实战案例"><a class="header" href="#七实战案例">七、实战案例</a></h2>
+<h3 id="71-案例一监控spring-boot应用"><a class="header" href="#71-案例一监控spring-boot应用">7.1 案例一：监控Spring Boot应用</a></h3>
+<p><strong>步骤1: 集成Micrometer</strong></p>
+<pre><code class="language-xml">&lt;!-- pom.xml --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.micrometer&lt;/groupId&gt;
+    &lt;artifactId&gt;micrometer-registry-prometheus&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p><strong>步骤2: 配置application.yml</strong></p>
+<pre><code class="language-yaml">management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      env: production
+    export:
+      prometheus:
+        enabled: true
+</code></pre>
+<p><strong>步骤3: 自定义业务指标</strong></p>
+<pre><code class="language-java">import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderService {
+
+    private final Counter orderCounter;
+    private final Timer orderProcessTimer;
+
+    public OrderService(MeterRegistry registry) {
+        this.orderCounter = Counter.builder("business.order.created")
+                .description("订单创建数")
+                .tags("status", "success")
+                .register(registry);
+
+        this.orderProcessTimer = Timer.builder("business.order.process.duration")
+                .description("订单处理耗时")
+                .register(registry);
+    }
+
+    public void createOrder(Order order) {
+        orderProcessTimer.record(() -&gt; {
+            // 业务逻辑
+            saveOrder(order);
+            orderCounter.increment();
+        });
+    }
+}
+</code></pre>
+<p><strong>步骤4: Prometheus配置</strong></p>
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'spring-boot-app'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['localhost:8080']
+        labels:
+          app: 'order-service'
+          env: 'production'
+</code></pre>
+<h3 id="72-案例二kubernetes集群监控"><a class="header" href="#72-案例二kubernetes集群监控">7.2 案例二：Kubernetes集群监控</a></h3>
+<p><strong>部署Prometheus到K8s</strong></p>
+<pre><code class="language-yaml"># prometheus-deployment.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      # Kubernetes API Server
+      - job_name: 'kubernetes-apiservers'
+        kubernetes_sd_configs:
+          - role: endpoints
+        scheme: https
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+            action: keep
+            regex: default;kubernetes;https
+
+      # Kubernetes Nodes
+      - job_name: 'kubernetes-nodes'
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/${1}/proxy/metrics
+
+      # Kubernetes Pods
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+            target_label: __address__
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: kubernetes_pod_name
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      serviceAccountName: prometheus
+      containers:
+      - name: prometheus
+        image: prom/prometheus:latest
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - name: config
+          mountPath: /etc/prometheus
+        - name: data
+          mountPath: /prometheus
+      volumes:
+      - name: config
+        configMap:
+          name: prometheus-config
+      - name: data
+        emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus
+spec:
+  selector:
+    app: prometheus
+  ports:
+  - port: 9090
+    targetPort: 9090
+  type: NodePort
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - nodes/proxy
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["extensions"]
+  resources:
+  - ingresses
+  verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+- kind: ServiceAccount
+  name: prometheus
+  namespace: default
+</code></pre>
+<p><strong>应用Annotation暴露metrics</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/metrics"
+spec:
+  containers:
+  - name: myapp
+    image: myapp:latest
+    ports:
+    - containerPort: 8080
+</code></pre>
+<h3 id="73-案例三使用grafana可视化"><a class="header" href="#73-案例三使用grafana可视化">7.3 案例三：使用Grafana可视化</a></h3>
+<p><strong>配置Prometheus数据源</strong></p>
+<pre><code class="language-json">{
+  "name": "Prometheus",
+  "type": "prometheus",
+  "url": "http://prometheus:9090",
+  "access": "proxy",
+  "isDefault": true
+}
+</code></pre>
+<p><strong>导入常用Dashboard</strong></p>
+<pre><code class="language-bash"># Node Exporter Dashboard
+Dashboard ID: 1860
+
+# Spring Boot Dashboard
+Dashboard ID: 12900
+
+# MySQL Dashboard
+Dashboard ID: 7362
+
+# Redis Dashboard
+Dashboard ID: 11835
+
+# Kubernetes Cluster Dashboard
+Dashboard ID: 7249
+</code></pre>
+<p><strong>自定义Dashboard面板</strong></p>
+<pre><code class="language-json">{
+  "title": "应用监控",
+  "panels": [
+    {
+      "title": "QPS",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total[1m]))"
+        }
+      ]
+    },
+    {
+      "title": "错误率",
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{status=~\"5..\"}[5m])) / sum(rate(http_requests_total[5m])) * 100"
+        }
+      ]
+    },
+    {
+      "title": "P99响应时间",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))"
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+<hr />
+<h2 id="八性能优化与最佳实践"><a class="header" href="#八性能优化与最佳实践">八、性能优化与最佳实践</a></h2>
+<h3 id="81-时间序列优化"><a class="header" href="#81-时间序列优化">8.1 时间序列优化</a></h3>
+<p><strong>控制标签基数</strong></p>
+<pre><code class="language-promql"># ❌ 错误: 用户ID作为标签（高基数）
+http_requests_total{user_id="12345"}
+
+# ✅ 正确: 使用聚合指标
+http_requests_by_user_count 10000  # 总用户请求数
+active_users_gauge 1500            # 活跃用户数
+</code></pre>
+<p><strong>避免不必要的标签</strong></p>
+<pre><code class="language-yaml"># ❌ 错误配置
+scrape_configs:
+  - job_name: 'app'
+    static_configs:
+      - targets: ['localhost:8080']
+        labels:
+          timestamp: '{{ now }}'    # 每次scrape都变化
+          random_id: '{{ uuid }}'   # 随机值
+
+# ✅ 正确配置
+scrape_configs:
+  - job_name: 'app'
+    static_configs:
+      - targets: ['localhost:8080']
+        labels:
+          env: 'production'  # 固定值
+          region: 'us-west'  # 有限值集合
+</code></pre>
+<h3 id="82-查询优化"><a class="header" href="#82-查询优化">8.2 查询优化</a></h3>
+<p><strong>使用Recording Rules</strong></p>
+<pre><code class="language-yaml"># prometheus.yml
+rule_files:
+  - 'rules/recording_rules.yml'
+
+# rules/recording_rules.yml
+groups:
+  - name: recording_rules
+    interval: 30s
+    rules:
+      # 预计算CPU使用率
+      - record: instance:node_cpu_utilization:rate5m
+        expr: |
+          100 - (avg by (instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
+
+      # 预计算应用QPS
+      - record: job:http_requests:rate1m
+        expr: |
+          sum by (job) (rate(http_requests_total[1m]))
+
+      # 预计算错误率
+      - record: job:http_error_rate:rate5m
+        expr: |
+          sum by (job) (rate(http_requests_total{status=~"5.."}[5m])) /
+          sum by (job) (rate(http_requests_total[5m]))
+</code></pre>
+<p><strong>优化查询语句</strong></p>
+<pre><code class="language-promql"># ❌ 慢查询
+avg(rate(http_requests_total[5m]))
+
+# ✅ 快速查询（使用recording rule）
+avg(job:http_requests:rate1m)
+
+# ❌ 深度聚合
+sum(sum(rate(http_requests_total[5m])) by (instance)) by (job)
+
+# ✅ 直接聚合
+sum(rate(http_requests_total[5m])) by (job)
+</code></pre>
+<h3 id="83-存储优化"><a class="header" href="#83-存储优化">8.3 存储优化</a></h3>
+<p><strong>配置数据保留策略</strong></p>
+<pre><code class="language-bash"># 启动参数
+--storage.tsdb.retention.time=30d    # 保留30天
+--storage.tsdb.retention.size=50GB   # 最大50GB
+
+# docker-compose.yml
+command:
+  - '--storage.tsdb.retention.time=30d'
+  - '--storage.tsdb.retention.size=50GB'
+  - '--storage.tsdb.path=/prometheus'
+</code></pre>
+<p><strong>使用远程存储</strong></p>
+<pre><code class="language-yaml"># 使用VictoriaMetrics作为远程存储
+remote_write:
+  - url: "http://victoriametrics:8428/api/v1/write"
+    queue_config:
+      max_samples_per_send: 10000
+      capacity: 20000
+      max_shards: 30
+
+remote_read:
+  - url: "http://victoriametrics:8428/api/v1/read"
+</code></pre>
+<h3 id="84-高可用部署"><a class="header" href="#84-高可用部署">8.4 高可用部署</a></h3>
+<p><strong>Prometheus联邦集群</strong></p>
+<pre><code class="language-yaml"># 中心Prometheus配置
+scrape_configs:
+  - job_name: 'federate'
+    honor_labels: true
+    metrics_path: '/federate'
+    params:
+      'match[]':
+        - '{job=~".+"}'  # 抓取所有指标
+        - '{__name__=~"job:.+"}'  # 抓取recording rules
+    static_configs:
+      - targets:
+        - 'prometheus-1:9090'
+        - 'prometheus-2:9090'
+        - 'prometheus-3:9090'
+</code></pre>
+<p><strong>Thanos架构</strong></p>
+<pre><code>┌──────────────┐   ┌──────────────┐   ┌──────────────┐
+│ Prometheus 1 │   │ Prometheus 2 │   │ Prometheus 3 │
+│  + Sidecar   │   │  + Sidecar   │   │  + Sidecar   │
+└──────┬───────┘   └──────┬───────┘   └──────┬───────┘
+       │                  │                  │
+       └──────────────────┼──────────────────┘
+                          │
+                ┌─────────▼──────────┐
+                │   Thanos Query     │  ← Grafana查询
+                └─────────┬──────────┘
+                          │
+          ┌───────────────┼───────────────┐
+          │               │               │
+  ┌───────▼──────┐ ┌──────▼──────┐ ┌─────▼──────┐
+  │ Thanos Store │ │ Thanos Rule │ │  S3/Minio  │
+  └──────────────┘ └─────────────┘ └────────────┘
+</code></pre>
+<hr />
+<h2 id="九常见问题排查"><a class="header" href="#九常见问题排查">九、常见问题排查</a></h2>
+<h3 id="91-prometheus常见问题"><a class="header" href="#91-prometheus常见问题">9.1 Prometheus常见问题</a></h3>
+<p><strong>问题1: 目标无法抓取（Target Down）</strong></p>
+<pre><code class="language-bash"># 检查目标状态
+curl http://localhost:9090/api/v1/targets
+
+# 常见原因:
+# 1. Exporter未启动
+# 2. 网络不通
+# 3. 防火墙阻止
+# 4. Exporter端口错误
+
+# 排查步骤:
+# 1. 测试Exporter可访问性
+curl http://target:9100/metrics
+
+# 2. 检查Prometheus日志
+docker logs prometheus
+
+# 3. 验证配置文件
+promtool check config prometheus.yml
+</code></pre>
+<p><strong>问题2: 查询速度慢</strong></p>
+<pre><code class="language-bash"># 分析慢查询
+# 1. 检查查询复杂度
+# 2. 查看时间序列数量
+curl http://localhost:9090/api/v1/label/__name__/values | jq '. | length'
+
+# 3. 查看TSDB统计
+curl http://localhost:9090/api/v1/status/tsdb
+
+# 优化建议:
+# 1. 使用Recording Rules
+# 2. 减少查询时间范围
+# 3. 降低标签基数
+# 4. 增加内存和存储
+</code></pre>
+<p><strong>问题3: 内存占用过高</strong></p>
+<pre><code class="language-bash"># 查看内存使用
+curl http://localhost:9090/metrics | grep process_resident_memory_bytes
+
+# 原因分析:
+# 1. 时间序列过多
+# 2. 查询过于复杂
+# 3. 数据保留时间过长
+
+# 解决方案:
+# 1. 减少标签基数
+# 2. 缩短数据保留时间
+# 3. 使用远程存储
+# 4. 增加内存限制
+</code></pre>
+<h3 id="92-告警常见问题"><a class="header" href="#92-告警常见问题">9.2 告警常见问题</a></h3>
+<p><strong>问题1: 告警未触发</strong></p>
+<pre><code class="language-bash"># 检查告警规则
+curl http://localhost:9090/api/v1/rules
+
+# 验证PromQL表达式
+# Web UI: http://localhost:9090/graph
+# 输入告警规则的expr表达式，查看是否有结果
+
+# 检查告警状态
+curl http://localhost:9090/api/v1/alerts
+
+# 常见原因:
+# 1. PromQL表达式错误
+# 2. for持续时间未满足
+# 3. 指标不存在或无数据
+</code></pre>
+<p><strong>问题2: 告警风暴</strong></p>
+<pre><code class="language-yaml"># 使用告警分组
+route:
+  group_by: ['alertname', 'cluster']
+  group_wait: 30s
+  group_interval: 5m
+
+# 使用抑制规则
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['instance']
+
+# 设置合理的repeat_interval
+route:
+  repeat_interval: 4h  # 4小时内不重复发送
+</code></pre>
+<hr />
+<h2 id="十学习成果验证标准"><a class="header" href="#十学习成果验证标准">十、学习成果验证标准</a></h2>
+<h3 id="验证标准1-环境搭建能力"><a class="header" href="#验证标准1-环境搭建能力">验证标准1: 环境搭建能力</a></h3>
+<p><strong>要求</strong>: 能够在20分钟内搭建Prometheus+Grafana+Alertmanager完整监控栈</p>
+<p><strong>验证步骤</strong>:</p>
+<ol>
+<li>编写docker-compose.yml</li>
+<li>配置prometheus.yml</li>
+<li>配置alertmanager.yml</li>
+<li>启动服务并验证</li>
+<li>在Grafana配置数据源</li>
+</ol>
+<h3 id="验证标准2-promql查询能力"><a class="header" href="#验证标准2-promql查询能力">验证标准2: PromQL查询能力</a></h3>
+<p><strong>要求</strong>: 能够编写复杂的PromQL查询语句</p>
+<p><strong>测试题</strong>:</p>
+<pre><code>给定指标: http_request_duration_seconds_bucket
+
+编写PromQL实现以下查询:
+1. 计算/api/users接口的P95响应时间
+2. 统计过去1小时内4xx错误总数
+3. 计算每个服务的QPS并按从高到低排序
+4. 预测2小时后的磁盘使用量
+5. 计算CPU使用率环比增长率
+</code></pre>
+<h3 id="验证标准3-exporter开发能力"><a class="header" href="#验证标准3-exporter开发能力">验证标准3: Exporter开发能力</a></h3>
+<p><strong>要求</strong>: 能够使用Python或Go开发自定义Exporter</p>
+<p><strong>测试任务</strong>:</p>
+<pre><code>开发一个业务指标Exporter，要求:
+1. 从MySQL读取订单数据
+2. 暴露以下指标:
+   - 今日订单总数(Counter)
+   - 今日订单总金额(Counter)
+   - 待处理订单数(Gauge)
+   - 订单处理耗时分布(Histogram)
+3. 支持/metrics端点
+4. 每30秒更新一次数据
+</code></pre>
+<h3 id="验证标准4-告警规则配置能力"><a class="header" href="#验证标准4-告警规则配置能力">验证标准4: 告警规则配置能力</a></h3>
+<p><strong>要求</strong>: 能够根据业务需求编写告警规则</p>
+<p><strong>测试任务</strong>:</p>
+<pre><code>为电商系统配置告警规则:
+1. CPU使用率超过80%持续5分钟
+2. 内存使用率超过85%
+3. 接口错误率超过5%持续3分钟
+4. 订单支付成功率低于95%
+5. 订单量相比1小时前下降50%
+6. 配置不同级别的告警通知
+</code></pre>
+<h3 id="验证标准5-故障排查能力"><a class="header" href="#验证标准5-故障排查能力">验证标准5: 故障排查能力</a></h3>
+<p><strong>要求</strong>: 能够快速定位和解决监控系统问题</p>
+<p><strong>测试场景</strong>:</p>
+<pre><code>场景1: Prometheus无法抓取某个target
+- 如何排查？
+- 可能的原因有哪些？
+- 如何验证修复？
+
+场景2: Grafana图表无数据
+- 检查哪些方面？
+- 如何验证数据源连接？
+- 如何验证PromQL语句？
+
+场景3: 告警未触发
+- 检查告警规则配置
+- 验证PromQL表达式
+- 检查Alertmanager状态
+</code></pre>
+<hr />
+<h2 id="十一进阶学习路径"><a class="header" href="#十一进阶学习路径">十一、进阶学习路径</a></h2>
+<h3 id="111-进阶技术方向"><a class="header" href="#111-进阶技术方向">11.1 进阶技术方向</a></h3>
+<p><strong>方向1: Prometheus内核与TSDB</strong></p>
+<ul>
+<li>TSDB存储原理</li>
+<li>WAL日志机制</li>
+<li>压缩算法</li>
+<li>查询引擎优化</li>
+</ul>
+<p><strong>方向2: 大规模Prometheus架构</strong></p>
+<ul>
+<li>联邦集群设计</li>
+<li>Thanos长期存储</li>
+<li>Cortex多租户方案</li>
+<li>VictoriaMetrics高性能存储</li>
+</ul>
+<p><strong>方向3: 云原生可观测性</strong></p>
+<ul>
+<li>OpenTelemetry集成</li>
+<li>Jaeger分布式追踪</li>
+<li>日志、指标、追踪三者融合</li>
+<li>eBPF无侵入监控</li>
+</ul>
+<p><strong>方向4: 智能运维AIOps</strong></p>
+<ul>
+<li>异常检测算法</li>
+<li>基于Prometheus的故障预测</li>
+<li>自动化根因分析</li>
+<li>智能告警降噪</li>
+</ul>
+<h3 id="112-推荐学习资源"><a class="header" href="#112-推荐学习资源">11.2 推荐学习资源</a></h3>
+<p><strong>官方文档</strong></p>
+<ul>
+<li>Prometheus: https://prometheus.io/docs/</li>
+<li>Grafana: https://grafana.com/docs/</li>
+<li>Alertmanager: https://prometheus.io/docs/alerting/latest/alertmanager/</li>
+</ul>
+<p><strong>开源项目</strong></p>
+<ul>
+<li>Thanos: https://github.com/thanos-io/thanos</li>
+<li>Cortex: https://github.com/cortexproject/cortex</li>
+<li>VictoriaMetrics: https://github.com/VictoriaMetrics/VictoriaMetrics</li>
+</ul>
+<p><strong>社区资源</strong></p>
+<ul>
+<li>Prometheus中文文档: https://prometheus.fuckcloudnative.io/</li>
+<li>PromCon大会视频: https://promcon.io/</li>
+<li>Awesome Prometheus: https://github.com/roaldnefs/awesome-prometheus</li>
+</ul>
+<p><strong>实战项目</strong></p>
+<ol>
+<li>监控个人服务器资源</li>
+<li>监控自己的Web应用</li>
+<li>搭建K8s集群监控</li>
+<li>开发业务指标Exporter</li>
+</ol>
+<h3 id="113-认证考试"><a class="header" href="#113-认证考试">11.3 认证考试</a></h3>
+<p><strong>CNCF CKA (Certified Kubernetes Administrator)</strong></p>
+<ul>
+<li>包含Prometheus监控相关内容</li>
+<li>适合云原生工程师</li>
+</ul>
+<p><strong>Grafana认证</strong></p>
+<ul>
+<li>Grafana Certified Associate</li>
+<li>专注可视化和Dashboard设计</li>
+</ul>
+<hr />
+<h2 id="十二附录"><a class="header" href="#十二附录">十二、附录</a></h2>
+<h3 id="121-常用exporter列表"><a class="header" href="#121-常用exporter列表">12.1 常用Exporter列表</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>Exporter</th><th>监控对象</th><th>端口</th><th>项目地址</th></tr></thead><tbody>
+<tr><td>node_exporter</td><td>Linux主机</td><td>9100</td><td>https://github.com/prometheus/node_exporter</td></tr>
+<tr><td>mysqld_exporter</td><td>MySQL</td><td>9104</td><td>https://github.com/prometheus/mysqld_exporter</td></tr>
+<tr><td>redis_exporter</td><td>Redis</td><td>9121</td><td>https://github.com/oliver006/redis_exporter</td></tr>
+<tr><td>postgres_exporter</td><td>PostgreSQL</td><td>9187</td><td>https://github.com/prometheus-community/postgres_exporter</td></tr>
+<tr><td>mongodb_exporter</td><td>MongoDB</td><td>9216</td><td>https://github.com/percona/mongodb_exporter</td></tr>
+<tr><td>elasticsearch_exporter</td><td>Elasticsearch</td><td>9114</td><td>https://github.com/prometheus-community/elasticsearch_exporter</td></tr>
+<tr><td>kafka_exporter</td><td>Kafka</td><td>9308</td><td>https://github.com/danielqsj/kafka_exporter</td></tr>
+<tr><td>nginx_exporter</td><td>Nginx</td><td>9113</td><td>https://github.com/nginxinc/nginx-prometheus-exporter</td></tr>
+<tr><td>blackbox_exporter</td><td>HTTP/TCP/ICMP</td><td>9115</td><td>https://github.com/prometheus/blackbox_exporter</td></tr>
+</tbody></table>
+</div>
+<h3 id="122-promql函数速查表"><a class="header" href="#122-promql函数速查表">12.2 PromQL函数速查表</a></h3>
+<p><strong>聚合函数</strong></p>
+<pre><code>sum()      - 求和
+avg()      - 平均值
+max()/min() - 最大/最小值
+count()    - 计数
+topk()/bottomk() - Top K
+quantile() - 分位数
+stddev()   - 标准差
+stdvar()   - 方差
+</code></pre>
+<p><strong>时间函数</strong></p>
+<pre><code>rate()     - 每秒速率
+irate()    - 瞬时速率
+increase() - 增长量
+delta()    - 差值
+idelta()   - 瞬时差值
+deriv()    - 导数
+predict_linear() - 线性预测
+</code></pre>
+<p><strong>数学函数</strong></p>
+<pre><code>abs()      - 绝对值
+ceil()     - 向上取整
+floor()    - 向下取整
+round()    - 四舍五入
+exp()      - 指数
+ln()/log2()/log10() - 对数
+sqrt()     - 平方根
+</code></pre>
+<p><strong>标签函数</strong></p>
+<pre><code>label_join()    - 合并标签
+label_replace() - 替换标签
+</code></pre>
+<h3 id="123-常用时间单位"><a class="header" href="#123-常用时间单位">12.3 常用时间单位</a></h3>
+<pre><code>ms - 毫秒
+s  - 秒
+m  - 分钟
+h  - 小时
+d  - 天
+w  - 周
+y  - 年
+</code></pre>
+<hr />
+<h2 id="结语"><a class="header" href="#结语">结语</a></h2>
+<p>Prometheus是云原生时代最重要的监控系统之一，掌握它将极大提升你的系统可观测性能力。</p>
+<p><strong>学习路径总结</strong>:</p>
+<pre><code>基础入门 (1周)
+  → 理解核心概念
+  → 搭建测试环境
+  → 学习PromQL基础
+
+实战进阶 (2周)
+  → 监控实际应用
+  → 开发自定义Exporter
+  → 配置告警规则
+
+高级应用 (持续)
+  → 大规模架构设计
+  → 性能优化
+  → 云原生集成
+</code></pre>
+<p><strong>持续学习建议</strong>:</p>
+<ol>
+<li>关注Prometheus官方博客</li>
+<li>参与开源社区贡献</li>
+<li>在实际项目中应用</li>
+<li>分享经验和最佳实践</li>
+<li>探索AIOps智能运维</li>
+</ol>
+<p>祝你成为监控专家！🚀📊</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/middleware/elk.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/middleware/rabbitmq.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/middleware/elk.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/middleware/rabbitmq.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

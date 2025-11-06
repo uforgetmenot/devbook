@@ -1,0 +1,1675 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Nginx 学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="nginx-学习笔记"><a class="header" href="#nginx-学习笔记">Nginx 学习笔记</a></h1>
+<h2 id="学习目标定位"><a class="header" href="#学习目标定位">学习目标定位</a></h2>
+<p><strong>角色定位</strong>: 0-5年经验的后端/运维工程师，希望系统掌握Nginx配置、优化和运维技能</p>
+<p><strong>学习成果</strong>: 完成本笔记学习后，你将能够：</p>
+<ul>
+<li>独立完成Nginx的安装、配置和部署</li>
+<li>熟练配置反向代理、负载均衡、HTTPS</li>
+<li>进行性能优化和故障排查</li>
+<li>在生产环境中独立运维Nginx服务</li>
+</ul>
+<hr />
+<h2 id="第一部分nginx-基础入门"><a class="header" href="#第一部分nginx-基础入门">第一部分：Nginx 基础入门</a></h2>
+<h3 id="11-nginx-简介与核心特点"><a class="header" href="#11-nginx-简介与核心特点">1.1 Nginx 简介与核心特点</a></h3>
+<h4 id="什么是nginx"><a class="header" href="#什么是nginx">什么是Nginx？</a></h4>
+<p>Nginx（engine x）是一个高性能的HTTP和反向代理服务器，也是一个IMAP/POP3/SMTP服务器。由俄罗斯程序员Igor Sysoev于2004年开发。</p>
+<h4 id="核心特点"><a class="header" href="#核心特点">核心特点</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>特点</th><th>说明</th><th>应用场景</th></tr></thead><tbody>
+<tr><td>高性能</td><td>单机支持10万+并发连接</td><td>高流量网站</td></tr>
+<tr><td>低资源消耗</td><td>内存占用小，CPU消耗低</td><td>资源受限环境</td></tr>
+<tr><td>高可靠性</td><td>7×24小时不间断运行</td><td>生产环境</td></tr>
+<tr><td>模块化设计</td><td>功能通过模块扩展</td><td>定制化需求</td></tr>
+<tr><td>热部署</td><td>不停机更新配置和升级</td><td>持续服务</td></tr>
+</tbody></table>
+</div>
+<h4 id="架构设计优势"><a class="header" href="#架构设计优势">架构设计优势</a></h4>
+<pre><code>┌─────────────────────────────────────┐
+│         Master Process              │  主进程（管理worker）
+│   (管理、监控、配置加载)              │
+└──────────────┬──────────────────────┘
+               │
+    ┌──────────┼──────────┐
+    │          │          │
+┌───▼───┐  ┌──▼────┐  ┌──▼────┐
+│Worker │  │Worker │  │Worker │  工作进程（处理请求）
+│Process│  │Process│  │Process │
+└───────┘  └───────┘  └───────┘
+</code></pre>
+<p><strong>核心技术</strong>：</p>
+<ol>
+<li><strong>事件驱动架构</strong>：基于epoll/kqueue高效处理事件</li>
+<li><strong>异步非阻塞I/O</strong>：一个worker可处理数千并发连接</li>
+<li><strong>多进程模型</strong>：主进程+多个worker进程，充分利用多核CPU</li>
+</ol>
+<h3 id="12-环境安装与搭建"><a class="header" href="#12-环境安装与搭建">1.2 环境安装与搭建</a></h3>
+<h4 id="实战案例1在ubuntu上安装nginx"><a class="header" href="#实战案例1在ubuntu上安装nginx">实战案例1：在Ubuntu上安装Nginx</a></h4>
+<p><strong>方法一：使用包管理器（推荐新手）</strong></p>
+<pre><code class="language-bash"># 更新软件包列表
+sudo apt update
+
+# 安装Nginx
+sudo apt install nginx -y
+
+# 启动Nginx
+sudo systemctl start nginx
+
+# 设置开机自启
+sudo systemctl enable nginx
+
+# 检查状态
+sudo systemctl status nginx
+
+# 验证安装
+nginx -v
+curl http://localhost
+</code></pre>
+<p><strong>方法二：源码编译安装（生产环境推荐）</strong></p>
+<pre><code class="language-bash"># 1. 安装依赖
+sudo apt install build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev libgd-dev -y
+
+# 2. 下载源码
+cd /usr/local/src
+wget http://nginx.org/download/nginx-1.24.0.tar.gz
+tar -zxvf nginx-1.24.0.tar.gz
+cd nginx-1.24.0
+
+# 3. 配置编译选项
+./configure \
+  --prefix=/usr/local/nginx \
+  --with-http_ssl_module \
+  --with-http_v2_module \
+  --with-http_realip_module \
+  --with-http_stub_status_module \
+  --with-http_gzip_static_module \
+  --with-pcre \
+  --with-stream \
+  --with-stream_ssl_module
+
+# 4. 编译安装
+make &amp;&amp; sudo make install
+
+# 5. 创建软链接
+sudo ln -s /usr/local/nginx/sbin/nginx /usr/bin/nginx
+
+# 6. 创建systemd服务文件
+sudo vim /etc/systemd/system/nginx.service
+</code></pre>
+<p><strong>Nginx systemd服务配置</strong>：</p>
+<pre><code class="language-ini">[Unit]
+Description=The NGINX HTTP and reverse proxy server
+After=network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+PIDFile=/usr/local/nginx/logs/nginx.pid
+ExecStartPre=/usr/local/nginx/sbin/nginx -t
+ExecStart=/usr/local/nginx/sbin/nginx
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<pre><code class="language-bash"># 重载systemd配置
+sudo systemctl daemon-reload
+sudo systemctl start nginx
+sudo systemctl enable nginx
+</code></pre>
+<h4 id="实战案例2docker部署nginx"><a class="header" href="#实战案例2docker部署nginx">实战案例2：Docker部署Nginx</a></h4>
+<pre><code class="language-bash"># 快速启动
+docker run -d --name my-nginx -p 80:80 nginx:latest
+
+# 挂载自定义配置
+docker run -d --name my-nginx \
+  -p 80:80 \
+  -v /path/to/nginx.conf:/etc/nginx/nginx.conf:ro \
+  -v /path/to/html:/usr/share/nginx/html:ro \
+  nginx:latest
+
+# 查看日志
+docker logs -f my-nginx
+</code></pre>
+<p><strong>Dockerfile示例</strong>：</p>
+<pre><code class="language-dockerfile">FROM nginx:1.24-alpine
+
+# 复制自定义配置
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY conf.d/ /etc/nginx/conf.d/
+
+# 复制静态文件
+COPY html/ /usr/share/nginx/html/
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
+
+EXPOSE 80 443
+
+CMD ["nginx", "-g", "daemon off;"]
+</code></pre>
+<h3 id="13-目录结构与重要文件"><a class="header" href="#13-目录结构与重要文件">1.3 目录结构与重要文件</a></h3>
+<h4 id="标准目录结构ubuntu-apt安装"><a class="header" href="#标准目录结构ubuntu-apt安装">标准目录结构（Ubuntu APT安装）</a></h4>
+<pre><code>/etc/nginx/
+├── nginx.conf              # 主配置文件
+├── conf.d/                 # 子配置文件目录
+│   └── default.conf
+├── sites-available/        # 可用站点配置
+│   └── default
+├── sites-enabled/          # 启用站点配置（软链接）
+│   └── default -&gt; ../sites-available/default
+├── snippets/               # 配置片段
+├── modules-available/      # 可用模块
+└── modules-enabled/        # 启用模块
+
+/var/log/nginx/
+├── access.log              # 访问日志
+└── error.log               # 错误日志
+
+/var/www/html/              # 默认网站根目录
+└── index.nginx-debian.html
+
+/usr/share/nginx/html/      # 默认页面目录
+</code></pre>
+<h4 id="源码编译安装目录"><a class="header" href="#源码编译安装目录">源码编译安装目录</a></h4>
+<pre><code>/usr/local/nginx/
+├── conf/                   # 配置文件
+│   ├── nginx.conf
+│   ├── mime.types
+│   └── fastcgi.conf
+├── html/                   # 默认网站根目录
+│   ├── index.html
+│   └── 50x.html
+├── logs/                   # 日志文件
+│   ├── access.log
+│   ├── error.log
+│   └── nginx.pid
+└── sbin/                   # 可执行文件
+    └── nginx
+</code></pre>
+<h3 id="14-基本命令与操作"><a class="header" href="#14-基本命令与操作">1.4 基本命令与操作</a></h3>
+<h4 id="常用命令速查"><a class="header" href="#常用命令速查">常用命令速查</a></h4>
+<pre><code class="language-bash"># 启动
+nginx
+sudo systemctl start nginx
+
+# 停止
+nginx -s stop               # 快速停止
+nginx -s quit               # 优雅停止（处理完当前请求）
+sudo systemctl stop nginx
+
+# 重启
+sudo systemctl restart nginx
+
+# 重载配置（不停机）
+nginx -s reload
+sudo systemctl reload nginx
+
+# 测试配置文件
+nginx -t
+nginx -T                    # 测试并显示配置
+
+# 查看版本和编译选项
+nginx -v                    # 简版
+nginx -V                    # 详细版（含编译参数）
+
+# 查看运行状态
+sudo systemctl status nginx
+ps aux | grep nginx
+
+# 查看监听端口
+sudo netstat -tlnp | grep nginx
+sudo ss -tlnp | grep nginx
+
+# 发送信号
+kill -HUP &lt;master_pid&gt;      # 重载配置
+kill -QUIT &lt;master_pid&gt;     # 优雅停止
+kill -USR1 &lt;master_pid&gt;     # 重新打开日志文件
+</code></pre>
+<hr />
+<h2 id="第二部分配置文件详解"><a class="header" href="#第二部分配置文件详解">第二部分：配置文件详解</a></h2>
+<h3 id="21-配置文件结构"><a class="header" href="#21-配置文件结构">2.1 配置文件结构</a></h3>
+<h4 id="配置文件层次关系"><a class="header" href="#配置文件层次关系">配置文件层次关系</a></h4>
+<pre><code class="language-nginx"># 全局块 - 影响整个Nginx服务器
+user nginx;
+worker_processes auto;
+
+events {
+    # events块 - 影响网络连接处理
+    worker_connections 1024;
+}
+
+http {
+    # http块 - HTTP服务器配置
+    include mime.types;
+
+    # upstream块 - 负载均衡配置
+    upstream backend {
+        server 192.168.1.10:8080;
+        server 192.168.1.11:8080;
+    }
+
+    # server块 - 虚拟主机配置
+    server {
+        listen 80;
+        server_name example.com;
+
+        # location块 - 请求路由配置
+        location / {
+            root /var/www/html;
+            index index.html;
+        }
+
+        location /api {
+            proxy_pass http://backend;
+        }
+    }
+}
+</code></pre>
+<h3 id="22-核心配置详解"><a class="header" href="#22-核心配置详解">2.2 核心配置详解</a></h3>
+<h4 id="实战案例3完整的生产环境配置模板"><a class="header" href="#实战案例3完整的生产环境配置模板">实战案例3：完整的生产环境配置模板</a></h4>
+<pre><code class="language-nginx"># ============ 全局块 ============
+user nginx;                          # 运行用户
+worker_processes auto;               # worker进程数（auto=CPU核心数）
+worker_cpu_affinity auto;            # CPU亲和性
+error_log /var/log/nginx/error.log warn;  # 错误日志
+pid /var/run/nginx.pid;              # PID文件
+
+# 限制资源
+worker_rlimit_nofile 65535;          # 单个worker最大文件打开数
+
+# ============ Events块 ============
+events {
+    use epoll;                       # Linux下使用epoll
+    worker_connections 10240;        # 单个worker最大连接数
+    multi_accept on;                 # 一次接受多个新连接
+}
+
+# ============ HTTP块 ============
+http {
+    # ---- 基础配置 ----
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    charset utf-8;
+
+    # ---- 日志格式 ----
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for" '
+                    '$request_time $upstream_response_time';
+
+    access_log /var/log/nginx/access.log main buffer=32k flush=5s;
+
+    # ---- 性能优化 ----
+    sendfile on;                     # 零拷贝
+    tcp_nopush on;                   # 减少网络包数量
+    tcp_nodelay on;                  # 减少延迟
+    keepalive_timeout 65;            # 长连接超时
+    keepalive_requests 100;          # 单个连接最大请求数
+
+    # ---- Gzip压缩 ----
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1k;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css application/json application/javascript
+               text/xml application/xml application/xml+rss text/javascript;
+
+    # ---- 缓冲区设置 ----
+    client_body_buffer_size 128k;
+    client_max_body_size 20m;
+    client_header_buffer_size 2k;
+    large_client_header_buffers 4 8k;
+
+    # ---- 超时设置 ----
+    client_header_timeout 15;
+    client_body_timeout 15;
+    send_timeout 25;
+
+    # ---- 安全设置 ----
+    server_tokens off;               # 隐藏版本号
+
+    # ---- 限流配置 ----
+    limit_req_zone $binary_remote_addr zone=api_limit:10m rate=10r/s;
+    limit_conn_zone $binary_remote_addr zone=conn_limit:10m;
+
+    # ---- 包含其他配置文件 ----
+    include /etc/nginx/conf.d/*.conf;
+}
+</code></pre>
+<h3 id="23-虚拟主机配置"><a class="header" href="#23-虚拟主机配置">2.3 虚拟主机配置</a></h3>
+<h4 id="实战案例4配置多个虚拟主机"><a class="header" href="#实战案例4配置多个虚拟主机">实战案例4：配置多个虚拟主机</a></h4>
+<p><strong>场景</strong>：在一台服务器上托管多个网站</p>
+<pre><code class="language-nginx"># /etc/nginx/conf.d/site1.conf
+server {
+    listen 80;
+    server_name www.site1.com site1.com;
+
+    # 访问日志
+    access_log /var/log/nginx/site1_access.log main;
+    error_log /var/log/nginx/site1_error.log;
+
+    # 网站根目录
+    root /var/www/site1;
+    index index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # 静态文件缓存
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+}
+
+# /etc/nginx/conf.d/site2.conf
+server {
+    listen 80;
+    server_name www.site2.com site2.com;
+
+    root /var/www/site2;
+    index index.php index.html;
+
+    # PHP处理
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+}
+
+# /etc/nginx/conf.d/site3.conf - 基于端口的虚拟主机
+server {
+    listen 8080;
+    server_name _;
+
+    root /var/www/site3;
+    index index.html;
+}
+</code></pre>
+<p><strong>验证配置</strong>：</p>
+<pre><code class="language-bash"># 测试配置
+sudo nginx -t
+
+# 重载配置
+sudo nginx -s reload
+
+# 测试访问
+curl -H "Host: www.site1.com" http://localhost/
+curl -H "Host: www.site2.com" http://localhost/
+curl http://localhost:8080/
+</code></pre>
+<hr />
+<h2 id="第三部分反向代理与负载均衡"><a class="header" href="#第三部分反向代理与负载均衡">第三部分：反向代理与负载均衡</a></h2>
+<h3 id="31-反向代理基础"><a class="header" href="#31-反向代理基础">3.1 反向代理基础</a></h3>
+<h4 id="正向代理-vs-反向代理"><a class="header" href="#正向代理-vs-反向代理">正向代理 vs 反向代理</a></h4>
+<pre><code>正向代理（客户端代理）:
+[客户端] → [代理服务器] → [目标服务器]
+用途：翻墙、缓存、访问控制
+
+反向代理（服务器代理）:
+[客户端] → [Nginx] → [后端服务器集群]
+用途：负载均衡、缓存、安全防护
+</code></pre>
+<h4 id="实战案例5简单反向代理配置"><a class="header" href="#实战案例5简单反向代理配置">实战案例5：简单反向代理配置</a></h4>
+<p><strong>场景</strong>：将请求代理到后端Node.js应用</p>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name api.example.com;
+
+    location / {
+        # 代理到后端服务
+        proxy_pass http://127.0.0.1:3000;
+
+        # 传递真实IP
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # 超时设置
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+
+        # 缓冲设置
+        proxy_buffering on;
+        proxy_buffer_size 8k;
+        proxy_buffers 8 8k;
+    }
+}
+</code></pre>
+<h4 id="实战案例6websocket代理"><a class="header" href="#实战案例6websocket代理">实战案例6：WebSocket代理</a></h4>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name ws.example.com;
+
+    location /ws/ {
+        proxy_pass http://127.0.0.1:3001;
+
+        # WebSocket必需配置
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+
+        # 长连接设置
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+    }
+}
+</code></pre>
+<h3 id="32-负载均衡配置"><a class="header" href="#32-负载均衡配置">3.2 负载均衡配置</a></h3>
+<h4 id="实战案例7完整的负载均衡方案"><a class="header" href="#实战案例7完整的负载均衡方案">实战案例7：完整的负载均衡方案</a></h4>
+<pre><code class="language-nginx"># 定义后端服务器组
+upstream backend_servers {
+    # 负载均衡算法：轮询（默认）
+    # least_conn;     # 最少连接
+    # ip_hash;        # IP哈希
+    # hash $request_uri;  # URL哈希
+
+    # 服务器列表
+    server 192.168.1.10:8080 weight=3 max_fails=2 fail_timeout=30s;
+    server 192.168.1.11:8080 weight=2 max_fails=2 fail_timeout=30s;
+    server 192.168.1.12:8080 weight=1 max_fails=2 fail_timeout=30s;
+    server 192.168.1.13:8080 backup;  # 备份服务器
+
+    # 长连接优化
+    keepalive 32;
+    keepalive_timeout 60s;
+    keepalive_requests 100;
+}
+
+server {
+    listen 80;
+    server_name www.example.com;
+
+    location / {
+        proxy_pass http://backend_servers;
+
+        # 标准代理头
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # 启用长连接
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+
+        # 健康检查相关
+        proxy_next_upstream error timeout http_500 http_502 http_503;
+        proxy_next_upstream_tries 2;
+        proxy_next_upstream_timeout 5s;
+    }
+}
+</code></pre>
+<h4 id="负载均衡算法对比"><a class="header" href="#负载均衡算法对比">负载均衡算法对比</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>算法</th><th>配置</th><th>适用场景</th><th>优缺点</th></tr></thead><tbody>
+<tr><td>轮询</td><td>默认</td><td>服务器性能均等</td><td>简单但不考虑负载</td></tr>
+<tr><td>加权轮询</td><td>weight=N</td><td>服务器性能不同</td><td>灵活但需手动调整</td></tr>
+<tr><td>最少连接</td><td>least_conn</td><td>请求处理时间差异大</td><td>动态但有开销</td></tr>
+<tr><td>IP哈希</td><td>ip_hash</td><td>需要会话保持</td><td>固定但不均衡</td></tr>
+<tr><td>一致性哈希</td><td>hash $key consistent</td><td>缓存服务器</td><td>稳定但复杂</td></tr>
+</tbody></table>
+</div>
+<h4 id="实战案例8会话保持sticky-session"><a class="header" href="#实战案例8会话保持sticky-session">实战案例8：会话保持（Sticky Session）</a></h4>
+<pre><code class="language-nginx"># 方法1：IP Hash
+upstream backend_sticky {
+    ip_hash;
+    server 192.168.1.10:8080;
+    server 192.168.1.11:8080;
+}
+
+# 方法2：Cookie绑定（需要商业版或第三方模块）
+# upstream backend_sticky {
+#     sticky cookie srv_id expires=1h domain=.example.com path=/;
+#     server 192.168.1.10:8080;
+#     server 192.168.1.11:8080;
+# }
+
+# 方法3：自定义Hash
+upstream backend_custom {
+    hash $cookie_user_id consistent;
+    server 192.168.1.10:8080;
+    server 192.168.1.11:8080;
+}
+</code></pre>
+<hr />
+<h2 id="第四部分https与安全配置"><a class="header" href="#第四部分https与安全配置">第四部分：HTTPS与安全配置</a></h2>
+<h3 id="41-ssltls证书配置"><a class="header" href="#41-ssltls证书配置">4.1 SSL/TLS证书配置</a></h3>
+<h4 id="实战案例9配置lets-encrypt免费证书"><a class="header" href="#实战案例9配置lets-encrypt免费证书">实战案例9：配置Let's Encrypt免费证书</a></h4>
+<pre><code class="language-bash"># 1. 安装Certbot
+sudo apt install certbot python3-certbot-nginx -y
+
+# 2. 获取证书（自动配置Nginx）
+sudo certbot --nginx -d example.com -d www.example.com
+
+# 3. 手动获取证书
+sudo certbot certonly --webroot -w /var/www/html -d example.com
+
+# 4. 自动续期
+sudo certbot renew --dry-run
+sudo crontab -e
+# 添加: 0 3 * * * certbot renew --quiet
+</code></pre>
+<h4 id="实战案例10完整的https配置"><a class="header" href="#实战案例10完整的https配置">实战案例10：完整的HTTPS配置</a></h4>
+<pre><code class="language-nginx"># HTTP重定向到HTTPS
+server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    # ACME验证路径（Let's Encrypt）
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/html;
+    }
+
+    # 重定向到HTTPS
+    location / {
+        return 301 https://&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.5806em;vertical-align:-0.15em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;ser&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;v&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;r&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;n&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;am&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;request_uri;
+    }
+}
+
+# HTTPS服务器
+server {
+    listen 443 ssl http2;
+    server_name example.com www.example.com;
+
+    # SSL证书配置
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem;
+
+    # SSL协议和加密套件
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers 'ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384';
+    ssl_prefer_server_ciphers off;
+
+    # SSL优化
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_session_tickets off;
+
+    # OCSP Stapling
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    resolver 8.8.8.8 8.8.4.4 valid=300s;
+    resolver_timeout 5s;
+
+    # 安全头
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+
+    # Content Security Policy
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';" always;
+
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        try_files &lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.6595em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;u&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;r&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;uri/ =404;
+    }
+}
+</code></pre>
+<h3 id="42-访问控制与安全"><a class="header" href="#42-访问控制与安全">4.2 访问控制与安全</a></h3>
+<h4 id="实战案例11ip访问控制"><a class="header" href="#实战案例11ip访问控制">实战案例11：IP访问控制</a></h4>
+<pre><code class="language-nginx"># 方法1：允许特定IP
+location /admin {
+    allow 192.168.1.0/24;
+    allow 10.0.0.1;
+    deny all;
+
+    root /var/www/admin;
+}
+
+# 方法2：拒绝特定IP
+location / {
+    deny 192.168.1.100;
+    deny 10.0.0.0/8;
+    allow all;
+}
+
+# 方法3：地理位置限制（需要GeoIP模块）
+geo $allowed_country {
+    default no;
+    CN yes;
+    US yes;
+}
+
+server {
+    if ($allowed_country = no) {
+        return 403;
+    }
+}
+</code></pre>
+<h4 id="实战案例12http基础认证"><a class="header" href="#实战案例12http基础认证">实战案例12：HTTP基础认证</a></h4>
+<pre><code class="language-bash"># 1. 创建密码文件
+sudo apt install apache2-utils -y
+sudo htpasswd -c /etc/nginx/.htpasswd admin
+sudo htpasswd /etc/nginx/.htpasswd user2
+</code></pre>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name admin.example.com;
+
+    location / {
+        auth_basic "Restricted Access";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+
+        root /var/www/admin;
+        index index.html;
+    }
+
+    # 特定路径不需要认证
+    location /public {
+        auth_basic off;
+        root /var/www/public;
+    }
+}
+</code></pre>
+<h4 id="实战案例13限流与防ddos"><a class="header" href="#实战案例13限流与防ddos">实战案例13：限流与防DDoS</a></h4>
+<pre><code class="language-nginx"># 定义限流区域
+limit_req_zone &lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;bina&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;r&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;y&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight" style="margin-right:0.02778em;"&gt;r&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;m&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;a&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;dd&lt;/span&gt;&lt;span class="mord mathnormal"&gt;rzo&lt;/span&gt;&lt;span class="mord mathnormal"&gt;n&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;span class="mrel"&gt;=&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;g&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;n&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.3361em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;imi&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;span class="mrel"&gt;:&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.6444em;"&gt;&lt;/span&gt;&lt;span class="mord"&gt;10&lt;/span&gt;&lt;span class="mord mathnormal"&gt;m&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;r&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;span class="mrel"&gt;=&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:1em;vertical-align:-0.25em;"&gt;&lt;/span&gt;&lt;span class="mord"&gt;5&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;r&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal"&gt;m&lt;/span&gt;&lt;span class="mpunct"&gt;;&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.1667em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;span class="mord mathnormal"&gt;imi&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight" style="margin-right:0.02778em;"&gt;r&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;q&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight" style="margin-right:0.04398em;"&gt;z&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal"&gt;n&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;binary_remote_addr zone=api_limit:10m rate=100r/s;
+limit_conn_zone $binary_remote_addr zone=conn_limit:10m;
+
+server {
+    listen 80;
+    server_name api.example.com;
+
+    # 限制并发连接数
+    limit_conn conn_limit 10;
+
+    # 登录接口严格限流
+    location /api/login {
+        limit_req zone=login_limit burst=2 nodelay;
+        proxy_pass http://backend;
+    }
+
+    # API接口限流
+    location /api/ {
+        limit_req zone=api_limit burst=20 nodelay;
+        limit_req_status 429;
+        proxy_pass http://backend;
+    }
+
+    # 限流错误页面
+    error_page 429 /429.html;
+    location = /429.html {
+        root /var/www/errors;
+        internal;
+    }
+}
+</code></pre>
+<hr />
+<h2 id="第五部分性能优化"><a class="header" href="#第五部分性能优化">第五部分：性能优化</a></h2>
+<h3 id="51-静态文件优化"><a class="header" href="#51-静态文件优化">5.1 静态文件优化</a></h3>
+<h4 id="实战案例14静态资源服务优化"><a class="header" href="#实战案例14静态资源服务优化">实战案例14：静态资源服务优化</a></h4>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name static.example.com;
+    root /var/www/static;
+
+    # 静态文件缓存配置
+    location ~* \.(jpg|jpeg|png|gif|ico|svg)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        access_log off;
+    }
+
+    location ~* \.(css|js)&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;x&lt;/span&gt;&lt;span class="mord mathnormal"&gt;p&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;res&lt;/span&gt;&lt;span class="mord"&gt;1&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10903em;"&gt;M&lt;/span&gt;&lt;span class="mpunct"&gt;;&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.1667em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.3361em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;h&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;er&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.07153em;"&gt;C&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;c&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;span class="mbin"&gt;−&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.07153em;"&gt;C&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal"&gt;n&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord mathnormal"&gt;ro&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;span class="mord"&gt;&amp;quot;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;p&lt;/span&gt;&lt;span class="mord mathnormal"&gt;u&lt;/span&gt;&lt;span class="mord mathnormal"&gt;b&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;c&lt;/span&gt;&lt;span class="mord"&gt;&amp;quot;&lt;/span&gt;&lt;span class="mpunct"&gt;;&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.1667em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;cces&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;s&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.3361em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;g&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;ff&lt;/span&gt;&lt;span class="mpunct"&gt;;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;span class="mord mathnormal"&gt;oc&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal"&gt;n&lt;/span&gt;&lt;span class="mspace nobreak"&gt; &lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;span class="mbin"&gt;∗&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:1.2369em;vertical-align:-0.25em;"&gt;&lt;/span&gt;&lt;span class="mord accent"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.9869em;"&gt;&lt;span style="top:-3em;"&gt;&lt;span class="pstrut" style="height:3em;"&gt;&lt;/span&gt;&lt;span class="mopen"&gt;(&lt;/span&gt;&lt;/span&gt;&lt;span style="top:-3.319em;"&gt;&lt;span class="pstrut" style="height:3em;"&gt;&lt;/span&gt;&lt;span class="accent-body" style="left:-0.1389em;"&gt;&lt;span class="mord"&gt;˙&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.25em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02691em;"&gt;w&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;ff&lt;/span&gt;&lt;span class="mord"&gt;∣&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02691em;"&gt;w&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;ff&lt;/span&gt;&lt;span class="mord"&gt;2∣&lt;/span&gt;&lt;span class="mord mathnormal"&gt;tt&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;f&lt;/span&gt;&lt;span class="mord"&gt;∣&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.10764em;"&gt;f&lt;/span&gt;&lt;span class="mord"&gt;∣&lt;/span&gt;&lt;span class="mord mathnormal"&gt;eo&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mclose"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt; {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        add_header Access-Control-Allow-Origin "*";
+        access_log off;
+    }
+
+    # 预压缩的gzip文件
+    location ~ \.(js|css)$ {
+        gzip_static on;
+        gzip_types application/javascript text/css;
+    }
+
+    # 禁止访问隐藏文件
+    location ~ /\. {
+        deny all;
+        access_log off;
+    }
+}
+</code></pre>
+<h3 id="52-缓存配置"><a class="header" href="#52-缓存配置">5.2 缓存配置</a></h3>
+<h4 id="实战案例15代理缓存配置"><a class="header" href="#实战案例15代理缓存配置">实战案例15：代理缓存配置</a></h4>
+<pre><code class="language-nginx"># 定义缓存路径和参数
+proxy_cache_path /var/cache/nginx/proxy
+                 levels=1:2
+                 keys_zone=proxy_cache:100m
+                 max_size=10g
+                 inactive=60m
+                 use_temp_path=off;
+
+# 定义缓存键
+proxy_cache_key "$scheme&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;re&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;q&lt;/span&gt;&lt;span class="mord mathnormal"&gt;u&lt;/span&gt;&lt;span class="mord mathnormal"&gt;es&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;m&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;host$request_uri";
+
+upstream backend {
+    server 192.168.1.10:8080;
+    server 192.168.1.11:8080;
+}
+
+server {
+    listen 80;
+    server_name www.example.com;
+
+    # API不缓存
+    location /api/ {
+        proxy_pass http://backend;
+        proxy_cache off;
+    }
+
+    # 静态内容缓存
+    location / {
+        proxy_pass http://backend;
+
+        # 启用缓存
+        proxy_cache proxy_cache;
+        proxy_cache_valid 200 10m;
+        proxy_cache_valid 404 1m;
+        proxy_cache_use_stale error timeout updating http_500 http_502 http_503;
+        proxy_cache_background_update on;
+        proxy_cache_lock on;
+
+        # 缓存绕过
+        proxy_cache_bypass $http_pragma &lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;tt&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;p&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;a&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;u&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;or&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.04398em;"&gt;z&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal"&gt;n&lt;/span&gt;&lt;span class="mpunct"&gt;;&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.1667em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;p&lt;/span&gt;&lt;span class="mord mathnormal"&gt;ro&lt;/span&gt;&lt;span class="mord mathnormal"&gt;x&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;y&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;n&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;c&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;c&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;http_pragma $http_authorization;
+
+        # 添加缓存状态头
+        add_header X-Cache-Status $upstream_cache_status;
+    }
+
+    # 缓存清除接口（需要限制访问）
+    location ~ /purge(/.*) {
+        allow 127.0.0.1;
+        deny all;
+        proxy_cache_purge proxy_cache "&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.6944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;sc&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;m&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;request_method&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.6944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;os&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;1";
+    }
+}
+</code></pre>
+<h3 id="53-性能调优参数"><a class="header" href="#53-性能调优参数">5.3 性能调优参数</a></h3>
+<h4 id="实战案例16高性能生产环境配置"><a class="header" href="#实战案例16高性能生产环境配置">实战案例16：高性能生产环境配置</a></h4>
+<pre><code class="language-nginx"># ============ 全局优化 ============
+user nginx;
+worker_processes auto;
+worker_cpu_affinity auto;
+worker_rlimit_nofile 100000;
+
+events {
+    use epoll;
+    worker_connections 10240;
+    multi_accept on;
+    accept_mutex off;
+}
+
+http {
+    # ---- 连接优化 ----
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+
+    # ---- 长连接配置 ----
+    keepalive_timeout 65;
+    keepalive_requests 1000;
+
+    # ---- 缓冲区优化 ----
+    client_body_buffer_size 256k;
+    client_max_body_size 50m;
+    client_header_buffer_size 4k;
+    large_client_header_buffers 4 32k;
+
+    output_buffers 2 128k;
+    postpone_output 1460;
+
+    # ---- 超时优化 ----
+    client_header_timeout 20;
+    client_body_timeout 20;
+    send_timeout 30;
+    reset_timedout_connection on;
+
+    # ---- Gzip压缩 ----
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 5;
+    gzip_min_length 1000;
+    gzip_buffers 16 8k;
+    gzip_http_version 1.1;
+    gzip_types text/plain text/css application/json application/javascript
+               text/xml application/xml application/xml+rss text/javascript
+               application/vnd.ms-fontobject application/x-font-ttf
+               font/opentype image/svg+xml;
+
+    # ---- 文件描述符缓存 ----
+    open_file_cache max=10000 inactive=60s;
+    open_file_cache_valid 120s;
+    open_file_cache_min_uses 2;
+    open_file_cache_errors on;
+
+    # ---- 日志优化 ----
+    access_log /var/log/nginx/access.log main buffer=32k flush=5s;
+    log_not_found off;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+</code></pre>
+<hr />
+<h2 id="第六部分监控与日志"><a class="header" href="#第六部分监控与日志">第六部分：监控与日志</a></h2>
+<h3 id="61-状态监控"><a class="header" href="#61-状态监控">6.1 状态监控</a></h3>
+<h4 id="实战案例17启用stub_status监控"><a class="header" href="#实战案例17启用stub_status监控">实战案例17：启用stub_status监控</a></h4>
+<pre><code class="language-nginx">server {
+    listen 8080;
+    server_name localhost;
+
+    location /nginx_status {
+        stub_status on;
+        access_log off;
+        allow 127.0.0.1;
+        allow 192.168.1.0/24;
+        deny all;
+    }
+}
+</code></pre>
+<p><strong>访问监控页面</strong>：</p>
+<pre><code class="language-bash">curl http://localhost:8080/nginx_status
+</code></pre>
+<p><strong>输出示例</strong>：</p>
+<pre><code>Active connections: 291
+server accepts handled requests
+ 16630948 16630948 31070465
+Reading: 6 Writing: 179 Waiting: 106
+</code></pre>
+<p><strong>指标含义</strong>：</p>
+<ul>
+<li>Active connections: 当前活动连接数</li>
+<li>accepts: 接受的连接总数</li>
+<li>handled: 处理的连接总数</li>
+<li>requests: 总请求数</li>
+<li>Reading: 正在读取请求头的连接数</li>
+<li>Writing: 正在向客户端写响应的连接数</li>
+<li>Waiting: 空闲长连接数</li>
+</ul>
+<h4 id="实战案例18集成prometheus监控"><a class="header" href="#实战案例18集成prometheus监控">实战案例18：集成Prometheus监控</a></h4>
+<pre><code class="language-bash"># 1. 安装nginx-prometheus-exporter
+wget https://github.com/nginxinc/nginx-prometheus-exporter/releases/download/v0.11.0/nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
+tar -xzf nginx-prometheus-exporter_0.11.0_linux_amd64.tar.gz
+sudo mv nginx-prometheus-exporter /usr/local/bin/
+
+# 2. 创建systemd服务
+sudo vim /etc/systemd/system/nginx-exporter.service
+</code></pre>
+<pre><code class="language-ini">[Unit]
+Description=Nginx Prometheus Exporter
+After=network.target
+
+[Service]
+Type=simple
+User=nginx
+ExecStart=/usr/local/bin/nginx-prometheus-exporter \
+  -nginx.scrape-uri=http://localhost:8080/nginx_status
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<pre><code class="language-bash">sudo systemctl daemon-reload
+sudo systemctl start nginx-exporter
+sudo systemctl enable nginx-exporter
+
+# 3. 验证
+curl http://localhost:9113/metrics
+</code></pre>
+<h3 id="62-日志管理"><a class="header" href="#62-日志管理">6.2 日志管理</a></h3>
+<h4 id="实战案例19自定义日志格式"><a class="header" href="#实战案例19自定义日志格式">实战案例19：自定义日志格式</a></h4>
+<pre><code class="language-nginx">http {
+    # JSON格式日志（便于日志分析）
+    log_format json_combined escape=json '{'
+        '"time":"$time_iso8601",'
+        '"remote_addr":"$remote_addr",'
+        '"request_method":"$request_method",'
+        '"request_uri":"$request_uri",'
+        '"status":$status,'
+        '"body_bytes_sent":$body_bytes_sent,'
+        '"http_referer":"$http_referer",'
+        '"http_user_agent":"$http_user_agent",'
+        '"request_time":$request_time,'
+        '"upstream_response_time":"$upstream_response_time",'
+        '"upstream_addr":"$upstream_addr"'
+    '}';
+
+    # 详细性能日志
+    log_format performance '$remote_addr - &lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:1em;vertical-align:-0.25em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;re&lt;/span&gt;&lt;span class="mord mathnormal"&gt;m&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;u&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;ser&lt;/span&gt;&lt;span class="mopen"&gt;[&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;time_local] '
+                          '"&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;re&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;q&lt;/span&gt;&lt;span class="mord mathnormal"&gt;u&lt;/span&gt;&lt;span class="mord mathnormal"&gt;es&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord"&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;status $body_bytes_sent '
+                          '"$http_referer" "$http_user_agent" '
+                          'rt=$request_time uct="$upstream_connect_time" '
+                          'uht="$upstream_header_time" urt="$upstream_response_time"';
+
+    access_log /var/log/nginx/access.log json_combined buffer=32k flush=5s;
+}
+</code></pre>
+<h4 id="实战案例20日志切割"><a class="header" href="#实战案例20日志切割">实战案例20：日志切割</a></h4>
+<p><strong>方法1：使用logrotate</strong></p>
+<pre><code class="language-bash"># /etc/logrotate.d/nginx
+/var/log/nginx/*.log {
+    daily                   # 每日轮转
+    missingok              # 日志丢失不报错
+    rotate 30              # 保留30份
+    compress               # 压缩旧日志
+    delaycompress          # 延迟压缩
+    notifempty             # 空文件不轮转
+    create 0640 nginx adm  # 创建新文件权限
+    sharedscripts          # 共享脚本
+    postrotate             # 轮转后执行
+        if [ -f /var/run/nginx.pid ]; then
+            kill -USR1 `cat /var/run/nginx.pid`
+        fi
+    endscript
+}
+</code></pre>
+<p><strong>方法2：定时任务脚本</strong></p>
+<pre><code class="language-bash">#!/bin/bash
+# /usr/local/bin/nginx_log_rotate.sh
+
+LOG_DIR="/var/log/nginx"
+BACKUP_DIR="/var/log/nginx/backup"
+DATE=$(date +%Y%m%d)
+
+# 创建备份目录
+mkdir -p $BACKUP_DIR
+
+# 移动日志
+mv $LOG_DIR/access.log $BACKUP_DIR/access_$DATE.log
+mv &lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:1em;vertical-align:-0.25em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;L&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;O&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;G&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.3283em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight" style="margin-right:0.02778em;"&gt;D&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.07847em;"&gt;I&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.00773em;"&gt;R&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;error&lt;/span&gt;&lt;span class="mord"&gt;.&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;span class="mord mathnormal"&gt;o&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;g&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;BACKUP_DIR/error_$DATE.log
+
+# 通知Nginx重新打开日志
+kill -USR1 `cat /var/run/nginx.pid`
+
+# 压缩7天前的日志
+find $BACKUP_DIR -name "*.log" -mtime +7 -exec gzip {} \;
+
+# 删除30天前的日志
+find $BACKUP_DIR -name "*.log.gz" -mtime +30 -delete
+</code></pre>
+<pre><code class="language-bash"># 添加到crontab
+0 0 * * * /usr/local/bin/nginx_log_rotate.sh
+</code></pre>
+<hr />
+<h2 id="第七部分故障排查与调试"><a class="header" href="#第七部分故障排查与调试">第七部分：故障排查与调试</a></h2>
+<h3 id="71-常见问题排查"><a class="header" href="#71-常见问题排查">7.1 常见问题排查</a></h3>
+<h4 id="问题1502-bad-gateway"><a class="header" href="#问题1502-bad-gateway">问题1：502 Bad Gateway</a></h4>
+<p><strong>原因分析</strong>：</p>
+<ol>
+<li>后端服务未启动或崩溃</li>
+<li>连接超时</li>
+<li>后端服务返回了无效响应</li>
+<li>SELinux阻止连接</li>
+</ol>
+<p><strong>排查步骤</strong>：</p>
+<pre><code class="language-bash"># 1. 检查后端服务状态
+sudo systemctl status backend_service
+netstat -tlnp | grep 8080
+
+# 2. 检查Nginx错误日志
+sudo tail -f /var/log/nginx/error.log
+
+# 3. 测试后端服务
+curl http://127.0.0.1:8080
+
+# 4. 检查SELinux（CentOS/RHEL）
+getenforce
+sudo setsebool -P httpd_can_network_connect 1
+
+# 5. 增加超时时间
+# 在nginx配置中:
+proxy_connect_timeout 300s;
+proxy_send_timeout 300s;
+proxy_read_timeout 300s;
+</code></pre>
+<h4 id="问题2413-request-entity-too-large"><a class="header" href="#问题2413-request-entity-too-large">问题2：413 Request Entity Too Large</a></h4>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-nginx">http {
+    client_max_body_size 100m;  # 全局设置
+}
+
+server {
+    client_max_body_size 50m;   # 服务器级别
+}
+
+location /upload {
+    client_max_body_size 200m;  # 路径级别
+}
+</code></pre>
+<h4 id="问题3504-gateway-timeout"><a class="header" href="#问题3504-gateway-timeout">问题3：504 Gateway Timeout</a></h4>
+<p><strong>解决方案</strong>：</p>
+<pre><code class="language-nginx">location /api/slow {
+    proxy_pass http://backend;
+
+    # 增加超时时间
+    proxy_connect_timeout 600s;
+    proxy_send_timeout 600s;
+    proxy_read_timeout 600s;
+
+    # 关闭缓冲（流式传输）
+    proxy_buffering off;
+}
+</code></pre>
+<h3 id="72-调试技巧"><a class="header" href="#72-调试技巧">7.2 调试技巧</a></h3>
+<h4 id="实战案例21启用调试日志"><a class="header" href="#实战案例21启用调试日志">实战案例21：启用调试日志</a></h4>
+<pre><code class="language-nginx"># 临时启用调试日志
+error_log /var/log/nginx/debug.log debug;
+
+events {
+    debug_connection 192.168.1.100;  # 只对特定IP启用debug
+}
+</code></pre>
+<pre><code class="language-bash"># 查看调试日志
+sudo tail -f /var/log/nginx/debug.log
+</code></pre>
+<h4 id="实战案例22配置测试和验证"><a class="header" href="#实战案例22配置测试和验证">实战案例22：配置测试和验证</a></h4>
+<pre><code class="language-bash"># 测试配置文件语法
+nginx -t
+
+# 显示完整配置（包含所有include）
+nginx -T
+
+# 测试并打印配置到文件
+nginx -T &gt; /tmp/nginx_full_config.txt
+
+# 验证upstream配置
+nginx -T 2&gt;&amp;1 | grep -A 20 "upstream"
+
+# 检查监听端口
+sudo nginx -T 2&gt;&amp;1 | grep listen
+
+# 查找配置文件中的某个指令
+nginx -T 2&gt;&amp;1 | grep proxy_pass
+</code></pre>
+<hr />
+<h2 id="第八部分实战项目案例"><a class="header" href="#第八部分实战项目案例">第八部分：实战项目案例</a></h2>
+<h3 id="实战项目1部署前后端分离应用"><a class="header" href="#实战项目1部署前后端分离应用">实战项目1：部署前后端分离应用</a></h3>
+<p><strong>场景</strong>：前端React应用 + 后端Django API</p>
+<pre><code class="language-nginx"># /etc/nginx/conf.d/webapp.conf
+
+# 后端服务器组
+upstream django_backend {
+    server 127.0.0.1:8000 weight=3;
+    server 127.0.0.1:8001 weight=2;
+    keepalive 32;
+}
+
+# HTTP重定向HTTPS
+server {
+    listen 80;
+    server_name example.com www.example.com;
+    return 301 https://example.com$request_uri;
+}
+
+# HTTPS服务
+server {
+    listen 443 ssl http2;
+    server_name example.com www.example.com;
+
+    # SSL配置
+    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+
+    # 安全头
+    add_header Strict-Transport-Security "max-age=31536000" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    # 前端静态文件
+    root /var/www/frontend/build;
+    index index.html;
+
+    # API代理
+    location /api/ {
+        proxy_pass http://django_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+
+        proxy_set_header Host &lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;os&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mpunct"&gt;;&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.1667em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;p&lt;/span&gt;&lt;span class="mord mathnormal"&gt;ro&lt;/span&gt;&lt;span class="mord mathnormal"&gt;x&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;y&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;s&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.3361em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;h&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;er&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.07847em;"&gt;X&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;span class="mbin"&gt;−&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.7778em;vertical-align:-0.0833em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.00773em;"&gt;R&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;span class="mbin"&gt;−&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.6833em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.07847em;"&gt;I&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.13889em;"&gt;P&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # CORS配置（如果需要）
+        add_header Access-Control-Allow-Origin "https://example.com" always;
+        add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+        add_header Access-Control-Allow-Headers "Authorization, Content-Type" always;
+
+        if ($request_method = OPTIONS) {
+            return 204;
+        }
+    }
+
+    # 静态资源缓存
+    location /static/ {
+        alias /var/www/frontend/build/static/;
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    location /media/ {
+        alias /var/www/media/;
+        expires 7d;
+    }
+
+    # 前端路由（SPA）
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+</code></pre>
+<h3 id="实战项目2微服务架构网关配置"><a class="header" href="#实战项目2微服务架构网关配置">实战项目2：微服务架构网关配置</a></h3>
+<pre><code class="language-nginx"># /etc/nginx/conf.d/microservices.conf
+
+# 用户服务
+upstream user_service {
+    server 192.168.1.10:8001 max_fails=3 fail_timeout=30s;
+    server 192.168.1.11:8001 max_fails=3 fail_timeout=30s;
+}
+
+# 订单服务
+upstream order_service {
+    server 192.168.1.10:8002 max_fails=3 fail_timeout=30s;
+    server 192.168.1.11:8002 max_fails=3 fail_timeout=30s;
+}
+
+# 商品服务
+upstream product_service {
+    server 192.168.1.10:8003 max_fails=3 fail_timeout=30s;
+    server 192.168.1.11:8003 max_fails=3 fail_timeout=30s;
+}
+
+# 限流配置
+limit_req_zone $binary_remote_addr zone=api_limit:10m rate=100r/s;
+
+server {
+    listen 80;
+    server_name api.example.com;
+
+    # 全局限流
+    limit_req zone=api_limit burst=50 nodelay;
+
+    # 用户服务路由
+    location /api/v1/users {
+        proxy_pass http://user_service;
+        include /etc/nginx/proxy_params;
+    }
+
+    # 订单服务路由
+    location /api/v1/orders {
+        proxy_pass http://order_service;
+        include /etc/nginx/proxy_params;
+    }
+
+    # 商品服务路由
+    location /api/v1/products {
+        proxy_pass http://product_service;
+        include /etc/nginx/proxy_params;
+    }
+
+    # 健康检查端点
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+}
+
+# /etc/nginx/proxy_params
+proxy_http_version 1.1;
+proxy_set_header Connection "";
+proxy_set_header Host &lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;h&lt;/span&gt;&lt;span class="mord mathnormal"&gt;os&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mpunct"&gt;;&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.1667em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;p&lt;/span&gt;&lt;span class="mord mathnormal"&gt;ro&lt;/span&gt;&lt;span class="mord mathnormal"&gt;x&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal" style="margin-right:0.03588em;"&gt;y&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.1514em;"&gt;&lt;span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;s&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord"&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="msupsub"&gt;&lt;span class="vlist-t vlist-t2"&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.3361em;"&gt;&lt;span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"&gt;&lt;span class="pstrut" style="height:2.7em;"&gt;&lt;/span&gt;&lt;span class="sizing reset-size6 size3 mtight"&gt;&lt;span class="mord mathnormal mtight"&gt;h&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-s"&gt;​&lt;/span&gt;&lt;/span&gt;&lt;span class="vlist-r"&gt;&lt;span class="vlist" style="height:0.15em;"&gt;&lt;span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.02778em;"&gt;er&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.07847em;"&gt;X&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;span class="mbin"&gt;−&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.7778em;vertical-align:-0.0833em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.00773em;"&gt;R&lt;/span&gt;&lt;span class="mord mathnormal"&gt;e&lt;/span&gt;&lt;span class="mord mathnormal"&gt;a&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.01968em;"&gt;l&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;span class="mbin"&gt;−&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2222em;"&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:0.6833em;"&gt;&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.07847em;"&gt;I&lt;/span&gt;&lt;span class="mord mathnormal" style="margin-right:0.13889em;"&gt;P&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+proxy_set_header X-Forwarded-Proto $scheme;
+proxy_connect_timeout 60s;
+proxy_send_timeout 60s;
+proxy_read_timeout 60s;
+</code></pre>
+<hr />
+<h2 id="学习验证标准"><a class="header" href="#学习验证标准">学习验证标准</a></h2>
+<p>完成本笔记学习后，你应该能够独立完成以下任务：</p>
+<h3 id="验证标准1基础操作能力"><a class="header" href="#验证标准1基础操作能力">验证标准1：基础操作能力</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+在Linux服务器上成功安装并启动Nginx</li>
+<li><input disabled="" type="checkbox"/>
+配置至少3个不同域名的虚拟主机</li>
+<li><input disabled="" type="checkbox"/>
+实现HTTP到HTTPS的自动重定向</li>
+<li><input disabled="" type="checkbox"/>
+能够排查并解决常见的502、504错误</li>
+</ul>
+<h3 id="验证标准2代理与负载均衡"><a class="header" href="#验证标准2代理与负载均衡">验证标准2：代理与负载均衡</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置反向代理到后端应用（Node.js/Python/Java）</li>
+<li><input disabled="" type="checkbox"/>
+实现至少3台服务器的负载均衡</li>
+<li><input disabled="" type="checkbox"/>
+配置健康检查和故障转移</li>
+<li><input disabled="" type="checkbox"/>
+实现会话保持（IP Hash或其他方式）</li>
+</ul>
+<h3 id="验证标准3https与安全"><a class="header" href="#验证标准3https与安全">验证标准3：HTTPS与安全</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用Let's Encrypt配置免费SSL证书</li>
+<li><input disabled="" type="checkbox"/>
+实现A级SSL安全评分（SSLLabs测试）</li>
+<li><input disabled="" type="checkbox"/>
+配置基本的访问控制和限流规则</li>
+<li><input disabled="" type="checkbox"/>
+添加安全响应头（HSTS、CSP等）</li>
+</ul>
+<h3 id="验证标准4性能优化"><a class="header" href="#验证标准4性能优化">验证标准4：性能优化</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置Gzip压缩，压缩率达到60%以上</li>
+<li><input disabled="" type="checkbox"/>
+实现静态资源缓存策略</li>
+<li><input disabled="" type="checkbox"/>
+配置代理缓存提升响应速度</li>
+<li><input disabled="" type="checkbox"/>
+优化worker进程和连接参数</li>
+</ul>
+<h3 id="验证标准5生产环境部署"><a class="header" href="#验证标准5生产环境部署">验证标准5：生产环境部署</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+部署一个完整的前后端分离项目</li>
+<li><input disabled="" type="checkbox"/>
+配置日志切割和监控</li>
+<li><input disabled="" type="checkbox"/>
+实现零停机配置更新</li>
+<li><input disabled="" type="checkbox"/>
+编写基本的故障排查流程文档</li>
+</ul>
+<hr />
+<h2 id="扩展资源与进阶建议"><a class="header" href="#扩展资源与进阶建议">扩展资源与进阶建议</a></h2>
+<h3 id="官方文档"><a class="header" href="#官方文档">官方文档</a></h3>
+<ul>
+<li><a href="http://nginx.org/en/docs/">Nginx官方文档</a></li>
+<li><a href="https://www.nginx.com/resources/wiki/start/">Nginx配置示例</a></li>
+<li><a href="http://nginx.org/en/docs/dev/development_guide.html">Nginx模块开发指南</a></li>
+</ul>
+<h3 id="推荐工具"><a class="header" href="#推荐工具">推荐工具</a></h3>
+<ul>
+<li><strong>nginxconfig.io</strong>: 在线配置生成器</li>
+<li><strong>nginx-amplify</strong>: 官方监控工具</li>
+<li><strong>GoAccess</strong>: 实时日志分析工具</li>
+<li><strong>SSLLabs</strong>: SSL配置测试工具</li>
+</ul>
+<h3 id="进阶学习方向"><a class="header" href="#进阶学习方向">进阶学习方向</a></h3>
+<ol>
+<li><strong>OpenResty</strong>: Nginx + LuaJIT的强大组合</li>
+<li><strong>Nginx Plus</strong>: 商业版高级功能</li>
+<li><strong>Kubernetes Ingress</strong>: K8s中的Nginx应用</li>
+<li><strong>性能调优</strong>: 深入学习系统调优和网络优化</li>
+</ol>
+<h3 id="实战项目建议"><a class="header" href="#实战项目建议">实战项目建议</a></h3>
+<ol>
+<li>搭建个人博客并配置HTTPS</li>
+<li>部署微服务API网关</li>
+<li>实现图片/视频CDN服务</li>
+<li>构建高可用Web集群（Nginx + Keepalived）</li>
+</ol>
+<h3 id="学习路线图"><a class="header" href="#学习路线图">学习路线图</a></h3>
+<pre><code>阶段1（1-2周）：基础入门
+├── 安装配置
+├── 虚拟主机
+└── 基本命令
+
+阶段2（2-3周）：核心功能
+├── 反向代理
+├── 负载均衡
+└── 静态服务
+
+阶段3（2-3周）：安全与优化
+├── HTTPS配置
+├── 性能优化
+└── 缓存策略
+
+阶段4（2-4周）：生产实战
+├── 监控日志
+├── 故障排查
+└── 高可用部署
+
+阶段5（持续）：进阶提升
+├── 模块开发
+├── OpenResty
+└── 架构设计
+</code></pre>
+<hr />
+<h2 id="附录常用配置片段"><a class="header" href="#附录常用配置片段">附录：常用配置片段</a></h2>
+<h3 id="a1-跨域cors配置"><a class="header" href="#a1-跨域cors配置">A1. 跨域CORS配置</a></h3>
+<pre><code class="language-nginx">location /api {
+    if ($request_method = 'OPTIONS') {
+        add_header Access-Control-Allow-Origin '*';
+        add_header Access-Control-Allow-Methods 'GET, POST, PUT, DELETE, OPTIONS';
+        add_header Access-Control-Allow-Headers 'Authorization, Content-Type';
+        add_header Access-Control-Max-Age 1728000;
+        add_header Content-Type 'text/plain; charset=utf-8';
+        add_header Content-Length 0;
+        return 204;
+    }
+
+    add_header Access-Control-Allow-Origin '*' always;
+    add_header Access-Control-Allow-Methods 'GET, POST, PUT, DELETE, OPTIONS' always;
+    add_header Access-Control-Allow-Headers 'Authorization, Content-Type' always;
+
+    proxy_pass http://backend;
+}
+</code></pre>
+<h3 id="a2-防盗链配置"><a class="header" href="#a2-防盗链配置">A2. 防盗链配置</a></h3>
+<pre><code class="language-nginx">location ~* \.(jpg|jpeg|png|gif)$ {
+    valid_referers none blocked server_names *.example.com;
+    if ($invalid_referer) {
+        return 403;
+        # 或重定向到防盗链图片
+        # rewrite ^/ /images/hotlink-denied.jpg break;
+    }
+}
+</code></pre>
+<h3 id="a3-url重写规则"><a class="header" href="#a3-url重写规则">A3. URL重写规则</a></h3>
+<pre><code class="language-nginx"># 去除www
+server {
+    server_name www.example.com;
+    return 301 $scheme://example.com$request_uri;
+}
+
+# 旧URL重定向
+location /old-page {
+    return 301 /new-page;
+}
+
+# 正则重写
+location ~* ^/product/(\d+)$ {
+    rewrite ^/product/(\d+)&lt;span class="katex"&gt;&lt;span class="katex-html" aria-hidden="true"&gt;&lt;span class="base"&gt;&lt;span class="strut" style="height:1em;vertical-align:-0.25em;"&gt;&lt;/span&gt;&lt;span class="mord"&gt;/&lt;/span&gt;&lt;span class="mord mathnormal"&gt;p&lt;/span&gt;&lt;span class="mord mathnormal"&gt;ro&lt;/span&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;span class="mord mathnormal"&gt;u&lt;/span&gt;&lt;span class="mord mathnormal"&gt;c&lt;/span&gt;&lt;span class="mord mathnormal"&gt;t&lt;/span&gt;&lt;span class="mord mathnormal"&gt;s&lt;/span&gt;&lt;span class="mclose"&gt;?&lt;/span&gt;&lt;span class="mord mathnormal"&gt;i&lt;/span&gt;&lt;span class="mord mathnormal"&gt;d&lt;/span&gt;&lt;span class="mspace" style="margin-right:0.2778em;"&gt;&lt;/span&gt;&lt;span class="mrel"&gt;=&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;1 last;
+}
+</code></pre>
+<h3 id="a4-错误页面配置"><a class="header" href="#a4-错误页面配置">A4. 错误页面配置</a></h3>
+<pre><code class="language-nginx">error_page 404 /404.html;
+error_page 500 502 503 504 /50x.html;
+
+location = /404.html {
+    root /var/www/errors;
+    internal;
+}
+
+location = /50x.html {
+    root /var/www/errors;
+    internal;
+}
+</code></pre>
+<hr />
+<h2 id="结语"><a class="header" href="#结语">结语</a></h2>
+<p>Nginx是一个功能强大且灵活的Web服务器，掌握它需要理论学习和实践操作相结合。建议你：</p>
+<ol>
+<li><strong>动手实践</strong>：每个配置示例都亲自测试</li>
+<li><strong>理解原理</strong>：不仅知道怎么做，还要知道为什么这么做</li>
+<li><strong>查阅文档</strong>：遇到问题先查官方文档</li>
+<li><strong>关注社区</strong>：学习他人的最佳实践</li>
+<li><strong>持续学习</strong>：Nginx和Web技术不断发展，保持学习热情</li>
+</ol>
+<p>记住：<strong>配置文件是活的文档，日志是最好的老师</strong>。祝你学习愉快，早日成为Nginx高手！</p>
+<hr />
+<p><strong>文档版本</strong>: v1.0
+<strong>最后更新</strong>: 2025-11-02
+<strong>适用版本</strong>: Nginx 1.20+</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/middleware/rocket.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/network/openrestry.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/middleware/rocket.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/network/openrestry.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

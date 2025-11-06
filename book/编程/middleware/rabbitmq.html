@@ -1,0 +1,2290 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>RabbitMQ 消息队列技术学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="rabbitmq-消息队列技术学习笔记"><a class="header" href="#rabbitmq-消息队列技术学习笔记">RabbitMQ 消息队列技术学习笔记</a></h1>
+<blockquote>
+<p><strong>学习者角色定位</strong>: 具备基础Java/Python开发能力的后端开发人员
+<strong>目标群体</strong>: 0-3年工作经验的后端开发、系统架构师
+<strong>预计学习周期</strong>: 2-3周（每天2-3小时）</p>
+</blockquote>
+<h2 id="一技术概述与核心价值"><a class="header" href="#一技术概述与核心价值">一、技术概述与核心价值</a></h2>
+<h3 id="11-什么是rabbitmq"><a class="header" href="#11-什么是rabbitmq">1.1 什么是RabbitMQ</a></h3>
+<p><strong>定义</strong>: RabbitMQ是一个开源的消息中间件（Message Broker），实现了AMQP（Advanced Message Queuing Protocol）协议，用于在分布式系统中传递消息。</p>
+<p><strong>核心特性</strong>:</p>
+<ul>
+<li>可靠性：持久化、传输确认、发布确认</li>
+<li>灵活的路由：通过Exchange进行消息路由</li>
+<li>集群化：多节点组成集群，实现高可用</li>
+<li>多种协议：AMQP、STOMP、MQTT等</li>
+<li>多语言客户端：Java、Python、Go、Node.js等</li>
+<li>管理界面：友好的Web管理界面</li>
+<li>插件机制：丰富的插件生态</li>
+</ul>
+<h3 id="12-消息队列的作用"><a class="header" href="#12-消息队列的作用">1.2 消息队列的作用</a></h3>
+<p><strong>核心价值</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>功能</th><th>说明</th><th>应用场景</th></tr></thead><tbody>
+<tr><td><strong>解耦</strong></td><td>降低系统间的耦合度</td><td>订单系统和库存系统解耦</td></tr>
+<tr><td><strong>异步</strong></td><td>提升系统响应速度</td><td>用户注册后异步发送邮件</td></tr>
+<tr><td><strong>削峰</strong></td><td>缓冲突发流量</td><td>秒杀系统流量控制</td></tr>
+<tr><td><strong>可靠</strong></td><td>保证消息不丢失</td><td>支付回调通知</td></tr>
+<tr><td><strong>顺序</strong></td><td>保证消息顺序性</td><td>订单状态变更</td></tr>
+</tbody></table>
+</div>
+<p><strong>同步vs异步通信对比</strong>:</p>
+<pre><code>同步调用:
+用户注册 → 写数据库 → 发送邮件 → 发送短信 → 返回结果
+         (50ms)    (2000ms)    (2000ms)   (总计4050ms)
+
+异步调用:
+用户注册 → 写数据库 → 发送MQ消息 → 返回结果  (总计100ms)
+                    ↓
+            后台异步处理: 发送邮件、短信
+</code></pre>
+<h3 id="13-rabbitmq与其他mq对比"><a class="header" href="#13-rabbitmq与其他mq对比">1.3 RabbitMQ与其他MQ对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>RabbitMQ</th><th>Kafka</th><th>RocketMQ</th><th>ActiveMQ</th></tr></thead><tbody>
+<tr><td><strong>开发语言</strong></td><td>Erlang</td><td>Scala/Java</td><td>Java</td><td>Java</td></tr>
+<tr><td><strong>单机吞吐量</strong></td><td>万级</td><td>百万级</td><td>十万级</td><td>万级</td></tr>
+<tr><td><strong>时效性</strong></td><td>微秒级</td><td>毫秒级</td><td>毫秒级</td><td>毫秒级</td></tr>
+<tr><td><strong>可用性</strong></td><td>高（主从）</td><td>非常高（分布式）</td><td>高（主从）</td><td>高（主从）</td></tr>
+<tr><td><strong>消息可靠性</strong></td><td>高</td><td>一般</td><td>高</td><td>一般</td></tr>
+<tr><td><strong>功能特性</strong></td><td>⭐⭐⭐⭐⭐</td><td>⭐⭐⭐</td><td>⭐⭐⭐⭐</td><td>⭐⭐⭐</td></tr>
+<tr><td><strong>学习曲线</strong></td><td>中等</td><td>陡峭</td><td>中等</td><td>简单</td></tr>
+<tr><td><strong>适用场景</strong></td><td>业务消息传递</td><td>日志收集、大数据</td><td>业务消息、事务</td><td>小规模应用</td></tr>
+</tbody></table>
+</div>
+<h3 id="14-rabbitmq核心架构"><a class="header" href="#14-rabbitmq核心架构">1.4 RabbitMQ核心架构</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                        RabbitMQ Server                       │
+│                                                               │
+│  ┌──────────┐   ┌─────────────────────┐   ┌──────────────┐ │
+│  │ Producer │──→│   Exchange (交换机)  │──→│   Queue     │ │
+│  │ (生产者) │   │                     │   │  (队列)      │ │
+│  └──────────┘   │  ┌───────────────┐  │   └──────┬───────┘ │
+│                  │  │ Direct        │  │          │         │
+│                  │  │ Topic         │  │          │         │
+│                  │  │ Fanout        │  │          │         │
+│                  │  │ Headers       │  │          │         │
+│                  │  └───────────────┘  │          │         │
+│                  │        ↓             │          │         │
+│                  │    Binding          │          │         │
+│                  │  (绑定规则)          │          │         │
+│                  └─────────────────────┘          │         │
+│                                                     ↓         │
+│                                           ┌──────────────┐   │
+│                                           │   Consumer   │   │
+│                                           │  (消费者)     │   │
+│                                           └──────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p><strong>核心概念</strong>:</p>
+<ul>
+<li><strong>Producer（生产者）</strong>: 发送消息的应用</li>
+<li><strong>Exchange（交换机）</strong>: 接收消息并路由到Queue</li>
+<li><strong>Queue（队列）</strong>: 存储消息，等待消费者消费</li>
+<li><strong>Binding（绑定）</strong>: Exchange和Queue之间的路由规则</li>
+<li><strong>Routing Key（路由键）</strong>: 消息路由的关键字</li>
+<li><strong>Consumer（消费者）</strong>: 接收并处理消息的应用</li>
+<li><strong>Virtual Host（虚拟主机）</strong>: 逻辑隔离单元，类似namespace</li>
+<li><strong>Connection（连接）</strong>: TCP连接</li>
+<li><strong>Channel（信道）</strong>: 在Connection内部的虚拟连接</li>
+</ul>
+<hr />
+<h2 id="二环境搭建与快速启动"><a class="header" href="#二环境搭建与快速启动">二、环境搭建与快速启动</a></h2>
+<h3 id="21-使用docker快速部署"><a class="header" href="#21-使用docker快速部署">2.1 使用Docker快速部署</a></h3>
+<p><strong>基础部署（单机版）</strong></p>
+<pre><code class="language-bash"># 拉取并启动RabbitMQ（包含管理界面）
+docker run -d \
+  --name rabbitmq \
+  -p 5672:5672 \
+  -p 15672:15672 \
+  -e RABBITMQ_DEFAULT_USER=admin \
+  -e RABBITMQ_DEFAULT_PASS=admin123 \
+  rabbitmq:3.12-management
+
+# 验证启动
+docker logs -f rabbitmq
+
+# 访问管理界面
+# URL: http://localhost:15672
+# 用户名: admin
+# 密码: admin123
+</code></pre>
+<p><strong>持久化部署</strong></p>
+<pre><code class="language-bash"># 创建数据目录
+mkdir -p /data/rabbitmq
+
+# 启动带数据持久化的RabbitMQ
+docker run -d \
+  --name rabbitmq \
+  --hostname rabbitmq-server \
+  -p 5672:5672 \
+  -p 15672:15672 \
+  -e RABBITMQ_DEFAULT_USER=admin \
+  -e RABBITMQ_DEFAULT_PASS=admin123 \
+  -v /data/rabbitmq:/var/lib/rabbitmq \
+  rabbitmq:3.12-management
+</code></pre>
+<h3 id="22-使用docker-compose部署"><a class="header" href="#22-使用docker-compose部署">2.2 使用Docker Compose部署</a></h3>
+<p><strong>创建 docker-compose.yml</strong></p>
+<pre><code class="language-yaml">version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    hostname: rabbitmq-server
+    ports:
+      - "5672:5672"    # AMQP端口
+      - "15672:15672"  # 管理界面端口
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+      RABBITMQ_DEFAULT_VHOST: /
+    volumes:
+      - ./data:/var/lib/rabbitmq
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./config/definitions.json:/etc/rabbitmq/definitions.json
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # 可选: 添加Prometheus监控
+  rabbitmq-exporter:
+    image: kbudde/rabbitmq-exporter:latest
+    container_name: rabbitmq-exporter
+    ports:
+      - "9419:9419"
+    environment:
+      RABBIT_URL: http://rabbitmq:15672
+      RABBIT_USER: admin
+      RABBIT_PASSWORD: admin123
+    depends_on:
+      - rabbitmq
+    restart: unless-stopped
+</code></pre>
+<p><strong>创建配置文件 config/rabbitmq.conf</strong></p>
+<pre><code class="language-ini"># 网络配置
+listeners.tcp.default = 5672
+
+# 管理插件
+management.tcp.port = 15672
+management.tcp.ip = 0.0.0.0
+
+# 内存阈值
+vm_memory_high_watermark.relative = 0.6
+
+# 磁盘空间阈值
+disk_free_limit.relative = 2.0
+
+# 日志配置
+log.file.level = info
+log.console = true
+log.console.level = info
+
+# 连接配置
+channel_max = 2000
+heartbeat = 60
+
+# 消息TTL
+default_vhost = /
+default_user = admin
+default_pass = admin123
+</code></pre>
+<p><strong>启动服务</strong></p>
+<pre><code class="language-bash">docker-compose up -d
+
+# 查看日志
+docker-compose logs -f rabbitmq
+
+# 停止服务
+docker-compose down
+
+# 停止并删除数据
+docker-compose down -v
+</code></pre>
+<h3 id="23-管理界面介绍"><a class="header" href="#23-管理界面介绍">2.3 管理界面介绍</a></h3>
+<p><strong>访问管理界面</strong>: http://localhost:15672</p>
+<p><strong>主要功能模块</strong>:</p>
+<ol>
+<li>
+<p><strong>Overview（概览）</strong></p>
+<ul>
+<li>连接数、通道数、队列数</li>
+<li>消息速率（发送/接收）</li>
+<li>节点信息</li>
+</ul>
+</li>
+<li>
+<p><strong>Connections（连接）</strong></p>
+<ul>
+<li>查看所有活动连接</li>
+<li>客户端IP和端口</li>
+<li>连接状态和流量</li>
+</ul>
+</li>
+<li>
+<p><strong>Channels（通道）</strong></p>
+<ul>
+<li>查看所有通道</li>
+<li>通道状态和消息速率</li>
+</ul>
+</li>
+<li>
+<p><strong>Exchanges（交换机）</strong></p>
+<ul>
+<li>创建/删除交换机</li>
+<li>查看绑定关系</li>
+<li>手动发送消息测试</li>
+</ul>
+</li>
+<li>
+<p><strong>Queues（队列）</strong></p>
+<ul>
+<li>创建/删除队列</li>
+<li>查看消息堆积情况</li>
+<li>手动获取/清空消息</li>
+</ul>
+</li>
+<li>
+<p><strong>Admin（管理）</strong></p>
+<ul>
+<li>用户管理</li>
+<li>虚拟主机管理</li>
+<li>策略配置</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="三核心概念深入理解"><a class="header" href="#三核心概念深入理解">三、核心概念深入理解</a></h2>
+<h3 id="31-exchange交换机类型"><a class="header" href="#31-exchange交换机类型">3.1 Exchange（交换机）类型</a></h3>
+<h4 id="311-direct-exchange直连交换机"><a class="header" href="#311-direct-exchange直连交换机">3.1.1 Direct Exchange（直连交换机）</a></h4>
+<p><strong>工作原理</strong>: 消息的routing key与binding key完全匹配</p>
+<p><strong>应用场景</strong>: 点对点消息传递、精确路由</p>
+<pre><code>┌──────────┐  routing_key:      ┌──────────────┐
+│ Producer │─────"order"───────→│    Direct    │
+└──────────┘                    │   Exchange   │
+                                └──────┬───────┘
+                                       │
+                  ┌────────────────────┼────────────────────┐
+                  │ binding_key:       │ binding_key:       │
+                  │ "order"            │ "payment"          │
+                  ↓                    ↓                    ↓
+          ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+          │ order_queue  │    │payment_queue │    │  log_queue   │
+          └──────────────┘    └──────────────┘    └──────────────┘
+                ✓                      ✗                   ✗
+</code></pre>
+<p><strong>代码示例（Python）</strong>:</p>
+<pre><code class="language-python">import pika
+
+# 建立连接
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+# 声明Direct类型交换机
+channel.exchange_declare(exchange='direct_logs', exchange_type='direct')
+
+# 创建队列并绑定
+channel.queue_declare(queue='order_queue')
+channel.queue_bind(exchange='direct_logs', queue='order_queue', routing_key='order')
+
+channel.queue_declare(queue='payment_queue')
+channel.queue_bind(exchange='direct_logs', queue='payment_queue', routing_key='payment')
+
+# 发送消息
+channel.basic_publish(
+    exchange='direct_logs',
+    routing_key='order',
+    body='New order created'
+)
+
+print("消息已发送到order_queue")
+connection.close()
+</code></pre>
+<h4 id="312-topic-exchange主题交换机"><a class="header" href="#312-topic-exchange主题交换机">3.1.2 Topic Exchange（主题交换机）</a></h4>
+<p><strong>工作原理</strong>: 支持通配符的routing key匹配</p>
+<ul>
+<li><code>*</code>: 匹配一个单词</li>
+<li><code>#</code>: 匹配零个或多个单词</li>
+</ul>
+<p><strong>应用场景</strong>: 基于主题的消息订阅、日志分级处理</p>
+<pre><code>Routing Key规则:
+  order.create    → 订单创建
+  order.update    → 订单更新
+  order.delete    → 订单删除
+  user.create     → 用户创建
+  user.*.email    → 用户相关邮件
+
+┌──────────┐                      ┌──────────────┐
+│ Producer │─────order.create────→│    Topic     │
+└──────────┘                      │   Exchange   │
+                                  └──────┬───────┘
+                                         │
+                ┌────────────────────────┼────────────────────┐
+                │ binding: "order.*"     │ binding: "*.create"│
+                ↓                        ↓                    │
+        ┌──────────────┐        ┌──────────────┐            │
+        │ order_queue  │        │ create_queue │            │
+        └──────────────┘        └──────────────┘            │
+              ✓                        ✓                     │
+                                                             │
+                ┌────────────────────────────────────────────┘
+                │ binding: "order.#"
+                ↓
+        ┌──────────────┐
+        │  all_orders  │
+        └──────────────┘
+              ✓
+</code></pre>
+<p><strong>代码示例（Java）</strong>:</p>
+<pre><code class="language-java">import com.rabbitmq.client.*;
+
+public class TopicProducer {
+    private final static String EXCHANGE_NAME = "topic_logs";
+
+    public static void main(String[] args) throws Exception {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        factory.setUsername("admin");
+        factory.setPassword("admin123");
+
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+
+            // 声明Topic类型交换机
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
+
+            // 发送不同routing key的消息
+            String[] routingKeys = {
+                "order.create",
+                "order.update",
+                "user.create",
+                "user.login.email"
+            };
+
+            for (String routingKey : routingKeys) {
+                String message = "Message with routing key: " + routingKey;
+                channel.basicPublish(EXCHANGE_NAME, routingKey, null, message.getBytes());
+                System.out.println("Sent: " + routingKey + " - " + message);
+            }
+        }
+    }
+}
+
+// 消费者1: 接收所有订单消息
+public class OrderConsumer {
+    public static void main(String[] args) throws Exception {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+
+        channel.exchangeDeclare("topic_logs", BuiltinExchangeType.TOPIC);
+        String queueName = channel.queueDeclare().getQueue();
+
+        // 绑定: order.*  (匹配 order.create, order.update 等)
+        channel.queueBind(queueName, "topic_logs", "order.*");
+
+        DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; {
+            String message = new String(delivery.getBody());
+            System.out.println("Order Consumer received: " +
+                delivery.getEnvelope().getRoutingKey() + " - " + message);
+        };
+
+        channel.basicConsume(queueName, true, deliverCallback, consumerTag -&gt; {});
+    }
+}
+
+// 消费者2: 接收所有create消息
+public class CreateConsumer {
+    public static void main(String[] args) throws Exception {
+        // ... 连接代码省略 ...
+
+        // 绑定: *.create  (匹配 order.create, user.create 等)
+        channel.queueBind(queueName, "topic_logs", "*.create");
+
+        // ... 消费代码省略 ...
+    }
+}
+</code></pre>
+<h4 id="313-fanout-exchange扇出交换机"><a class="header" href="#313-fanout-exchange扇出交换机">3.1.3 Fanout Exchange（扇出交换机）</a></h4>
+<p><strong>工作原理</strong>: 广播消息到所有绑定的队列，忽略routing key</p>
+<p><strong>应用场景</strong>: 消息广播、实时通知</p>
+<pre><code>┌──────────┐                    ┌──────────────┐
+│ Producer │───────────────────→│   Fanout     │
+└──────────┘                    │   Exchange   │
+                                └──────┬───────┘
+                                       │
+                  ┌────────────────────┼────────────────────┐
+                  │                    │                    │
+                  ↓                    ↓                    ↓
+          ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+          │   queue_1    │    │   queue_2    │    │   queue_3    │
+          └──────────────┘    └──────────────┘    └──────────────┘
+                ✓                    ✓                    ✓
+         (所有队列都收到消息)
+</code></pre>
+<p><strong>代码示例（Go）</strong>:</p>
+<pre><code class="language-go">package main
+
+import (
+    "log"
+    "github.com/streadway/amqp"
+)
+
+func main() {
+    // 建立连接
+    conn, err := amqp.Dial("amqp://admin:admin123@localhost:5672/")
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer conn.Close()
+
+    ch, err := conn.Channel()
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer ch.Close()
+
+    // 声明Fanout类型交换机
+    err = ch.ExchangeDeclare(
+        "logs",   // 交换机名称
+        "fanout", // 类型
+        true,     // 持久化
+        false,    // 自动删除
+        false,    // 内部使用
+        false,    // 等待服务器确认
+        nil,      // 额外参数
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // 发送消息（routing key为空）
+    body := "System broadcast message"
+    err = ch.Publish(
+        "logs", // 交换机
+        "",     // routing key (fanout忽略此参数)
+        false,  // mandatory
+        false,  // immediate
+        amqp.Publishing{
+            ContentType: "text/plain",
+            Body:        []byte(body),
+        },
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    log.Println("Broadcast message sent")
+}
+
+// 消费者示例
+func consumer() {
+    // ... 连接代码省略 ...
+
+    // 创建临时队列
+    q, err := ch.QueueDeclare(
+        "",    // 名称为空，自动生成
+        false, // 非持久化
+        true,  // 自动删除
+        true,  // 独占
+        false, // 不等待
+        nil,
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // 绑定到fanout交换机
+    err = ch.QueueBind(
+        q.Name, // 队列名
+        "",     // routing key（fanout忽略）
+        "logs", // 交换机
+        false,
+        nil,
+    )
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    // 消费消息
+    msgs, err := ch.Consume(
+        q.Name, // 队列
+        "",     // 消费者标签
+        true,   // 自动ack
+        false,  // 独占
+        false,  // 不等待
+        false,  // 不阻塞
+        nil,
+    )
+
+    for msg := range msgs {
+        log.Printf("Received: %s", msg.Body)
+    }
+}
+</code></pre>
+<h4 id="314-headers-exchange头交换机"><a class="header" href="#314-headers-exchange头交换机">3.1.4 Headers Exchange（头交换机）</a></h4>
+<p><strong>工作原理</strong>: 根据消息头属性进行路由，忽略routing key</p>
+<p><strong>应用场景</strong>: 复杂路由规则、多条件匹配</p>
+<pre><code class="language-python">import pika
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+# 声明Headers类型交换机
+channel.exchange_declare(exchange='headers_exchange', exchange_type='headers')
+
+# 创建队列并绑定（x-match: all 表示所有条件都要匹配）
+channel.queue_declare(queue='priority_queue')
+channel.queue_bind(
+    exchange='headers_exchange',
+    queue='priority_queue',
+    arguments={
+        'x-match': 'all',  # 或 'any'
+        'type': 'order',
+        'priority': 'high'
+    }
+)
+
+# 发送消息（携带headers）
+channel.basic_publish(
+    exchange='headers_exchange',
+    routing_key='',  # headers类型忽略routing key
+    body='High priority order',
+    properties=pika.BasicProperties(
+        headers={'type': 'order', 'priority': 'high'}
+    )
+)
+</code></pre>
+<h3 id="32-queue队列属性"><a class="header" href="#32-queue队列属性">3.2 Queue（队列）属性</a></h3>
+<p><strong>队列声明参数</strong>:</p>
+<pre><code class="language-java">channel.queueDeclare(
+    String queue,           // 队列名称
+    boolean durable,        // 是否持久化
+    boolean exclusive,      // 是否独占
+    boolean autoDelete,     // 是否自动删除
+    Map&lt;String, Object&gt; arguments  // 其他参数
+);
+</code></pre>
+<p><strong>重要参数说明</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>参数</th><th>说明</th><th>示例</th></tr></thead><tbody>
+<tr><td><strong>durable</strong></td><td>队列持久化，重启后队列不丢失</td><td>true/false</td></tr>
+<tr><td><strong>exclusive</strong></td><td>独占队列，仅限当前连接使用</td><td>true/false</td></tr>
+<tr><td><strong>autoDelete</strong></td><td>最后一个消费者断开后自动删除</td><td>true/false</td></tr>
+<tr><td><strong>x-message-ttl</strong></td><td>消息TTL（毫秒）</td><td>60000</td></tr>
+<tr><td><strong>x-max-length</strong></td><td>队列最大消息数</td><td>10000</td></tr>
+<tr><td><strong>x-max-length-bytes</strong></td><td>队列最大字节数</td><td>10485760</td></tr>
+<tr><td><strong>x-dead-letter-exchange</strong></td><td>死信交换机</td><td>"dlx_exchange"</td></tr>
+<tr><td><strong>x-max-priority</strong></td><td>优先级队列，0-255</td><td>10</td></tr>
+</tbody></table>
+</div>
+<p><strong>示例：创建带TTL和死信队列</strong></p>
+<pre><code class="language-java">Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+args.put("x-message-ttl", 60000);              // 消息60秒过期
+args.put("x-dead-letter-exchange", "dlx");     // 死信交换机
+args.put("x-dead-letter-routing-key", "dead"); // 死信路由键
+args.put("x-max-length", 10000);               // 最多10000条消息
+
+channel.queueDeclare("my_queue", true, false, false, args);
+</code></pre>
+<hr />
+<h2 id="四开发实践"><a class="header" href="#四开发实践">四、开发实践</a></h2>
+<h3 id="41-java客户端开发"><a class="header" href="#41-java客户端开发">4.1 Java客户端开发</a></h3>
+<p><strong>添加依赖（Maven）</strong>:</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.rabbitmq&lt;/groupId&gt;
+    &lt;artifactId&gt;amqp-client&lt;/artifactId&gt;
+    &lt;version&gt;5.18.0&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p><strong>生产者示例</strong>:</p>
+<pre><code class="language-java">import com.rabbitmq.client.*;
+
+public class Producer {
+    private static final String QUEUE_NAME = "hello_queue";
+
+    public static void main(String[] args) throws Exception {
+        // 1. 创建连接工厂
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        factory.setPort(5672);
+        factory.setUsername("admin");
+        factory.setPassword("admin123");
+        factory.setVirtualHost("/");
+
+        // 2. 创建连接和通道
+        try (Connection connection = factory.newConnection();
+             Channel channel = connection.createChannel()) {
+
+            // 3. 声明队列
+            channel.queueDeclare(
+                QUEUE_NAME,  // 队列名
+                true,        // 持久化
+                false,       // 不独占
+                false,       // 不自动删除
+                null         // 额外参数
+            );
+
+            // 4. 发送消息
+            for (int i = 0; i &lt; 10; i++) {
+                String message = "Hello RabbitMQ " + i;
+                channel.basicPublish(
+                    "",          // 交换机（空字符串表示默认交换机）
+                    QUEUE_NAME,  // routing key（默认交换机使用队列名）
+                    MessageProperties.PERSISTENT_TEXT_PLAIN,  // 消息持久化
+                    message.getBytes()
+                );
+                System.out.println("Sent: " + message);
+                Thread.sleep(100);
+            }
+        }
+    }
+}
+</code></pre>
+<p><strong>消费者示例（推模式）</strong>:</p>
+<pre><code class="language-java">import com.rabbitmq.client.*;
+
+public class Consumer {
+    private static final String QUEUE_NAME = "hello_queue";
+
+    public static void main(String[] args) throws Exception {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("localhost");
+        factory.setUsername("admin");
+        factory.setPassword("admin123");
+
+        Connection connection = factory.newConnection();
+        Channel channel = connection.createChannel();
+
+        // 声明队列（确保队列存在）
+        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+
+        // 设置QoS（每次只接收1条消息）
+        channel.basicQos(1);
+
+        System.out.println("Waiting for messages...");
+
+        // 定义消息处理回调
+        DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; {
+            String message = new String(delivery.getBody(), "UTF-8");
+            System.out.println("Received: " + message);
+
+            try {
+                // 模拟业务处理
+                doWork(message);
+
+                // 手动确认消息
+                channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+            } catch (Exception e) {
+                // 处理失败，拒绝消息并重新入队
+                channel.basicNack(delivery.getEnvelope().getDeliveryTag(), false, true);
+                System.err.println("Error processing message: " + e.getMessage());
+            }
+        };
+
+        // 取消消费回调
+        CancelCallback cancelCallback = consumerTag -&gt; {
+            System.out.println("Consumer cancelled: " + consumerTag);
+        };
+
+        // 开始消费（手动ACK）
+        channel.basicConsume(
+            QUEUE_NAME,      // 队列名
+            false,           // 手动ACK
+            deliverCallback,
+            cancelCallback
+        );
+    }
+
+    private static void doWork(String message) throws InterruptedException {
+        // 模拟耗时操作
+        Thread.sleep(1000);
+    }
+}
+</code></pre>
+<h3 id="42-python客户端开发"><a class="header" href="#42-python客户端开发">4.2 Python客户端开发</a></h3>
+<p><strong>安装依赖</strong>:</p>
+<pre><code class="language-bash">pip install pika
+</code></pre>
+<p><strong>生产者示例</strong>:</p>
+<pre><code class="language-python">import pika
+import json
+import time
+
+# 建立连接
+credentials = pika.PlainCredentials('admin', 'admin123')
+parameters = pika.ConnectionParameters(
+    host='localhost',
+    port=5672,
+    virtual_host='/',
+    credentials=credentials,
+    heartbeat=600,
+    blocked_connection_timeout=300
+)
+
+connection = pika.BlockingConnection(parameters)
+channel = connection.channel()
+
+# 声明交换机
+channel.exchange_declare(
+    exchange='order_exchange',
+    exchange_type='topic',
+    durable=True
+)
+
+# 声明队列
+channel.queue_declare(
+    queue='order_queue',
+    durable=True,
+    arguments={
+        'x-message-ttl': 60000,  # 消息TTL 60秒
+        'x-max-length': 10000     # 最大消息数
+    }
+)
+
+# 绑定
+channel.queue_bind(
+    exchange='order_exchange',
+    queue='order_queue',
+    routing_key='order.#'
+)
+
+# 发送消息
+for i in range(10):
+    message = {
+        'order_id': f'ORDER_{i}',
+        'amount': 100 + i,
+        'timestamp': time.time()
+    }
+
+    channel.basic_publish(
+        exchange='order_exchange',
+        routing_key='order.create',
+        body=json.dumps(message),
+        properties=pika.BasicProperties(
+            delivery_mode=2,  # 消息持久化
+            content_type='application/json',
+            headers={'source': 'order-service'}
+        )
+    )
+    print(f'Sent: {message}')
+    time.sleep(0.5)
+
+connection.close()
+</code></pre>
+<p><strong>消费者示例</strong>:</p>
+<pre><code class="language-python">import pika
+import json
+import time
+
+credentials = pika.PlainCredentials('admin', 'admin123')
+parameters = pika.ConnectionParameters(
+    host='localhost',
+    credentials=credentials
+)
+
+connection = pika.BlockingConnection(parameters)
+channel = connection.channel()
+
+# 声明队列（确保存在）
+channel.queue_declare(queue='order_queue', durable=True)
+
+# 设置QoS
+channel.basic_qos(prefetch_count=1)
+
+def callback(ch, method, properties, body):
+    """消息处理回调函数"""
+    try:
+        # 解析消息
+        message = json.loads(body)
+        print(f'Received: {message}')
+
+        # 模拟业务处理
+        time.sleep(1)
+        process_order(message)
+
+        # 手动ACK
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+        print('Message processed successfully')
+
+    except Exception as e:
+        print(f'Error: {e}')
+        # 拒绝消息并重新入队
+        ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
+
+def process_order(order):
+    """处理订单业务逻辑"""
+    print(f"Processing order: {order['order_id']}, amount: {order['amount']}")
+    # 实际业务逻辑...
+
+# 开始消费
+channel.basic_consume(
+    queue='order_queue',
+    on_message_callback=callback,
+    auto_ack=False  # 手动ACK
+)
+
+print('Waiting for messages. To exit press CTRL+C')
+
+try:
+    channel.start_consuming()
+except KeyboardInterrupt:
+    print('Interrupted')
+    connection.close()
+</code></pre>
+<h3 id="43-spring-boot集成"><a class="header" href="#43-spring-boot集成">4.3 Spring Boot集成</a></h3>
+<p><strong>添加依赖</strong>:</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-amqp&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p><strong>配置文件 application.yml</strong>:</p>
+<pre><code class="language-yaml">spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin123
+    virtual-host: /
+    # 连接池配置
+    connection-timeout: 15000
+    # 发布者确认
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+    # 消费者配置
+    listener:
+      simple:
+        acknowledge-mode: manual  # 手动ACK
+        prefetch: 1              # 预取数量
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000
+</code></pre>
+<p><strong>RabbitMQ配置类</strong>:</p>
+<pre><code class="language-java">import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class RabbitMQConfig {
+
+    // 交换机
+    public static final String ORDER_EXCHANGE = "order.exchange";
+    // 队列
+    public static final String ORDER_QUEUE = "order.queue";
+    // 路由键
+    public static final String ORDER_ROUTING_KEY = "order.create";
+
+    // 死信交换机
+    public static final String DLX_EXCHANGE = "dlx.exchange";
+    public static final String DLX_QUEUE = "dlx.queue";
+
+    /**
+     * 声明交换机
+     */
+    @Bean
+    public Exchange orderExchange() {
+        return ExchangeBuilder
+                .topicExchange(ORDER_EXCHANGE)
+                .durable(true)
+                .build();
+    }
+
+    /**
+     * 声明队列（带死信配置）
+     */
+    @Bean
+    public Queue orderQueue() {
+        return QueueBuilder
+                .durable(ORDER_QUEUE)
+                .ttl(60000)  // 消息TTL 60秒
+                .maxLength(10000)  // 最大消息数
+                .deadLetterExchange(DLX_EXCHANGE)  // 死信交换机
+                .deadLetterRoutingKey("dead")  // 死信路由键
+                .build();
+    }
+
+    /**
+     * 绑定
+     */
+    @Bean
+    public Binding orderBinding() {
+        return BindingBuilder
+                .bind(orderQueue())
+                .to(orderExchange())
+                .with(ORDER_ROUTING_KEY)
+                .noargs();
+    }
+
+    /**
+     * 死信交换机
+     */
+    @Bean
+    public Exchange dlxExchange() {
+        return ExchangeBuilder
+                .directExchange(DLX_EXCHANGE)
+                .durable(true)
+                .build();
+    }
+
+    /**
+     * 死信队列
+     */
+    @Bean
+    public Queue dlxQueue() {
+        return QueueBuilder.durable(DLX_QUEUE).build();
+    }
+
+    /**
+     * 死信绑定
+     */
+    @Bean
+    public Binding dlxBinding() {
+        return BindingBuilder
+                .bind(dlxQueue())
+                .to(dlxExchange())
+                .with("dead")
+                .noargs();
+    }
+
+    /**
+     * 消息转换器（使用JSON）
+     */
+    @Bean
+    public Jackson2JsonMessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
+    /**
+     * RabbitTemplate配置
+     */
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(messageConverter());
+
+        // 发布者确认回调
+        template.setConfirmCallback((correlationData, ack, cause) -&gt; {
+            if (ack) {
+                System.out.println("消息发送成功");
+            } else {
+                System.err.println("消息发送失败: " + cause);
+            }
+        });
+
+        // 消息返回回调（消息无法路由时）
+        template.setReturnsCallback(returned -&gt; {
+            System.err.println("消息被退回: " + returned.getMessage());
+        });
+
+        return template;
+    }
+}
+</code></pre>
+<p><strong>生产者</strong>:</p>
+<pre><code class="language-java">import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderProducer {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    public void sendOrder(Order order) {
+        // 发送消息
+        rabbitTemplate.convertAndSend(
+            RabbitMQConfig.ORDER_EXCHANGE,
+            RabbitMQConfig.ORDER_ROUTING_KEY,
+            order,
+            message -&gt; {
+                // 设置消息属性
+                message.getMessageProperties().setHeader("source", "order-service");
+                message.getMessageProperties().setPriority(5);
+                return message;
+            }
+        );
+
+        System.out.println("Order sent: " + order.getOrderId());
+    }
+
+    /**
+     * 延迟消息（需要延迟消息插件）
+     */
+    public void sendDelayedOrder(Order order, int delayMillis) {
+        rabbitTemplate.convertAndSend(
+            RabbitMQConfig.ORDER_EXCHANGE,
+            RabbitMQConfig.ORDER_ROUTING_KEY,
+            order,
+            message -&gt; {
+                message.getMessageProperties().setDelay(delayMillis);
+                return message;
+            }
+        );
+    }
+}
+</code></pre>
+<p><strong>消费者</strong>:</p>
+<pre><code class="language-java">import com.rabbitmq.client.Channel;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
+
+@Component
+public class OrderConsumer {
+
+    /**
+     * 监听订单队列
+     */
+    @RabbitListener(queues = RabbitMQConfig.ORDER_QUEUE)
+    public void handleOrder(Order order, Message message, Channel channel) throws Exception {
+        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+
+        try {
+            System.out.println("Received order: " + order.getOrderId());
+
+            // 业务处理
+            processOrder(order);
+
+            // 手动ACK
+            channel.basicAck(deliveryTag, false);
+            System.out.println("Order processed successfully");
+
+        } catch (Exception e) {
+            System.err.println("Error processing order: " + e.getMessage());
+
+            // 判断是否重试
+            Integer retryCount = (Integer) message.getMessageProperties()
+                    .getHeaders().get("x-retry-count");
+            if (retryCount == null) {
+                retryCount = 0;
+            }
+
+            if (retryCount &lt; 3) {
+                // 重新入队
+                channel.basicNack(deliveryTag, false, true);
+            } else {
+                // 超过重试次数，拒绝消息（进入死信队列）
+                channel.basicNack(deliveryTag, false, false);
+            }
+        }
+    }
+
+    /**
+     * 监听死信队列
+     */
+    @RabbitListener(queues = RabbitMQConfig.DLX_QUEUE)
+    public void handleDeadLetter(Order order, Message message) {
+        System.err.println("Dead letter received: " + order.getOrderId());
+        // 记录到数据库或发送告警
+    }
+
+    private void processOrder(Order order) {
+        // 实际业务逻辑
+        System.out.println("Processing order: " + order.getOrderId());
+    }
+}
+</code></pre>
+<hr />
+<h2 id="五高级特性"><a class="header" href="#五高级特性">五、高级特性</a></h2>
+<h3 id="51-消息可靠性保证"><a class="header" href="#51-消息可靠性保证">5.1 消息可靠性保证</a></h3>
+<h4 id="511-生产者确认publisher-confirms"><a class="header" href="#511-生产者确认publisher-confirms">5.1.1 生产者确认（Publisher Confirms）</a></h4>
+<p><strong>机制</strong>: 生产者发送消息后，等待RabbitMQ的确认</p>
+<p><strong>实现方式</strong>:</p>
+<p><strong>1. 事务模式（性能差，不推荐）</strong></p>
+<pre><code class="language-java">try {
+    channel.txSelect();  // 开启事务
+    channel.basicPublish(...);
+    channel.txCommit();  // 提交事务
+} catch (Exception e) {
+    channel.txRollback();  // 回滚事务
+}
+</code></pre>
+<p><strong>2. 发布确认模式（推荐）</strong></p>
+<pre><code class="language-java">// 开启发布确认
+channel.confirmSelect();
+
+// 方式1: 同步确认（每条消息等待确认）
+channel.basicPublish(...);
+if (!channel.waitForConfirms()) {
+    System.err.println("消息发送失败");
+}
+
+// 方式2: 异步确认（推荐）
+channel.addConfirmListener(new ConfirmListener() {
+    @Override
+    public void handleAck(long deliveryTag, boolean multiple) {
+        System.out.println("消息确认成功: " + deliveryTag);
+    }
+
+    @Override
+    public void handleNack(long deliveryTag, boolean multiple) {
+        System.err.println("消息确认失败: " + deliveryTag);
+        // 可以重试或记录失败消息
+    }
+});
+
+channel.basicPublish(...);
+</code></pre>
+<h4 id="512-消息持久化"><a class="header" href="#512-消息持久化">5.1.2 消息持久化</a></h4>
+<p><strong>三要素</strong>:</p>
+<ol>
+<li>交换机持久化: <code>channel.exchangeDeclare(..., durable=true)</code></li>
+<li>队列持久化: <code>channel.queueDeclare(..., durable=true)</code></li>
+<li>消息持久化: <code>MessageProperties.PERSISTENT_TEXT_PLAIN</code></li>
+</ol>
+<pre><code class="language-java">// 1. 声明持久化交换机
+channel.exchangeDeclare("my_exchange", "direct", true);
+
+// 2. 声明持久化队列
+channel.queueDeclare("my_queue", true, false, false, null);
+
+// 3. 发送持久化消息
+channel.basicPublish(
+    "my_exchange",
+    "my_routing_key",
+    MessageProperties.PERSISTENT_TEXT_PLAIN,  // 持久化属性
+    message.getBytes()
+);
+</code></pre>
+<h4 id="513-消费者确认consumer-acknowledgments"><a class="header" href="#513-消费者确认consumer-acknowledgments">5.1.3 消费者确认（Consumer Acknowledgments）</a></h4>
+<p><strong>ACK模式对比</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>模式</th><th>说明</th><th>使用场景</th></tr></thead><tbody>
+<tr><td><strong>自动ACK</strong></td><td>消息投递后立即确认</td><td>消息允许丢失的场景</td></tr>
+<tr><td><strong>手动ACK</strong></td><td>业务处理成功后确认</td><td>需要保证消息不丢失</td></tr>
+<tr><td><strong>批量ACK</strong></td><td>一次确认多条消息</td><td>提升性能</td></tr>
+</tbody></table>
+</div>
+<p><strong>手动ACK示例</strong>:</p>
+<pre><code class="language-java">channel.basicConsume(queue, false, deliverCallback, cancelCallback);
+
+DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; {
+    try {
+        // 业务处理
+        processMessage(delivery.getBody());
+
+        // 单条确认
+        channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+
+    } catch (Exception e) {
+        // 拒绝消息
+        // requeue=true: 重新入队
+        // requeue=false: 丢弃消息或进入死信队列
+        channel.basicNack(delivery.getEnvelope().getDeliveryTag(), false, true);
+    }
+};
+</code></pre>
+<p><strong>批量ACK示例</strong>:</p>
+<pre><code class="language-java">int messageCount = 0;
+int batchSize = 10;
+
+DeliverCallback deliverCallback = (consumerTag, delivery) -&gt; {
+    processMessage(delivery.getBody());
+    messageCount++;
+
+    if (messageCount &gt;= batchSize) {
+        // multiple=true: 批量确认所有小于等于deliveryTag的消息
+        channel.basicAck(delivery.getEnvelope().getDeliveryTag(), true);
+        messageCount = 0;
+    }
+};
+</code></pre>
+<h3 id="52-死信队列dead-letter-exchange"><a class="header" href="#52-死信队列dead-letter-exchange">5.2 死信队列（Dead Letter Exchange）</a></h3>
+<p><strong>死信产生场景</strong>:</p>
+<ol>
+<li>消息被拒绝（basic.reject / basic.nack）且 requeue=false</li>
+<li>消息TTL过期</li>
+<li>队列达到最大长度</li>
+</ol>
+<p><strong>配置死信队列</strong>:</p>
+<pre><code class="language-java">// 1. 创建死信交换机和队列
+channel.exchangeDeclare("dlx_exchange", "direct", true);
+channel.queueDeclare("dlx_queue", true, false, false, null);
+channel.queueBind("dlx_queue", "dlx_exchange", "dead");
+
+// 2. 创建业务队列，指定死信交换机
+Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+args.put("x-dead-letter-exchange", "dlx_exchange");
+args.put("x-dead-letter-routing-key", "dead");
+args.put("x-message-ttl", 10000);  // 10秒后成为死信
+
+channel.queueDeclare("business_queue", true, false, false, args);
+
+// 3. 消费死信队列
+channel.basicConsume("dlx_queue", false, (consumerTag, delivery) -&gt; {
+    System.out.println("Dead letter: " + new String(delivery.getBody()));
+    // 记录日志、发送告警、人工处理等
+    channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+}, consumerTag -&gt; {});
+</code></pre>
+<p><strong>使用死信队列实现延迟队列</strong>:</p>
+<pre><code class="language-java">// 延迟队列：消息不被消费，等待TTL过期后进入死信队列
+Map&lt;String, Object&gt; delayArgs = new HashMap&lt;&gt;();
+delayArgs.put("x-dead-letter-exchange", "business_exchange");
+delayArgs.put("x-dead-letter-routing-key", "business");
+delayArgs.put("x-message-ttl", 30000);  // 延迟30秒
+
+channel.queueDeclare("delay_queue", true, false, false, delayArgs);
+
+// 发送延迟消息到delay_queue
+channel.basicPublish("", "delay_queue", null, message.getBytes());
+
+// 30秒后，消息会自动路由到business_exchange → business_queue
+</code></pre>
+<h3 id="53-优先级队列"><a class="header" href="#53-优先级队列">5.3 优先级队列</a></h3>
+<p><strong>配置优先级队列</strong>:</p>
+<pre><code class="language-java">// 1. 声明优先级队列（最大优先级10）
+Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+args.put("x-max-priority", 10);
+channel.queueDeclare("priority_queue", true, false, false, args);
+
+// 2. 发送不同优先级的消息
+for (int i = 0; i &lt; 10; i++) {
+    int priority = i % 10;  // 优先级 0-9
+    AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
+            .priority(priority)
+            .build();
+
+    channel.basicPublish("", "priority_queue", props,
+            ("Message with priority " + priority).getBytes());
+}
+
+// 消费时，高优先级消息会优先被消费
+</code></pre>
+<p><strong>注意事项</strong>:</p>
+<ul>
+<li>优先级队列会影响性能</li>
+<li>只有在消息堆积时，优先级才有意义</li>
+<li>优先级范围：0-255（推荐0-10）</li>
+</ul>
+<h3 id="54-消息追踪"><a class="header" href="#54-消息追踪">5.4 消息追踪</a></h3>
+<p><strong>开启追踪插件</strong>:</p>
+<pre><code class="language-bash"># 启用追踪插件
+rabbitmq-plugins enable rabbitmq_tracing
+
+# 在管理界面创建trace
+Admin → Tracing → Add a new trace
+</code></pre>
+<p><strong>在代码中添加消息ID</strong>:</p>
+<pre><code class="language-java">String messageId = UUID.randomUUID().toString();
+
+AMQP.BasicProperties props = new AMQP.BasicProperties.Builder()
+        .messageId(messageId)
+        .timestamp(new Date())
+        .build();
+
+channel.basicPublish("exchange", "routing_key", props, message.getBytes());
+
+// 记录日志
+log.info("Message sent: {} - {}", messageId, message);
+</code></pre>
+<hr />
+<h2 id="六集群与高可用"><a class="header" href="#六集群与高可用">六、集群与高可用</a></h2>
+<h3 id="61-集群模式"><a class="header" href="#61-集群模式">6.1 集群模式</a></h3>
+<p><strong>集群类型</strong>:</p>
+<ol>
+<li><strong>普通集群</strong>: 元数据共享，消息不共享</li>
+<li><strong>镜像集群</strong>: 消息在多个节点备份，实现高可用</li>
+</ol>
+<p><strong>Docker Compose搭建集群</strong>:</p>
+<pre><code class="language-yaml">version: '3.8'
+
+services:
+  rabbitmq1:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq1
+    environment:
+      RABBITMQ_ERLANG_COOKIE: 'secret_cookie'
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./data/rabbitmq1:/var/lib/rabbitmq
+
+  rabbitmq2:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq2
+    environment:
+      RABBITMQ_ERLANG_COOKIE: 'secret_cookie'
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    volumes:
+      - ./data/rabbitmq2:/var/lib/rabbitmq
+    depends_on:
+      - rabbitmq1
+
+  rabbitmq3:
+    image: rabbitmq:3.12-management
+    hostname: rabbitmq3
+    environment:
+      RABBITMQ_ERLANG_COOKIE: 'secret_cookie'
+    ports:
+      - "5674:5672"
+      - "15674:15672"
+    volumes:
+      - ./data/rabbitmq3:/var/lib/rabbitmq
+    depends_on:
+      - rabbitmq1
+</code></pre>
+<p><strong>加入集群（在rabbitmq2和rabbitmq3容器中执行）</strong>:</p>
+<pre><code class="language-bash"># 进入容器
+docker exec -it rabbitmq2 bash
+
+# 停止应用
+rabbitmqctl stop_app
+
+# 重置节点
+rabbitmqctl reset
+
+# 加入集群
+rabbitmqctl join_cluster rabbit@rabbitmq1
+
+# 启动应用
+rabbitmqctl start_app
+
+# 查看集群状态
+rabbitmqctl cluster_status
+</code></pre>
+<h3 id="62-镜像队列配置"><a class="header" href="#62-镜像队列配置">6.2 镜像队列配置</a></h3>
+<p><strong>通过管理界面配置</strong>:</p>
+<ol>
+<li>Admin → Policies → Add/update a policy</li>
+<li>Pattern: ^mirror.*  (匹配队列名)</li>
+<li>Definition: <code>{"ha-mode":"exactly","ha-params":2,"ha-sync-mode":"automatic"}</code></li>
+</ol>
+<p><strong>通过命令行配置</strong>:</p>
+<pre><code class="language-bash">rabbitmqctl set_policy ha-all "^" '{"ha-mode":"all","ha-sync-mode":"automatic"}'
+
+# 参数说明:
+# ha-mode: all（所有节点） | exactly（指定数量） | nodes（指定节点）
+# ha-params: 节点数量（ha-mode=exactly时）
+# ha-sync-mode: automatic（自动同步） | manual（手动同步）
+</code></pre>
+<p><strong>Java代码配置</strong>:</p>
+<pre><code class="language-java">Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+args.put("x-ha-policy", "all");  // 所有节点镜像
+channel.queueDeclare("mirror_queue", true, false, false, args);
+</code></pre>
+<h3 id="63-客户端连接集群"><a class="header" href="#63-客户端连接集群">6.3 客户端连接集群</a></h3>
+<p><strong>Java连接多个节点</strong>:</p>
+<pre><code class="language-java">ConnectionFactory factory = new ConnectionFactory();
+
+// 配置多个节点地址
+Address[] addresses = new Address[]{
+    new Address("192.168.1.101", 5672),
+    new Address("192.168.1.102", 5672),
+    new Address("192.168.1.103", 5672)
+};
+
+// 创建连接（自动故障转移）
+Connection connection = factory.newConnection(addresses);
+</code></pre>
+<p><strong>Spring Boot配置集群</strong>:</p>
+<pre><code class="language-yaml">spring:
+  rabbitmq:
+    addresses: 192.168.1.101:5672,192.168.1.102:5672,192.168.1.103:5672
+    username: admin
+    password: admin123
+    connection-timeout: 15000
+</code></pre>
+<hr />
+<h2 id="七性能优化与最佳实践"><a class="header" href="#七性能优化与最佳实践">七、性能优化与最佳实践</a></h2>
+<h3 id="71-性能优化建议"><a class="header" href="#71-性能优化建议">7.1 性能优化建议</a></h3>
+<p><strong>1. 连接和通道管理</strong></p>
+<pre><code class="language-java">// ❌ 错误：每次发送消息都创建连接
+public void sendMessage(String msg) {
+    Connection conn = factory.newConnection();
+    Channel channel = conn.createChannel();
+    channel.basicPublish(...);
+    channel.close();
+    conn.close();
+}
+
+// ✅ 正确：复用连接和通道
+private Connection connection;
+private Channel channel;
+
+@PostConstruct
+public void init() {
+    connection = factory.newConnection();
+    channel = connection.createChannel();
+}
+
+public void sendMessage(String msg) {
+    channel.basicPublish(...);
+}
+</code></pre>
+<p><strong>2. 批量发送消息</strong></p>
+<pre><code class="language-java">// 批量发送
+channel.confirmSelect();
+for (int i = 0; i &lt; 1000; i++) {
+    channel.basicPublish(...);
+}
+channel.waitForConfirms(5000);  // 批量等待确认
+</code></pre>
+<p><strong>3. 预取数量优化</strong></p>
+<pre><code class="language-java">// 设置合理的prefetch值（根据业务处理时间调整）
+channel.basicQos(10);  // 每次预取10条消息
+
+// 处理快: prefetch可以大一些（20-50）
+// 处理慢: prefetch小一些（1-5）
+</code></pre>
+<p><strong>4. 消息大小控制</strong></p>
+<pre><code>建议:
+- 单条消息 &lt; 128KB
+- 超过限制的大文件，存储到OSS，消息中只传URL
+</code></pre>
+<p><strong>5. 队列长度监控</strong></p>
+<pre><code class="language-java">// 定期检查队列长度
+AMQP.Queue.DeclareOk ok = channel.queueDeclarePassive("queue_name");
+int messageCount = ok.getMessageCount();
+
+if (messageCount &gt; 10000) {
+    // 告警：消息堆积
+    sendAlert("Queue backlog: " + messageCount);
+}
+</code></pre>
+<h3 id="72-最佳实践"><a class="header" href="#72-最佳实践">7.2 最佳实践</a></h3>
+<p><strong>1. 消息幂等性设计</strong></p>
+<pre><code class="language-java">// 方案1: 使用唯一消息ID
+String messageId = UUID.randomUUID().toString();
+
+// 消费者检查是否已处理
+@Transactional
+public void processMessage(String messageId, Order order) {
+    // 检查Redis/DB中是否已处理
+    if (redis.exists("processed:" + messageId)) {
+        return;  // 已处理，直接返回
+    }
+
+    // 处理业务
+    orderService.createOrder(order);
+
+    // 标记已处理
+    redis.setex("processed:" + messageId, 86400, "1");
+}
+
+// 方案2: 数据库唯一索引
+CREATE UNIQUE INDEX idx_order_no ON orders(order_no);
+</code></pre>
+<p><strong>2. 消息重试策略</strong></p>
+<pre><code class="language-java">@RabbitListener(queues = "order_queue")
+public void handleMessage(Order order, Message message, Channel channel) throws IOException {
+    long deliveryTag = message.getMessageProperties().getDeliveryTag();
+
+    try {
+        processOrder(order);
+        channel.basicAck(deliveryTag, false);
+
+    } catch (BusinessException e) {
+        // 业务异常，不重试
+        log.error("Business error: {}", e.getMessage());
+        channel.basicNack(deliveryTag, false, false);
+
+    } catch (Exception e) {
+        // 系统异常，重试
+        Integer retryCount = (Integer) message.getMessageProperties()
+                .getHeaders().getOrDefault("x-retry-count", 0);
+
+        if (retryCount &lt; 3) {
+            // 重试（延迟递增）
+            int delay = (int) Math.pow(2, retryCount) * 1000;  // 1s, 2s, 4s
+            resendWithDelay(order, delay, retryCount + 1);
+            channel.basicAck(deliveryTag, false);
+        } else {
+            // 超过重试次数，进入死信队列
+            log.error("Max retry exceeded");
+            channel.basicNack(deliveryTag, false, false);
+        }
+    }
+}
+</code></pre>
+<p><strong>3. 消息顺序性保证</strong></p>
+<pre><code class="language-java">// 方案1: 单队列 + 单消费者
+channel.basicQos(1);
+
+// 方案2: 根据业务ID路由到同一队列
+String routingKey = "order." + order.getUserId() % 10;
+channel.basicPublish(exchange, routingKey, null, message.getBytes());
+</code></pre>
+<p><strong>4. 流量削峰</strong></p>
+<pre><code class="language-java">// 使用队列作为缓冲层
+@PostMapping("/order")
+public Result createOrder(@RequestBody Order order) {
+    // 1. 快速响应
+    rabbitTemplate.convertAndSend("order.exchange", "order.create", order);
+
+    // 2. 返回受理结果
+    return Result.success("订单已提交，请稍后查询处理结果");
+}
+
+// 异步消费，平滑处理
+@RabbitListener(queues = "order.queue", concurrency = "5-10")
+public void processOrder(Order order) {
+    orderService.process(order);
+}
+</code></pre>
+<hr />
+<h2 id="八实战案例"><a class="header" href="#八实战案例">八、实战案例</a></h2>
+<h3 id="81-案例一订单系统异步处理"><a class="header" href="#81-案例一订单系统异步处理">8.1 案例一：订单系统异步处理</a></h3>
+<p><strong>场景</strong>: 用户下单后，需要扣减库存、发送短信、积分增加等操作</p>
+<p><strong>架构设计</strong>:</p>
+<pre><code>用户下单
+   ↓
+订单服务（生产者）
+   ↓
+发送消息到 order.exchange
+   ↓
+┌─────────────┬─────────────┬─────────────┐
+↓             ↓             ↓             ↓
+库存队列      短信队列      积分队列      物流队列
+↓             ↓             ↓             ↓
+库存服务      短信服务      积分服务      物流服务
+</code></pre>
+<p><strong>生产者（订单服务）</strong>:</p>
+<pre><code class="language-java">@Service
+public class OrderService {
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Transactional
+    public void createOrder(Order order) {
+        // 1. 保存订单到数据库
+        orderMapper.insert(order);
+
+        // 2. 发送消息到MQ（订单创建事件）
+        OrderEvent event = new OrderEvent();
+        event.setOrderId(order.getId());
+        event.setUserId(order.getUserId());
+        event.setAmount(order.getAmount());
+        event.setTimestamp(System.currentTimeMillis());
+
+        // 使用topic交换机，不同服务订阅不同的routing key
+        rabbitTemplate.convertAndSend(
+                "order.exchange",
+                "order.created",
+                event
+        );
+
+        log.info("Order created: {}", order.getId());
+    }
+}
+</code></pre>
+<p><strong>消费者1（库存服务）</strong>:</p>
+<pre><code class="language-java">@Component
+public class StockConsumer {
+
+    @Autowired
+    private StockService stockService;
+
+    @RabbitListener(queues = "order.stock.queue")
+    public void handleOrder(OrderEvent event, Channel channel, Message message) throws IOException {
+        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+
+        try {
+            // 扣减库存
+            boolean success = stockService.deductStock(event.getOrderId());
+
+            if (success) {
+                channel.basicAck(deliveryTag, false);
+                log.info("Stock deducted for order: {}", event.getOrderId());
+            } else {
+                // 库存不足，通知订单服务取消订单
+                rabbitTemplate.convertAndSend(
+                        "order.exchange",
+                        "order.cancel",
+                        event.getOrderId()
+                );
+                channel.basicAck(deliveryTag, false);
+            }
+
+        } catch (Exception e) {
+            log.error("Stock deduction failed", e);
+            channel.basicNack(deliveryTag, false, true);
+        }
+    }
+}
+</code></pre>
+<p><strong>消费者2（短信服务）</strong>:</p>
+<pre><code class="language-java">@Component
+public class SmsConsumer {
+
+    @Autowired
+    private SmsService smsService;
+
+    @RabbitListener(queues = "order.sms.queue")
+    public void handleOrder(OrderEvent event, Channel channel, Message message) throws IOException {
+        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+
+        try {
+            // 发送短信通知
+            smsService.sendOrderNotification(event.getUserId(), event.getOrderId());
+            channel.basicAck(deliveryTag, false);
+            log.info("SMS sent for order: {}", event.getOrderId());
+
+        } catch (Exception e) {
+            // 短信失败不影响订单，记录日志即可
+            log.error("SMS send failed", e);
+            channel.basicAck(deliveryTag, false);
+        }
+    }
+}
+</code></pre>
+<h3 id="82-案例二延迟任务处理"><a class="header" href="#82-案例二延迟任务处理">8.2 案例二：延迟任务处理</a></h3>
+<p><strong>场景</strong>: 订单15分钟未支付自动取消</p>
+<p><strong>方案1：使用死信队列实现延迟</strong></p>
+<pre><code class="language-java">@Configuration
+public class DelayQueueConfig {
+
+    // 延迟交换机和队列
+    @Bean
+    public Exchange delayExchange() {
+        return new DirectExchange("delay.exchange", true, false);
+    }
+
+    @Bean
+    public Queue delayQueue() {
+        Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+        // 15分钟后消息成为死信
+        args.put("x-message-ttl", 15 * 60 * 1000);
+        // 死信交换机
+        args.put("x-dead-letter-exchange", "order.exchange");
+        args.put("x-dead-letter-routing-key", "order.cancel");
+
+        return new Queue("delay.queue", true, false, false, args);
+    }
+
+    @Bean
+    public Binding delayBinding() {
+        return BindingBuilder
+                .bind(delayQueue())
+                .to(delayExchange())
+                .with("delay")
+                .noargs();
+    }
+}
+
+// 创建订单时发送延迟消息
+public void createOrder(Order order) {
+    orderMapper.insert(order);
+
+    // 发送延迟取消消息
+    rabbitTemplate.convertAndSend(
+            "delay.exchange",
+            "delay",
+            order.getId()
+    );
+}
+
+// 15分钟后，消息自动路由到订单取消队列
+@RabbitListener(queues = "order.cancel.queue")
+public void cancelUnpaidOrder(String orderId, Channel channel, Message message) throws IOException {
+    Order order = orderMapper.selectById(orderId);
+
+    if (order.getStatus() == OrderStatus.UNPAID) {
+        // 取消订单
+        orderService.cancel(orderId);
+        log.info("Order cancelled: {}", orderId);
+    }
+
+    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+}
+</code></pre>
+<p><strong>方案2：使用延迟插件（推荐）</strong></p>
+<pre><code class="language-bash"># 安装延迟插件
+rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+</code></pre>
+<pre><code class="language-java">@Bean
+public Exchange delayedExchange() {
+    Map&lt;String, Object&gt; args = new HashMap&lt;&gt;();
+    args.put("x-delayed-type", "direct");
+    return new CustomExchange("delayed.exchange", "x-delayed-message", true, false, args);
+}
+
+// 发送延迟消息
+public void sendDelayedMessage(String orderId, int delayMillis) {
+    rabbitTemplate.convertAndSend(
+            "delayed.exchange",
+            "order.cancel",
+            orderId,
+            message -&gt; {
+                message.getMessageProperties().setDelay(delayMillis);
+                return message;
+            }
+    );
+}
+</code></pre>
+<hr />
+<h2 id="九监控与运维"><a class="header" href="#九监控与运维">九、监控与运维</a></h2>
+<h3 id="91-管理界面监控"><a class="header" href="#91-管理界面监控">9.1 管理界面监控</a></h3>
+<p><strong>关键指标</strong>:</p>
+<ol>
+<li><strong>连接数</strong>: Connections</li>
+<li><strong>通道数</strong>: Channels</li>
+<li><strong>队列消息数</strong>: Messages (Ready + Unacked)</li>
+<li><strong>消息速率</strong>: Message rates (publish/deliver)</li>
+<li><strong>内存使用</strong>: Memory</li>
+<li><strong>磁盘使用</strong>: Disk space</li>
+</ol>
+<p><strong>告警阈值设置</strong>:</p>
+<pre><code>- 队列消息堆积 &gt; 10000
+- 消息处理速率 &lt; 发送速率（持续5分钟）
+- 内存使用 &gt; 80%
+- 磁盘使用 &gt; 80%
+- Consumer数量 = 0（队列无消费者）
+</code></pre>
+<h3 id="92-prometheus监控集成"><a class="header" href="#92-prometheus监控集成">9.2 Prometheus监控集成</a></h3>
+<p><strong>配置Prometheus抓取</strong>:</p>
+<pre><code class="language-yaml"># prometheus.yml
+scrape_configs:
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets: ['rabbitmq-exporter:9419']
+</code></pre>
+<p><strong>Grafana Dashboard</strong>:</p>
+<pre><code>Dashboard ID: 10991  (RabbitMQ Overview)
+</code></pre>
+<p><strong>关键PromQL查询</strong>:</p>
+<pre><code class="language-promql"># 队列消息数
+rabbitmq_queue_messages
+
+# 消息发送速率
+rate(rabbitmq_channel_messages_published_total[5m])
+
+# 消息消费速率
+rate(rabbitmq_queue_messages_delivered_total[5m])
+
+# 未确认消息数
+rabbitmq_queue_messages_unacked
+</code></pre>
+<h3 id="93-常见问题排查"><a class="header" href="#93-常见问题排查">9.3 常见问题排查</a></h3>
+<p><strong>问题1: 消息堆积</strong></p>
+<pre><code class="language-bash"># 检查队列消息数
+rabbitmqctl list_queues name messages consumers
+
+# 原因:
+# 1. 消费者处理慢
+# 2. 消费者宕机
+# 3. 消费者数量不足
+
+# 解决:
+# 1. 增加消费者数量
+# 2. 优化业务处理逻辑
+# 3. 临时增加预取数量
+</code></pre>
+<p><strong>问题2: 内存告警</strong></p>
+<pre><code class="language-bash"># 查看内存使用
+rabbitmqctl status
+
+# 原因:
+# 1. 消息堆积过多
+# 2. 大量连接/通道
+# 3. 内存阈值设置过高
+
+# 解决:
+# 1. 降低内存阈值
+vm_memory_high_watermark.relative = 0.4
+
+# 2. 启用惰性队列
+channel.queueDeclare("lazy_queue", true, false, false,
+    Collections.singletonMap("x-queue-mode", "lazy"));
+
+# 3. 清理不用的队列
+rabbitmqctl delete_queue queue_name
+</code></pre>
+<p><strong>问题3: 磁盘空间不足</strong></p>
+<pre><code class="language-bash"># 查看磁盘使用
+df -h /var/lib/rabbitmq
+
+# 解决:
+# 1. 清理过期消息
+rabbitmqctl eval 'rabbit_amqqueue:delete(rabbit_misc:r(&lt;&lt;"/"&gt;&gt;, queue, &lt;&lt;"queue_name"&gt;&gt;), false, false).'
+
+# 2. 缩短消息TTL
+# 3. 增加磁盘空间
+# 4. 启用消息压缩
+</code></pre>
+<hr />
+<h2 id="十学习成果验证标准"><a class="header" href="#十学习成果验证标准">十、学习成果验证标准</a></h2>
+<h3 id="验证标准1-环境搭建能力"><a class="header" href="#验证标准1-环境搭建能力">验证标准1: 环境搭建能力</a></h3>
+<p><strong>要求</strong>: 能够在15分钟内使用Docker部署RabbitMQ并访问管理界面</p>
+<p><strong>验证步骤</strong>:</p>
+<ol>
+<li>使用Docker启动RabbitMQ</li>
+<li>访问管理界面（http://localhost:15672）</li>
+<li>创建虚拟主机、用户、权限</li>
+<li>创建交换机和队列</li>
+<li>发送测试消息</li>
+</ol>
+<h3 id="验证标准2-编程能力"><a class="header" href="#验证标准2-编程能力">验证标准2: 编程能力</a></h3>
+<p><strong>要求</strong>: 能够使用Java/Python编写生产者和消费者</p>
+<p><strong>测试任务</strong>:</p>
+<pre><code>1. 创建一个Direct Exchange
+2. 创建两个队列并绑定到交换机
+3. 生产者发送10条消息
+4. 消费者接收并处理消息（手动ACK）
+5. 实现消息确认机制（Publisher Confirms）
+</code></pre>
+<h3 id="验证标准3-高级特性应用"><a class="header" href="#验证标准3-高级特性应用">验证标准3: 高级特性应用</a></h3>
+<p><strong>要求</strong>: 能够配置死信队列、延迟队列、优先级队列</p>
+<p><strong>测试任务</strong>:</p>
+<pre><code>1. 配置死信队列，处理失败消息
+2. 使用死信队列实现15分钟延迟任务
+3. 创建优先级队列，验证高优先级消息优先消费
+4. 配置消息TTL和队列最大长度
+</code></pre>
+<h3 id="验证标准4-集群部署能力"><a class="header" href="#验证标准4-集群部署能力">验证标准4: 集群部署能力</a></h3>
+<p><strong>要求</strong>: 能够搭建RabbitMQ集群并配置镜像队列</p>
+<p><strong>测试任务</strong>:</p>
+<pre><code>1. 使用Docker Compose搭建3节点集群
+2. 配置镜像队列
+3. 模拟节点故障，验证高可用
+4. 客户端连接集群（多地址配置）
+</code></pre>
+<h3 id="验证标准5-故障排查能力"><a class="header" href="#验证标准5-故障排查能力">验证标准5: 故障排查能力</a></h3>
+<p><strong>要求</strong>: 能够分析和解决常见问题</p>
+<p><strong>测试场景</strong>:</p>
+<pre><code>场景1: 消息丢失
+- 检查持久化配置
+- 检查确认机制
+- 检查消费者ACK模式
+
+场景2: 消息重复消费
+- 如何保证幂等性？
+- 如何设计唯一消息ID？
+
+场景3: 消息堆积
+- 如何监控队列长度？
+- 如何增加消费能力？
+- 如何优化消费逻辑？
+</code></pre>
+<hr />
+<h2 id="十一进阶学习路径"><a class="header" href="#十一进阶学习路径">十一、进阶学习路径</a></h2>
+<h3 id="111-进阶技术方向"><a class="header" href="#111-进阶技术方向">11.1 进阶技术方向</a></h3>
+<p><strong>方向1: 分布式事务</strong></p>
+<ul>
+<li>两阶段提交（2PC）</li>
+<li>TCC补偿模式</li>
+<li>本地消息表</li>
+<li>事务消息（RocketMQ）</li>
+</ul>
+<p><strong>方向2: 微服务通信</strong></p>
+<ul>
+<li>Spring Cloud Stream</li>
+<li>事件驱动架构（EDA）</li>
+<li>CQRS模式</li>
+<li>Saga模式</li>
+</ul>
+<p><strong>方向3: 高性能优化</strong></p>
+<ul>
+<li>连接池优化</li>
+<li>批量处理</li>
+<li>零拷贝技术</li>
+<li>消息压缩</li>
+</ul>
+<p><strong>方向4: 可观测性</strong></p>
+<ul>
+<li>分布式追踪（Zipkin、Jaeger）</li>
+<li>日志聚合</li>
+<li>指标监控</li>
+<li>告警体系</li>
+</ul>
+<h3 id="112-推荐学习资源"><a class="header" href="#112-推荐学习资源">11.2 推荐学习资源</a></h3>
+<p><strong>官方文档</strong></p>
+<ul>
+<li>RabbitMQ官方文档: https://www.rabbitmq.com/documentation.html</li>
+<li>AMQP协议规范: https://www.amqp.org/</li>
+</ul>
+<p><strong>开源项目</strong></p>
+<ul>
+<li>Spring AMQP: https://github.com/spring-projects/spring-amqp</li>
+<li>Pika (Python): https://github.com/pika/pika</li>
+</ul>
+<p><strong>社区资源</strong></p>
+<ul>
+<li>RabbitMQ中文文档: https://rabbitmq.mr-ping.com/</li>
+<li>RabbitMQ最佳实践: https://www.cloudamqp.com/blog/</li>
+</ul>
+<p><strong>实战项目</strong></p>
+<ol>
+<li>实现电商订单异步处理系统</li>
+<li>构建日志收集和分析平台</li>
+<li>开发延迟任务调度系统</li>
+<li>实现分布式事务解决方案</li>
+</ol>
+<h3 id="113-替代方案了解"><a class="header" href="#113-替代方案了解">11.3 替代方案了解</a></h3>
+<p><strong>对比其他消息队列</strong>:</p>
+<p><strong>RocketMQ</strong></p>
+<ul>
+<li>优势: 高吞吐、事务消息、顺序消息</li>
+<li>适合: 金融、电商、大数据场景</li>
+</ul>
+<p><strong>Kafka</strong></p>
+<ul>
+<li>优势: 超高吞吐、持久化、流处理</li>
+<li>适合: 日志收集、大数据流式处理</li>
+</ul>
+<p><strong>Redis Stream</strong></p>
+<ul>
+<li>优势: 简单、低延迟</li>
+<li>适合: 轻量级消息队列、实时数据流</li>
+</ul>
+<hr />
+<h2 id="十二附录"><a class="header" href="#十二附录">十二、附录</a></h2>
+<h3 id="121-常用命令速查"><a class="header" href="#121-常用命令速查">12.1 常用命令速查</a></h3>
+<p><strong>管理命令</strong>:</p>
+<pre><code class="language-bash"># 查看状态
+rabbitmqctl status
+
+# 查看队列
+rabbitmqctl list_queues
+
+# 查看交换机
+rabbitmqctl list_exchanges
+
+# 查看绑定
+rabbitmqctl list_bindings
+
+# 查看连接
+rabbitmqctl list_connections
+
+# 查看通道
+rabbitmqctl list_channels
+
+# 查看消费者
+rabbitmqctl list_consumers
+
+# 删除队列
+rabbitmqctl delete_queue queue_name
+
+# 清空队列
+rabbitmqctl purge_queue queue_name
+</code></pre>
+<p><strong>插件管理</strong>:</p>
+<pre><code class="language-bash"># 查看插件列表
+rabbitmq-plugins list
+
+# 启用插件
+rabbitmq-plugins enable rabbitmq_management
+rabbitmq-plugins enable rabbitmq_tracing
+rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+
+# 禁用插件
+rabbitmq-plugins disable plugin_name
+</code></pre>
+<p><strong>集群命令</strong>:</p>
+<pre><code class="language-bash"># 查看集群状态
+rabbitmqctl cluster_status
+
+# 加入集群
+rabbitmqctl join_cluster rabbit@node1
+
+# 移除节点
+rabbitmqctl forget_cluster_node rabbit@node2
+</code></pre>
+<h3 id="122-常见错误码"><a class="header" href="#122-常见错误码">12.2 常见错误码</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>错误码</th><th>说明</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>311</td><td>CONTENT_TOO_LARGE</td><td>消息太大，建议&lt;128KB</td></tr>
+<tr><td>312</td><td>NO_ROUTE</td><td>消息无法路由</td></tr>
+<tr><td>313</td><td>NO_CONSUMERS</td><td>队列无消费者</td></tr>
+<tr><td>320</td><td>CONNECTION_FORCED</td><td>连接被强制关闭</td></tr>
+<tr><td>404</td><td>NOT_FOUND</td><td>资源不存在</td></tr>
+<tr><td>406</td><td>PRECONDITION_FAILED</td><td>参数不匹配</td></tr>
+</tbody></table>
+</div>
+<h3 id="123-性能基准参考"><a class="header" href="#123-性能基准参考">12.3 性能基准参考</a></h3>
+<p><strong>单机性能</strong>（标准配置）:</p>
+<pre><code>- 发送速率: 2-5万 msg/s
+- 接收速率: 2-5万 msg/s
+- 消息大小: 1KB
+- 持久化: 开启
+- 确认模式: Publisher Confirms
+</code></pre>
+<p><strong>集群性能</strong>（3节点镜像队列）:</p>
+<pre><code>- 发送速率: 5-10万 msg/s
+- 接收速率: 5-10万 msg/s
+- 可用性: 99.9%
+</code></pre>
+<hr />
+<h2 id="结语"><a class="header" href="#结语">结语</a></h2>
+<p>RabbitMQ是现代分布式系统中不可或缺的消息中间件，掌握它将显著提升系统的可扩展性和可靠性。</p>
+<p><strong>学习路径总结</strong>:</p>
+<pre><code>基础入门 (第1周)
+  → 理解核心概念
+  → 环境搭建
+  → 简单生产者/消费者
+
+深入应用 (第2周)
+  → Exchange类型
+  → 消息可靠性
+  → 死信队列/延迟队列
+
+生产实战 (第3周+)
+  → 集群部署
+  → 性能优化
+  → 监控告警
+  → 故障处理
+</code></pre>
+<p><strong>持续提升建议</strong>:</p>
+<ol>
+<li>在实际项目中应用RabbitMQ</li>
+<li>研究开源项目的使用案例</li>
+<li>关注社区最佳实践</li>
+<li>深入理解AMQP协议</li>
+<li>对比学习其他消息队列</li>
+</ol>
+<p>祝你成为消息队列专家！🚀📨</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/middleware/prometheus.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/middleware/rocket.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/middleware/prometheus.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/middleware/rocket.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

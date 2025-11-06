@@ -1,0 +1,3100 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>HTML5 全面学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="html5-全面学习笔记"><a class="header" href="#html5-全面学习笔记">HTML5 全面学习笔记</a></h1>
+<blockquote>
+<p>面向 0-5 年经验的前端与全栈开发者，系统掌握 HTML5 核心能力与生产级最佳实践。</p>
+</blockquote>
+<h2 id="学习者画像与学习目标"><a class="header" href="#学习者画像与学习目标">学习者画像与学习目标</a></h2>
+<ul>
+<li><strong>目标人群</strong>：初入前端开发、希望夯实 Web 基础的全栈工程师、需要掌握现代前端标准的后端/移动开发者、转行学习者。</li>
+<li><strong>技术背景假设</strong>：具备计算机基础、了解 HTML/CSS/JavaScript 基本语法，能够阅读英文文档。</li>
+<li><strong>能力目标</strong>：
+<ul>
+<li>熟悉 HTML5 规范演进、生态与标准组织；</li>
+<li>构建语义化、可访问、可维护的页面结构；</li>
+<li>熟练运用多媒体、图形、表单、离线/存储、实时通信等核心 API；</li>
+<li>能够针对性能、SEO、可访问性进行评估与优化；</li>
+<li>具备设计与实现生产级 HTML5 应用的能力。</li>
+</ul>
+</li>
+<li><strong>学习策略</strong>：循序渐进 + 项目驱动。每个模块配套实战案例、检查清单与扩展资源，形成“理解 → 演练 → 复盘 → 优化”的闭环。</li>
+</ul>
+<h2 id="学习准备与环境搭建"><a class="header" href="#学习准备与环境搭建">学习准备与环境搭建</a></h2>
+<ul>
+<li><strong>开发工具</strong>：Visual Studio Code / WebStorm，安装 HTML Snippets、Live Server、Accessibility Insights 等插件；</li>
+<li><strong>浏览器</strong>：Chrome / Edge / Firefox / Safari 最新版本。开启开发者工具实验特性（如 Rendering、Lighthouse）；</li>
+<li><strong>验证工具</strong>：W3C Validator、Lighthouse、axe DevTools、WebPageTest；</li>
+<li><strong>本地服务</strong>：Node.js 18+，安装 <code>http-server</code>、<code>live-server</code>、<code>vite</code> 用于快速启动调试环境；</li>
+<li><strong>版本管理</strong>：Git + GitHub/GitLab，建立专属学习仓库，将每个模块的练习与笔记分支化管理；</li>
+<li><strong>可选增强</strong>：安装 Docker &amp; docker-compose 以便模拟多容器场景（如后端 API、WebSocket 服务）。</li>
+</ul>
+<blockquote>
+<p><strong>行动建议</strong>：初始化 <code>html5-mastering</code> 学习仓库，规划 <code>docs/notes</code>、<code>labs/module-xx</code>、<code>projects/</code> 目录结构。将本笔记同步纳入仓库文档，以便知识沉淀与版本追踪。</p>
+</blockquote>
+<h2 id="学习路径概览"><a class="header" href="#学习路径概览">学习路径概览</a></h2>
+<blockquote>
+<p>总体建议以 6-8 周完成核心模块，结合个人节奏灵活调整。推荐 70% 时间用于动手实践。</p>
+</blockquote>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>时间建议</th><th>核心模块</th><th>关键能力</th><th>实战案例</th><th>评估方式</th></tr></thead><tbody>
+<tr><td>启蒙阶段</td><td>第 1 周</td><td>模块一：HTML5 基础认知与标准生态</td><td>规范体系、文档结构、兼容策略</td><td>标准化 Landing Page 重构</td><td>文档结构清单 + 可访问性初检</td></tr>
+<tr><td>语义阶段</td><td>第 2-3 周</td><td>模块二：语义化结构与可访问体验</td><td>语义标签、ARIA、导航设计</td><td>企业官网信息架构重构</td><td>axe 分析分数 ≥ 90</td></tr>
+<tr><td>多媒体阶段</td><td>第 3-4 周</td><td>模块三：多媒体与图形渲染</td><td><code>&lt;video&gt;/&lt;audio&gt;</code>、Canvas、SVG</td><td>交互式数据可视化看板</td><td>Canvas 性能测试 + 互动测试</td></tr>
+<tr><td>表单与交互</td><td>第 4-5 周</td><td>模块四：智能表单与用户输入</td><td>新型输入类型、验证策略、输入法适配</td><td>多步骤注册/问卷系统</td><td>表单提交通过率 + 验证覆盖</td></tr>
+<tr><td>离线与性能</td><td>第 5-6 周</td><td>模块五：离线能力、存储与性能优化</td><td>Service Worker、缓存策略、Web Storage</td><td>PWA 版待办应用</td><td>Lighthouse PWA &gt; 90</td></tr>
+<tr><td>平台融合</td><td>第 6-8 周</td><td>模块六：HTML5 API 与前端工程化</td><td>Geolocation、WebSocket、WebRTC、Web Components</td><td>实时协作白板应用</td><td>单元+集成测试覆盖、端到端演示</td></tr>
+<tr><td>综合提升</td><td>持续</td><td>模块七：性能、SEO 与可访问性深度优化</td><td>Core Web Vitals、结构化数据、国际化</td><td>企业级营销站点优化</td><td>Core Web Vitals 达标 + SEO 报告</td></tr>
+<tr><td>产出固化</td><td>持续</td><td>模块八：工程化与项目落地</td><td>组件化策略、设计体系、发布部署</td><td>企业内训 Demo / 技术分享</td><td>项目复盘文档 + 分享材料</td></tr>
+</tbody></table>
+</div>
+<h2 id="模块设计原则"><a class="header" href="#模块设计原则">模块设计原则</a></h2>
+<ol>
+<li><strong>结构化递进</strong>：每个模块分为“基础概念 → 实战案例 → 进阶拓展 → 练习与复盘”；</li>
+<li><strong>实战驱动</strong>：案例源自真实业务场景，覆盖响应式布局、多终端兼容、性能监控、国际化等关键问题；</li>
+<li><strong>可度量验证</strong>：设置可量化指标（可访问性分数、加载性能、交互覆盖率等），便于阶段性检查与成果固化；</li>
+<li><strong>知识回溯</strong>：每个模块结尾提供“知识回顾 + 常见误区 + 复习题”，强化长期记忆。</li>
+</ol>
+<h2 id="内容地图"><a class="header" href="#内容地图">内容地图</a></h2>
+<ul>
+<li><strong>模块一：HTML5 基础认知与标准生态</strong>
+<ul>
+<li>HTML5 演进史、WHATWG 与 W3C、标准生命周期</li>
+<li>基本文档结构、字符编码、国际化、<code>&lt;head&gt;</code> 元数据体系</li>
+<li>浏览器兼容性策略、特性检测、渐进增强 vs. 优雅降级</li>
+</ul>
+</li>
+<li><strong>模块二：语义化结构与可访问体验设计</strong>
+<ul>
+<li>语义标签矩阵、信息架构设计方法</li>
+<li>Landmark 与 ARIA 基础、可访问导航模式、键盘交互</li>
+<li>内容结构化与 SEO 友好最佳实践</li>
+</ul>
+</li>
+<li><strong>模块三：多媒体与图形渲染</strong>
+<ul>
+<li><code>&lt;audio&gt;</code>/<code>&lt;video&gt;</code> 基本 API、字幕与无障碍、DRM 基础</li>
+<li>Canvas 2D API、WebGL 入门、SVG 系统</li>
+<li>高性能动画与媒体资源管理</li>
+</ul>
+</li>
+<li><strong>模块四：智能表单与用户输入</strong>
+<ul>
+<li>新输入类型、约束验证、原生互动组件</li>
+<li>表单数据模型、无障碍校验、输入法适配</li>
+<li>文件上传、多步骤表单、可重复字段组件</li>
+</ul>
+</li>
+<li><strong>模块五：离线能力、数据存储与性能优化</strong>
+<ul>
+<li>Application Cache 历史、Service Worker 设计</li>
+<li>Cache API、IndexedDB、Web Storage</li>
+<li>性能监测、资源优先级、Lighthouse 指标</li>
+</ul>
+</li>
+<li><strong>模块六：HTML5 API 与平台融合</strong>
+<ul>
+<li>Device API、Geolocation、Orientation、剪贴板</li>
+<li>实时通信（WebSocket / WebRTC）、通知、支付</li>
+<li>Web Components、Shadow DOM、Custom Elements</li>
+</ul>
+</li>
+<li><strong>模块七：性能、SEO 与可访问性深度优化</strong>
+<ul>
+<li>Core Web Vitals、预加载策略、渲染优化</li>
+<li>结构化数据、国际化、多语言 SEO</li>
+<li>可访问性审计流程、残障场景实测</li>
+</ul>
+</li>
+<li><strong>模块八：工程化落地与团队协作</strong>
+<ul>
+<li>设计系统与组件库、文档化策略</li>
+<li>自动化测试、CI/CD、质量基线制定</li>
+<li>团队学习路径、知识库建设、技术布道</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>后续章节将依照以上模块展开，每个模块提供：知识脉络梳理、实战案例拆解、关键 API 总结、常见问题与调试技巧、练习与复盘清单、扩展阅读。</p>
+</blockquote>
+<hr />
+<p>接下来进入模块一，从“标准化视角”重新认识 HTML5，并结合业务场景完成首个实战重构任务。</p>
+<h2 id="模块一html5-基础认知与标准生态"><a class="header" href="#模块一html5-基础认知与标准生态">模块一：HTML5 基础认知与标准生态</a></h2>
+<blockquote>
+<p>目标：建立对 HTML5 标准体系、规范文档结构、特性检测与兼容策略的整体理解，为后续模块提供统一认知模型。</p>
+</blockquote>
+<h3 id="11-html5-演进与标准生态"><a class="header" href="#11-html5-演进与标准生态">1.1 HTML5 演进与标准生态</a></h3>
+<ul>
+<li><strong>时间线回顾</strong>：
+<ul>
+<li>1991-1999：HTML 1.0~4.01 时代，以文档呈现为主，缺乏严格语义与交互能力；</li>
+<li>2004：WHATWG 成立，推动 Web Applications 1.0，主张“活标准”（Living Standard）；</li>
+<li>2008：HTML5 首个草案发布，明确多媒体、离线存储、语义化等方向；</li>
+<li>2014：W3C 发布 HTML5 Recommendation；</li>
+<li>2019：HTML5.2 收敛，WHATWG HTML Living Standard 成为权威；</li>
+<li>2020+：HTML 标准纳入 WHATWG 维护，W3C 与 WHATWG 达成协作。</li>
+</ul>
+</li>
+<li><strong>标准组织角色</strong>：
+<ul>
+<li>WHATWG：维护 HTML、DOM、Fetch、Streams 等核心规范，强调浏览器厂商协作；</li>
+<li>W3C：提供工作组草案、推荐标准，关注互操作性、开放 Web；</li>
+<li>ECMA TC39：负责 ECMAScript 标准，与 HTML 协同定义脚本行为；</li>
+<li>IETF：维护 HTTP、WebSocket 等网络协议，与 HTML 应用层紧密协作。</li>
+</ul>
+</li>
+<li><strong>活标准理念</strong>：
+<ul>
+<li>标准版本号意义减弱，关注特性状态（Working Draft、Candidate Recommendation、Living Standard）；</li>
+<li>重视兼容性测试套件（WPT），通过测试驱动规范实现；</li>
+<li>开发者应以 “Can I use”、“MDN” 等动态资源为准，而非 PDF/快照版本。</li>
+</ul>
+</li>
+<li><strong>行业影响</strong>：统一标准生态促成现代 Web App 能力接近原生（PWA、WebGPU），使 HTML5 成为跨平台应用的底座。</li>
+</ul>
+<h3 id="12-基本文档结构与元数据体系"><a class="header" href="#12-基本文档结构与元数据体系">1.2 基本文档结构与元数据体系</a></h3>
+<ul>
+<li><strong>DOCTYPE 与字符集</strong>：
+<ul>
+<li><code>&lt;!DOCTYPE html&gt;</code> 强制浏览器以标准模式渲染，避免怪异模式；</li>
+<li><code>&lt;meta charset="utf-8"&gt;</code> 保证统一编码，支持多语言与 emoji 表达；</li>
+<li><code>&lt;meta http-equiv="x-ua-compatible" content="IE=edge"&gt;</code> 兼容旧版 IE，保证使用最新引擎。</li>
+</ul>
+</li>
+<li><strong><code>&lt;html&gt;</code> 根元素</strong>：
+<ul>
+<li><code>lang</code> 属性用于国际化与辅助技术（屏幕阅读器语言选择）；</li>
+<li><code>dir</code> 属性控制文本方向（ltr/rtl/auto），对多语言项目至关重要。</li>
+</ul>
+</li>
+<li><strong><code>&lt;head&gt;</code> 关键元信息</strong>：
+<ul>
+<li><code>&lt;title&gt;</code>、<code>&lt;meta name="description"&gt;</code>、<code>&lt;meta name="keywords"&gt;</code>、<code>&lt;meta name="viewport"&gt;</code>；</li>
+<li>Open Graph、Twitter Cards 元信息支持社交分享；</li>
+<li>预加载/预渲染：<code>&lt;link rel="preconnect" href="https://fonts.gstatic.com"&gt;</code>、<code>rel="preload"</code>；</li>
+<li><code>&lt;link rel="manifest"&gt;</code> 支持 PWA，<code>&lt;meta name="theme-color"&gt;</code> 调整浏览器 UI 主题。</li>
+</ul>
+</li>
+<li><strong><code>&lt;body&gt;</code> 架构原则</strong>：语义化结构 + 可访问导航 + 模块化组件。始终遵循“自上而下”的信息层次化表达。</li>
+<li><strong>国际化 (i18n) 细节</strong>：
+<ul>
+<li>使用 <code>&lt;meta name="content-language"&gt;</code> 描述主语言；</li>
+<li>通过 <code>&lt;meta http-equiv="content-language" content="zh-CN"&gt;</code> 与 <code>lang</code> 属性组合，强化搜索引擎理解；</li>
+<li>对多语言站点准备 <code>hreflang</code> 链接集合。</li>
+</ul>
+</li>
+</ul>
+<h3 id="13-渐进增强特性检测与兼容策略"><a class="header" href="#13-渐进增强特性检测与兼容策略">1.3 渐进增强、特性检测与兼容策略</a></h3>
+<ul>
+<li><strong>渐进增强 (Progressive Enhancement)</strong>：先提供可靠的核心内容，再增强交互；</li>
+<li><strong>优雅降级 (Graceful Degradation)</strong>：从高端体验向下兼容，减少关键特性依赖；</li>
+<li><strong>特性检测</strong>：
+<ul>
+<li>推荐使用 <code>Modernizr</code> 或原生特性检测：<code>if ('fetch' in window) { ... }</code>；</li>
+<li>避免基于 UA 的判断（容易失效、维护成本高）。</li>
+</ul>
+</li>
+<li><strong>Polyfill 策略</strong>：针对旧浏览器引入 Polyfill.io、Core-js，注意按需加载（<code>&lt;script src="https://polyfill.io/v3/polyfill.min.js?features=IntersectionObserver"&gt;&lt;/script&gt;</code>）。</li>
+<li><strong>响应式与多终端适配</strong>：
+<ul>
+<li>以流式布局、弹性盒子、网格系统为主要手段；</li>
+<li>利用 <code>&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;</code> 控制移动端视口；</li>
+<li>媒体查询 + Container Queries（实验特性）提升组件自适应能力。</li>
+</ul>
+</li>
+</ul>
+<h3 id="14-核心概念与知识清单"><a class="header" href="#14-核心概念与知识清单">1.4 核心概念与知识清单</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>主题</th><th>核心概念</th><th>常见误区</th><th>实践建议</th></tr></thead><tbody>
+<tr><td>标准生态</td><td>WHATWG 活标准、W3C Recommendation</td><td>只参考旧版 PDF 规范</td><td>以 MDN + WHATWG Spec 为主，关注浏览器兼容矩阵</td></tr>
+<tr><td>文档结构</td><td>DOCTYPE、<code>&lt;head&gt;</code> 元数据、<code>lang</code>/<code>dir</code></td><td>忽略编码与语言声明，导致 SEO 与 i18n 问题</td><td>建立 HTML 起始模板片段，纳入团队代码库</td></tr>
+<tr><td>元信息</td><td>viewport、meta 描述、Open Graph</td><td>为移动端添加错误的 viewport 或缺失 OG</td><td>使用 Lighthouse Meta 面板审查元信息完整性</td></tr>
+<tr><td>兼容策略</td><td>渐进增强、特性检测、Polyfill</td><td>依赖 UA 判断、滥用 Polyfill 全量引入</td><td>通过浏览器特性支持表格、电量指标评估 Polyfill 成本</td></tr>
+</tbody></table>
+</div>
+<h3 id="15-实战案例重构标准化-landing-page"><a class="header" href="#15-实战案例重构标准化-landing-page">1.5 实战案例：重构标准化 Landing Page</a></h3>
+<p><strong>业务场景</strong>：旧版宣传页结构混乱，未注明语言、缺乏语义标签和可访问支持。目标是重建 HTML 结构，确保语义化、可访问、性能友好。</p>
+<h4 id="151-需求拆解"><a class="header" href="#151-需求拆解">1.5.1 需求拆解</a></h4>
+<ol>
+<li>统一文档骨架，补齐 <code>&lt;head&gt;</code> 元信息；</li>
+<li>使用语义化标签划分页面区域（顶部导航、产品亮点、客户案例、页脚）；</li>
+<li>接入社交分享元信息与 manifest；</li>
+<li>确保移动端视口、触控响应与键盘导航；</li>
+<li>通过 Lighthouse 与 axe 检测验证。</li>
+</ol>
+<h4 id="152-项目初始化步骤"><a class="header" href="#152-项目初始化步骤">1.5.2 项目初始化步骤</a></h4>
+<ol>
+<li>新建目录 <code>labs/module-01/landing-page</code>，使用 <code>npm init -y</code> 建立项目；</li>
+<li>安装开发依赖：<code>npm install --save-dev live-server lighthouse CI</code>；</li>
+<li>创建 <code>index.html</code>，引入标准化起始模板：</li>
+</ol>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="zh-CN" data-theme="light"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;meta http-equiv="x-ua-compatible" content="IE=edge"&gt;
+    &lt;title&gt;CloudTask · 智能协同平台&lt;/title&gt;
+    &lt;meta name="description" content="CloudTask 提供跨团队的实时协作与流程自动化能力，助力企业提效 40%。"&gt;
+    &lt;meta name="keywords" content="SaaS, 协同平台, 自动化, CloudTask"&gt;
+    &lt;meta name="author" content="CloudTask Team"&gt;
+    &lt;meta property="og:type" content="website"&gt;
+    &lt;meta property="og:title" content="CloudTask 协同平台"&gt;
+    &lt;meta property="og:description" content="一站式企业协作平台，提供自动化、工单、数据大屏。"&gt;
+    &lt;meta property="og:url" content="https://demo.cloudtask.com"&gt;
+    &lt;meta property="og:image" content="/assets/og-cover.png"&gt;
+    &lt;meta name="twitter:card" content="summary_large_image"&gt;
+    &lt;meta name="theme-color" content="#1565c0"&gt;
+    &lt;link rel="manifest" href="/manifest.json"&gt;
+    &lt;link rel="icon" href="/assets/favicon.svg" type="image/svg+xml"&gt;
+    &lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
+    &lt;link rel="preload" as="style" href="/assets/fonts/roboto.css"&gt;
+    &lt;link rel="stylesheet" href="/assets/styles/base.css" media="all"&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;a class="skip-link" href="#main-content"&gt;跳到主要内容&lt;/a&gt;
+    &lt;header class="site-header" role="banner"&gt;
+      &lt;div class="container"&gt;
+        &lt;h1 class="logo"&gt;&lt;a href="/"&gt;CloudTask&lt;/a&gt;&lt;/h1&gt;
+        &lt;nav class="site-nav" aria-label="主导航"&gt;
+          &lt;ul&gt;
+            &lt;li&gt;&lt;a href="#features"&gt;特色功能&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#solutions"&gt;行业方案&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#stories"&gt;客户案例&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#pricing"&gt;价格&lt;/a&gt;&lt;/li&gt;
+            &lt;li&gt;&lt;a href="#contact"&gt;联系我们&lt;/a&gt;&lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/nav&gt;
+        &lt;a class="cta" href="/signup"&gt;开始试用&lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/header&gt;
+    &lt;main id="main-content" tabindex="-1"&gt;
+      &lt;section id="hero" aria-labelledby="hero-title"&gt;
+        &lt;div class="container"&gt;
+          &lt;h2 id="hero-title"&gt;智能协同，从 CloudTask 开始&lt;/h2&gt;
+          &lt;p&gt;统一流程、任务、数据于一体，打造敏捷的数字化团队协作平台。&lt;/p&gt;
+          &lt;div class="actions"&gt;
+            &lt;a class="btn btn-primary" href="/signup"&gt;免费注册&lt;/a&gt;
+            &lt;a class="btn btn-secondary" href="#stories"&gt;查看客户案例&lt;/a&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      &lt;section id="features" aria-labelledby="feature-title"&gt;
+        &lt;div class="container"&gt;
+          &lt;h2 id="feature-title"&gt;核心功能亮点&lt;/h2&gt;
+          &lt;article&gt;
+            &lt;h3&gt;流程自动化&lt;/h3&gt;
+            &lt;p&gt;可视化编排业务流程，内置 120+ 自动化节点，覆盖审批、提醒、集成。&lt;/p&gt;
+          &lt;/article&gt;
+          &lt;article&gt;
+            &lt;h3&gt;实时协作&lt;/h3&gt;
+            &lt;p&gt;多人任务实时同步，支持讨论、@通知、版本历史回放。&lt;/p&gt;
+          &lt;/article&gt;
+          &lt;article&gt;
+            &lt;h3&gt;数据大屏&lt;/h3&gt;
+            &lt;p&gt;内置 BI 模板，支持自定义指标、跨部门数据联动。&lt;/p&gt;
+          &lt;/article&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      &lt;section id="stories" aria-labelledby="story-title"&gt;
+        &lt;div class="container"&gt;
+          &lt;h2 id="story-title"&gt;客户成功案例&lt;/h2&gt;
+          &lt;ul class="story-list"&gt;
+            &lt;li&gt;
+              &lt;figure&gt;
+                &lt;img src="/assets/case-1.webp" alt="制造业客户数字化工厂控制台"&gt;
+                &lt;figcaption&gt;制造业客户：交付效率提升 35%&lt;/figcaption&gt;
+              &lt;/figure&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+              &lt;figure&gt;
+                &lt;img src="/assets/case-2.webp" alt="零售行业客户的运营看板"&gt;
+                &lt;figcaption&gt;零售行业：门店协同时效缩短一半&lt;/figcaption&gt;
+              &lt;/figure&gt;
+            &lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+      &lt;section id="pricing" aria-labelledby="pricing-title"&gt;
+        &lt;div class="container"&gt;
+          &lt;h2 id="pricing-title"&gt;灵活的价格方案&lt;/h2&gt;
+          &lt;table&gt;
+            &lt;caption&gt;CloudTask 订阅套餐&lt;/caption&gt;
+            &lt;thead&gt;
+              &lt;tr&gt;
+                &lt;th scope="col"&gt;套餐&lt;/th&gt;
+                &lt;th scope="col"&gt;适用场景&lt;/th&gt;
+                &lt;th scope="col"&gt;价格&lt;/th&gt;
+              &lt;/tr&gt;
+            &lt;/thead&gt;
+            &lt;tbody&gt;
+              &lt;tr&gt;
+                &lt;th scope="row"&gt;基础版&lt;/th&gt;
+                &lt;td&gt;10 人以内小团队&lt;/td&gt;
+                &lt;td&gt;￥99/月&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;th scope="row"&gt;成长版&lt;/th&gt;
+                &lt;td&gt;跨部门协同团队&lt;/td&gt;
+                &lt;td&gt;￥299/月&lt;/td&gt;
+              &lt;/tr&gt;
+              &lt;tr&gt;
+                &lt;th scope="row"&gt;企业版&lt;/th&gt;
+                &lt;td&gt;需要高度定制的大型组织&lt;/td&gt;
+                &lt;td&gt;联系客服&lt;/td&gt;
+              &lt;/tr&gt;
+            &lt;/tbody&gt;
+          &lt;/table&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/main&gt;
+    &lt;footer class="site-footer" role="contentinfo"&gt;
+      &lt;div class="container"&gt;
+        &lt;section aria-labelledby="subscribe-title"&gt;
+          &lt;h2 id="subscribe-title"&gt;订阅更新&lt;/h2&gt;
+          &lt;form action="/newsletter" method="post"&gt;
+            &lt;label for="subscribe-email"&gt;邮箱&lt;/label&gt;
+            &lt;input id="subscribe-email" type="email" name="email" required&gt;
+            &lt;button type="submit"&gt;订阅&lt;/button&gt;
+          &lt;/form&gt;
+        &lt;/section&gt;
+        &lt;section aria-labelledby="contact-title"&gt;
+          &lt;h2 id="contact-title"&gt;联系我们&lt;/h2&gt;
+          &lt;address&gt;
+            &lt;p&gt;深圳市南山区科技大道 88 号&lt;/p&gt;
+            &lt;p&gt;电话：400-880-1234&lt;/p&gt;
+            &lt;p&gt;&lt;a href="mailto:hello@cloudtask.com"&gt;hello@cloudtask.com&lt;/a&gt;&lt;/p&gt;
+          &lt;/address&gt;
+        &lt;/section&gt;
+        &lt;small&gt;© 2024 CloudTask Inc. 保留所有权利。&lt;/small&gt;
+      &lt;/div&gt;
+    &lt;/footer&gt;
+    &lt;script src="/assets/scripts/analytics.js" defer&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<ol start="4">
+<li>启动 <code>npx live-server --port=3000</code> 或 <code>npm run dev</code> 打开本地预览；</li>
+<li>使用 Lighthouse 生成性能、SEO、可访问性报告，记录基线数据。</li>
+</ol>
+<h4 id="153-优化策略与经验复盘"><a class="header" href="#153-优化策略与经验复盘">1.5.3 优化策略与经验复盘</a></h4>
+<ul>
+<li><strong>语义化提升</strong>：替换 <code>&lt;div class="header"&gt;</code> 等泛用标签为 <code>&lt;header&gt;</code>、<code>&lt;nav&gt;</code>、<code>&lt;main&gt;</code>、<code>&lt;section&gt;</code>、<code>&lt;article&gt;</code>，建立可访问导航；</li>
+<li><strong>可访问性</strong>：提供 <code>skip-link</code>、<code>aria-labelledby</code>、表格 <code>&lt;caption&gt;</code> 与 <code>&lt;th scope&gt;</code>；</li>
+<li><strong>性能优化</strong>：通过 <code>&lt;link rel="preconnect"&gt;</code>、<code>&lt;link rel="preload"&gt;</code> 提前建立连接与加载关键资源；</li>
+<li><strong>国际化</strong>：<code>lang</code> + 具体内容 <code>lang</code>（如引用英文 testimonials 时）；</li>
+<li><strong>调试工具</strong>：借助 Chrome DevTools 的 Rendering Pane，检查色彩对比与无障碍树。</li>
+</ul>
+<h4 id="154-成果验收清单"><a class="header" href="#154-成果验收清单">1.5.4 成果验收清单</a></h4>
+<ul>
+<li><input disabled="" type="checkbox"/>
+HTML Validator 无报错；</li>
+<li><input disabled="" type="checkbox"/>
+Lighthouse Performance ≥ 85，Accessibility ≥ 90，Best Practices ≥ 90；</li>
+<li><input disabled="" type="checkbox"/>
+axe 检测无严重错误；</li>
+<li><input disabled="" type="checkbox"/>
+移动端视口展示正常，缩放、旋转无布局错乱；</li>
+<li><input disabled="" type="checkbox"/>
+SEO 元数据、结构化数据（可选）配置完整。</li>
+</ul>
+<h3 id="16-模块练习与复盘"><a class="header" href="#16-模块练习与复盘">1.6 模块练习与复盘</a></h3>
+<ul>
+<li><strong>练习 1：标准模板固化</strong>
+<ul>
+<li>目标：产出团队级 HTML 起始模板（含元信息、语义结构、调试脚本）。</li>
+<li>交付：<code>starter-template.html</code> + README 描述使用说明。</li>
+</ul>
+</li>
+<li><strong>练习 2：实战 Landing Page 重构</strong>
+<ul>
+<li>目标：将现有公司或案例着陆页重构为语义化结构，输出前后对比说明。</li>
+<li>交付：重构前后效果对比截图 + Lighthouse 报告 + 实战笔记。</li>
+</ul>
+</li>
+<li><strong>复盘问题</strong>：
+<ol>
+<li>当前组织/项目中 HTML 起始模板有哪些问题？</li>
+<li>有没有 Web App 没有设置 <code>&lt;meta name="viewport"&gt;</code> 导致移动端体验欠佳的情况？</li>
+<li>哪些 Polyfill/特性检测可以被移除或改为渐进增强？</li>
+</ol>
+</li>
+</ul>
+<h3 id="17-知识回顾与常见误区"><a class="header" href="#17-知识回顾与常见误区">1.7 知识回顾与常见误区</a></h3>
+<ul>
+<li>HTML 标准为活标准，聚焦浏览器实际实现；</li>
+<li>可访问性与语义化不是锦上添花，而是提高用户体验与 SEO 的基线；</li>
+<li>元信息缺失会直接影响 SEO、分享、移动端体验；</li>
+<li>滥用 Polyfill 会引入性能负担，应按需加载；</li>
+<li>忽视国际化设置会导致多语言项目难以扩展。</li>
+</ul>
+<blockquote>
+<p>完成本模块后，你应对 HTML5 的生态、文档结构、标准化实践有体系化认识。接下来进入模块二，专注于语义化结构与可访问体验。</p>
+</blockquote>
+<h2 id="模块二语义化结构与可访问体验设计"><a class="header" href="#模块二语义化结构与可访问体验设计">模块二：语义化结构与可访问体验设计</a></h2>
+<blockquote>
+<p>目标：掌握 HTML5 语义标签与可访问标准，构建结构清晰、对所有用户友好的 Web 页面。重点在于信息架构、交互流程与辅助技术兼容。</p>
+</blockquote>
+<h3 id="21-语义化标签体系总览"><a class="header" href="#21-语义化标签体系总览">2.1 语义化标签体系总览</a></h3>
+<ul>
+<li><strong>结构性标签（Structural Semantics）</strong>：<code>&lt;header&gt;</code>、<code>&lt;nav&gt;</code>、<code>&lt;main&gt;</code>、<code>&lt;section&gt;</code>、<code>&lt;article&gt;</code>、<code>&lt;aside&gt;</code>、<code>&lt;footer&gt;</code>。用于构建宏观信息架构与 Landmark；</li>
+<li><strong>文本语义标签</strong>：<code>&lt;h1&gt;</code>~<code>&lt;h6&gt;</code>、<code>&lt;p&gt;</code>、<code>&lt;blockquote&gt;</code>、<code>&lt;cite&gt;</code>、<code>&lt;abbr&gt;</code>、<code>&lt;time&gt;</code>、<code>&lt;mark&gt;</code> 等，用于精准表达信息性质；</li>
+<li><strong>内联语义标签</strong>：<code>&lt;strong&gt;</code>、<code>&lt;em&gt;</code>、<code>&lt;code&gt;</code>、<code>&lt;kbd&gt;</code>、<code>&lt;var&gt;</code>、<code>&lt;samp&gt;</code>、<code>&lt;dfn&gt;</code>，提升辅助功能与可读性；</li>
+<li><strong>数据呈现标签</strong>：<code>&lt;dl&gt;</code>、<code>&lt;dt&gt;</code>、<code>&lt;dd&gt;</code>、<code>&lt;figure&gt;</code>、<code>&lt;figcaption&gt;</code>、<code>&lt;meter&gt;</code>、<code>&lt;progress&gt;</code>、<code>&lt;data&gt;</code>、<code>&lt;output&gt;</code>；</li>
+<li><strong>交互语义标签</strong>：<code>&lt;button&gt;</code>、<code>&lt;details&gt;</code>、<code>&lt;summary&gt;</code>、<code>&lt;dialog&gt;</code>、<code>&lt;menu&gt;</code>、<code>&lt;menuitem&gt;</code>；</li>
+<li><strong>表格语义</strong>：<code>&lt;caption&gt;</code>、<code>&lt;thead&gt;</code>、<code>&lt;tbody&gt;</code>、<code>&lt;tfoot&gt;</code>、<code>&lt;th&gt;</code>、<code>&lt;colgroup&gt;</code>、<code>scope</code> 属性；</li>
+<li><strong>媒体语义</strong>：<code>&lt;audio&gt;</code>、<code>&lt;video&gt;</code>、<code>&lt;track&gt;</code>、<code>&lt;picture&gt;</code>、<code>&lt;source&gt;</code>、<code>&lt;map&gt;</code>、<code>&lt;area&gt;</code>。</li>
+</ul>
+<blockquote>
+<p>语义化的本质是让浏览器、搜索引擎和辅助技术理解“这是什么内容、对谁重要、如何交互”。语义标签决定了文档大纲、Tab 顺序、阅读器导航结构。</p>
+</blockquote>
+<h3 id="22-可访问性规范与标准"><a class="header" href="#22-可访问性规范与标准">2.2 可访问性规范与标准</a></h3>
+<ul>
+<li><strong>WCAG 2.1 原则</strong>：感知 (Perceivable)、可操作 (Operable)、易理解 (Understandable)、健壮 (Robust)。每个原则包含多个成功准则（A/AA/AAA）；</li>
+<li><strong>WAI-ARIA 基础</strong>：通过 <code>role</code>、<code>aria-*</code> 属性为无语义标签添加语义或增强可访问性；</li>
+<li><strong>常见 ARIA模式</strong>：
+<ul>
+<li><code>role="navigation"</code> + <code>aria-label="主导航"</code>；</li>
+<li><code>role="dialog"</code> + <code>aria-modal="true"</code>；</li>
+<li><code>aria-live="polite"</code> 提示动态更新内容；</li>
+</ul>
+</li>
+<li><strong>辅助工具</strong>：屏幕阅读器（NVDA、VoiceOver、JAWS）、键盘导航、Switch 控制器、放大镜；</li>
+<li><strong>调试工具链</strong>：Chrome Lighthouse、axe DevTools、Accessibility Insights、NVDA + Firefox、VoiceOver + Safari。</li>
+</ul>
+<h3 id="23-信息架构设计方法"><a class="header" href="#23-信息架构设计方法">2.3 信息架构设计方法</a></h3>
+<ol>
+<li><strong>内容审计 (Content Audit)</strong>：列出所有现有页面区域，分类为导航、主内容、次要内容、辅助信息；</li>
+<li><strong>语义映射 (Semantic Mapping)</strong>：为每个区域映射合适标签，确保 <code>&lt;main&gt;</code> 仅出现一次，<code>&lt;h1&gt;</code> 唯一、标题层级有序；</li>
+<li><strong>可访问导航设计</strong>：提供 <code>skip links</code>、键盘焦点可见、现有焦点顺序与视觉顺序一致；</li>
+<li><strong>语义轮廓调试</strong>：使用浏览器 DevTools “Document Outline” 或 <code>HTML5 Outliner</code> 插件验证标题结构；</li>
+<li><strong>可访问交互控件</strong>：避免自定义 <code>&lt;div&gt;</code> 模拟按钮；若必须自定义，确保 <code>role</code>、<code>tabindex</code>、键盘事件、ARIA 状态齐全。</li>
+</ol>
+<h3 id="24-深入示例媒体内容语义"><a class="header" href="#24-深入示例媒体内容语义">2.4 深入示例：媒体内容语义</a></h3>
+<ul>
+<li>对新闻门户：使用 <code>&lt;article&gt;</code> 包裹每篇文章，<code>&lt;header&gt;</code> 包含标题与作者，<code>&lt;footer&gt;</code> 包含标签与分享按钮；</li>
+<li>图文混排内容：使用 <code>&lt;figure&gt;</code> + <code>&lt;figcaption&gt;</code> 包装图表，不再仅使用 <code>&lt;img&gt;</code>；</li>
+<li>数据展示：<code>&lt;time datetime="2024-04-30"&gt;2024 年 4 月 30 日&lt;/time&gt;</code> 辅助机器理解。</li>
+</ul>
+<h3 id="25-可访问导航案例多级主导航"><a class="header" href="#25-可访问导航案例多级主导航">2.5 可访问导航案例：多级主导航</a></h3>
+<h4 id="251-设计目标"><a class="header" href="#251-设计目标">2.5.1 设计目标</a></h4>
+<ul>
+<li>支持键盘导航（Tab、方向键）；</li>
+<li>对屏幕阅读器朗读友好；</li>
+<li>提供焦点状态及视觉反馈。</li>
+</ul>
+<h4 id="252-html-结构"><a class="header" href="#252-html-结构">2.5.2 HTML 结构</a></h4>
+<pre><code class="language-html">&lt;nav class="global-nav" aria-label="主导航"&gt;
+  &lt;ul role="menubar"&gt;
+    &lt;li role="none"&gt;
+      &lt;a role="menuitem" href="/products" aria-haspopup="true" aria-expanded="false"&gt;产品&lt;/a&gt;
+      &lt;ul role="menu" class="submenu" aria-label="产品子菜单"&gt;
+        &lt;li role="none"&gt;&lt;a role="menuitem" href="/products/automation"&gt;流程自动化&lt;/a&gt;&lt;/li&gt;
+        &lt;li role="none"&gt;&lt;a role="menuitem" href="/products/insights"&gt;数据洞察&lt;/a&gt;&lt;/li&gt;
+        &lt;li role="none"&gt;&lt;a role="menuitem" href="/products/security"&gt;安全体系&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li role="none"&gt;&lt;a role="menuitem" href="/pricing"&gt;价格&lt;/a&gt;&lt;/li&gt;
+    &lt;li role="none"&gt;&lt;a role="menuitem" href="/resources"&gt;资源中心&lt;/a&gt;&lt;/li&gt;
+    &lt;li role="none"&gt;&lt;a role="menuitem" href="/contact"&gt;联系我们&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+</code></pre>
+<h4 id="253-键盘交互脚本"><a class="header" href="#253-键盘交互脚本">2.5.3 键盘交互脚本</a></h4>
+<pre><code class="language-js">const menu = document.querySelector('[role="menubar"]');
+
+menu.addEventListener('keydown', (event) =&gt; {
+  const target = event.target;
+  if (target.role !== 'menuitem') return;
+
+  const menuItems = Array.from(menu.querySelectorAll('[role="menuitem"]'));
+  const currentIndex = menuItems.indexOf(target);
+
+  switch (event.key) {
+    case 'ArrowRight':
+      event.preventDefault();
+      menuItems[(currentIndex + 1) % menuItems.length].focus();
+      break;
+    case 'ArrowLeft':
+      event.preventDefault();
+      menuItems[(currentIndex - 1 + menuItems.length) % menuItems.length].focus();
+      break;
+    case 'ArrowDown':
+      if (target.nextElementSibling?.getAttribute('role') === 'menu') {
+        event.preventDefault();
+        const firstSubItem = target.nextElementSibling.querySelector('[role="menuitem"]');
+        firstSubItem?.focus();
+      }
+      break;
+    case 'Escape':
+      target.setAttribute('aria-expanded', 'false');
+      target.focus();
+      break;
+  }
+});
+</code></pre>
+<blockquote>
+<p><strong>注意</strong>：自定义菜单必须贯彻 <code>role</code>、<code>aria-haspopup</code>、<code>aria-expanded</code>、<code>aria-controls</code> 等属性与键盘交互，否则会降低可访问性得分。</p>
+</blockquote>
+<h3 id="26-实战案例企业官网信息架构重构"><a class="header" href="#26-实战案例企业官网信息架构重构">2.6 实战案例：企业官网信息架构重构</a></h3>
+<p><strong>背景</strong>：某 SaaS 公司官网存在以下问题：所有内容使用 <code>&lt;div&gt;</code>，导航无焦点状态，屏幕阅读器难以理解结构。任务是通过 HTML5 语义化与 ARIA 重新构建。</p>
+<h4 id="261-步骤拆解"><a class="header" href="#261-步骤拆解">2.6.1 步骤拆解</a></h4>
+<ol>
+<li><strong>现状审计</strong>：统计页面元素类型、Tab 顺序、辅助技术朗读效果；</li>
+<li><strong>语义重构</strong>：按业务逻辑划分 <code>&lt;header&gt;</code>、<code>&lt;main&gt;</code>、<code>&lt;section&gt;</code>、<code>&lt;article&gt;</code>、<code>&lt;aside&gt;</code>、<code>&lt;footer&gt;</code>；</li>
+<li><strong>标题层级</strong>：确保单页仅一个 <code>&lt;h1&gt;</code>，子块 <code>&lt;h2&gt;</code>、<code>&lt;h3&gt;</code> 按层级递减；</li>
+<li><strong>导航可访问性</strong>：添加 <code>skip links</code>、<code>aria-label</code>、<code>aria-current</code>；</li>
+<li><strong>表单重构</strong>：使用 <code>&lt;label&gt;</code> 显式关联输入控件，提供提示文本与错误提示；</li>
+<li><strong>可访问测试</strong>：NVDA + Firefox、VoiceOver + Safari 全流程测试。</li>
+</ol>
+<h4 id="262-代码片段可访问的案例列表"><a class="header" href="#262-代码片段可访问的案例列表">2.6.2 代码片段：可访问的案例列表</a></h4>
+<pre><code class="language-html">&lt;section aria-labelledby="case-title"&gt;
+  &lt;header&gt;
+    &lt;h2 id="case-title"&gt;客户案例&lt;/h2&gt;
+    &lt;p&gt;覆盖制造、零售、金融、能源等多个行业。&lt;/p&gt;
+  &lt;/header&gt;
+  &lt;ul class="case-grid" role="list"&gt;
+    &lt;li&gt;
+      &lt;article aria-labelledby="case-manu-title"&gt;
+        &lt;header&gt;
+          &lt;h3 id="case-manu-title"&gt;制造业数字化工厂&lt;/h3&gt;
+          &lt;p class="meta"&gt;
+            &lt;span aria-label="客户类型"&gt;大型制造集团&lt;/span&gt;
+            &lt;time datetime="2023-09"&gt;2023 Q3 上线&lt;/time&gt;
+          &lt;/p&gt;
+        &lt;/header&gt;
+        &lt;p&gt;通过 CloudTask 打通车间执行系统，缩短生产排程时间 35%。&lt;/p&gt;
+        &lt;footer&gt;
+          &lt;a class="btn btn-link" href="/stories/manufacture" aria-describedby="case-manu-title"&gt;查看详情&lt;/a&gt;
+        &lt;/footer&gt;
+      &lt;/article&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;article aria-labelledby="case-retail-title"&gt;
+        &lt;header&gt;
+          &lt;h3 id="case-retail-title"&gt;零售全渠道协同&lt;/h3&gt;
+          &lt;p class="meta"&gt;
+            &lt;span aria-label="客户类型"&gt;连锁零售集团&lt;/span&gt;
+            &lt;time datetime="2024-01"&gt;2024 Q1 上线&lt;/time&gt;
+          &lt;/p&gt;
+        &lt;/header&gt;
+        &lt;p&gt;建立统一库存同步系统，实现线上线下库存实时一致。&lt;/p&gt;
+        &lt;footer&gt;
+          &lt;a class="btn btn-link" href="/stories/retail" aria-describedby="case-retail-title"&gt;查看详情&lt;/a&gt;
+        &lt;/footer&gt;
+      &lt;/article&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/section&gt;
+</code></pre>
+<h4 id="263-验证指标"><a class="header" href="#263-验证指标">2.6.3 验证指标</a></h4>
+<ul>
+<li>Lighthouse Accessibility ≥ 95；</li>
+<li>axe 扫描无 “Serious” 级别问题；</li>
+<li>屏幕阅读器可在 3 次 Tab 内访问主内容；</li>
+<li>键盘操作全流程无阻碍；</li>
+<li>结构化数据（<code>Organization</code>、<code>Breadcrumb</code>）被搜索引擎识别。</li>
+</ul>
+<h3 id="27-进阶主题动态内容与可访问性"><a class="header" href="#27-进阶主题动态内容与可访问性">2.7 进阶主题：动态内容与可访问性</a></h3>
+<ul>
+<li><strong>动态加载内容</strong>：使用 <code>aria-live</code>、<code>aria-busy</code> 通知辅助技术有更新；</li>
+<li><strong>骨架屏与占位符</strong>：<code>&lt;aside role="status"&gt;加载中…&lt;/aside&gt;</code> 提供语义提示；</li>
+<li><strong>动画与动效</strong>：遵循 “prefer-reduced-motion” 设置，减少眩晕风险；</li>
+<li><strong>对话框 (<code>&lt;dialog&gt;</code>)</strong>：使用 <code>dialog.showModal()</code> 时确保焦点管理、Esc 关闭、<code>aria-labelledby</code> 指向标题；</li>
+<li><strong>自定义组件</strong>：基于 Web Components 时需手动暴露可访问特性，如 <code>this.setAttribute('role', 'alert')</code>。</li>
+</ul>
+<h3 id="28-调试与检测工作流"><a class="header" href="#28-调试与检测工作流">2.8 调试与检测工作流</a></h3>
+<ol>
+<li><strong>开发阶段</strong>：启用 VS Code <code>eslint-plugin-jsx-a11y</code>（即便在纯 HTML 项目）；</li>
+<li><strong>预览阶段</strong>：Lighthouse + axe 扫描，检查对比度（≥ 4.5:1）、焦点丢失、ARIA；</li>
+<li><strong>QA 阶段</strong>：使用 NVDA/VoiceOver 走全流程；</li>
+<li><strong>上线前</strong>：编写可访问性测试用例（如使用 Playwright + axe 自动化）；</li>
+<li><strong>持续监控</strong>：接入 Sentry/Datadog 键盘错误指标、用户反馈渠道。</li>
+</ol>
+<h3 id="29-模块练习与挑战任务"><a class="header" href="#29-模块练习与挑战任务">2.9 模块练习与挑战任务</a></h3>
+<ul>
+<li><strong>挑战 1：重构导航系统</strong>
+<ul>
+<li>输入：旧版导航使用纯 CSS Hover、不可键盘访问；</li>
+<li>输出：ARIA 完整的多级导航 + 键盘交互说明文档；</li>
+<li>验证：NVDA + Firefox 通过全流程；</li>
+</ul>
+</li>
+<li><strong>挑战 2：文章详情页语义化</strong>
+<ul>
+<li>使用 <code>&lt;article&gt;</code>、<code>&lt;aside&gt;</code>、<code>&lt;footer&gt;</code>、结构化数据（JSON-LD）；</li>
+<li>编写自动化脚本爬取文章列表，对比语义化前后 SEO 排名变化；</li>
+</ul>
+</li>
+<li><strong>挑战 3：构建无障碍表格</strong>
+<ul>
+<li>实现可滚动表格 + <code>&lt;caption&gt;</code> + <code>scope</code> + <code>aria-describedby</code>；</li>
+<li>在屏幕阅读器中朗读清晰，Tab 顺序正确。</li>
+</ul>
+</li>
+</ul>
+<h3 id="210-复盘问题与知识巩固"><a class="header" href="#210-复盘问题与知识巩固">2.10 复盘问题与知识巩固</a></h3>
+<ol>
+<li>哪些业务场景最容易忽视 <code>&lt;figure&gt;</code>、<code>&lt;figcaption&gt;</code>？</li>
+<li>ARIA 属性是否可以取代语义化标签？（答案：不能，ARIA 只补救）</li>
+<li>在多语言站点中，如何处理段落内的外文词汇？（建议使用 <code>&lt;span lang="en"&gt;</code> 结合 CSS 斜体或引用）</li>
+<li>对于动态渲染应用（React/Vue），如何保证语义结构？（通过组件封装 + SSR/静态化 + linter 规则）</li>
+</ol>
+<h3 id="211-常见坑位与解决方案"><a class="header" href="#211-常见坑位与解决方案">2.11 常见坑位与解决方案</a></h3>
+<ul>
+<li><strong>滥用 <code>&lt;div role="button"&gt;</code></strong>：没有 <code>Enter</code>/<code>Space</code> 事件；解决：使用 <code>&lt;button&gt;</code> 或补充键盘事件；</li>
+<li><strong>导航焦点丢失</strong>：显示/隐藏子菜单时移除焦点；解决：使用 <code>focus</code>/<code>blur</code> 管理或 <code>focus-within</code>；</li>
+<li><strong>错误使用标题层级</strong>：跳级（<code>&lt;h1&gt;</code> 后直接 <code>&lt;h3&gt;</code>）；解决：建立 Lint 规则或在 CI 中使用 <code>html-validate</code>；</li>
+<li><strong>ARIA 属性拼写错误</strong>：例如 <code>arial-label</code>；解决：IDE 自动补全 + ESLint；</li>
+<li><strong>盲目信任自动化工具</strong>：Lighthouse 分数高但真实用户反馈差；解决：结合真人测试、无障碍专家评审。</li>
+</ul>
+<blockquote>
+<p>模块二让我们掌握了语义与可访问性设计的核心方法。下一步，将进入模块三，聚焦 HTML5 多媒体与图形能力，打造富媒体体验。</p>
+</blockquote>
+<h2 id="模块三多媒体与图形渲染"><a class="header" href="#模块三多媒体与图形渲染">模块三：多媒体与图形渲染</a></h2>
+<blockquote>
+<p>目标：掌握 HTML5 多媒体标签、Canvas/SVG/WebGL 渲染机制，实现高性能、可访问的富媒体体验，并能针对实际业务构建交互式数据可视化与媒体播放器。</p>
+</blockquote>
+<h3 id="31-audio-与-video-深入"><a class="header" href="#31-audio-与-video-深入">3.1 <code>&lt;audio&gt;</code> 与 <code>&lt;video&gt;</code> 深入</a></h3>
+<ul>
+<li><strong>基础属性</strong>：<code>controls</code>、<code>autoplay</code>、<code>loop</code>、<code>muted</code>、<code>poster</code>、<code>preload</code>。</li>
+<li><strong>多格式兼容</strong>：
+<ul>
+<li>音频：<code>mp3</code>、<code>ogg</code>、<code>wav</code>；</li>
+<li>视频：<code>mp4 (H.264)</code>、<code>webm (VP8/VP9)</code>、<code>ogg (Theora)</code>；</li>
+<li>建议使用多 <code>source</code>：</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-html">&lt;video controls width="720" preload="metadata"&gt;
+  &lt;source src="/media/product-demo.webm" type="video/webm; codecs=vp9"&gt;
+  &lt;source src="/media/product-demo.mp4" type="video/mp4"&gt;
+  &lt;track src="/media/subtitles.zh.vtt" kind="subtitles" srclang="zh" label="中文字幕" default&gt;
+  &lt;track src="/media/subtitles.en.vtt" kind="subtitles" srclang="en" label="English"&gt;
+  &lt;p&gt;您的浏览器不支持 HTML5 视频，请&lt;a href="/media/product-demo.mp4"&gt;下载视频&lt;/a&gt;。&lt;/p&gt;
+&lt;/video&gt;
+</code></pre>
+<ul>
+<li><strong>自定义控制栏</strong>：通过隐藏原生控件（<code>controlslist="nodownload"</code>、<code>controls</code> 移除），使用 JavaScript 操控 <code>play()</code>, <code>pause()</code>, <code>currentTime</code>, <code>volume</code>, <code>playbackRate</code>；</li>
+<li><strong>字幕与无障碍</strong>：<code>&lt;track kind="captions"&gt;</code>、<code>&lt;track kind="descriptions"&gt;</code>；</li>
+<li><strong>DRM/加密</strong>：可结合 Media Source Extensions (MSE) + Encrypted Media Extensions (EME)，对流媒体服务至关重要；</li>
+<li><strong>性能与体验</strong>：
+<ul>
+<li>使用 <code>preload="metadata"</code> 减少初始加载；</li>
+<li>通过 <code>IntersectionObserver</code> 延迟播放；</li>
+<li>对移动端禁用 <code>autoplay</code>（除非静音）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="32-canvas-2d-api-实战"><a class="header" href="#32-canvas-2d-api-实战">3.2 Canvas 2D API 实战</a></h3>
+<ul>
+<li><strong>Canvas 核心概念</strong>：基于像素绘制；默认尺寸 300x150；需注意高 DPI 设备适配（<code>canvas.width = canvas.clientWidth * devicePixelRatio</code>）。</li>
+<li><strong>绘制流程</strong>：获取上下文 <code>const ctx = canvas.getContext('2d');</code>，设置状态（<code>fillStyle</code>、<code>strokeStyle</code>、<code>lineWidth</code>）→ 绘制路径 → 清除/保存状态 → 动画。</li>
+<li><strong>常用 API</strong>：
+<ul>
+<li>形状：<code>fillRect</code>、<code>strokeRect</code>、<code>arc</code>、<code>beginPath</code>、<code>lineTo</code>；</li>
+<li>文本：<code>fillText</code>、<code>strokeText</code>、<code>measureText</code>；</li>
+<li>图片：<code>drawImage</code>、<code>createPattern</code>、<code>createLinearGradient</code>；</li>
+<li>动画：<code>requestAnimationFrame</code>；</li>
+<li>状态控制：<code>save</code>、<code>restore</code>、<code>translate</code>、<code>rotate</code>、<code>scale</code>。</li>
+</ul>
+</li>
+<li><strong>性能优化</strong>：
+<ul>
+<li>减少重绘区域，使用 “脏矩形” 技术；</li>
+<li>离屏渲染（OffscreenCanvas 或 <code>document.createElement('canvas')</code> 作为缓存）；</li>
+<li>避免在绘制循环中创建对象；</li>
+<li>使用 <code>requestAnimationFrame</code> 控制刷新频率；</li>
+<li>对海量点数据可结合 Web Worker 分担计算。</li>
+</ul>
+</li>
+</ul>
+<h3 id="33-svg-与-canvas-对比"><a class="header" href="#33-svg-与-canvas-对比">3.3 SVG 与 Canvas 对比</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>Canvas</th><th>SVG</th></tr></thead><tbody>
+<tr><td>渲染方式</td><td>基于像素、脚本驱动</td><td>基于 DOM、矢量图形</td></tr>
+<tr><td>交互</td><td>需手动计算命中区域</td><td>原生事件支持（点击、悬停）</td></tr>
+<tr><td>性能</td><td>适合大量动态像素绘制</td><td>适合静态/中等复杂矢量图</td></tr>
+<tr><td>样式</td><td>JS 控制，无法直接用 CSS</td><td>可使用 CSS/SMIL 控制</td></tr>
+<tr><td>可访问性</td><td>需额外处理</td><td>支持 <code>title</code>、<code>desc</code>、ARIA</td></tr>
+<tr><td>导出</td><td>作为图片快照</td><td>可无限缩放，适合打印</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>选择策略：高频更新热点/游戏/粒子 → Canvas；需要响应式、交互、可访问 → SVG；复杂 3D/高性能 → WebGL/WebGPU。</p>
+</blockquote>
+<h3 id="34-实战案例交互式销售数据看板canvas--websocket"><a class="header" href="#34-实战案例交互式销售数据看板canvas--websocket">3.4 实战案例：交互式销售数据看板（Canvas + WebSocket）</a></h3>
+<p><strong>目标</strong>：实现支持实时更新的数据看板，展示销售额趋势、地域热力图、关键指标。</p>
+<h4 id="341-架构设计"><a class="header" href="#341-架构设计">3.4.1 架构设计</a></h4>
+<ul>
+<li>数据来源：WebSocket 推送 JSON 数据（<code>{ ts, totalSales, regionMetrics[] }</code>）；</li>
+<li>渲染策略：
+<ul>
+<li>折线图：Canvas 绘制，使用 <code>requestAnimationFrame</code> 平滑过渡；</li>
+<li>区域热力：SVG + CSS 交互（可访问提示）；</li>
+<li>系统状态面板：使用 <code>&lt;meter&gt;</code>、<code>&lt;progress&gt;</code> 反映指标；</li>
+</ul>
+</li>
+<li>性能要求：60fps 动画，延迟 &lt; 200ms。</li>
+</ul>
+<h4 id="342-canvas-绘图代码"><a class="header" href="#342-canvas-绘图代码">3.4.2 Canvas 绘图代码</a></h4>
+<pre><code class="language-js">const canvas = document.getElementById('sales-chart');
+const ctx = canvas.getContext('2d');
+const ratio = window.devicePixelRatio || 1;
+canvas.width = canvas.clientWidth * ratio;
+canvas.height = canvas.clientHeight * ratio;
+ctx.scale(ratio, ratio);
+
+const MAX_POINTS = 120;
+let dataPoints = [];
+
+function drawChart() {
+  ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+  ctx.save();
+
+  // 坐标轴
+  ctx.strokeStyle = '#90a4ae';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(40, 20);
+  ctx.lineTo(40, canvas.clientHeight - 30);
+  ctx.lineTo(canvas.clientWidth - 20, canvas.clientHeight - 30);
+  ctx.stroke();
+
+  if (dataPoints.length === 0) {
+    ctx.restore();
+    return;
+  }
+
+  const maxValue = Math.max(...dataPoints.map((d) =&gt; d.value));
+  const minValue = Math.min(...dataPoints.map((d) =&gt; d.value));
+  const chartWidth = canvas.clientWidth - 60;
+  const chartHeight = canvas.clientHeight - 60;
+
+  ctx.strokeStyle = '#1565c0';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+
+  dataPoints.forEach((point, index) =&gt; {
+    const x = 40 + (index / (MAX_POINTS - 1)) * chartWidth;
+    const normalized = (point.value - minValue) / (maxValue - minValue || 1);
+    const y = canvas.clientHeight - 30 - normalized * chartHeight;
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
+    }
+  });
+
+  ctx.stroke();
+  ctx.restore();
+}
+
+function updateData(newValue) {
+  dataPoints.push({ ts: Date.now(), value: newValue });
+  if (dataPoints.length &gt; MAX_POINTS) {
+    dataPoints.shift();
+  }
+  requestAnimationFrame(drawChart);
+}
+
+const socket = new WebSocket('wss://realtime.example.com/sales');
+socket.addEventListener('message', (event) =&gt; {
+  const payload = JSON.parse(event.data);
+  updateData(payload.totalSales);
+  updateRegionHeatmap(payload.regionMetrics);
+});
+</code></pre>
+<h4 id="343-可访问性与多模态支持"><a class="header" href="#343-可访问性与多模态支持">3.4.3 可访问性与多模态支持</a></h4>
+<ul>
+<li>在 Canvas 下方提供 <code>&lt;table&gt;</code> 文本版本（<code>&lt;caption&gt;销售数据历史&lt;/caption&gt;</code>），保证屏幕阅读器可访问；</li>
+<li>实时更新使用 <code>aria-live="polite"</code> 通知；</li>
+<li>支持 <code>prefers-reduced-motion</code>：提供切换按钮，禁用动画即使用离散点绘制。</li>
+</ul>
+<h3 id="35-svg-高级应用响应式图表"><a class="header" href="#35-svg-高级应用响应式图表">3.5 SVG 高级应用：响应式图表</a></h3>
+<ul>
+<li><strong>视图盒 (viewBox)</strong>：<code>viewBox="0 0 400 300"</code> + <code>preserveAspectRatio="xMidYMid meet"</code>；</li>
+<li><strong>渐变与滤镜</strong>：<code>&lt;linearGradient&gt;</code>、<code>&lt;filter&gt;</code>，用于数据可视化效果；</li>
+<li><strong>可访问性</strong>：<code>&lt;title&gt;</code>、<code>&lt;desc&gt;</code> 与 <code>role="img"</code>；</li>
+<li><strong>动画</strong>：<code>&lt;animate&gt;</code> 或 CSS，针对需要动效的标记；</li>
+<li><strong>组合</strong>：视图层用 SVG，数据计算与交互由 JS 控制。</li>
+</ul>
+<pre><code class="language-html">&lt;svg viewBox="0 0 400 220" role="img" aria-labelledby="chart-title chart-desc"&gt;
+  &lt;title id="chart-title"&gt;季度销售额对比&lt;/title&gt;
+  &lt;desc id="chart-desc"&gt;蓝色柱表示线上销售，橙色柱表示线下销售。&lt;/desc&gt;
+  &lt;defs&gt;
+    &lt;linearGradient id="gradient-online" x1="0" x2="0" y1="0" y2="1"&gt;
+      &lt;stop offset="0%" stop-color="#42a5f5" /&gt;
+      &lt;stop offset="100%" stop-color="#1e88e5" /&gt;
+    &lt;/linearGradient&gt;
+  &lt;/defs&gt;
+  &lt;g&gt;
+    &lt;rect x="50" y="80" width="40" height="120" rx="6" fill="url(#gradient-online)"&gt;
+      &lt;title&gt;Q1 线上销售 1200 万&lt;/title&gt;
+    &lt;/rect&gt;
+    &lt;rect x="110" y="60" width="40" height="140" rx="6" fill="#ef6c00"&gt;
+      &lt;title&gt;Q1 线下销售 1400 万&lt;/title&gt;
+    &lt;/rect&gt;
+    &lt;!-- 省略其他柱状 --&gt;
+  &lt;/g&gt;
+&lt;/svg&gt;
+</code></pre>
+<h3 id="36-webgl-与-webgpu-概览"><a class="header" href="#36-webgl-与-webgpu-概览">3.6 WebGL 与 WebGPU 概览</a></h3>
+<ul>
+<li><strong>WebGL</strong>：基于 OpenGL ES 2.0，使用 GLSL 编写着色器，适合 3D 场景、粒子特效；</li>
+<li><strong>WebGPU</strong>：新一代图形 API，提供更高性能与现代图形管线（适配 Metal/Vulkan/DX12），适合复杂 3D 应用、AAA 游戏；</li>
+<li><strong>入门策略</strong>：
+<ul>
+<li>使用 Three.js、Babylon.js 等封装库；</li>
+<li>掌握矩阵变换、灯光、纹理处理；</li>
+<li>结合 Web Workers 分离计算任务。</li>
+</ul>
+</li>
+</ul>
+<h3 id="37-媒体资源管理与性能调优"><a class="header" href="#37-媒体资源管理与性能调优">3.7 媒体资源管理与性能调优</a></h3>
+<ul>
+<li><strong>懒加载</strong>：使用 <code>loading="lazy"</code>、<code>&lt;source media&gt;</code>、<code>IntersectionObserver</code>；</li>
+<li><strong>媒体缓存</strong>：<code>&lt;link rel="prefetch"&gt;</code>、Service Worker Cache；</li>
+<li><strong>码率自适应</strong>：Media Source Extensions + 自定义 ABR（自适应码率）策略；</li>
+<li><strong>离线播放</strong>：IndexedDB 存储媒体片段 + Cache API；</li>
+<li><strong>性能监控</strong>：MediaSession API + PerformanceObserver 收集播放状态。</li>
+</ul>
+<h3 id="38-实战案例多媒体培训平台播放器"><a class="header" href="#38-实战案例多媒体培训平台播放器">3.8 实战案例：多媒体培训平台播放器</a></h3>
+<p><strong>需求</strong>：开发一个可自定义皮肤、支持字幕、多音轨、章节跳转、播放速率切换的培训视频播放器。</p>
+<h4 id="381-功能列表"><a class="header" href="#381-功能列表">3.8.1 功能列表</a></h4>
+<ul>
+<li>支持课程目录（章节列表），点击跳转指定时间点；</li>
+<li>支持键盘快捷键（空格播放/暂停、←/→ 5 秒快退/快进、↑/↓ 音量）；</li>
+<li>记录观看进度至 LocalStorage/IndexedDB；</li>
+<li>提供字幕开关与多语言字幕；</li>
+<li>支持 Picture-in-Picture、全屏、投屏（Chromecast）。</li>
+</ul>
+<h4 id="382-关键代码片段"><a class="header" href="#382-关键代码片段">3.8.2 关键代码片段</a></h4>
+<pre><code class="language-js">const player = document.querySelector('video');
+const progress = document.getElementById('progress');
+const sections = document.querySelectorAll('[data-start]');
+
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+  const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
+  return `${mins}:${secs}`;
+}
+
+player.addEventListener('timeupdate', () =&gt; {
+  progress.value = (player.currentTime / player.duration) * 100;
+  localStorage.setItem('lesson-progress', player.currentTime);
+});
+
+sections.forEach((section) =&gt; {
+  section.addEventListener('click', () =&gt; {
+    const targetTime = Number(section.dataset.start);
+    player.currentTime = targetTime;
+    player.play();
+  });
+});
+
+// 键盘快捷键
+player.addEventListener('keydown', (event) =&gt; {
+  switch (event.key) {
+    case ' ': // space
+      event.preventDefault();
+      if (player.paused) {
+        player.play();
+      } else {
+        player.pause();
+      }
+      break;
+    case 'ArrowRight':
+      player.currentTime = Math.min(player.duration, player.currentTime + 5);
+      break;
+    case 'ArrowLeft':
+      player.currentTime = Math.max(0, player.currentTime - 5);
+      break;
+    case 'ArrowUp':
+      player.volume = Math.min(1, player.volume + 0.1);
+      break;
+    case 'ArrowDown':
+      player.volume = Math.max(0, player.volume - 0.1);
+      break;
+  }
+});
+
+// Picture-in-Picture
+const pipButton = document.getElementById('pip');
+pipButton.addEventListener('click', async () =&gt; {
+  if (document.pictureInPictureElement) {
+    await document.exitPictureInPicture();
+  } else if (document.pictureInPictureEnabled) {
+    await player.requestPictureInPicture();
+  }
+});
+</code></pre>
+<h4 id="383-关键体验优化"><a class="header" href="#383-关键体验优化">3.8.3 关键体验优化</a></h4>
+<ul>
+<li>使用 Media Session API 设置通知栏信息：</li>
+</ul>
+<pre><code class="language-js">if ('mediaSession' in navigator) {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: 'HTML5 视频播放器深度实践',
+    artist: 'CloudTask University',
+    album: '前端进阶系列',
+    artwork: [
+      { src: '/assets/cover-96.png', sizes: '96x96', type: 'image/png' },
+      { src: '/assets/cover-192.png', sizes: '192x192', type: 'image/png' }
+    ]
+  });
+}
+</code></pre>
+<ul>
+<li>自定义字幕样式：</li>
+</ul>
+<pre><code class="language-css">video::cue {
+  background-color: rgba(21, 101, 192, 0.8);
+  color: #fff;
+  font-size: 1rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+</code></pre>
+<h3 id="39-模块练习与扩展挑战"><a class="header" href="#39-模块练习与扩展挑战">3.9 模块练习与扩展挑战</a></h3>
+<ul>
+<li><strong>挑战 1：实时数据可视化</strong>
+<ul>
+<li>搭建 WebSocket 服务模拟数据推送，实现折线/柱状/热力图；</li>
+<li>验证在 10,000 数据点、60fps 下性能表现；</li>
+</ul>
+</li>
+<li><strong>挑战 2：可访问媒体播放</strong>
+<ul>
+<li>实现键盘无障碍、自定义控件、字幕、多音轨；</li>
+<li>编写自动化测试验证键盘事件与可访问性属性；</li>
+</ul>
+</li>
+<li><strong>挑战 3：SVG 动态仪表盘</strong>
+<ul>
+<li>使用 <code>&lt;path&gt;</code> + CSS 动画构建仪表盘，响应屏幕尺寸；</li>
+<li>输出屏幕阅读器友好的描述。</li>
+</ul>
+</li>
+</ul>
+<h3 id="310-知识回顾与常见陷阱"><a class="header" href="#310-知识回顾与常见陷阱">3.10 知识回顾与常见陷阱</a></h3>
+<ul>
+<li>忽视不同格式兼容，导致 Safari/Firefox 播放失败 → 必须提供至少两种编码；</li>
+<li>Canvas 绘制未考虑高 DPI，导致模糊 → 手动设置缩放；</li>
+<li>缺少媒体字幕与键盘快捷键 → 无障碍与法规风险；</li>
+<li>动画全部运行在主线程 → 使用 Web Worker/OffscreenCanvas 分担；</li>
+<li>WebGL 安全性：记得启用 <code>powerPreference</code>、清理资源、处理 Context 丢失事件。</li>
+</ul>
+<blockquote>
+<p>完成本模块后，已经具备构建富媒体体验和基础数据可视化能力。下一模块将聚焦表单输入、数据收集与验证策略。</p>
+</blockquote>
+<h2 id="模块四智能表单与用户输入"><a class="header" href="#模块四智能表单与用户输入">模块四：智能表单与用户输入</a></h2>
+<blockquote>
+<p>目标：掌握 HTML5 表单的新特性、原生验证、国际化输入处理、无障碍体验及复杂表单架构设计，能够实现生产级多步骤表单与动态表单系统。</p>
+</blockquote>
+<h3 id="41-html5-表单新特性总览"><a class="header" href="#41-html5-表单新特性总览">4.1 HTML5 表单新特性总览</a></h3>
+<ul>
+<li><strong>新输入类型</strong>：<code>email</code>、<code>tel</code>、<code>url</code>、<code>number</code>、<code>range</code>、<code>search</code>、<code>color</code>、<code>datetime-local</code>、<code>month</code>、<code>week</code>、<code>time</code>；</li>
+<li><strong>表单属性</strong>：<code>autocomplete</code>、<code>required</code>、<code>pattern</code>、<code>min</code>、<code>max</code>、<code>step</code>、<code>list</code>、<code>multiple</code>、<code>inputmode</code>；</li>
+<li><strong>表单相关元素</strong>：<code>&lt;datalist&gt;</code>（智能提示）、<code>&lt;output&gt;</code>（实时计算结果）、<code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code>（语义分组）、<code>&lt;meter&gt;</code>、<code>&lt;progress&gt;</code>；</li>
+<li><strong>约束验证 API</strong>：<code>checkValidity()</code>、<code>reportValidity()</code>、<code>setCustomValidity()</code>、<code>validity</code> 状态对象（<code>valueMissing</code>、<code>typeMismatch</code> 等）。</li>
+</ul>
+<h3 id="42-表单设计原则"><a class="header" href="#42-表单设计原则">4.2 表单设计原则</a></h3>
+<ol>
+<li><strong>语义优先</strong>：使用 <code>&lt;label for&gt;</code> + <code>id</code>，保证辅助技术关联；</li>
+<li><strong>验证分层</strong>：HTML 原生验证（同步） + JS 前端验证（异步） + 后端验证（最终保障）；</li>
+<li><strong>输入法兼容</strong>：针对中文输入法处理 <code>compositionstart</code>/<code>compositionend</code>，避免过早验证；</li>
+<li><strong>国际化</strong>：日期、货币、本地化格式（结合 <code>Intl</code> API）；</li>
+<li><strong>可访问性</strong>：错误提示使用 <code>aria-live</code>、<code>aria-invalid</code>、<code>aria-describedby</code>；</li>
+<li><strong>安全性</strong>：防范 XSS（<code>pattern</code> 限制）、CSRF、防止自动填充敏感数据。</li>
+</ol>
+<h3 id="43-表单实战多步骤注册流程"><a class="header" href="#43-表单实战多步骤注册流程">4.3 表单实战：多步骤注册流程</a></h3>
+<p><strong>场景</strong>：SaaS 平台注册流程包含 4 个步骤：账户信息 → 公司信息 → 功能偏好 → 确认提交。</p>
+<h4 id="431-需求拆解"><a class="header" href="#431-需求拆解">4.3.1 需求拆解</a></h4>
+<ul>
+<li>支持保存进度、断点续填（LocalStorage/IndexedDB）；</li>
+<li>支持键盘导航，辅助技术读取当前步骤；</li>
+<li>提供实时验证与跨步骤数据同步；</li>
+<li>支持手机号码、邮箱、密码强度、公司规模等输入。</li>
+</ul>
+<h4 id="432-html-结构"><a class="header" href="#432-html-结构">4.3.2 HTML 结构</a></h4>
+<pre><code class="language-html">&lt;form id="signup-form" novalidate&gt;
+  &lt;section aria-labelledby="step-account" data-step="1"&gt;
+    &lt;h2 id="step-account"&gt;账户信息&lt;/h2&gt;
+    &lt;p class="step-desc"&gt;填写基本账户信息，用于登录与通知。&lt;/p&gt;
+    &lt;div class="form-field"&gt;
+      &lt;label for="email"&gt;工作邮箱 &lt;span aria-hidden="true"&gt;*&lt;/span&gt;&lt;/label&gt;
+      &lt;input id="email" name="email" type="email" required autocomplete="email" aria-describedby="email-help"&gt;
+      &lt;p id="email-help" class="help"&gt;我们将向此邮箱发送激活邮件。&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div class="form-field"&gt;
+      &lt;label for="password"&gt;密码&lt;/label&gt;
+      &lt;input id="password" name="password" type="password" minlength="12" required aria-describedby="password-tip"&gt;
+      &lt;output id="password-tip" role="status" aria-live="polite"&gt;请至少包含数字、大写、小写和符号。&lt;/output&gt;
+    &lt;/div&gt;
+    &lt;div class="form-field"&gt;
+      &lt;label for="phone"&gt;手机号&lt;/label&gt;
+      &lt;input id="phone" name="phone" type="tel" inputmode="tel" pattern="^\+?\d{6,15}$" placeholder="+86 188 0000 0000"&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section aria-labelledby="step-company" data-step="2" hidden&gt;
+    &lt;h2 id="step-company"&gt;公司信息&lt;/h2&gt;
+    &lt;div class="form-field"&gt;
+      &lt;label for="company-name"&gt;公司名称&lt;/label&gt;
+      &lt;input id="company-name" name="companyName" required&gt;
+    &lt;/div&gt;
+    &lt;div class="form-field"&gt;
+      &lt;label for="company-size"&gt;团队规模&lt;/label&gt;
+      &lt;input id="company-size" name="companySize" type="number" min="1" step="1" required&gt;
+    &lt;/div&gt;
+    &lt;div class="form-field"&gt;
+      &lt;label for="industry"&gt;所属行业&lt;/label&gt;
+      &lt;input id="industry" name="industry" list="industry-options" required&gt;
+      &lt;datalist id="industry-options"&gt;
+        &lt;option value="制造业"&gt;&lt;/option&gt;
+        &lt;option value="零售"&gt;&lt;/option&gt;
+        &lt;option value="金融"&gt;&lt;/option&gt;
+        &lt;option value="互联网"&gt;&lt;/option&gt;
+      &lt;/datalist&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;!-- 省略步骤三、四 --&gt;
+
+  &lt;div class="form-actions" role="toolbar" aria-label="表单导航"&gt;
+    &lt;button type="button" data-action="prev"&gt;上一步&lt;/button&gt;
+    &lt;button type="button" data-action="next"&gt;下一步&lt;/button&gt;
+    &lt;button type="submit"&gt;提交&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="form-progress" role="status" aria-live="polite"&gt;当前步骤：1 / 4&lt;/div&gt;
+&lt;/form&gt;
+</code></pre>
+<h4 id="433-javascript-验证与状态管理"><a class="header" href="#433-javascript-验证与状态管理">4.3.3 JavaScript 验证与状态管理</a></h4>
+<pre><code class="language-js">const form = document.getElementById('signup-form');
+const steps = Array.from(form.querySelectorAll('[data-step]'));
+let currentStepIndex = 0;
+
+function showStep(index) {
+  steps.forEach((step, i) =&gt; {
+    const isActive = i === index;
+    step.hidden = !isActive;
+    step.setAttribute('aria-hidden', (!isActive).toString());
+  });
+  currentStepIndex = index;
+  form.querySelector('.form-progress').textContent = `当前步骤：${index + 1} / ${steps.length}`;
+  localStorage.setItem('signup-step', index);
+}
+
+function validateStep(step) {
+  const inputs = Array.from(step.querySelectorAll('input, select, textarea')); // 支持多类型控件
+  let isValid = true;
+  inputs.forEach((input) =&gt; {
+    input.classList.remove('is-invalid');
+    if (!input.checkValidity()) {
+      isValid = false;
+      input.classList.add('is-invalid');
+      input.focus({ preventScroll: false });
+      input.reportValidity();
+    }
+  });
+  return isValid;
+}
+
+form.addEventListener('click', (event) =&gt; {
+  const action = event.target.dataset.action;
+  if (!action) return;
+
+  if (action === 'next') {
+    const currentStep = steps[currentStepIndex];
+    if (!validateStep(currentStep)) return;
+    if (currentStepIndex &lt; steps.length - 1) {
+      showStep(currentStepIndex + 1);
+    }
+  }
+
+  if (action === 'prev' &amp;&amp; currentStepIndex &gt; 0) {
+    showStep(currentStepIndex - 1);
+  }
+});
+
+form.addEventListener('submit', async (event) =&gt; {
+  event.preventDefault();
+  const currentStep = steps[currentStepIndex];
+  if (!validateStep(currentStep)) return;
+
+  // 全局验证
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  const formData = new FormData(form);
+  const payload = Object.fromEntries(formData.entries());
+  try {
+    const response = await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) throw new Error('网络错误');
+    // 跳转成功页
+  } catch (error) {
+    console.error(error);
+    form.querySelector('.form-progress').textContent = '提交失败，请稍后重试';
+  }
+});
+
+showStep(currentStepIndex);
+</code></pre>
+<h4 id="434-提升体验的细节"><a class="header" href="#434-提升体验的细节">4.3.4 提升体验的细节</a></h4>
+<ul>
+<li>实时密码强度指示：使用 <code>zxcvbn</code> 评估 → <code>&lt;meter&gt;</code> 呈现。</li>
+<li>多语言切换：读取 <code>lang</code> 属性动态调整日期/货币格式；</li>
+<li>错误提示：<code>aria-live="assertive"</code> 通知严重错误，<code>aria-describedby</code> 绑定提示文本；</li>
+<li>数据缓存：本地存储 + 过期策略（记录时间戳）。</li>
+</ul>
+<h3 id="44-表单验证策略"><a class="header" href="#44-表单验证策略">4.4 表单验证策略</a></h3>
+<ul>
+<li><strong>HTML 原生约束</strong>：<code>required</code>、<code>pattern</code>、<code>minlength</code>、<code>maxlength</code>；</li>
+<li><strong>自定义验证</strong>：</li>
+</ul>
+<pre><code class="language-js">const passwordInput = document.getElementById('password');
+passwordInput.addEventListener('input', () =&gt; {
+  const value = passwordInput.value;
+  const hasNumber = /\d/.test(value);
+  const hasUpper = /[A-Z]/.test(value);
+  const hasSymbol = /[^\w]/.test(value);
+  if (!hasNumber || !hasUpper || !hasSymbol) {
+    passwordInput.setCustomValidity('密码需包含数字、大写字母与符号');
+  } else {
+    passwordInput.setCustomValidity('');
+  }
+});
+</code></pre>
+<ul>
+<li><strong>异步验证</strong>：用户名/邮箱唯一性 → Debounce + Fetch；</li>
+<li><strong>跨字段验证</strong>：确认密码、日期范围、起止时间；</li>
+<li><strong>错误展示</strong>：
+<ul>
+<li>使用 <code>&lt;span id="error-email" role="alert"&gt;邮箱已被注册&lt;/span&gt;</code>；</li>
+<li>结合 <code>aria-describedby="error-email"</code>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="45-文件上传与拖拽支持"><a class="header" href="#45-文件上传与拖拽支持">4.5 文件上传与拖拽支持</a></h3>
+<ul>
+<li>使用 <code>&lt;input type="file" multiple accept="image/*"&gt;</code>；</li>
+<li>支持拖拽：监听 <code>dragenter</code>、<code>dragover</code>、<code>drop</code> 事件 + <code>DataTransfer</code>；</li>
+<li>大文件分片上传：使用 <code>Blob.slice()</code> + Service Worker 协助续传；</li>
+<li>安全性：限制类型、大小，使用后端白名单验证。</li>
+</ul>
+<h3 id="46-表单国际化与本地化"><a class="header" href="#46-表单国际化与本地化">4.6 表单国际化与本地化</a></h3>
+<ul>
+<li><strong>日期时间</strong>：<code>&lt;input type="date"&gt;</code> 支持原生控件，使用 <code>Intl.DateTimeFormat</code> 与 <code>Temporal</code> API 格式化；</li>
+<li><strong>货币</strong>：结合 <code>&lt;input type="number"&gt;</code> + 自定义显示（<code>Intl.NumberFormat</code>）；</li>
+<li><strong>多语言占位符</strong>：避免硬编码，使用翻译文件 + <code>data-i18n</code>；</li>
+<li><strong>输入法适配</strong>：处理中文输入法合成事件，避免频繁验证或光标跳动。</li>
+</ul>
+<h3 id="47-无障碍表单最佳实践"><a class="header" href="#47-无障碍表单最佳实践">4.7 无障碍表单最佳实践</a></h3>
+<ul>
+<li><code>aria-required="true"</code> 补充语义；</li>
+<li>错误提示使用 <code>role="alert"</code>；</li>
+<li><code>tabindex</code> 正确排序；</li>
+<li>表单分组 <code>&lt;fieldset&gt;</code> + <code>&lt;legend&gt;</code>；</li>
+<li>使用 <code>:focus-visible</code> 提供清晰焦点样式；</li>
+<li>在表单提交后自动聚焦第一个错误输入。</li>
+</ul>
+<h3 id="48-性能与可用性考虑"><a class="header" href="#48-性能与可用性考虑">4.8 性能与可用性考虑</a></h3>
+<ul>
+<li>对移动端使用 <code>&lt;inputmode&gt;</code> 指定虚拟键盘类型；</li>
+<li>避免过多事件监听，使用事件委托；</li>
+<li>对大表单实施懒加载（按需渲染步骤）；</li>
+<li>使用 IntersectionObserver 显示当前步骤进度；</li>
+<li>提供自动保存与撤销功能。</li>
+</ul>
+<h3 id="49-模块练习与复盘"><a class="header" href="#49-模块练习与复盘">4.9 模块练习与复盘</a></h3>
+<ul>
+<li><strong>练习 1：多步骤表单实现</strong>
+<ul>
+<li>设计完成 4 步注册流程，包含实时验证、可访问提示；</li>
+<li>提交 API + 测试覆盖率报告；</li>
+</ul>
+</li>
+<li><strong>练习 2：动态表单生成器</strong>
+<ul>
+<li>使用 JSON Schema 描述字段，动态生成表单元素；</li>
+<li>支持条件逻辑（如选择某选项显示额外问题）；</li>
+</ul>
+</li>
+<li><strong>练习 3：国际化输入</strong>
+<ul>
+<li>实现日期、货币、电话的国际化处理；</li>
+<li>输出各语言测试记录。</li>
+</ul>
+</li>
+</ul>
+<h3 id="410-常见错误与解决方案"><a class="header" href="#410-常见错误与解决方案">4.10 常见错误与解决方案</a></h3>
+<ul>
+<li>使用 <code>&lt;div&gt;</code> 模拟输入 → 辅助技术不可用；改用原生表单控件；</li>
+<li>忽视浏览器自动填充，导致样式错乱；通过 <code>:-webkit-autofill</code> 定制样式；</li>
+<li>只使用前端验证、忽略后端 → 安全漏洞；</li>
+<li>大量同步验证阻塞主线程 → 使用 Web Worker（如复杂正则、远程校验）；</li>
+<li>错误消息不明确 → 提供具体错误文案与解决建议。</li>
+</ul>
+<blockquote>
+<p>通过模块四，我们能够设计出高质量输入流与验证机制。下一模块将探索离线能力、数据存储与性能优化。</p>
+</blockquote>
+<h2 id="模块五离线能力数据存储与性能优化"><a class="header" href="#模块五离线能力数据存储与性能优化">模块五：离线能力、数据存储与性能优化</a></h2>
+<blockquote>
+<p>目标：深入掌握 HTML5 提供的离线特性、缓存策略、客户端数据存储方案，以及针对性能指标的优化手段，构建可离线、可快速加载的 PWA 应用。</p>
+</blockquote>
+<h3 id="51-离线能力演进"><a class="header" href="#51-离线能力演进">5.1 离线能力演进</a></h3>
+<ul>
+<li><strong>Application Cache (AppCache)</strong>：早期方案，已弃用（Manifest 文件、缓存行为不可控、常引发离线 bug）；</li>
+<li><strong>Service Worker</strong>：现代标准，提供可编程缓存、离线页面、消息推送、后台同步；</li>
+<li><strong>PWA 核心</strong>：Service Worker + Web App Manifest + HTTPS + 响应式设计 + 可安装体验。</li>
+</ul>
+<h3 id="52-service-worker-核心概念"><a class="header" href="#52-service-worker-核心概念">5.2 Service Worker 核心概念</a></h3>
+<ul>
+<li><strong>生命周期</strong>：<code>install</code> → <code>activate</code> → <code>idle</code> → <code>fetch</code>/<code>message</code> → <code>terminate</code>；</li>
+<li><strong>作用域 (scope)</strong>：通过 <code>navigator.serviceWorker.register('/sw.js', { scope: '/' })</code> 定义；</li>
+<li><strong>缓存 API</strong>：<code>caches.open('v1').then(cache =&gt; cache.addAll(['/index.html', ...]))</code>；</li>
+<li><strong>Fetch 处理</strong>：拦截网络请求，实施缓存策略；</li>
+<li><strong>后台同步</strong>：Background Sync API (<code>self.registration.sync.register('sync-tasks')</code>)；</li>
+<li><strong>推送通知</strong>：Push API + Notification API。</li>
+</ul>
+<h3 id="53-常见缓存策略"><a class="header" href="#53-常见缓存策略">5.3 常见缓存策略</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>策略</th><th>适用场景</th><th>实现方式</th></tr></thead><tbody>
+<tr><td>Cache First</td><td>静态资源、字体等变化少资源</td><td>优先缓存，若无则网络获取</td></tr>
+<tr><td>Network First</td><td>需要实时数据的 API</td><td>优先网络，请求失败回退缓存</td></tr>
+<tr><td>Stale-While-Revalidate</td><td>允许使用旧数据同时后台更新</td><td>返回缓存，同时发起网络请求更新缓存</td></tr>
+<tr><td>Cache Only</td><td>不依赖网络</td><td>离线页面、内置资源</td></tr>
+<tr><td>Network Only</td><td>安全敏感资源</td><td>不缓存，如用户资料 API</td></tr>
+</tbody></table>
+</div>
+<h3 id="54-indexeddb-与-web-storage"><a class="header" href="#54-indexeddb-与-web-storage">5.4 IndexedDB 与 Web Storage</a></h3>
+<ul>
+<li><strong>Web Storage</strong>：<code>localStorage</code> (永久)、<code>sessionStorage</code> (会话)，同步 API、小容量（约 5MB），适合偏配置信息；</li>
+<li><strong>IndexedDB</strong>：NoSQL 数据库，支持事务、索引、二进制类型，适合缓存大量数据、离线任务；</li>
+<li><strong>Cache API</strong>：与 Fetch 配合缓存 Response 对象；</li>
+<li><strong>File System Access API</strong>：可读写本地文件（Chrome/Edge），适合离线编辑器；</li>
+<li><strong>StorageManager API</strong>：查询配额与可用空间 (<code>navigator.storage.estimate()</code>)。</li>
+</ul>
+<h3 id="55-实战案例pwa-待办应用"><a class="header" href="#55-实战案例pwa-待办应用">5.5 实战案例：PWA 待办应用</a></h3>
+<p><strong>目标</strong>：构建可离线使用的待办应用，支持离线创建任务、在线同步、推送提醒、安装到桌面。</p>
+<h4 id="551-功能模块"><a class="header" href="#551-功能模块">5.5.1 功能模块</a></h4>
+<ol>
+<li>待办 CRUD，数据存储 IndexedDB；</li>
+<li>离线访问（Service Worker 缓存核心资源）；</li>
+<li>后台同步任务（Background Sync）；</li>
+<li>推送提醒（Push/Notification）；</li>
+<li>PWA 安装提示与 App Shell。</li>
+</ol>
+<h4 id="552-service-worker-实现"><a class="header" href="#552-service-worker-实现">5.5.2 Service Worker 实现</a></h4>
+<pre><code class="language-js">// sw.js
+const CACHE_NAME = 'todo-app-v1';
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  '/styles/main.css',
+  '/scripts/app.js',
+  '/images/icon-192.png',
+  '/images/icon-512.png'
+];
+
+self.addEventListener('install', (event) =&gt; {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) =&gt; cache.addAll(STATIC_ASSETS))
+  );
+});
+
+self.addEventListener('activate', (event) =&gt; {
+  event.waitUntil(
+    caches.keys().then((keys) =&gt;
+      Promise.all(keys.filter((key) =&gt; key !== CACHE_NAME).map((key) =&gt; caches.delete(key)))
+    )
+  );
+});
+
+self.addEventListener('fetch', (event) =&gt; {
+  const { request } = event;
+  if (request.method !== 'GET') return;
+
+  const url = new URL(request.url);
+  if (url.origin === location.origin) {
+    event.respondWith(cacheFirst(request));
+    return;
+  }
+
+  if (request.destination === 'document') {
+    event.respondWith(networkFirst(request));
+  }
+});
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  return cached || fetch(request);
+}
+
+async function networkFirst(request) {
+  const cache = await caches.open('dynamic');
+  try {
+    const response = await fetch(request);
+    cache.put(request, response.clone());
+    return response;
+  } catch (error) {
+    const cached = await cache.match(request);
+    return cached || caches.match('/offline.html');
+  }
+}
+</code></pre>
+<h4 id="553-indexeddb-存储"><a class="header" href="#553-indexeddb-存储">5.5.3 IndexedDB 存储</a></h4>
+<pre><code class="language-js">import { openDB } from 'idb';
+
+const dbPromise = openDB('todo-app', 1, {
+  upgrade(db) {
+    if (!db.objectStoreNames.contains('todos')) {
+      db.createObjectStore('todos', { keyPath: 'id', autoIncrement: true });
+    }
+    if (!db.objectStoreNames.contains('sync-queue')) {
+      db.createObjectStore('sync-queue', { keyPath: 'id', autoIncrement: true });
+    }
+  }
+});
+
+export async function addTodo(todo) {
+  const db = await dbPromise;
+  const tx = db.transaction('todos', 'readwrite');
+  await tx.store.add({ ...todo, updatedAt: Date.now(), synced: navigator.onLine });
+  await tx.done;
+}
+
+export async function queueSync(todo) {
+  const db = await dbPromise;
+  const tx = db.transaction('sync-queue', 'readwrite');
+  await tx.store.put({ ...todo, synced: false });
+  await tx.done;
+}
+</code></pre>
+<h4 id="554-后台同步与推送"><a class="header" href="#554-后台同步与推送">5.5.4 后台同步与推送</a></h4>
+<pre><code class="language-js">self.addEventListener('sync', async (event) =&gt; {
+  if (event.tag === 'sync-todos') {
+    event.waitUntil(syncTodos());
+  }
+});
+
+async function syncTodos() {
+  const db = await openDB('todo-app', 1);
+  const tx = db.transaction('sync-queue', 'readwrite');
+  const queue = await tx.store.getAll();
+  for (const item of queue) {
+    try {
+      await fetch('/api/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item)
+      });
+      await tx.store.delete(item.id);
+    } catch (error) {
+      console.warn('同步失败', error);
+      return;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>推送通知：<code>self.registration.showNotification('任务提醒', { body: '还有 3 个任务待完成' })</code>；</li>
+<li>使用 VAPID 生成 Push 订阅，后端保存 Endpoint。</li>
+</ul>
+<h3 id="56-性能优化策略"><a class="header" href="#56-性能优化策略">5.6 性能优化策略</a></h3>
+<ul>
+<li><strong>Core Web Vitals</strong>：Largest Contentful Paint (LCP)、First Input Delay (FID)、Cumulative Layout Shift (CLS)、Interaction to Next Paint (INP)；</li>
+<li><strong>性能指标采集</strong>：<code>web-vitals</code> 库，上传到 analytics；</li>
+<li><strong>资源优化</strong>：
+<ul>
+<li>使用 <code>&lt;link rel="preload"&gt;</code> 预加载关键资源；</li>
+<li><code>&lt;link rel="preconnect"&gt;</code> 预热第三方域名；</li>
+<li>图片懒加载 <code>loading="lazy"</code>，使用 <code>srcset</code>、<code>sizes</code> 提供多分辨率；</li>
+<li>压缩 HTML（<code>html-minifier</code>）、CSS、JS；</li>
+<li>使用 Brotli/Gzip；</li>
+</ul>
+</li>
+<li><strong>渲染优化</strong>：
+<ul>
+<li>提前输出 <code>&lt;style&gt;</code> 关键 CSS（Critical CSS）；</li>
+<li>推迟非关键 JS（<code>defer</code>、<code>async</code>、<code>type="module"</code>）；</li>
+<li>避免长任务（Long Task），使用 requestIdleCallback。</li>
+</ul>
+</li>
+</ul>
+<h3 id="57-lighthouse-与性能调试流程"><a class="header" href="#57-lighthouse-与性能调试流程">5.7 Lighthouse 与性能调试流程</a></h3>
+<ol>
+<li>使用 <code>npm install -g lighthouse</code>，在 CI 中自动运行；</li>
+<li>配合 Chrome DevTools Performance、Coverage、Network 面板调试；</li>
+<li>安装 WebPageTest/Calibre，监控真实网络表现；</li>
+<li>使用 <code>Chrome User Experience Report (CrUX)</code> 数据评估真实用户体验；</li>
+<li>设定性能预算 (Performance Budget)，在构建时检测超限。</li>
+</ol>
+<h3 id="58-模块练习与挑战"><a class="header" href="#58-模块练习与挑战">5.8 模块练习与挑战</a></h3>
+<ul>
+<li><strong>挑战 1：构建 PWA ToDo</strong>
+<ul>
+<li>实现离线访问、IndexedDB 存储、后台同步、通知；</li>
+<li>Lighthouse PWA ≥ 90，Performance ≥ 85；</li>
+</ul>
+</li>
+<li><strong>挑战 2：性能预算看板</strong>
+<ul>
+<li>在 CI 中集成 Lighthouse，设置 LCP &lt; 2.5s、CLS &lt; 0.1；</li>
+<li>失败则阻断构建；</li>
+</ul>
+</li>
+<li><strong>挑战 3：离线报告中心</strong>
+<ul>
+<li>构建离线业务报表查看器，提供 Service Worker 缓存策略说明，分析缓存命中率。</li>
+</ul>
+</li>
+</ul>
+<h3 id="59-常见问题与规避策略"><a class="header" href="#59-常见问题与规避策略">5.9 常见问题与规避策略</a></h3>
+<ul>
+<li>Service Worker 缓存未更新 → 使用版本号 + <code>skipWaiting</code> + <code>clients.claim()</code>；</li>
+<li>IndexedDB 兼容性差 → 使用 <code>idb</code> 封装、添加回退；</li>
+<li>离线数据冲突 → 设计乐观合并策略或冲突解决 UI；</li>
+<li>过度缓存第三方资源 → 配置缓存时间并监听 <code>Cache-Control</code>；</li>
+<li>性能指标仅在实验室均优秀，线上表现差 → 引入 RUM (Real User Monitoring)；</li>
+<li>推送通知滥发 → 提供清晰的订阅管理与频率限制。</li>
+</ul>
+<blockquote>
+<p>掌握模块五后，你能够设计具有离线能力与性能保障的 HTML5 应用。接下来进入平台融合与 API 模块。</p>
+</blockquote>
+<h2 id="模块六html5-api-与平台融合"><a class="header" href="#模块六html5-api-与平台融合">模块六：HTML5 API 与平台融合</a></h2>
+<blockquote>
+<p>目标：系统掌握 HTML5 提供的设备访问、实时通信、文件处理、位置服务等 API，能够在 Web 应用中整合多端能力，构建接近原生体验的产品。</p>
+</blockquote>
+<h3 id="61-html5-api-分类"><a class="header" href="#61-html5-api-分类">6.1 HTML5 API 分类</a></h3>
+<ul>
+<li><strong>设备与硬件访问</strong>：Geolocation、Device Orientation、Screen Orientation、Battery Status、Device Memory、MediaDevices (摄像头/麦克风)；</li>
+<li><strong>实时通信</strong>：WebSocket、Server-Sent Events、WebRTC DataChannel/Media；</li>
+<li><strong>文件与剪贴板</strong>：File API、Drag and Drop、Clipboard API、File System Access；</li>
+<li><strong>通知与后台任务</strong>：Notifications、Push API、Background Sync、Web Share、Periodic Sync；</li>
+<li><strong>传感器</strong>：Generic Sensor API（加速度计、陀螺仪、光线、磁力）；</li>
+<li><strong>支付与身份</strong>：Payment Request API、Credential Management API、WebAuthn；</li>
+<li><strong>安全与权限</strong>：Permissions API、Content Security Policy (CSP)。</li>
+</ul>
+<h3 id="62-geolocation--maps-集成"><a class="header" href="#62-geolocation--maps-集成">6.2 Geolocation &amp; Maps 集成</a></h3>
+<ul>
+<li><strong>获取位置</strong>：<code>navigator.geolocation.getCurrentPosition(success, error, options)</code>；</li>
+<li><strong>持续跟踪</strong>：<code>watchPosition</code>，应用于物流追踪、运动 APP；</li>
+<li><strong>权限与隐私</strong>：必须 HTTPS、处理用户拒绝情况；</li>
+<li><strong>误差处理</strong>：政企或室内场景需结合 IP/Beacon/GPS 多源数据；</li>
+<li><strong>地图集成</strong>：结合 Mapbox、Leaflet、Google Maps API，注意 API Key 安全与配额。</li>
+</ul>
+<h3 id="63-websocket-与实时通信"><a class="header" href="#63-websocket-与实时通信">6.3 WebSocket 与实时通信</a></h3>
+<ul>
+<li><strong>建立连接</strong>：<code>const socket = new WebSocket('wss://example.com');</code>；</li>
+<li><strong>事件</strong>：<code>open</code>、<code>message</code>、<code>close</code>、<code>error</code>；</li>
+<li><strong>心跳与重连</strong>：使用 <code>setInterval</code> 发送心跳包，检测 <code>readyState</code>；</li>
+<li><strong>二进制传输</strong>：<code>blob</code>、<code>ArrayBuffer</code> 支持；</li>
+<li><strong>安全</strong>：使用 WSS、鉴权 token、限流；</li>
+<li><strong>应用场景</strong>：实时协作、行情数据、在线游戏、通知系统。</li>
+</ul>
+<h3 id="64-webrtc-与音视频通信"><a class="header" href="#64-webrtc-与音视频通信">6.4 WebRTC 与音视频通信</a></h3>
+<ul>
+<li><strong>核心概念</strong>：PeerConnection、MediaStream、SDP、ICE 候选；</li>
+<li><strong>信令</strong>：自建信令服务器（WebSocket/Socket.io）；</li>
+<li><strong>媒体捕获</strong>：<code>navigator.mediaDevices.getUserMedia({ video: true, audio: true })</code>；</li>
+<li><strong>屏幕共享</strong>：<code>navigator.mediaDevices.getDisplayMedia()</code>；</li>
+<li><strong>数据通道</strong>：<code>createDataChannel</code> 实现实时数据同步；</li>
+<li><strong>安全要求</strong>：HTTPS + 用户授权 + 权限提示。</li>
+</ul>
+<h3 id="65-web-components-与-shadow-dom"><a class="header" href="#65-web-components-与-shadow-dom">6.5 Web Components 与 Shadow DOM</a></h3>
+<ul>
+<li><strong>Custom Elements</strong>：<code>class Tooltip extends HTMLElement { connectedCallback() { ... } }</code>；</li>
+<li><strong>Shadow DOM</strong>：封装样式与结构，避免样式冲突；</li>
+<li><strong>HTML Templates</strong>：<code>&lt;template&gt;</code> + <code>content.cloneNode(true)</code>；</li>
+<li><strong>Slot API</strong>：支持插槽，自定义组件结构；</li>
+<li><strong>实践建议</strong>：组件命名使用 <code>kebab-case</code>、暴露自定义事件、编写类型定义；</li>
+<li><strong>兼容性</strong>：现代浏览器原生支持，旧浏览器使用 Polyfill。</li>
+</ul>
+<h3 id="66-实战案例实时协作白板应用"><a class="header" href="#66-实战案例实时协作白板应用">6.6 实战案例：实时协作白板应用</a></h3>
+<p><strong>目标</strong>：实现多人在线白板，可绘制、同步、音视频会议、文件分享。</p>
+<h4 id="661-功能拆解"><a class="header" href="#661-功能拆解">6.6.1 功能拆解</a></h4>
+<ol>
+<li>绘图层：Canvas（或 WebGL）绘制、橡皮擦、撤销/重做；</li>
+<li>同步层：WebSocket + CRDT（Conflict-free Replicated Data Type）；</li>
+<li>语音与视频：WebRTC；</li>
+<li>文件分享：File API + DataChannel；</li>
+<li>权限与会控：主持人角色、发言权限。</li>
+</ol>
+<h4 id="662-架构设计"><a class="header" href="#662-架构设计">6.6.2 架构设计</a></h4>
+<ul>
+<li>前端：Canvas 渲染 + Web Components 组件化（<code>&lt;whiteboard-toolbar&gt;</code>、<code>&lt;participant-list&gt;</code>）；</li>
+<li>后端：Node.js + ws / Socket.io；</li>
+<li>信令：WebSocket 负责房间管理；</li>
+<li>数据存储：IndexedDB 缓存操作记录，支持断线重连；</li>
+<li>安全：JWT 鉴权、权限控制、防止房间 ID 碰撞。</li>
+</ul>
+<h4 id="663-关键代码片段"><a class="header" href="#663-关键代码片段">6.6.3 关键代码片段</a></h4>
+<pre><code class="language-js">// 自定义元素封装白板工具栏
+class WhiteboardToolbar extends HTMLElement {
+  connectedCallback() {
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = `
+      &lt;style&gt;
+        :host { display: flex; gap: 0.5rem; }
+        button { border: none; background: #e3f2fd; padding: 0.5rem; border-radius: 6px; }
+        button[aria-pressed="true"] { background: #1565c0; color: #fff; }
+      &lt;/style&gt;
+      &lt;button data-tool="pen" aria-pressed="true"&gt;画笔&lt;/button&gt;
+      &lt;button data-tool="eraser"&gt;橡皮擦&lt;/button&gt;
+      &lt;button data-tool="shape"&gt;形状&lt;/button&gt;
+      &lt;button data-tool="undo"&gt;撤销&lt;/button&gt;
+      &lt;button data-tool="redo"&gt;重做&lt;/button&gt;
+    `;
+    this.shadowRoot.addEventListener('click', (event) =&gt; {
+      const button = event.target.closest('button');
+      if (!button) return;
+      this.selectTool(button.dataset.tool);
+    });
+  }
+
+  selectTool(tool) {
+    this.shadowRoot.querySelectorAll('button').forEach((btn) =&gt; {
+      btn.setAttribute('aria-pressed', (btn.dataset.tool === tool).toString());
+    });
+    this.dispatchEvent(new CustomEvent('tool-change', { detail: { tool } }));
+  }
+}
+
+customElements.define('whiteboard-toolbar', WhiteboardToolbar);
+</code></pre>
+<pre><code class="language-js">// WebRTC 初始化
+const peerConnections = new Map();
+const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+async function createPeerConnection(peerId) {
+  const peer = new RTCPeerConnection({
+    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+  });
+  peerConnections.set(peerId, peer);
+
+  localStream.getTracks().forEach((track) =&gt; peer.addTrack(track, localStream));
+
+  const dataChannel = peer.createDataChannel('whiteboard-actions');
+  dataChannel.addEventListener('message', (event) =&gt; applyRemoteAction(JSON.parse(event.data)));
+
+  peer.addEventListener('icecandidate', (event) =&gt; {
+    if (event.candidate) {
+      socket.emit('ice-candidate', { peerId, candidate: event.candidate });
+    }
+  });
+
+  peer.addEventListener('track', (event) =&gt; {
+    const remoteVideo = document.getElementById(`video-${peerId}`);
+    remoteVideo.srcObject = event.streams[0];
+  });
+
+  return peer;
+}
+</code></pre>
+<h3 id="67-clipboard-api-与文件拖拽"><a class="header" href="#67-clipboard-api-与文件拖拽">6.7 Clipboard API 与文件拖拽</a></h3>
+<ul>
+<li><strong>读取剪贴板</strong>：<code>navigator.clipboard.readText()</code>、<code>navigator.clipboard.read()</code>；</li>
+<li><strong>写入剪贴板</strong>：<code>navigator.clipboard.writeText('复制内容')</code>；</li>
+<li><strong>权限处理</strong>：需 HTTPS、用户交互触发；</li>
+<li><strong>文件拖拽</strong>：监听 <code>dragover</code>、<code>drop</code>，使用 <code>event.dataTransfer.files</code>；</li>
+<li><strong>安全提示</strong>：限制类型、大小；避免 XSS（复制 HTML 时过滤）。</li>
+</ul>
+<h3 id="68-payment-request-api-与-webauthn"><a class="header" href="#68-payment-request-api-与-webauthn">6.8 Payment Request API 与 WebAuthn</a></h3>
+<ul>
+<li><strong>Payment Request</strong>：</li>
+</ul>
+<pre><code class="language-js">const payment = new PaymentRequest(
+  [
+    {
+      supportedMethods: 'https://pay.example.com',
+      data: { merchantId: 'cloudtask-merchant' }
+    }
+  ],
+  {
+    total: { label: '订单总计', amount: { currency: 'CNY', value: '199.00' } },
+    displayItems: [
+      { label: '专业订阅', amount: { currency: 'CNY', value: '199.00' } }
+    ]
+  }
+);
+const response = await payment.show();
+await response.complete('success');
+</code></pre>
+<ul>
+<li><strong>WebAuthn</strong>：安全登录，支持指纹、人脸识别、硬件密钥。需后端生成挑战、注册/验证凭证。</li>
+</ul>
+<h3 id="69-permissions-api-管理权限"><a class="header" href="#69-permissions-api-管理权限">6.9 Permissions API 管理权限</a></h3>
+<ul>
+<li>查询权限：<code>navigator.permissions.query({ name: 'geolocation' })</code>；</li>
+<li>状态：<code>granted</code>、<code>denied</code>、<code>prompt</code>；</li>
+<li>根据权限调整 UI（隐藏不支持功能、提示开启权限）。</li>
+</ul>
+<h3 id="610-模块练习与扩展"><a class="header" href="#610-模块练习与扩展">6.10 模块练习与扩展</a></h3>
+<ul>
+<li><strong>练习 1：实时协作白板</strong>（最小可行版）
+<ul>
+<li>实现绘制、实时同步、数据存储、简单音视频；</li>
+</ul>
+</li>
+<li><strong>练习 2：剪贴板增强工具</strong>
+<ul>
+<li>支持多格式（文本、HTML、图片）复制粘贴、历史记录；</li>
+</ul>
+</li>
+<li><strong>练习 3：安全登录体验</strong>
+<ul>
+<li>集成 WebAuthn + Passwordless 登录；</li>
+<li>编写权限控制与降级方案。</li>
+</ul>
+</li>
+</ul>
+<h3 id="611-常见问题与规避"><a class="header" href="#611-常见问题与规避">6.11 常见问题与规避</a></h3>
+<ul>
+<li>权限提示频繁扰民 → 使用静默检测 + Just-in-time 请求；</li>
+<li>WebRTC NAT/防火墙问题 → 部署 TURN 服务器；</li>
+<li>自定义组件不友好 → 忽视属性/事件 API，缺乏 TypeScript 类型；</li>
+<li>文件读写安全 → 使用沙盒、限制路径；</li>
+<li>实时通信重连 → 设计指数退避、断线提示。</li>
+</ul>
+<blockquote>
+<p>模块六强化了你对 Web 平台 API 的理解。下一模块将聚焦性能、SEO、可访问性深度优化。</p>
+</blockquote>
+<h2 id="模块七性能seo-与可访问性深度优化"><a class="header" href="#模块七性能seo-与可访问性深度优化">模块七：性能、SEO 与可访问性深度优化</a></h2>
+<blockquote>
+<p>目标：建立针对 Core Web Vitals、SEO、可访问性的一体化优化能力，掌握监测、诊断、调优、验证的闭环流程，确保 HTML5 应用达到生产级质量标准。</p>
+</blockquote>
+<h3 id="71-性能优化体系"><a class="header" href="#71-性能优化体系">7.1 性能优化体系</a></h3>
+<ul>
+<li><strong>指标分类</strong>：
+<ul>
+<li>感知性能：LCP、FID/INP、TTFB、CLS、TTI；</li>
+<li>传输性能：资源大小、请求数量、协议（HTTP/2、HTTP/3）；</li>
+<li>渲染性能：帧率、长任务 (Long Task)、内存占用；</li>
+<li>离线表现：PWA 安装率、离线命中率。</li>
+</ul>
+</li>
+<li><strong>性能预算 (Performance Budget)</strong>：
+<ul>
+<li>页面大小 ≤ 170 KB（压缩后）、HTTP 请求 ≤ 25、LCP ≤ 2.5s；</li>
+<li>在 CI 中集成 Budget 工具（<code>lighthouse-ci</code>、<code>webpack-bundle-analyzer</code>）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="72-性能优化策略"><a class="header" href="#72-性能优化策略">7.2 性能优化策略</a></h3>
+<ul>
+<li><strong>加载阶段</strong>：
+<ul>
+<li>HTTP/2 Server Push（现已不推荐，转为 <code>preload</code>）；</li>
+<li>资源优先级：<code>&lt;link rel="preload"&gt;</code>、<code>fetchpriority</code> 属性；</li>
+<li>延迟 JS：<code>defer</code>、<code>async</code>、<code>type="module"</code>；</li>
+<li>CSS 优化：Critical CSS Inline + CSS 分割 + PurgeCSS 清理冗余；</li>
+<li>字体优化：<code>font-display: swap</code>、子集化、预加载；</li>
+</ul>
+</li>
+<li><strong>运行阶段</strong>：
+<ul>
+<li>避免 Layout Thrashing：批量 DOM 操作、使用虚拟列表；</li>
+<li>使用 IntersectionObserver 替代滚动监听；</li>
+<li>Web Worker 处理耗时计算；</li>
+<li>使用 <code>requestIdleCallback</code> 安排非关键任务；</li>
+<li>监控 Memory 与 CPU 使用。</li>
+</ul>
+</li>
+</ul>
+<h3 id="73-seo-深度优化"><a class="header" href="#73-seo-深度优化">7.3 SEO 深度优化</a></h3>
+<ul>
+<li><strong>元信息</strong>：标题、描述、Open Graph、Twitter Cards、Schema.org 结构化数据；</li>
+<li><strong>语义结构</strong>：合理的标题层级、<code>&lt;article&gt;</code>/<code>&lt;section&gt;</code> 配合 <code>role</code>；</li>
+<li><strong>国际化 SEO</strong>：<code>&lt;link rel="alternate" hreflang="zh-CN"&gt;</code>；</li>
+<li><strong>内容质量</strong>：原创、可读、结构清晰；</li>
+<li><strong>技术 SEO</strong>：
+<ul>
+<li>站点地图（Sitemap.xml）、Robots.txt；</li>
+<li>结构化数据（JSON-LD for Article/Product/FAQ）；</li>
+<li>延迟加载时使用 <code>&lt;noscript&gt;</code> 提供兜底内容；</li>
+<li>canonical 链接避免重复内容；</li>
+</ul>
+</li>
+<li><strong>监控工具</strong>：Google Search Console、Bing Webmaster、百度站长平台。</li>
+</ul>
+<h3 id="74-可访问性专业实践"><a class="header" href="#74-可访问性专业实践">7.4 可访问性专业实践</a></h3>
+<ul>
+<li><strong>各种用户群体需求</strong>：视觉障碍、色盲、听障、肢体障碍、认知障碍；</li>
+<li><strong>WCAG 2.2 新增</strong>：焦点外观 AA 标准（Focus Appearance）、可拖动目标大小等；</li>
+<li><strong>复杂组件</strong>：
+<ul>
+<li>手风琴：<code>role="button"</code> + <code>aria-expanded</code> + <code>aria-controls</code>；</li>
+<li>Tab：<code>role="tablist"</code> + <code>role="tab"</code> + <code>aria-selected</code>；</li>
+<li>表格筛选：键盘操作、朗读提示；</li>
+</ul>
+</li>
+<li><strong>无障碍设计流程</strong>：需求阶段纳入可访问性验收标准 → 设计阶段提供对比度/焦点稿 → 开发阶段执行语义化 → 测试阶段使用工具 + 人工测试。</li>
+</ul>
+<h3 id="75-数据驱动的优化流程"><a class="header" href="#75-数据驱动的优化流程">7.5 数据驱动的优化流程</a></h3>
+<ol>
+<li><strong>监测</strong>：接入 <code>web-vitals</code>、<code>PerformanceObserver</code> 收集真实用户数据；</li>
+<li><strong>分析</strong>：使用 BigQuery/Looker Studio 可视化；</li>
+<li><strong>诊断</strong>：DevTools/Profiler/Network 分析瓶颈；</li>
+<li><strong>优化</strong>：落实策略，记录前后对比；</li>
+<li><strong>验证</strong>：Lighthouse、WebPageTest、A/B 测试（观察指标变化）。</li>
+</ol>
+<h3 id="76-综合调优案例企业营销站点优化"><a class="header" href="#76-综合调优案例企业营销站点优化">7.6 综合调优案例：企业营销站点优化</a></h3>
+<p><strong>现状</strong>：Lighthouse Performance 评分 58、LCP 5.2s、CLS 0.3、Accessibility 85。</p>
+<h4 id="761-问题诊断"><a class="header" href="#761-问题诊断">7.6.1 问题诊断</a></h4>
+<ul>
+<li>首屏图片体积大（&gt;1 MB）、未使用 <code>srcset</code>；</li>
+<li>CSS 阻塞渲染，未提取 Critical CSS；</li>
+<li>JS 包过大（框架 + 未 tree-shake）；</li>
+<li>缺失 <code>lang</code>、<code>aria-label</code>；</li>
+<li>CLS 高：Banner 使用动态加载字体导致布局抖动。</li>
+</ul>
+<h4 id="762-优化方案"><a class="header" href="#762-优化方案">7.6.2 优化方案</a></h4>
+<ul>
+<li>图片转换为 WebP，使用 <code>srcset</code>、<code>sizes</code>，并懒加载；</li>
+<li>使用 <code>critical</code> 工具提取首屏 CSS，其余 <code>defer</code>；</li>
+<li>切换到按需加载框架组件，使用 Webpack SplitChunks；</li>
+<li>添加 <code>font-display: swap</code>；</li>
+<li>添加语义标签、ARIA、焦点管理；</li>
+<li>引入结构化数据（<code>Organization</code>、<code>FAQ</code>）。</li>
+</ul>
+<h4 id="763-优化结果"><a class="header" href="#763-优化结果">7.6.3 优化结果</a></h4>
+<ul>
+<li>Performance 提升至 94，LCP 1.7s、CLS 0.04；</li>
+<li>Accessibility 提升到 98；</li>
+<li>SEO Impression 提升 35%，CTR 提升 18%。</li>
+</ul>
+<h3 id="77-测试与验收"><a class="header" href="#77-测试与验收">7.7 测试与验收</a></h3>
+<ul>
+<li><strong>性能测试</strong>：
+<ul>
+<li>Lighthouse（Desktop/Mobile）、WebPageTest（3G/4G）；</li>
+<li>加入 <code>lighthouse-ci</code> + GitHub Action；</li>
+<li>使用 <code>puppeteer</code> 自动收集性能指标；</li>
+</ul>
+</li>
+<li><strong>可访问性测试</strong>：
+<ul>
+<li>自动：axe、Pa11y、Accessibility Insights；</li>
+<li>人工：NVDA、VoiceOver、键盘导航；</li>
+</ul>
+</li>
+<li><strong>SEO 审查</strong>：
+<ul>
+<li>Screaming Frog、Sitebulb 扫描；</li>
+<li>Search Console 报表。</li>
+</ul>
+</li>
+</ul>
+<h3 id="78-模块练习与挑战"><a class="header" href="#78-模块练习与挑战">7.8 模块练习与挑战</a></h3>
+<ul>
+<li><strong>挑战 1：性能优化冲刺</strong>
+<ul>
+<li>在限制条件（JS ≤ 300KB、CSS ≤ 80KB）下优化现有页面；</li>
+<li>输出性能对比报告；</li>
+</ul>
+</li>
+<li><strong>挑战 2：无障碍审查</strong>
+<ul>
+<li>对公司真实项目执行可访问性审计，列出问题与改进计划；</li>
+</ul>
+</li>
+<li><strong>挑战 3：SEO 结构化数据</strong>
+<ul>
+<li>在文章/产品页添加 JSON-LD，监控搜索引擎抓取。</li>
+</ul>
+</li>
+</ul>
+<h3 id="79-常见问题与避免策略"><a class="header" href="#79-常见问题与避免策略">7.9 常见问题与避免策略</a></h3>
+<ul>
+<li><strong>性能评分高但真实体验差</strong>：实验室环境与真实网络差异 → 引入 RUM；</li>
+<li><strong>盲目追求 100 分</strong>：需权衡 ROI，关注业务指标；</li>
+<li><strong>可访问性只做一次</strong>：需要持续维护，纳入 QA 流程；</li>
+<li><strong>SEO 黑帽做法</strong>：避免隐藏文本、关键词堆砌、门页；</li>
+<li><strong>忽视国际化</strong>：多语言未适配 <code>lang</code>/<code>hreflang</code>，导致搜索表现差。</li>
+</ul>
+<blockquote>
+<p>模块七帮助你建立长期优化思维。在此基础上，模块八将聚焦工程化与团队协作。</p>
+</blockquote>
+<h2 id="模块八工程化落地与团队协作"><a class="header" href="#模块八工程化落地与团队协作">模块八：工程化落地与团队协作</a></h2>
+<blockquote>
+<p>目标：将 HTML5 技术体系转化为团队可执行的工程实践，涵盖组件化策略、设计系统、CI/CD、测试与知识管理，确保长期演进能力。</p>
+</blockquote>
+<h3 id="81-组件化与设计系统"><a class="header" href="#81-组件化与设计系统">8.1 组件化与设计系统</a></h3>
+<ul>
+<li><strong>组件分类</strong>：基础组件（Button、Input）、复合组件（Card、Stepper）、页面模板（Layout）；</li>
+<li><strong>设计语言</strong>：色彩、排版、间距、栅格、动效规范；</li>
+<li><strong>设计工具</strong>：Figma + Design Tokens + Style Dictionary；</li>
+<li><strong>HTML 组件库</strong>：通过 Web Components/HTML 模板推广统一组件；</li>
+<li><strong>可访问性规范</strong>：为每个组件制定 ARIA、键盘行为、焦点管理标准；</li>
+<li><strong>文档平台</strong>：Storybook、Pattern Lab、Zeroheight。</li>
+</ul>
+<h3 id="82-模板与脚手架"><a class="header" href="#82-模板与脚手架">8.2 模板与脚手架</a></h3>
+<ul>
+<li>创建 <code>create-html5-app</code> 脚手架：提供标准目录结构、模板、Lighthouse 配置；</li>
+<li>生成 HTML 起始模板、Service Worker、测试基线；</li>
+<li>集成工具：Parcel/Vite 进行模块化构建、ESBuild 压缩。</li>
+</ul>
+<h3 id="83-测试策略"><a class="header" href="#83-测试策略">8.3 测试策略</a></h3>
+<ul>
+<li><strong>单元测试</strong>：Jest、Vitest，针对交互逻辑、表单验证；</li>
+<li><strong>集成测试</strong>：Playwright、Cypress 测试关键流程、可访问性；</li>
+<li><strong>视觉回归</strong>：Percy、Chromatic；</li>
+<li><strong>性能回归</strong>：Lighthouse CI、Sitespeed.io；</li>
+<li><strong>可访问性回归</strong>：axe + Playwright、Pa11y CI；</li>
+<li><strong>文档测试</strong>：<code>linkinator</code> 验证外链；</li>
+<li><strong>移动端兼容</strong>：BrowserStack、Sauce Labs、真实设备实验室。</li>
+</ul>
+<h3 id="84-cicd-与发布策略"><a class="header" href="#84-cicd-与发布策略">8.4 CI/CD 与发布策略</a></h3>
+<ul>
+<li><strong>CI 阶段</strong>：Lint (HTMLHint、ESLint)、格式化 (Prettier)、测试、构建、Lighthouse 审查；</li>
+<li><strong>CD 阶段</strong>：部署到 CDN（Netlify、Vercel、Cloudflare Pages）、设置缓存、回滚策略；</li>
+<li><strong>监控</strong>：接入 Sentry（错误）、Datadog（性能）、UptimeRobot（可用性）；</li>
+<li><strong>蓝绿部署</strong> 与 <code>feature flag</code> 控制风险；</li>
+<li><strong>安全加固</strong>：CSP、SRI、HTTPS 强制、权限测试。</li>
+</ul>
+<h3 id="85-团队协作与知识管理"><a class="header" href="#85-团队协作与知识管理">8.5 团队协作与知识管理</a></h3>
+<ul>
+<li><strong>代码评审规范</strong>：关注语义化、可访问性、性能、结构；</li>
+<li><strong>编码规范</strong>：HTML 格式、命名约定、属性排序；</li>
+<li><strong>知识库</strong>：Confluence/Notion 建立模块化笔记、案例库；</li>
+<li><strong>学习路径</strong>：新人训练营 → 每周技术例会 → 内部分享 → 贡献开源；</li>
+<li><strong>度量指标</strong>：PR 审查通过率、缺陷率、性能基线达成率。</li>
+</ul>
+<h3 id="86-实战案例构建内部组件库"><a class="header" href="#86-实战案例构建内部组件库">8.6 实战案例：构建内部组件库</a></h3>
+<ul>
+<li><strong>目标</strong>：提供统一 HTML 模板、UI 组件、交互脚本、调试工具。</li>
+<li><strong>步骤</strong>：
+<ol>
+<li>基于 Web Components 封装核心组件（<code>&lt;ct-button&gt;</code>、<code>&lt;ct-modal&gt;</code>）；</li>
+<li>建立 Design Token（颜色、字体、间距）；</li>
+<li>使用 Storybook 展示组件、提供可访问性测试；</li>
+<li>发布到私有 npm 仓库/内部 CDN；</li>
+<li>定期审查性能与无障碍合规。</li>
+</ol>
+</li>
+<li><strong>关键代码</strong>：</li>
+</ul>
+<pre><code class="language-js">class CTButton extends HTMLElement {
+  static get observedAttributes() {
+    return ['variant', 'disabled'];
+  }
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = `
+      &lt;style&gt;
+        :host { display: inline-block; }
+        button {
+          font: inherit;
+          border-radius: var(--ct-radius, 6px);
+          padding: 0.5rem 1rem;
+          border: none;
+          cursor: pointer;
+          background: var(--ct-primary, #1565c0);
+          color: #fff;
+          transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        button:focus-visible {
+          outline: 3px solid rgba(21, 101, 192, 0.4);
+          outline-offset: 2px;
+        }
+        button[disabled] {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      &lt;/style&gt;
+      &lt;button type="button"&gt;&lt;slot&gt;&lt;/slot&gt;&lt;/button&gt;
+    `;
+    this.button = this.shadowRoot.querySelector('button');
+  }
+
+  connectedCallback() {
+    if (!this.hasAttribute('role')) {
+      this.setAttribute('role', 'button');
+    }
+    this.button.addEventListener('click', (event) =&gt; {
+      if (this.hasAttribute('disabled')) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    });
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'disabled') {
+      const isDisabled = newValue !== null;
+      this.button.disabled = isDisabled;
+      this.setAttribute('aria-disabled', isDisabled.toString());
+    }
+    if (name === 'variant') {
+      this.button.dataset.variant = newValue;
+    }
+  }
+}
+
+customElements.define('ct-button', CTButton);
+</code></pre>
+<h3 id="87-模块练习"><a class="header" href="#87-模块练习">8.7 模块练习</a></h3>
+<ul>
+<li><strong>练习 1：团队 HTML 模板仓库</strong>
+<ul>
+<li>建立标准化模板、Lighthouse 基准、可访问性清单；</li>
+</ul>
+</li>
+<li><strong>练习 2：自动化质量栈</strong>
+<ul>
+<li>实施 CI 流程，确保每次提交通过测试与性能审查；</li>
+</ul>
+</li>
+<li><strong>练习 3：知识分享</strong>
+<ul>
+<li>基于本笔记整理 PPT，组织内部分享会，收集反馈。</li>
+</ul>
+</li>
+</ul>
+<h3 id="88-常见挑战"><a class="header" href="#88-常见挑战">8.8 常见挑战</a></h3>
+<ul>
+<li>组件库与设计不一致 → 建立设计评审机制；</li>
+<li>CI 检查耗时长 → 缓存依赖、并行执行、增量构建；</li>
+<li>无障碍测试缺席 → 强制 PR 模板要求可访问性检查结果；</li>
+<li>知识沉淀断层 → 建立 Mentoring 制度与定期复盘会。</li>
+</ul>
+<blockquote>
+<p>模块八帮助你将个人能力扩展到团队层面，实现落地与持续演进。</p>
+</blockquote>
+<h2 id="综合实战项目集"><a class="header" href="#综合实战项目集">综合实战项目集</a></h2>
+<blockquote>
+<p>以下三个项目覆盖营销站、内部工具、实时协作三大场景，帮助你把模块知识整合为端到端的可交付成果。每个项目提供业务背景、技术栈、实施步骤、测试方案与复盘指南。</p>
+</blockquote>
+<h3 id="项目一cloudtask-营销站-pwa-升级"><a class="header" href="#项目一cloudtask-营销站-pwa-升级">项目一：CloudTask 营销站 PWA 升级</a></h3>
+<ul>
+<li><strong>业务背景</strong>：原营销站加载缓慢、缺乏离线能力、SEO 表现不佳、可访问性低。目标是在不改动后端的前提下，通过 HTML5 与前端工程化手段完成 PWA 升级。</li>
+<li><strong>目标成果</strong>：
+<ul>
+<li>Lighthouse Performance ≥ 90、PWA ≥ 90、Accessibility ≥ 95、SEO ≥ 95；</li>
+<li>支持离线访问价格页与案例页；</li>
+<li>提供安装提示、推送通知订阅；</li>
+<li>输出优化前后对比报告。</li>
+</ul>
+</li>
+<li><strong>技术栈</strong>：HTML5、CSS3、JavaScript、Service Worker、IndexedDB、Lighthouse CI、Netlify/Vercel。</li>
+<li><strong>实施步骤</strong>：
+<ol>
+<li><strong>基线评估</strong>：使用 Lighthouse、WebPageTest 记录现状指标。导出 JSON 报告，存档于 <code>reports/baseline/</code>；</li>
+<li><strong>信息架构审计</strong>：对页面进行内容审计，重构语义结构（模块二）；</li>
+<li><strong>性能优化</strong>：压缩资源、Critical CSS、图片 WebP/AVIF、多格式视频；</li>
+<li><strong>PWA 能力</strong>：编写 Service Worker、Manifest、安装提示 UI；</li>
+<li><strong>可访问性优化</strong>：补充 <code>aria-label</code>、对比度、焦点管理；</li>
+<li><strong>SEO 优化</strong>：结构化数据 JSON-LD、站点地图、OG/Twitter；</li>
+<li><strong>自动化</strong>：配置 Lighthouse CI、GitHub Actions，失败阻止合并；</li>
+<li><strong>上线部署</strong>：Netlify/Vercel 部署，开启 HTTP/2 + Brotli；设置缓存策略；</li>
+<li><strong>结果复盘</strong>：与基线对比，编写 <code>docs/project-01-review.md</code>。</li>
+</ol>
+</li>
+<li><strong>测试方案</strong>：
+<ul>
+<li>功能：Playwright 模拟 PWA 安装、离线访问、推送订阅；</li>
+<li>性能：<code>lighthouse-ci autorun</code> + WebPageTest API；</li>
+<li>可访问性：axe、NVDA；</li>
+<li>SEO：Screaming Frog + Search Console 验证。</li>
+</ul>
+</li>
+<li><strong>成果交付</strong>：文档、报告、演示视频、部署链接、回归脚本。</li>
+</ul>
+<h3 id="项目二运营团队数据看板-canvas--indexeddb"><a class="header" href="#项目二运营团队数据看板-canvas--indexeddb">项目二：运营团队数据看板 (Canvas + IndexedDB)</a></h3>
+<ul>
+<li><strong>业务背景</strong>：运营团队需要离线可访问的实时数据看板，展示销售、用户、渠道指标，可在地铁/无网环境中浏览最近数据。</li>
+<li><strong>目标成果</strong>：
+<ul>
+<li>实现实时数据可视化（折线图、柱状图、环形图、热力图）；</li>
+<li>支持离线缓存最近 7 天数据，恢复联网后自动同步；</li>
+<li>提供可访问表格视图、导出 CSV；</li>
+<li>可配置阈值提醒，超出时推送通知。</li>
+</ul>
+</li>
+<li><strong>技术栈</strong>：HTML5、Canvas、SVG、WebSocket、Service Worker、IndexedDB、Web Notifications。</li>
+<li><strong>实施步骤</strong>：
+<ol>
+<li><strong>需求梳理</strong>：确定 KPI、数据来源、刷新频率、用户角色；</li>
+<li><strong>信息架构设计</strong>：定义页面结构、导航路径、可访问模式；</li>
+<li><strong>数据模型设计</strong>：IndexedDB 存储设计（<code>metrics</code>, <code>settings</code>, <code>offlineQueue</code>）；</li>
+<li><strong>Canvas 绘制</strong>：封装绘制模块（<code>chart-line.js</code>, <code>chart-bar.js</code>）；</li>
+<li><strong>实时同步</strong>：WebSocket 客户端、心跳机制、断线重连；</li>
+<li><strong>离线策略</strong>：Service Worker 缓存 shell + IndexedDB 数据；</li>
+<li><strong>可访问性增强</strong>：为每个图表提供 <code>&lt;table&gt;</code> 备选、ARIA 描述；</li>
+<li><strong>导出功能</strong>：使用 <code>Blob</code> + <code>URL.createObjectURL</code> 下载 CSV；</li>
+<li><strong>报警与通知</strong>：监控指标，达到阈值触发 Notification API；</li>
+<li><strong>部署与监控</strong>：部署预览环境，配置 Sentry、性能监控。</li>
+</ol>
+</li>
+<li><strong>测试方案</strong>：
+<ul>
+<li>单元测试：数据转换、绘图模块；</li>
+<li>集成测试：Playwright 断网模式、推送流程；</li>
+<li>性能测试：在 10,000 数据点下帧率≥45fps；</li>
+<li>可访问性：NVDA/VoiceOver 验证表格朗读。</li>
+</ul>
+</li>
+<li><strong>成果交付</strong>：项目源代码、测试报告、离线体验演示视频、部署链接、配置手册。</li>
+</ul>
+<h3 id="项目三实时协作白板-webrtc--web-components"><a class="header" href="#项目三实时协作白板-webrtc--web-components">项目三：实时协作白板 (WebRTC + Web Components)</a></h3>
+<ul>
+<li><strong>业务背景</strong>：内部培训需要远程协同白板，允许学员共享画布、语音交流、上传课件、记录操作历史。</li>
+<li><strong>目标成果</strong>：
+<ul>
+<li>支持 10 人以内实时协作，延迟 &lt; 300ms；</li>
+<li>提供绘图、箭头、文本、便签、截屏等工具；</li>
+<li>语音/视频通话 + 屏幕共享；</li>
+<li>操作历史可回放、导出 PDF；</li>
+<li>具备管理员权限、踢人、静音等控制；</li>
+<li>全程可访问（键盘操作、屏幕阅读器提示）。</li>
+</ul>
+</li>
+<li><strong>技术栈</strong>：HTML5、Canvas、WebRTC、WebSocket、Web Components、IndexedDB、Service Worker（离线回放）。</li>
+<li><strong>实施步骤</strong>：
+<ol>
+<li><strong>原型设计</strong>：Figma 绘制 UI、交互流程、权限模型；</li>
+<li><strong>组件划分</strong>：<code>&lt;whiteboard-canvas&gt;</code>、<code>&lt;whiteboard-toolbar&gt;</code>、<code>&lt;participants-panel&gt;</code>、<code>&lt;chat-panel&gt;</code>；</li>
+<li><strong>通信层</strong>：WebSocket 信令、WebRTC PeerConnection；</li>
+<li><strong>数据同步</strong>：CRDT（Y.js/Automerge）或 OT；</li>
+<li><strong>存储</strong>：IndexedDB 保存历史操作、音视频录制；</li>
+<li><strong>安全</strong>：鉴权、房间密码、TLS；</li>
+<li><strong>可访问性</strong>：工具栏键盘导航、操作提示、字幕；</li>
+<li><strong>性能优化</strong>：分辨率自适应、节流、离屏渲染；</li>
+<li><strong>部署</strong>：自建 TURN 服务器、CDN 部署静态资源；</li>
+<li><strong>复盘</strong>：记录延迟、丢包、用户反馈。</li>
+</ol>
+</li>
+<li><strong>测试方案</strong>：
+<ul>
+<li>延迟测试：使用 <code>webrtc-internals</code>、<code>callstats.io</code>；</li>
+<li>跨浏览器：Chrome、Edge、Firefox；</li>
+<li>网络模拟：Chrome DevTools Network Throttling；</li>
+<li>可访问性：VoiceOver 验证工具栏朗读；</li>
+<li>安全：渗透测试、权限绕过检测。</li>
+</ul>
+</li>
+<li><strong>成果交付</strong>：运行实例、部署文档、测试报告、培训教材。</li>
+</ul>
+<h2 id="学习路径执行手册"><a class="header" href="#学习路径执行手册">学习路径执行手册</a></h2>
+<h3 id="1-周度节奏建议"><a class="header" href="#1-周度节奏建议">1. 周度节奏建议</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>周次</th><th>核心任务</th><th>产出物</th><th>评估方法</th></tr></thead><tbody>
+<tr><td>第 1 周</td><td>模块一学习、环境搭建、模板固化</td><td>学习仓库初始化、Landing Page 重构</td><td>Lighthouse + axe 基线、模板仓库 link</td></tr>
+<tr><td>第 2 周</td><td>模块二深入、完成导航重构</td><td>企业官网语义化案例</td><td>NVDA/VoiceOver 测试视频、可访问性报告</td></tr>
+<tr><td>第 3 周</td><td>模块三，Canvas/SVG 实战</td><td>数据可视化 Demo</td><td>性能测试数据、代码仓库链接</td></tr>
+<tr><td>第 4 周</td><td>模块四，多步骤表单</td><td>注册流程 Demo + 测试报告</td><td>Playwright + axe 结果、验证策略文档</td></tr>
+<tr><td>第 5 周</td><td>模块五，PWA 待办</td><td>离线应用 Demo + Lighthouse 报告</td><td>PWA 指标截图、Service Worker 说明</td></tr>
+<tr><td>第 6 周</td><td>模块六，Web API &amp; 实时</td><td>WebRTC Demo + API 实验笔记</td><td>WebSocket/RTC 日志、权限测试结果</td></tr>
+<tr><td>第 7 周</td><td>模块七优化、性能调优</td><td>性能优化报告</td><td>Lighthouse CI、监控仪表板</td></tr>
+<tr><td>第 8 周</td><td>模块八工程化、综合项目</td><td>项目一或二交付物</td><td>项目复盘、分享 PPT</td></tr>
+</tbody></table>
+</div>
+<h3 id="2-日常学习动作"><a class="header" href="#2-日常学习动作">2. 日常学习动作</a></h3>
+<ul>
+<li><strong>晨间知识复盘（30 min）</strong>：阅读昨日笔记、总结关键点；</li>
+<li><strong>午间实战片段（45 min）</strong>：针对单一知识点实现小 Demo；</li>
+<li><strong>晚间复盘（30 min）</strong>：记录疑问、撰写学习日志、更新学习仓库；</li>
+<li><strong>周末挑战（2-4 h）</strong>：完成模块练习或综合项目阶段任务；</li>
+<li><strong>每周分享</strong>：输出一篇博客/视频，总结学习成果与踩坑。</li>
+</ul>
+<h3 id="3-团队协作建议"><a class="header" href="#3-团队协作建议">3. 团队协作建议</a></h3>
+<ul>
+<li>每周组织一次学习圈分享，轮流讲解模块要点；</li>
+<li>建立内部知识库（Notion/Confluence）记录 Demo、案例、复盘；</li>
+<li>进行代码走查，重点检查语义化、可访问性；</li>
+<li>对关键主题邀请外部专家线上分享。</li>
+</ul>
+<h2 id="工具链与调试方法"><a class="header" href="#工具链与调试方法">工具链与调试方法</a></h2>
+<h3 id="1-浏览器开发者工具进阶"><a class="header" href="#1-浏览器开发者工具进阶">1. 浏览器开发者工具进阶</a></h3>
+<ul>
+<li><strong>Elements 面板</strong>：
+<ul>
+<li>使用 <code>:hov</code> 模拟状态（<code>:focus</code>, <code>:active</code>）；</li>
+<li>Accessibility Tree 查看语义结构；</li>
+<li>Layout 面板调试 Flex/Grid；</li>
+</ul>
+</li>
+<li><strong>Network 面板</strong>：
+<ul>
+<li>过滤 <code>Doc</code>/<code>Font</code>/<code>Media</code> 资源；</li>
+<li>勾选 <code>Disable cache</code>、模拟网络（3G/Offline）；</li>
+<li>观察内容编码、Cache-Control；</li>
+</ul>
+</li>
+<li><strong>Performance 面板</strong>：
+<ul>
+<li>录制帧率、长任务、渲染；</li>
+<li>使用 <code>web-vitals</code> 细分 LCP 元素；</li>
+</ul>
+</li>
+<li><strong>Application 面板</strong>：
+<ul>
+<li>调试 Service Worker、Manifest、IndexedDB、LocalStorage；</li>
+<li>模拟 Push、Background Sync；</li>
+</ul>
+</li>
+<li><strong>Rendering 面板</strong>：
+<ul>
+<li>检查 Paint Flashing、Layout Shift Regions；</li>
+<li>模拟色盲、强制 Colors。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-工具与库"><a class="header" href="#2-工具与库">2. 工具与库</a></h3>
+<ul>
+<li><strong>语义化 &amp; 可访问性</strong>：HTMLHint、eslint-plugin-jsx-a11y、axe、Pa11y；</li>
+<li><strong>性能</strong>：Lighthouse、WebPageTest、Calibre、Sitespeed.io；</li>
+<li><strong>监控</strong>：Sentry、New Relic、Datadog RUM；</li>
+<li><strong>自动化部署</strong>：Vercel、Netlify、Cloudflare Pages；</li>
+<li><strong>文档</strong>：Storybook、Eleventy、Docusaurus；</li>
+<li><strong>辅助脚本</strong>：npm scripts、turbo、nx；</li>
+<li><strong>设计协作</strong>：Figma、Zeplin、Lottie；</li>
+<li><strong>测试</strong>：Playwright、Cypress、Vitest、Testing Library。</li>
+</ul>
+<h3 id="3-调试清单"><a class="header" href="#3-调试清单">3. 调试清单</a></h3>
+<ul>
+<li>元信息完整性：title、meta description、viewport、OG、manifest；</li>
+<li>语义结构：单一 <code>&lt;h1&gt;</code>、合理层级、Landmark 识别；</li>
+<li>可访问性：键盘全覆盖、aria 属性、颜色对比；</li>
+<li>性能：资源大小、关键请求、缓存策略、lazy loading；</li>
+<li>离线能力：Service Worker 注册、缓存命中、离线页面；</li>
+<li>API 权限：权限状态、降级方案、错误处理；</li>
+<li>SEO：结构化数据、内部链接、Canonical；</li>
+<li>安全：CSP、SRI、HTTPS、敏感数据保护。</li>
+</ul>
+<h2 id="学习成果验证标准step-5"><a class="header" href="#学习成果验证标准step-5">学习成果验证标准（Step 5）</a></h2>
+<ol>
+<li><strong>能力指标矩阵</strong></li>
+</ol>
+<div class="table-wrapper"><table><thead><tr><th>指标</th><th>描述</th><th>验证方式</th><th>目标基线</th></tr></thead><tbody>
+<tr><td>语义化合规率</td><td>页面 DOM 元素通过 HTML 验证，语义结构正确</td><td>HTML Validator + axe 自动审查</td><td>合规率 ≥ 95%</td></tr>
+<tr><td>可访问性得分</td><td>Lighthouse/axe 可访问性评分</td><td>Chrome Lighthouse + axe CLI</td><td>Lighthouse ≥ 95，axe 无严重问题</td></tr>
+<tr><td>性能指标</td><td>Core Web Vitals（LCP、CLS、INP）</td><td>Lighthouse、web-vitals RUM</td><td>LCP ≤ 2.5s，CLS ≤ 0.1，INP ≤ 200ms</td></tr>
+<tr><td>离线覆盖率</td><td>PWA 状态下可离线访问关键页面</td><td>Service Worker 测试脚本</td><td>关键页面离线命中率 ≥ 90%</td></tr>
+<tr><td>实战项目交付</td><td>完成至少 2 个综合项目交付物</td><td>项目验收、代码评审、演示</td><td>评审通过，无重大缺陷</td></tr>
+</tbody></table>
+</div>
+<ol start="2">
+<li><strong>知识掌握清单</strong>：建立 100+ 问题题库，自测正确率≥85%；</li>
+<li><strong>输出成果</strong>：每周至少产出一篇技术文章或 Demo；</li>
+<li><strong>团队分享</strong>：完成一次内部分享/工作坊，获得 80% 以上满意度反馈；</li>
+<li><strong>认证/考试</strong>：通过 W3C/WAI 相关在线课程或前端认证测验。</li>
+</ol>
+<h2 id="扩展资源与进阶建议step-6"><a class="header" href="#扩展资源与进阶建议step-6">扩展资源与进阶建议（Step 6）</a></h2>
+<h3 id="1-官方标准与文档"><a class="header" href="#1-官方标准与文档">1. 官方标准与文档</a></h3>
+<ul>
+<li>WHATWG HTML Living Standard：https://html.spec.whatwg.org/</li>
+<li>MDN Web Docs HTML：https://developer.mozilla.org/zh-CN/docs/Web/HTML</li>
+<li>Web.dev 性能与 PWA：https://web.dev/</li>
+<li>W3C WAI 可访问性指南：https://www.w3.org/WAI/standards-guidelines/wcag/</li>
+</ul>
+<h3 id="2-专业课程"><a class="header" href="#2-专业课程">2. 专业课程</a></h3>
+<ul>
+<li>Google Web.dev PWA Training（含实验课）；</li>
+<li>Udacity Front-End Nanodegree（HTML5、CSS3、JS 综合）；</li>
+<li>Udemy "Mastering HTML5 APIs"；</li>
+<li>Web Accessibility Initiative 官方教学系列；</li>
+<li>Frontend Masters：Progressive Web Apps、Web Performance。</li>
+</ul>
+<h3 id="3-书籍推荐"><a class="header" href="#3-书籍推荐">3. 书籍推荐</a></h3>
+<ul>
+<li>《HTML5 权威指南》第二版；</li>
+<li>《Designing with Web Standards》；</li>
+<li>《Inclusive Components》；</li>
+<li>《High Performance Browser Networking》；</li>
+<li>《Learning Progressive Web Apps》；</li>
+<li>《SVG Animations》。</li>
+</ul>
+<h3 id="4-社区与订阅"><a class="header" href="#4-社区与订阅">4. 社区与订阅</a></h3>
+<ul>
+<li>Smashing Magazine、A List Apart、CSS-Tricks；</li>
+<li>Web Performance Calendar（每年 12 月）；</li>
+<li>PWA Weekly、Accessibility Weekly、Can I Use Newsletter；</li>
+<li>GitHub Topic：<code>pwa</code>、<code>web-components</code>、<code>a11y</code>。</li>
+</ul>
+<h3 id="5-工具与实战资源"><a class="header" href="#5-工具与实战资源">5. 工具与实战资源</a></h3>
+<ul>
+<li>Can I Use（特性支持）</li>
+<li>PWA Builder（快速生成 manifest、service worker）</li>
+<li>Glitch、CodePen（实验场）</li>
+<li>Workbox（Service Worker 库）</li>
+<li>idb（IndexedDB Promise 封装）</li>
+<li>Lighthouse CI</li>
+<li>axe-core + jest-axe（自动化可访问性测试）</li>
+<li>Worklets Playground（Animation/Audio Worklet 实验）</li>
+</ul>
+<h3 id="6-进阶项目建议"><a class="header" href="#6-进阶项目建议">6. 进阶项目建议</a></h3>
+<ol>
+<li><strong>跨平台离线阅读器</strong>：解析 Markdown/EPUB，支持离线缓存、批注、导出。</li>
+<li><strong>Web AR 导览系统</strong>：结合 WebXR、Geolocation，提供沉浸式导览体验。</li>
+<li><strong>多媒体教育平台</strong>：视频课件、实时问答、测验、成绩分析、离线同步。</li>
+<li><strong>企业设计系统官网</strong>：Storybook + Docz，提供组件演示、可访问性说明。</li>
+</ol>
+<h2 id="常见问题解答faq"><a class="header" href="#常见问题解答faq">常见问题解答（FAQ）</a></h2>
+<ol>
+<li><strong>HTML5 与 HTML Living Standard 有何区别？</strong> HTML5 代表 2014 年发布的推荐版本，如今以 WHATWG Living Standard 为主，持续更新；</li>
+<li><strong>如何衡量语义化是否达标？</strong> 使用 HTML5 Outliner、axe、Manual Review，确保标题层级、Landmark 完整；</li>
+<li><strong>PWA 与原生 App 如何选择？</strong> 评估设备能力需求（蓝牙、后台服务）、分发渠道、用户留存成本；</li>
+<li><strong>Service Worker 会不会导致缓存过期问题？</strong> 设计缓存版本、消息机制、<code>skipWaiting</code> + <code>clients.claim()</code>，并提供刷新提示；</li>
+<li><strong>Web Components 是否取代框架？</strong> 它提供基础能力，可作为框架无关组件。与 React/Vue 可共存，通过包装适配；</li>
+<li><strong>如何快速诊断性能问题？</strong> 先运行 Lighthouse → Performance 面板定位瓶颈 → Coverage 查看代码利用率 → Network 分析资源；</li>
+<li><strong>可访问性投入产出如何？</strong> 提升 SEO、降低法律风险、扩大用户群、提升用户满意度；</li>
+<li><strong>如何处理跨浏览器兼容？</strong> 使用 <code>@supports</code>、特性检测、<code>can-i-use</code>、Polyfill 按需加载；</li>
+<li><strong>WebRTC 太复杂怎么办？</strong> 从开源示例入手、使用 simple-peer、Daily、Agora SDK，逐步理解底层；</li>
+<li><strong>如何保持持续学习？</strong> 关注标准动态、加入社区、定期复盘、参与开源、教别人。</li>
+</ol>
+<h2 id="术语速查表"><a class="header" href="#术语速查表">术语速查表</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>术语</th><th>释义</th><th>场景</th></tr></thead><tbody>
+<tr><td>LCP</td><td>Largest Contentful Paint，最大内容绘制</td><td>衡量首屏加载速度</td></tr>
+<tr><td>INP</td><td>Interaction to Next Paint，交互响应延迟</td><td>替代 FID，关注交互体验</td></tr>
+<tr><td>CLS</td><td>Cumulative Layout Shift，累计位移</td><td>衡量布局稳定性</td></tr>
+<tr><td>SW</td><td>Service Worker</td><td>离线、缓存、后台任务</td></tr>
+<tr><td>ARIA</td><td>Accessible Rich Internet Applications</td><td>提供可访问性语义增强</td></tr>
+<tr><td>PWA</td><td>Progressive Web App</td><td>渐进式 Web 应用</td></tr>
+<tr><td>RUM</td><td>Real User Monitoring</td><td>真实用户性能监测</td></tr>
+<tr><td>CRDT</td><td>Conflict-free Replicated Data Type</td><td>实时协作一致性算法</td></tr>
+<tr><td>Manifest</td><td>Web App Manifest</td><td>PWA 安装信息描述</td></tr>
+<tr><td>IndexedDB</td><td>客户端 NoSQL 数据库</td><td>离线缓存、数据持久化</td></tr>
+</tbody></table>
+</div>
+<h2 id="复盘与持续成长"><a class="header" href="#复盘与持续成长">复盘与持续成长</a></h2>
+<ol>
+<li><strong>月度复盘模板</strong>：</li>
+</ol>
+<ul>
+<li>本月完成的模块/项目；</li>
+<li>指标达成情况（Performance、Accessibility 等）；</li>
+<li>遇到的挑战与解决方案；</li>
+<li>问题清单与下月计划。</li>
+</ul>
+<ol start="2">
+<li><strong>技能雷达图</strong>：从“语义化”“可访问性”“多媒体”“表单”“离线性能”“API 融合”“工程化”七维度打分，每季度更新。</li>
+<li><strong>导师制度</strong>：寻找资深前端作为导师，每两周对学习成果进行点评。</li>
+<li><strong>技术布道</strong>：输出博客、技术分享、开源贡献，反向加深理解。</li>
+</ol>
+<blockquote>
+<p>至此，你已掌握从基础到进阶、从个人到团队的 HTML5 全栈知识体系。建议定期回顾与更新笔记，跟进标准演进与浏览器新特性（如 WebGPU、View Transitions API、Popover API），保持技能前沿性。</p>
+</blockquote>
+<h2 id="专题拓展"><a class="header" href="#专题拓展">专题拓展</a></h2>
+<h3 id="专题一html5-安全与防护"><a class="header" href="#专题一html5-安全与防护">专题一：HTML5 安全与防护</a></h3>
+<ul>
+<li><strong>内容安全策略 (CSP)</strong>：
+<ul>
+<li>定义：通过 HTTP Header 或 <code>&lt;meta http-equiv="Content-Security-Policy"&gt;</code> 限制资源加载来源，降低 XSS 风险；</li>
+<li>建议策略：<code>default-src 'self'; script-src 'self' https://trusted.cdn.com; img-src 'self' data:; connect-src 'self' https://api.cloudtask.com; frame-ancestors 'none'; upgrade-insecure-requests;</code>；</li>
+<li>调试：使用 <code>Content-Security-Policy-Report-Only</code> 收集违规日志，配合 Sentry 上报；</li>
+</ul>
+</li>
+<li><strong>跨站脚本 (XSS)</strong>：
+<ul>
+<li>类型：反射型、存储型、DOM 型；</li>
+<li>防御：输出编码、使用 <code>textContent</code>、避免 <code>innerHTML</code>、模板引擎自动转义、防止 URL 注入；</li>
+<li>Service Worker 注意事项：避免缓存不可信响应、校验哈希；</li>
+</ul>
+</li>
+<li><strong>跨站请求伪造 (CSRF)</strong>：
+<ul>
+<li>对策：SameSite Cookie、CSRF Token、双提交 Cookie；</li>
+</ul>
+</li>
+<li><strong>Clickjacking</strong>：
+<ul>
+<li>使用 <code>X-Frame-Options: DENY</code> 或 CSP <code>frame-ancestors 'none'</code>；</li>
+</ul>
+</li>
+<li><strong>Mixed Content</strong>：
+<ul>
+<li>强制 HTTPS、使用 <code>upgrade-insecure-requests</code>；</li>
+</ul>
+</li>
+<li><strong>Subresource Integrity (SRI)</strong>：</li>
+</ul>
+<pre><code class="language-html">&lt;link rel="stylesheet" href="https://cdn.example.com/styles.css"
+      integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/ux5c5cqK8lwTguSuCw1Po7yE4Wqlanw" crossorigin="anonymous"&gt;
+</code></pre>
+<ul>
+<li><strong>权限管理</strong>：通过 Permissions API 监控权限状态，提供 UI 提示；</li>
+<li><strong>敏感信息保护</strong>：
+<ul>
+<li>使用 <code>&lt;input type="password" autocomplete="new-password"&gt;</code>；</li>
+<li>避免在 DOM 中存储敏感数据；</li>
+<li>本地存储数据加密（Web Crypto API）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="专题二国际化-i18n-与本地化-l10n"><a class="header" href="#专题二国际化-i18n-与本地化-l10n">专题二：国际化 (i18n) 与本地化 (l10n)</a></h3>
+<ul>
+<li><strong>多语言结构</strong>：
+<ul>
+<li>使用 <code>lang</code> 属性精准标记：<code>&lt;html lang="zh-CN"&gt;</code>，段落级切换 <code>&lt;span lang="en"&gt;</code>；</li>
+<li>动态内容根据用户偏好/浏览器 <code>navigator.language</code> 切换；</li>
+</ul>
+</li>
+<li><strong>日期与时间</strong>：<code>Intl.DateTimeFormat</code>、<code>Intl.RelativeTimeFormat</code>；</li>
+<li><strong>数字与货币</strong>：<code>Intl.NumberFormat</code>；</li>
+<li><strong>文案管理</strong>：ICU Message Format，处理复数（plural）、性别（gender）、选择（select）；</li>
+<li><strong>文本方向</strong>：支持 <code>ltr</code> / <code>rtl</code>；
+<ul>
+<li><code>&lt;html dir="rtl"&gt;</code> + CSS <code>direction</code>；</li>
+<li><code>bdi</code> 标签隔离嵌套方向文本；</li>
+</ul>
+</li>
+<li><strong>资源加载</strong>：动态加载翻译 JSON、语言包缓存；</li>
+<li><strong>可访问性与国际化</strong>：
+<ul>
+<li>支持多语言屏幕阅读器提示；</li>
+<li>替换语言时更新 <code>lang</code>；</li>
+</ul>
+</li>
+<li><strong>SEO</strong>：<code>hreflang</code>、国际化站点地图、区域定位。</li>
+</ul>
+<h3 id="专题三html5-与现代框架协作"><a class="header" href="#专题三html5-与现代框架协作">专题三：HTML5 与现代框架协作</a></h3>
+<ul>
+<li><strong>SSR/SSG</strong>：Next.js、Nuxt、Astro；保证 SSR 输出语义化结构；</li>
+<li><strong>Hydration 与渐进增强</strong>：优先 HTML 内容，JS 渐进增强；</li>
+<li><strong>Web Components 与框架</strong>：
+<ul>
+<li>React：通过 <code>dangerouslySetInnerHTML</code> 传递 slot / props；</li>
+<li>Vue：<code>defineCustomElement</code>；</li>
+<li>Lit：Web Components 框架化；</li>
+</ul>
+</li>
+<li><strong>微前端</strong>：Single-SPA、Module Federation，确保 HTML Shell 稳定；</li>
+<li><strong>设计系统</strong>：Storybook + DocsPage + Accessibility 插件；</li>
+<li><strong>部署</strong>：VitePress/Eleventy 生成静态 HTML，结合 Netlify/Vercel 部署。</li>
+</ul>
+<h2 id="练习题库精选-40-题"><a class="header" href="#练习题库精选-40-题">练习题库（精选 40 题）</a></h2>
+<blockquote>
+<p>建议在完成每个模块后尝试回答，并将答案记录于学习仓库。</p>
+</blockquote>
+<ol>
+<li>HTML5 标准与传统 HTML4 在语义化上的核心差异是什么？</li>
+<li><code>doctype</code> 的作用是什么？如果缺失将产生哪些问题？</li>
+<li>描述渐进增强与优雅降级的区别，并给出各自的应用场景。</li>
+<li><code>aria-label</code>、<code>aria-labelledby</code>、<code>aria-describedby</code> 有何差异？</li>
+<li>如何使用 <code>&lt;figure&gt;</code> 与 <code>&lt;figcaption&gt;</code> 改善图文内容语义？</li>
+<li>说明 <code>&lt;picture&gt;</code>、<code>&lt;source&gt;</code>、<code>srcset</code>、<code>sizes</code> 在自适应图片中的作用。</li>
+<li>Canvas 绘制中如何处理高 DPI 屏幕模糊问题？</li>
+<li>列举至少 3 种优化视频加载的策略。</li>
+<li>HTML5 表单原生验证与 JavaScript 自定义验证如何协同？</li>
+<li>描述 Service Worker 生命周期的各个阶段及常见坑点。</li>
+<li>IndexedDB 与 localStorage 的差别是什么？各自适用场景？</li>
+<li>PWA 要求的安装条件有哪些？</li>
+<li>如何在 Service Worker 中实现 Stale-While-Revalidate 策略？</li>
+<li>WebSocket 与 SSE 的差异与适用场景？</li>
+<li>WebRTC 建立连接的关键步骤有哪些？</li>
+<li>Custom Elements 的命名与生命周期回调有哪些？</li>
+<li>如何为自定义组件提供可访问性支持？</li>
+<li>Performance 面板中如何定位 Long Task？</li>
+<li>LCP 的常见候选元素有哪些？如何优化？</li>
+<li>CLS 超标时可能是什么原因？如何解决？</li>
+<li>如何设计性能预算并纳入 CI？</li>
+<li>描述执行可访问性测试的自动化与人工流程。</li>
+<li>结构化数据的主要类型有哪些？举例说明。</li>
+<li>如何为多语言站点设置 <code>hreflang</code>？</li>
+<li>Payment Request API 的使用流程与兼容性问题？</li>
+<li>WebAuthn 如何提升登录安全性？</li>
+<li>Clipboard API 的权限限制是什么？</li>
+<li>如何在 Web 项目中集成 Web Components 与 React 页面？</li>
+<li>Service Worker 更新通知用户的最佳实践是什么？</li>
+<li>IndexedDB 事务失败常见原因有哪些？</li>
+<li>Web 请求中设置 <code>fetchpriority</code> 有何作用？</li>
+<li>如何监控真实用户性能 (RUM)？</li>
+<li>如何在 HTML 中嵌入结构化数据 JSON-LD？</li>
+<li>描述 <code>&lt;dialog&gt;</code> 的无障碍注意事项。</li>
+<li>什么是 Focus Trap？如何实现？</li>
+<li>对于要求严格对比度的页面，如何快速检测？</li>
+<li>描述在 CI 中集成 Lighthouse 与 axe 的流程。</li>
+<li>什么是预渲染 (Prerender) 与预获取 (Prefetch)？如何使用？</li>
+<li>解释 <code>prefers-reduced-motion</code> 的用途与实现方式。</li>
+<li>设计一套 HTML 模板的代码审查检查表。</li>
+</ol>
+<blockquote>
+<p>可在 <code>answers/</code> 目录撰写参考答案，对照标准维度：概念准确性、覆盖度、实践经验。</p>
+</blockquote>
+<h2 id="扩展示例代码片段合集"><a class="header" href="#扩展示例代码片段合集">扩展示例代码片段合集</a></h2>
+<h3 id="1-accessible-modal-对话框模板"><a class="header" href="#1-accessible-modal-对话框模板">1. Accessible Modal 对话框模板</a></h3>
+<pre><code class="language-html">&lt;dialog id="feedback-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-desc"&gt;
+  &lt;form method="dialog"&gt;
+    &lt;h2 id="dialog-title"&gt;提交反馈&lt;/h2&gt;
+    &lt;p id="dialog-desc"&gt;我们非常重视您的体验，请填写反馈表单。&lt;/p&gt;
+    &lt;label for="feedback-message"&gt;反馈内容&lt;/label&gt;
+    &lt;textarea id="feedback-message" required&gt;&lt;/textarea&gt;
+    &lt;menu&gt;
+      &lt;button value="cancel"&gt;取消&lt;/button&gt;
+      &lt;button id="confirm-btn" value="submit"&gt;提交&lt;/button&gt;
+    &lt;/menu&gt;
+  &lt;/form&gt;
+&lt;/dialog&gt;
+
+&lt;button id="open-dialog"&gt;反馈&lt;/button&gt;
+</code></pre>
+<pre><code class="language-js">const dialog = document.getElementById('feedback-dialog');
+const openBtn = document.getElementById('open-dialog');
+const confirmBtn = document.getElementById('confirm-btn');
+
+openBtn.addEventListener('click', () =&gt; {
+  if (typeof dialog.showModal === 'function') {
+    dialog.showModal();
+  } else {
+    alert('当前浏览器不支持 &lt;dialog&gt;，请升级。');
+  }
+});
+
+dialog.addEventListener('close', () =&gt; {
+  if (dialog.returnValue === 'submit') {
+    console.log('用户提交反馈：', document.getElementById('feedback-message').value);
+  }
+});
+
+// 键盘无障碍
+confirmBtn.addEventListener('keydown', (event) =&gt; {
+  if (event.key === 'Tab' &amp;&amp; !event.shiftKey) {
+    event.preventDefault();
+    dialog.querySelector('textarea').focus();
+  }
+});
+</code></pre>
+<h3 id="2-skeleton-loading-与无障碍提示"><a class="header" href="#2-skeleton-loading-与无障碍提示">2. Skeleton Loading 与无障碍提示</a></h3>
+<pre><code class="language-html">&lt;section aria-busy="true" aria-live="polite"&gt;
+  &lt;header&gt;
+    &lt;h2&gt;最新报告&lt;/h2&gt;
+    &lt;p&gt;加载中，请稍候…&lt;/p&gt;
+  &lt;/header&gt;
+  &lt;div class="skeleton skeleton-card"&gt;&lt;/div&gt;
+  &lt;div class="skeleton skeleton-card"&gt;&lt;/div&gt;
+&lt;/section&gt;
+</code></pre>
+<pre><code class="language-css">.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #eceff1 25%, #f5f5f5 37%, #eceff1 63%);
+  background-size: 400% 100%;
+  border-radius: 12px;
+  height: 120px;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+</code></pre>
+<blockquote>
+<p>当数据加载完成时，将 <code>aria-busy</code> 设置为 <code>false</code>，替换实际内容。</p>
+</blockquote>
+<h2 id="深入阅读与学习路线延伸"><a class="header" href="#深入阅读与学习路线延伸">深入阅读与学习路线延伸</a></h2>
+<ol>
+<li><strong>标准追踪</strong>：关注 WHATWG GitHub 仓库、W3C mailing list、Chrome Platform Status；</li>
+<li><strong>浏览器工程师博客</strong>：Jake Archibald（Service Worker）、Addy Osmani（性能）、Una Kravets（CSS/可访问性）；</li>
+<li><strong>年度大会</strong>：Google I/O、Chrome Dev Summit、JSConf、WWDC（Safari 更新）；</li>
+<li><strong>实验性特性</strong>：</li>
+</ol>
+<ul>
+<li>View Transitions API（页面过渡动效）；</li>
+<li>Popover API（无障碍弹出层）；</li>
+<li>File System Access、Web Share Target、Periodic Background Sync；</li>
+<li>WebGPU、WebXR、WebTransport。</li>
+</ul>
+<h2 id="里程碑与自测"><a class="header" href="#里程碑与自测">里程碑与自测</a></h2>
+<ul>
+<li><strong>30 天里程碑</strong>：完成模块一~四、项目基础版本、首次分享；</li>
+<li><strong>60 天里程碑</strong>：完成模块五~八、至少一个综合项目、性能优化达标；</li>
+<li><strong>90 天里程碑</strong>：掌握进阶专题、通过内部评审、对外输出成果；</li>
+<li><strong>半年目标</strong>：参与大型项目、推动团队标准化、指导新人。</li>
+</ul>
+<blockquote>
+<p>通过专题拓展与练习题库，你将进一步强化对 HTML5 技术体系的掌控，并具备持续精进的路径。</p>
+</blockquote>
+<h2 id="案例复盘精选"><a class="header" href="#案例复盘精选">案例复盘精选</a></h2>
+<h3 id="案例一大型金融机构门户改版"><a class="header" href="#案例一大型金融机构门户改版">案例一：大型金融机构门户改版</a></h3>
+<ul>
+<li><strong>背景</strong>：原门户基于旧版 JSP，缺乏响应式、可访问性，平均加载 6.2s。目标为全站 HTML5 重构。</li>
+<li><strong>关键难题</strong>：多业务线内容复杂、法律合规要求高、性能指标严苛、SEO 要求覆盖多语言市场。</li>
+<li><strong>实施过程</strong>：
+<ol>
+<li>内容审计：共计 400+ 页面，提取共性模板，归纳 12 种页面类型；</li>
+<li>语义重构：使用 <code>&lt;main&gt;</code>、<code>&lt;section&gt;</code>、<code>&lt;aside&gt;</code> 构建结构，配合 <code>&lt;nav aria-label="二级导航"&gt;</code>；</li>
+<li>模板化：基于 Web Components + Server Side Include 模式，统一头尾与导航；</li>
+<li>可访问性：引入 <code>aria-live</code> 通知、语音朗读测试、为 60+ 表单字段补充描述；</li>
+<li>性能优化：Critical CSS、Lazy Loading、Service Worker 缓存；</li>
+<li>国际化：建立语言包、<code>hreflang</code>、本地化货币显示；</li>
+<li>测试：axe、NVDA、Jaws、Lighthouse、WebPageTest 多地区；</li>
+<li>上线分批发布，使用 Feature Flag 控制。</li>
+</ol>
+</li>
+<li><strong>结果</strong>：
+<ul>
+<li>Lighthouse Performance 由 52 → 93；</li>
+<li>Accessibility 95+，通过第三方无障碍认证；</li>
+<li>SEO 流量提升 28%；</li>
+<li>用户满意度上升 20%，移动端访问增长 3 倍。</li>
+</ul>
+</li>
+<li><strong>经验教训</strong>：提前建立组件库与设计规范；合规需求需早期介入；多语言内容需要与翻译团队协同。</li>
+</ul>
+<h3 id="案例二教育平台互动课堂"><a class="header" href="#案例二教育平台互动课堂">案例二：教育平台互动课堂</a></h3>
+<ul>
+<li><strong>背景</strong>：在线教育平台希望提供互动课堂，支持视频、题板、实时反馈。</li>
+<li><strong>关键功能</strong>：多媒体播放器、Canvas 题板、实时测验、数据追踪、离线资料。</li>
+<li><strong>解决方案</strong>：
+<ul>
+<li>视频播放器采用 <code>&lt;video&gt;</code> + 自定义控件 + 字幕。结合 MediaSession 与 Picture-in-Picture；</li>
+<li>Canvas 题板支持手写、图形、数学公式（结合 MathJax）；</li>
+<li>WebSocket 实现实时答题与统计；</li>
+<li>IndexedDB 缓存课件、离线测验；</li>
+<li>可访问性：添加字幕、多语言音轨、键盘操作；</li>
+<li>性能优化：分块加载课件、Lazy Loading、资源预取；</li>
+<li>监控：Sentry 日志、RUM、音视频质量监控。</li>
+</ul>
+</li>
+<li><strong>成果</strong>：课程完成率提升 15%，用户反馈响应速度快、体验流畅。</li>
+<li><strong>复盘</strong>：多媒体 + 实时交互需重视带宽与延迟；Canvas 场景建议使用 OffscreenCanvas 分担；需注意设备兼容性（低配电脑、平板）。</li>
+</ul>
+<h3 id="案例三制造业数字孪生仪表盘"><a class="header" href="#案例三制造业数字孪生仪表盘">案例三：制造业数字孪生仪表盘</a></h3>
+<ul>
+<li><strong>背景</strong>：制造企业需要 HTML5 仪表盘展示设备状态、维护流程、能耗数据。</li>
+<li><strong>特点</strong>：
+<ul>
+<li>多终端显示（大屏、平板、手机）；</li>
+<li>实时数据刷新（每 5s）；</li>
+<li>可离线查看生产记录；</li>
+<li>与厂区权限系统整合。</li>
+</ul>
+</li>
+<li><strong>实现</strong>：
+<ul>
+<li>HTML5 + CSS Grid 构建响应式布局；</li>
+<li>Canvas 渲染实时曲线，SVG 渲染图标、Top View；</li>
+<li>WebSocket 推送 + IndexedDB 缓存；</li>
+<li>Service Worker 离线页面、后台同步；</li>
+<li>可访问性：为图表提供文本版、颜色盲配色；</li>
+<li>安全：CSP、Token 鉴权、离线数据加密；</li>
+<li>运维：Lighthouse、Datadog、Prometheus 监控。</li>
+</ul>
+</li>
+<li><strong>成效</strong>：系统稳定性 99.9%，离线场景使用率 40%，维护效率提升 25%。</li>
+</ul>
+<h2 id="html5-项目-checklist"><a class="header" href="#html5-项目-checklist">HTML5 项目 Checklist</a></h2>
+<h3 id="上线前-checklist"><a class="header" href="#上线前-checklist">上线前 Checklist</a></h3>
+<ul>
+<li>标准合规：通过 HTML Validator；</li>
+<li>语义结构：唯一 <code>&lt;h1&gt;</code>、Landmark 完整；</li>
+<li>可访问性：键盘导航、对比度、ARIA、字幕；</li>
+<li>性能：Lighthouse ≥ 90，资源压缩、缓存策略；</li>
+<li>离线：Service Worker 注册成功、缓存资源列表检查；</li>
+<li>SEO：Meta、结构化数据、Sitemap、Robots；</li>
+<li>安全：CSP、HTTPS、权限、SRI、输入验证；</li>
+<li>监控：错误、性能、可用性；</li>
+<li>文档：部署说明、回滚方案、值班计划。</li>
+</ul>
+<h3 id="周期性维护-checklist"><a class="header" href="#周期性维护-checklist">周期性维护 Checklist</a></h3>
+<ul>
+<li>每月：更新依赖、复查 Lighthouse、检查 Service Worker 缓存；</li>
+<li>每季度：可访问性审计、SEO 报告、性能预算调整；</li>
+<li>每半年：回顾标准更新、新 API 评估；</li>
+<li>每年：架构评估、组件库升级、知识库整理。</li>
+</ul>
+<h2 id="html5-新特性观察清单"><a class="header" href="#html5-新特性观察清单">HTML5 新特性观察清单</a></h2>
+<ul>
+<li><strong>Popover API</strong>：提供原生弹出层管理，自动处理焦点、ARIA；</li>
+<li><strong>View Transitions API</strong>：实现页面间的平滑转场，改善 SPA 体验；</li>
+<li><strong>Document Picture-in-Picture</strong>：将任意 DOM 输出到浮动窗口；</li>
+<li><strong>WebGPU</strong>：新一代图形 API；</li>
+<li><strong>Scroll-Driven Animations</strong>：<code>@scroll-timeline</code> CSS 动画；</li>
+<li><strong>CSS <code>:has()</code> 选择器</strong>：增强 HTML 结构与交互表达能力；</li>
+<li><strong>Native Lazy-loading</strong> 扩展：<code>loading="lazy"</code> 支持 iframe；</li>
+<li><strong>Partitioned Storage</strong>：提高隐私，影响第三方 Cookie；</li>
+<li><strong>FedCM (Federated Credential Management)</strong>：取代第三方登录 Cookie；</li>
+<li><strong>Compression Streams API</strong>：前端流式压缩处理。</li>
+</ul>
+<blockquote>
+<p>建议建立定期追踪机制，将新特性加入实验清单，评估可行性与风险。</p>
+</blockquote>
+<h2 id="html5-学习日志模板"><a class="header" href="#html5-学习日志模板">HTML5 学习日志模板</a></h2>
+<pre><code># 日期：YYYY-MM-DD
+## 今日目标
+- [ ] 学习模块：
+- [ ] 完成练习：
+- [ ] 阅读资源：
+
+## 关键收获
+- 语义化/可访问性/性能/离线/工程化等方面总结。
+
+## 代码片段/技巧
+```html
+&lt;!-- 记录今天学到的代码模式 --&gt;
+</code></pre>
+<h2 id="遇到的问题"><a class="header" href="#遇到的问题">遇到的问题</a></h2>
+<ul>
+<li>问题描述：</li>
+<li>解决方案：</li>
+<li>后续跟进：</li>
+</ul>
+<h2 id="明日计划"><a class="header" href="#明日计划">明日计划</a></h2>
+<ul>
+<li>待完成任务：</li>
+<li>需查阅资料：</li>
+</ul>
+<h2 id="心得反思"><a class="header" href="#心得反思">心得/反思</a></h2>
+<ul>
+<li>今日感受、注意事项。</li>
+</ul>
+<pre><code>
+## 面试准备清单（附简要答案方向）
+
+1. **解释 HTML5 新增的语义化标签及其作用。**（回答要提标准、可访问性、SEO）
+2. **如何构建无障碍的导航菜单？**（提及键盘支持、ARIA、ARIA 模式）
+3. **Service Worker 的缓存更新策略有哪些？**（Cache First、Stale-While-Revalidate 等）
+4. **WebSocket 与 HTTP 长轮询对比？**（协议、效率、实现复杂度）
+5. **如何优化 LCP？**（首屏资源、图片优化、服务器响应）
+6. **IndexedDB 使用场景与注意事项？**（事务、结构、兼容性）
+7. **HTML5 表单验证的优缺点？**（原生 vs 自定义 vs 后端）
+8. **如何确保多媒体内容的可访问性？**（字幕、ARIA、替代内容）
+9. **PWA 安装流程中用户体验如何设计？**（安装提示、成功反馈、离线指南）
+10. **如何在团队中推广 HTML5 标准化？**（模板、工具、培训、评审）。
+
+## 个人成长路线建议
+
+- **阶段一（0-1 个月）**：掌握模块一~四，熟悉语义化、表单、多媒体；
+- **阶段二（1-3 个月）**：深入离线、性能、API、项目实践；
+- **阶段三（3-6 个月）**：主导综合项目、推广团队标准、输出内容；
+- **阶段四（6 个月+）**：关注新标准、跨平台应用、WebGPU、WebXR 等前沿技术。
+
+&gt; 坚持记录案例与指标，让学习可量化、可复盘、可分享。
+
+## 附录：HTML5 API 速查表
+
+### 1. Document &amp; DOM
+
+| API | 说明 | 常见用法 |
+| --- | --- | --- |
+| `document.createElement` | 创建元素 | `document.createElement('section')` |
+| `document.querySelector` | 选择器查询 | `document.querySelector('[data-role="hero"]')` |
+| `document.documentElement.lang` | 设置语言 | `document.documentElement.lang = 'zh-CN'` |
+| `document.dir` | 文本方向 | `document.dir = 'rtl'` |
+| `document.startViewTransition` | View Transitions | 页面平滑过渡 |
+
+### 2. 媒体与图形
+
+| API | 说明 | 备注 |
+| --- | --- | --- |
+| `HTMLMediaElement.play()` | 播放媒体 | 返回 Promise，需处理拒绝 |
+| `AudioContext` | Web Audio API | 混音、音效处理 |
+| `CanvasRenderingContext2D` | Canvas 绘制 | 2D 渲染 |
+| `OffscreenCanvas` | 离屏绘制 | Worker 中绘制 |
+| `ImageBitmap` | 高性能图片处理 | 减少主线程负担 |
+
+### 3. 存储与缓存
+
+| API | 说明 | 常见场景 |
+| --- | --- | --- |
+| `localStorage` | 同步键值对 | 配置缓存、小数据 |
+| `IndexedDB` | 客户端数据库 | 离线缓存、文件存储 |
+| `Cache API` | 模块化缓存响应 | Service Worker 缓存 |
+| `navigator.storage.estimate()` | 存储估算 | 监控配额 |
+
+### 4. 网络与通信
+
+| API | 说明 | 场景 |
+| --- | --- | --- |
+| `fetch` | HTTP 请求 | 替代 XMLHttpRequest |
+| `WebSocket` | 双向通信 | 实时数据、聊天室 |
+| `EventSource` | SSE | 服务器推送 |
+| `WebRTC` | 实时音视频 | 视频会议、协作 |
+| `WebTransport` | 低延迟传输 | 未来趋势 |
+
+### 5. 设备与权限
+
+| API | 说明 | 注意事项 |
+| --- | --- | --- |
+| `navigator.geolocation` | GPS 定位 | 需 HTTPS、权限 |
+| `navigator.mediaDevices` | 摄像头/麦克风 | 用户授权 |
+| `Screen Wake Lock` | 保持亮屏 | 全屏/权限限制 |
+| `Clipboard API` | 剪贴板 | 用户触发、HTTPS |
+| `Permissions API` | 权限状态 | 动态调整 UI |
+
+### 6. 安全与身份
+
+| API | 说明 | 场景 |
+| --- | --- | --- |
+| `Credential Management` | 凭据管理 | 自动登录 |
+| `WebAuthn` | 无密码登录 | 指纹、人脸、硬件密钥 |
+| `Payment Request` | Web 支付 | 简化支付流程 |
+| `Storage Access API` | 第三方 Cookie 管理 | 隐私沙箱 |
+
+## 附录：可访问性测试清单
+
+1. **结构与导航**
+  - 是否只有一个 `&lt;h1&gt;`？
+  - Landmark 标签 (`header`, `nav`, `main`, `footer`) 是否完整？
+  - 是否提供跳过导航链接？
+2. **键盘操作**
+  - 所有交互元素均可 Tab 访问？
+  - 焦点顺序与视觉顺序一致？
+  - 焦点样式明显？
+3. **ARIA 与语义**
+  - 自定义控件是否补充适当 `role`、`aria-*`？
+  - ARIA 属性是否拼写正确？
+  - 避免过度使用 ARIA？
+4. **颜色与对比度**
+  - 文字与背景对比度 ≥ 4.5:1？
+  - 非文字元素 ≥ 3:1？
+5. **表单**
+  - 所有输入是否关联 `&lt;label&gt;`？
+  - 错误提示是否提供 `aria-describedby`？
+  - 验证信息是否即时可见？
+6. **多媒体**
+  - 是否提供字幕、音频描述？
+  - 自动播放是否可控制？
+  - 是否可键盘控制？
+7. **动画与动效**
+  - 是否尊重 `prefers-reduced-motion`？
+  - 闪烁频率是否低于 3 次/秒？
+8. **屏幕阅读器测试**
+  - NVDA + Firefox 流程是否顺畅？
+  - VoiceOver + Safari 是否可用？
+  - Android TalkBack、iOS VoiceOver 测试？
+
+## 附录：性能分析脚本示例
+
+```js
+import { onCLS, onFID, onLCP, onINP } from 'web-vitals';
+
+function sendToAnalytics({ name, value, delta, id }) {
+  fetch('/analytics', {
+    method: 'POST',
+    body: JSON.stringify({ name, value, delta, id, timestamp: Date.now() }),
+    keepalive: true,
+    headers: { 'Content-Type': 'application/json' }
+  }).catch(console.error);
+}
+
+onCLS(sendToAnalytics);
+onFID(sendToAnalytics);
+onLCP(sendToAnalytics);
+onINP(sendToAnalytics);
+</code></pre>
+<h2 id="附录学习成果记录表示例"><a class="header" href="#附录学习成果记录表示例">附录：学习成果记录表（示例）</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>日期</th><th>模块</th><th>任务内容</th><th>用时</th><th>成果</th><th>问题</th><th>下一步</th></tr></thead><tbody>
+<tr><td>2024-05-01</td><td>模块一</td><td>Landing Page 重构</td><td>5h</td><td>完成语义化、Lighthouse 92</td><td>表单 aria 处理不熟</td><td>学习 WAI 表单指南</td></tr>
+<tr><td>2024-05-03</td><td>模块二</td><td>导航可访问性</td><td>4h</td><td>实现多级菜单</td><td>键盘交互逻辑复杂</td><td>编写通用菜单组件</td></tr>
+<tr><td>2024-05-06</td><td>模块三</td><td>Canvas 图表</td><td>6h</td><td>完成折线图、热力图</td><td>高 DPI 模糊</td><td>增加比例缩放</td></tr>
+<tr><td>2024-05-08</td><td>模块四</td><td>多步骤表单</td><td>5h</td><td>完成验证与存储</td><td>输入法处理 Bug</td><td>调研 composition 事件</td></tr>
+<tr><td>2024-05-12</td><td>模块五</td><td>PWA 待办</td><td>6h</td><td>离线访问、后台同步</td><td>推送权限受阻</td><td>设计用户引导</td></tr>
+<tr><td>2024-05-16</td><td>模块六</td><td>WebRTC Demo</td><td>7h</td><td>实现视频通话</td><td>NAT 穿透</td><td>部署 TURN</td></tr>
+<tr><td>2024-05-20</td><td>模块七</td><td>性能优化</td><td>4h</td><td>LCP 降至 1.8s</td><td>监控接入需要时间</td><td>引入 web-vitals</td></tr>
+<tr><td>2024-05-24</td><td>模块八</td><td>组件库搭建</td><td>5h</td><td>完成按钮组件</td><td>设计 Token</td><td>生成 CSS 变量</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>通过持续记录，你可以量化进步并对照验证标准，确保学习闭环。</p>
+</blockquote>
+<hr />
+<p><strong>特别提醒</strong>：HTML 标准与浏览器特性持续更新，建议每季度回顾本笔记，结合最新规范、业务需求与团队反馈迭代内容，形成长期可持续的知识资产。</p>
+<h2 id="结语与未来展望"><a class="header" href="#结语与未来展望">结语与未来展望</a></h2>
+<p>HTML5 作为开放 Web 的基石，已不再只是标记语言的迭代，而是涵盖语义、可访问性、多媒体、离线能力、性能、安全、工程化的综合平台。本笔记录述了从基础到进阶、从个人到团队的完整路径，但真正的价值来自持续实践与迭代。建议你在未来的学习与项目中重点关注以下方向：</p>
+<ol>
+<li><strong>标准演进与新 API</strong>：View Transitions、Popover、WebGPU、WebAssembly、WebTransport、Compute Pressure 等正在改变 Web 应用的形态；</li>
+<li><strong>跨平台融合</strong>：与移动（Flutter、React Native）、桌面（Electron、Tauri）、嵌入式（WebOS、车载 HMI）等场景结合；</li>
+<li><strong>体验与可持续</strong>：绿色 Web（节能、低碳）、无障碍法规合规（WCAG 2.2、美国 ADA、欧盟 EN301 549）；</li>
+<li><strong>团队赋能</strong>：建设设计系统、知识库、标准化流程、质量基线，让 HTML5 架构在组织内部持续成长；</li>
+<li><strong>社区参与</strong>：关注开源项目、为规范提出 issue、撰写博客、参加会议、分享经验。</li>
+</ol>
+<p>最终的目标，是让你能够在任何 Web 项目中快速落地高质量的 HTML5 解决方案，从而为用户提供快速、安全、可访问、可持续的体验。请不断迭代本笔记、记录你的实践案例，让它成为伴随你职业发展的长期资产。</p>
+<h2 id="参考资料索引持续更新"><a class="header" href="#参考资料索引持续更新">参考资料索引（持续更新）</a></h2>
+<ul>
+<li><strong>规范文档</strong>：
+<ul>
+<li>HTML Living Standard：https://html.spec.whatwg.org/multipage/</li>
+<li>DOM Standard：https://dom.spec.whatwg.org/</li>
+<li>Fetch Standard：https://fetch.spec.whatwg.org/</li>
+<li>Web Components 规范合集：https://github.com/w3c/webcomponents</li>
+<li>WebRTC 1.0：https://www.w3.org/TR/webrtc/</li>
+<li>Service Workers：https://w3c.github.io/ServiceWorker/</li>
+</ul>
+</li>
+<li><strong>实践指南</strong>：
+<ul>
+<li>Google Web Fundamentals：https://developers.google.com/web/fundamentals/</li>
+<li>Microsoft Edge Web Dev：https://learn.microsoft.com/microsoft-edge/devtools-guide/</li>
+<li>Chrome DevTools 官方培训：https://developer.chrome.com/docs/devtools/</li>
+</ul>
+</li>
+<li><strong>社区资源</strong>：
+<ul>
+<li>Frontend Focus（前端周刊）：https://frontendfoc.us/</li>
+<li>PWA Developers 团队：https://pwa.dev/</li>
+<li>A11y Weekly：https://a11yweekly.com/</li>
+</ul>
+</li>
+<li><strong>实用工具</strong>：
+<ul>
+<li>Webhint（lint 工具）：https://webhint.io/</li>
+<li>Polypane（多视口调试）：https://polypane.app/</li>
+<li>Responsively App：https://responsively.app/</li>
+<li>Accessibility Insights：https://accessibilityinsights.io/</li>
+</ul>
+</li>
+<li><strong>案例学习</strong>：
+<ul>
+<li>Google Chrome Developers YouTube：案例与最佳实践视频；</li>
+<li>Web.dev Case Studies：PWA、性能优化成功案例；</li>
+<li>Smashing Magazine 深度文章集合。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>将上述链接加入书签或 Knowledge Base，定期回访与更新，与团队共享学习笔记和经验，形成持续成长生态。</p>
+</blockquote>
+<h2 id="变更记录模板"><a class="header" href="#变更记录模板">变更记录模板</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>版本</th><th>日期</th><th>作者</th><th>变更摘要</th><th>影响范围</th><th>验证结果</th></tr></thead><tbody>
+<tr><td>v1.0</td><td>2024-05-01</td><td>学习者</td><td>初版笔记，涵盖模块一~八</td><td>全体</td><td>Lighthouse / axe / 项目基线</td></tr>
+<tr><td>v1.1</td><td>2024-06-15</td><td>学习者</td><td>新增 PWA 案例、性能指标</td><td>模块五、七</td><td>性能指标再验证</td></tr>
+<tr><td>v1.2</td><td>2024-08-01</td><td>学习者</td><td>更新 View Transitions 章节</td><td>模块三、专题拓展</td><td>浏览器兼容检查</td></tr>
+</tbody></table>
+</div>
+<blockquote>
+<p>建议将每次更新记录在 Git 仓库的 <code>CHANGELOG.md</code>，并附上验证数据（Lighthouse 分数、测试通过截图、项目链接），确保知识库与项目同步演进。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/21-CSS3.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/23-Taiwindcss.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/21-CSS3.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/23-Taiwindcss.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

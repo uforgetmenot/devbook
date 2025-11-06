@@ -1,0 +1,2838 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Vue.js 系统化学习笔记（实战导向 | Vue 3） - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="vuejs-系统化学习笔记实战导向--vue-3"><a class="header" href="#vuejs-系统化学习笔记实战导向--vue-3">Vue.js 系统化学习笔记（实战导向 | Vue 3）</a></h1>
+<blockquote>
+<p>面向 0-5 年经验的前端/全栈开发者与转行学习者，聚焦 Vue 3 + Vite + TypeScript + Vue Router + Pinia 的现代工程化实践，涵盖从基础到生产部署的完整路径。</p>
+</blockquote>
+<hr />
+<h2 id="版本与前置假设"><a class="header" href="#版本与前置假设">版本与前置假设</a></h2>
+<ul>
+<li>Vue 版本：Vue 3（&gt;=3.3，推荐 3.4+）</li>
+<li>构建工具：Vite 5+</li>
+<li>路由：Vue Router 4+</li>
+<li>状态管理：Pinia 2+</li>
+<li>语言：TypeScript（可按需改为 JS）</li>
+<li>Node.js：18+（LTS）</li>
+<li>包管理器：pnpm（推荐）/ npm / yarn</li>
+</ul>
+<p>如你项目需兼容 Vue 2，请单独规划迁移策略（Composition API 插件、路由/状态管理差异、构建工具升级）。本笔记默认 Vue 3 生态。</p>
+<hr />
+<h2 id="学习目标outcome"><a class="header" href="#学习目标outcome">学习目标（Outcome）</a></h2>
+<ul>
+<li>牢固掌握 Vue 3 响应式与组件化核心，能独立开发中小型前端应用。</li>
+<li>掌握 Vue Router、Pinia 的工程化用法，能设计清晰的路由与数据层。</li>
+<li>熟悉 Vite 工程配置、代码质量与测试体系，能完成性能优化与生产部署。</li>
+<li>能使用 SSR（Nuxt 3）完成首屏性能优化与 SEO 友好型应用的搭建（可选进阶）。</li>
+</ul>
+<hr />
+<h2 id="适用人群与角色定位"><a class="header" href="#适用人群与角色定位">适用人群与角色定位</a></h2>
+<ul>
+<li>0-5 年经验的前端/全栈开发者，已具备基本 HTML/CSS/JS 能力。</li>
+<li>期望系统性掌握 Vue 3 技术栈并落地到生产的工程师与技术负责人。</li>
+<li>对 TypeScript、工程化、测试与性能优化有明确提升诉求的开发者。</li>
+</ul>
+<hr />
+<h2 id="快速环境准备10-分钟"><a class="header" href="#快速环境准备10-分钟">快速环境准备（10 分钟）</a></h2>
+<pre><code class="language-bash"># 1) 安装 Node.js 18+（略）
+# 2) 推荐安装 pnpm
+corepack enable
+corepack prepare pnpm@latest --activate
+
+# 3) 创建 Vue 项目（可选含 TS / Router / Pinia / Vitest）
+pnpm create vue@latest my-vue-app
+cd my-vue-app
+pnpm install
+pnpm dev  # 启动开发服务器
+</code></pre>
+<p>验证标准：浏览器访问 http://localhost:5173 能看到默认首页；修改 <code>src/App.vue</code> 能热更新。</p>
+<hr />
+<h2 id="学习路径总览从入门到生产"><a class="header" href="#学习路径总览从入门到生产">学习路径总览（从入门到生产）</a></h2>
+<ol>
+<li>基础与响应式原理：模板语法、指令、Composition API、响应式系统、常见坑</li>
+<li>组件与通信：Props/Emits、v-model、插槽、Provide/Inject、可复用逻辑</li>
+<li>路由与导航（Vue Router）：嵌套/动态路由、导航守卫、懒加载与权限</li>
+<li>状态管理（Pinia）：Store 设计、持久化、与组合式 API 协作</li>
+<li>构建与工程化（Vite）：规范、环境变量、构建优化、部署、测试</li>
+<li>SSR 与全栈（Nuxt 3，可选进阶）：数据获取、SEO、缓存与稳定性</li>
+</ol>
+<p>每一阶段配套实战练习与“可量化验证标准”。建议以一个中小型产品需求贯穿，逐步增强功能与质量，例如“任务清单 + 账户系统 + 权限 + 数据可视化 + 部署监控”。</p>
+<hr />
+<h2 id="核心模块-1基础与响应式原理"><a class="header" href="#核心模块-1基础与响应式原理">核心模块 1：基础与响应式原理</a></h2>
+<p>本模块目标：理解“模板 -&gt; 组件 -&gt; 响应式数据 -&gt; 视图更新”的闭环，熟练使用 Composition API（<code>ref</code>/<code>reactive</code>/<code>computed</code>/<code>watch</code>）。</p>
+<h3 id="11-模板语法与常用指令"><a class="header" href="#11-模板语法与常用指令">1.1 模板语法与常用指令</a></h3>
+<ul>
+<li>插值：<code>{{ expr }}</code> 支持任意 JS 表达式（不建议复杂逻辑）。</li>
+<li>属性绑定：<code>:class</code>、<code>:style</code>、<code>v-bind="obj"</code> 批量绑定。</li>
+<li>事件处理：<code>@click="handler"</code>，事件传参 <code>@click="handler(item)"</code>。</li>
+<li>条件与列表：<code>v-if / v-else-if / v-else</code>、<code>v-show</code>、<code>v-for</code>（务必加 <code>:key</code>）。</li>
+<li>双向绑定：<code>v-model</code>（可用于原生表单与自定义组件）。</li>
+<li>动态组件与 DOM 转移：<code>&lt;component :is="..."&gt;</code>、<code>&lt;teleport&gt;</code>。</li>
+</ul>
+<p>示例 <code>src/App.vue</code>：</p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;h1&gt;{{ title }}&lt;/h1&gt;
+  &lt;input v-model="keyword" placeholder="搜索任务..." /&gt;
+
+  &lt;p v-if="!filtered.length"&gt;暂无任务&lt;/p&gt;
+  &lt;ul v-else&gt;
+    &lt;li v-for="item in filtered" :key="item.id"&gt;
+      &lt;label&gt;
+        &lt;input type="checkbox" v-model="item.done" /&gt;
+        &lt;span :class="{ done: item.done }"&gt;{{ item.text }}&lt;/span&gt;
+      &lt;/label&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { ref, computed } from 'vue'
+
+const title = ref('任务清单')
+const keyword = ref('')
+const todos = ref([
+  { id: 1, text: '阅读 Composition API', done: false },
+  { id: 2, text: '实现一个组件', done: true },
+])
+
+const filtered = computed(() =&gt; {
+  const k = keyword.value.trim().toLowerCase()
+  return !k ? todos.value : todos.value.filter(i =&gt; i.text.toLowerCase().includes(k))
+})
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.done { text-decoration: line-through; color: #999; }
+input { margin-bottom: 8px; }
+&lt;/style&gt;
+</code></pre>
+<p>要点：</p>
+<ul>
+<li><code>computed</code> 必须返回值，内部使用依赖项的 <code>.value</code>。</li>
+<li><code>v-for</code> 务必提供稳定的 <code>:key</code>（避免 DOM 复用导致 UI 错乱）。</li>
+</ul>
+<h3 id="12-composition-api-与响应式"><a class="header" href="#12-composition-api-与响应式">1.2 Composition API 与响应式</a></h3>
+<ul>
+<li><code>ref(value)</code>：包裹基本值或对象，访问与赋值通过 <code>.value</code>。</li>
+<li><code>reactive(obj)</code>：将对象变为深层代理（Proxy），直接读写属性即可；与 <code>ref</code> 嵌套时取值差异需要注意。</li>
+<li><code>computed(getter | { get, set })</code>：基于依赖自动缓存，依赖变更触发重新计算。</li>
+<li><code>watch(source, cb, options)</code>：侦听 <code>ref/reactive/computed</code> 或函数返回值；默认惰性，<code>{ immediate: true }</code> 立即触发一次。</li>
+</ul>
+<p>示例：响应式原理最小实现（理解而非生产使用）：</p>
+<pre><code class="language-ts">// 伪代码：依赖收集 -&gt; 触发更新
+type EffectFn = () =&gt; void
+let activeEffect: EffectFn | null = null
+
+export function effect(fn: EffectFn) {
+  activeEffect = fn
+  fn()
+  activeEffect = null
+}
+
+const bucket = new WeakMap&lt;object, Map&lt;string | symbol, Set&lt;EffectFn&gt;&gt;&gt;()
+
+function track(target: object, key: string | symbol) {
+  if (!activeEffect) return
+  let depsMap = bucket.get(target)
+  if (!depsMap) bucket.set(target, (depsMap = new Map()))
+  let deps = depsMap.get(key)
+  if (!deps) depsMap.set(key, (deps = new Set()))
+  deps.add(activeEffect)
+}
+
+function trigger(target: object, key: string | symbol) {
+  const depsMap = bucket.get(target); if (!depsMap) return
+  const effects = depsMap.get(key); if (!effects) return
+  effects.forEach(fn =&gt; fn())
+}
+
+export function reactive&lt;T extends object&gt;(obj: T): T {
+  return new Proxy(obj, {
+    get(target, key, receiver) {
+      const res = Reflect.get(target, key, receiver)
+      track(target, key)
+      return res
+    },
+    set(target, key, value, receiver) {
+      const res = Reflect.set(target, key, value, receiver)
+      trigger(target, key)
+      return res
+    },
+  })
+}
+
+// 使用
+const state = reactive({ count: 0 })
+effect(() =&gt; { console.log('count changed:', state.count) })
+state.count++
+</code></pre>
+<p>理解点：</p>
+<ul>
+<li>Vue 基于 Proxy 做依赖跟踪（<code>get</code>）和触发（<code>set</code>），实际实现更复杂（调度器、分支切换、Map/Set、数组等）。</li>
+<li>生产中直接使用 Vue 的 <code>ref/reactive/computed/watch</code>，无需自行实现。</li>
+</ul>
+<h3 id="13-表单与双向绑定-v-model"><a class="header" href="#13-表单与双向绑定-v-model">1.3 表单与双向绑定 v-model</a></h3>
+<p><code>v-model</code> 等价于 <code>:value</code> + <code>@update:modelValue</code>（在自定义组件中），可扩展多个 v-model。</p>
+<p>自定义组件支持 v-model：</p>
+<pre><code class="language-vue">&lt;!-- TextInput.vue --&gt;
+&lt;template&gt;
+  &lt;input :value="modelValue" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" /&gt;
+  &lt;p v-if="error" class="error"&gt;{{ error }}&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+defineProps&lt;{ modelValue: string; error?: string }&gt;()
+defineEmits&lt;{ 'update:modelValue': [value: string] }&gt;()
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.error { color: #e11d48; }
+&lt;/style&gt;
+</code></pre>
+<p>使用：</p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;TextInput v-model="username" :error="nameError" /&gt;
+  &lt;button :disabled="!valid" @click="submit"&gt;提交&lt;/button&gt;
+  &lt;p&gt;输入：{{ username }}&lt;/p&gt;
+  &lt;p v-if="submitOk" class="ok"&gt;提交成功！&lt;/p&gt;
+  &lt;p v-else-if="submitErr" class="err"&gt;{{ submitErr }}&lt;/p&gt;
+  &lt;hr /&gt;
+  &lt;label&gt;
+    &lt;input type="checkbox" v-model="agree" /&gt; 同意条款
+  &lt;/label&gt;
+  &lt;p&gt;状态：{{ agree ? '已同意' : '未同意' }}&lt;/p&gt;
+  &lt;p&gt;禁用按钮条件：用户名 &gt;= 3 且 已同意&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { ref, computed } from 'vue'
+import TextInput from './TextInput.vue'
+
+const username = ref('')
+const agree = ref(false)
+const nameError = computed(() =&gt; username.value.length === 0 ? '请输入用户名' : (username.value.length &lt; 3 ? '至少 3 个字符' : ''))
+const valid = computed(() =&gt; !nameError.value &amp;&amp; agree.value)
+
+const submitOk = ref(false)
+const submitErr = ref('')
+function submit() {
+  submitOk.value = false
+  submitErr.value = ''
+  if (!valid.value) {
+    submitErr.value = '请完善信息'
+    return
+  }
+  // 模拟提交
+  setTimeout(() =&gt; { submitOk.value = true }, 400)
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.ok { color: #16a34a }
+.err { color: #dc2626 }
+&lt;/style&gt;
+</code></pre>
+<p>实战检查点：</p>
+<ul>
+<li>输入校验由 <code>computed</code> 驱动，视图自动联动；避免手动 DOM 操作。</li>
+<li>组件对外暴露 <code>modelValue</code> + <code>update:modelValue</code> 即可支持 v-model。</li>
+</ul>
+<h3 id="14-生命周期与副作用管理"><a class="header" href="#14-生命周期与副作用管理">1.4 生命周期与副作用管理</a></h3>
+<ul>
+<li>组合式 API 生命周期钩子：<code>onMounted</code>、<code>onUpdated</code>、<code>onUnmounted</code>、<code>onBeforeRouteLeave</code>（在路由场景配合 Vue Router）。</li>
+<li>在 <code>onUnmounted</code> 清理副作用（定时器、事件监听、订阅）。</li>
+<li>使用 <code>watch</code> 处理数据变化副作用，避免在模板中写复杂逻辑。</li>
+</ul>
+<p>常见错误与规避：</p>
+<ul>
+<li>在 <code>setup</code> 外部访问 <code>ref.value</code> 且期望响应式更新（丢失响应式上下文）。</li>
+<li>忘记在 <code>watch</code> 中清理副作用，或对深层对象侦听时未使用 <code>deep: true</code>。</li>
+<li>滥用 <code>watchEffect</code> 导致不必要的重复执行。</li>
+</ul>
+<h3 id="15-小型实战todo-清单可独立运行"><a class="header" href="#15-小型实战todo-清单可独立运行">1.5 小型实战：Todo 清单（可独立运行）</a></h3>
+<p>目标：实现增/删/改/查、筛选、持久化（localStorage），并具备基本可维护性。</p>
+<p>初始化：</p>
+<pre><code class="language-bash">pnpm create vue@latest vue-todos
+cd vue-todos
+pnpm install
+pnpm dev
+</code></pre>
+<p>核心 Store（不依赖 Pinia，练习组合式函数）：<code>src/composables/useTodos.ts</code></p>
+<pre><code class="language-ts">import { ref, computed, watch } from 'vue'
+
+export type Todo = { id: number; text: string; done: boolean }
+
+const LS_KEY = 'todos'
+
+export function useTodos(initial?: Todo[]) {
+  const list = ref&lt;Todo[]&gt;(initial ?? load())
+  const keyword = ref('')
+  const filtered = computed(() =&gt; {
+    const k = keyword.value.trim().toLowerCase()
+    return k ? list.value.filter(i =&gt; i.text.toLowerCase().includes(k)) : list.value
+  })
+
+  function add(text: string) { list.value.unshift({ id: Date.now(), text, done: false }) }
+  function remove(id: number) { list.value = list.value.filter(i =&gt; i.id !== id) }
+  function toggle(id: number) {
+    const t = list.value.find(i =&gt; i.id === id); if (t) t.done = !t.done
+  }
+
+  watch(list, () =&gt; save(list.value), { deep: true })
+  return { list, keyword, filtered, add, remove, toggle }
+}
+
+function load(): Todo[] {
+  try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]') } catch { return [] }
+}
+function save(data: Todo[]) { localStorage.setItem(LS_KEY, JSON.stringify(data)) }
+</code></pre>
+<p>视图：<code>src/App.vue</code></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;h1&gt;Todos&lt;/h1&gt;
+  &lt;form @submit.prevent="onAdd"&gt;
+    &lt;input v-model="text" placeholder="添加任务..." /&gt;
+    &lt;button :disabled="!text.trim()"&gt;添加&lt;/button&gt;
+  &lt;/form&gt;
+  &lt;input v-model="keyword" placeholder="搜索..." /&gt;
+  &lt;ul&gt;
+    &lt;li v-for="t in filtered" :key="t.id"&gt;
+      &lt;label&gt;
+        &lt;input type="checkbox" :checked="t.done" @change="toggle(t.id)" /&gt;
+        &lt;span :class="{ done: t.done }"&gt;{{ t.text }}&lt;/span&gt;
+      &lt;/label&gt;
+      &lt;button @click="remove(t.id)"&gt;删除&lt;/button&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+import { useTodos } from './composables/useTodos'
+
+const { list, keyword, filtered, add, remove, toggle } = useTodos()
+const text = ref('')
+function onAdd() {
+  const v = text.value.trim(); if (!v) return
+  add(v); text.value = ''
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.done { text-decoration: line-through; color: #64748b }
+form { margin-bottom: 8px; }
+&lt;/style&gt;
+</code></pre>
+<p>验证标准：</p>
+<ul>
+<li>能添加、勾选、删除任务；刷新浏览器后数据持久。</li>
+<li>搜索框可实时过滤；空关键字显示所有。</li>
+<li>不编写任何 Options API 代码，完全基于 Composition API。</li>
+</ul>
+<p>扩展练习：</p>
+<ul>
+<li>使用 <code>computed</code> 统计剩余任务数，增加“清除已完成”按钮。</li>
+<li>将 <code>useTodos</code> 拆分为 <code>useStorage</code> + <code>useFilter</code> 可复用逻辑。</li>
+</ul>
+<hr />
+<h2 id="核心模块-2组件与通信props--emits--插槽--provide-inject"><a class="header" href="#核心模块-2组件与通信props--emits--插槽--provide-inject">核心模块 2：组件与通信（Props / Emits / 插槽 / Provide-Inject）</a></h2>
+<p>本模块目标：掌握组件抽象边界、单向数据流、可组合与可测试性。</p>
+<h3 id="21-组件边界与契约"><a class="header" href="#21-组件边界与契约">2.1 组件边界与契约</a></h3>
+<ul>
+<li>输入（Props）与输出（Emits）形成组件契约，文档即代码：</li>
+</ul>
+<pre><code class="language-ts">// Button.vue
+const props = defineProps&lt;{ type?: 'primary' | 'ghost'; loading?: boolean }&gt;()
+const emit = defineEmits&lt;{ click: [MouseEvent] }&gt;()
+</code></pre>
+<ul>
+<li>避免在子组件直接修改父组件数据；以 <code>emit</code> 通知父组件进行状态变更。</li>
+<li>使用 <code>v-model</code> 为“表单类组件”提供直观的双向绑定体验。</li>
+</ul>
+<h3 id="22-插槽与内容分发"><a class="header" href="#22-插槽与内容分发">2.2 插槽与内容分发</a></h3>
+<ul>
+<li>默认插槽、具名插槽、作用域插槽（将子组件数据暴露给父组件模板）。</li>
+<li>实战：Tabs 组件（简化实现）。</li>
+</ul>
+<pre><code class="language-vue">&lt;!-- Tabs.vue --&gt;
+&lt;template&gt;
+  &lt;div class="tabs"&gt;
+    &lt;button v-for="(tab, i) in tabs" :key="i" :class="{ active: i===active }" @click="active = i"&gt;
+      &lt;slot name="label" :tab="tab" :index="i"&gt;{{ tab.label }}&lt;/slot&gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class="panel"&gt;
+    &lt;slot name="panel" :tab="tabs[active]" :index="active"&gt;{{ tabs[active].content }}&lt;/slot&gt;
+  &lt;/div&gt;
+  &lt;slot /&gt;
+  &lt;!-- 透传默认插槽，便于组合 --&gt;
+  &lt;Teleport to="body"&gt;&lt;slot name="teleported" /&gt;&lt;/Teleport&gt;
+  &lt;!-- 展示 Teleport 用法 --&gt;
+  &lt;KeepAlive&gt;&lt;slot name="cached" /&gt;&lt;/KeepAlive&gt;
+  &lt;!-- 展示 KeepAlive 用法（真实项目请谨慎缓存策略） --&gt;
+  &lt;component :is="dynamicComp" v-if="dynamicComp" /&gt;
+  &lt;!-- 动态组件示例（可选） --&gt;
+  &lt;hr /&gt;
+  &lt;pre&gt;active: {{ active }}&lt;/pre&gt;
+  &lt;pre&gt;tabs: {{ tabs }}&lt;/pre&gt;
+  &lt;p&gt;注：本示例为教学用途，生产应用需增加更多健壮性校验与无障碍支持。&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+type Tab = { label: string; content: string }
+const props = defineProps&lt;{ tabs: Tab[]; dynamicComp?: any }&gt;()
+const active = ref(0)
+const dynamicComp = props.dynamicComp
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.tabs { display: flex; gap: 8px; margin-bottom: 8px }
+.active { font-weight: bold }
+.panel { border: 1px solid #e5e7eb; padding: 8px }
+&lt;/style&gt;
+</code></pre>
+<p>使用：</p>
+<pre><code class="language-vue">&lt;Tabs :tabs="[{label:'A',content:'A1'},{label:'B',content:'B1'}]"&gt;
+  &lt;template #label="{ tab, index }"&gt;
+    &lt;span&gt;{{ index + 1 }}. {{ tab.label }}&lt;/span&gt;
+  &lt;/template&gt;
+  &lt;template #panel="{ tab }"&gt;
+    &lt;strong&gt;{{ tab.content }}&lt;/strong&gt;
+  &lt;/template&gt;
+&lt;/Tabs&gt;
+</code></pre>
+<h3 id="23-provide--inject-与可复用逻辑"><a class="header" href="#23-provide--inject-与可复用逻辑">2.3 Provide / Inject 与可复用逻辑</a></h3>
+<ul>
+<li>Provide/Inject 适用于跨层级依赖传递（主题、国际化、表单上下文）。</li>
+<li>更推荐用“组合式函数（composable）+ 明确的 props/emits”复用业务逻辑。</li>
+</ul>
+<p>示例：表单上下文（简化）：</p>
+<pre><code class="language-ts">// formContext.ts
+import { InjectionKey, provide, inject, ref } from 'vue'
+type FormCtx = { disabled: boolean; setDisabled: (v: boolean) =&gt; void }
+const KEY: InjectionKey&lt;FormCtx&gt; = Symbol('form-ctx')
+export function provideForm() {
+  const disabled = ref(false)
+  provide(KEY, { disabled: disabled.value, setDisabled: v =&gt; (disabled.value = v) })
+}
+export function useForm() {
+  const ctx = inject(KEY)
+  if (!ctx) throw new Error('No form context')
+  return ctx
+}
+</code></pre>
+<p>注意：Provide 注入的值若需保持响应式，应传 <code>ref/reactive</code> 或 computed，而非解包后的原始值。</p>
+<h3 id="24-组件测试vitest--vue-testing-library"><a class="header" href="#24-组件测试vitest--vue-testing-library">2.4 组件测试（Vitest + Vue Testing Library）</a></h3>
+<pre><code class="language-bash">pnpm add -D vitest @vitest/ui jsdom @vue/test-utils @testing-library/vue
+</code></pre>
+<p>示例测试：</p>
+<pre><code class="language-ts">import { render, fireEvent, screen } from '@testing-library/vue'
+import TextInput from '@/components/TextInput.vue'
+
+test('it emits update when typing', async () =&gt; {
+  const { emitted } = render(TextInput, { props: { modelValue: '' } })
+  const input = screen.getByRole('textbox')
+  await fireEvent.update(input, 'abc')
+  expect(emitted()['update:modelValue'][0]).toEqual(['abc'])
+})
+</code></pre>
+<p>验证标准：</p>
+<ul>
+<li>能清晰用 props/emits 定义契约；复杂内容用插槽解耦。</li>
+<li>重要组件具备基础单测（渲染/交互/可访问性断言）。</li>
+</ul>
+<hr />
+<h2 id="核心模块-3路由与导航vue-router-4"><a class="header" href="#核心模块-3路由与导航vue-router-4">核心模块 3：路由与导航（Vue Router 4）</a></h2>
+<p>本模块将覆盖：基础路由、嵌套路由、动态参数、导航守卫、懒加载、权限控制与常见坑。实战项目会实现“登录 -&gt; 受保护页 -&gt; 404/重定向 -&gt; 细粒度权限”。</p>
+<h3 id="31-安装与基础配置"><a class="header" href="#31-安装与基础配置">3.1 安装与基础配置</a></h3>
+<pre><code class="language-bash">pnpm add vue-router
+</code></pre>
+<p>创建路由：<code>src/router/index.ts</code></p>
+<pre><code class="language-ts">import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+
+const routes: RouteRecordRaw[] = [
+  { path: '/', name: 'home', component: () =&gt; import('@/views/Home.vue') },
+  { path: '/login', name: 'login', component: () =&gt; import('@/views/Login.vue'), meta: { public: true } },
+  {
+    path: '/app',
+    component: () =&gt; import('@/layouts/AppLayout.vue'),
+    children: [
+      { path: '', redirect: { name: 'dashboard' } },
+      { path: 'dashboard', name: 'dashboard', component: () =&gt; import('@/views/Dashboard.vue') },
+      { path: 'users/:id', name: 'userDetail', component: () =&gt; import('@/views/UserDetail.vue'), props: true },
+    ],
+  },
+  { path: '/:pathMatch(.*)*', name: 'notfound', component: () =&gt; import('@/views/NotFound.vue'), meta: { public: true } },
+]
+
+export const router = createRouter({
+  history: createWebHistory(),
+  routes,
+  scrollBehavior(to, from, saved) {
+    if (saved) return saved
+    return { top: 0 }
+  },
+})
+</code></pre>
+<p>在入口注入：<code>src/main.ts</code></p>
+<pre><code class="language-ts">import { createApp } from 'vue'
+import App from './App.vue'
+import { router } from './router'
+
+createApp(App).use(router).mount('#app')
+</code></pre>
+<h3 id="32-动态路由别名与重定向"><a class="header" href="#32-动态路由别名与重定向">3.2 动态路由、别名与重定向</a></h3>
+<ul>
+<li>动态参数：<code>/users/:id</code>，在组件中通过 <code>defineProps&lt;{ id: string }&gt;()</code> 获取（<code>props: true</code>）。</li>
+<li>别名：<code>alias: ['/u/:id']</code>。</li>
+<li>重定向：<code>{ path: '/home', redirect: '/' }</code>。</li>
+</ul>
+<h3 id="33-路由懒加载与代码分割"><a class="header" href="#33-路由懒加载与代码分割">3.3 路由懒加载与代码分割</a></h3>
+<ul>
+<li>使用 <code>() =&gt; import('...')</code> 实现按需加载，结合 Vite 分包策略。</li>
+<li>路由级别的 <code>webpackChunkName</code> 注释在 Vite 中无需使用；若需手动分组，可用动态导入与 <code>/* @vite-ignore */</code> 场景。</li>
+</ul>
+<h3 id="34-导航守卫与权限控制"><a class="header" href="#34-导航守卫与权限控制">3.4 导航守卫与权限控制</a></h3>
+<p>基础全局守卫（简化示例）：<code>src/router/guards.ts</code></p>
+<pre><code class="language-ts">import type { Router } from 'vue-router'
+
+export function applyGuards(router: Router, isAuthenticated: () =&gt; boolean) {
+  router.beforeEach((to, from, next) =&gt; {
+    if (to.meta.public) return next()
+    if (!isAuthenticated()) return next({ name: 'login', query: { redirect: to.fullPath } })
+    next()
+  })
+}
+</code></pre>
+<p>在 <code>main.ts</code> 中注入（暂用伪实现，Module 4 使用 Pinia 接管）：</p>
+<pre><code class="language-ts">import { applyGuards } from '@/router/guards'
+const isAuth = () =&gt; !!localStorage.getItem('token')
+applyGuards(router, isAuth)
+</code></pre>
+<p>细粒度权限：利用 <code>meta.roles</code> 与用户角色数组比对：</p>
+<pre><code class="language-ts">// 路由定义
+{ path: '/admin', name: 'admin', component: () =&gt; import('@/views/Admin.vue'), meta: { roles: ['admin'] } }
+
+// 守卫内
+const roles = getUserRoles() // ['user'] / ['admin']
+const need = to.meta.roles as string[] | undefined
+if (need &amp;&amp; !need.some(r =&gt; roles.includes(r))) return next({ name: 'notfound' })
+</code></pre>
+<h3 id="35-路由数据获取模式"><a class="header" href="#35-路由数据获取模式">3.5 路由数据获取模式</a></h3>
+<ul>
+<li>组合式函数在 <code>setup</code> 中发起请求；配合 Suspense，实现路由级加载状态。</li>
+<li>使用“路由变更 -&gt; 取消上个请求 -&gt; 发起新请求”的模式，避免数据污染。</li>
+<li>SSR（Nuxt）会改为服务端数据获取；在纯 Vue 项目中，可配合 <code>onBeforeRouteUpdate</code> 更新。</li>
+</ul>
+<p>示例：<code>UserDetail.vue</code></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;Suspense&gt;
+    &lt;template #default&gt;
+      &lt;UserCard :user="user" /&gt;
+    &lt;/template&gt;
+    &lt;template #fallback&gt;
+      &lt;p&gt;Loading...&lt;/p&gt;
+    &lt;/template&gt;
+  &lt;/Suspense&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { onBeforeRouteUpdate, useRoute } from 'vue-router'
+import { ref } from 'vue'
+import { fetchUser } from '@/services/user'
+
+const route = useRoute()
+const user = ref(await fetchUser(route.params.id as string))
+
+onBeforeRouteUpdate(async (to) =&gt; {
+  user.value = await fetchUser(to.params.id as string)
+})
+&lt;/script&gt;
+</code></pre>
+<p>注意：直接在 <code>setup</code> 顶层 <code>await</code> 需要启用 <code>&lt;script setup&gt;</code> + <code>Suspense</code> 支持；若不使用 Suspense，请在 <code>onMounted</code> 内异步拉取并设置 loading 状态。</p>
+<h3 id="36-常见错误与规避"><a class="header" href="#36-常见错误与规避">3.6 常见错误与规避</a></h3>
+<ul>
+<li>路由切换时状态未重置，导致详情页残留旧数据：在 <code>onBeforeRouteUpdate</code> 或监听 <code>route.params</code> 时清理状态。</li>
+<li>404 与重定向环：检查动态段与通配符优先级，确保 <code>/:pathMatch(.*)*</code> 放最后。</li>
+<li>滥用全局守卫拦截所有路由，忽视 <code>meta.public</code> 导致登录页也被拦截。</li>
+</ul>
+<h3 id="37-验证标准"><a class="header" href="#37-验证标准">3.7 验证标准</a></h3>
+<ul>
+<li>能实现公共页（登录/404）与受保护页的访问控制。</li>
+<li>提供基于 <code>roles</code> 的细粒度限制；直接访问受限路由被正确拦截。</li>
+<li>首次进入与参数变化时能正确拉取路由级数据，且无数据污染。</li>
+</ul>
+<h3 id="38-动态菜单与面包屑"><a class="header" href="#38-动态菜单与面包屑">3.8 动态菜单与面包屑</a></h3>
+<p>根据路由 <code>meta.title</code>、<code>meta.icon</code> 生成菜单与面包屑：</p>
+<pre><code class="language-ts">// src/router/routes.ts
+export const appRoutes = [
+  {
+    path: '/app',
+    meta: { title: '应用', icon: 'app' },
+    component: () =&gt; import('@/layouts/AppLayout.vue'),
+    children: [
+      { path: 'dashboard', name: 'dashboard', meta: { title: '仪表盘', icon: 'dashboard' }, component: () =&gt; import('@/views/Dashboard.vue') },
+      { path: 'users', meta: { title: '用户', icon: 'user' }, children: [
+        { path: '', redirect: { name: 'userList' } },
+        { path: 'list', name: 'userList', meta: { title: '用户列表' }, component: () =&gt; import('@/views/UserList.vue') },
+        { path: ':id', name: 'userDetail', meta: { title: '用户详情', hidden: true }, component: () =&gt; import('@/views/UserDetail.vue') },
+      ]},
+    ],
+  },
+]
+</code></pre>
+<p>构建菜单：</p>
+<pre><code class="language-ts">// src/composables/useMenus.ts
+import type { RouteRecordRaw } from 'vue-router'
+
+type MenuItem = { title: string; icon?: string; path: string; children?: MenuItem[] }
+
+export function buildMenus(routes: RouteRecordRaw[]): MenuItem[] {
+  function travel(list: RouteRecordRaw[], base = ''): MenuItem[] {
+    return list
+      .filter(r =&gt; !r.meta?.hidden)
+      .map(r =&gt; {
+        const path = r.path.startsWith('/') ? r.path : `${base}/${r.path}`.replace(/\/+/, '/')
+        const item: MenuItem = { title: (r.meta?.title as string) || r.name?.toString() || '', icon: r.meta?.icon as string | undefined, path }
+        if (r.children?.length) item.children = travel(r.children, path)
+        return item
+      })
+  }
+  return travel(routes)
+}
+</code></pre>
+<p>面包屑：</p>
+<pre><code class="language-ts">// src/composables/useBreadcrumb.ts
+import { useRoute } from 'vue-router'
+
+export function useBreadcrumb() {
+  const route = useRoute()
+  const items = route.matched
+    .filter(r =&gt; r.meta?.title)
+    .map(r =&gt; ({ title: r.meta!.title as string, path: r.path }))
+  return { items }
+}
+</code></pre>
+<h3 id="39-路由过渡与页面标题"><a class="header" href="#39-路由过渡与页面标题">3.9 路由过渡与页面标题</a></h3>
+<p>在 <code>App.vue</code> 中：</p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;RouterView v-slot="{ Component }"&gt;
+    &lt;Transition name="fade" mode="out-in"&gt;
+      &lt;component :is="Component" /&gt;
+    &lt;/Transition&gt;
+  &lt;/RouterView&gt;
+  &lt;Toast /&gt;
+&lt;/template&gt;
+&lt;script setup lang="ts"&gt;
+import { useRoute } from 'vue-router'
+import { watch } from 'vue'
+
+const route = useRoute()
+watch(() =&gt; route.meta.title, (t) =&gt; {
+  document.title = t ? `${t as string} - Mini Admin` : 'Mini Admin'
+}, { immediate: true })
+&lt;/script&gt;
+&lt;style&gt;
+.fade-enter-active, .fade-leave-active { transition: opacity .2s }
+.fade-enter-from, .fade-leave-to { opacity: 0 }
+&lt;/style&gt;
+</code></pre>
+<h3 id="310-数据预取与取消abortcontroller"><a class="header" href="#310-数据预取与取消abortcontroller">3.10 数据预取与取消（AbortController）</a></h3>
+<p>模式：路由变化时取消上一次请求，避免竞态覆盖。</p>
+<pre><code class="language-ts">// src/services/http.ts
+export async function get&lt;T&gt;(url: string, signal?: AbortSignal): Promise&lt;T&gt; {
+  const res = await fetch(url, { signal, headers: { 'Content-Type': 'application/json' } })
+  if (!res.ok) throw new Error(res.statusText)
+  return await res.json() as T
+}
+
+// src/views/UserDetail.vue 片段
+const controller = new AbortController()
+onBeforeRouteUpdate(async (to) =&gt; {
+  controller.abort() // 取消上一次
+  const c = new AbortController()
+  controller = c
+  user.value = await get(`/api/users/${to.params.id}`, c.signal)
+})
+onUnmounted(() =&gt; controller.abort())
+</code></pre>
+<h3 id="311-离开确认未保存表单"><a class="header" href="#311-离开确认未保存表单">3.11 离开确认（未保存表单）</a></h3>
+<p>组合式函数：</p>
+<pre><code class="language-ts">// src/composables/useLeaveConfirm.ts
+import { onBeforeRouteLeave } from 'vue-router'
+import { onMounted, onUnmounted } from 'vue'
+
+export function useLeaveConfirm(enable: () =&gt; boolean) {
+  const msg = '你有未保存的更改，确定要离开吗？'
+  onBeforeRouteLeave((to, from, next) =&gt; {
+    if (!enable()) return next()
+    if (confirm(msg)) return next()
+    next(false)
+  })
+
+  function beforeUnload(e: BeforeUnloadEvent) {
+    if (!enable()) return
+    e.preventDefault(); e.returnValue = msg
+  }
+  onMounted(() =&gt; window.addEventListener('beforeunload', beforeUnload))
+  onUnmounted(() =&gt; window.removeEventListener('beforeunload', beforeUnload))
+}
+</code></pre>
+<p>在表单页面中：</p>
+<pre><code class="language-ts">const dirty = computed(() =&gt; JSON.stringify(form) !== JSON.stringify(initial))
+useLeaveConfirm(() =&gt; dirty.value)
+</code></pre>
+<hr />
+<h2 id="核心模块-4状态管理pinia-2"><a class="header" href="#核心模块-4状态管理pinia-2">核心模块 4：状态管理（Pinia 2）</a></h2>
+<p>本模块将覆盖：Store 划分、state/getters/actions、服务调用、持久化缓存、SSR 兼容、与组合式 API 的边界。实战项目将封装用户与购物车两个 store，并实现登录态/刷新恢复/并发请求处理。</p>
+<h3 id="41-安装与初始化"><a class="header" href="#41-安装与初始化">4.1 安装与初始化</a></h3>
+<pre><code class="language-bash">pnpm add pinia
+</code></pre>
+<p>在 <code>main.ts</code> 中注入：</p>
+<pre><code class="language-ts">import { createPinia } from 'pinia'
+const app = createApp(App)
+app.use(createPinia())
+app.use(router)
+app.mount('#app')
+</code></pre>
+<h3 id="42-设计-store-边界原则"><a class="header" href="#42-设计-store-边界原则">4.2 设计 Store 边界（原则）</a></h3>
+<ul>
+<li>按领域划分（Auth、User、Cart、Product、Ui），避免“上帝 Store”。</li>
+<li>Store 只关心“状态 + 计算 + 业务动作”，不要塞进视图层逻辑。</li>
+<li>异步请求在 Action 中进行，捕获错误并做最小副作用。</li>
+</ul>
+<h3 id="43-认证-storeauth"><a class="header" href="#43-认证-storeauth">4.3 认证 Store（Auth）</a></h3>
+<p><code>src/stores/auth.ts</code></p>
+<pre><code class="language-ts">import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { loginApi, getProfileApi } from '@/services/auth'
+
+export const useAuth = defineStore('auth', () =&gt; {
+  const token = ref&lt;string | null&gt;(localStorage.getItem('token'))
+  const user = ref&lt;{ id: string; name: string; roles: string[] } | null&gt;(null)
+  const isAuthenticated = computed(() =&gt; !!token.value)
+
+  async function login(username: string, password: string) {
+    const res = await loginApi(username, password)
+    token.value = res.token
+    localStorage.setItem('token', res.token)
+    await fetchProfile()
+  }
+
+  async function fetchProfile() {
+    if (!token.value) { user.value = null; return }
+    user.value = await getProfileApi()
+  }
+
+  function logout() {
+    token.value = null
+    user.value = null
+    localStorage.removeItem('token')
+  }
+
+  return { token, user, isAuthenticated, login, fetchProfile, logout }
+})
+</code></pre>
+<p>在路由守卫中使用 Pinia（替代 localStorage 判定）：</p>
+<pre><code class="language-ts">import { useAuth } from '@/stores/auth'
+router.beforeEach(async (to, from, next) =&gt; {
+  const auth = useAuth()
+  // 首次加载时尝试恢复资料
+  if (auth.token &amp;&amp; !auth.user) await auth.fetchProfile()
+
+  if (to.meta.public) return next()
+  if (!auth.isAuthenticated) return next({ name: 'login', query: { redirect: to.fullPath } })
+
+  const need = to.meta.roles as string[] | undefined
+  if (need &amp;&amp; !need.some(r =&gt; auth.user?.roles.includes(r))) return next({ name: 'notfound' })
+  next()
+})
+</code></pre>
+<h3 id="44-购物车-storecart"><a class="header" href="#44-购物车-storecart">4.4 购物车 Store（Cart）</a></h3>
+<p><code>src/stores/cart.ts</code></p>
+<pre><code class="language-ts">import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+
+type Item = { id: string; title: string; price: number; qty: number }
+
+export const useCart = defineStore('cart', () =&gt; {
+  const items = ref&lt;Item[]&gt;(load())
+  const count = computed(() =&gt; items.value.reduce((s, i) =&gt; s + i.qty, 0))
+  const total = computed(() =&gt; items.value.reduce((s, i) =&gt; s + i.price * i.qty, 0))
+
+  function add(it: Omit&lt;Item, 'qty'&gt;, qty = 1) {
+    const found = items.value.find(i =&gt; i.id === it.id)
+    if (found) found.qty += qty
+    else items.value.push({ ...it, qty })
+    save(items.value)
+  }
+  function remove(id: string) {
+    items.value = items.value.filter(i =&gt; i.id !== id); save(items.value)
+  }
+  function clear() { items.value = []; save(items.value) }
+
+  return { items, count, total, add, remove, clear }
+})
+
+function load(): Item[] { try { return JSON.parse(localStorage.getItem('cart') || '[]') } catch { return [] } }
+function save(data: Item[]) { localStorage.setItem('cart', JSON.stringify(data)) }
+</code></pre>
+<p>视图使用：</p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;div&gt;数量：{{ count }} | 合计：{{ total.toFixed(2) }}&lt;/div&gt;
+  &lt;button @click="add({ id: '1', title: 'Vue 3 实战', price: 88 })"&gt;加购&lt;/button&gt;
+&lt;/template&gt;
+&lt;script setup lang="ts"&gt;
+import { useCart } from '@/stores/cart'
+const { count, total, add } = useCart()
+&lt;/script&gt;
+</code></pre>
+<h3 id="45-持久化与插件"><a class="header" href="#45-持久化与插件">4.5 持久化与插件</a></h3>
+<ul>
+<li>简易方案：手动 <code>localStorage</code>（如上）。</li>
+<li>推荐方案：<code>pinia-plugin-persistedstate</code></li>
+</ul>
+<pre><code class="language-bash">pnpm add pinia-plugin-persistedstate
+</code></pre>
+<p><code>main.ts</code> 中：</p>
+<pre><code class="language-ts">import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+app.use(pinia)
+</code></pre>
+<p>在 Store 中启用：</p>
+<pre><code class="language-ts">export const useCart = defineStore('cart', () =&gt; { /* ... */ }, { persist: true })
+</code></pre>
+<h3 id="46-与组合式函数的边界"><a class="header" href="#46-与组合式函数的边界">4.6 与组合式函数的边界</a></h3>
+<ul>
+<li>业务数据流与缓存交给 Store；视图局部状态交给组件/组合式函数。</li>
+<li>可将“领域服务”封装为组合式函数（如 <code>useProducts</code>），内部再依赖 Pinia。</li>
+</ul>
+<h3 id="47-store-测试vitest"><a class="header" href="#47-store-测试vitest">4.7 Store 测试（Vitest）</a></h3>
+<pre><code class="language-ts">import { setActivePinia, createPinia } from 'pinia'
+import { useCart } from '@/stores/cart'
+
+beforeEach(() =&gt; setActivePinia(createPinia()))
+
+test('add increases count and total', () =&gt; {
+  const cart = useCart()
+  cart.add({ id: 'b1', title: 'Book', price: 10 }, 2)
+  expect(cart.count).toBe(2)
+  expect(cart.total).toBe(20)
+})
+</code></pre>
+<h3 id="48-验证标准"><a class="header" href="#48-验证标准">4.8 验证标准</a></h3>
+<ul>
+<li>划分 2-3 个 Store，边界清晰，互不循环依赖。</li>
+<li>Auth 刷新后能自动恢复用户资料；受保护路由依然有效。</li>
+<li>持久化策略合理（敏感字段避免明文，或仅持久化必要片段）。</li>
+</ul>
+<h3 id="49-请求层封装axiosfetch-二选一"><a class="header" href="#49-请求层封装axiosfetch-二选一">4.9 请求层封装（axios/fetch 二选一）</a></h3>
+<p>推荐统一请求层，集中处理 BaseURL、超时、Token、错误与重试。</p>
+<p>Axios 方案：</p>
+<pre><code class="language-ts">// src/services/axios.ts
+import axios from 'axios'
+import { useAuth } from '@/stores/auth'
+
+export const http = axios.create({ baseURL: import.meta.env.VITE_API_BASE, timeout: 15_000 })
+
+http.interceptors.request.use((config) =&gt; {
+  const { token } = useAuth()
+  if (token) config.headers.Authorization = `Bearer ${token}`
+  return config
+})
+
+http.interceptors.response.use(
+  res =&gt; res,
+  err =&gt; {
+    // 统一错误包装
+    const status = err.response?.status
+    const message = err.response?.data?.message || err.message
+    return Promise.reject({ status, message, cause: err })
+  },
+)
+</code></pre>
+<p>Fetch 方案（轻量）：参考 3.10 中封装，增加 Token/错误处理。</p>
+<h3 id="410-取消与请求去重"><a class="header" href="#410-取消与请求去重">4.10 取消与请求去重</a></h3>
+<p>Axios：</p>
+<pre><code class="language-ts">// src/services/dedupe.ts
+import type { AxiosRequestConfig, Canceler } from 'axios'
+const pending = new Map&lt;string, Canceler&gt;()
+
+function genKey(config: AxiosRequestConfig) {
+  const { method, url, params, data } = config
+  return [method, url, JSON.stringify(params), JSON.stringify(data)].join('&amp;')
+}
+
+export function addPending(config: AxiosRequestConfig, canceler: Canceler) {
+  const key = genKey(config)
+  if (pending.has(key)) pending.get(key)!('Canceled duplicate request')
+  pending.set(key, canceler)
+}
+export function removePending(config: AxiosRequestConfig) {
+  const key = genKey(config)
+  pending.delete(key)
+}
+</code></pre>
+<p>在拦截器中集成：</p>
+<pre><code class="language-ts">import axios from 'axios'
+import { addPending, removePending } from './dedupe'
+const http = axios.create()
+
+http.interceptors.request.use((config) =&gt; {
+  config.cancelToken = new axios.CancelToken(cancel =&gt; addPending(config, cancel))
+  return config
+})
+http.interceptors.response.use((res) =&gt; {
+  removePending(res.config)
+  return res
+}, (err) =&gt; {
+  if (err.config) removePending(err.config)
+  return Promise.reject(err)
+})
+</code></pre>
+<h3 id="411-乐观更新与回滚"><a class="header" href="#411-乐观更新与回滚">4.11 乐观更新与回滚</a></h3>
+<p>在 Cart 中示例：</p>
+<pre><code class="language-ts">async function addAndSync(it: Omit&lt;Item, 'qty'&gt;, qty = 1) {
+  // 乐观更新
+  const snapshot = structuredClone(items.value)
+  add(it, qty)
+  try {
+    await http.post('/cart/add', { id: it.id, qty })
+  } catch (e) {
+    // 回滚
+    items.value = snapshot
+    throw e
+  }
+}
+</code></pre>
+<h3 id="412-swrstale-while-revalidate缓存模式"><a class="header" href="#412-swrstale-while-revalidate缓存模式">4.12 SWR（stale-while-revalidate）缓存模式</a></h3>
+<p>组合式封装：</p>
+<pre><code class="language-ts">// src/composables/useSWR.ts
+import { ref } from 'vue'
+
+export function useSWR&lt;T&gt;(key: string, fetcher: () =&gt; Promise&lt;T&gt;, ttl = 30_000) {
+  const data = ref&lt;T | null&gt;(null)
+  const loading = ref(false)
+  const err = ref&lt;any&gt;(null)
+  const cacheKey = `swr:${key}`
+  const cacheAtKey = `${cacheKey}:at`
+
+  async function load(revalidate = true) {
+    const now = Date.now()
+    const cached = localStorage.getItem(cacheKey)
+    const cachedAt = Number(localStorage.getItem(cacheAtKey) || 0)
+    if (cached &amp;&amp; now - cachedAt &lt; ttl) data.value = JSON.parse(cached)
+    if (!revalidate) return
+    loading.value = true
+    try {
+      const fresh = await fetcher()
+      data.value = fresh
+      localStorage.setItem(cacheKey, JSON.stringify(fresh))
+      localStorage.setItem(cacheAtKey, String(Date.now()))
+    } catch (e) { err.value = e } finally { loading.value = false }
+  }
+  load(true)
+  return { data, loading, err, reload: () =&gt; load(true) }
+}
+</code></pre>
+<p>使用：</p>
+<pre><code class="language-ts">const { data: products, reload } = useSWR('products', () =&gt; http.get('/products').then(r =&gt; r.data))
+</code></pre>
+<h3 id="413-错误与通知统一处理"><a class="header" href="#413-错误与通知统一处理">4.13 错误与通知统一处理</a></h3>
+<p>可在 Store action 捕获错误并派发全局消息（如 Toast）：</p>
+<pre><code class="language-ts">try { await login(username, password) }
+catch (e: any) { showToast(e.message || '登录失败') }
+</code></pre>
+<h3 id="414-ssr-兼容要点pinia"><a class="header" href="#414-ssr-兼容要点pinia">4.14 SSR 兼容要点（Pinia）</a></h3>
+<ul>
+<li>每个请求创建新的 Pinia 实例（隔离用户状态）。</li>
+<li>避免在服务端访问 <code>localStorage</code>；以 <code>process.client</code> 守卫或传入服务端上下文。</li>
+</ul>
+<h3 id="415-进阶验证标准"><a class="header" href="#415-进阶验证标准">4.15 进阶验证标准</a></h3>
+<ul>
+<li>重复点击加载不会并发打爆接口（去重/取消有效）。</li>
+<li>乐观更新在失败时正确回滚，UI 状态与后端一致。</li>
+<li>列表数据具备 SWR 能力，可离线读取，回到在线后自动刷新。</li>
+</ul>
+<hr />
+<h2 id="核心模块-5构建与工程化vite-5"><a class="header" href="#核心模块-5构建与工程化vite-5">核心模块 5：构建与工程化（Vite 5）</a></h2>
+<p>本模块将覆盖：环境变量管理、ESLint + Prettier、路径别名、静态资源策略、构建体积优化、依赖预构建、Mock/代理、CI/CD、容器化与部署运行监控。包含 Vitest 单测与 Playwright/Cypress 端到端测试骨架。</p>
+<h3 id="51-代码规范与类型系统"><a class="header" href="#51-代码规范与类型系统">5.1 代码规范与类型系统</a></h3>
+<pre><code class="language-bash">pnpm add -D typescript @types/node
+pnpm add -D eslint @antfu/eslint-config prettier
+</code></pre>
+<p><code>eslint.config.js</code>（示例）：</p>
+<pre><code class="language-js">import antfu from '@antfu/eslint-config'
+export default antfu({ vue: true, stylistic: true })
+</code></pre>
+<p>脚本：<code>package.json</code></p>
+<pre><code class="language-json">{
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  }
+}
+</code></pre>
+<h3 id="52-vite-配置与路径别名"><a class="header" href="#52-vite-配置与路径别名">5.2 Vite 配置与路径别名</a></h3>
+<p><code>vite.config.ts</code></p>
+<pre><code class="language-ts">import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import path from 'node:path'
+
+export default defineConfig({
+  plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
+    },
+  },
+  build: {
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vue: ['vue', 'vue-router', 'pinia'],
+          vendor: ['axios'],
+        },
+      },
+    },
+  },
+})
+</code></pre>
+<h3 id="53-环境变量与模式"><a class="header" href="#53-环境变量与模式">5.3 环境变量与模式</a></h3>
+<p><code>.env</code> 文件：</p>
+<pre><code>VITE_API_BASE=/api
+</code></pre>
+<p>使用：</p>
+<pre><code class="language-ts">const apiBase = import.meta.env.VITE_API_BASE
+</code></pre>
+<p>模式切换：<code>pnpm dev -- --mode staging</code>，读取 <code>.env.staging</code>。</p>
+<h3 id="54-性能优化策略"><a class="header" href="#54-性能优化策略">5.4 性能优化策略</a></h3>
+<ul>
+<li>路由与组件懒加载，避免首页一次性加载所有内容。</li>
+<li>图片资源使用现代格式（WebP/AVIF），开启按需加载与占位过渡。</li>
+<li>使用依赖分析工具（<code>rollup-plugin-visualizer</code>）定位大包。</li>
+<li>预构建第三方库，减少冷启动成本。</li>
+</ul>
+<pre><code class="language-bash">pnpm add -D rollup-plugin-visualizer
+</code></pre>
+<pre><code class="language-ts">// vite.config.ts
+import { visualizer } from 'rollup-plugin-visualizer'
+plugins: [vue(), visualizer({ open: true })]
+</code></pre>
+<h3 id="55-单元测试与-e2e"><a class="header" href="#55-单元测试与-e2e">5.5 单元测试与 E2E</a></h3>
+<p>Vitest 配置：<code>vitest.config.ts</code></p>
+<pre><code class="language-ts">import { defineConfig } from 'vitest/config'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+  plugins: [vue()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./test/setup.ts'],
+  },
+})
+</code></pre>
+<p>E2E（Playwright）：</p>
+<pre><code class="language-bash">pnpm create playwright@latest
+</code></pre>
+<p>编写基础用例：首屏渲染、路由跳转、表单提交、受保护页拦截。</p>
+<h3 id="56-部署与运维"><a class="header" href="#56-部署与运维">5.6 部署与运维</a></h3>
+<p>Nginx 配置（历史路由回退）：</p>
+<pre><code>location / {
+  try_files $uri $uri/ /index.html;
+}
+</code></pre>
+<p>Dockerfile（简版）：</p>
+<pre><code class="language-Dockerfile">FROM node:20-alpine AS builder
+WORKDIR /app
+COPY . .
+RUN corepack enable &amp;&amp; corepack prepare pnpm@latest --activate \
+ &amp;&amp; pnpm install --frozen-lockfile \
+ &amp;&amp; pnpm build
+
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY ./deploy/nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+</code></pre>
+<p>CI 提示：</p>
+<ul>
+<li>在 CI 中缓存 <code>~/.pnpm-store</code> 与 <code>node_modules/.vite</code> 可加速构建。</li>
+<li>产物上传至对象存储/静态托管（Vercel/Netlify/Cloudflare Pages/Nginx）。</li>
+</ul>
+<h3 id="57-验证标准"><a class="header" href="#57-验证标准">5.7 验证标准</a></h3>
+<ul>
+<li>ESLint/Prettier/TS 全部通过，提交前自动检查（pre-commit）。</li>
+<li>构建体积可视化报告可读，首页包体控制在设定目标（如 &lt; 200KB gzip）。</li>
+<li>E2E 覆盖关键用户路径（登陆、导航、表单、错误页）。</li>
+</ul>
+<h3 id="58-构建体积与分包策略"><a class="header" href="#58-构建体积与分包策略">5.8 构建体积与分包策略</a></h3>
+<ul>
+<li>路由级懒加载：核心页面按路由切分。</li>
+<li>依赖分组：将 <code>vue/vue-router/pinia</code> 拆为 <code>vue</code> 块、业务三方库为 <code>vendor</code> 块。</li>
+<li>动态导入与命名：在 Vite 下建议通过 <code>manualChunks</code> 控制，而非注释命名。</li>
+</ul>
+<pre><code class="language-ts">// vite.config.ts（更灵活的 manualChunks）
+build: {
+  rollupOptions: {
+    output: {
+      manualChunks(id) {
+        if (id.includes('node_modules')) {
+          if (id.includes('vue')) return 'vue'
+          if (id.includes('echarts')) return 'echarts'
+          return 'vendor'
+        }
+      },
+    },
+  },
+}
+</code></pre>
+<h3 id="59-资源与图片优化"><a class="header" href="#59-资源与图片优化">5.9 资源与图片优化</a></h3>
+<ul>
+<li>小图内联：控制 <code>assetsInlineLimit</code>（默认 4KB）。</li>
+<li>使用现代图片格式（WebP/AVIF），并提供回退。</li>
+<li>响应式图片：<code>&lt;img srcset&gt;</code> 与 <code>sizes</code>。</li>
+<li>懒加载：<code>loading="lazy"</code> 与可视区域检测（IntersectionObserver）。</li>
+</ul>
+<h3 id="510-字体与图标策略"><a class="header" href="#510-字体与图标策略">5.10 字体与图标策略</a></h3>
+<ul>
+<li>优先矢量图标（Iconify/UnoCSS/组件库图标），减少自定义字体。</li>
+<li>若使用字体：子集化（subsetting）、<code>font-display: swap</code>，并以 <code>preload</code> 优化首屏。</li>
+</ul>
+<h3 id="511-预加载与预获取"><a class="header" href="#511-预加载与预获取">5.11 预加载与预获取</a></h3>
+<ul>
+<li>预获取（prefetch）：为用户可能点击的下一页面提前获取资源。</li>
+<li>预加载（preload）：对关键资源（首屏 CSS/字体）进行高优先级加载。</li>
+</ul>
+<p>Vite 插件：<code>vite-plugin-html</code> 或手动在 <code>index.html</code> 添加：</p>
+<pre><code class="language-html">&lt;link rel="preload" href="/assets/main.css" as="style"&gt;
+&lt;link rel="preload" href="/assets/app.woff2" as="font" type="font/woff2" crossorigin&gt;
+</code></pre>
+<h3 id="512-http-缓存与压缩"><a class="header" href="#512-http-缓存与压缩">5.12 HTTP 缓存与压缩</a></h3>
+<ul>
+<li>生产服务器开启 Gzip 与 Brotli（优先 Brotli）。</li>
+<li>为静态构建产物设置长缓存（<code>Cache-Control: public, max-age=31536000, immutable</code>）。</li>
+<li>对 <code>index.html</code> 禁止缓存（或短缓存）。</li>
+</ul>
+<p>Nginx 片段：</p>
+<pre><code>gzip on;
+gzip_types text/plain application/javascript text/css application/json image/svg+xml;
+
+location /assets/ {
+  add_header Cache-Control "public, max-age=31536000, immutable";
+}
+location = /index.html {
+  add_header Cache-Control "no-cache";
+}
+</code></pre>
+<h3 id="513-环境类型与安全注入"><a class="header" href="#513-环境类型与安全注入">5.13 环境类型与安全注入</a></h3>
+<p>定义环境变量类型声明：<code>src/env.d.ts</code></p>
+<pre><code class="language-ts">interface ImportMetaEnv {
+  readonly VITE_API_BASE: string
+}
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+</code></pre>
+<p>注意：仅 <code>VITE_</code> 前缀会在构建时注入前端代码；切勿注入敏感密钥。</p>
+<h3 id="514-mock-与代理"><a class="header" href="#514-mock-与代理">5.14 Mock 与代理</a></h3>
+<ul>
+<li>简易代理：见 <code>vite.config.ts</code>。</li>
+<li>Mock：<code>vite-plugin-mock</code> 或 <code>msw</code>（更贴近真实 API 交互）。</li>
+</ul>
+<pre><code class="language-bash">pnpm add -D msw
+</code></pre>
+<p>在测试或开发环境启动 MSW 拦截，实现稳定联调。</p>
+<h3 id="515-github-actionsci-示例"><a class="header" href="#515-github-actionsci-示例">5.15 GitHub Actions（CI 示例）</a></h3>
+<p><code>.github/workflows/ci.yml</code></p>
+<pre><code class="language-yaml">name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: corepack enable &amp;&amp; corepack prepare pnpm@latest --activate
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint &amp;&amp; pnpm test
+      - run: pnpm build
+      - uses: actions/upload-artifact@v4
+        with: { name: dist, path: dist }
+</code></pre>
+<h3 id="516-性能预算与度量"><a class="header" href="#516-性能预算与度量">5.16 性能预算与度量</a></h3>
+<ul>
+<li>设定预算：首屏 JS gzip &lt; 200KB，TTI &lt; 3s（示例）。</li>
+<li>工具：Lighthouse、WebPageTest、Chrome Performance/Memory、Source Map Explorer。</li>
+<li>在 PR 中附上报告快照，作为质量门禁。</li>
+</ul>
+<h3 id="517-端到端测试建议"><a class="header" href="#517-端到端测试建议">5.17 端到端测试建议</a></h3>
+<ul>
+<li>Playwright：并发测试、移动端视口、路由与网络拦截、截图基线。</li>
+<li>关键路径：注册/登录、受保护页、表单提交流程、404/重定向、错误回退。</li>
+</ul>
+<h3 id="518-生产观测概览"><a class="header" href="#518-生产观测概览">5.18 生产观测（概览）</a></h3>
+<ul>
+<li>Core Web Vitals：FID/INP、LCP、CLS；上报埋点。</li>
+<li>错误监控：Sentry/阿里 ARMS/字节火山等（见后续模块）。</li>
+</ul>
+<h3 id="519-常见工程化坑"><a class="header" href="#519-常见工程化坑">5.19 常见工程化坑</a></h3>
+<ul>
+<li>路由懒加载路径大小写导致构建差异（大小写敏感文件系统）。</li>
+<li>错误使用 <code>import.meta.env</code> 导致服务端/客户端变量混淆。</li>
+<li>忽视 CSS 代码分割，首页引入大量无关样式。</li>
+</ul>
+<h3 id="520-进阶验证标准"><a class="header" href="#520-进阶验证标准">5.20 进阶验证标准</a></h3>
+<ul>
+<li>提交即检查（lint/test/build）通过，构建产物可视化无异常大块。</li>
+<li>Lighthouse 分数达标；Web Vitals 上报可见且稳定。</li>
+</ul>
+<hr />
+<h2 id="核心模块-6ssr-与全栈nuxt-3可选进阶"><a class="header" href="#核心模块-6ssr-与全栈nuxt-3可选进阶">核心模块 6：SSR 与全栈（Nuxt 3，可选进阶）</a></h2>
+<p>本模块将覆盖：渲染模式（CSR/SSR/SSG/ISR），数据获取与缓存、错误边界、Hydration 与指标监控。实战项目将实现博客列表 SSR 与路由级数据缓存策略。</p>
+<h3 id="61-快速开始"><a class="header" href="#61-快速开始">6.1 快速开始</a></h3>
+<pre><code class="language-bash">pnpm dlx nuxi@latest init nuxt-ssr
+cd nuxt-ssr
+pnpm install
+pnpm dev
+</code></pre>
+<p>目录要点：<code>pages/</code> 路由即页面；<code>layouts/</code> 页面布局；<code>server/api/</code> 服务端路由；<code>app.vue</code> 应用外壳。</p>
+<h3 id="62-数据获取与缓存"><a class="header" href="#62-数据获取与缓存">6.2 数据获取与缓存</a></h3>
+<ul>
+<li><code>useAsyncData</code> / <code>useFetch</code>：在服务端预取数据，客户端水合（hydrate）。</li>
+<li>缓存：可设置 <code>staleTime</code>、<code>getCachedData</code>，或在服务端层引入外部缓存（Redis）。</li>
+</ul>
+<p>示例：<code>pages/index.vue</code></p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;div&gt;
+    &lt;h1&gt;博客&lt;/h1&gt;
+    &lt;ul&gt;
+      &lt;li v-for="p in posts" :key="p.id"&gt;{{ p.title }}&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/div&gt;
+  &lt;pre&gt;server: {{ process.server }}&lt;/pre&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+type Post = { id: number; title: string }
+const { data: posts } = await useAsyncData&lt;Post[]&gt;('posts', () =&gt; $fetch('/api/posts'), { staleTime: 30_000 })
+&lt;/script&gt;
+</code></pre>
+<p>服务端 API：<code>server/api/posts.ts</code></p>
+<pre><code class="language-ts">export default defineEventHandler(() =&gt; {
+  return [
+    { id: 1, title: 'Hello SSR' },
+    { id: 2, title: 'Nuxt 3 Data' },
+  ]
+})
+</code></pre>
+<h3 id="63-seo-与-meta"><a class="header" href="#63-seo-与-meta">6.3 SEO 与 Meta</a></h3>
+<pre><code class="language-ts">// 页面或组件 setup 中
+useHead({
+  title: '博客列表',
+  meta: [
+    { name: 'description', content: 'Nuxt 3 SSR 示例' },
+    { property: 'og:type', content: 'website' },
+  ],
+})
+</code></pre>
+<h3 id="64-部署提示"><a class="header" href="#64-部署提示">6.4 部署提示</a></h3>
+<ul>
+<li>运行模式：<code>node server</code>、Edge（Nitro 适配）或静态导出（部分场景）。</li>
+<li>SSR 需可用的服务器环境或无服务器平台（Vercel/Netlify/Cloudflare）。</li>
+</ul>
+<h3 id="65-验证标准"><a class="header" href="#65-验证标准">6.5 验证标准</a></h3>
+<ul>
+<li>首屏 HTML 包含页面关键文本（无需 JS 也可看到内容）。</li>
+<li>刷新页面不会触发 404，动态路由 SSR 正常。</li>
+<li>基础 SEO 标签正确注入，<code>sitemap/robots</code> 可选配置到位。</li>
+</ul>
+<hr />
+<h2 id="常见错误与避坑清单贯穿模块"><a class="header" href="#常见错误与避坑清单贯穿模块">常见错误与避坑清单（贯穿模块）</a></h2>
+<ul>
+<li>缺失 <code>:key</code> 导致列表渲染复用异常。</li>
+<li>在 <code>setup</code> 外解构 <code>props</code> 或响应式对象，导致丢失响应性。</li>
+<li>深层对象侦听未使用 <code>deep: true</code>，或监听函数内访问未被追踪的依赖。</li>
+<li>滥用全局事件总线；优先组合式函数与清晰的数据流。</li>
+<li>在销毁时未清理副作用（计时器、监听器、订阅）。</li>
+</ul>
+<hr />
+<h2 id="阶段性学习路径与里程碑"><a class="header" href="#阶段性学习路径与里程碑">阶段性学习路径与里程碑</a></h2>
+<ul>
+<li>阶段 A（1-2 天）：掌握模板语法、Composition API、基本组件通信与表单处理。产出：Todo + 表单验证 Demo。验证：可维护性、响应式理解问答。</li>
+<li>阶段 B（2-3 天）：完成 Vue Router/Pinia 基础，搭建中小型应用的骨架。产出：多页面 + 登录/权限 Demo。验证：路由守卫与状态流正确。</li>
+<li>阶段 C（2-4 天）：工程化与质量保障（ESLint/Prettier、Vitest、E2E、性能优化）。产出：CI 配置与性能报告。验证：构建体积与关键指标压线。</li>
+<li>阶段 D（可选 2-3 天）：Nuxt 3 SSR。产出：博客 SSR 与缓存策略。验证：首屏指标与 SEO。</li>
+</ul>
+<hr />
+<h2 id="模块化验证标准初版"><a class="header" href="#模块化验证标准初版">模块化验证标准（初版）</a></h2>
+<ul>
+<li>基础模块：
+<ul>
+<li>能清晰解释 <code>ref/reactive/computed/watch</code> 的差异与适用场景。</li>
+<li>能独立实现自定义 <code>v-model</code> 组件并通过单元测试。</li>
+<li>能避免典型响应式陷阱（丢失响应/错误依赖/多余 watch）。</li>
+</ul>
+</li>
+<li>组件模块：
+<ul>
+<li>合理定义组件契约，能通过插槽实现内容解耦。</li>
+<li>核心组件具备覆盖 70%+ 常用行为的单测用例。</li>
+</ul>
+</li>
+<li>路由与状态：
+<ul>
+<li>实现权限路由与刷新保持登录态，处理 401/403/404 场景。</li>
+<li>Store 边界清晰，避免“上帝 Store”，具备持久化策略。</li>
+</ul>
+</li>
+<li>工程化：
+<ul>
+<li>ESLint/Prettier/TS 配置到位，Vitest 通过率 90%+。</li>
+<li>生产构建体积与首屏加载时间达标（自设量化阈值）。</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="扩展资源与推荐"><a class="header" href="#扩展资源与推荐">扩展资源与推荐</a></h2>
+<ul>
+<li>官方文档：
+<ul>
+<li>Vue 3: https://vuejs.org/</li>
+<li>Vue Router: https://router.vuejs.org/</li>
+<li>Pinia: https://pinia.vuejs.org/</li>
+<li>Vite: https://vitejs.dev/</li>
+</ul>
+</li>
+<li>生态：
+<ul>
+<li>组件库：Element Plus、Naive UI、Vuetify</li>
+<li>表单与验证：vee-validate、yup</li>
+<li>数据可视化：ECharts、Apache Superset（配合）</li>
+<li>国际化：vue-i18n</li>
+<li>动画：@vueuse/motion、GSAP</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注：后续模块 3-6 将在本文件继续扩展包含完整实战案例、测试与部署示例，并给出生产级配置清单与指标验收项。</p>
+</blockquote>
+<hr />
+<h2 id="综合实战mini-admin登录权限路由状态工程化"><a class="header" href="#综合实战mini-admin登录权限路由状态工程化">综合实战：Mini Admin（登录/权限/路由/状态/工程化）</a></h2>
+<p>目标：实现一个最小可用的后台管理系统，包含登录、仪表盘、用户列表详情（动态路由）、角色权限控制、全局状态与持久化、基础单测与 E2E 测试、构建与部署。</p>
+<h3 id="a-初始化与选项"><a class="header" href="#a-初始化与选项">A. 初始化与选项</a></h3>
+<pre><code class="language-bash">pnpm create vue@latest mini-admin
+# 选择：TypeScript、Vue Router、Pinia、Vitest、ESLint + Prettier
+cd mini-admin
+pnpm install
+</code></pre>
+<h3 id="b-目录结构建议"><a class="header" href="#b-目录结构建议">B. 目录结构建议</a></h3>
+<pre><code>src/
+  assets/
+  components/
+  layouts/
+  router/
+  services/
+  stores/
+  views/
+  App.vue
+  main.ts
+</code></pre>
+<h3 id="c-登录与权限"><a class="header" href="#c-登录与权限">C. 登录与权限</a></h3>
+<p><code>services/auth.ts</code>（模拟服务）：</p>
+<pre><code class="language-ts">export async function loginApi(username: string, password: string) {
+  if (username === 'admin' &amp;&amp; password === 'admin') return { token: 't_admin' }
+  if (username === 'user' &amp;&amp; password === 'user') return { token: 't_user' }
+  throw new Error('Invalid credentials')
+}
+
+export async function getProfileApi() {
+  const token = localStorage.getItem('token')
+  if (token === 't_admin') return { id: '1', name: 'Admin', roles: ['admin'] }
+  if (token === 't_user') return { id: '2', name: 'User', roles: ['user'] }
+  throw new Error('Unauthorized')
+}
+</code></pre>
+<p><code>stores/auth.ts</code>：参考模块 4 代码。</p>
+<p>路由守卫：参考模块 3 <code>applyGuards</code> 思路并融合 Pinia。</p>
+<h3 id="d-页面与布局"><a class="header" href="#d-页面与布局">D. 页面与布局</a></h3>
+<p><code>layouts/AppLayout.vue</code>：</p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;header&gt;
+    &lt;RouterLink to="/app/dashboard"&gt;Dashboard&lt;/RouterLink&gt;
+    &lt;RouterLink to="/app/users/1"&gt;User#1&lt;/RouterLink&gt;
+    &lt;RouterLink to="/admin" v-if="isAdmin"&gt;Admin&lt;/RouterLink&gt;
+    &lt;button @click="logout"&gt;退出&lt;/button&gt;
+  &lt;/header&gt;
+  &lt;main&gt;&lt;RouterView /&gt;&lt;/main&gt;
+&lt;/template&gt;
+&lt;script setup lang="ts"&gt;
+import { storeToRefs } from 'pinia'
+import { useAuth } from '@/stores/auth'
+const auth = useAuth()
+const { user } = storeToRefs(auth)
+const isAdmin = computed(() =&gt; user.value?.roles.includes('admin'))
+const logout = () =&gt; auth.logout()
+&lt;/script&gt;
+</code></pre>
+<p><code>views/Login.vue</code>、<code>views/Dashboard.vue</code>、<code>views/UserDetail.vue</code>、<code>views/Admin.vue</code> 按需实现（UserDetail 使用路由参数拉取数据）。</p>
+<h3 id="e-测试"><a class="header" href="#e-测试">E. 测试</a></h3>
+<ul>
+<li>单元测试：
+<ul>
+<li><code>stores/auth.spec.ts</code>：登录成功与失败、刷新恢复资料。</li>
+<li>组件测试：登录表单，输入错误提示与成功跳转。</li>
+</ul>
+</li>
+<li>E2E：
+<ul>
+<li>场景 1：访问受保护页 -&gt; 跳转登录 -&gt; 登录成功 -&gt; 回跳。</li>
+<li>场景 2：普通用户访问 <code>/admin</code> -&gt; 404。</li>
+</ul>
+</li>
+</ul>
+<h3 id="f-构建与部署"><a class="header" href="#f-构建与部署">F. 构建与部署</a></h3>
+<p>按模块 5 配置 Vite 构建与 Nginx/Docker 部署，设置历史路由回退。</p>
+<h3 id="g-验收清单可量化"><a class="header" href="#g-验收清单可量化">G. 验收清单（可量化）</a></h3>
+<ul>
+<li>功能：登录/登出/回跳；角色权限；用户详情动态路由。</li>
+<li>质量：单元测试 10+ 用例，E2E 至少 2 条主路径通过。</li>
+<li>性能：首页 gzip 包体 &lt; 200KB，Lighthouse Performance &gt; 85。</li>
+<li>可靠：刷新状态保持，错误统一提示，路由守卫无环。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-7表单与验证vee-validate--yup"><a class="header" href="#扩展模块-7表单与验证vee-validate--yup">扩展模块 7：表单与验证（vee-validate + yup）</a></h2>
+<p>目标：构建可复用的表单验证体系，覆盖同步/异步校验、动态表单、服务端错误整合。</p>
+<h3 id="71-安装与基础配置"><a class="header" href="#71-安装与基础配置">7.1 安装与基础配置</a></h3>
+<pre><code class="language-bash">pnpm add vee-validate yup
+</code></pre>
+<p>简单示例：</p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;Form :validation-schema="schema" @submit="onSubmit"&gt;
+    &lt;Field name="email" as="input" type="email" placeholder="Email" /&gt;
+    &lt;ErrorMessage name="email" /&gt;
+    &lt;Field name="password" as="input" type="password" placeholder="Password" /&gt;
+    &lt;ErrorMessage name="password" /&gt;
+    &lt;button type="submit"&gt;登录&lt;/button&gt;
+  &lt;/Form&gt;
+  &lt;p v-if="serverError" class="err"&gt;{{ serverError }}&lt;/p&gt;
+  &lt;p v-if="ok" class="ok"&gt;登录成功&lt;/p&gt;
+  &lt;pre&gt;values: {{ values }}&lt;/pre&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { Form, Field, ErrorMessage, useForm } from 'vee-validate'
+import * as yup from 'yup'
+import { ref } from 'vue'
+
+const schema = yup.object({
+  email: yup.string().email('邮箱格式不正确').required('请输入邮箱'),
+  password: yup.string().min(6, '至少 6 位').required('请输入密码'),
+})
+const { values } = useForm()
+const ok = ref(false)
+const serverError = ref('')
+
+async function onSubmit(v: any) {
+  serverError.value = ''
+  ok.value = false
+  try {
+    // 伪接口
+    if (v.email === 'a@b.com' &amp;&amp; v.password === '123456') ok.value = true
+    else throw new Error('账号或密码错误')
+  } catch (e: any) { serverError.value = e.message }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.err { color: #dc2626 }
+.ok { color: #16a34a }
+&lt;/style&gt;
+</code></pre>
+<h3 id="72-复用与复杂场景"><a class="header" href="#72-复用与复杂场景">7.2 复用与复杂场景</a></h3>
+<ul>
+<li>封装通用 <code>FormItem</code>：统一 label、错误提示和布局。</li>
+<li>动态表单：基于 <code>v-for</code> 渲染 <code>Field</code>，配合 yup 的 <code>array().of(object())</code>。</li>
+<li>异步校验：用户名重名检测使用 <code>test('unique', ...)</code> 并节流请求。</li>
+</ul>
+<h3 id="73-验证标准"><a class="header" href="#73-验证标准">7.3 验证标准</a></h3>
+<ul>
+<li>表单验证与服务端错误整合良好，错误展示一致。</li>
+<li>动态表单与异步校验覆盖核心场景；无重复提交。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-8国际化vue-i18n"><a class="header" href="#扩展模块-8国际化vue-i18n">扩展模块 8：国际化（vue-i18n）</a></h2>
+<p>目标：实现多语言切换、按需加载、日期/数字/复数格式化，保证在路由、标题与组件内一致生效。</p>
+<h3 id="81-安装与配置"><a class="header" href="#81-安装与配置">8.1 安装与配置</a></h3>
+<pre><code class="language-bash">pnpm add vue-i18n
+</code></pre>
+<p><code>src/i18n.ts</code>：</p>
+<pre><code class="language-ts">import { createI18n } from 'vue-i18n'
+
+export const i18n = createI18n({
+  legacy: false,
+  locale: 'zh',
+  fallbackLocale: 'en',
+  messages: {
+    zh: { hello: '你好，{name}！', items: '共有 {n} 个项目', login: '登录' },
+    en: { hello: 'Hello, {name}!', items: 'There are {n} items', login: 'Login' },
+  },
+})
+</code></pre>
+<p>在 <code>main.ts</code> 注入：<code>app.use(i18n)</code>。</p>
+<h3 id="82-组件内使用与懒加载"><a class="header" href="#82-组件内使用与懒加载">8.2 组件内使用与懒加载</a></h3>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;p&gt;{{ t('hello', { name: 'Vue' }) }}&lt;/p&gt;
+  &lt;p&gt;{{ tc('items', n, { n }) }}&lt;/p&gt;
+  &lt;button @click="switchLang"&gt;切换语言&lt;/button&gt;
+  &lt;p&gt;当前语言：{{ locale }}&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;script setup lang="ts"&gt;
+import { useI18n } from 'vue-i18n'
+const { t, tc, locale } = useI18n()
+function switchLang() { locale.value = locale.value === 'zh' ? 'en' : 'zh' }
+&lt;/script&gt;
+</code></pre>
+<p>按需加载语言包：</p>
+<pre><code class="language-ts">async function setLang(l: string) {
+  if (!i18n.global.availableLocales.includes(l)) {
+    const mod = await import(`./locales/${l}.json`)
+    i18n.global.setLocaleMessage(l, mod.default)
+  }
+  i18n.global.locale.value = l
+}
+</code></pre>
+<h3 id="83-验证标准"><a class="header" href="#83-验证标准">8.3 验证标准</a></h3>
+<ul>
+<li>路由标题、面包屑、按钮文本随语言切换一致更新。</li>
+<li>语言包懒加载工作正常，无 404；默认语言回退逻辑正常。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-9动画与交互transitiongroup--motion"><a class="header" href="#扩展模块-9动画与交互transitiongroup--motion">扩展模块 9：动画与交互（Transition/Group + Motion）</a></h2>
+<p>目标：通过原生 <code>Transition</code>、<code>TransitionGroup</code> 与 <code>@vueuse/motion</code> 实现沉浸式交互，兼顾性能与可访问性。</p>
+<h3 id="91-基础过渡"><a class="header" href="#91-基础过渡">9.1 基础过渡</a></h3>
+<pre><code class="language-vue">&lt;Transition name="slide-fade"&gt;
+  &lt;div v-if="open"&gt;内容&lt;/div&gt;
+&lt;/Transition&gt;
+&lt;style&gt;
+.slide-fade-enter-active { transition: all .2s ease-out }
+.slide-fade-leave-active { transition: all .1s ease-in }
+.slide-fade-enter-from, .slide-fade-leave-to { opacity: 0; transform: translateY(-4px) }
+&lt;/style&gt;
+</code></pre>
+<p>列表过渡：</p>
+<pre><code class="language-vue">&lt;TransitionGroup name="list" tag="ul"&gt;
+  &lt;li v-for="i in items" :key="i.id"&gt;{{ i.text }}&lt;/li&gt;
+&lt;/TransitionGroup&gt;
+&lt;style&gt;
+.list-move, .list-enter-active, .list-leave-active { transition: all .2s }
+.list-enter-from, .list-leave-to { opacity: 0; transform: translateY(6px) }
+&lt;/style&gt;
+</code></pre>
+<h3 id="92-motion可选"><a class="header" href="#92-motion可选">9.2 Motion（可选）</a></h3>
+<pre><code class="language-bash">pnpm add @vueuse/motion
+</code></pre>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;div v-motion="{ initial: { opacity: 0 }, enter: { opacity: 1 } }"&gt;Fade In&lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
+<h3 id="93-验证标准"><a class="header" href="#93-验证标准">9.3 验证标准</a></h3>
+<ul>
+<li>过渡效果无闪烁、不卡顿；列表增删过渡自然。</li>
+<li>动画不影响交互（可中断/可跳过），对可访问性无负面影响。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-10可访问性a11y"><a class="header" href="#扩展模块-10可访问性a11y">扩展模块 10：可访问性（a11y）</a></h2>
+<p>目标：落实语义化标签、键盘可达、焦点管理与 ARIA，提升易用性与合规性。</p>
+<h3 id="101-基础规范"><a class="header" href="#101-基础规范">10.1 基础规范</a></h3>
+<ul>
+<li>使用语义化标签：<code>&lt;button&gt;</code>、<code>&lt;label&gt;</code>、<code>&lt;nav&gt;</code>、<code>&lt;main&gt;</code>、<code>&lt;section&gt;</code>。</li>
+<li>表单关联 <code>for/id</code>，图片具备 <code>alt</code>，交互元素可聚焦且可键盘操作。</li>
+<li>为自定义组件提供 <code>role</code> 与必要的 <code>aria-*</code> 属性。</li>
+</ul>
+<h3 id="102-焦点管理"><a class="header" href="#102-焦点管理">10.2 焦点管理</a></h3>
+<p>模态框示例：</p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;div v-if="open" class="dialog" role="dialog" aria-modal="true" aria-labelledby="title"&gt;
+    &lt;h2 id="title"&gt;标题&lt;/h2&gt;
+    &lt;button @click="confirm"&gt;确定&lt;/button&gt;
+    &lt;button @click="close"&gt;关闭&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;script setup lang="ts"&gt;
+import { onMounted } from 'vue'
+onMounted(() =&gt; {
+  // 将焦点移动到对话框首个可交互元素（省略实现或借助第三方库）
+})
+&lt;/script&gt;
+</code></pre>
+<h3 id="103-验证标准"><a class="header" href="#103-验证标准">10.3 验证标准</a></h3>
+<ul>
+<li>通过基本无障碍检查（Lighthouse a11y &gt; 90）。</li>
+<li>主要交互控件在仅键盘操作时可完成核心流程。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-11前端安全xsscsrfcsp"><a class="header" href="#扩展模块-11前端安全xsscsrfcsp">扩展模块 11：前端安全（XSS/CSRF/CSP）</a></h2>
+<p>目标：掌握常见前端安全风险与缓解措施，建立最小攻击面。</p>
+<h3 id="111-xss-防护"><a class="header" href="#111-xss-防护">11.1 XSS 防护</a></h3>
+<ul>
+<li>禁止直接信任不可信 HTML；谨慎使用 <code>v-html</code>，结合白名单清洗（DOMPurify）。</li>
+</ul>
+<pre><code class="language-bash">pnpm add dompurify
+</code></pre>
+<pre><code class="language-ts">import DOMPurify from 'dompurify'
+const safe = DOMPurify.sanitize(untrustedHtml)
+</code></pre>
+<ul>
+<li>输出转义、URL 参数校验与编码；避免字符串拼接生成 HTML。</li>
+</ul>
+<h3 id="112-csrf-与认证"><a class="header" href="#112-csrf-与认证">11.2 CSRF 与认证</a></h3>
+<ul>
+<li>对跨域请求使用 <code>SameSite=Lax/Strict</code> Cookie 或使用 Token + <code>Authorization</code> 头。</li>
+<li>重要操作要求二次确认与幂等性；后端校验 <code>Origin/Referer</code>。</li>
+</ul>
+<h3 id="113-csp-与资源约束"><a class="header" href="#113-csp-与资源约束">11.3 CSP 与资源约束</a></h3>
+<ul>
+<li>配置 CSP：限制脚本来源，关闭 <code>unsafe-inline</code>（或结合 nonce/hash）。</li>
+</ul>
+<pre><code>Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'
+</code></pre>
+<h3 id="114-依赖与供应链"><a class="header" href="#114-依赖与供应链">11.4 依赖与供应链</a></h3>
+<ul>
+<li>锁定依赖（<code>pnpm-lock.yaml</code>），启用 <code>pnpm audit</code>，定期升级安全补丁。</li>
+</ul>
+<h3 id="115-验证标准"><a class="header" href="#115-验证标准">11.5 验证标准</a></h3>
+<ul>
+<li>关键页面无 <code>v-html</code> 或已清洗；Lighthouse 安全项通过。</li>
+<li>请求认证方案合理，关键操作具备防护与确认机制。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-12监控与日志sentry自研埋点"><a class="header" href="#扩展模块-12监控与日志sentry自研埋点">扩展模块 12：监控与日志（Sentry/自研埋点）</a></h2>
+<p>目标：构建错误上报、性能指标与用户行为埋点，完善可观测性。</p>
+<h3 id="121-前端错误监控sentry"><a class="header" href="#121-前端错误监控sentry">12.1 前端错误监控（Sentry）</a></h3>
+<pre><code class="language-bash">pnpm add @sentry/vue @sentry/tracing
+</code></pre>
+<pre><code class="language-ts">import * as Sentry from '@sentry/vue'
+import { BrowserTracing } from '@sentry/tracing'
+
+Sentry.init({
+  app,
+  dsn: 'https://example@sentry.io/123',
+  integrations: [new BrowserTracing({ routingInstrumentation: Sentry.vueRouterInstrumentation(router) })],
+  tracesSampleRate: 0.1,
+})
+</code></pre>
+<h3 id="122-性能指标上报"><a class="header" href="#122-性能指标上报">12.2 性能指标上报</a></h3>
+<pre><code class="language-ts">import { onCLS, onFID, onLCP } from 'web-vitals'
+function report(metric: any) { navigator.sendBeacon('/metrics', JSON.stringify(metric)) }
+onCLS(report); onFID(report); onLCP(report)
+</code></pre>
+<h3 id="123-自研埋点建议"><a class="header" href="#123-自研埋点建议">12.3 自研埋点建议</a></h3>
+<ul>
+<li>定义事件规范（命名/属性/上下文），封装 <code>track(event, props)</code>。</li>
+<li>隐私合规：脱敏/匿名化，遵循地区法规（GDPR/本地法规）。</li>
+</ul>
+<h3 id="124-验证标准"><a class="header" href="#124-验证标准">12.4 验证标准</a></h3>
+<ul>
+<li>捕获未处理异常与 Promise 拒绝；错误详情上报完整可定位。</li>
+<li>关键性能指标（LCP/INP/CLS）可见并可筛选维度。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-13pwavite-plugin-pwa"><a class="header" href="#扩展模块-13pwavite-plugin-pwa">扩展模块 13：PWA（vite-plugin-pwa）</a></h2>
+<p>目标：实现离线缓存、图标与安装提示，提升可用性与体验。</p>
+<h3 id="131-安装与配置"><a class="header" href="#131-安装与配置">13.1 安装与配置</a></h3>
+<pre><code class="language-bash">pnpm add -D vite-plugin-pwa
+</code></pre>
+<pre><code class="language-ts">// vite.config.ts
+import { VitePWA } from 'vite-plugin-pwa'
+plugins: [
+  vue(),
+  VitePWA({
+    registerType: 'autoUpdate',
+    manifest: { name: 'Mini Admin', short_name: 'Admin', icons: [] },
+    workbox: { runtimeCaching: [{ urlPattern: /^https:\/\/api\.example\.com\//, handler: 'NetworkFirst' }] },
+  })
+]
+</code></pre>
+<h3 id="132-前端注册"><a class="header" href="#132-前端注册">13.2 前端注册</a></h3>
+<pre><code class="language-ts">// main.ts
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () =&gt; navigator.serviceWorker.register('/sw.js'))
+}
+</code></pre>
+<h3 id="133-验证标准"><a class="header" href="#133-验证标准">13.3 验证标准</a></h3>
+<ul>
+<li>可离线打开最近访问页面；更新后可自动刷新缓存。</li>
+<li>安装提示与图标显示正确，Lighthouse PWA 分数达标。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-14数据可视化echarts"><a class="header" href="#扩展模块-14数据可视化echarts">扩展模块 14：数据可视化（ECharts）</a></h2>
+<p>目标：在 Vue 中高性能绘图，支持响应式与大数据量。</p>
+<h3 id="141-集成方案"><a class="header" href="#141-集成方案">14.1 集成方案</a></h3>
+<pre><code class="language-bash">pnpm add echarts vue-echarts
+</code></pre>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;VChart :option="option" autoresize class="chart" /&gt;
+&lt;/template&gt;
+&lt;script setup lang="ts"&gt;
+import { use } from 'echarts/core'
+import { CanvasRenderer } from 'echarts/renderers'
+import { BarChart } from 'echarts/charts'
+import { GridComponent, TooltipComponent } from 'echarts/components'
+import VChart from 'vue-echarts'
+
+use([CanvasRenderer, BarChart, GridComponent, TooltipComponent])
+const option = { xAxis: { type: 'category', data: ['A','B','C'] }, yAxis: {}, series: [{ type: 'bar', data: [5, 20, 36] }] }
+&lt;/script&gt;
+&lt;style&gt;.chart { height: 300px }&lt;/style&gt;
+</code></pre>
+<h3 id="142-性能建议"><a class="header" href="#142-性能建议">14.2 性能建议</a></h3>
+<ul>
+<li>使用 <code>CanvasRenderer</code>，大数据开启 <code>large</code> 或数据下采样。</li>
+<li>容器 Resize 使用 <code>autoresize</code>，避免频繁手动触发。</li>
+</ul>
+<h3 id="143-验证标准"><a class="header" href="#143-验证标准">14.3 验证标准</a></h3>
+<ul>
+<li>图表在窗口缩放后仍自适应，交互无明显卡顿。</li>
+<li>数据更新后保持平滑过渡，无内存泄漏。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-15性能专项进阶"><a class="header" href="#扩展模块-15性能专项进阶">扩展模块 15：性能专项进阶</a></h2>
+<p>目标：掌握框架层与业务层的性能优化方法，定位并消除卡顿与泄漏。</p>
+<h3 id="151-响应式性能陷阱"><a class="header" href="#151-响应式性能陷阱">15.1 响应式性能陷阱</a></h3>
+<ul>
+<li>过度 <code>watchEffect</code>：依赖收集不明确，频繁执行；优先 <code>watch</code> 精准依赖。</li>
+<li>大型对象 <code>reactive</code> 深层侦听：拆分为更细粒度的 <code>ref</code>。</li>
+<li>频繁变更导致重渲染：对列表做批量更新或节流。</li>
+</ul>
+<h3 id="152-列表与虚拟滚动"><a class="header" href="#152-列表与虚拟滚动">15.2 列表与虚拟滚动</a></h3>
+<ul>
+<li>使用 <code>virtual-scroller</code>（如 <code>vue-virtual-scroller</code>）渲染 1w+ 行数据。</li>
+<li>列表项加稳定 <code>key</code>，避免昂贵 diff；避免在 <code>v-for</code> 中使用函数/新对象。</li>
+</ul>
+<h3 id="153-组件缓存与懒挂载"><a class="header" href="#153-组件缓存与懒挂载">15.3 组件缓存与懒挂载</a></h3>
+<ul>
+<li><code>KeepAlive</code> 缓存路由页面：小心缓存过多导致内存膨胀；配合 <code>include/exclude</code>。</li>
+<li>大组件“延迟挂载”：滚动到可视区域后再动态导入。</li>
+</ul>
+<h3 id="154-计算与事件节流"><a class="header" href="#154-计算与事件节流">15.4 计算与事件节流</a></h3>
+<pre><code class="language-ts">import { computed } from 'vue'
+import { useThrottleFn } from '@vueuse/core'
+
+const expensive = computed(() =&gt; heavyCalc(input.value))
+const onScroll = useThrottleFn(() =&gt; { /* ... */ }, 100)
+</code></pre>
+<h3 id="155-内存泄漏排查"><a class="header" href="#155-内存泄漏排查">15.5 内存泄漏排查</a></h3>
+<ul>
+<li>DevTools Performance/Memory 记录快照，关注 Detached DOM 与 Listener 未清理。</li>
+<li>检查：未 <code>onUnmounted</code> 清理的定时器/订阅；全局单例上挂载的引用。</li>
+</ul>
+<h3 id="156-懒加载与预取策略"><a class="header" href="#156-懒加载与预取策略">15.6 懒加载与预取策略</a></h3>
+<ul>
+<li>对用户高概率路径进行 <code>prefetch</code>；低概率路径保持懒加载。</li>
+<li>对“立即可见”的首屏关键资源使用 <code>preload</code>，其余资源延迟加载。</li>
+</ul>
+<h3 id="157-验证标准"><a class="header" href="#157-验证标准">15.7 验证标准</a></h3>
+<ul>
+<li>列表渲染性能提升显著（&gt; 60FPS），交互卡顿明显减少。</li>
+<li>内存快照无持续增长趋势；回收正常，无 Detached DOM 累积。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-16测试专项unitintegratione2e"><a class="header" href="#扩展模块-16测试专项unitintegratione2e">扩展模块 16：测试专项（Unit/Integration/E2E）</a></h2>
+<p>目标：构建从单元到端到端的完整测试金字塔，保障可回归性与重构信心。</p>
+<h3 id="161-组件测试模式"><a class="header" href="#161-组件测试模式">16.1 组件测试模式</a></h3>
+<ul>
+<li>使用 Vue Testing Library：鼓励以用户视角（查询可访问性角色/文本）。</li>
+<li>避免依赖实现细节（<code>wrapper.vm</code>），偏向 DOM 与可见行为断言。</li>
+</ul>
+<p>示例：</p>
+<pre><code class="language-ts">import { render, screen, fireEvent } from '@testing-library/vue'
+import Counter from '@/components/Counter.vue'
+
+test('increments on click', async () =&gt; {
+  render(Counter)
+  await fireEvent.click(screen.getByRole('button', { name: /\+/ }))
+  expect(screen.getByText('1')).toBeInTheDocument()
+})
+</code></pre>
+<h3 id="162-store-与-router-测试"><a class="header" href="#162-store-与-router-测试">16.2 Store 与 Router 测试</a></h3>
+<pre><code class="language-ts">import { createTestingPinia } from '@pinia/testing'
+import { createRouter, createMemoryHistory } from 'vue-router'
+
+const pinia = createTestingPinia({ createSpy: vi.fn })
+const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component: Home }] })
+render(App, { global: { plugins: [pinia, router] } })
+</code></pre>
+<h3 id="163-网络-mockmsw"><a class="header" href="#163-网络-mockmsw">16.3 网络 Mock（MSW）</a></h3>
+<pre><code class="language-ts">// test/setup.ts
+import { setupServer } from 'msw/node'
+import { rest } from 'msw'
+export const server = setupServer(
+  rest.get('/api/users/:id', (req, res, ctx) =&gt; res(ctx.json({ id: req.params.id, name: 'Alice' })))
+)
+beforeAll(() =&gt; server.listen())
+afterEach(() =&gt; server.resetHandlers())
+afterAll(() =&gt; server.close())
+</code></pre>
+<h3 id="164-e2e-场景"><a class="header" href="#164-e2e-场景">16.4 E2E 场景</a></h3>
+<ul>
+<li>登录回跳、受保护页、表单校验、错误提示、导航与 404。</li>
+<li>截图基线：不同分辨率下关键页面对比。</li>
+</ul>
+<h3 id="165-覆盖率与门禁"><a class="header" href="#165-覆盖率与门禁">16.5 覆盖率与门禁</a></h3>
+<ul>
+<li>配置 <code>vitest --coverage</code> 并在 CI 设定阈值；对关键模块（Store/路由守卫/表单）覆盖 80%+。</li>
+</ul>
+<h3 id="166-验证标准"><a class="header" href="#166-验证标准">16.6 验证标准</a></h3>
+<ul>
+<li>单测稳定、无“脆弱测试”；E2E 持续通过且无频繁误报。</li>
+<li>关键用户路径都有测试覆盖，回归周期可控。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-17vue-2--vue-3-迁移指南"><a class="header" href="#扩展模块-17vue-2--vue-3-迁移指南">扩展模块 17：Vue 2 → Vue 3 迁移指南</a></h2>
+<p>目标：从 Vue 2 平滑迁移到 Vue 3，理解 API 差异与兼容策略。</p>
+<h3 id="171-差异概览"><a class="header" href="#171-差异概览">17.1 差异概览</a></h3>
+<ul>
+<li>响应式：Proxy 替代 defineProperty；移除部分变更检测限制。</li>
+<li>生命周期：<code>beforeCreate/created</code> → <code>setup</code>; <code>destroyed</code> → <code>unmounted</code>。</li>
+<li>事件：<code>.native</code> 修饰符移除；自定义组件事件以 <code>emits</code> 声明。</li>
+<li>插槽：作用域插槽语法调整为 <code>v-slot</code>；<code>$scopedSlots</code> 移除。</li>
+<li>过滤器：内置过滤器移除，使用方法/计算属性或 i18n/format 库。</li>
+<li>v-model：<code>value</code>/<code>input</code> → <code>modelValue</code>/<code>update:modelValue</code>。</li>
+</ul>
+<h3 id="172-迁移步骤"><a class="header" href="#172-迁移步骤">17.2 迁移步骤</a></h3>
+<ol>
+<li>升级依赖（Router 4、Pinia、Vite），移除 Vuex（可迁 Pinia）。</li>
+<li>启用 Composition API（Options 可并存），逐步迁移核心组件。</li>
+<li>替换全局 API（<code>Vue.use</code> → <code>app.use</code>，<code>Vue.prototype</code> → <code>app.config.globalProperties</code>）。</li>
+<li>v-model 与插槽语法更新；移除过滤器。</li>
+<li>组件库替换（ElementUI → Element Plus 等）。</li>
+</ol>
+<h3 id="173-兼容构建可选"><a class="header" href="#173-兼容构建可选">17.3 兼容构建（可选）</a></h3>
+<ul>
+<li>Vue 3 兼容构建（Compat Build）可临时保留部分旧行为，便于分阶段迁移。</li>
+</ul>
+<h3 id="174-验证标准"><a class="header" href="#174-验证标准">17.4 验证标准</a></h3>
+<ul>
+<li>主要业务路径迁移完成，构建/测试通过；性能与包体有所改善。</li>
+<li>无未迁移 API 报警；代码风格统一（首选 Composition API）。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-18风格指南与最佳实践"><a class="header" href="#扩展模块-18风格指南与最佳实践">扩展模块 18：风格指南与最佳实践</a></h2>
+<p>目标：统一编码风格、命名、目录与组件约定，提高可读性与可维护性。</p>
+<h3 id="181-目录与命名"><a class="header" href="#181-目录与命名">18.1 目录与命名</a></h3>
+<ul>
+<li>目录：<code>components/</code>（基础/业务）、<code>views/</code>（路由页）、<code>composables/</code>（组合式函数）、<code>stores/</code>、<code>services/</code>、<code>router/</code>、<code>assets/</code>。</li>
+<li>命名：组件 <code>PascalCase.vue</code>，组合式 <code>useXxx.ts</code>，Store <code>useXxx</code>，服务 <code>xxxApi.ts</code>。</li>
+</ul>
+<h3 id="182-组件风格"><a class="header" href="#182-组件风格">18.2 组件风格</a></h3>
+<ul>
+<li>单一职责：每个组件专注一种职责；复杂组件拆分“容器/展示”。</li>
+<li>Props/Emits 明确类型，默认值与约束清晰；插槽命名 <code>#header/#footer/#item</code>。</li>
+</ul>
+<h3 id="183-组合式-api-约定"><a class="header" href="#183-组合式-api-约定">18.3 组合式 API 约定</a></h3>
+<ul>
+<li>仅在 <code>setup</code> 或组合式函数内部使用 <code>ref/reactive</code>；导出只暴露必要的 API。</li>
+<li>组合式函数具备“无副作用”默认行为，副作用由调用方显式触发。</li>
+</ul>
+<h3 id="184-异常与日志"><a class="header" href="#184-异常与日志">18.4 异常与日志</a></h3>
+<ul>
+<li>统一错误处理：服务层抛业务错误，视图层展示用户可读信息。</li>
+<li>关键路径加埋点；错误包含上下文（用户、路由、接口）。</li>
+</ul>
+<h3 id="185-代码审查清单"><a class="header" href="#185-代码审查清单">18.5 代码审查清单</a></h3>
+<ul>
+<li>是否引入未使用依赖？是否可按需加载？</li>
+<li>是否破坏单向数据流？是否存在隐藏副作用？</li>
+<li>是否缺少清理？是否对外暴露过多实现细节？</li>
+</ul>
+<h3 id="186-验证标准"><a class="header" href="#186-验证标准">18.6 验证标准</a></h3>
+<ul>
+<li>PR 基于统一 ESLint/Prettier；命名与目录约定一致；评审通过率高。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-19架构与模式可扩展前端"><a class="header" href="#扩展模块-19架构与模式可扩展前端">扩展模块 19：架构与模式（可扩展前端）</a></h2>
+<p>目标：在中大型项目中建立清晰边界与演化能力。</p>
+<h3 id="191-分层与边界"><a class="header" href="#191-分层与边界">19.1 分层与边界</a></h3>
+<ul>
+<li>View（组件）— State（Pinia）— Service（API/域逻辑）— Infra（适配器）。</li>
+<li>数据只通过明确边界流转；避免跨层直接耦合。</li>
+</ul>
+<h3 id="192-组合式函数与领域服务"><a class="header" href="#192-组合式函数与领域服务">19.2 组合式函数与领域服务</a></h3>
+<ul>
+<li>将特定业务流程封装为组合式函数（含状态/动作），由视图消费。</li>
+<li>领域对象与校验透出最小接口；在边界集中防御。</li>
+</ul>
+<h3 id="193-路由驱动的代码分割"><a class="header" href="#193-路由驱动的代码分割">19.3 路由驱动的代码分割</a></h3>
+<ul>
+<li>以路由为单位规划模块；模块内部再行拆分（子路由/子 Store）。</li>
+</ul>
+<h3 id="194-微前端可选"><a class="header" href="#194-微前端可选">19.4 微前端（可选）</a></h3>
+<ul>
+<li>若采用：限制共享依赖版本，定义基座与子应用通信协议；权衡复杂度与收益。</li>
+</ul>
+<h3 id="195-配置化与插件化"><a class="header" href="#195-配置化与插件化">19.5 配置化与插件化</a></h3>
+<ul>
+<li>将易变规则抽离为配置（权限/菜单/路由元信息），或以插件化注入（如主题）。</li>
+</ul>
+<h3 id="196-验证标准"><a class="header" href="#196-验证标准">19.6 验证标准</a></h3>
+<ul>
+<li>新功能可自然落位（目录/边界清晰），变更影响面可控，可测试性高。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-20常见问题与排错faq"><a class="header" href="#扩展模块-20常见问题与排错faq">扩展模块 20：常见问题与排错（FAQ）</a></h2>
+<h3 id="q1v-for-渲染错乱状态串了"><a class="header" href="#q1v-for-渲染错乱状态串了">Q1：v-for 渲染错乱/状态串了？</a></h3>
+<ul>
+<li>A：缺少稳定 <code>:key</code> 或使用索引为 key；确保 key 唯一且稳定。</li>
+</ul>
+<h3 id="q2响应式对象修改后视图不更新"><a class="header" href="#q2响应式对象修改后视图不更新">Q2：响应式对象修改后视图不更新？</a></h3>
+<ul>
+<li>A：在 <code>ref</code> 与 <code>reactive</code> 混用时注意 <code>.value</code>；避免解构丢失响应性。</li>
+</ul>
+<h3 id="q3路由切换后页面残留旧数据"><a class="header" href="#q3路由切换后页面残留旧数据">Q3：路由切换后页面残留旧数据？</a></h3>
+<ul>
+<li>A：在 <code>onBeforeRouteUpdate</code> 或监听 <code>route.params</code> 时重置状态；或为组件设置唯一 <code>:key</code> 强制重建。</li>
+</ul>
+<h3 id="q4构建后白屏资源-404"><a class="header" href="#q4构建后白屏资源-404">Q4：构建后白屏/资源 404？</a></h3>
+<ul>
+<li>A：检查部署路径 <code>base</code>、Nginx 历史路由回退与资源路径大小写。</li>
+</ul>
+<h3 id="q5打包体积大首屏慢"><a class="header" href="#q5打包体积大首屏慢">Q5：打包体积大/首屏慢？</a></h3>
+<ul>
+<li>A：开启路由懒加载、手动分块、移除未用依赖、图片/字体优化与缓存策略。</li>
+</ul>
+<h3 id="q6内存越来越大"><a class="header" href="#q6内存越来越大">Q6：内存越来越大？</a></h3>
+<ul>
+<li>A：检查未清理的定时器/订阅/全局引用；借助 Performance/Memory 快照定位。</li>
+</ul>
+<h3 id="q7pinia-状态刷新丢失"><a class="header" href="#q7pinia-状态刷新丢失">Q7：Pinia 状态刷新丢失？</a></h3>
+<ul>
+<li>A：启用持久化插件或自定义序列化；敏感信息谨慎持久化。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-21自定义指令与插件"><a class="header" href="#扩展模块-21自定义指令与插件">扩展模块 21：自定义指令与插件</a></h2>
+<p>目标：掌握指令与插件的开发方式，封装跨组件的通用行为。</p>
+<h3 id="211-指令点击外部关闭click-outside"><a class="header" href="#211-指令点击外部关闭click-outside">21.1 指令：点击外部关闭（click-outside）</a></h3>
+<pre><code class="language-ts">// src/directives/clickOutside.ts
+export default {
+  mounted(el: HTMLElement, binding: any) {
+    el.__onDocClick__ = (e: MouseEvent) =&gt; {
+      if (!el.contains(e.target as Node)) binding.value(e)
+    }
+    document.addEventListener('click', el.__onDocClick__)
+  },
+  unmounted(el: HTMLElement) {
+    document.removeEventListener('click', el.__onDocClick__)
+  },
+}
+</code></pre>
+<p>使用：<code>v-click-outside="close"</code>。</p>
+<h3 id="212-指令按钮权限-v-permission"><a class="header" href="#212-指令按钮权限-v-permission">21.2 指令：按钮权限 <code>v-permission</code></a></h3>
+<pre><code class="language-ts">// src/directives/permission.ts
+import { useAuth } from '@/stores/auth'
+export default {
+  mounted(el: HTMLElement, binding: any) {
+    const need: string[] = Array.isArray(binding.value) ? binding.value : [binding.value]
+    const { user } = useAuth()
+    const ok = need.some(r =&gt; user?.roles.includes(r))
+    if (!ok) el.remove()
+  },
+}
+</code></pre>
+<h3 id="213-插件化注册"><a class="header" href="#213-插件化注册">21.3 插件化注册</a></h3>
+<pre><code class="language-ts">// src/plugins/directives.ts
+import clickOutside from '@/directives/clickOutside'
+import permission from '@/directives/permission'
+export default {
+  install(app: any) {
+    app.directive('click-outside', clickOutside)
+    app.directive('permission', permission)
+  }
+}
+// main.ts
+import directives from '@/plugins/directives'
+app.use(directives)
+</code></pre>
+<h3 id="214-验证标准"><a class="header" href="#214-验证标准">21.4 验证标准</a></h3>
+<ul>
+<li>指令易复用且不泄漏事件；权限指令符合角色/策略要求。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-22主题与样式体系css-变量原子化可选"><a class="header" href="#扩展模块-22主题与样式体系css-变量原子化可选">扩展模块 22：主题与样式体系（CSS 变量/原子化可选）</a></h2>
+<p>目标：支持明暗主题与品牌色切换，保持组件风格一致。</p>
+<h3 id="221-css-变量主题"><a class="header" href="#221-css-变量主题">22.1 CSS 变量主题</a></h3>
+<pre><code class="language-css">:root { --bg: #ffffff; --fg: #111827 }
+.dark { --bg: #0b1220; --fg: #e5e7eb }
+body { background: var(--bg); color: var(--fg) }
+</code></pre>
+<pre><code class="language-ts">// src/composables/useTheme.ts
+import { ref, watchEffect } from 'vue'
+const key = 'theme'
+export function useTheme() {
+  const dark = ref(localStorage.getItem(key) === 'dark')
+  watchEffect(() =&gt; {
+    document.documentElement.classList.toggle('dark', dark.value)
+    localStorage.setItem(key, dark.value ? 'dark' : 'light')
+  })
+  return { dark }
+}
+</code></pre>
+<h3 id="222-原子化可选unocsstailwind"><a class="header" href="#222-原子化可选unocsstailwind">22.2 原子化（可选：UnoCSS/Tailwind）</a></h3>
+<ul>
+<li>使用 UnoCSS 或 TailwindCSS 提升统一性与开发效率；结合设计规范。</li>
+</ul>
+<h3 id="223-验证标准"><a class="header" href="#223-验证标准">22.3 验证标准</a></h3>
+<ul>
+<li>主题切换即刻生效且持久化；与第三方组件库风格一致或有适配。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-23实用组合式函数库vueuse"><a class="header" href="#扩展模块-23实用组合式函数库vueuse">扩展模块 23：实用组合式函数库（VueUse）</a></h2>
+<p>目标：借助 VueUse 快速实现常见交互与设备能力。</p>
+<h3 id="231-常用示例"><a class="header" href="#231-常用示例">23.1 常用示例</a></h3>
+<pre><code class="language-ts">import { useDark, useToggle, useClipboard, useMouse, useElementVisibility } from '@vueuse/core'
+const isDark = useDark(); const toggle = useToggle(isDark)
+const { text, copy } = useClipboard({ legacy: true })
+const { x, y } = useMouse()
+const visible = useElementVisibility(el)
+</code></pre>
+<h3 id="232-验证标准"><a class="header" href="#232-验证标准">23.2 验证标准</a></h3>
+<ul>
+<li>组合式复用自然、依赖最小；避免滥用导致包体膨胀。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-24文件上传与大文件分片"><a class="header" href="#扩展模块-24文件上传与大文件分片">扩展模块 24：文件上传与大文件分片</a></h2>
+<p>目标：实现大文件分片上传、断点续传与并发控制。</p>
+<h3 id="241-分片与并发"><a class="header" href="#241-分片与并发">24.1 分片与并发</a></h3>
+<pre><code class="language-ts">async function uploadFile(file: File) {
+  const chunkSize = 2 * 1024 * 1024
+  const chunks = Math.ceil(file.size / chunkSize)
+  const list = Array.from({ length: chunks }, (_, i) =&gt; file.slice(i * chunkSize, (i + 1) * chunkSize))
+  const tasks = list.map((blob, i) =&gt; {
+    const form = new FormData(); form.append('file', blob); form.append('index', String(i))
+    return fetch('/api/upload/chunk', { method: 'POST', body: form })
+  })
+  // 控制并发
+  const pool = 4
+  for (let i = 0; i &lt; tasks.length; i += pool) await Promise.all(tasks.slice(i, i + pool))
+  await fetch('/api/upload/merge', { method: 'POST', body: JSON.stringify({ name: file.name, chunks }) })
+}
+</code></pre>
+<h3 id="242-断点续传与校验"><a class="header" href="#242-断点续传与校验">24.2 断点续传与校验</a></h3>
+<ul>
+<li>生成文件唯一哈希（如 SparkMD5），查询服务端已上传分片；仅补传缺失分片。</li>
+</ul>
+<h3 id="243-验证标准"><a class="header" href="#243-验证标准">24.3 验证标准</a></h3>
+<ul>
+<li>大文件上传稳定、可续传；失败重试与并发控制有效。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-25实时通信websocket--sse"><a class="header" href="#扩展模块-25实时通信websocket--sse">扩展模块 25：实时通信（WebSocket / SSE）</a></h2>
+<p>目标：实现可靠的实时通信通道，支持心跳、断线重连、消息去重与前后台可见性切换。</p>
+<h3 id="251-选择与适用场景"><a class="header" href="#251-选择与适用场景">25.1 选择与适用场景</a></h3>
+<ul>
+<li>WebSocket：双向通信、低延迟，适合 IM、协作、行情等。</li>
+<li>SSE（Server-Sent Events）：服务端单向推送、轻量、天然重连，适合通知/日志流。</li>
+</ul>
+<h3 id="252-websocket-组合式封装"><a class="header" href="#252-websocket-组合式封装">25.2 WebSocket 组合式封装</a></h3>
+<pre><code class="language-ts">// src/composables/useWs.ts
+import { ref, onMounted, onUnmounted } from 'vue'
+
+type Options = {
+  url: string
+  protocols?: string | string[]
+  heartbeat?: number // ms
+  maxRetry?: number
+}
+
+export function useWs({ url, protocols, heartbeat = 15000, maxRetry = 10 }: Options) {
+  const ws = ref&lt;WebSocket | null&gt;(null)
+  const connected = ref(false)
+  const messages = ref&lt;any[]&gt;([])
+  let retry = 0
+  let hbTimer: any
+  let alive = false
+
+  function connect() {
+    if (ws.value &amp;&amp; (ws.value.readyState === WebSocket.OPEN || ws.value.readyState === WebSocket.CONNECTING)) return
+    ws.value = new WebSocket(url, protocols)
+    ws.value.onopen = () =&gt; {
+      connected.value = true
+      retry = 0
+      alive = true
+      startHeartbeat()
+    }
+    ws.value.onmessage = (e) =&gt; {
+      // 消息解包与去重逻辑按需实现（例如基于 id）
+      try { messages.value.push(JSON.parse(e.data)) } catch { messages.value.push(e.data) }
+    }
+    ws.value.onclose = () =&gt; {
+      connected.value = false
+      stopHeartbeat()
+      if (alive &amp;&amp; retry &lt; maxRetry) setTimeout(() =&gt; { retry++; connect() }, backoff(retry))
+    }
+    ws.value.onerror = () =&gt; ws.value?.close()
+  }
+
+  function backoff(i: number) { return Math.min(2000 * i, 15000) }
+
+  function startHeartbeat() {
+    stopHeartbeat()
+    hbTimer = setInterval(() =&gt; send({ type: 'ping', t: Date.now() }), heartbeat)
+  }
+  function stopHeartbeat() { if (hbTimer) clearInterval(hbTimer) }
+
+  function send(data: any) { if (ws.value?.readyState === WebSocket.OPEN) ws.value.send(JSON.stringify(data)) }
+
+  onMounted(() =&gt; { alive = true; connect() })
+  onUnmounted(() =&gt; { alive = false; stopHeartbeat(); ws.value?.close() })
+
+  return { ws, connected, messages, send }
+}
+</code></pre>
+<p>页面使用：</p>
+<pre><code class="language-ts">const { connected, messages, send } = useWs({ url: 'wss://example.com/ws' })
+send({ type: 'join', room: 'general' })
+</code></pre>
+<h3 id="253-sse-简易封装"><a class="header" href="#253-sse-简易封装">25.3 SSE 简易封装</a></h3>
+<pre><code class="language-ts">// src/composables/useSSE.ts
+import { ref, onMounted, onUnmounted } from 'vue'
+export function useSSE(url: string, opts?: EventSourceInit) {
+  const data = ref&lt;string&gt;('')
+  let es: EventSource | null = null
+  onMounted(() =&gt; {
+    es = new EventSource(url, opts)
+    es.onmessage = e =&gt; (data.value = e.data)
+  })
+  onUnmounted(() =&gt; es?.close())
+  return { data }
+}
+</code></pre>
+<h3 id="254-验证标准"><a class="header" href="#254-验证标准">25.4 验证标准</a></h3>
+<ul>
+<li>断线自动重连且退避生效，心跳正常；前后台切换连接稳定。</li>
+<li>消息不会重复处理；异常错误可见且可重试。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-26graphql-集成apollo-client"><a class="header" href="#扩展模块-26graphql-集成apollo-client">扩展模块 26：GraphQL 集成（Apollo Client）</a></h2>
+<p>目标：基于 GraphQL 构建查询/变更/缓存更新与分页，配合类型生成提升可靠性。</p>
+<h3 id="261-安装"><a class="header" href="#261-安装">26.1 安装</a></h3>
+<pre><code class="language-bash">pnpm add @apollo/client graphql
+pnpm add -D graphql-tag
+</code></pre>
+<h3 id="262-客户端配置"><a class="header" href="#262-客户端配置">26.2 客户端配置</a></h3>
+<pre><code class="language-ts">// src/graphql/client.ts
+import { ApolloClient, InMemoryCache, HttpLink, from } from '@apollo/client/core'
+import { onError } from '@apollo/client/link/error'
+
+const http = new HttpLink({ uri: '/graphql', credentials: 'include' })
+const error = onError(({ graphQLErrors, networkError }) =&gt; {
+  if (graphQLErrors) graphQLErrors.forEach(e =&gt; console.error('[GQL]', e.message))
+  if (networkError) console.error('[NET]', networkError)
+})
+
+export const apollo = new ApolloClient({
+  link: from([error, http]),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          users: {
+            keyArgs: false,
+            merge(existing = { items: [] }, incoming) {
+              return { ...incoming, items: [...existing.items, ...incoming.items] }
+            },
+          },
+        },
+      },
+    },
+  }),
+})
+</code></pre>
+<h3 id="263-查询与变更"><a class="header" href="#263-查询与变更">26.3 查询与变更</a></h3>
+<pre><code class="language-ts">// src/graphql/queries.ts
+import { gql } from 'graphql-tag'
+export const GET_POSTS = gql`query ($page:Int){ posts(page:$page){ items{ id title } page total } }`
+export const CREATE_POST = gql`mutation ($title:String!){ createPost(title:$title){ id title } }`
+</code></pre>
+<pre><code class="language-ts">// 在组件中
+import { apollo } from '@/graphql/client'
+import { GET_POSTS, CREATE_POST } from '@/graphql/queries'
+
+const { data } = await apollo.query({ query: GET_POSTS, variables: { page: 1 } })
+await apollo.mutate({
+  mutation: CREATE_POST,
+  variables: { title: 'Hello' },
+  update(cache, { data }) {
+    // 写入缓存或触发 refetch
+  },
+  optimisticResponse: { createPost: { __typename: 'Post', id: 'temp', title: 'Hello' } },
+})
+</code></pre>
+<h3 id="264-类型生成可选"><a class="header" href="#264-类型生成可选">26.4 类型生成（可选）</a></h3>
+<pre><code class="language-bash">pnpm add -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-apollo-client-helpers
+npx graphql-codegen init
+</code></pre>
+<h3 id="265-验证标准"><a class="header" href="#265-验证标准">26.5 验证标准</a></h3>
+<ul>
+<li>分页/乐观更新可用，缓存策略明确；错误处理与重试生效。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-27web-worker-与-comlink"><a class="header" href="#扩展模块-27web-worker-与-comlink">扩展模块 27：Web Worker 与 Comlink</a></h2>
+<p>目标：将重计算/IO 密集任务迁移至 Worker，释放主线程，改善交互流畅度。</p>
+<h3 id="271-原生-workervite"><a class="header" href="#271-原生-workervite">27.1 原生 Worker（Vite）</a></h3>
+<pre><code class="language-ts">// src/workers/hash.worker.ts
+export default () =&gt; {
+  self.onmessage = (e: MessageEvent&lt;File&gt;) =&gt; {
+    // 省略：计算文件 hash（SparkMD5/crypto.subtle）
+    postMessage({ hash: 'abc123' })
+  }
+}
+</code></pre>
+<p>在组件中：</p>
+<pre><code class="language-ts">// @ts-ignore
+import WorkerUrl from '@/workers/hash.worker.ts?worker'
+const worker = new Worker(WorkerUrl, { type: 'module' })
+worker.onmessage = (e) =&gt; { console.log(e.data.hash) }
+worker.postMessage(file)
+</code></pre>
+<h3 id="272-comlink-简化通信"><a class="header" href="#272-comlink-简化通信">27.2 Comlink 简化通信</a></h3>
+<pre><code class="language-bash">pnpm add comlink
+</code></pre>
+<pre><code class="language-ts">// src/workers/math.worker.ts
+import { expose } from 'comlink'
+const api = { add(a: number, b: number) { return a + b } }
+expose(api)
+</code></pre>
+<pre><code class="language-ts">// 组件
+import { wrap } from 'comlink'
+// @ts-ignore
+import WorkerUrl from '@/workers/math.worker.ts?worker'
+const worker = new Worker(WorkerUrl, { type: 'module' })
+const api = wrap&lt;{ add(a: number, b: number): Promise&lt;number&gt; }&gt;(worker)
+const sum = await api.add(1, 2)
+</code></pre>
+<h3 id="273-验证标准"><a class="header" href="#273-验证标准">27.3 验证标准</a></h3>
+<ul>
+<li>重计算不阻塞 UI；组件卸载时正确终止 Worker；无内存泄漏。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-28高性能表格与数据管理"><a class="header" href="#扩展模块-28高性能表格与数据管理">扩展模块 28：高性能表格与数据管理</a></h2>
+<p>目标：在大数据量下保持流畅渲染，提供排序、筛选、分页、选择与编辑等功能。</p>
+<h3 id="281-虚拟滚动"><a class="header" href="#281-虚拟滚动">28.1 虚拟滚动</a></h3>
+<p>推荐：<code>vue-virtual-scroller</code> 或 <code>v3-virtual-scroll-list</code></p>
+<pre><code class="language-bash">pnpm add vue-virtual-scroller
+</code></pre>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;RecycleScroller :items="rows" :item-size="42" key-field="id" class="list"&gt;
+    &lt;template #default="{ item }"&gt;
+      &lt;div class="row"&gt;{{ item.id }} - {{ item.name }} - {{ item.value }}&lt;/div&gt;
+    &lt;/template&gt;
+  &lt;/RecycleScroller&gt;
+&lt;/template&gt;
+&lt;script setup lang="ts"&gt;
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+import { RecycleScroller } from 'vue-virtual-scroller'
+const rows = Array.from({ length: 20000 }).map((_, i) =&gt; ({ id: i, name: `R${i}`, value: Math.random() }))
+&lt;/script&gt;
+</code></pre>
+<h3 id="282-远程分页与筛选"><a class="header" href="#282-远程分页与筛选">28.2 远程分页与筛选</a></h3>
+<ul>
+<li>将筛选条件与分页参数存于路由查询；后端分页返回总条数。</li>
+<li>防抖输入、服务端排序；本地缓存最近查询结果。</li>
+</ul>
+<h3 id="283-可编辑单元格与批量提交"><a class="header" href="#283-可编辑单元格与批量提交">28.3 可编辑单元格与批量提交</a></h3>
+<ul>
+<li>编辑态与查看态分离，离开行即校验；批量提交合并请求。</li>
+</ul>
+<h3 id="284-验证标准"><a class="header" href="#284-验证标准">28.4 验证标准</a></h3>
+<ul>
+<li>2w 行滚动顺滑；筛选/排序稳定，无卡顿；编辑操作可回退。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-29nuxt-进阶中间件缓存边缘"><a class="header" href="#扩展模块-29nuxt-进阶中间件缓存边缘">扩展模块 29：Nuxt 进阶（中间件/缓存/边缘）</a></h2>
+<p>目标：利用 Nuxt/Nitro 能力优化 SSR、路由中间件与边缘部署体验。</p>
+<h3 id="291-中间件与权限"><a class="header" href="#291-中间件与权限">29.1 中间件与权限</a></h3>
+<p><code>middleware/auth.global.ts</code></p>
+<pre><code class="language-ts">export default defineNuxtRouteMiddleware((to) =&gt; {
+  const token = useCookie('token').value
+  if (!to.meta.public &amp;&amp; !token) return navigateTo('/login')
+})
+</code></pre>
+<h3 id="292-数据缓存与-isr"><a class="header" href="#292-数据缓存与-isr">29.2 数据缓存与 ISR</a></h3>
+<p><code>server/api/posts.ts</code></p>
+<pre><code class="language-ts">export default defineEventHandler(async (event) =&gt; {
+  setResponseHeader(event, 'Cache-Control', 's-maxage=60, stale-while-revalidate=300')
+  // or use cachedFunction from nitro
+  return await fetchPosts()
+})
+</code></pre>
+<p>静态增量再生成（ISR）：配置 <code>routeRules</code>。</p>
+<pre><code class="language-ts">// nuxt.config.ts
+export default defineNuxtConfig({
+  routeRules: { '/blog/**': { isr: 60 } },
+})
+</code></pre>
+<h3 id="293-边缘部署"><a class="header" href="#293-边缘部署">29.3 边缘部署</a></h3>
+<ul>
+<li>使用 Cloudflare/Netlify Edge 运行 Nitro；注意 Node API 可用性与 polyfill。</li>
+</ul>
+<h3 id="294-验证标准"><a class="header" href="#294-验证标准">29.4 验证标准</a></h3>
+<ul>
+<li>中间件权限与缓存策略生效；边缘环境运行稳定、冷启动快。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-30seo-与可观测性扩展"><a class="header" href="#扩展模块-30seo-与可观测性扩展">扩展模块 30：SEO 与可观测性扩展</a></h2>
+<p>目标：完善搜索友好度与可观测体系，包含结构化数据与可复现实验。</p>
+<h3 id="301-结构化数据json-ld"><a class="header" href="#301-结构化数据json-ld">30.1 结构化数据（JSON-LD）</a></h3>
+<pre><code class="language-ts">useHead({ script: [{ type: 'application/ld+json', children: JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'Article', headline: '标题', datePublished: '2024-01-01'
+}) }] })
+</code></pre>
+<h3 id="302-sitemap-与-robots"><a class="header" href="#302-sitemap-与-robots">30.2 Sitemap 与 robots</a></h3>
+<pre><code class="language-bash">pnpm add -D sitemap
+</code></pre>
+<p>生成脚本输出至 <code>dist/sitemap.xml</code> 并在部署处配置 robots.txt。</p>
+<h3 id="303-lighthouse-ci"><a class="header" href="#303-lighthouse-ci">30.3 Lighthouse CI</a></h3>
+<pre><code class="language-bash">pnpm add -D @lhci/cli
+</code></pre>
+<p>在 CI 运行审计并与性能预算绑定。</p>
+<h3 id="304-验证标准"><a class="header" href="#304-验证标准">30.4 验证标准</a></h3>
+<ul>
+<li>添加结构化数据后，Google 富结果可识别；Lighthouse SEO &gt; 90。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-31离线数据与同步indexeddbdexie"><a class="header" href="#扩展模块-31离线数据与同步indexeddbdexie">扩展模块 31：离线数据与同步（IndexedDB/Dexie）</a></h2>
+<p>目标：在弱网/离线场景下保证可用，并在恢复后进行一致性同步。</p>
+<h3 id="311-dexie-集成"><a class="header" href="#311-dexie-集成">31.1 Dexie 集成</a></h3>
+<pre><code class="language-bash">pnpm add dexie
+</code></pre>
+<pre><code class="language-ts">// src/db.ts
+import Dexie, { Table } from 'dexie'
+export interface Todo { id?: number; text: string; done: boolean; updatedAt: number }
+export class AppDB extends Dexie { todos!: Table&lt;Todo, number&gt; }
+export const db = new AppDB('app'); db.version(1).stores({ todos: '++id, updatedAt' })
+</code></pre>
+<h3 id="312-同步策略"><a class="header" href="#312-同步策略">31.2 同步策略</a></h3>
+<ul>
+<li>客户端记录变更队列与时间戳；恢复在线后批量同步（乐观并发控制）。</li>
+<li>冲突解决：Last-Write-Wins、基于版本/向量时钟，或显式用户合并。</li>
+</ul>
+<h3 id="313-验证标准"><a class="header" href="#313-验证标准">31.3 验证标准</a></h3>
+<ul>
+<li>断网可继续编辑；联网后数据正确上行与下行；冲突可追溯。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-32monorepo-与共享组件库"><a class="header" href="#扩展模块-32monorepo-与共享组件库">扩展模块 32：Monorepo 与共享组件库</a></h2>
+<p>目标：使用 pnpm workspace 构建多包工程，沉淀共享 UI/工具库。</p>
+<h3 id="321-workspaces"><a class="header" href="#321-workspaces">32.1 Workspaces</a></h3>
+<p><code>pnpm-workspace.yaml</code></p>
+<pre><code class="language-yaml">packages:
+  - apps/*
+  - packages/*
+</code></pre>
+<p>共享 UI 包（packages/ui）使用 <code>tsup</code> 构建，应用通过别名与 TS 路径引用。</p>
+<h3 id="322-ts-project-references可选"><a class="header" href="#322-ts-project-references可选">32.2 TS Project References（可选）</a></h3>
+<p>在大型项目中提升增量编译速度与 IDE 体验。</p>
+<h3 id="323-验证标准"><a class="header" href="#323-验证标准">32.3 验证标准</a></h3>
+<ul>
+<li>共享库版本与发布流程顺畅；应用升级简单、无循环依赖。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-33数据请求库tanstack-query-for-vue"><a class="header" href="#扩展模块-33数据请求库tanstack-query-for-vue">扩展模块 33：数据请求库（TanStack Query for Vue）</a></h2>
+<p>目标：用 <code>@tanstack/vue-query</code> 管理请求缓存、去重、重试、后台刷新与无限列表。</p>
+<h3 id="331-安装与提供器"><a class="header" href="#331-安装与提供器">33.1 安装与提供器</a></h3>
+<pre><code class="language-bash">pnpm add @tanstack/vue-query
+</code></pre>
+<pre><code class="language-ts">// main.ts
+import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
+const client = new QueryClient({ defaultOptions: { queries: { retry: 1, staleTime: 30_000 } } })
+app.use(VueQueryPlugin, { queryClient: client })
+</code></pre>
+<h3 id="332-使用示例"><a class="header" href="#332-使用示例">33.2 使用示例</a></h3>
+<pre><code class="language-ts">import { useQuery, useMutation, useInfiniteQuery } from '@tanstack/vue-query'
+const users = useQuery({ queryKey: ['users'], queryFn: () =&gt; http.get('/users').then(r =&gt; r.data) })
+const add = useMutation({ mutationFn: (u) =&gt; http.post('/users', u) })
+const more = useInfiniteQuery({
+  queryKey: ['posts'],
+  queryFn: ({ pageParam = 1 }) =&gt; http.get('/posts', { params: { page: pageParam } }).then(r =&gt; r.data),
+  getNextPageParam: (last) =&gt; last.nextPage,
+})
+</code></pre>
+<h3 id="333-验证标准"><a class="header" href="#333-验证标准">33.3 验证标准</a></h3>
+<ul>
+<li>同一路径请求不会重复；聚焦重新获取工作正常；无限滚动稳定。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-34表格进阶树形分组固定列虚拟化可编辑"><a class="header" href="#扩展模块-34表格进阶树形分组固定列虚拟化可编辑">扩展模块 34：表格进阶（树形/分组/固定列/虚拟化/可编辑）</a></h2>
+<p>目标：在复杂数据场景中保持高性能与可维护性，支持树形展开、分组统计、固定列与横向/纵向虚拟滚动、行内编辑与批量提交。</p>
+<h3 id="341-树形表格扁平化渲染"><a class="header" href="#341-树形表格扁平化渲染">34.1 树形表格（扁平化渲染）</a></h3>
+<p>思路：对树数据进行“扁平化 + level + 展开状态”处理，仅渲染可见节点。</p>
+<pre><code class="language-ts">// src/composables/useTreeTable.ts
+import { ref, computed } from 'vue'
+
+export type Node = { id: string; name: string; children?: Node[] }
+type Row = Node &amp; { level: number; parent?: string; expanded?: boolean; isLeaf: boolean }
+
+export function useTreeTable(data: Node[]) {
+  const expanded = ref&lt;Record&lt;string, boolean&gt;&gt;({})
+  function toggle(id: string) { expanded.value[id] = !expanded.value[id] }
+
+  function walk(nodes: Node[], level = 0, parent?: string, acc: Row[] = []): Row[] {
+    for (const n of nodes) {
+      const isLeaf = !n.children || n.children.length === 0
+      acc.push({ ...n, level, parent, expanded: !!expanded.value[n.id], isLeaf })
+      if (!isLeaf &amp;&amp; expanded.value[n.id]) walk(n.children!, level + 1, n.id, acc)
+    }
+    return acc
+  }
+  const rows = computed(() =&gt; walk(data))
+  return { rows, toggle, expanded }
+}
+</code></pre>
+<p>使用（缩进 + 展开按钮）：</p>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;table&gt;
+    &lt;tbody&gt;
+      &lt;tr v-for="r in rows" :key="r.id"&gt;
+        &lt;td&gt;
+          &lt;span :style="{ paddingLeft: `${r.level * 16}px` }"&gt;&lt;/span&gt;
+          &lt;button v-if="!r.isLeaf" @click="toggle(r.id)"&gt;{{ r.expanded ? '-' : '+' }}&lt;/button&gt;
+          {{ r.name }}
+        &lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+  &lt;p&gt;提示：真实项目请加上 aria-expanded 与键盘操作支持。&lt;/p&gt;
+  &lt;p&gt;注：可与虚拟滚动组合，仅传入 rows 作为数据源。&lt;/p&gt;
+  &lt;pre&gt;rowsCount: {{ rows.length }}&lt;/pre&gt;
+&lt;/template&gt;
+&lt;script setup lang="ts"&gt;
+import { useTreeTable, type Node } from '@/composables/useTreeTable'
+const tree: Node[] = [ { id: '1', name: 'A', children: [{ id: '1-1', name: 'A1' }] }, { id: '2', name: 'B' } ]
+const { rows, toggle } = useTreeTable(tree)
+&lt;/script&gt;
+</code></pre>
+<h3 id="342-分组与聚合"><a class="header" href="#342-分组与聚合">34.2 分组与聚合</a></h3>
+<p>对扁平数据按字段分组，并插入“组头行 + 小计”。</p>
+<pre><code class="language-ts">type Item = { id: string; category: string; price: number }
+type Row = { type: 'group' | 'item' | 'subtotal'; key?: string; item?: Item; sum?: number }
+
+export function groupBy(items: Item[], key: (x: Item) =&gt; string): Row[] {
+  const groups = new Map&lt;string, Item[]&gt;()
+  items.forEach(it =&gt; {
+    const k = key(it); if (!groups.has(k)) groups.set(k, [])
+    groups.get(k)!.push(it)
+  })
+  const rows: Row[] = []
+  for (const [k, list] of groups) {
+    rows.push({ type: 'group', key: k })
+    list.forEach(item =&gt; rows.push({ type: 'item', item }))
+    rows.push({ type: 'subtotal', key: k, sum: list.reduce((s, i) =&gt; s + i.price, 0) })
+  }
+  return rows
+}
+</code></pre>
+<h3 id="343-固定列与横向虚拟滚动思路"><a class="header" href="#343-固定列与横向虚拟滚动思路">34.3 固定列与横向虚拟滚动（思路）</a></h3>
+<ul>
+<li>将表格拆分为三块：左固定、主体、右固定；用同步滚动事件保持对齐。</li>
+<li>主体区域引入横向虚拟滚动，只渲染可见列。</li>
+<li>高度/列宽需统一，建议使用 CSS Grid 或测量缓存。</li>
+</ul>
+<h3 id="344-行内编辑与批量提交"><a class="header" href="#344-行内编辑与批量提交">34.4 行内编辑与批量提交</a></h3>
+<p>范式：<code>draft</code> 草稿层 + 校验 + 批量提交 + 乐观回滚。</p>
+<pre><code class="language-ts">import { reactive } from 'vue'
+type Row = { id: string; name: string; price: number }
+export function useRowEdit(row: Row) {
+  const draft = reactive({ ...row })
+  function reset() { Object.assign(draft, row) }
+  function apply() { Object.assign(row, draft) }
+  return { draft, reset, apply }
+}
+</code></pre>
+<p>批量：将 <code>apply()</code> 与服务调用封装事务，失败时回滚。</p>
+<h3 id="345-验证标准"><a class="header" href="#345-验证标准">34.5 验证标准</a></h3>
+<ul>
+<li>1–2 万行数据滚动顺畅；树形展开/折叠不卡顿；固定列对齐正确。</li>
+<li>行内编辑、批量提交与回滚稳定，错误提示清晰；键盘可达。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-35富文本编辑器tiptapquill"><a class="header" href="#扩展模块-35富文本编辑器tiptapquill">扩展模块 35：富文本编辑器（Tiptap/Quill）</a></h2>
+<p>目标：构建可扩展的富文本编辑器，支持工具栏、图片上传、粘贴清洗与只读模式。</p>
+<h3 id="351-tiptap-集成"><a class="header" href="#351-tiptap-集成">35.1 Tiptap 集成</a></h3>
+<pre><code class="language-bash">pnpm add @tiptap/vue-3 @tiptap/starter-kit @tiptap/extension-image
+</code></pre>
+<pre><code class="language-vue">&lt;template&gt;
+  &lt;EditorContent :editor="editor" /&gt;
+  &lt;div class="toolbar"&gt;
+    &lt;button @click="cmd('toggleBold')"&gt;B&lt;/button&gt;
+    &lt;button @click="insertImage"&gt;IMG&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;pre&gt;{{ json }}&lt;/pre&gt;
+&lt;/template&gt;
+&lt;script setup lang="ts"&gt;
+import { onBeforeUnmount, computed } from 'vue'
+import { EditorContent, useEditor } from '@tiptap/vue-3'
+import StarterKit from '@tiptap/starter-kit'
+import Image from '@tiptap/extension-image'
+
+const editor = useEditor({
+  extensions: [StarterKit, Image],
+  content: '&lt;p&gt;Hello Tiptap&lt;/p&gt;',
+})
+function cmd(name: keyof ReturnType&lt;typeof editor&gt;['commands']) { editor?.value?.commands[name as any]() }
+async function insertImage() {
+  const url = prompt('Image URL')
+  if (url) editor?.value?.commands.setImage({ src: url })
+}
+onBeforeUnmount(() =&gt; editor?.value?.destroy())
+const json = computed(() =&gt; editor?.value?.getJSON())
+&lt;/script&gt;
+</code></pre>
+<p>粘贴清洗：在 <code>beforePaste</code> 中过滤不可信 HTML 或使用 DOMPurify。</p>
+<h3 id="352-quill-备选"><a class="header" href="#352-quill-备选">35.2 Quill 备选</a></h3>
+<pre><code class="language-bash">pnpm add quill
+</code></pre>
+<pre><code class="language-vue">&lt;template&gt;&lt;div ref="el" /&gt;&lt;/template&gt;
+&lt;script setup lang="ts"&gt;
+import Quill from 'quill'; import { onMounted } from 'vue'
+const el = ref&lt;HTMLDivElement&gt;()
+onMounted(() =&gt; { const q = new Quill(el.value!, { theme: 'snow' }) })
+&lt;/script&gt;
+</code></pre>
+<h3 id="353-图片上传与安全"><a class="header" href="#353-图片上传与安全">35.3 图片上传与安全</a></h3>
+<ul>
+<li>本地选择图片后先上传到对象存储，返回 URL 再插入。</li>
+<li>清洗粘贴内容，限制允许的标签与属性，避免 XSS。</li>
+</ul>
+<h3 id="354-验证标准"><a class="header" href="#354-验证标准">35.4 验证标准</a></h3>
+<ul>
+<li>内容保存/恢复正常；图片上传失败可重试；只读/编辑切换稳定。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-36webrtc-实时音视频与屏幕共享"><a class="header" href="#扩展模块-36webrtc-实时音视频与屏幕共享">扩展模块 36：WebRTC 实时音视频与屏幕共享</a></h2>
+<p>目标：建立端到端多媒体通信，涵盖媒体获取、Peer 连接、信令、网络协商与屏幕共享。</p>
+<h3 id="361-基础流程"><a class="header" href="#361-基础流程">36.1 基础流程</a></h3>
+<pre><code class="language-ts">// src/webrtc/basic.ts
+export async function createPeer(local: HTMLVideoElement, remote: HTMLVideoElement, sendSignal: (msg:any)=&gt;void) {
+  const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] })
+  const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+  local.srcObject = stream
+  stream.getTracks().forEach(t =&gt; pc.addTrack(t, stream))
+  pc.ontrack = (e) =&gt; (remote.srcObject = e.streams[0])
+  pc.onicecandidate = (e) =&gt; e.candidate &amp;&amp; sendSignal({ type: 'candidate', candidate: e.candidate })
+  return pc
+}
+</code></pre>
+<p>信令（伪）：</p>
+<pre><code class="language-ts">// A 端
+const offer = await pc.createOffer(); await pc.setLocalDescription(offer)
+sendSignal({ type: 'offer', sdp: offer })
+// B 端
+await pc.setRemoteDescription(offer)
+const answer = await pc.createAnswer(); await pc.setLocalDescription(answer)
+sendSignal({ type: 'answer', sdp: answer })
+// A 端
+await pc.setRemoteDescription(answer)
+</code></pre>
+<p>屏幕共享：</p>
+<pre><code class="language-ts">const screen = await (navigator.mediaDevices as any).getDisplayMedia({ video: true })
+const track = screen.getVideoTracks()[0]
+const sender = pc.getSenders().find(s =&gt; s.track?.kind === 'video')
+sender?.replaceTrack(track)
+</code></pre>
+<h3 id="362-turn带宽与回退"><a class="header" href="#362-turn带宽与回退">36.2 TURN/带宽与回退</a></h3>
+<ul>
+<li>弱网下配置 TURN；限制编码器/码率；不支持 WebRTC 的环境回退到 WebSocket/SFU。</li>
+</ul>
+<h3 id="363-验证标准"><a class="header" href="#363-验证标准">36.3 验证标准</a></h3>
+<ul>
+<li>本地/远端画面与音频连通，切换摄像头/麦克风与屏幕共享稳定；断网重连可恢复。</li>
+</ul>
+<hr />
+<h2 id="扩展模块-37数据一致性与协同事务性-ui--undo-redo--crdt"><a class="header" href="#扩展模块-37数据一致性与协同事务性-ui--undo-redo--crdt">扩展模块 37：数据一致性与协同（事务性 UI / Undo-Redo / CRDT）</a></h2>
+<p>目标：在乐观 UI、离线与多人协作场景中保持数据一致与可回退。</p>
+<h3 id="371-事务性-ui-与回滚"><a class="header" href="#371-事务性-ui-与回滚">37.1 事务性 UI 与回滚</a></h3>
+<pre><code class="language-ts">type Op = () =&gt; Promise&lt;void&gt;
+type Revert = () =&gt; Promise&lt;void&gt; | void
+export async function transactional(doOp: Op, revert: Revert) {
+  try { await doOp() } catch (e) { await revert(); throw e }
+}
+</code></pre>
+<p>应用到 Pinia Action：提交前更新 UI，失败执行 revert。</p>
+<h3 id="372-undoredo-组合式"><a class="header" href="#372-undoredo-组合式">37.2 Undo/Redo 组合式</a></h3>
+<pre><code class="language-ts">// src/composables/useUndoRedo.ts
+import { ref } from 'vue'
+export function useUndoRedo&lt;T&gt;(initial: T) {
+  const current = ref&lt;T&gt;(structuredClone(initial))
+  const undoStack: T[] = []
+  const redoStack: T[] = []
+  function commit(next: T) { undoStack.push(structuredClone(current.value)); current.value = structuredClone(next); redoStack.length = 0 }
+  function undo() { if (undoStack.length) { redoStack.push(structuredClone(current.value)); current.value = undoStack.pop()! } }
+  function redo() { if (redoStack.length) { undoStack.push(structuredClone(current.value)); current.value = redoStack.pop()! } }
+  return { current, commit, undo, redo }
+}
+</code></pre>
+<h3 id="373-协同编辑crdt-with-yjs"><a class="header" href="#373-协同编辑crdt-with-yjs">37.3 协同编辑（CRDT with Y.js）</a></h3>
+<pre><code class="language-bash">pnpm add yjs y-websocket
+</code></pre>
+<pre><code class="language-ts">import * as Y from 'yjs'
+import { WebsocketProvider } from 'y-websocket'
+const doc = new Y.Doc()
+const provider = new WebsocketProvider('wss://yjs.example/ws', 'room1', doc)
+const ytext = doc.getText('content')
+// 与编辑器（如 Tiptap ProseMirror）进行绑定，省略绑定代码
+</code></pre>
+<h3 id="374-验证标准"><a class="header" href="#374-验证标准">37.4 验证标准</a></h3>
+<ul>
+<li>关键操作可撤销/重做；并发修改不会丢失内容；乐观 UI 失败能回滚至一致状态。</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/34-NextJS.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/40-AscendCL.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/34-NextJS.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/40-AscendCL.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

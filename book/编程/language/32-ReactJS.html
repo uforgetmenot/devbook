@@ -1,0 +1,1054 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ReactJS (React 18) 实战学习笔记 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="reactjs-react-18-实战学习笔记"><a class="header" href="#reactjs-react-18-实战学习笔记">ReactJS (React 18) 实战学习笔记</a></h1>
+<p>适用版本：React 18.x、React Router v6、Vite 5、TypeScript 5（示例多用 TS，JS 读者可去掉类型）</p>
+<p>目标读者：0-5 年前端开发者、全栈转型者、系统性掌握 React 的学习者</p>
+<p>学习产出：完成一个从 0 到可部署的 React 应用，掌握 Hooks、状态管理、路由、样式与性能优化，并具备基本测试与部署能力。</p>
+<p>先修要求：ES6 基础、DOM/事件模型、npm 基础，建议了解 TypeScript 基本类型。</p>
+<hr />
+<h2 id="学习路径总览循序渐进"><a class="header" href="#学习路径总览循序渐进">学习路径总览（循序渐进）</a></h2>
+<ul>
+<li>环境搭建与项目脚手架：Vite + React + TS</li>
+<li>React 基础与组件化：JSX、Props、State、事件/表单</li>
+<li>Hooks 与状态管理：内置 Hooks、Context、Redux Toolkit/Zustand</li>
+<li>路由与页面结构：React Router v6、嵌套路由、懒加载</li>
+<li>样式与组件设计：CSS Modules/Tailwind/Styled、组件模式与错误边界</li>
+<li>性能优化与并发特性：useTransition/useDeferredValue、分包与缓存</li>
+<li>测试、构建与部署：RTL/Jest、Cypress、Vite 构建、环境变量、部署</li>
+</ul>
+<p>注：本笔记融合原提纲的所有要点，按模块化方式重组，便于实战落地。</p>
+<hr />
+<h2 id="模块一环境与基础jsx组件state事件表单"><a class="header" href="#模块一环境与基础jsx组件state事件表单">模块一：环境与基础（JSX、组件、State、事件/表单）</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>使用 Vite 初始化 React 项目并集成 TypeScript</li>
+<li>JSX/TSX 基础语法、Props/State、受控与非受控表单</li>
+<li>useEffect 生命周期等价关系与事件处理</li>
+</ul>
+<p>实践场景：实现一个带搜索与计数的最小应用。</p>
+<p>步骤 1：初始化工程</p>
+<pre><code class="language-bash">npm create vite@latest my-react-app -- --template react-ts
+cd my-react-app
+npm i
+npm run dev
+</code></pre>
+<p>步骤 2：核心代码示例（src/App.tsx）</p>
+<pre><code class="language-tsx">import { useEffect, useState } from 'react'
+
+type Item = { id: number; name: string }
+
+const mockFetch = (q: string): Promise&lt;Item[]&gt; =&gt;
+  new Promise(resolve =&gt;
+    setTimeout(() =&gt; resolve([
+      { id: 1, name: 'React' },
+      { id: 2, name: 'TypeScript' },
+      { id: 3, name: 'Vite' },
+    ].filter(i =&gt; i.name.toLowerCase().includes(q.toLowerCase()))), 300)
+  )
+
+export default function App() {
+  const [query, setQuery] = useState('')           // 受控输入
+  const [items, setItems] = useState&lt;Item[]&gt;([])
+  const [count, setCount] = useState(0)
+
+  useEffect(() =&gt; {                                // 副作用：查询
+    let alive = true
+    mockFetch(query).then(res =&gt; { if (alive) setItems(res) })
+    return () =&gt; { alive = false }
+  }, [query])
+
+  const onSubmit = (e: React.FormEvent) =&gt; {
+    e.preventDefault()
+    setCount(c =&gt; c + 1)                           // 自动批处理：与其他 setState 可合并
+  }
+
+  return (
+    &lt;div style={{ padding: 16 }}&gt;
+      &lt;h1&gt;React 基础示例&lt;/h1&gt;
+      &lt;form onSubmit={onSubmit}&gt;
+        &lt;input
+          value={query}
+          onChange={e =&gt; setQuery(e.target.value)}
+          placeholder="搜索关键词"
+        /&gt;
+        &lt;button type="submit"&gt;搜索次数 +1&lt;/button&gt;
+      &lt;/form&gt;
+      &lt;p&gt;搜索提交次数：{count}&lt;/p&gt;
+      &lt;ul&gt;
+        {items.map(i =&gt; &lt;li key={i.id}&gt;{i.name}&lt;/li&gt;)}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<p>易错点与对策：</p>
+<ul>
+<li>key 使用稳定、唯一值（如 id），避免索引作为 key 引发重排问题</li>
+<li>useEffect 依赖缺失易造成“幽灵”副作用，务必声明完整依赖或使用 ESLint 插件</li>
+<li>表单受控组件需保证 value 与 onChange 成对出现</li>
+</ul>
+<p>进阶阅读：虚拟 DOM、合成事件系统、受控 vs 非受控组件</p>
+<hr />
+<h2 id="模块二hooks-与状态管理内置自定义contextredux-toolkitzustand"><a class="header" href="#模块二hooks-与状态管理内置自定义contextredux-toolkitzustand">模块二：Hooks 与状态管理（内置/自定义、Context、Redux Toolkit、Zustand）</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>基础 Hooks：useState/useEffect/useRef/useMemo/useCallback</li>
+<li>复杂状态：useReducer + Context 组合</li>
+<li>全局状态：Redux Toolkit（企业常用）与 Zustand（极简）</li>
+<li>自定义 Hook 规范：以 use 开头、只在顶层调用、只在函数组件/Hook 中调用</li>
+</ul>
+<p>实践 1：useReducer + Context 主题切换</p>
+<pre><code class="language-tsx">// src/theme.tsx
+import { createContext, useContext, useReducer } from 'react'
+
+type Theme = 'light' | 'dark'
+type Action = { type: 'toggle' }
+
+const ThemeCtx = createContext&lt;{ theme: Theme; dispatch: React.Dispatch&lt;Action&gt; } | null&gt;(null)
+
+function reducer(state: Theme, action: Action): Theme {
+  switch (action.type) { case 'toggle': return state === 'light' ? 'dark' : 'light'; default: return state }
+}
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, dispatch] = useReducer(reducer, 'light')
+  return &lt;ThemeCtx.Provider value={{ theme, dispatch }}&gt;{children}&lt;/ThemeCtx.Provider&gt;
+}
+
+export const useTheme = () =&gt; {
+  const ctx = useContext(ThemeCtx)
+  if (!ctx) throw new Error('useTheme must be used within ThemeProvider')
+  return ctx
+}
+</code></pre>
+<pre><code class="language-tsx">// src/App.tsx（节选）
+import { ThemeProvider, useTheme } from './theme'
+
+function Toolbar() {
+  const { theme, dispatch } = useTheme()
+  return (
+    &lt;div data-theme={theme}&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'toggle' })}&gt;切换主题（{theme}）&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}
+
+export default function App() {
+  return (
+    &lt;ThemeProvider&gt;
+      &lt;Toolbar /&gt;
+    &lt;/ThemeProvider&gt;
+  )
+}
+</code></pre>
+<p>实践 2：Zustand 极简全局状态</p>
+<pre><code class="language-ts">// src/store/useCart.ts
+import { create } from 'zustand'
+
+type Item = { id: number; name: string; qty: number }
+type CartState = {
+  items: Item[]
+  add: (i: Omit&lt;Item, 'qty'&gt;) =&gt; void
+  inc: (id: number) =&gt; void
+}
+
+export const useCart = create&lt;CartState&gt;(set =&gt; ({
+  items: [],
+  add: i =&gt; set(s =&gt; ({ items: [...s.items, { ...i, qty: 1 }] })),
+  inc: id =&gt; set(s =&gt; ({ items: s.items.map(it =&gt; it.id === id ? { ...it, qty: it.qty + 1 } : it) })),
+}))
+</code></pre>
+<pre><code class="language-tsx">// 使用
+import { useCart } from './store/useCart'
+export function CartButton({ id, name }: { id: number; name: string }) {
+  const add = useCart(s =&gt; s.add)
+  return &lt;button onClick={() =&gt; add({ id, name })}&gt;加入购物车&lt;/button&gt;
+}
+</code></pre>
+<p>自定义 Hook 模板：</p>
+<pre><code class="language-ts">import { useEffect, useState } from 'react'
+
+export function useDebounce&lt;T&gt;(value: T, delay = 300) {
+  const [debounced, setDebounced] = useState(value)
+  useEffect(() =&gt; { const t = setTimeout(() =&gt; setDebounced(value), delay); return () =&gt; clearTimeout(t) }, [value, delay])
+  return debounced
+}
+</code></pre>
+<p>易错点与对策：</p>
+<ul>
+<li>过度使用 Context 会导致重渲染，拆分 Context 或搭配 selector（Zustand/RTK）</li>
+<li>useCallback/useMemo 不是性能银弹；先定位瓶颈再优化</li>
+<li>reducer 需保持纯函数，不要在其中做副作用</li>
+</ul>
+<hr />
+<h2 id="模块三路由与页面结构react-router-v6"><a class="header" href="#模块三路由与页面结构react-router-v6">模块三：路由与页面结构（React Router v6）</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>BrowserRouter/Routes/Route/Link 基础、useParams/useNavigate</li>
+<li>嵌套路由与布局路由、404 兜底</li>
+<li>懒加载 + Suspense 提升首屏性能</li>
+</ul>
+<p>示例：</p>
+<pre><code class="language-tsx">// src/main.tsx
+import React, { Suspense, lazy } from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route, Link, useParams } from 'react-router-dom'
+
+const Home = () =&gt; &lt;h2&gt;首页&lt;/h2&gt;
+const Product = () =&gt; { const { id } = useParams(); return &lt;h2&gt;商品 #{id}&lt;/h2&gt; }
+const About = lazy(() =&gt; import('./pages/About'))
+
+function Layout() {
+  return (
+    &lt;div&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;首页&lt;/Link&gt; | &lt;Link to="/about"&gt;关于&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;Suspense fallback={&lt;p&gt;加载中...&lt;/p&gt;}&gt;
+        &lt;Routes&gt;
+          &lt;Route path="/" element={&lt;Home /&gt;} /&gt;
+          &lt;Route path="/products/:id" element={&lt;Product /&gt;} /&gt;
+          &lt;Route path="/about" element={&lt;About /&gt;} /&gt;
+          &lt;Route path="*" element={&lt;h2&gt;404 未找到&lt;/h2&gt;} /&gt;
+        &lt;/Routes&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  &lt;BrowserRouter&gt;
+    &lt;Layout /&gt;
+  &lt;/BrowserRouter&gt;
+)
+</code></pre>
+<p>易错点与对策：</p>
+<ul>
+<li>v6 使用 element 而非 component 属性；Switch 改为 Routes</li>
+<li>懒加载组件需用 Suspense 包裹</li>
+<li>路由参数变化不会自动重置组件状态，必要时监听 params 变化</li>
+</ul>
+<hr />
+<h2 id="模块四样式与组件设计csstailwindstyled组件模式错误边界"><a class="header" href="#模块四样式与组件设计csstailwindstyled组件模式错误边界">模块四：样式与组件设计（CSS/Tailwind/Styled、组件模式、错误边界）</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>样式方案选择：CSS Modules、Tailwind CSS、Styled Components/Emotion</li>
+<li>组件模式：复合组件、受控/非受控、Render Props（了解）</li>
+<li>稳健性：Error Boundary 捕获渲染错误</li>
+</ul>
+<p>示例 1：CSS Modules</p>
+<pre><code class="language-tsx">// src/Button.module.css
+.primary { background: #2563eb; color: #fff; padding: 8px 12px; border-radius: 6px; }
+</code></pre>
+<pre><code class="language-tsx">// src/Button.tsx
+import styles from './Button.module.css'
+export function Button(props: React.ButtonHTMLAttributes&lt;HTMLButtonElement&gt;) {
+  return &lt;button className={styles.primary} {...props} /&gt;
+}
+</code></pre>
+<p>示例 2：Tailwind（安装后使用实用类）</p>
+<pre><code class="language-tsx">export const Card: React.FC&lt;React.PropsWithChildren&lt;{ title: string }&gt;&gt; = ({ title, children }) =&gt; (
+  &lt;div className="rounded-lg border p-4 shadow-sm"&gt;
+    &lt;h3 className="mb-2 text-lg font-semibold"&gt;{title}&lt;/h3&gt;
+    {children}
+  &lt;/div&gt;
+)
+</code></pre>
+<p>示例 3：Styled Components</p>
+<pre><code class="language-tsx">import styled from 'styled-components'
+const Badge = styled.span`
+  background: #eef2ff; color: #3730a3; padding: 2px 8px; border-radius: 9999px;
+`
+</code></pre>
+<p>Error Boundary：</p>
+<pre><code class="language-tsx">import React from 'react'
+type State = { hasError: boolean }
+export class ErrorBoundary extends React.Component&lt;{ fallback?: React.ReactNode }, State&gt; {
+  state: State = { hasError: false }
+  static getDerivedStateFromError() { return { hasError: true } }
+  componentDidCatch(err: unknown) { console.error(err) }
+  render() { return this.state.hasError ? this.props.fallback ?? &lt;p&gt;出错了&lt;/p&gt; : this.props.children }
+}
+</code></pre>
+<p>组合优于继承：</p>
+<ul>
+<li>通过 children/slots 组合出可复用组件（如 Modal、Dialog），避免深层继承</li>
+</ul>
+<hr />
+<h2 id="模块五性能优化与-react-18-并发特性"><a class="header" href="#模块五性能优化与-react-18-并发特性">模块五：性能优化与 React 18 并发特性</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>自动批处理、并发渲染理念</li>
+<li>useTransition 避免交互卡顿、useDeferredValue 优化大列表筛选</li>
+<li>memo/useMemo/useCallback 的适用场景</li>
+<li>代码分割与懒加载、资源缓存策略</li>
+</ul>
+<p>示例：大列表筛选优化</p>
+<pre><code class="language-tsx">import { useDeferredValue, useMemo, useState, useTransition } from 'react'
+
+const bigList = Array.from({ length: 20000 }, (_, i) =&gt; `Item ${i}`)
+
+export default function FilterDemo() {
+  const [q, setQ] = useState('')
+  const [isPending, startTransition] = useTransition()
+  const deferredQ = useDeferredValue(q)
+
+  const filtered = useMemo(() =&gt; bigList.filter(i =&gt; i.includes(deferredQ)), [deferredQ])
+
+  return (
+    &lt;div&gt;
+      &lt;input value={q} onChange={e =&gt; startTransition(() =&gt; setQ(e.target.value))} /&gt;
+      {isPending &amp;&amp; &lt;span&gt;筛选中...&lt;/span&gt;}
+      &lt;ul&gt;{filtered.map(i =&gt; &lt;li key={i}&gt;{i}&lt;/li&gt;)}&lt;/ul&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<p>经验法则：</p>
+<ul>
+<li>优先消除不必要的重新渲染：拆分组件、提升 key 稳定性</li>
+<li>对昂贵计算使用 useMemo；对稳定回调使用 useCallback 给到 memoized 子组件</li>
+<li>懒加载路由与组件，利用浏览器缓存与 CDN</li>
+</ul>
+<hr />
+<h2 id="模块六测试构建与部署"><a class="header" href="#模块六测试构建与部署">模块六：测试、构建与部署</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>单元测试：Jest + React Testing Library（RTL）</li>
+<li>端到端测试：Cypress（核心用户流程）</li>
+<li>Vite 构建、环境变量与多环境部署</li>
+</ul>
+<p>示例：用 RTL 测试交互</p>
+<pre><code class="language-tsx">// src/App.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import App from './App'
+
+test('搜索次数按钮可工作', () =&gt; {
+  render(&lt;App /&gt;)
+  fireEvent.submit(screen.getByText('搜索次数 +1').closest('form')!)
+  expect(screen.getByText(/搜索提交次数：1/)).toBeInTheDocument()
+})
+</code></pre>
+<p>Vite 构建与环境变量：</p>
+<pre><code class="language-bash">npm run build
+npm run preview
+
+# 环境变量：.env、.env.development、.env.production
+VITE_API_BASE=https://api.example.com
+</code></pre>
+<p>部署建议：</p>
+<ul>
+<li>静态站点（CSR）：Vercel/Netlify/静态资源服务器</li>
+<li>SSR/同构：推荐迁移到 Next.js（见《34-NextJS.md》）</li>
+<li>企业私有化：Nginx + CDN；开启 gzip/br 压缩与缓存，设置合理的 Cache-Control</li>
+</ul>
+<hr />
+<h2 id="常见错误与解决方案速查"><a class="header" href="#常见错误与解决方案速查">常见错误与解决方案（速查）</a></h2>
+<ul>
+<li>setState 后状态不更新：异步批处理；不要立即读取旧值，使用函数式更新 <code>setX(prev =&gt; ...)</code></li>
+<li>列表渲染闪烁/错位：key 不稳定或使用索引作为 key</li>
+<li>useEffect 进入死循环：依赖声明不当或在 effect 中更新依赖；拆分 effect 或使用条件判断</li>
+<li>Context 更新导致全局重渲染：拆分 Context、结合 selector 或使用 Zustand/RTK</li>
+<li>事件冒泡/默认行为：记得 <code>e.preventDefault()</code> / <code>e.stopPropagation()</code></li>
+</ul>
+<hr />
+<h2 id="学习成果验证标准量化"><a class="header" href="#学习成果验证标准量化">学习成果验证标准（量化）</a></h2>
+<ol>
+<li>基础掌握：能独立实现一个含路由、表单、列表的应用（功能完整、无控制台报错）</li>
+<li>性能意识：在 2 万条本地列表筛选下，输入交互无明显卡顿（&lt; 100ms 感知）</li>
+<li>状态管理：能在项目中正确落地 Context + useReducer 或 Zustand/RTK</li>
+<li>工程能力：完成至少 5 个 RTL 组件用例，端到端覆盖核心流程（登录/下单等）</li>
+<li>部署上线：使用 Vite 构建并部署到任一平台，可通过健康检查访问</li>
+</ol>
+<hr />
+<h2 id="扩展资源与工具清单"><a class="header" href="#扩展资源与工具清单">扩展资源与工具清单</a></h2>
+<ul>
+<li>官方文档：React Docs、react.dev/learn；React Router v6 文档</li>
+<li>状态管理：Redux Toolkit、Zustand、Recoil（可选）</li>
+<li>组件库：Ant Design、MUI、Radix UI、Headless UI</li>
+<li>样式：Tailwind CSS、Styled Components、Emotion</li>
+<li>调试：React Developer Tools（Profiler 分析渲染热点）</li>
+<li>模板与最佳实践：vite + react-ts 模板，eslint + prettier + husky + lint-staged</li>
+</ul>
+<hr />
+<h2 id="附录-a项目结构建议"><a class="header" href="#附录-a项目结构建议">附录 A：项目结构建议</a></h2>
+<pre><code>src/
+  components/   # 通用组件
+  pages/        # 页面（路由）
+  hooks/        # 自定义 hooks
+  store/        # 状态（如 zustand/rtk）
+  styles/       # 全局样式、tailwind.css
+  App.tsx
+  main.tsx
+</code></pre>
+<h2 id="附录-btypescript-小贴士"><a class="header" href="#附录-btypescript-小贴士">附录 B：TypeScript 小贴士</a></h2>
+<ul>
+<li>组件 Props 尽量显式声明，优先使用 <code>PropsWithChildren</code></li>
+<li>事件类型：<code>React.ChangeEvent&lt;HTMLInputElement&gt;</code>、<code>React.FormEvent&lt;HTMLFormElement&gt;</code></li>
+<li>useRef 泛型：<code>useRef&lt;HTMLDivElement | null&gt;(null)</code></li>
+</ul>
+<hr />
+<h2 id="与原提纲要点的映射说明已融合"><a class="header" href="#与原提纲要点的映射说明已融合">与原提纲要点的映射说明（已融合）</a></h2>
+<ul>
+<li>基础概念/JSX/组件/State/生命周期/事件/表单 → 模块一</li>
+<li>Hooks（基础/高级/自定义）→ 模块二</li>
+<li>状态管理（Context/第三方）→ 模块二</li>
+<li>路由（BrowserRouter/Routes/嵌套）→ 模块三</li>
+<li>样式（CSS Modules/Styled/Emotion/Tailwind）→ 模块四</li>
+<li>React 18（并发、Suspense、useTransition、useDeferredValue、useId、自动批处理）→ 模块五</li>
+<li>性能优化/代码分割（lazy/Suspense）→ 模块五</li>
+<li>测试（Jest/RTL、Cypress）→ 模块六</li>
+<li>构建与部署（Vite/环境变量/SSR 与 Next.js）→ 模块六</li>
+<li>高级模式（HOC/Render Props/复合组件）→ 模块四（以复合组件为主）</li>
+<li>开发工具与调试、TypeScript 集成 → 全篇贯穿与附录</li>
+</ul>
+<hr />
+<p>完成本笔记后，你应能在日常工作中熟练使用 React 18 开发中小型前端应用，并具备优化与上线能力。可继续学习：《33-MobxJS.md》《34-NextJS.md》。</p>
+<hr />
+<h2 id="模块七数据获取与缓存react-queryswr"><a class="header" href="#模块七数据获取与缓存react-queryswr">模块七：数据获取与缓存（React Query/SWR）</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>常见数据获取痛点：加载态/错误态/重新请求/缓存/并发竞态/依赖请求</li>
+<li>React Query（TanStack Query）核心概念：Query、Mutation、缓存失效、预取、并行与依赖查询</li>
+<li>替代方案：SWR（轻量级，stale-while-revalidate 模式）</li>
+</ul>
+<p>安装与初始化：</p>
+<pre><code class="language-bash">npm i @tanstack/react-query axios
+</code></pre>
+<pre><code class="language-tsx">// src/main.tsx（集成 QueryClientProvider）
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import App from './App'
+
+const queryClient = new QueryClient()
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  &lt;QueryClientProvider client={queryClient}&gt;
+    &lt;App /&gt;
+  &lt;/QueryClientProvider&gt;
+)
+</code></pre>
+<p>基础查询：</p>
+<pre><code class="language-tsx">// src/api/client.ts
+import axios from 'axios'
+export const api = axios.create({ baseURL: import.meta.env.VITE_API_BASE || '/api' })
+
+// src/api/products.ts
+export type Product = { id: number; title: string; price: number; stock: number }
+export const fetchProducts = async () =&gt; (await api.get&lt;Product[]&gt;('/products')).data
+
+// src/pages/Products.tsx
+import { useQuery } from '@tanstack/react-query'
+import { fetchProducts } from '../api/products'
+
+export default function Products() {
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+    staleTime: 60_000,
+  })
+  if (isLoading) return &lt;p&gt;加载中...&lt;/p&gt;
+  if (isError) return &lt;p&gt;加载失败 &lt;button onClick={() =&gt; refetch()}&gt;重试&lt;/button&gt;&lt;/p&gt;
+  return &lt;ul&gt;{data!.map(p =&gt; &lt;li key={p.id}&gt;{p.title} - {p.price}&lt;/li&gt;)}&lt;/ul&gt;
+}
+</code></pre>
+<p>依赖查询与预取：</p>
+<pre><code class="language-tsx">import { useQuery, useQueryClient } from '@tanstack/react-query'
+
+const qc = useQueryClient()
+// 预取详情缓存，提升用户感觉
+const prefetchProduct = (id: number) =&gt; qc.prefetchQuery({ queryKey: ['product', id], queryFn: () =&gt; api.get(`/products/${id}`).then(r =&gt; r.data) })
+</code></pre>
+<p>变更（Mutation）与失效：</p>
+<pre><code class="language-tsx">import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+export function useUpdatePrice() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (payload: { id: number; price: number }) =&gt; api.patch(`/products/${payload.id}`, { price: payload.price }),
+    onSuccess: (_, { id }) =&gt; {
+      qc.invalidateQueries({ queryKey: ['products'] })
+      qc.invalidateQueries({ queryKey: ['product', id] })
+    },
+  })
+}
+</code></pre>
+<p>经验法则：</p>
+<ul>
+<li>组件中只关心“数据是什么”和“状态是什么”，请求细节交给 Query 层</li>
+<li>正确设置 <code>staleTime</code> 与 <code>cacheTime</code>，避免频繁请求</li>
+<li>使用 <code>queryKey</code> 设计缓存分区；避免 key 不稳定导致重复缓存</li>
+</ul>
+<hr />
+<h2 id="模块八表单与验证react-hook-form--zod"><a class="header" href="#模块八表单与验证react-hook-form--zod">模块八：表单与验证（React Hook Form + Zod）</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>React Hook Form（RHF）高性能受控/非受控混合方案</li>
+<li>基于 Zod/Yup 的模式化校验，统一错误显示</li>
+</ul>
+<p>安装：</p>
+<pre><code class="language-bash">npm i react-hook-form zod @hookform/resolvers
+</code></pre>
+<p>示例：登录表单 + 校验</p>
+<pre><code class="language-tsx">// src/pages/Login.tsx
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+
+const schema = z.object({
+  email: z.string().email('邮箱格式不正确'),
+  password: z.string().min(6, '至少 6 位'),
+})
+type Form = z.infer&lt;typeof schema&gt;
+
+export default function Login() {
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm&lt;Form&gt;({ resolver: zodResolver(schema) })
+  const onSubmit = async (data: Form) =&gt; {
+    await new Promise(r =&gt; setTimeout(r, 300))
+    alert(`登录成功: ${data.email}`)
+  }
+  return (
+    &lt;form onSubmit={handleSubmit(onSubmit)}&gt;
+      &lt;input placeholder="邮箱" {...register('email')} /&gt;
+      {errors.email &amp;&amp; &lt;p&gt;{errors.email.message}&lt;/p&gt;}
+      &lt;input type="password" placeholder="密码" {...register('password')} /&gt;
+      {errors.password &amp;&amp; &lt;p&gt;{errors.password.message}&lt;/p&gt;}
+      &lt;button disabled={isSubmitting}&gt;登录&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}
+</code></pre>
+<p>技巧：</p>
+<ul>
+<li>对第三方 UI 组件用 <code>Controller</code> 包裹</li>
+<li>用 <code>mode: 'onBlur' | 'onChange'</code> 控制触发时机；提交前整体验证</li>
+</ul>
+<hr />
+<h2 id="模块九大型列表与虚拟化react-window"><a class="header" href="#模块九大型列表与虚拟化react-window">模块九：大型列表与虚拟化（react-window）</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>何时需要虚拟化：列表 &gt; 1000 项或单项渲染复杂</li>
+<li>react-window 的行虚拟化与固定高度/自适应高度配置</li>
+</ul>
+<p>示例：</p>
+<pre><code class="language-tsx">import { FixedSizeList as List } from 'react-window'
+
+const Row = ({ index, style }: { index: number; style: React.CSSProperties }) =&gt; (
+  &lt;div style={style}&gt;Row #{index}&lt;/div&gt;
+)
+
+export default function BigList() {
+  return &lt;List height={500} width={'100%'} itemCount={100000} itemSize={32}&gt;{Row}&lt;/List&gt;
+}
+</code></pre>
+<p>经验法则：</p>
+<ul>
+<li>虚拟化与 <code>useDeferredValue</code> 常搭配；注意容器高度与滚动同步</li>
+<li>结合 <code>memo</code> 避免行组件重渲染</li>
+</ul>
+<hr />
+<h2 id="模块十无障碍a11y与国际化i18n"><a class="header" href="#模块十无障碍a11y与国际化i18n">模块十：无障碍（a11y）与国际化（i18n）</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>语义化标签、键盘可达性、可聚焦顺序、ARIA 属性</li>
+<li>使用 i18next 进行国际化切换与文案管理</li>
+</ul>
+<p>示例（i18next 最小集成）：</p>
+<pre><code class="language-bash">npm i i18next react-i18next
+</code></pre>
+<pre><code class="language-tsx">// i18n.ts
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
+
+i18n.use(initReactI18next).init({
+  resources: {
+    zh: { translation: { hello: '你好' } },
+    en: { translation: { hello: 'Hello' } },
+  },
+  lng: 'zh',
+  fallbackLng: 'en',
+})
+export default i18n
+</code></pre>
+<pre><code class="language-tsx">// App.tsx
+import './i18n'
+import { useTranslation } from 'react-i18next'
+export default function App() {
+  const { t, i18n } = useTranslation()
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; i18n.changeLanguage(i18n.language === 'zh' ? 'en' : 'zh')}&gt;切换语言&lt;/button&gt;
+      &lt;p&gt;{t('hello')}&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<hr />
+<h2 id="实战项目迷你电商react--router--zustand--react-query--rhf"><a class="header" href="#实战项目迷你电商react--router--zustand--react-query--rhf">实战项目：迷你电商（React + Router + Zustand + React Query + RHF）</a></h2>
+<p>目标：从 0 到可运行的“商品列表/详情/购物车/登录/下单”应用，具备加载态/错误态、缓存与状态管理、表单校验与 E2E 测试雏形。</p>
+<p>功能列表：</p>
+<ul>
+<li>商品列表：过滤、分页（前端模拟）、收藏</li>
+<li>商品详情：加入购物车、库存校验</li>
+<li>购物车：增减数量、价格汇总、下单（模拟）</li>
+<li>登录：邮箱 + 密码校验；登录态存储（localStorage）</li>
+<li>数据：使用 Mock（MSW 或本地 json）</li>
+</ul>
+<p>依赖：</p>
+<pre><code class="language-bash">npm i react-router-dom zustand @tanstack/react-query axios react-hook-form zod @hookform/resolvers
+# 可选：msw cypress @testing-library/react jest-dom vitest
+</code></pre>
+<p>项目结构建议：</p>
+<pre><code>src/
+  api/           # axios 客户端与接口定义
+  components/    # 通用 UI
+  hooks/         # 自定义 hooks
+  pages/         # 页面（路由）
+  store/         # 状态（cart/auth）
+  tests/         # 单元/组件测试
+  App.tsx
+  main.tsx
+</code></pre>
+<p>核心代码：</p>
+<pre><code class="language-ts">// src/store/auth.ts
+import { create } from 'zustand'
+type User = { email: string } | null
+type Auth = { user: User; login: (email: string) =&gt; void; logout: () =&gt; void }
+export const useAuth = create&lt;Auth&gt;(set =&gt; ({
+  user: null,
+  login: email =&gt; set({ user: { email } }),
+  logout: () =&gt; set({ user: null }),
+}))
+</code></pre>
+<pre><code class="language-ts">// src/store/cart.ts
+import { create } from 'zustand'
+type CartItem = { id: number; title: string; price: number; qty: number }
+type Cart = {
+  items: CartItem[]
+  add: (item: Omit&lt;CartItem, 'qty'&gt;) =&gt; void
+  inc: (id: number) =&gt; void
+  dec: (id: number) =&gt; void
+  total: () =&gt; number
+}
+export const useCart = create&lt;Cart&gt;(set =&gt; ({
+  items: [],
+  add: it =&gt; set(s =&gt; ({ items: s.items.some(i =&gt; i.id === it.id) ? s.items : [...s.items, { ...it, qty: 1 }] })),
+  inc: id =&gt; set(s =&gt; ({ items: s.items.map(i =&gt; i.id === id ? { ...i, qty: i.qty + 1 } : i) })),
+  dec: id =&gt; set(s =&gt; ({ items: s.items.map(i =&gt; i.id === id ? { ...i, qty: Math.max(1, i.qty - 1) } : i) })),
+  total: () =&gt; 0,
+}))
+</code></pre>
+<pre><code class="language-tsx">// src/App.tsx（路由骨架）
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom'
+import Products from './pages/Products'
+import ProductDetail from './pages/ProductDetail'
+import Cart from './pages/Cart'
+import Login from './pages/Login'
+import { useAuth } from './store/auth'
+
+function RequireAuth({ children }: { children: JSX.Element }) {
+  const user = useAuth(s =&gt; s.user)
+  return user ? children : &lt;Navigate to="/login" replace /&gt;
+}
+
+export default function App() {
+  return (
+    &lt;BrowserRouter&gt;
+      &lt;nav&gt;
+        &lt;Link to="/"&gt;商品&lt;/Link&gt; | &lt;Link to="/cart"&gt;购物车&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;Routes&gt;
+        &lt;Route path="/" element={&lt;Products /&gt;} /&gt;
+        &lt;Route path="/products/:id" element={&lt;ProductDetail /&gt;} /&gt;
+        &lt;Route path="/cart" element={&lt;RequireAuth&gt;&lt;Cart /&gt;&lt;/RequireAuth&gt;} /&gt;
+        &lt;Route path="/login" element={&lt;Login /&gt;} /&gt;
+        &lt;Route path="*" element={&lt;h2&gt;404&lt;/h2&gt;} /&gt;
+      &lt;/Routes&gt;
+    &lt;/BrowserRouter&gt;
+  )
+}
+</code></pre>
+<pre><code class="language-tsx">// src/pages/ProductDetail.tsx（加入购物车）
+import { useParams } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../api/client'
+import { useCart } from '../store/cart'
+
+export default function ProductDetail() {
+  const { id } = useParams()
+  const add = useCart(s =&gt; s.add)
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['product', id],
+    queryFn: async () =&gt; (await api.get(`/products/${id}`)).data,
+    enabled: !!id,
+  })
+  if (isLoading) return &lt;p&gt;加载中...&lt;/p&gt;
+  if (isError) return &lt;p&gt;加载失败&lt;/p&gt;
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;{data.title}&lt;/h2&gt;
+      &lt;p&gt;价格：{data.price}&lt;/p&gt;
+      &lt;button onClick={() =&gt; add({ id: data.id, title: data.title, price: data.price })}&gt;加入购物车&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}
+</code></pre>
+<p>运行步骤：</p>
+<ol>
+<li>准备 API：可使用 json-server 或 MSW 模拟 <code>/products</code> 与 <code>/products/:id</code></li>
+<li>本地启动：<code>npm run dev</code></li>
+<li>行为验证：
+<ul>
+<li>列表加载与详情跳转</li>
+<li>登录后访问购物车页</li>
+<li>加入购物车、数量增减与汇总</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="工程化与质量保障eslintprettierhuskyvitest"><a class="header" href="#工程化与质量保障eslintprettierhuskyvitest">工程化与质量保障（ESLint/Prettier/Husky/Vitest）</a></h2>
+<p>你将学到：</p>
+<ul>
+<li>统一代码风格与提交规范，预防常见错误</li>
+<li>组件与逻辑单测、端到端测试策略</li>
+</ul>
+<p>建议配置：</p>
+<pre><code class="language-json">// package.json（片段）
+{
+  "scripts": {
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "vitest",
+    "prettify": "prettier -w ."
+  }
+}
+</code></pre>
+<p>示例 ESLint 规则要点：</p>
+<ul>
+<li>react-hooks/exhaustive-deps：确保 useEffect 依赖完整</li>
+<li>@typescript-eslint/no-misused-promises：避免事件处理返回 Promise 的陷阱</li>
+</ul>
+<p>测试场景建议：</p>
+<ul>
+<li>单测：复杂 hooks、自定义逻辑、纯函数工具</li>
+<li>组件测试：可交互组件（表单、列表筛选、路由跳转）</li>
+<li>E2E：核心业务路径（登录→下单）</li>
+</ul>
+<hr />
+<h2 id="react-18-深潜并发严格模式与常见惊讶点"><a class="header" href="#react-18-深潜并发严格模式与常见惊讶点">React 18 深潜：并发、严格模式与常见“惊讶点”</a></h2>
+<p>要点：</p>
+<ul>
+<li>开发模式下 StrictMode 会二次执行初始渲染（避免副作用泄漏）</li>
+<li>自动批处理：同一次事件循环内多次 setState 合并更新</li>
+<li>useTransition：把不紧急的更新标记为可打断，提高交互响应</li>
+</ul>
+<p>示例：StrictMode 导致副作用执行两次</p>
+<pre><code class="language-tsx">useEffect(() =&gt; {
+  const id = setInterval(() =&gt; console.log('tick'), 1000)
+  return () =&gt; clearInterval(id)
+}, [])
+// 仅在开发模式下你可能会看到 setInterval 创建两次；生产不会。
+</code></pre>
+<p>避坑清单：</p>
+<ul>
+<li>避免在 render 阶段做副作用（如网络请求、订阅）；使用 useEffect</li>
+<li>保证副作用可幂等/可清理；返回清理函数</li>
+<li>注意“陈旧闭包”：依赖 state/props 的回调要么放在 useEffect 中，要么把依赖放进依赖数组</li>
+</ul>
+<hr />
+<h2 id="安全与稳定性"><a class="header" href="#安全与稳定性">安全与稳定性</a></h2>
+<p>要点：</p>
+<ul>
+<li>XSS：避免直接 <code>dangerouslySetInnerHTML</code>；若必须使用，先做服务端可信的转义/白名单</li>
+<li>表单安全：避免将敏感信息存储在本地；使用 httponly cookie（需要后端配合）</li>
+<li>错误上报：Sentry 或自建上报，结合 Error Boundary 与全局 <code>window.onerror</code></li>
+</ul>
+<hr />
+<h2 id="常见问题扩展故障排查"><a class="header" href="#常见问题扩展故障排查">常见问题扩展（故障排查）</a></h2>
+<ul>
+<li>Hydration mismatch（SSR/同构场景）：确保首屏 HTML 与客户端渲染一致；避免使用非确定性值（如 <code>Date.now()</code>、<code>Math.random()</code>）直接渲染</li>
+<li>key 与本地状态丢失：当列表重新排序或过滤时，使用稳定 key；避免索引作为 key</li>
+<li>useLayoutEffect 警告（SSR）：在浏览器端使用 useLayoutEffect；在 SSR 环境需条件降级到 useEffect</li>
+<li>CSS 问题：样式隔离优先选择 CSS Modules/Tailwind；减少全局样式污染</li>
+</ul>
+<hr />
+<h2 id="面试与自我检验题可量化"><a class="header" href="#面试与自我检验题可量化">面试与自我检验题（可量化）</a></h2>
+<p>简答/代码：</p>
+<ol>
+<li>描述 useEffect 与 useLayoutEffect 的差异与使用场景，并给出一段需要 useLayoutEffect 的代码</li>
+<li>基于 React Query 设计“商品详情”的缓存策略（含 key、staleTime、预取时机）</li>
+<li>用 RHF + Zod 实现注册表单，要求两次密码一致校验与通用错误展示组件</li>
+<li>解释为什么 Context 过度使用会导致性能问题，并给出替代方案（selector/Zustand）</li>
+<li>给出一个 useDebounce 与 useTransition 的组合优化搜索体验的示例</li>
+</ol>
+<p>评分建议：</p>
+<ul>
+<li>代码正确性（40%）、可维护性（30%）、性能意识（20%）、可测试性（10%）</li>
+</ul>
+<hr />
+<h2 id="路线与进阶建议"><a class="header" href="#路线与进阶建议">路线与进阶建议</a></h2>
+<ul>
+<li>完成本笔记 → 实战项目上线（Vercel/Netlify）→ 引入 Storybook 做组件驱动开发 → 学习 Next.js（SSR/RSC/路由约定）→ 引入 E2E（Cypress/Playwright）→ 关注可观测性与性能监控</li>
+<li>生态库：
+<ul>
+<li>数据：React Query、SWR</li>
+<li>状态：Redux Toolkit、Zustand、Recoil</li>
+<li>UI：Radix UI、Headless UI、shadcn/ui</li>
+<li>表单：React Hook Form、Formik</li>
+<li>图表：ECharts、Recharts、VisX</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="扩展资源精选"><a class="header" href="#扩展资源精选">扩展资源（精选）</a></h2>
+<ul>
+<li>React 官方教程与 Learn 章节（react.dev/learn）</li>
+<li>TanStack Query 文档与示例</li>
+<li>React Hook Form 文档 + Recipes</li>
+<li>Kent C. Dodds 的 Testing 教程与博客</li>
+<li>React 性能优化专题（Profiler、虚拟化、并发）</li>
+</ul>
+<hr />
+<p>【版本与维护说明】</p>
+<ul>
+<li>最近更新：2025-11-02</li>
+<li>适配版本：React 18、React Router v6、Vite 5、TypeScript 5</li>
+<li>建议每季度回顾：生态更新（如 Router v7、TanStack 新特性、RHF 版本改动）</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/31-TypeScript.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/33-MobxJS.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/31-TypeScript.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/33-MobxJS.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

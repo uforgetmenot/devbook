@@ -1,0 +1,1588 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>CSS3 全面学习笔记（实战导向） - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="css3-全面学习笔记实战导向"><a class="header" href="#css3-全面学习笔记实战导向">CSS3 全面学习笔记（实战导向）</a></h1>
+<h2 id="导学篇学习目标与角色定位"><a class="header" href="#导学篇学习目标与角色定位">导学篇：学习目标与角色定位</a></h2>
+<ul>
+<li><strong>目标读者画像</strong>：拥有 0-5 年前端或全栈开发经验的工程师、设计师转行者，以及需要系统掌握 CSS3 的产品/运营技术支持人员。</li>
+<li><strong>学习最终成果</strong>：能够独立设计与实现生产级 Web UI，掌握现代布局体系（Flexbox、Grid）、视觉与交互特效（动画、滤镜、变量）、响应式适配策略和工程化工作流，并具备调试与性能优化能力。</li>
+<li><strong>实战导向原则</strong>：每个知识点都辅以典型场景与可运行示例；通过案例练习涵盖多设备适配、组件化开发、设计系统落地等真实需求；引导学习者在项目环境中验证知识。</li>
+<li><strong>学习方法论</strong>：遵循 “基础概念 → 专题模块 → 实战演练 → 总结反思 → 构建知识地图 → 持续迭代” 的闭环；建议采用番茄工作法与阶段性复盘来保证学习节奏。</li>
+</ul>
+<h3 id="学习路径全景"><a class="header" href="#学习路径全景">学习路径全景</a></h3>
+<ol>
+<li><strong>环境准备与调试工具</strong>：掌握常用浏览器 DevTools、CSS 规范、格式化与 Lint 工具。</li>
+<li><strong>CSS 语言基石</strong>：深入理解选择器、优先级、继承与盒模型，理清渲染流程。</li>
+<li><strong>现代布局系统</strong>：系统使用 Flexbox、Grid、定位、流式布局构建响应式页面。</li>
+<li><strong>视觉表现与设计语言</strong>：掌握色彩、排版、背景、滤镜、自定义属性（CSS 变量）等能力。</li>
+<li><strong>交互与动画</strong>：实现变换、过渡、关键帧动画、滚动驱动效果与微交互。</li>
+<li><strong>高级特性与兼容策略</strong>：逐步引入容器查询、<code>:has()</code>、子网格、Cascade Layers 等新特性；掌握渐进增强与回退方案。</li>
+<li><strong>工程化与团队协作</strong>：引入 CSS 预处理器、后处理器、模块化策略、设计系统治理；配合构建工具实现产物优化。</li>
+<li><strong>综合实战项目</strong>：以登陆页、组件库、数据可视化仪表盘、设计系统等场景进行整合演练。</li>
+<li><strong>质量保障与性能优化</strong>：建立验收标准、回归测试、性能监测与持续改进机制。</li>
+</ol>
+<hr />
+<h2 id="模块一css-基础核心概念"><a class="header" href="#模块一css-基础核心概念">模块一：CSS 基础核心概念</a></h2>
+<h3 id="11-css-语言结构与渲染流程"><a class="header" href="#11-css-语言结构与渲染流程">1.1 CSS 语言结构与渲染流程</a></h3>
+<ul>
+<li><strong>CSS 工作机制</strong>：浏览器将 CSS 文本解析成 CSSOM，与 HTML DOM 合并生成 Render Tree；结合布局计算生成盒模型，最后绘制到屏幕。如果理解这一流程，便能针对性优化性能与调试问题。</li>
+<li><strong>渲染生命周期关键点</strong>：Style Recalc（样式计算）、Layout/Reflow（布局）、Paint（绘制）、Composite（合成）。减少回流与重绘是性能优化的核心。</li>
+<li><strong>关键术语</strong>：Rule（规则）、Selector（选择器）、Declaration（声明）、Property（属性）、Value（值）。</li>
+</ul>
+<h3 id="12-选择器与优先级"><a class="header" href="#12-选择器与优先级">1.2 选择器与优先级</a></h3>
+<ul>
+<li><strong>基础选择器</strong>：元素（<code>div</code>）、类（<code>.btn</code>）、ID（<code>#header</code>）、全局（<code>*</code>）。</li>
+<li><strong>组合选择器</strong>：后代（<code>article p</code>）、子代（<code>ul &gt; li</code>）、兄弟（<code>h2 + p</code> / <code>h2 ~ p</code>）。</li>
+<li><strong>属性与伪类伪元素选择器</strong>：<code>[type="email"]</code>、<code>:hover</code>、<code>:focus-visible</code>、<code>::before</code>、<code>::marker</code> 等。</li>
+<li><strong>优先级计算规则</strong>：行内样式 &gt; ID 选择器 &gt; 类 / 伪类 / 属性选择器 &gt; 元素 &gt; 通配符。使用 <code>!important</code> 会提升优先级，需谨慎。</li>
+<li><strong>层叠顺序（Cascade）</strong>：来源（作者、用户、浏览器默认），重要性（<code>!important</code>）、优先级、源顺序。CSS Cascade 4 引入 Cascade Layers（<code>@layer</code>）。</li>
+</ul>
+<h4 id="实战案例构建多层级导航条的样式控制"><a class="header" href="#实战案例构建多层级导航条的样式控制">实战案例：构建多层级导航条的样式控制</a></h4>
+<pre><code class="language-html">&lt;nav class="nav"&gt;
+  &lt;ul class="nav__list"&gt;
+    &lt;li class="nav__item nav__item--current"&gt;&lt;a href="#"&gt;设计系统&lt;/a&gt;&lt;/li&gt;
+    &lt;li class="nav__item"&gt;
+      &lt;a href="#"&gt;课程目录&lt;/a&gt;
+      &lt;ul class="nav__submenu"&gt;
+        &lt;li class="nav__submenu-item"&gt;&lt;a href="#"&gt;模块一：基础&lt;/a&gt;&lt;/li&gt;
+        &lt;li class="nav__submenu-item"&gt;&lt;a href="#"&gt;模块二：布局&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+</code></pre>
+<pre><code class="language-css">/* 使用 @layer 管理层叠顺序，确保组件样式不会被全局覆盖 */
+@layer reset, base, component, utilities;
+
+@layer reset {
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+}
+
+@layer base {
+  body { font-family: "Inter", system-ui, sans-serif; line-height: 1.5; }
+}
+
+@layer component {
+  .nav { background: linear-gradient(120deg, #161b22, #0d1117); color: #fff; }
+  .nav__list { display: flex; align-items: center; gap: 1.5rem; padding: 1rem 2.5rem; list-style: none; }
+  .nav__item { position: relative; }
+  .nav__item &gt; a { text-decoration: none; color: inherit; padding: 0.5rem 0.75rem; border-radius: 0.5rem; transition: background 0.24s ease; }
+  .nav__item--current &gt; a { background: rgba(255,255,255,0.12); }
+  .nav__item:hover &gt; a { background: rgba(255,255,255,0.08); }
+
+  .nav__submenu {
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    left: 0;
+    display: grid;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: #0f172a;
+    border-radius: 0.75rem;
+    min-width: 14rem;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.28);
+    opacity: 0;
+    transform: translateY(12px);
+    pointer-events: none;
+    transition: opacity 0.28s ease, transform 0.28s ease;
+  }
+
+  .nav__item:hover &gt; .nav__submenu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .nav__submenu-item &gt; a { display: block; color: rgba(226, 232, 240, 0.92); padding: 0.5rem 0.75rem; border-radius: 0.45rem; }
+  .nav__submenu-item &gt; a:hover { background: rgba(94, 234, 212, 0.16); color: #5eead4; }
+}
+
+@layer utilities {
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+}
+</code></pre>
+<p><strong>案例要点总结</strong>：通过 <code>@layer</code> 控制层级，使用结构化 BEM 命名，配合过渡动画提升用户体验；调试时在浏览器查看 Cascade 视图以验证优先级。</p>
+<h3 id="13-继承初始值与计算值"><a class="header" href="#13-继承初始值与计算值">1.3 继承、初始值与计算值</a></h3>
+<ul>
+<li><strong>继承属性</strong>：字体、颜色、行高等会自动继承；布局相关属性（如 <code>margin</code>、<code>padding</code>）不会继承。</li>
+<li><strong>初始值（initial value）</strong>：每个属性都有默认值，可用 <code>initial</code> 显式恢复；<code>inherit</code> 强制继承父值。</li>
+<li><strong>计算值（computed value）</strong>：浏览器解析后得到的值，调试时可在 DevTools 查看，理解各阶段有助定位问题。</li>
+<li><strong>常见陷阱</strong>：<code>line-height</code> 使用无单位值时会继承计算值；<code>em</code>、<code>rem</code> 与继承链会影响最终视觉。</li>
+</ul>
+<h3 id="14-盒模型详解"><a class="header" href="#14-盒模型详解">1.4 盒模型详解</a></h3>
+<ul>
+<li><strong>标准盒模型 vs IE 盒模型</strong>：<code>box-sizing: content-box</code>（默认）与 <code>border-box</code> 区别在于宽高计算是否包含 padding 与 border。现代开发推荐统一设置 <code>box-sizing: border-box</code>。</li>
+<li><strong>尺寸计算公式</strong>：<code>border-box</code> → 元素总宽度 = 设定宽度；<code>content-box</code> → 总宽度 = width + padding × 2 + border × 2。</li>
+<li><strong>可视格式化模型（Visual Formatting Model）</strong>：包含块、行框、块级元素、行内元素、定位元素的布局规则。</li>
+<li><strong>Margin 合并问题</strong>：上下相邻块元素的外边距可能合并；常用 <code>padding</code>、<code>border</code> 或 <code>overflow: hidden</code> 解决。</li>
+</ul>
+<h3 id="15-调试技巧"><a class="header" href="#15-调试技巧">1.5 调试技巧</a></h3>
+<ul>
+<li>使用 Chrome DevTools 的 <strong>Layout 面板</strong>（或 Firefox Layout）可视化盒模型。</li>
+<li>在元素面板中查看 “Styles” 与 “Computed” 窗格，追踪属性来源与最终值。</li>
+<li>借助 <code>outline: 1px solid red;</code> 等临时样式定位布局问题，完成后移除。</li>
+</ul>
+<hr />
+<h2 id="模块二选择器系统与样式架构"><a class="header" href="#模块二选择器系统与样式架构">模块二：选择器系统与样式架构</a></h2>
+<h3 id="21-高级选择器与模式识别"><a class="header" href="#21-高级选择器与模式识别">2.1 高级选择器与模式识别</a></h3>
+<ul>
+<li><strong>属性选择器拓展</strong>：<code>[data-state="open"]</code>、<code>[href^="https"]</code>、<code>[class*="btn-"]</code> 支持模式匹配；与 JS 组件状态联动时非常高效。</li>
+<li><strong>结构伪类</strong>：<code>:nth-child()</code>、<code>:nth-of-type()</code>、<code>:not()</code>、<code>:is()</code>、<code>:where()</code> 帮助我们精准匹配复杂 DOM 结构。</li>
+<li><strong>关系伪类</strong>：<code>:has()</code> 可选择包含特定后代元素的父级，适用于无 JS 的交互效果；目前 Chrome/Safari 已支持，注意兼容。</li>
+<li><strong>交互伪类</strong>：<code>:focus-visible</code>、<code>:focus-within</code> 提升无障碍体验；<code>:target</code> 结合锚点可创建轻量级组件。</li>
+</ul>
+<h4 id="选择器性能建议"><a class="header" href="#选择器性能建议">选择器性能建议</a></h4>
+<ul>
+<li>优先使用类选择器；避免写过于深的后代链。</li>
+<li>利用 <code>:is()</code> 与 <code>:where()</code> 合并重复模式，减少 CSS 体积并控制优先级。</li>
+<li>在大型项目中通过命名约束（BEM、ITCSS、Atomic CSS）提升可维护性。</li>
+</ul>
+<h3 id="22-样式架构方法论比较"><a class="header" href="#22-样式架构方法论比较">2.2 样式架构方法论比较</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>架构方式</th><th>核心理念</th><th>优点</th><th>适用场景</th><th>注意事项</th></tr></thead><tbody>
+<tr><td>BEM</td><td>Block/Element/Modifier 组件命名体系</td><td>可读性强、避免选择器嵌套</td><td>组件化项目、多人协作</td><td>名称较长，可借助构建工具压缩</td></tr>
+<tr><td>OOCSS</td><td>分离结构与皮肤、容器与内容</td><td>可复用性高</td><td>样式复用需求强</td><td>易导致类名泛化，需规范</td></tr>
+<tr><td>SMACSS</td><td>Base, Layout, Module, State, Theme 分类</td><td>强调分层</td><td>大型站点治理</td><td>与 BEM 结合更佳</td></tr>
+<tr><td>ITCSS</td><td>层级结构：Settings → Tools → Generic → Elements → Objects → Components → Utilities</td><td>控制 Cascade、避免特异性冲突</td><td>设计系统、UI 库</td><td>落地需要团队共识和工具支持</td></tr>
+<tr><td>Atomic/Utility CSS</td><td>将样式拆成原子类，构建界面</td><td>快速开发、体积可控</td><td>Tailwind/UnoCSS 等框架</td><td>可读性依赖设计文档</td></tr>
+</tbody></table>
+</div>
+<h3 id="23-样式架构案例企业级设计系统的层次化组织"><a class="header" href="#23-样式架构案例企业级设计系统的层次化组织">2.3 样式架构案例：企业级设计系统的层次化组织</a></h3>
+<pre><code class="language-css">/* 1. Settings 层：设计令牌（Design Tokens） */
+:root {
+  --color-primary-500: #2563eb;
+  --color-primary-600: #1d4ed8;
+  --color-neutral-900: #0f172a;
+  --space-2: 0.5rem;
+  --space-4: 1rem;
+  --radius-md: 0.75rem;
+  --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.22);
+}
+
+/* 2. Tools 层：函数、mixin（若使用预处理器） */
+@custom-media --narrow (max-width: 640px);
+
+/* 3. Generic 层：Reset、Normalize */
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; font-family: "Inter", system-ui, sans-serif; }
+}
+
+/* 4. Elements 层：原生元素默认样式 */
+@layer base {
+  h1, h2, h3 { color: var(--color-neutral-900); font-weight: 700; }
+  p { color: rgba(15, 23, 42, 0.76); }
+}
+
+/* 5. Objects 层：布局原语 */
+@layer objects {
+  .o-stack { display: flex; flex-direction: column; gap: var(--space-4); }
+  .o-cluster { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+  .o-cover { min-height: 100vh; display: grid; place-items: center; padding: 6vw; }
+}
+
+/* 6. Components 层：具体 UI 组件 */
+@layer components {
+  .c-card {
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: calc(var(--space-4) * 2);
+    display: grid;
+    gap: var(--space-4);
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+  }
+  .c-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 80px rgba(15, 23, 42, 0.28);
+  }
+  .c-card__title { font-size: clamp(1.25rem, 1.4vw, 1.8rem); }
+  .c-card__meta { color: rgba(15, 23, 42, 0.56); font-size: 0.9rem; }
+  .c-button { padding: 0.65rem 1.4rem; border-radius: 999px; border: none; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #f8fafc; font-weight: 600; cursor: pointer; }
+  .c-button--ghost { background: rgba(37, 99, 235, 0.14); color: #1d4ed8; }
+}
+
+/* 7. Utilities 层：工具类 */
+@layer utilities {
+  .u-text-center { text-align: center; }
+  .u-hide { display: none !important; }
+  .u-shadow-none { box-shadow: none !important; }
+}
+</code></pre>
+<p><strong>落地建议</strong>：将层级写入文档，配合 Stylelint + 自定义规则保障分类；在设计系统 Storybook 中演示每层的职责范围。</p>
+<h3 id="24-常见错误与调试策略"><a class="header" href="#24-常见错误与调试策略">2.4 常见错误与调试策略</a></h3>
+<ul>
+<li>选择器过长导致维护困难：使用样式架构方法，避免 DOM 层级变化引发联动问题。</li>
+<li>滥用 <code>!important</code>：用层级管理与特异性控制取代；必要时记录原因。</li>
+<li>类名语义化不足：采用 BEM 或设计 tokens，减少误解。</li>
+<li>忽略无障碍状态：加入 <code>:focus-visible</code>、<code>:focus-within</code>、<code>prefers-reduced-motion</code> 等兼容处理。</li>
+</ul>
+<hr />
+<h2 id="模块三布局体系与响应式思维"><a class="header" href="#模块三布局体系与响应式思维">模块三：布局体系与响应式思维</a></h2>
+<h3 id="31-流式布局与定位"><a class="header" href="#31-流式布局与定位">3.1 流式布局与定位</a></h3>
+<ul>
+<li><strong>文档流</strong>：块元素占满一行，行内元素按内容宽度排列。理解流式布局是掌握更高级布局的前提。</li>
+<li><strong>浮动布局</strong>：早期常用，现代场景主要用于文字环绕；使用 <code>display: flow-root</code> 可创建自包含布局上下文。</li>
+<li><strong>定位</strong>：<code>relative</code>、<code>absolute</code>、<code>fixed</code>、<code>sticky</code>。使用 <code>position: sticky</code> 可以简化吸顶导航、目录定位等交互。</li>
+</ul>
+<h4 id="案例构建浮动图文混排模块"><a class="header" href="#案例构建浮动图文混排模块">案例：构建浮动图文混排模块</a></h4>
+<pre><code class="language-html">&lt;section class="feature-block"&gt;
+  &lt;figure class="feature-block__media"&gt;
+    &lt;img src="/assets/css-grid-dashboard.png" alt="Grid Dashboard" /&gt;
+    &lt;figcaption&gt;Grid 驱动的数据看板布局示意&lt;/figcaption&gt;
+  &lt;/figure&gt;
+  &lt;div class="feature-block__content"&gt;
+    &lt;h2&gt;以数据驱动的布局系统&lt;/h2&gt;
+    &lt;p&gt;通过 CSS Grid 定义区域与轨道，实现灵活的卡片重排与跨列布局，让仪表盘既响应式又具备设计秩序。&lt;/p&gt;
+    &lt;a class="feature-block__cta" href="#"&gt;了解栅格设计原则 →&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+</code></pre>
+<pre><code class="language-css">.feature-block {
+  background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(99,102,241,0.16));
+  padding: clamp(1.5rem, 3vw, 3rem);
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+.feature-block__media {
+  float: right;
+  margin: 0 0 1rem 2rem;
+  max-width: clamp(220px, 40vw, 360px);
+  text-align: center;
+  background: rgba(15, 23, 42, 0.08);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+.feature-block__media img {
+  width: 100%;
+  border-radius: 0.75rem;
+  display: block;
+}
+.feature-block__content {
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+.feature-block__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #1d4ed8;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 1.5rem;
+}
+@media (max-width: 960px) {
+  .feature-block__media {
+    float: none;
+    margin: 0 0 1.5rem 0;
+    max-width: 100%;
+  }
+}
+</code></pre>
+<p><strong>要点</strong>：使用 <code>float</code> 实现包裹图文，结合媒体查询恢复流式顺序。生产环境应优先考虑 Flex/Grid 实现，但理解浮动遗产对维护老系统仍然必要。</p>
+<h3 id="32-flexbox组件级布局利器"><a class="header" href="#32-flexbox组件级布局利器">3.2 Flexbox：组件级布局利器</a></h3>
+<ul>
+<li><strong>核心概念</strong>：主轴（main axis）与交叉轴（cross axis），容器与项目（items）。</li>
+<li><strong>常用属性</strong>：
+<ul>
+<li>容器：<code>display:flex</code>、<code>flex-direction</code>、<code>flex-wrap</code>、<code>justify-content</code>、<code>align-items</code>、<code>gap</code>。</li>
+<li>子项：<code>flex-grow</code>、<code>flex-shrink</code>、<code>flex-basis</code>、<code>align-self</code>、<code>order</code>。</li>
+</ul>
+</li>
+<li><strong>典型模式</strong>：导航条、卡片栈、响应式列表、等比分布按钮、垂直居中。</li>
+<li><strong>调试技巧</strong>：Chrome/Firefox DevTools 内置 Flex overlay。先确定主轴方向，再微调子项属性。</li>
+</ul>
+<h4 id="案例构建响应式定价卡组"><a class="header" href="#案例构建响应式定价卡组">案例：构建响应式定价卡组</a></h4>
+<pre><code class="language-html">&lt;section class="pricing"&gt;
+  &lt;header class="pricing__header"&gt;
+    &lt;h2&gt;CSS3 前端加速营&lt;/h2&gt;
+    &lt;p&gt;根据团队规模选择合适的知识方案&lt;/p&gt;
+  &lt;/header&gt;
+  &lt;div class="pricing__plans"&gt;
+    &lt;article class="plan plan--starter"&gt;
+      &lt;h3&gt;个人成长计划&lt;/h3&gt;
+      &lt;p class="plan__price"&gt;&lt;span&gt;¥&lt;/span&gt;199&lt;/p&gt;
+      &lt;ul class="plan__features"&gt;
+        &lt;li&gt;CSS核心知识结构图&lt;/li&gt;
+        &lt;li&gt;实战案例代码包&lt;/li&gt;
+        &lt;li&gt;设计系统样式指南&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;button class="plan__cta"&gt;立即加入&lt;/button&gt;
+    &lt;/article&gt;
+    &lt;article class="plan plan--team plan--highlight"&gt;
+      &lt;h3&gt;团队赋能计划&lt;/h3&gt;
+      &lt;p class="plan__price"&gt;&lt;span&gt;¥&lt;/span&gt;1299&lt;/p&gt;
+      &lt;ul class="plan__features"&gt;
+        &lt;li&gt;工作坊复刻项目&lt;/li&gt;
+        &lt;li&gt;工程化风格 lint 规则&lt;/li&gt;
+        &lt;li&gt;代码评审与性能诊断&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;button class="plan__cta"&gt;预约顾问&lt;/button&gt;
+    &lt;/article&gt;
+    &lt;article class="plan plan--enterprise"&gt;
+      &lt;h3&gt;企业定制计划&lt;/h3&gt;
+      &lt;p class="plan__price"&gt;定制报价&lt;/p&gt;
+      &lt;ul class="plan__features"&gt;
+        &lt;li&gt;组件库治理方案&lt;/li&gt;
+        &lt;li&gt;设计令牌系统共建&lt;/li&gt;
+        &lt;li&gt;长期辅导与内训&lt;/li&gt;
+      &lt;/ul&gt;
+      &lt;button class="plan__cta"&gt;联系团队&lt;/button&gt;
+    &lt;/article&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+</code></pre>
+<pre><code class="language-css">.pricing {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  padding: clamp(2rem, 6vw, 5rem);
+  background: radial-gradient(circle at top, rgba(37,99,235,0.16), rgba(15,23,42,0.92));
+  color: #e2e8f0;
+}
+.pricing__header { text-align: center; }
+.pricing__header h2 { font-size: clamp(2rem, 4vw, 2.8rem); }
+.pricing__plans {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+  justify-content: center;
+}
+.plan {
+  flex: 1 1 calc(min(20rem, 100%));
+  background: rgba(15, 23, 42, 0.72);
+  border-radius: 1.25rem;
+  padding: 2.25rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.plan--highlight {
+  border-color: rgba(94, 234, 212, 0.6);
+  background: linear-gradient(160deg, rgba(2,132,199,0.85), rgba(59,130,246,0.82));
+}
+.plan:hover { transform: translateY(-6px); }
+.plan__price { font-size: clamp(2.5rem, 5vw, 3rem); font-weight: 700; }
+.plan__features { list-style: none; display: grid; gap: 0.85rem; }
+.plan__features li { position: relative; padding-left: 1.5rem; }
+.plan__features li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: #5eead4;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.18);
+}
+.plan__cta {
+  margin-top: auto;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  background: #0f172a;
+  border: none;
+  color: #5eead4;
+  font-weight: 600;
+  cursor: pointer;
+}
+@media (max-width: 680px) {
+  .plan { flex: 1 1 100%; }
+}
+</code></pre>
+<p><strong>构建思路</strong>：通过 <code>flex: 1 1 calc(min(20rem, 100%))</code> 控制卡片最小宽度，结合 <code>flex-wrap</code> 自动换行；突出重点方案使用额外类修饰。</p>
+<h3 id="33-css-grid二维布局与设计系统"><a class="header" href="#33-css-grid二维布局与设计系统">3.3 CSS Grid：二维布局与设计系统</a></h3>
+<ul>
+<li><strong>核心概念</strong>：Grid Container、Grid Item、Track（轨道）、Line（线）、Cell（单元格）、Area（区域）。</li>
+<li><strong>轨道定义方式</strong>：<code>grid-template-columns</code>、<code>grid-template-rows</code>、<code>repeat()</code>、<code>minmax()</code>、<code>auto-fit</code>、<code>auto-fill</code>。</li>
+<li><strong>对齐与间距</strong>：<code>justify-items</code>、<code>align-items</code>、<code>justify-content</code>、<code>align-content</code>、<code>gap</code>。</li>
+<li><strong>网格模板区域</strong>：<code>grid-template-areas</code> 直观命名区域，适合营销页。</li>
+<li><strong>子网格（Subgrid）</strong>：允许子元素继承父网格轨道，实现跨组件对齐。</li>
+</ul>
+<h4 id="案例构建数据仪表盘布局含子网格"><a class="header" href="#案例构建数据仪表盘布局含子网格">案例：构建数据仪表盘布局（含子网格）</a></h4>
+<pre><code class="language-html">&lt;div class="dashboard"&gt;
+  &lt;header class="dashboard__header"&gt;CSS3 技能雷达&lt;/header&gt;
+  &lt;aside class="dashboard__sidebar"&gt;
+    &lt;nav class="sidebar-nav"&gt;
+      &lt;h3&gt;模块导航&lt;/h3&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#module-1"&gt;基础核心&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#module-2"&gt;布局体系&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#module-3"&gt;视觉表达&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#module-4"&gt;动画交互&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#module-5"&gt;工程化&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/aside&gt;
+  &lt;main class="dashboard__main"&gt;
+    &lt;section class="card chart-card"&gt;...&lt;/section&gt;
+    &lt;section class="card stats-card"&gt;...&lt;/section&gt;
+    &lt;section class="card timeline-card"&gt;...&lt;/section&gt;
+    &lt;section class="card note-card"&gt;...&lt;/section&gt;
+  &lt;/main&gt;
+&lt;/div&gt;
+</code></pre>
+<pre><code class="language-css">.dashboard {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "header header"
+    "sidebar main";
+  background: #0f172a;
+  color: #e2e8f0;
+}
+.dashboard__header {
+  grid-area: header;
+  padding: 1.5rem 2.5rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+.dashboard__sidebar {
+  grid-area: sidebar;
+  padding: 2rem 1.5rem;
+  border-right: 1px solid rgba(148, 163, 184, 0.18);
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+.dashboard__main {
+  grid-area: main;
+  padding: 2rem 2.5rem;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: minmax(180px, auto);
+  gap: 1.5rem;
+}
+
+.card {
+  background: rgba(15, 23, 42, 0.78);
+  border-radius: 1rem;
+  border: 1px solid rgba(94, 234, 212, 0.1);
+  padding: 1.5rem;
+}
+
+.chart-card { grid-column: span 8; grid-row: span 2; }
+.stats-card { grid-column: span 4; }
+.timeline-card { grid-column: span 4; }
+.note-card { grid-column: span 8; }
+
+.timeline-card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+.timeline-card__list {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  gap: 1rem;
+}
+.timeline-card__item {
+  grid-column: span 6;
+  display: grid;
+  gap: 0.5rem;
+  background: rgba(30, 41, 59, 0.6);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+@media (max-width: 1280px) {
+  .dashboard {
+    grid-template-columns: 220px 1fr;
+  }
+  .chart-card { grid-column: span 12; }
+  .stats-card { grid-column: span 6; }
+  .timeline-card { grid-column: span 6; }
+  .note-card { grid-column: span 12; }
+}
+
+@media (max-width: 960px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main";
+  }
+  .dashboard__sidebar { display: none; }
+  .dashboard__main { grid-template-columns: repeat(6, 1fr); }
+  .chart-card, .note-card { grid-column: span 6; }
+  .stats-card, .timeline-card { grid-column: span 6; }
+}
+</code></pre>
+<p><strong>案例亮点</strong>：利用 12 列网格实现模块化布局，通过媒体查询调整跨列跨度；在时间线卡片内使用 <code>subgrid</code> 对齐内部元素，保持视觉一致性。</p>
+<h3 id="34-多列布局multi-column-layout与自适应排版"><a class="header" href="#34-多列布局multi-column-layout与自适应排版">3.4 多列布局（Multi-Column Layout）与自适应排版</a></h3>
+<ul>
+<li><code>column-count</code>、<code>column-width</code> 可实现杂志式排版，适用于长文档摘要。</li>
+<li>注意 <code>column-gap</code>、<code>column-rule</code> 控制列间距与分隔线；谨慎处理跨列元素（<code>column-span: all</code>）。</li>
+<li>实战中常与 grid/flex 结合，用于展示标签云、博客目录。</li>
+</ul>
+<h3 id="35-响应式布局策略"><a class="header" href="#35-响应式布局策略">3.5 响应式布局策略</a></h3>
+<ul>
+<li><strong>断点设计</strong>：移动优先（从小屏到大屏）更利于性能；根据内容而非设备决定断点。</li>
+<li><strong>流式单位</strong>：<code>vw</code>、<code>vh</code>、<code>vmin</code>、<code>clamp()</code>、<code>min()</code>、<code>max()</code>；通过 <code>clamp(min, preferred, max)</code> 处理字体与间距。</li>
+<li><strong><code>minmax()</code> 与自动填充</strong>：网格布局中 <code>repeat(auto-fit, minmax(220px, 1fr))</code>，自动适配多列卡片。</li>
+<li><strong>容器查询 (<code>@container</code>)</strong>：基于组件容器尺寸生成响应式样式，解决媒体查询局限；需设置 <code>container-type: inline-size</code>。</li>
+</ul>
+<hr />
+<h2 id="模块四视觉表现与设计语言实现"><a class="header" href="#模块四视觉表现与设计语言实现">模块四：视觉表现与设计语言实现</a></h2>
+<h3 id="41-色彩管理与渐变"><a class="header" href="#41-色彩管理与渐变">4.1 色彩管理与渐变</a></h3>
+<ul>
+<li><strong>颜色模型</strong>：<code>rgb()</code>、<code>rgba()</code>、<code>hsl()</code>、<code>lab()</code>、<code>lch()</code>（现代浏览器支持）。选择 <code>hsl</code>/<code>lab</code> 更易生成和谐的色彩梯度。</li>
+<li><strong>渐变类型</strong>：线性渐变（<code>linear-gradient</code>）、径向渐变（<code>radial-gradient</code>）、锥形渐变（<code>conic-gradient</code>）。</li>
+<li><strong>渐变技巧</strong>：叠加多层渐变产生质感；配合 <code>background-blend-mode</code> 模拟玻璃效果。</li>
+<li><strong>色彩令牌管理</strong>：定义 <code>--color-primary-500</code> 等变量，统一维护主题。</li>
+</ul>
+<h4 id="案例玻璃拟态卡片"><a class="header" href="#案例玻璃拟态卡片">案例：玻璃拟态卡片</a></h4>
+<pre><code class="language-css">.glassy-card {
+  position: relative;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(ellipse at top, rgba(59,130,246,0.12), rgba(14,116,144,0.02)),
+    rgba(15, 23, 42, 0.35);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  backdrop-filter: blur(16px) saturate(140%);
+  color: #f8fafc;
+  max-width: 560px;
+}
+.glassy-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, rgba(94,234,212,0.25), rgba(59,130,246,0));
+  opacity: 0.8;
+  pointer-events: none;
+}
+</code></pre>
+<p><strong>说明</strong>：组合渐变与 <code>backdrop-filter</code> 实现玻璃拟态；需要考虑性能与兼容，旧版浏览器可降级为纯色背景。</p>
+<h3 id="42-字体排版与可读性"><a class="header" href="#42-字体排版与可读性">4.2 字体排版与可读性</a></h3>
+<ul>
+<li><strong>字体栈</strong>：合理选择系统字体或 Web Font，兼顾品牌与性能。示例：<code>font-family: "Inter", "SF Pro Display", "PingFang SC", system-ui, sans-serif;</code></li>
+<li><strong>排版参数</strong>：<code>line-height</code>（1.5-1.8 提升可读性）、<code>letter-spacing</code>（标题适当增加）、<code>font-kerning</code>、<code>font-feature-settings</code>。</li>
+<li><strong>响应式排版</strong>：<code>clamp()</code> 结合 <code>vw</code> 单位调整标题尺寸。</li>
+<li><strong>中文排版注意</strong>：使用合适的字体、字重；处理中英文混排空隙（<code>text-spacing</code>、<code>font-variant-east-asian</code>）。</li>
+</ul>
+<h3 id="43-背景阴影与质感"><a class="header" href="#43-背景阴影与质感">4.3 背景、阴影与质感</a></h3>
+<ul>
+<li><code>box-shadow</code> 多层叠加模拟光影；<code>drop-shadow</code> 作用于滤镜。</li>
+<li><code>background-clip</code>、<code>background-origin</code> 控制背景裁剪；<code>background-attachment: fixed</code> 实现视差。</li>
+<li><code>filter</code> 与 <code>backdrop-filter</code> 构建模糊、暗角、磨砂效果；注意性能。</li>
+</ul>
+<h3 id="44-图形与绘制"><a class="header" href="#44-图形与绘制">4.4 图形与绘制</a></h3>
+<ul>
+<li><strong>剪裁与遮罩</strong>：<code>clip-path</code>、<code>mask-image</code>、<code>mask-composite</code> 可以实现复杂形状；配合 SVG 更灵活。</li>
+<li><strong>渐变边框</strong>：使用 <code>border-image</code> 或伪元素模拟。</li>
+<li><strong>形状控制</strong>：<code>shape-outside</code> 让文本沿着自定义形状排版。</li>
+</ul>
+<h3 id="45-css-变量自定义属性"><a class="header" href="#45-css-变量自定义属性">4.5 CSS 变量（自定义属性）</a></h3>
+<ul>
+<li>语法：<code>--token-name</code> 定义，<code>var(--token-name, fallback)</code> 使用。</li>
+<li>常用场景：主题切换、动态间距、响应式阈值、配合 JS 实现交互（通过 <code>element.style.setProperty</code> 更新）。</li>
+<li>变量作用域：遵循 DOM 层级继承，可配合 <code>@property</code> 定义类型与插值。</li>
+</ul>
+<pre><code class="language-css">@property --gradient-angle {
+  syntax: "&lt;angle&gt;";
+  inherits: false;
+  initial-value: 0deg;
+}
+.hero {
+  --gradient-angle: 120deg;
+  background: conic-gradient(from var(--gradient-angle), #2563eb, #22d3ee, #6366f1, #2563eb);
+  animation: rotate 6s linear infinite;
+}
+@keyframes rotate {
+  to { --gradient-angle: 360deg; }
+}
+</code></pre>
+<p><strong>说明</strong>：<code>@property</code> 允许在动画中平滑插值自定义属性，提升可控性。</p>
+<hr />
+<h2 id="模块五交互动画与动效设计"><a class="header" href="#模块五交互动画与动效设计">模块五：交互动画与动效设计</a></h2>
+<h3 id="51-过渡transition基础"><a class="header" href="#51-过渡transition基础">5.1 过渡（Transition）基础</a></h3>
+<ul>
+<li>属性：<code>transition-property</code>、<code>transition-duration</code>、<code>transition-timing-function</code>、<code>transition-delay</code>。</li>
+<li>动画曲线：<code>ease</code>、<code>ease-in-out</code>、<code>cubic-bezier()</code>；结合 <code>cubic-bezier.com</code> 设计自定义曲线。</li>
+<li>场景：按钮反馈、卡片悬浮、折叠菜单、色彩渐变。</li>
+<li>实战建议：使用 <code>transition</code> 控制单一或少量属性，避免影响性能的属性（如 <code>width</code>）频繁过渡。</li>
+</ul>
+<pre><code class="language-css">.button {
+  background: linear-gradient(135deg, #6366f1, #22d3ee);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.24s ease, background 0.32s ease;
+}
+.button:hover {
+  transform: translateY(-2px) scale(1.015);
+  box-shadow: 0 22px 44px rgba(79, 70, 229, 0.28);
+  background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+}
+</code></pre>
+<h3 id="52-transform-与-3d-场景"><a class="header" href="#52-transform-与-3d-场景">5.2 Transform 与 3D 场景</a></h3>
+<ul>
+<li><strong>2D 变换</strong>：<code>translate</code>、<code>scale</code>、<code>rotate</code>、<code>skew</code>，常与 <code>transition</code> 搭配。</li>
+<li><strong>3D 变换</strong>：<code>perspective</code>、<code>rotateX</code>、<code>rotateY</code>、<code>translateZ</code> 实现翻转、倾斜。</li>
+<li><code>transform-origin</code> 控制变换基准点。</li>
+<li>注意 <code>will-change: transform</code> 可以提示浏览器优化，但要适量使用。</li>
+</ul>
+<h3 id="53-关键帧动画keyframes"><a class="header" href="#53-关键帧动画keyframes">5.3 关键帧动画（@keyframes）</a></h3>
+<ul>
+<li>语法：<code>@keyframes name { from { ... } to { ... } }</code> 或百分比定义。</li>
+<li>属性：<code>animation-name</code>、<code>animation-duration</code>、<code>animation-timing-function</code>、<code>animation-iteration-count</code>、<code>animation-direction</code>（如 <code>alternate</code>）、<code>animation-fill-mode</code>、<code>animation-play-state</code>。</li>
+<li>注意点：动画过多影响性能；提供 <code>prefers-reduced-motion</code> 兼容。</li>
+</ul>
+<h4 id="案例滚动触发的列表动效"><a class="header" href="#案例滚动触发的列表动效">案例：滚动触发的列表动效</a></h4>
+<pre><code class="language-html">&lt;section class="roadmap" id="module-4"&gt;
+  &lt;header class="roadmap__header"&gt;
+    &lt;h2&gt;CSS3 动效学习路线&lt;/h2&gt;
+    &lt;p&gt;从基础反馈到沉浸式交互的系统化实践&lt;/p&gt;
+  &lt;/header&gt;
+  &lt;ol class="roadmap__list"&gt;
+    &lt;li class="roadmap__item"&gt;掌握 Transition 基本属性与微交互模式&lt;/li&gt;
+    &lt;li class="roadmap__item"&gt;结合 Transform 构建卡片翻转与层叠效果&lt;/li&gt;
+    &lt;li class="roadmap__item"&gt;使用 Keyframes 实现复杂入场动画&lt;/li&gt;
+    &lt;li class="roadmap__item"&gt;引入 Scroll-Linked 动画与 Intersection Observer&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/section&gt;
+</code></pre>
+<pre><code class="language-css">.roadmap {
+  background: #0b1120;
+  padding: clamp(3rem, 6vw, 5rem);
+  display: grid;
+  gap: 2.5rem;
+}
+.roadmap__list {
+  counter-reset: step;
+  display: grid;
+  gap: 2rem;
+}
+.roadmap__item {
+  counter-increment: step;
+  position: relative;
+  padding: 1.75rem 2rem 1.75rem 3.5rem;
+  border-radius: 1.25rem;
+  background: linear-gradient(135deg, rgba(30,64,175,0.28), rgba(22,163,74,0.18));
+  color: #e2e8f0;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.roadmap__item::before {
+  content: counter(step);
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: rgba(226, 232, 240, 0.18);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+.roadmap__item:nth-child(1) { animation-delay: 0.1s; }
+.roadmap__item:nth-child(2) { animation-delay: 0.24s; }
+.roadmap__item:nth-child(3) { animation-delay: 0.38s; }
+.roadmap__item:nth-child(4) { animation-delay: 0.52s; }
+
+@keyframes rise {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roadmap__item {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+</code></pre>
+<p><strong>说明</strong>：实现滚动触发可通过 Intersection Observer 在元素进入视口时添加 <code>is-visible</code> 类；CSS 层关注动画定义与降级策略。</p>
+<h3 id="54-scroll-driven-动画"><a class="header" href="#54-scroll-driven-动画">5.4 Scroll-driven 动画</a></h3>
+<ul>
+<li><strong>Scroll Timeline</strong>（<code>@scroll-timeline</code> 与 <code>animation-timeline</code>）：Chrome/Edge/Safari 已支持，允许基于滚动位置驱动动画。</li>
+<li>配合 <code>view-timeline</code>、<code>animation-range</code> 实现入场、视差、sticky 动画。</li>
+<li>旧浏览器可利用 JavaScript 监听滚动，配合 <code>requestAnimationFrame</code> 更新 CSS 变量。</li>
+</ul>
+<pre><code class="language-css">@scroll-timeline progress-timeline {
+  source: auto;
+  orientation: block;
+  scroll-offsets: 0%, 100%;
+}
+.progress-card {
+  animation: slide-up 1 linear forwards;
+  animation-timeline: progress-timeline;
+  animation-range: entry 0% exit 80%;
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(48px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</code></pre>
+<h3 id="55-动效设计原则"><a class="header" href="#55-动效设计原则">5.5 动效设计原则</a></h3>
+<ul>
+<li><strong>功能性优先</strong>：动效应帮助用户理解层级、状态转变，避免花哨无意义。</li>
+<li><strong>响应时间</strong>：界面反馈在 100-200ms 内；复杂动画保持在 300-500ms。</li>
+<li><strong>节奏控制</strong>：使用 <code>animation-delay</code> 与 <code>transition-delay</code> 编排节奏，避免同时发生的动画造成干扰。</li>
+<li><strong>性能考量</strong>：优先使用 <code>transform</code> 与 <code>opacity</code>；避免触发布局与绘制频繁变化。</li>
+</ul>
+<hr />
+<h2 id="模块六响应式设计与现代特性"><a class="header" href="#模块六响应式设计与现代特性">模块六：响应式设计与现代特性</a></h2>
+<h3 id="61-媒体查询策略"><a class="header" href="#61-媒体查询策略">6.1 媒体查询策略</a></h3>
+<ul>
+<li><strong>语法</strong>：<code>@media (min-width: 768px)</code>、<code>@media (prefers-color-scheme: dark)</code>、<code>@media (pointer: coarse)</code> 等。</li>
+<li><strong>移动优先</strong>：先写小屏样式，再增加 <code>min-width</code> 断点覆写。</li>
+<li><strong>多维适配</strong>：考虑输入方式（<code>pointer</code>、<code>hover</code>）、亮暗模式、用户偏好（<code>prefers-reduced-motion</code>、<code>prefers-contrast</code>）。</li>
+<li><strong>断点管理</strong>：使用 CSS 变量或预处理器集中定义；可放在 <code>:root</code> 中，提高可维护性。</li>
+</ul>
+<h3 id="62-容器查询container-queries"><a class="header" href="#62-容器查询container-queries">6.2 容器查询（Container Queries）</a></h3>
+<ul>
+<li><strong>基本用法</strong>：
+<pre><code class="language-css">.card-grid { container-type: inline-size; }
+@container (min-width: 540px) { ... }
+</code></pre>
+</li>
+<li>通过 <code>container-name</code> 指定命名查询，配合 <code>@container name (min-width: ...)</code>。</li>
+<li>在组件库中为每个容器设置 <code>container-type</code>，让组件根据自身容器宽度适配。</li>
+</ul>
+<h4 id="案例自适应信息卡片组件"><a class="header" href="#案例自适应信息卡片组件">案例：自适应信息卡片组件</a></h4>
+<pre><code class="language-html">&lt;section class="insight-grid"&gt;
+  &lt;article class="insight-card"&gt;
+    &lt;header&gt;
+      &lt;h3&gt;关键指标趋势&lt;/h3&gt;
+      &lt;span class="tag"&gt;Data&lt;/span&gt;
+    &lt;/header&gt;
+    &lt;p&gt;通过 CSS 变量驱动色彩梯度，结合 Grid 定义图表布局。&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;article class="insight-card insight-card--wide"&gt;
+    &lt;header&gt;
+      &lt;h3&gt;响应式策略回顾&lt;/h3&gt;
+      &lt;span class="tag"&gt;Responsive&lt;/span&gt;
+    &lt;/header&gt;
+    &lt;ul&gt;
+      &lt;li&gt;移动优先断点设计&lt;/li&gt;
+      &lt;li&gt;容器查询替代多重媒体查询&lt;/li&gt;
+      &lt;li&gt;使用 clamp() 控制排版节奏&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/article&gt;
+&lt;/section&gt;
+</code></pre>
+<pre><code class="language-css">.insight-grid {
+  display: grid;
+  gap: 1.5rem;
+  container-type: inline-size;
+}
+.insight-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(94, 234, 212, 0.14);
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  display: grid;
+  gap: 1rem;
+}
+.insight-card &gt; header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.insight-card .tag {
+  background: rgba(94, 234, 212, 0.16);
+  color: #5eead4;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.85rem;
+}
+
+@container (min-width: 580px) {
+  .insight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .insight-card { min-height: 260px; }
+  .insight-card--wide { grid-column: span 2; }
+}
+
+@container (min-width: 880px) {
+  .insight-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .insight-card--wide { grid-column: span 2; }
+}
+</code></pre>
+<h3 id="63-现代布局工具subgridaspect-ratio"><a class="header" href="#63-现代布局工具subgridaspect-ratio">6.3 现代布局工具：Subgrid、<code>aspect-ratio</code></a></h3>
+<ul>
+<li><strong>Subgrid</strong>：子元素继承父网格轨道，实现多层组件对齐。常用于表头与表格主体对齐、卡片内子模块对齐。</li>
+<li><strong><code>aspect-ratio</code></strong>：定义宽高比，替代 <code>padding-top</code> hack；支持响应式媒体容器。</li>
+<li><strong><code>object-fit</code></strong>：控制媒体填充方式（<code>cover</code>、<code>contain</code>）。</li>
+</ul>
+<h3 id="64-主题切换与暗黑模式"><a class="header" href="#64-主题切换与暗黑模式">6.4 主题切换与暗黑模式</a></h3>
+<ul>
+<li><strong>系统偏好</strong>：<code>@media (prefers-color-scheme: dark)</code> 自动适配。</li>
+<li><strong>CSS 变量控制主题</strong>：在 <code>:root</code> 与 <code>[data-theme="dark"]</code> 定义不同变量。</li>
+<li><strong>渐变与滤镜</strong>：暗黑模式降低纯黑对比，使用 <code>#0b1120</code> 等深蓝。</li>
+</ul>
+<pre><code class="language-css">:root {
+  color-scheme: light dark;
+  --bg: #f8fafc;
+  --text: #0f172a;
+  --surface: #fff;
+}
+[data-theme="dark"] {
+  --bg: #0b1120;
+  --text: #e2e8f0;
+  --surface: rgba(15, 23, 42, 0.92);
+}
+body { background: var(--bg); color: var(--text); }
+.card { background: var(--surface); }
+</code></pre>
+<h3 id="65-国际化与多语言适配"><a class="header" href="#65-国际化与多语言适配">6.5 国际化与多语言适配</a></h3>
+<ul>
+<li><strong>文字方向</strong>：<code>dir="rtl"</code>、<code>:lang()</code> 选择器适配阿拉伯语、希伯来语；使用逻辑属性（<code>margin-inline-start</code>）。</li>
+<li><strong>字体回退</strong>：为不同语言提供合适字体，避免字符缺失。</li>
+<li><strong>排版与间距</strong>：使用 <code>writing-mode</code> 支持纵向书写场景。</li>
+</ul>
+<hr />
+<h2 id="模块七工程化组织与协作"><a class="header" href="#模块七工程化组织与协作">模块七：工程化、组织与协作</a></h2>
+<h3 id="71-预处理与后处理"><a class="header" href="#71-预处理与后处理">7.1 预处理与后处理</a></h3>
+<ul>
+<li><strong>CSS 预处理器</strong>：Sass、Less、Stylus。提供变量、嵌套、函数等语法糖；最终编译为 CSS。</li>
+<li><strong>后处理器</strong>：PostCSS 生态（Autoprefixer、cssnano、postcss-preset-env）。</li>
+<li><strong>模块化方案</strong>：CSS Modules、Scoped CSS（Vue）、Styled Components（React）、Vanilla Extract。</li>
+</ul>
+<h4 id="建议的工作流"><a class="header" href="#建议的工作流">建议的工作流</a></h4>
+<ol>
+<li>使用 Sass/SCSS 组织设计令牌与混入。</li>
+<li>PostCSS 负责 Autoprefixer、<code>postcss-preset-env</code> 转译新特性。</li>
+<li>构建阶段通过 <code>cssnano</code> 压缩；引入 <code>critical</code> 工具抽取关键 CSS。</li>
+<li>搭配 Stylelint、Prettier 保证风格一致。</li>
+</ol>
+<h3 id="72-设计系统与-design-tokens"><a class="header" href="#72-设计系统与-design-tokens">7.2 设计系统与 Design Tokens</a></h3>
+<ul>
+<li><strong>设计令牌分类</strong>：颜色、排版、间距、阴影、动画时间、尺寸。推荐使用 JSON/YAML 描述。</li>
+<li><strong>工具链</strong>：Style Dictionary、Theo、Figma Tokens → 代码同步。</li>
+<li><strong>CSS 表达</strong>：将 tokens 映射为 CSS 变量，在组件中消费。</li>
+</ul>
+<pre><code class="language-scss">// tokens.scss
+$color-primary-500: #2563eb;
+$space-4: 1rem;
+$radius-lg: 1.25rem;
+
+:root {
+  --color-primary-500: #{$color-primary-500};
+  --space-4: #{$space-4};
+  --radius-lg: #{$radius-lg};
+}
+</code></pre>
+<h3 id="73-组件化与-storybook"><a class="header" href="#73-组件化与-storybook">7.3 组件化与 Storybook</a></h3>
+<ul>
+<li><strong>结构</strong>：在 Storybook 维护组件故事，覆盖状态（默认、Hover、Disabled、Loading）。</li>
+<li><strong>文档化</strong>：使用 Markdown + Live Preview 展示交互行为。</li>
+<li><strong>视觉回归</strong>：Loki、Chromatic 检查 UI 差异。</li>
+</ul>
+<h3 id="74-样式质量保障"><a class="header" href="#74-样式质量保障">7.4 样式质量保障</a></h3>
+<ul>
+<li><strong>Lint</strong>：Stylelint + stylelint-config-standard；编写自定义规则限制 <code>!important</code> 使用次数。</li>
+<li><strong>自动化测试</strong>：E2E（Playwright/Cypress）验证布局；结合 Percy 进行视觉回归。</li>
+<li><strong>CI 集成</strong>：在 CI 中运行 Lint + 构建 + Visual Test；变更必须过 PR 审查。</li>
+</ul>
+<h3 id="75-性能优化"><a class="header" href="#75-性能优化">7.5 性能优化</a></h3>
+<ul>
+<li><strong>关键渲染路径优化</strong>：Critical CSS、延迟加载非关键 CSS (<code>media="print" onload</code> trick 或 <code>rel="preload"</code>)。</li>
+<li><strong>减少重排</strong>：避免频繁读取/写入布局属性，可通过 <code>getComputedStyle</code> 缓存。</li>
+<li><strong>动画性能</strong>：使用合成层友好属性；限制盒阴影数量。</li>
+<li><strong>CSS 体积控制</strong>：按需加载、Tree Shaking、原子化工具。</li>
+</ul>
+<h3 id="76-无障碍a11y要求"><a class="header" href="#76-无障碍a11y要求">7.6 无障碍（A11y）要求</a></h3>
+<ul>
+<li>提供足够色彩对比度（WCAG AA：4.5:1）。</li>
+<li>焦点可见；使用 <code>:focus-visible</code> 定义样式。</li>
+<li>动画配置 <code>prefers-reduced-motion</code>。必要时提供跳过动画选项。</li>
+<li>表格、表单添加语义标签；隐藏元素使用 <code>sr-only</code> 工具类。</li>
+</ul>
+<hr />
+<h2 id="模块八综合实战案例"><a class="header" href="#模块八综合实战案例">模块八：综合实战案例</a></h2>
+<h3 id="案例一响应式营销着陆页"><a class="header" href="#案例一响应式营销着陆页">案例一：响应式营销着陆页</a></h3>
+<p><strong>目标</strong>：通过 CSS Grid + Flex 构建移动至桌面全响应布局，强调视觉梯度与组件化。</p>
+<ol>
+<li><strong>布局规划</strong>：头图区（Hero）、价值卡片、课程章节、FAQ、行动召唤。</li>
+<li><strong>设计要点</strong>：使用 <code>clamp()</code> 控制标题排版；通过渐变背景突出 CTA；引入容器查询应对嵌套组件。</li>
+<li><strong>核心代码片段</strong>：</li>
+</ol>
+<pre><code class="language-html">&lt;header class="hero"&gt;
+  &lt;div class="hero__content"&gt;
+    &lt;p class="hero__badge"&gt;CSS3 全链路提升营&lt;/p&gt;
+    &lt;h1&gt;掌握现代 Web 样式工程，打造沉浸式用户体验&lt;/h1&gt;
+    &lt;p class="hero__desc"&gt;系统梳理 CSS3 知识图谱，从基础语言内核到设计系统与动效，结合 4 大项目驱动实战。&lt;/p&gt;
+    &lt;div class="hero__cta"&gt;
+      &lt;a class="button" href="#curriculum"&gt;查看课程模块&lt;/a&gt;
+      &lt;a class="button button--ghost" href="#case"&gt;体验实战案例&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;figure class="hero__visual"&gt;
+    &lt;img src="/assets/hero-visual.svg" alt="CSS 项目示意" /&gt;
+  &lt;/figure&gt;
+&lt;/header&gt;
+</code></pre>
+<pre><code class="language-css">.hero {
+  display: grid;
+  gap: 2.5rem;
+  padding: clamp(3rem, 8vw, 5rem) clamp(1.5rem, 6vw, 7rem);
+  background: radial-gradient(circle at 20% 20%, rgba(94, 234, 212, 0.18), transparent 42%),
+              radial-gradient(circle at 80% 18%, rgba(59,130,246,0.16), transparent 46%),
+              #0b1120;
+}
+.hero__content {
+  display: grid;
+  gap: 1.25rem;
+}
+.hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(94, 234, 212, 0.16);
+  color: #5eead4;
+  font-weight: 600;
+}
+.hero__cta { display: flex; flex-wrap: wrap; gap: 1rem; }
+.hero__visual {
+  justify-self: center;
+  transform: translateY(6px);
+}
+.hero__visual img {
+  width: min(420px, 100%);
+  filter: drop-shadow(0 32px 70px rgba(15, 23, 42, 0.45));
+}
+
+@media (min-width: 960px) {
+  .hero {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+  }
+  .hero__content { gap: 1.5rem; }
+}
+</code></pre>
+<ol start="4">
+<li><strong>验证点</strong>：
+<ul>
+<li>断点在 640px、960px、1280px 时布局平滑过渡；</li>
+<li>色彩与动效符合 Design Tokens；</li>
+<li>Lighthouse Performance &gt; 90，Accessibility &gt; 95。</li>
+</ul>
+</li>
+</ol>
+<h3 id="案例二组件化知识库基于容器查询"><a class="header" href="#案例二组件化知识库基于容器查询">案例二：组件化知识库（基于容器查询）</a></h3>
+<p><strong>目标</strong>：构建包含导航、文章摘要、推荐资源的知识库界面，组件可在不同容器宽度下自适应。</p>
+<ul>
+<li><strong>布局结构</strong>：<code>main</code> 内部使用 Grid 分栏，<code>aside</code> 提供过滤条件。</li>
+<li><strong>关键点</strong>：文章卡片使用容器查询调整布局；标签列表采用 CSS 多列；暗色模式适配。</li>
+<li><strong>代码亮点</strong>：</li>
+</ul>
+<pre><code class="language-css">.article-card {
+  display: grid;
+  gap: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  container-type: inline-size;
+}
+.article-card__meta {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+@container (min-width: 560px) {
+  .article-card {
+    grid-template-columns: 1fr max-content;
+    align-items: center;
+  }
+  .article-card__meta { justify-content: flex-end; }
+}
+
+@container (min-width: 820px) {
+  .article-card {
+    grid-template-columns: 320px 1fr;
+    gap: 1.5rem;
+  }
+  .article-card__cover {
+    height: 220px;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+}
+</code></pre>
+<ul>
+<li><strong>验收标准</strong>：容器宽度在 360px、600px、900px 时布局合理；主题切换无视觉错误；交互可通过键盘操作。</li>
+</ul>
+<h3 id="案例三css-动效微交互库"><a class="header" href="#案例三css-动效微交互库">案例三：CSS 动效微交互库</a></h3>
+<p><strong>目标</strong>：沉淀按钮、标签、输入框、导航等常见 UI 组件的动效，提供统一 API。</p>
+<ul>
+<li><strong>动效模式</strong>：按压、漂浮、光效、骨架屏（Skeleton）、加载占位。</li>
+<li><strong>技术要点</strong>：使用 CSS 变量控制动效时序；配合 <code>@property</code> 实现动画插值；封装 Utility 类。</li>
+</ul>
+<pre><code class="language-css">.motion-button {
+  --motion-duration: 240ms;
+  --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+.motion-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.24), transparent 65%);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform var(--motion-duration) var(--motion-ease),
+              opacity var(--motion-duration) var(--motion-ease);
+}
+.motion-button:focus-visible::after,
+.motion-button:hover::after {
+  transform: scale(1.5);
+  opacity: 1;
+}
+</code></pre>
+<ul>
+<li><strong>文档化</strong>：在 Storybook 中提供动效对比与代码片段；记录性能建议（如 degradable version）。</li>
+</ul>
+<hr />
+<h2 id="模块九学习路径规划与阶段性目标"><a class="header" href="#模块九学习路径规划与阶段性目标">模块九：学习路径规划与阶段性目标</a></h2>
+<h3 id="91-4-阶段能力进阶"><a class="header" href="#91-4-阶段能力进阶">9.1 4 阶段能力进阶</a></h3>
+<ol>
+<li>
+<p><strong>基础扎实期（1-2 周）</strong></p>
+<ul>
+<li>任务：掌握选择器、盒模型、常用布局属性；完成 5 个基础布局练习（导航、卡片、表格、表单、文章页）。</li>
+<li>工具：MDN 文档、Flexbox Froggy、Grid Garden。</li>
+<li>里程碑：能够独立分析设计稿，将视觉元素映射到 CSS 属性。</li>
+</ul>
+</li>
+<li>
+<p><strong>专题突破期（2-4 周）</strong></p>
+<ul>
+<li>任务：系统学习 Flexbox &amp; Grid、动画与过渡、响应式设计。完成一个响应式着陆页项目。</li>
+<li>里程碑：理解布局模块化思想，能在 DevTools 中快速调试问题。</li>
+</ul>
+</li>
+<li>
+<p><strong>工程化扩展期（4-6 周）</strong></p>
+<ul>
+<li>任务：学习 Sass/PostCSS、Stylelint、组件化方案；实践设计系统 tokens；搭建 Storybook。</li>
+<li>里程碑：可在团队项目中搭建完整样式工程，编写通用组件文档。</li>
+</ul>
+</li>
+<li>
+<p><strong>综合实战期（6-10 周）</strong></p>
+<ul>
+<li>任务：独立完成一个数据仪表盘项目或组件库；实施性能调优与无障碍优化；总结经验形成知识库。</li>
+<li>里程碑：具备 CSS 架构设计能力，能够指导团队遵循编码规范。</li>
+</ul>
+</li>
+</ol>
+<h3 id="92-日常学习节奏建议"><a class="header" href="#92-日常学习节奏建议">9.2 日常学习节奏建议</a></h3>
+<ul>
+<li>每周 3-4 天学习，每天 2-3 小时，采用 45min 学习 + 10min 总结 + 5min 休息的番茄方案。</li>
+<li>每周复盘一次：记录掌握的属性、遇到的问题、案例成果。</li>
+<li>与伙伴结对评审样式实现，分享调试心得。</li>
+</ul>
+<h3 id="93-项目驱动实践列表"><a class="header" href="#93-项目驱动实践列表">9.3 项目驱动实践列表</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>项目名称</th><th>核心技能</th><th>推荐工具</th><th>验收标准</th></tr></thead><tbody>
+<tr><td>基础</td><td>课程封面页</td><td>选择器、盒模型、字体</td><td>CodePen、MDN</td><td>完成静态页面，保持像素误差 &lt; 2px</td></tr>
+<tr><td>进阶</td><td>响应式博客</td><td>Flexbox、Grid、媒体查询</td><td>VS Code、Live Server</td><td>多设备适配；Lighthouse PWA &gt; 90</td></tr>
+<tr><td>工程化</td><td>设计系统文档站</td><td>CSS 变量、Tokens、Storybook</td><td>Storybook、Style Dictionary</td><td>tokens 与文档自动同步；CI 通过</td></tr>
+<tr><td>综合</td><td>数据仪表盘</td><td>Grid、动画、主题切换</td><td>React/Vue + CSS Modules</td><td>交互流畅；Performance &gt; 85</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="模块十学习成果验证标准"><a class="header" href="#模块十学习成果验证标准">模块十：学习成果验证标准</a></h2>
+<ol>
+<li><strong>布局掌握度测试</strong>
+<ul>
+<li>任务：在 90 分钟内实现指定设计稿，包含响应式 Grids 与 Flexbox 多组合。</li>
+<li>验证：导师检查结构语义、可维护性（是否乱用 <code>!important</code>）。</li>
+</ul>
+</li>
+<li><strong>动画与交互实现</strong>
+<ul>
+<li>任务：为 5 类组件（按钮、标签、导航、卡片、Modal）设计动效并通过 <code>prefers-reduced-motion</code> 降级。</li>
+<li>验证：使用屏幕录制对比动画节奏，进行可访问性审查。</li>
+</ul>
+</li>
+<li><strong>工程化实践</strong>
+<ul>
+<li>任务：配置 Stylelint + Prettier + CI；利用 PostCSS 转译容器查询与新语法；输出 <code>bundle.css</code> &lt; 120KB。</li>
+<li>验证：CI 报告无错误；构建产物通过 gzip 后 &lt; 40KB。</li>
+</ul>
+</li>
+<li><strong>设计系统落地</strong>
+<ul>
+<li>任务：建立 50+ 设计令牌，覆盖颜色、排版、阴影、动效；编写 Storybook 文档。</li>
+<li>验证：产品经理和设计师在演示中确认可复用性；文档无断链。</li>
+</ul>
+</li>
+<li><strong>问题排查能力</strong>
+<ul>
+<li>任务：给定存在布局错位与动画卡顿的项目，要求在 60 分钟内定位并修复 5 个以上问题。</li>
+<li>验证：提交问题分析报告与修复 diff，包含原因说明。</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="模块十一常见问题与调试手册"><a class="header" href="#模块十一常见问题与调试手册">模块十一：常见问题与调试手册</a></h2>
+<h3 id="111-布局错位"><a class="header" href="#111-布局错位">11.1 布局错位</a></h3>
+<ul>
+<li><strong>症状</strong>：元素堆叠、滚动条异常。</li>
+<li><strong>排查步骤</strong>：
+<ol>
+<li>使用 DevTools 检查盒模型，确认尺寸与 <code>box-sizing</code>。</li>
+<li>查看父元素是否设置 <code>display</code> 和 <code>position</code>；确认 Flex/Grid 子项配置。</li>
+<li>检查 margin 合并或未清除浮动。</li>
+</ol>
+</li>
+<li><strong>解决策略</strong>：使用 <code>flow-root</code> 清除浮动；必要时增加包裹层控制约束；采用 CSS 变量统一间距。</li>
+</ul>
+<h3 id="112-动画卡顿"><a class="header" href="#112-动画卡顿">11.2 动画卡顿</a></h3>
+<ul>
+<li>检查是否动画 <code>width</code> / <code>height</code> / <code>top</code> / <code>left</code> 等触发回流；改用 <code>transform</code>。</li>
+<li>使用 <code>will-change</code> 适度优化；避免同时动画的元素过多。</li>
+<li>浏览器 Performance 面板记录动画帧率，寻找瓶颈。</li>
+</ul>
+<h3 id="113-字体与渲染问题"><a class="header" href="#113-字体与渲染问题">11.3 字体与渲染问题</a></h3>
+<ul>
+<li>Web Font 加载慢导致闪烁（FOIT/FOUT）：使用 <code>font-display: swap</code>，预加载字体。</li>
+<li>中文字体文件庞大：采用子集化（Glyphhanger、subset-font），或使用系统字体栈。</li>
+<li>渲染锯齿：启用 <code>-webkit-font-smoothing: antialiased;</code>，但注意跨平台差异。</li>
+</ul>
+<h3 id="114-浏览器兼容性"><a class="header" href="#114-浏览器兼容性">11.4 浏览器兼容性</a></h3>
+<ul>
+<li>使用 <code>@supports</code> 检测特性：
+<pre><code class="language-css">@supports (display: grid) {
+  /* 启用 Grid 布局 */
+}
+</code></pre>
+</li>
+<li>提供回退方案，如在不支持 Grid 的环境下使用 Flex。</li>
+<li>关注 Can I Use；在 CI 集成 Browserslist 检测。</li>
+</ul>
+<h3 id="115-debug-工具"><a class="header" href="#115-debug-工具">11.5 Debug 工具</a></h3>
+<ul>
+<li>Chrome DevTools：Layout、Animations、Rendering 面板。</li>
+<li>Firefox DevTools：Grid 与 Flex overlay，适合调试网格。</li>
+<li>Safari：Motion &amp; Timeline；关注 iOS 设备表现。</li>
+<li>VS Code 插件：Live Sass Compiler、Stylelint。</li>
+</ul>
+<hr />
+<h2 id="模块十二扩展资源与进阶建议"><a class="header" href="#模块十二扩展资源与进阶建议">模块十二：扩展资源与进阶建议</a></h2>
+<h3 id="121-官方文档与标准"><a class="header" href="#121-官方文档与标准">12.1 官方文档与标准</a></h3>
+<ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS">MDN CSS 文档</a></li>
+<li><a href="https://www.w3.org/Style/CSS/current-work">W3C CSS Working Group Drafts</a></li>
+<li><a href="https://whatwg.org/">WHATWG</a> 与 <a href="https://tc39.es/">TC39</a>（了解 Web 标准协作）</li>
+</ul>
+<h3 id="122-高质量课程与书籍"><a class="header" href="#122-高质量课程与书籍">12.2 高质量课程与书籍</a></h3>
+<ul>
+<li>《CSS 揭秘》：理解视觉效果实现原理。</li>
+<li>《Refactoring UI》：设计与编码融合的案例。</li>
+<li>《Smashing CSS》：深入 CSS 架构与技巧。</li>
+<li>在线课程：Josh Comeau CSS for JavaScript Developers、Kevin Powell 系列课程。</li>
+</ul>
+<h3 id="123-工具与社区"><a class="header" href="#123-工具与社区">12.3 工具与社区</a></h3>
+<ul>
+<li>设计工具：Figma、Penpot。</li>
+<li>代码 Playground：CodePen、CodeSandbox、StackBlitz。</li>
+<li>社区：CSS-Tricks、Smashing Magazine、web.dev、Frontend Masters Blog。</li>
+<li>版本跟踪：订阅 Chrome/Safari/Firefox release notes，关注 <code>@CSSWG</code>。</li>
+</ul>
+<h3 id="124-持续学习建议"><a class="header" href="#124-持续学习建议">12.4 持续学习建议</a></h3>
+<ul>
+<li>每季度回顾 CSS 规范新增；在项目中尝试容器查询、子网格等新特性。</li>
+<li>参与开源组件库贡献（如 Chakra UI、Ant Design），学习大规模样式治理经验。</li>
+<li>定期写总结文章或制作 demo，形成知识外化；建立个人 CSS Pattern Library。</li>
+</ul>
+<hr />
+<h2 id="附录-acss-属性速查索引节选"><a class="header" href="#附录-acss-属性速查索引节选">附录 A：CSS 属性速查索引（节选）</a></h2>
+<blockquote>
+<p>以类别组织常用属性，每项给出简明说明与典型场景。建议打印或在 Notion 中收藏，作为项目开发时的快速参考。</p>
+</blockquote>
+<h3 id="a1-布局与盒模型"><a class="header" href="#a1-布局与盒模型">A.1 布局与盒模型</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>属性</th><th>说明</th><th>常用值</th><th>场景提示</th></tr></thead><tbody>
+<tr><td><code>display</code></td><td>定义元素生成框类型</td><td><code>block</code> / <code>inline</code> / <code>flex</code> / <code>grid</code> / <code>inline-grid</code> / <code>contents</code></td><td>切换布局上下文；<code>display: contents</code> 适用于语义包装需忽略的场景</td></tr>
+<tr><td><code>position</code></td><td>定位方式</td><td><code>static</code> / <code>relative</code> / <code>absolute</code> / <code>fixed</code> / <code>sticky</code></td><td>构建相对定位容器、吸顶导航、浮层</td></tr>
+<tr><td><code>z-index</code></td><td>控制堆叠上下文层级</td><td>整数</td><td>注意定位上下文；与 <code>position</code> 配合</td></tr>
+<tr><td><code>float</code></td><td>元素浮动</td><td><code>left</code> / <code>right</code> / <code>none</code></td><td>文字环绕老项目；<code>flow-root</code> 清除</td></tr>
+<tr><td><code>clear</code></td><td>控制浮动影响</td><td><code>left</code> / <code>right</code> / <code>both</code></td><td>清除浮动</td></tr>
+<tr><td><code>overflow</code></td><td>内容溢出处理</td><td><code>visible</code> / <code>hidden</code> / <code>scroll</code> / <code>auto</code> / <code>clip</code></td><td>滚动容器、视觉裁剪</td></tr>
+<tr><td><code>box-sizing</code></td><td>盒模型模式</td><td><code>content-box</code> / <code>border-box</code></td><td>统一为 <code>border-box</code> 降低错误</td></tr>
+</tbody></table>
+</div>
+<h3 id="a2-flexbox-属性"><a class="header" href="#a2-flexbox-属性">A.2 Flexbox 属性</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>属性</th><th>说明</th><th>常用值</th><th>场景</th></tr></thead><tbody>
+<tr><td><code>flex-direction</code></td><td>主轴方向</td><td><code>row</code> / <code>column</code></td><td>横向 vs 纵向组件</td></tr>
+<tr><td><code>flex-wrap</code></td><td>是否换行</td><td><code>nowrap</code> / <code>wrap</code></td><td>响应式卡片</td></tr>
+<tr><td><code>justify-content</code></td><td>主轴对齐</td><td><code>flex-start</code> / <code>center</code> / <code>space-between</code></td><td>导航、按钮组</td></tr>
+<tr><td><code>align-items</code></td><td>交叉轴对齐</td><td><code>stretch</code> / <code>center</code> / <code>flex-end</code></td><td>垂直居中</td></tr>
+<tr><td><code>align-self</code></td><td>单项交叉轴对齐</td><td>同上</td><td>特殊元素调整</td></tr>
+<tr><td><code>flex</code></td><td>速记属性</td><td><code>flex: grow shrink basis</code></td><td>等比分配</td></tr>
+</tbody></table>
+</div>
+<h3 id="a3-grid-属性"><a class="header" href="#a3-grid-属性">A.3 Grid 属性</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>属性</th><th>说明</th><th>典型配置</th></tr></thead><tbody>
+<tr><td><code>grid-template-columns</code></td><td>列轨道定义</td><td><code>repeat(12, 1fr)</code>、<code>repeat(auto-fit, minmax(240px, 1fr))</code></td></tr>
+<tr><td><code>grid-template-rows</code></td><td>行轨道定义</td><td><code>auto 1fr auto</code></td></tr>
+<tr><td><code>grid-template-areas</code></td><td>区域命名</td><td><code>"header header" "sidebar main"</code></td></tr>
+<tr><td><code>grid-column</code></td><td>列跨度</td><td><code>grid-column: 1 / 4;</code>、<code>grid-column: span 2;</code></td></tr>
+<tr><td><code>grid-auto-flow</code></td><td>自动放置</td><td><code>row</code> / <code>column</code> / <code>dense</code></td></tr>
+<tr><td><code>place-items</code></td><td>同时设置 <code>align-items</code> 与 <code>justify-items</code></td><td><code>center</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="a4-视觉表现属性"><a class="header" href="#a4-视觉表现属性">A.4 视觉表现属性</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>属性</th><th>功能</th><th>示例</th></tr></thead><tbody>
+<tr><td><code>color</code></td><td>文本颜色</td><td><code>#0f172a</code>、<code>rgb(226,232,240)</code></td></tr>
+<tr><td><code>background</code></td><td>背景复合属性</td><td><code>linear-gradient(135deg, #2563eb, #22d3ee)</code></td></tr>
+<tr><td><code>border-radius</code></td><td>圆角</td><td><code>1rem</code>、<code>50%</code></td></tr>
+<tr><td><code>box-shadow</code></td><td>阴影</td><td><code>0 18px 45px rgba(15,23,42,0.28)</code></td></tr>
+<tr><td><code>filter</code></td><td>滤镜效果</td><td><code>blur(12px)</code>、<code>drop-shadow(0 24px 50px rgba(15,23,42,0.45))</code></td></tr>
+<tr><td><code>backdrop-filter</code></td><td>背景滤镜</td><td><code>blur(16px)</code>、<code>saturate(140%)</code></td></tr>
+<tr><td><code>mix-blend-mode</code></td><td>混合模式</td><td><code>multiply</code>、<code>screen</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="a5-动画属性"><a class="header" href="#a5-动画属性">A.5 动画属性</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>属性</th><th>功能</th><th>示例</th></tr></thead><tbody>
+<tr><td><code>transition</code></td><td>定义过渡</td><td><code>transition: transform 0.24s ease;</code></td></tr>
+<tr><td><code>@keyframes</code></td><td>关键帧序列</td><td><code>@keyframes fade { from { opacity: 0; } to { opacity: 1; } }</code></td></tr>
+<tr><td><code>animation</code></td><td>动画复合属性</td><td><code>animation: fade-in 0.6s ease-out forwards;</code></td></tr>
+<tr><td><code>transform</code></td><td>变换</td><td><code>scale(1.05)</code>、<code>rotate(12deg)</code></td></tr>
+<tr><td><code>transform-origin</code></td><td>变换原点</td><td><code>center bottom</code></td></tr>
+<tr><td><code>perspective</code></td><td>透视</td><td><code>perspective: 1000px;</code></td></tr>
+</tbody></table>
+</div>
+<h3 id="a6-响应式与现代特性"><a class="header" href="#a6-响应式与现代特性">A.6 响应式与现代特性</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>示例</th><th>说明</th></tr></thead><tbody>
+<tr><td>媒体查询</td><td><code>@media (min-width: 768px) { ... }</code></td><td>控制断点</td></tr>
+<tr><td>容器查询</td><td><code>@container (min-width: 600px) { ... }</code></td><td>基于容器尺寸</td></tr>
+<tr><td><code>clamp()</code></td><td><code>font-size: clamp(1rem, 2vw, 1.5rem);</code></td><td>范围限制</td></tr>
+<tr><td><code>min()</code> / <code>max()</code></td><td><code>width: min(90vw, 1200px);</code></td><td>取最小/大值</td></tr>
+<tr><td>逻辑属性</td><td><code>margin-inline-start</code>、<code>padding-block</code></td><td>国际化支持</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="附录-b实战练习与挑战清单"><a class="header" href="#附录-b实战练习与挑战清单">附录 B：实战练习与挑战清单</a></h2>
+<ol>
+<li>
+<p><strong>Flexbox 五连杀</strong>：</p>
+<ul>
+<li>练习一：实现自适应导航栏（含徽标、菜单、操作按钮）。</li>
+<li>练习二：等高卡片瀑布流排布，保证卡片底部对齐。</li>
+<li>练习三：聊天对话 UI，两侧消息气泡 + 输入栏。</li>
+<li>练习四：定价表格自适应排列，突出推荐方案。</li>
+<li>练习五：仪表盘统计项，支持动态插入项目。</li>
+</ul>
+</li>
+<li>
+<p><strong>Grid 九宫格挑战</strong>：</p>
+<ul>
+<li>练习：仿造 Dribbble 作品，使用 Grid 还原视觉；通过媒体查询优化。</li>
+<li>要求：至少使用 <code>grid-template-areas</code>、<code>auto-fit</code>、<code>minmax()</code>、子网格。</li>
+</ul>
+</li>
+<li>
+<p><strong>动效实验室</strong>：</p>
+<ul>
+<li>制作三个按钮动效（微动效/光标跟随/长按进度）。</li>
+<li>实现滚动驱动的进度条和章节浮标。</li>
+<li>使用 <code>@property</code> + <code>conic-gradient</code> 制作加载环。</li>
+</ul>
+</li>
+<li>
+<p><strong>响应式暗黑模式</strong>：</p>
+<ul>
+<li>构建支持深浅色、容器查询、字体动态调节的组件库。</li>
+<li>在 <code>prefers-reduced-motion</code> 环境下提供替代视觉。</li>
+</ul>
+</li>
+<li>
+<p><strong>性能优化实战</strong>：</p>
+<ul>
+<li>对大型 CSS 文件进行按需拆分；比较优化前后加载时长。</li>
+<li>使用 Chrome Performance 记录布局与重绘数据，撰写分析报告。</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h2 id="附录-c术语与概念速览"><a class="header" href="#附录-c术语与概念速览">附录 C：术语与概念速览</a></h2>
+<ul>
+<li><strong>Cascade</strong>：层叠；CSS 解析决定最终样式的过程。</li>
+<li><strong>Specificity</strong>：特异性；选择器优先级数值表达。</li>
+<li><strong>Box Formatting Context (BFC)</strong>：决定元素如何布局与相互影响的上下文，如 <code>display: flow-root</code> 会创建独立 BFC。</li>
+<li><strong>Stacking Context</strong>：堆叠上下文；由某些 CSS 属性（<code>position</code>、<code>opacity</code> &lt; 1、<code>transform</code> 等）触发，影响 <code>z-index</code>。</li>
+<li><strong>Reflow/Repaint</strong>：回流与重绘；性能优化重点关注的渲染阶段。</li>
+<li><strong>Progressive Enhancement</strong>：渐进增强；先保证基础功能，再针对现代浏览器添加增强特性。</li>
+<li><strong>Critical CSS</strong>：首屏关键 CSS；在 HTML <code>&lt;head&gt;</code> 内内联，提升首屏渲染速度。</li>
+<li><strong>Design Tokens</strong>：跨平台共享的设计值集合，保证一致性。</li>
+<li><strong>Atomic CSS</strong>：原子类 CSS；每个类对应一个属性，便于组合构建 UI。</li>
+</ul>
+<hr />
+<h2 id="总结与行动计划"><a class="header" href="#总结与行动计划">总结与行动计划</a></h2>
+<ul>
+<li><strong>知识闭环</strong>：从基础语法到高级特性、从单一组件到完整设计系统，CSS3 学习需要纵向深度与横向广度兼顾。</li>
+<li><strong>实践驱动</strong>：建议并行推进个人项目与团队协作，持续输出 demo 与组件文档。</li>
+<li><strong>持续迭代</strong>：关注 CSS 标准更新（容器查询、渐变、动画 API），定期复盘优化现有代码，打造个人 CSS Pattern Library。</li>
+<li><strong>下一步行动</strong>：
+<ol>
+<li>完成基础模块练习（选择器、盒模型、布局）。</li>
+<li>选择一个真实需求（如公司活动页）进行响应式重构。</li>
+<li>搭建 Stylelint + Storybook，沉淀组件库文档。</li>
+<li>制订每月学习计划，跟进新特性并分享学习成果。</li>
+</ol>
+</li>
+</ul>
+<blockquote>
+<p>通过以上路线，你将具备从设计理解到工程实现的 CSS3 全链路能力，为前端或全栈职业发展奠定坚实基础。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/language/20-Java.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/language/22-Html5.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/language/20-Java.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/language/22-Html5.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+
