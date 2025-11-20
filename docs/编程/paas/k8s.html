@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Kubernetes 容器编排平台学习笔记 - 开发</title>
+        <title>Kubernetes (K8s) 深度学习笔记 - 开发</title>
 
 
         <!-- Custom HTML head -->
@@ -181,278 +181,768 @@
                         <div class="sidetoc"><nav class="pagetoc"></nav></div>
 
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="kubernetes-容器编排平台学习笔记"><a class="header" href="#kubernetes-容器编排平台学习笔记">Kubernetes 容器编排平台学习笔记</a></h1>
-<blockquote>
-<p><strong>学习目标</strong>: 掌握Kubernetes容器编排核心概念、集群部署管理、应用发布运维，能够在生产环境构建高可用云原生应用</p>
-<p><strong>适用人群</strong>: 云原生工程师、DevOps工程师、后端开发工程师</p>
-<p><strong>前置知识</strong>: Docker容器技术、Linux系统、网络基础</p>
-</blockquote>
-<hr />
-<h2 id="1-基础概念"><a class="header" href="#1-基础概念">1. 基础概念</a></h2>
-<h3 id="11-什么是-kubernetes"><a class="header" href="#11-什么是-kubernetes">1.1 什么是 Kubernetes</a></h3>
-<p>Kubernetes (K8s) 是一个开源的容器编排平台，用于自动化部署、扩展和管理容器化应用。</p>
-<p><strong>核心价值</strong>:</p>
+<h1 id="kubernetes-k8s-深度学习笔记"><a class="header" href="#kubernetes-k8s-深度学习笔记">Kubernetes (K8s) 深度学习笔记</a></h1>
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
 <ul>
-<li><strong>自动化部署</strong>: 声明式配置，自动调度容器</li>
-<li><strong>弹性伸缩</strong>: 根据负载自动扩缩容</li>
-<li><strong>自我修复</strong>: 自动重启失败容器、替换节点</li>
-<li><strong>服务发现</strong>: 内置服务发现和负载均衡</li>
-<li><strong>滚动更新</strong>: 无停机更新应用</li>
+<li><a href="#%E4%B8%80kubernetes%E6%A6%82%E8%BF%B0%E4%B8%8E%E6%A0%B8%E5%BF%83%E4%BB%B7%E5%80%BC">一、Kubernetes概述与核心价值</a></li>
+<li><a href="#%E4%BA%8C%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84%E6%B7%B1%E5%BA%A6%E5%89%96%E6%9E%90">二、核心架构深度剖析</a></li>
+<li><a href="#%E4%B8%89%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5%E8%AF%A6%E8%A7%A3">三、核心概念详解</a></li>
+<li><a href="#%E5%9B%9B%E7%BD%91%E7%BB%9C%E7%B3%BB%E7%BB%9F%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90">四、网络系统深度解析</a></li>
+<li><a href="#%E4%BA%94%E5%AD%98%E5%82%A8%E7%B3%BB%E7%BB%9F%E8%AF%A6%E8%A7%A3">五、存储系统详解</a></li>
+<li><a href="#%E5%85%AD%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6">六、安全机制</a></li>
+<li><a href="#%E4%B8%83%E8%B0%83%E5%BA%A6%E4%B8%8E%E7%BC%96%E6%8E%92">七、调度与编排</a></li>
+<li><a href="#%E5%85%AB%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B%E4%B8%8E%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5">八、实战案例与最佳实践</a></li>
 </ul>
-<p><strong>适用场景</strong>:</p>
-<pre><code>微服务架构 → 容器化应用编排
-云原生应用 → 多云部署管理
-持续交付 → CI/CD自动化
-大规模集群 → 弹性计算资源
-</code></pre>
-<h3 id="12-kubernetes-架构"><a class="header" href="#12-kubernetes-架构">1.2 Kubernetes 架构</a></h3>
-<p><strong>集群架构图</strong>:</p>
-<pre><code>┌─────────────────────────────────────────────────────┐
-│                   Master Node                        │
-│  ┌──────────┐  ┌──────────┐  ┌────────────────┐   │
-│  │ API      │  │ Scheduler│  │   Controller   │   │
-│  │ Server   │  │          │  │   Manager      │   │
-│  └────┬─────┘  └────┬─────┘  └────────┬───────┘   │
-│       │             │                  │            │
-│       └─────────────┴──────────────────┘            │
-│                      │                               │
-│                ┌─────▼─────┐                        │
-│                │   etcd    │                        │
-│                │  (数据库)  │                        │
-│                └───────────┘                        │
-└─────────────────────────────────────────────────────┘
-                       │
-        ┌──────────────┼──────────────┐
-        │              │              │
-┌───────▼──────┐ ┌────▼──────┐ ┌────▼──────┐
-│ Worker Node1 │ │Worker Node2│ │Worker Node3│
-│ ┌──────────┐ │ │┌──────────┐│ │┌──────────┐│
-│ │  kubelet │ │ ││  kubelet ││ ││  kubelet ││
-│ │kube-proxy│ │ ││kube-proxy││ ││kube-proxy││
-│ │ Container│ │ ││ Container││ ││ Container││
-│ │ Runtime  │ │ ││ Runtime  ││ ││ Runtime  ││
-│ └──────────┘ │ │└──────────┘│ │└──────────┘│
-└──────────────┘ └────────────┘ └────────────┘
-</code></pre>
-<p><strong>Master节点组件</strong>:</p>
-<p><strong>1. API Server</strong></p>
+<hr />
+<h2 id="一kubernetes概述与核心价值"><a class="header" href="#一kubernetes概述与核心价值">一、Kubernetes概述与核心价值</a></h2>
+<h3 id="11-什么是kubernetes"><a class="header" href="#11-什么是kubernetes">1.1 什么是Kubernetes</a></h3>
+<p>Kubernetes (K8s) 是一个开源的容器编排平台，用于自动化部署、扩展和管理容器化应用程序。它由Google于2014年开源，基于Google内部大规模集群管理系统Borg的经验构建。</p>
+<p><strong>核心功能</strong>：</p>
 <ul>
-<li>集群的统一入口，所有操作通过API Server</li>
-<li>RESTful API接口</li>
+<li><strong>自动化部署与回滚</strong>：声明式配置，自动将应用部署到期望状态</li>
+<li><strong>服务发现与负载均衡</strong>：自动分配DNS名称和IP地址，并进行负载均衡</li>
+<li><strong>自我修复</strong>：自动重启失败容器，替换和重新调度不健康的节点</li>
+<li><strong>水平扩展</strong>：根据CPU使用率或其他指标自动扩缩容</li>
+<li><strong>密钥与配置管理</strong>：安全地存储和管理敏感信息</li>
+</ul>
+<h3 id="12-为什么需要kubernetes"><a class="header" href="#12-为什么需要kubernetes">1.2 为什么需要Kubernetes</a></h3>
+<p><strong>传统部署的痛点</strong>：</p>
+<ul>
+<li>物理机部署：资源利用率低，扩展困难</li>
+<li>虚拟机部署：资源隔离较好但启动慢，资源开销大</li>
+<li>容器部署：轻量快速但缺乏统一管理</li>
+</ul>
+<p><strong>Kubernetes解决的核心问题</strong>：</p>
+<ol>
+<li><strong>资源调度</strong>：在数百上千个节点中智能调度容器</li>
+<li><strong>高可用性</strong>：自动故障转移和自我修复</li>
+<li><strong>弹性伸缩</strong>：根据负载自动扩缩容</li>
+<li><strong>服务发现</strong>：动态服务注册与发现</li>
+<li><strong>配置管理</strong>：统一配置和密钥管理</li>
+<li><strong>滚动更新</strong>：零停机部署和回滚</li>
+</ol>
+<h3 id="13-核心概念速览"><a class="header" href="#13-核心概念速览">1.3 核心概念速览</a></h3>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│                      Kubernetes集群                      │
+│                                                         │
+│  ┌──────────────────┐         ┌──────────────────┐    │
+│  │   Control Plane  │         │      Nodes        │    │
+│  │  ┌────────────┐  │         │  ┌────────────┐  │    │
+│  │  │API Server  │  │◄────────┤  │  Kubelet   │  │    │
+│  │  └────────────┘  │         │  └────────────┘  │    │
+│  │  ┌────────────┐  │         │  ┌────────────┐  │    │
+│  │  │ Scheduler  │  │         │  │Kube-proxy  │  │    │
+│  │  └────────────┘  │         │  └────────────┘  │    │
+│  │  ┌────────────┐  │         │  ┌────────────┐  │    │
+│  │  │Controller  │  │         │  │ Container  │  │    │
+│  │  │  Manager   │  │         │  │  Runtime   │  │    │
+│  │  └────────────┘  │         │  └────────────┘  │    │
+│  │  ┌────────────┐  │         │      (Pods)      │    │
+│  │  │   etcd     │  │         └──────────────────┘    │
+│  │  └────────────┘  │                                  │
+│  └──────────────────┘                                  │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="二核心架构深度剖析"><a class="header" href="#二核心架构深度剖析">二、核心架构深度剖析</a></h2>
+<h3 id="21-控制平面组件-control-plane"><a class="header" href="#21-控制平面组件-control-plane">2.1 控制平面组件 (Control Plane)</a></h3>
+<p>控制平面负责管理集群的全局决策，包括调度、检测和响应集群事件。</p>
+<h4 id="211-kube-apiserver"><a class="header" href="#211-kube-apiserver">2.1.1 kube-apiserver</a></h4>
+<p><strong>核心职责</strong>：</p>
+<ul>
+<li>Kubernetes的核心组件，暴露HTTP API</li>
+<li>所有组件交互的统一入口</li>
 <li>认证、授权、准入控制</li>
+<li>数据持久化到etcd</li>
 </ul>
-<p><strong>2. Scheduler</strong></p>
-<ul>
-<li>负责Pod调度到合适的Node</li>
-<li>考虑资源需求、亲和性、污点容忍等</li>
-</ul>
-<p><strong>3. Controller Manager</strong></p>
-<ul>
-<li>管理各种控制器</li>
-<li>节点控制器、副本控制器、端点控制器等</li>
-</ul>
-<p><strong>4. etcd</strong></p>
-<ul>
-<li>分布式键值存储</li>
-<li>存储集群所有配置和状态数据</li>
-</ul>
-<p><strong>Worker节点组件</strong>:</p>
-<p><strong>1. kubelet</strong></p>
-<ul>
-<li>节点代理，管理Pod生命周期</li>
-<li>与API Server通信</li>
-<li>监控Pod健康状态</li>
-</ul>
-<p><strong>2. kube-proxy</strong></p>
-<ul>
-<li>网络代理，实现Service功能</li>
-<li>负载均衡流量转发</li>
-</ul>
-<p><strong>3. Container Runtime</strong></p>
-<ul>
-<li>容器运行时 (Docker、containerd、CRI-O)</li>
-<li>实际运行容器</li>
-</ul>
-<h3 id="13-核心概念"><a class="header" href="#13-核心概念">1.3 核心概念</a></h3>
-<p><strong>Pod</strong>:</p>
-<ul>
-<li>Kubernetes最小部署单元</li>
-<li>包含一个或多个容器</li>
-<li>共享网络和存储</li>
-</ul>
-<p><strong>Service</strong>:</p>
-<ul>
-<li>为一组Pod提供统一访问入口</li>
-<li>负载均衡和服务发现</li>
-<li>ClusterIP、NodePort、LoadBalancer类型</li>
-</ul>
-<p><strong>Namespace</strong>:</p>
-<ul>
-<li>逻辑隔离的虚拟集群</li>
-<li>资源配额和权限管理</li>
-<li>多租户环境</li>
-</ul>
-<p><strong>Label 和 Selector</strong>:</p>
-<ul>
-<li>Label: 键值对标签，附加到资源</li>
-<li>Selector: 通过标签选择资源</li>
-</ul>
-<hr />
-<h2 id="2-集群部署"><a class="header" href="#2-集群部署">2. 集群部署</a></h2>
-<h3 id="21-kubeadm-部署-推荐"><a class="header" href="#21-kubeadm-部署-推荐">2.1 kubeadm 部署 (推荐)</a></h3>
-<p><strong>环境准备</strong>:</p>
-<pre><code class="language-bash"># 所有节点关闭swap
-swapoff -a
-sed -i '/ swap / s/^/#/' /etc/fstab
-
-# 禁用SELinux
-setenforce 0
-sed -i 's/^SELINUX=enforcing$/SELINUX=disabled/' /etc/selinux/config
-
-# 配置内核参数
-cat &lt;&lt;EOF | tee /etc/modules-load.d/k8s.conf
-overlay
-br_netfilter
-EOF
-
-modprobe overlay
-modprobe br_netfilter
-
-cat &lt;&lt;EOF | tee /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-iptables  = 1
-net.bridge.bridge-nf-call-ip6tables = 1
-net.ipv4.ip_forward                 = 1
-EOF
-
-sysctl --system
+<p><strong>工作原理</strong>：</p>
+<pre><code>Client Request
+    │
+    ▼
+┌─────────────────┐
+│  Authentication │  (身份认证)
+│  - Token        │
+│  - Certificate  │
+│  - OIDC         │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Authorization  │  (权限验证)
+│  - RBAC         │
+│  - ABAC         │
+│  - Webhook      │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Admission Ctrl  │  (准入控制)
+│  - Mutation     │
+│  - Validation   │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Persist to     │
+│      etcd       │
+└─────────────────┘
 </code></pre>
-<p><strong>安装Docker</strong>:</p>
-<pre><code class="language-bash"># 参考Docker章节安装
-apt-get install docker-ce docker-ce-cli containerd.io
+<p><strong>关键配置参数</strong>：</p>
+<pre><code class="language-bash">--etcd-servers                    # etcd服务器地址
+--etcd-cafile                     # etcd CA证书
+--authorization-mode=RBAC         # 授权模式
+--enable-admission-plugins        # 启用的准入控制插件
+--service-cluster-ip-range        # Service IP地址范围
+</code></pre>
+<p><strong>技术深度 - API Server高可用</strong>：</p>
+<ul>
+<li>API Server是无状态的，可以水平扩展</li>
+<li>多个API Server实例通过负载均衡器对外提供服务</li>
+<li>etcd作为唯一的数据持久化存储</li>
+<li>使用乐观并发控制（resourceVersion）处理并发更新</li>
+</ul>
+<h4 id="212-etcd"><a class="header" href="#212-etcd">2.1.2 etcd</a></h4>
+<p><strong>核心职责</strong>：</p>
+<ul>
+<li>分布式键值存储系统</li>
+<li>存储Kubernetes所有集群数据</li>
+<li>提供一致性保证（Raft协议）</li>
+<li>支持Watch机制实时监听变更</li>
+</ul>
+<p><strong>工作原理</strong>：</p>
+<pre><code>etcd集群架构：
 
-# 配置Docker
-cat &lt;&lt;EOF | tee /etc/docker/daemon.json
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
+┌─────────┐      ┌─────────┐      ┌─────────┐
+│ etcd-1  │◄────►│ etcd-2  │◄────►│ etcd-3  │
+│ (Leader)│      │(Follower)│      │(Follower)│
+└────┬────┘      └─────────┘      └─────────┘
+     │
+     │ Raft协议
+     │ - Leader选举
+     │ - 日志复制
+     │ - 一致性保证
+     │
+     ▼
+┌──────────────────────┐
+│  所有集群状态数据      │
+│  - Pods              │
+│  - Services          │
+│  - ConfigMaps        │
+│  - Secrets           │
+└──────────────────────┘
+</code></pre>
+<p><strong>技术深度 - Raft一致性算法</strong>：</p>
+<ol>
+<li>
+<p><strong>Leader选举</strong>：</p>
+<ul>
+<li>节点状态：Leader、Follower、Candidate</li>
+<li>选举超时触发新一轮选举</li>
+<li>获得多数投票的节点成为Leader</li>
+</ul>
+</li>
+<li>
+<p><strong>日志复制</strong>：</p>
+<ul>
+<li>Leader接收客户端请求，写入本地日志</li>
+<li>Leader并行发送日志到所有Follower</li>
+<li>多数节点确认后，Leader提交日志</li>
+<li>提交后的日志应用到状态机</li>
+</ul>
+</li>
+<li>
+<p><strong>安全性保证</strong>：</p>
+<ul>
+<li>已提交的日志不会丢失</li>
+<li>同一位置的日志在不同节点上相同</li>
+</ul>
+</li>
+</ol>
+<p><strong>etcd关键配置</strong>：</p>
+<pre><code class="language-bash">--listen-client-urls              # 客户端监听地址
+--advertise-client-urls           # 客户端访问地址
+--listen-peer-urls                # 节点间通信地址
+--initial-cluster                 # 集群成员列表
+--initial-cluster-state=new       # 集群初始状态
+</code></pre>
+<h4 id="213-kube-scheduler"><a class="header" href="#213-kube-scheduler">2.1.3 kube-scheduler</a></h4>
+<p><strong>核心职责</strong>：</p>
+<ul>
+<li>监听未调度的Pod</li>
+<li>为Pod选择最优节点</li>
+<li>考虑资源需求、亲和性、反亲和性、污点容忍等</li>
+</ul>
+<p><strong>调度流程</strong>：</p>
+<pre><code>┌────────────────┐
+│  Watch未调度Pod │
+└───────┬────────┘
+        │
+        ▼
+┌────────────────┐
+│  预选 (Filter)  │  过滤不满足条件的节点
+│  - 资源是否充足  │
+│  - 端口是否冲突  │
+│  - 节点选择器    │
+│  - 污点容忍     │
+└───────┬────────┘
+        │
+        ▼
+┌────────────────┐
+│  优选 (Score)   │  对节点打分排序
+│  - 资源均衡     │
+│  - 亲和性      │
+│  - 镜像本地性   │
+└───────┬────────┘
+        │
+        ▼
+┌────────────────┐
+│  绑定 (Bind)    │  将Pod绑定到最优节点
+│  更新etcd      │
+└────────────────┘
+</code></pre>
+<p><strong>调度策略详解</strong>：</p>
+<ol>
+<li>
+<p><strong>预选策略 (Predicates)</strong>：</p>
+<ul>
+<li><code>PodFitsResources</code>：节点资源是否满足Pod请求</li>
+<li><code>PodFitsHostPorts</code>：端口是否冲突</li>
+<li><code>MatchNodeSelector</code>：是否满足节点选择器</li>
+<li><code>NoVolumeZoneConflict</code>：卷的可用区是否冲突</li>
+<li><code>PodToleratesNodeTaints</code>：是否容忍节点污点</li>
+</ul>
+</li>
+<li>
+<p><strong>优选策略 (Priorities)</strong>：</p>
+<ul>
+<li><code>LeastRequestedPriority</code>：选择资源使用率最低的节点</li>
+<li><code>BalancedResourceAllocation</code>：CPU和内存使用均衡</li>
+<li><code>SelectorSpreadPriority</code>：同一服务的Pod分散到不同节点</li>
+<li><code>NodeAffinityPriority</code>：节点亲和性评分</li>
+<li><code>ImageLocalityPriority</code>：镜像已存在的节点优先</li>
+</ul>
+</li>
+</ol>
+<p><strong>技术深度 - 调度框架</strong>：</p>
+<pre><code class="language-go">// 调度框架扩展点
+type Framework interface {
+    // QueueSort: 队列排序
+    QueueSort(pod *v1.Pod)
+
+    // PreFilter: 预处理
+    PreFilter(pod *v1.Pod) *Status
+
+    // Filter: 过滤不合格节点
+    Filter(pod *v1.Pod, node *v1.Node) *Status
+
+    // PostFilter: 后处理（抢占）
+    PostFilter(pod *v1.Pod, nodes []*v1.Node) *Status
+
+    // PreScore: 打分预处理
+    PreScore(pod *v1.Pod, nodes []*v1.Node) *Status
+
+    // Score: 节点打分
+    Score(pod *v1.Pod, node *v1.Node) (int64, *Status)
+
+    // NormalizeScore: 分数归一化
+    NormalizeScore(pod *v1.Pod, scores []int64) *Status
+
+    // Reserve: 预留资源
+    Reserve(pod *v1.Pod, node *v1.Node) *Status
+
+    // PreBind: 绑定前操作
+    PreBind(pod *v1.Pod, node *v1.Node) *Status
+
+    // Bind: 绑定Pod到节点
+    Bind(pod *v1.Pod, node *v1.Node) *Status
+
+    // PostBind: 绑定后操作
+    PostBind(pod *v1.Pod, node *v1.Node)
 }
-EOF
-
-systemctl restart docker
 </code></pre>
-<p><strong>安装kubeadm、kubelet、kubectl</strong>:</p>
-<pre><code class="language-bash"># 添加K8s源
-cat &lt;&lt;EOF | tee /etc/apt/sources.list.d/kubernetes.list
-deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
-EOF
+<h4 id="214-kube-controller-manager"><a class="header" href="#214-kube-controller-manager">2.1.4 kube-controller-manager</a></h4>
+<p><strong>核心职责</strong>：</p>
+<ul>
+<li>运行各种控制器</li>
+<li>监控集群状态</li>
+<li>确保实际状态向期望状态收敛</li>
+</ul>
+<p><strong>主要控制器</strong>：</p>
+<ol>
+<li>
+<p><strong>Node Controller</strong>：</p>
+<ul>
+<li>监控节点健康状态</li>
+<li>节点不可达时驱逐Pod</li>
+<li>更新节点条件和状态</li>
+</ul>
+</li>
+<li>
+<p><strong>Replication Controller</strong>：</p>
+<ul>
+<li>确保指定数量的Pod副本运行</li>
+<li>创建或删除Pod以维持期望数量</li>
+</ul>
+</li>
+<li>
+<p><strong>Endpoints Controller</strong>：</p>
+<ul>
+<li>为Service创建和更新Endpoints对象</li>
+<li>关联Service和后端Pod</li>
+</ul>
+</li>
+<li>
+<p><strong>ServiceAccount &amp; Token Controllers</strong>：</p>
+<ul>
+<li>为新命名空间创建默认ServiceAccount</li>
+<li>为ServiceAccount创建API访问令牌</li>
+</ul>
+</li>
+<li>
+<p><strong>Deployment Controller</strong>：</p>
+<ul>
+<li>管理Deployment生命周期</li>
+<li>控制ReplicaSet创建和滚动更新</li>
+</ul>
+</li>
+</ol>
+<p><strong>控制循环原理</strong>：</p>
+<pre><code class="language-go">// 控制器核心逻辑
+for {
+    // 1. 获取期望状态（从etcd）
+    desired := getDesiredState()
 
-# 安装
-apt-get update
-apt-get install -y kubelet=1.26.0-00 kubeadm=1.26.0-00 kubectl=1.26.0-00
-apt-mark hold kubelet kubeadm kubectl
+    // 2. 获取当前状态（从集群）
+    current := getCurrentState()
+
+    // 3. 计算差异
+    diff := compare(desired, current)
+
+    // 4. 执行调谐动作
+    if diff != nil {
+        reconcile(diff)  // 创建、更新或删除资源
+    }
+
+    // 5. 等待下一个同步周期
+    wait()
+}
 </code></pre>
-<p><strong>初始化Master节点</strong>:</p>
-<pre><code class="language-bash"># 初始化集群
-kubeadm init \
-  --apiserver-advertise-address=192.168.1.10 \
-  --image-repository registry.aliyuncs.com/google_containers \
-  --kubernetes-version v1.26.0 \
-  --service-cidr=10.96.0.0/12 \
-  --pod-network-cidr=10.244.0.0/16
-
-# 配置kubectl
-mkdir -p $HOME/.kube
-cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-chown $(id -u):$(id -g) $HOME/.kube/config
-
-# 查看节点
-kubectl get nodes
+<p><strong>技术深度 - 控制器模式</strong>：</p>
+<pre><code>┌──────────────────────────────────────────────┐
+│              Controller Pattern               │
+│                                              │
+│  ┌────────┐    Watch    ┌────────────┐     │
+│  │ Informer│◄───────────│ API Server │     │
+│  └───┬────┘            └────────────┘     │
+│      │                                      │
+│      │ Events                               │
+│      ▼                                      │
+│  ┌────────────┐                            │
+│  │ Work Queue │  限流、去重、重试           │
+│  └─────┬──────┘                            │
+│        │                                     │
+│        │ Dequeue                            │
+│        ▼                                     │
+│  ┌────────────┐                            │
+│  │  Worker    │  调谐逻辑                   │
+│  │  Goroutine │                             │
+│  └────────────┘                            │
+└──────────────────────────────────────────────┘
 </code></pre>
-<p><strong>安装网络插件 (Flannel)</strong>:</p>
-<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
+<p><strong>并发控制参数</strong>：</p>
+<pre><code class="language-bash">--concurrent-deployment-syncs=5   # Deployment并发同步数
+--concurrent-replicaset-syncs=5   # ReplicaSet并发同步数
+--concurrent-service-syncs=5      # Service并发同步数
+--concurrent-endpoint-syncs=5     # Endpoint并发同步数
 </code></pre>
-<p><strong>加入Worker节点</strong>:</p>
-<pre><code class="language-bash"># 在Worker节点执行 (Master初始化时输出的命令)
-kubeadm join 192.168.1.10:6443 \
-  --token abcdef.0123456789abcdef \
-  --discovery-token-ca-cert-hash sha256:xxx...
+<h4 id="215-cloud-controller-manager-可选"><a class="header" href="#215-cloud-controller-manager-可选">2.1.5 cloud-controller-manager (可选)</a></h4>
+<p><strong>核心职责</strong>：</p>
+<ul>
+<li>与云提供商API交互</li>
+<li>管理云特定的资源（负载均衡器、存储卷等）</li>
+<li>解耦Kubernetes核心和云提供商逻辑</li>
+</ul>
+<p><strong>主要控制器</strong>：</p>
+<ul>
+<li><strong>Node Controller</strong>：检查云提供商确定节点是否被删除</li>
+<li><strong>Route Controller</strong>：设置云基础设施的路由</li>
+<li><strong>Service Controller</strong>：创建、更新和删除云负载均衡器</li>
+</ul>
+<h3 id="22-node组件"><a class="header" href="#22-node组件">2.2 Node组件</a></h3>
+<h4 id="221-kubelet"><a class="header" href="#221-kubelet">2.2.1 kubelet</a></h4>
+<p><strong>核心职责</strong>：</p>
+<ul>
+<li>运行在每个节点上的主要代理</li>
+<li>管理Pod和容器的生命周期</li>
+<li>定期向API Server汇报节点状态</li>
+<li>执行容器健康检查</li>
+</ul>
+<p><strong>工作流程</strong>：</p>
+<pre><code>┌────────────────────────────────────────┐
+│            Kubelet工作流程              │
+│                                        │
+│  1. Watch API Server                  │
+│     ├─ 获取分配到本节点的Pod          │
+│     └─ 监听Pod变更事件                │
+│                                        │
+│  2. Pod同步                           │
+│     ├─ 解析Pod Spec                   │
+│     ├─ 拉取镜像                       │
+│     └─ 创建容器                       │
+│                                        │
+│  3. 健康检查                          │
+│     ├─ Liveness Probe (存活探针)      │
+│     ├─ Readiness Probe (就绪探针)     │
+│     └─ Startup Probe (启动探针)       │
+│                                        │
+│  4. 状态上报                          │
+│     ├─ 节点状态 (CPU、内存、磁盘)     │
+│     ├─ Pod状态                        │
+│     └─ 容器状态                       │
+│                                        │
+│  5. 资源管理                          │
+│     ├─ Cgroup资源限制                 │
+│     ├─ QoS分类                        │
+│     └─ 驱逐策略                       │
+└────────────────────────────────────────┘
 </code></pre>
-<h3 id="22-验证集群"><a class="header" href="#22-验证集群">2.2 验证集群</a></h3>
-<pre><code class="language-bash"># 查看节点状态
-kubectl get nodes
+<p><strong>技术深度 - Pod生命周期管理</strong>：</p>
+<ol>
+<li><strong>Pod创建流程</strong>：</li>
+</ol>
+<pre><code>API Server通知
+    │
+    ▼
+┌──────────────┐
+│  拉取Pod Spec │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ 准备Pod沙箱   │  创建网络命名空间
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ 拉取镜像     │  并行拉取所有容器镜像
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ 启动Init容器 │  顺序执行，必须全部成功
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ 启动主容器   │  并行启动
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ 启动后钩子   │  PostStart Hook
+└──────────────┘
+</code></pre>
+<ol start="2">
+<li><strong>健康检查机制</strong>：</li>
+</ol>
+<pre><code class="language-yaml">livenessProbe:
+  httpGet:
+    path: /healthz
+    port: 8080
+  initialDelaySeconds: 15  # 首次探测延迟
+  periodSeconds: 10        # 探测间隔
+  timeoutSeconds: 1        # 探测超时
+  successThreshold: 1      # 成功阈值
+  failureThreshold: 3      # 失败阈值（重启容器）
 
-# 预期输出:
-# NAME     STATUS   ROLES           AGE   VERSION
-# master   Ready    control-plane   5m    v1.26.0
-# worker1  Ready    &lt;none&gt;          2m    v1.26.0
-# worker2  Ready    &lt;none&gt;          2m    v1.26.0
+readinessProbe:
+  tcpSocket:
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  failureThreshold: 3      # 失败阈值（移出Service）
 
-# 查看系统Pod
-kubectl get pods -n kube-system
+startupProbe:
+  httpGet:
+    path: /startup
+    port: 8080
+  failureThreshold: 30     # 启动最多等待时间
+  periodSeconds: 10
+</code></pre>
+<ol start="3">
+<li><strong>QoS分类</strong>：</li>
+</ol>
+<ul>
+<li>
+<p><strong>Guaranteed</strong>：所有容器都设置了requests和limits，且相等</p>
+<pre><code class="language-yaml">resources:
+  requests:
+    memory: "1Gi"
+    cpu: "1000m"
+  limits:
+    memory: "1Gi"
+    cpu: "1000m"
+</code></pre>
+</li>
+<li>
+<p><strong>Burstable</strong>：至少一个容器设置了requests或limits</p>
+<pre><code class="language-yaml">resources:
+  requests:
+    memory: "500Mi"
+    cpu: "500m"
+  limits:
+    memory: "1Gi"
+    cpu: "2000m"
+</code></pre>
+</li>
+<li>
+<p><strong>BestEffort</strong>：未设置任何requests和limits</p>
+</li>
+</ul>
+<p><strong>驱逐策略</strong>：</p>
+<pre><code>节点压力检测：
+  - memory.available &lt; 100Mi
+  - nodefs.available &lt; 10%
+  - imagefs.available &lt; 15%
 
-# 查看组件状态
-kubectl get cs
+驱逐顺序：
+  1. BestEffort Pods
+  2. Burstable Pods (超过requests)
+  3. Burstable Pods (未超过requests)
+  4. Guaranteed Pods
+</code></pre>
+<h4 id="222-kube-proxy"><a class="header" href="#222-kube-proxy">2.2.2 kube-proxy</a></h4>
+<p><strong>核心职责</strong>：</p>
+<ul>
+<li>维护节点上的网络规则</li>
+<li>实现Service的虚拟IP和负载均衡</li>
+<li>支持三种模式：userspace、iptables、IPVS</li>
+</ul>
+<p><strong>工作模式详解</strong>：</p>
+<ol>
+<li><strong>userspace模式</strong> (已废弃)：</li>
+</ol>
+<pre><code>Client → iptables → kube-proxy → Pod
+         (DNAT)    (转发)
+</code></pre>
+<ul>
+<li>优点：稳定</li>
+<li>缺点：性能差，需要用户空间和内核空间切换</li>
+</ul>
+<ol start="2">
+<li><strong>iptables模式</strong> (默认)：</li>
+</ol>
+<pre><code>Client → iptables → Pod
+         (DNAT + 负载均衡)
+</code></pre>
+<ul>
+<li>优点：性能好，无需用户空间转发</li>
+<li>缺点：规则数量大时性能下降，不支持会话保持</li>
+</ul>
+<ol start="3">
+<li><strong>IPVS模式</strong> (推荐)：</li>
+</ol>
+<pre><code>Client → IPVS → Pod
+         (负载均衡)
+</code></pre>
+<ul>
+<li>优点：高性能，支持多种负载均衡算法</li>
+<li>缺点：需要内核支持IPVS模块</li>
+</ul>
+<p><strong>技术深度 - iptables规则示例</strong>：</p>
+<pre><code class="language-bash"># Service: ClusterIP 10.96.0.10:80 → Pods: 10.244.1.5:8080, 10.244.2.6:8080
+
+# 1. 捕获发往Service的流量
+-A KUBE-SERVICES -d 10.96.0.10/32 -p tcp -m tcp --dport 80 \
+   -j KUBE-SVC-XXXXX
+
+# 2. 负载均衡到后端Pod（概率匹配）
+-A KUBE-SVC-XXXXX -m statistic --mode random --probability 0.5 \
+   -j KUBE-SEP-AAAAA  # 50%概率到Pod1
+
+-A KUBE-SVC-XXXXX -j KUBE-SEP-BBBBB  # 其余到Pod2
+
+# 3. DNAT到具体Pod
+-A KUBE-SEP-AAAAA -p tcp -m tcp \
+   -j DNAT --to-destination 10.244.1.5:8080
+
+-A KUBE-SEP-BBBBB -p tcp -m tcp \
+   -j DNAT --to-destination 10.244.2.6:8080
+</code></pre>
+<p><strong>IPVS负载均衡算法</strong>：</p>
+<ul>
+<li><code>rr</code>：轮询 (Round Robin)</li>
+<li><code>lc</code>：最少连接 (Least Connection)</li>
+<li><code>dh</code>：目标哈希 (Destination Hashing)</li>
+<li><code>sh</code>：源哈希 (Source Hashing)</li>
+<li><code>sed</code>：最短期望延迟 (Shortest Expected Delay)</li>
+<li><code>nq</code>：永不排队 (Never Queue)</li>
+</ul>
+<h4 id="223-容器运行时-container-runtime"><a class="header" href="#223-容器运行时-container-runtime">2.2.3 容器运行时 (Container Runtime)</a></h4>
+<p><strong>核心职责</strong>：</p>
+<ul>
+<li>负责运行容器</li>
+<li>实现CRI (Container Runtime Interface)</li>
+</ul>
+<p><strong>支持的运行时</strong>：</p>
+<ul>
+<li><strong>containerd</strong>：轻量级，CNCF毕业项目，推荐使用</li>
+<li><strong>CRI-O</strong>：专为Kubernetes设计，轻量级</li>
+<li><strong>Docker</strong> (通过dockershim，已废弃)</li>
+</ul>
+<p><strong>CRI接口</strong>：</p>
+<pre><code class="language-protobuf">service RuntimeService {
+    // Pod沙箱管理
+    rpc RunPodSandbox(RunPodSandboxRequest)
+        returns (RunPodSandboxResponse) {}
+    rpc StopPodSandbox(StopPodSandboxRequest)
+        returns (StopPodSandboxResponse) {}
+
+    // 容器管理
+    rpc CreateContainer(CreateContainerRequest)
+        returns (CreateContainerResponse) {}
+    rpc StartContainer(StartContainerRequest)
+        returns (StartContainerResponse) {}
+    rpc StopContainer(StopContainerRequest)
+        returns (StopContainerResponse) {}
+
+    // 容器执行
+    rpc ExecSync(ExecSyncRequest)
+        returns (ExecSyncResponse) {}
+}
+
+service ImageService {
+    // 镜像管理
+    rpc PullImage(PullImageRequest)
+        returns (PullImageResponse) {}
+    rpc ListImages(ListImagesRequest)
+        returns (ListImagesResponse) {}
+    rpc RemoveImage(RemoveImageRequest)
+        returns (RemoveImageResponse) {}
+}
 </code></pre>
 <hr />
-<h2 id="3-工作负载"><a class="header" href="#3-工作负载">3. 工作负载</a></h2>
-<h3 id="31-pod"><a class="header" href="#31-pod">3.1 Pod</a></h3>
-<p><strong>Pod YAML示例</strong>:</p>
+<h2 id="三核心概念详解"><a class="header" href="#三核心概念详解">三、核心概念详解</a></h2>
+<h3 id="31-pod---最小调度单元"><a class="header" href="#31-pod---最小调度单元">3.1 Pod - 最小调度单元</a></h3>
+<h4 id="311-pod基本概念"><a class="header" href="#311-pod基本概念">3.1.1 Pod基本概念</a></h4>
+<p>Pod是Kubernetes中最小的可部署单元，包含一个或多个容器，共享网络命名空间和存储卷。</p>
+<p><strong>Pod设计哲学</strong>：</p>
+<ul>
+<li>一个Pod运行单个应用实例</li>
+<li>紧密耦合的容器放在同一Pod</li>
+<li>Pod是临时性的，不应持久化数据</li>
+</ul>
+<p><strong>Pod组成</strong>：</p>
+<pre><code>┌─────────────────────────────────────┐
+│              Pod                     │
+│                                     │
+│  ┌──────────────┐  ┌──────────────┐│
+│  │  Container1  │  │  Container2  ││
+│  │  (Main App)  │  │  (Sidecar)   ││
+│  └──────────────┘  └──────────────┘│
+│                                     │
+│  共享：                              │
+│  - 网络命名空间 (同一IP)            │
+│  - IPC命名空间                      │
+│  - UTS命名空间 (主机名)             │
+│  - 存储卷                           │
+└─────────────────────────────────────┘
+</code></pre>
+<h4 id="312-pod生命周期"><a class="header" href="#312-pod生命周期">3.1.2 Pod生命周期</a></h4>
+<p><strong>Pod阶段 (Phase)</strong>：</p>
+<ul>
+<li><code>Pending</code>：Pod已创建，但容器尚未运行</li>
+<li><code>Running</code>：至少一个容器正在运行</li>
+<li><code>Succeeded</code>：所有容器成功终止</li>
+<li><code>Failed</code>：至少一个容器失败终止</li>
+<li><code>Unknown</code>：无法获取Pod状态</li>
+</ul>
+<p><strong>容器状态</strong>：</p>
+<ul>
+<li><code>Waiting</code>：等待启动（拉取镜像、等待调度）</li>
+<li><code>Running</code>：正在运行</li>
+<li><code>Terminated</code>：已终止</li>
+</ul>
+<p><strong>Pod生命周期钩子</strong>：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Pod
 metadata:
-  name: nginx-pod
-  labels:
-    app: nginx
+  name: lifecycle-demo
 spec:
   containers:
-  - name: nginx
-    image: nginx:1.23
-    ports:
-    - containerPort: 80
-    resources:
-      requests:
-        memory: "64Mi"
-        cpu: "250m"
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
+  - name: main
+    image: nginx
+    lifecycle:
+      postStart:  # 容器启动后立即执行
+        exec:
+          command: ["/bin/sh", "-c", "echo Hello from postStart &gt; /usr/share/message"]
+      preStop:    # 容器终止前执行
+        exec:
+          command: ["/bin/sh", "-c", "nginx -s quit; while killall -0 nginx; do sleep 1; done"]
 </code></pre>
-<p><strong>Pod操作</strong>:</p>
-<pre><code class="language-bash"># 创建Pod
-kubectl apply -f nginx-pod.yaml
-
-# 查看Pod
-kubectl get pods
-kubectl get pod nginx-pod -o wide
-
-# 查看Pod详情
-kubectl describe pod nginx-pod
-
-# 查看Pod日志
-kubectl logs nginx-pod
-
-# 进入Pod
-kubectl exec -it nginx-pod -- /bin/bash
-
-# 删除Pod
-kubectl delete pod nginx-pod
-</code></pre>
-<p><strong>Init容器</strong>:</p>
-<pre><code class="language-yaml">spec:
+<h4 id="313-init容器"><a class="header" href="#313-init容器">3.1.3 Init容器</a></h4>
+<p>Init容器在主容器启动前顺序执行，用于初始化工作。</p>
+<p><strong>特点</strong>：</p>
+<ul>
+<li>总是运行到成功</li>
+<li>顺序执行，每个必须成功后才运行下一个</li>
+<li>如果失败，Pod会重启（根据restartPolicy）</li>
+</ul>
+<p><strong>使用场景</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: init-demo
+spec:
   initContainers:
-  - name: init-myservice
+  - name: init-db
     image: busybox
-    command: ['sh', '-c', 'until nslookup myservice; do echo waiting; sleep 2; done']
+    command: ['sh', '-c', 'until nslookup mydb; do echo waiting for mydb; sleep 2; done;']
+  - name: init-config
+    image: busybox
+    command: ['sh', '-c', 'cp /config/* /app-config/']
+    volumeMounts:
+    - name: config
+      mountPath: /config
+    - name: app-config
+      mountPath: /app-config
+
   containers:
-  - name: myapp
-    image: myapp:latest
+  - name: app
+    image: myapp
+    volumeMounts:
+    - name: app-config
+      mountPath: /etc/config
+
+  volumes:
+  - name: config
+    configMap:
+      name: app-config
+  - name: app-config
+    emptyDir: {}
 </code></pre>
-<h3 id="32-deployment"><a class="header" href="#32-deployment">3.2 Deployment</a></h3>
-<p><strong>Deployment示例</strong>:</p>
+<h4 id="314-pod重启策略"><a class="header" href="#314-pod重启策略">3.1.4 Pod重启策略</a></h4>
+<pre><code class="language-yaml">spec:
+  restartPolicy: Always  # Always, OnFailure, Never
+</code></pre>
+<ul>
+<li><code>Always</code>：容器终止后总是重启（默认）</li>
+<li><code>OnFailure</code>：容器非零退出时重启</li>
+<li><code>Never</code>：永不重启</li>
+</ul>
+<p><strong>重启延迟</strong>：</p>
+<pre><code>0s → 10s → 20s → 40s → 80s → 160s → 300s (最大)
+</code></pre>
+<h3 id="32-工作负载资源"><a class="header" href="#32-工作负载资源">3.2 工作负载资源</a></h3>
+<h4 id="321-deployment---无状态应用管理"><a class="header" href="#321-deployment---无状态应用管理">3.2.1 Deployment - 无状态应用管理</a></h4>
+<p><strong>核心功能</strong>：</p>
+<ul>
+<li>声明式更新</li>
+<li>滚动更新和回滚</li>
+<li>扩缩容</li>
+<li>暂停和恢复</li>
+</ul>
+<p><strong>完整示例</strong>：</p>
 <pre><code class="language-yaml">apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -461,367 +951,1062 @@ metadata:
     app: nginx
 spec:
   replicas: 3
+
+  # 选择器（必须匹配template.metadata.labels）
   selector:
     matchLabels:
       app: nginx
+
+  # 更新策略
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # 滚动更新时最多可超出期望副本数
+      maxUnavailable: 1  # 滚动更新时最多不可用副本数
+
+  # 最小就绪时间（秒）
+  minReadySeconds: 10
+
+  # 保留的历史版本数
+  revisionHistoryLimit: 10
+
+  # Pod模板
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: v1
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.21
+        ports:
+        - containerPort: 80
+          name: http
+
+        # 资源限制
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+
+        # 健康检查
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+</code></pre>
+<p><strong>滚动更新流程</strong>：</p>
+<pre><code>初始状态: 3个v1 Pods
+
+更新镜像: nginx:1.21 → nginx:1.22
+
+步骤1: 创建1个v2 Pod (maxSurge=1)
+  v1: ███  (3个)
+  v2: █    (1个) ← 新建
+
+步骤2: v2 Pod就绪后，删除1个v1 Pod
+  v1: ██   (2个)
+  v2: ██   (2个)
+
+步骤3: 创建1个v2 Pod
+  v1: ██   (2个)
+  v2: ███  (3个)
+
+步骤4: 删除1个v1 Pod
+  v1: █    (1个)
+  v2: ███  (3个)
+
+步骤5: 删除最后1个v1 Pod
+  v1:      (0个)
+  v2: ███  (3个) ← 完成
+</code></pre>
+<p><strong>Deployment管理命令</strong>：</p>
+<pre><code class="language-bash"># 创建Deployment
+kubectl create deployment nginx --image=nginx:1.21 --replicas=3
+
+# 更新镜像（触发滚动更新）
+kubectl set image deployment/nginx nginx=nginx:1.22
+
+# 查看更新状态
+kubectl rollout status deployment/nginx
+
+# 查看更新历史
+kubectl rollout history deployment/nginx
+
+# 回滚到上一版本
+kubectl rollout undo deployment/nginx
+
+# 回滚到指定版本
+kubectl rollout undo deployment/nginx --to-revision=2
+
+# 暂停更新
+kubectl rollout pause deployment/nginx
+
+# 恢复更新
+kubectl rollout resume deployment/nginx
+
+# 扩缩容
+kubectl scale deployment/nginx --replicas=5
+
+# 自动扩缩容
+kubectl autoscale deployment/nginx --min=2 --max=10 --cpu-percent=80
+</code></pre>
+<h4 id="322-statefulset---有状态应用管理"><a class="header" href="#322-statefulset---有状态应用管理">3.2.2 StatefulSet - 有状态应用管理</a></h4>
+<p><strong>核心特性</strong>：</p>
+<ul>
+<li>稳定的持久化存储</li>
+<li>稳定的网络标识</li>
+<li>有序的部署和扩展</li>
+<li>有序的删除和终止</li>
+</ul>
+<p><strong>与Deployment的区别</strong>：</p>
+<pre><code>Deployment:
+  - Pod名称随机: nginx-deployment-7d8f4c9b5d-xm7kp
+  - 网络标识不稳定
+  - 无状态，可随意替换
+  - 并行创建和删除
+
+StatefulSet:
+  - Pod名称固定: nginx-0, nginx-1, nginx-2
+  - 稳定的DNS: nginx-0.nginx-service.default.svc.cluster.local
+  - 有状态，不可随意替换
+  - 顺序创建和删除
+</code></pre>
+<p><strong>完整示例</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-headless
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    name: web
+  clusterIP: None  # Headless Service，不分配ClusterIP
+  selector:
+    app: nginx
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nginx
+spec:
+  serviceName: "nginx-headless"  # 关联Headless Service
+  replicas: 3
+
+  selector:
+    matchLabels:
+      app: nginx
+
+  # 最小就绪时间
+  minReadySeconds: 10
+
+  # Pod管理策略
+  podManagementPolicy: OrderedReady  # OrderedReady(顺序) 或 Parallel(并行)
+
+  # 更新策略
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0  # 分区更新：&gt;=partition的Pod才会更新
+
   template:
     metadata:
       labels:
         app: nginx
     spec:
+      terminationGracePeriodSeconds: 10
       containers:
       - name: nginx
-        image: nginx:1.23
+        image: nginx:1.21
         ports:
         - containerPort: 80
-</code></pre>
-<p><strong>Deployment操作</strong>:</p>
-<pre><code class="language-bash"># 创建Deployment
-kubectl apply -f nginx-deployment.yaml
-
-# 查看Deployment
-kubectl get deployment
-kubectl get deploy nginx-deployment
-
-# 查看ReplicaSet
-kubectl get rs
-
-# 查看Pod
-kubectl get pods -l app=nginx
-
-# 扩容/缩容
-kubectl scale deployment nginx-deployment --replicas=5
-
-# 更新镜像
-kubectl set image deployment/nginx-deployment nginx=nginx:1.24
-
-# 查看滚动更新状态
-kubectl rollout status deployment/nginx-deployment
-
-# 查看历史版本
-kubectl rollout history deployment/nginx-deployment
-
-# 回滚到上一版本
-kubectl rollout undo deployment/nginx-deployment
-
-# 回滚到指定版本
-kubectl rollout undo deployment/nginx-deployment --to-revision=2
-</code></pre>
-<h3 id="33-statefulset"><a class="header" href="#33-statefulset">3.3 StatefulSet</a></h3>
-<p>用于有状态应用 (数据库、消息队列等)。</p>
-<pre><code class="language-yaml">apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: mysql
-spec:
-  serviceName: mysql
-  replicas: 3
-  selector:
-    matchLabels:
-      app: mysql
-  template:
-    metadata:
-      labels:
-        app: mysql
-    spec:
-      containers:
-      - name: mysql
-        image: mysql:8.0
-        ports:
-        - containerPort: 3306
+          name: web
         volumeMounts:
-        - name: data
-          mountPath: /var/lib/mysql
+        - name: www
+          mountPath: /usr/share/nginx/html
+
+  # 持久卷声明模板
   volumeClaimTemplates:
   - metadata:
-      name: data
+      name: www
     spec:
-      accessModes: ["ReadWriteOnce"]
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "standard"
       resources:
         requests:
-          storage: 10Gi
+          storage: 1Gi
 </code></pre>
-<p><strong>特点</strong>:</p>
+<p><strong>Pod创建顺序</strong>：</p>
+<pre><code>创建过程（顺序）:
+  nginx-0 (等待Running and Ready) →
+  nginx-1 (等待Running and Ready) →
+  nginx-2 (等待Running and Ready)
+
+删除过程（逆序）:
+  nginx-2 (等待完全终止) →
+  nginx-1 (等待完全终止) →
+  nginx-0 (等待完全终止)
+</code></pre>
+<p><strong>网络标识</strong>：</p>
+<pre><code class="language-bash"># Pod DNS名称
+&lt;pod-name&gt;.&lt;service-name&gt;.&lt;namespace&gt;.svc.cluster.local
+
+# 示例
+nginx-0.nginx-headless.default.svc.cluster.local
+nginx-1.nginx-headless.default.svc.cluster.local
+nginx-2.nginx-headless.default.svc.cluster.local
+
+# 在集群内访问
+curl nginx-0.nginx-headless
+</code></pre>
+<p><strong>分区滚动更新</strong>：</p>
+<pre><code class="language-yaml">updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    partition: 2  # 只更新序号&gt;=2的Pod
+
+# 效果：
+# nginx-0: 保持旧版本
+# nginx-1: 保持旧版本
+# nginx-2: 更新到新版本
+</code></pre>
+<h4 id="323-daemonset---每个节点运行一个pod"><a class="header" href="#323-daemonset---每个节点运行一个pod">3.2.3 DaemonSet - 每个节点运行一个Pod</a></h4>
+<p><strong>使用场景</strong>：</p>
 <ul>
-<li>稳定的网络标识 (mysql-0, mysql-1, mysql-2)</li>
-<li>有序部署和扩展</li>
-<li>持久化存储</li>
+<li>集群存储守护进程（如glusterd、ceph）</li>
+<li>日志收集守护进程（如fluentd、logstash）</li>
+<li>节点监控守护进程（如Prometheus Node Exporter、collectd）</li>
+<li>网络插件代理（如kube-proxy、Calico）</li>
 </ul>
-<h3 id="34-daemonset"><a class="header" href="#34-daemonset">3.4 DaemonSet</a></h3>
-<p>确保每个Node运行一个Pod副本。</p>
+<p><strong>示例</strong>：</p>
 <pre><code class="language-yaml">apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: fluentd
+  namespace: kube-system
 spec:
   selector:
     matchLabels:
-      app: fluentd
+      name: fluentd
+
+  # 更新策略
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1  # 滚动更新时最多不可用数量
+
   template:
     metadata:
       labels:
-        app: fluentd
+        name: fluentd
     spec:
+      # 容忍主节点污点，允许在主节点运行
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+
       containers:
       - name: fluentd
-        image: fluentd:latest
+        image: fluentd:v1.14
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
         volumeMounts:
         - name: varlog
           mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+
       volumes:
       - name: varlog
         hostPath:
           path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
 </code></pre>
-<p><strong>应用场景</strong>:</p>
+<p><strong>节点选择</strong>：</p>
+<pre><code class="language-yaml">spec:
+  template:
+    spec:
+      # 只在有特定标签的节点运行
+      nodeSelector:
+        disktype: ssd
+
+      # 或使用亲和性
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: Exists
+</code></pre>
+<h4 id="324-job---一次性任务"><a class="header" href="#324-job---一次性任务">3.2.4 Job - 一次性任务</a></h4>
+<p><strong>特点</strong>：</p>
 <ul>
-<li>日志收集 (Fluentd, Filebeat)</li>
-<li>监控代理 (Node Exporter)</li>
-<li>网络插件 (Calico, Flannel)</li>
+<li>运行到完成</li>
+<li>失败后可重试</li>
+<li>支持并行执行</li>
 </ul>
-<h3 id="35-job-和-cronjob"><a class="header" href="#35-job-和-cronjob">3.5 Job 和 CronJob</a></h3>
-<p><strong>Job (一次性任务)</strong>:</p>
+<p><strong>示例</strong>：</p>
 <pre><code class="language-yaml">apiVersion: batch/v1
 kind: Job
 metadata:
   name: pi
 spec:
+  # 完成次数
+  completions: 5
+
+  # 并行度
+  parallelism: 2
+
+  # 最大重试次数
+  backoffLimit: 4
+
+  # 活跃截止时间（秒）
+  activeDeadlineSeconds: 600
+
+  # 完成后保留时间（秒）
+  ttlSecondsAfterFinished: 100
+
   template:
     spec:
+      restartPolicy: Never  # Job必须设置为Never或OnFailure
       containers:
       - name: pi
-        image: perl
+        image: perl:5.34
         command: ["perl", "-Mbignum=bpi", "-wle", "print bpi(2000)"]
-      restartPolicy: Never
-  backoffLimit: 4
 </code></pre>
-<p><strong>CronJob (定时任务)</strong>:</p>
+<p><strong>执行模式</strong>：</p>
+<pre><code>1. 非并行Job (completions=1, parallelism=1):
+   创建1个Pod，完成后Job结束
+
+2. 固定完成次数Job (completions=N):
+   创建N个Pod，全部完成后Job结束
+
+3. 工作队列Job (parallelism=N):
+   创建N个并行Pod，至少1个成功后Job结束
+   适合从队列消费任务
+</code></pre>
+<h4 id="325-cronjob---定时任务"><a class="header" href="#325-cronjob---定时任务">3.2.5 CronJob - 定时任务</a></h4>
+<p><strong>示例</strong>：</p>
 <pre><code class="language-yaml">apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: backup
+  name: hello
 spec:
-  schedule: "0 2 * * *"  # 每天凌晨2点
+  # Cron表达式
+  schedule: "*/1 * * * *"  # 每分钟执行一次
+
+  # 时区（Kubernetes 1.25+）
+  timeZone: "Asia/Shanghai"
+
+  # 并发策略
+  concurrencyPolicy: Forbid  # Allow, Forbid, Replace
+
+  # 保留成功Job数量
+  successfulJobsHistoryLimit: 3
+
+  # 保留失败Job数量
+  failedJobsHistoryLimit: 1
+
+  # 启动截止时间（秒）
+  startingDeadlineSeconds: 100
+
   jobTemplate:
     spec:
       template:
         spec:
-          containers:
-          - name: backup
-            image: backup-tool:latest
-            command: ["/bin/sh", "-c", "backup.sh"]
           restartPolicy: OnFailure
+          containers:
+          - name: hello
+            image: busybox
+            command: ["/bin/sh", "-c", "date; echo Hello from Kubernetes"]
 </code></pre>
-<hr />
-<h2 id="4-服务发现与负载均衡"><a class="header" href="#4-服务发现与负载均衡">4. 服务发现与负载均衡</a></h2>
-<h3 id="41-service"><a class="header" href="#41-service">4.1 Service</a></h3>
-<p><strong>ClusterIP (默认)</strong>:</p>
+<p><strong>Cron表达式</strong>：</p>
+<pre><code># ┌───────────── 分钟 (0 - 59)
+# │ ┌───────────── 小时 (0 - 23)
+# │ │ ┌───────────── 日 (1 - 31)
+# │ │ │ ┌───────────── 月 (1 - 12)
+# │ │ │ │ ┌───────────── 星期 (0 - 6) (0是周日)
+# │ │ │ │ │
+# * * * * *
+
+示例：
+  0 */2 * * *     # 每2小时
+  30 3 * * *      # 每天3:30
+  0 0 * * 0       # 每周日午夜
+  0 0 1 * *       # 每月1日午夜
+  */10 * * * *    # 每10分钟
+</code></pre>
+<p><strong>并发策略</strong>：</p>
+<ul>
+<li><code>Allow</code>：允许并发运行（默认）</li>
+<li><code>Forbid</code>：禁止并发，如果上次未完成则跳过本次</li>
+<li><code>Replace</code>：取消当前运行的Job，用新Job替换</li>
+</ul>
+<h3 id="33-service---服务发现与负载均衡"><a class="header" href="#33-service---服务发现与负载均衡">3.3 Service - 服务发现与负载均衡</a></h3>
+<h4 id="331-service类型"><a class="header" href="#331-service类型">3.3.1 Service类型</a></h4>
+<p><strong>1. ClusterIP (默认)</strong>：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-service
+  name: my-service
 spec:
-  selector:
-    app: nginx
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
   type: ClusterIP
-</code></pre>
-<p><strong>NodePort</strong>:</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-nodeport
-spec:
   selector:
     app: nginx
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 80
-    nodePort: 30080
+    port: 80        # Service端口
+    targetPort: 80  # Pod端口
+</code></pre>
+<ul>
+<li>只能在集群内访问</li>
+<li>分配虚拟IP (ClusterIP)</li>
+<li>通过kube-proxy实现负载均衡</li>
+</ul>
+<p><strong>2. NodePort</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
   type: NodePort
-</code></pre>
-<p><strong>LoadBalancer (云平台)</strong>:</p>
-<pre><code class="language-yaml">apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-lb
-spec:
   selector:
     app: nginx
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
-  type: LoadBalancer
+    nodePort: 30080  # 30000-32767范围
 </code></pre>
-<p><strong>Headless Service</strong>:</p>
+<ul>
+<li>在每个节点上开放端口</li>
+<li>可通过<code>&lt;NodeIP&gt;:&lt;NodePort&gt;</code>访问</li>
+<li>自动创建ClusterIP</li>
+</ul>
+<p><strong>3. LoadBalancer</strong>：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Service
 metadata:
-  name: mysql-headless
+  name: my-service
 spec:
-  clusterIP: None  # Headless
+  type: LoadBalancer
   selector:
-    app: mysql
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+</code></pre>
+<ul>
+<li>云提供商提供外部负载均衡器</li>
+<li>自动创建NodePort和ClusterIP</li>
+<li>分配外部IP</li>
+</ul>
+<p><strong>4. ExternalName</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  type: ExternalName
+  externalName: my.database.example.com
+</code></pre>
+<ul>
+<li>返回CNAME记录</li>
+<li>用于将集群外服务映射到集群内</li>
+</ul>
+<h4 id="332-service发现机制"><a class="header" href="#332-service发现机制">3.3.2 Service发现机制</a></h4>
+<p><strong>1. 环境变量</strong>：</p>
+<pre><code class="language-bash"># Kubernetes自动注入环境变量
+MYSERVICE_SERVICE_HOST=10.96.0.10
+MYSERVICE_SERVICE_PORT=80
+</code></pre>
+<p><strong>2. DNS</strong>：</p>
+<pre><code># Service DNS格式
+&lt;service-name&gt;.&lt;namespace&gt;.svc.cluster.local
+
+# 示例
+nginx.default.svc.cluster.local
+</code></pre>
+<p><strong>DNS记录类型</strong>：</p>
+<pre><code>A记录（ClusterIP）:
+  nginx.default.svc.cluster.local → 10.96.0.10
+
+SRV记录（带端口）:
+  _http._tcp.nginx.default.svc.cluster.local
+    → nginx.default.svc.cluster.local:80
+
+Headless Service (ClusterIP: None):
+  nginx.default.svc.cluster.local
+    → pod-ip-1, pod-ip-2, pod-ip-3  (所有Pod IP)
+</code></pre>
+<h4 id="333-endpoints"><a class="header" href="#333-endpoints">3.3.3 Endpoints</a></h4>
+<p>Service通过Endpoints关联后端Pod：</p>
+<pre><code class="language-yaml"># Service自动创建Endpoints
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: my-service
+subsets:
+- addresses:
+  - ip: 10.244.1.5
+  - ip: 10.244.2.6
+  ports:
+  - port: 8080
+    protocol: TCP
+</code></pre>
+<p><strong>手动管理Endpoints</strong>（用于外部服务）：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: external-db
+spec:
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
+
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: external-db
+subsets:
+- addresses:
+  - ip: 192.168.1.100  # 外部数据库IP
   ports:
   - port: 3306
 </code></pre>
-<h3 id="42-ingress"><a class="header" href="#42-ingress">4.2 Ingress</a></h3>
-<p><strong>安装Nginx Ingress Controller</strong>:</p>
-<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+<h4 id="334-会话亲和性"><a class="header" href="#334-会话亲和性">3.3.4 会话亲和性</a></h4>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: nginx
+  sessionAffinity: ClientIP  # None(默认) 或 ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800  # 会话保持时间（秒）
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
 </code></pre>
-<p><strong>Ingress示例</strong>:</p>
+<hr />
+<h2 id="四网络系统深度解析"><a class="header" href="#四网络系统深度解析">四、网络系统深度解析</a></h2>
+<h3 id="41-kubernetes网络模型"><a class="header" href="#41-kubernetes网络模型">4.1 Kubernetes网络模型</a></h3>
+<p><strong>网络要求</strong>：</p>
+<ol>
+<li>所有Pod可以在不使用NAT的情况下与所有其他Pod通信</li>
+<li>所有节点可以在不使用NAT的情况下与所有Pod通信</li>
+<li>Pod看到的自己的IP与其他Pod看到的IP相同</li>
+</ol>
+<p><strong>网络层次</strong>：</p>
+<pre><code>┌────────────────────────────────────────┐
+│           Container-to-Container       │  同一Pod内通过lo接口
+└────────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│           Pod-to-Pod (同节点)           │  通过网桥
+└────────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│           Pod-to-Pod (跨节点)           │  通过CNI插件
+└────────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│           Pod-to-Service               │  通过kube-proxy
+└────────────────────────────────────────┘
+┌────────────────────────────────────────┐
+│           External-to-Service          │  通过Ingress/LoadBalancer
+└────────────────────────────────────────┘
+</code></pre>
+<h3 id="42-cni网络插件"><a class="header" href="#42-cni网络插件">4.2 CNI网络插件</a></h3>
+<h4 id="421-cni标准"><a class="header" href="#421-cni标准">4.2.1 CNI标准</a></h4>
+<p><strong>CNI配置示例</strong>：</p>
+<pre><code class="language-json">{
+  "cniVersion": "0.3.1",
+  "name": "mynetwork",
+  "type": "bridge",
+  "bridge": "cni0",
+  "isGateway": true,
+  "ipMasq": true,
+  "ipam": {
+    "type": "host-local",
+    "subnet": "10.244.0.0/16",
+    "routes": [
+      { "dst": "0.0.0.0/0" }
+    ]
+  }
+}
+</code></pre>
+<h4 id="422-主流cni插件对比"><a class="header" href="#422-主流cni插件对比">4.2.2 主流CNI插件对比</a></h4>
+<p><strong>1. Flannel</strong> (简单易用)：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-flannel-cfg
+  namespace: kube-system
+data:
+  net-conf.json: |
+    {
+      "Network": "10.244.0.0/16",
+      "Backend": {
+        "Type": "vxlan"  # 或 host-gw, wireguard
+      }
+    }
+</code></pre>
+<p>特点：</p>
+<ul>
+<li>简单易部署</li>
+<li>支持多种后端（VXLAN、host-gw、WireGuard）</li>
+<li>不支持NetworkPolicy</li>
+</ul>
+<p><strong>2. Calico</strong> (功能强大)：
+特点：</p>
+<ul>
+<li>支持NetworkPolicy</li>
+<li>使用BGP路由</li>
+<li>高性能</li>
+<li>支持eBPF加速</li>
+</ul>
+<pre><code class="language-yaml"># Calico网络策略示例
+apiVersion: projectcalico.org/v3
+kind: NetworkPolicy
+metadata:
+  name: allow-tcp-6379
+spec:
+  selector: app == 'redis'
+  ingress:
+  - action: Allow
+    protocol: TCP
+    source:
+      selector: app == 'backend'
+    destination:
+      ports:
+      - 6379
+</code></pre>
+<p><strong>3. Cilium</strong> (基于eBPF)：
+特点：</p>
+<ul>
+<li>基于eBPF，性能极高</li>
+<li>L7层网络策略</li>
+<li>服务网格集成</li>
+<li>强大的可观测性</li>
+</ul>
+<p><strong>4. Weave Net</strong>：
+特点：</p>
+<ul>
+<li>自动发现和配置</li>
+<li>加密通信</li>
+<li>支持NetworkPolicy</li>
+<li>多播支持</li>
+</ul>
+<h3 id="43-networkpolicy---网络策略"><a class="header" href="#43-networkpolicy---网络策略">4.3 NetworkPolicy - 网络策略</a></h3>
+<h4 id="431-基本概念"><a class="header" href="#431-基本概念">4.3.1 基本概念</a></h4>
+<p>NetworkPolicy用于控制Pod之间的网络流量，实现微隔离。</p>
+<p><strong>默认行为</strong>：</p>
+<ul>
+<li>未定义NetworkPolicy：所有流量允许</li>
+<li>定义NetworkPolicy后：默认拒绝，只允许匹配规则的流量</li>
+</ul>
+<h4 id="432-入站规则示例"><a class="header" href="#432-入站规则示例">4.3.2 入站规则示例</a></h4>
+<p><strong>1. 拒绝所有入站流量</strong>：</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-ingress
+spec:
+  podSelector: {}  # 选择所有Pod
+  policyTypes:
+  - Ingress
+</code></pre>
+<p><strong>2. 允许特定Pod访问</strong>：</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-frontend
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: frontend
+    ports:
+    - protocol: TCP
+      port: 8080
+</code></pre>
+<p><strong>3. 允许特定命名空间访问</strong>：</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-namespace
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          project: myproject
+    ports:
+    - protocol: TCP
+      port: 8080
+</code></pre>
+<p><strong>4. 允许特定IP段访问</strong>：</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-cidr
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 172.17.0.0/16
+        except:
+        - 172.17.1.0/24
+    ports:
+    - protocol: TCP
+      port: 8080
+</code></pre>
+<h4 id="433-出站规则示例"><a class="header" href="#433-出站规则示例">4.3.3 出站规则示例</a></h4>
+<p><strong>1. 拒绝所有出站流量</strong>：</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-all-egress
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+</code></pre>
+<p><strong>2. 允许访问特定服务</strong>：</p>
+<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-to-database
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: database
+    ports:
+    - protocol: TCP
+      port: 3306
+
+  # 允许DNS查询
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+    - podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+</code></pre>
+<h3 id="44-ingress---七层路由"><a class="header" href="#44-ingress---七层路由">4.4 Ingress - 七层路由</a></h3>
+<h4 id="441-ingress资源"><a class="header" href="#441-ingress资源">4.4.1 Ingress资源</a></h4>
 <pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: web-ingress
+  name: my-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
+
+  # TLS配置
+  tls:
+  - hosts:
+    - myapp.example.com
+    secretName: myapp-tls
+
   rules:
-  - host: www.example.com
+  # 基于主机名路由
+  - host: myapp.example.com
     http:
       paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: web-service
-            port:
-              number: 80
-  - host: api.example.com
-    http:
-      paths:
-      - path: /
+
+      # 路径前缀匹配
+      - path: /api
         pathType: Prefix
         backend:
           service:
             name: api-service
             port:
-              number: 8080
-</code></pre>
-<p><strong>TLS配置</strong>:</p>
-<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: tls-ingress
-spec:
-  tls:
-  - hosts:
-    - www.example.com
-    secretName: tls-secret
-  rules:
-  - host: www.example.com
+              number: 80
+
+      # 精确匹配
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+
+  # 另一个主机
+  - host: admin.example.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: web-service
+            name: admin-service
             port:
               number: 80
 </code></pre>
-<p><strong>创建TLS Secret</strong>:</p>
-<pre><code class="language-bash">kubectl create secret tls tls-secret \
-  --cert=tls.crt \
-  --key=tls.key
+<h4 id="442-路径类型"><a class="header" href="#442-路径类型">4.4.2 路径类型</a></h4>
+<ul>
+<li><code>Exact</code>：精确匹配路径</li>
+<li><code>Prefix</code>：前缀匹配</li>
+<li><code>ImplementationSpecific</code>：由Ingress Controller决定</li>
+</ul>
+<p><strong>匹配示例</strong>：</p>
+<pre><code>路径: /foo
+  Exact:
+    /foo ✓
+    /foo/ ✗
+    /foo/bar ✗
+
+  Prefix:
+    /foo ✓
+    /foo/ ✓
+    /foo/bar ✓
+    /football ✗
+</code></pre>
+<h4 id="443-常用注解-nginx-ingress-controller"><a class="header" href="#443-常用注解-nginx-ingress-controller">4.4.3 常用注解 (Nginx Ingress Controller)</a></h4>
+<pre><code class="language-yaml">metadata:
+  annotations:
+    # URL重写
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+    # 限流
+    nginx.ingress.kubernetes.io/limit-rps: "10"
+
+    # 请求体大小限制
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+
+    # 超时配置
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+
+    # 会话亲和性
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+
+    # 白名单
+    nginx.ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/8,192.168.0.0/16"
+
+    # 基本认证
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: basic-auth
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+
+    # CORS
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
 </code></pre>
 <hr />
-<h2 id="5-存储"><a class="header" href="#5-存储">5. 存储</a></h2>
-<h3 id="51-configmap"><a class="header" href="#51-configmap">5.1 ConfigMap</a></h3>
-<p><strong>创建ConfigMap</strong>:</p>
-<pre><code class="language-bash"># 从文件创建
-kubectl create configmap app-config --from-file=config.properties
+<h2 id="五存储系统详解"><a class="header" href="#五存储系统详解">五、存储系统详解</a></h2>
+<h3 id="51-volume类型"><a class="header" href="#51-volume类型">5.1 Volume类型</a></h3>
+<h4 id="511-临时卷"><a class="header" href="#511-临时卷">5.1.1 临时卷</a></h4>
+<p><strong>1. emptyDir</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pd
+spec:
+  containers:
+  - name: test-container
+    image: nginx
+    volumeMounts:
+    - name: cache-volume
+      mountPath: /cache
 
-# 从字面值创建
-kubectl create configmap app-config \
-  --from-literal=database.host=mysql \
-  --from-literal=database.port=3306
-
-# 从YAML创建
-kubectl apply -f - &lt;&lt;EOF
-apiVersion: v1
+  volumes:
+  - name: cache-volume
+    emptyDir:
+      sizeLimit: 1Gi  # 可选：限制大小
+      # medium: Memory  # 可选：使用内存作为存储（tmpfs）
+</code></pre>
+<p>特点：</p>
+<ul>
+<li>Pod创建时创建，删除时删除</li>
+<li>同一Pod的容器共享</li>
+<li>存储在节点磁盘或内存</li>
+</ul>
+<p><strong>2. configMap</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
 kind: ConfigMap
 metadata:
   name: app-config
 data:
-  database.host: mysql
-  database.port: "3306"
-  config.properties: |
-    server.port=8080
-    log.level=INFO
-EOF
-</code></pre>
-<p><strong>使用ConfigMap</strong>:</p>
-<pre><code class="language-yaml">apiVersion: v1
+  application.yaml: |
+    server:
+      port: 8080
+    database:
+      host: db.example.com
+
+---
+apiVersion: v1
 kind: Pod
 metadata:
-  name: myapp
+  name: app
 spec:
   containers:
   - name: app
-    image: myapp:latest
-    # 方式1: 环境变量
-    env:
-    - name: DB_HOST
-      valueFrom:
-        configMapKeyRef:
-          name: app-config
-          key: database.host
-    # 方式2: 挂载为文件
+    image: myapp
     volumeMounts:
     - name: config
       mountPath: /etc/config
+      readOnly: true
+
   volumes:
   - name: config
     configMap:
       name: app-config
+      items:  # 可选：只挂载特定key
+      - key: application.yaml
+        path: app.yaml
 </code></pre>
-<h3 id="52-secret"><a class="header" href="#52-secret">5.2 Secret</a></h3>
-<p><strong>创建Secret</strong>:</p>
-<pre><code class="language-bash"># 创建generic类型
-kubectl create secret generic db-secret \
-  --from-literal=username=admin \
-  --from-literal=password=secret123
-
-# 创建TLS证书
-kubectl create secret tls tls-secret \
-  --cert=tls.crt \
-  --key=tls.key
-
-# 创建Docker registry认证
-kubectl create secret docker-registry regcred \
-  --docker-server=myregistry.com \
-  --docker-username=user \
-  --docker-password=pass \
-  --docker-email=user@example.com
-</code></pre>
-<p><strong>使用Secret</strong>:</p>
+<p><strong>3. secret</strong>：</p>
 <pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+data:
+  username: YWRtaW4=  # base64编码
+  password: cGFzc3dvcmQ=
+
+---
+apiVersion: v1
 kind: Pod
 metadata:
-  name: myapp
+  name: app
 spec:
   containers:
   - name: app
-    image: myapp:latest
+    image: myapp
     env:
-    - name: DB_PASSWORD
+    - name: DB_USERNAME
       valueFrom:
         secretKeyRef:
           name: db-secret
-          key: password
-  imagePullSecrets:
-  - name: regcred
+          key: username
+    volumeMounts:
+    - name: secret
+      mountPath: /etc/secret
+      readOnly: true
+
+  volumes:
+  - name: secret
+    secret:
+      secretName: db-secret
+      defaultMode: 0400  # 文件权限
 </code></pre>
-<h3 id="53-持久化存储"><a class="header" href="#53-持久化存储">5.3 持久化存储</a></h3>
-<p><strong>PersistentVolume (PV)</strong>:</p>
+<h4 id="512-持久卷"><a class="header" href="#512-持久卷">5.1.2 持久卷</a></h4>
+<p><strong>1. hostPath</strong> (仅用于测试)：</p>
+<pre><code class="language-yaml">volumes:
+- name: data
+  hostPath:
+    path: /data
+    type: DirectoryOrCreate  # Directory, File, Socket等
+</code></pre>
+<p><strong>2. nfs</strong>：</p>
+<pre><code class="language-yaml">volumes:
+- name: data
+  nfs:
+    server: nfs-server.example.com
+    path: /exported/path
+    readOnly: false
+</code></pre>
+<p><strong>3. cephfs</strong>：</p>
+<pre><code class="language-yaml">volumes:
+- name: data
+  cephfs:
+    monitors:
+    - 10.16.154.78:6789
+    - 10.16.154.82:6789
+    path: /
+    user: admin
+    secretRef:
+      name: ceph-secret
+</code></pre>
+<h3 id="52-persistentvolume-pv-与-persistentvolumeclaim-pvc"><a class="header" href="#52-persistentvolume-pv-与-persistentvolumeclaim-pvc">5.2 PersistentVolume (PV) 与 PersistentVolumeClaim (PVC)</a></h3>
+<h4 id="521-pv生命周期"><a class="header" href="#521-pv生命周期">5.2.1 PV生命周期</a></h4>
+<pre><code>┌──────────────┐
+│  Provisioning │  供给
+│  - Static     │  管理员预先创建
+│  - Dynamic    │  根据StorageClass动态创建
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│   Binding    │  绑定到PVC
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│    Using     │  Pod使用
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│  Reclaiming  │  回收
+│  - Retain    │  保留数据，手动处理
+│  - Delete    │  删除PV和后端存储
+│  - Recycle   │  已废弃
+└──────────────┘
+</code></pre>
+<h4 id="522-静态供给"><a class="header" href="#522-静态供给">5.2.2 静态供给</a></h4>
+<p><strong>创建PV</strong>：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -829,39 +2014,54 @@ metadata:
 spec:
   capacity:
     storage: 10Gi
+
+  # 访问模式
   accessModes:
-  - ReadWriteMany
+  - ReadWriteOnce   # RWO: 单节点读写
+  # - ReadOnlyMany  # ROX: 多节点只读
+  # - ReadWriteMany # RWX: 多节点读写
+
+  # 回收策略
+  persistentVolumeReclaimPolicy: Retain  # Retain, Delete, Recycle
+
+  # 存储类
+  storageClassName: standard
+
+  # 挂载选项
+  mountOptions:
+  - hard
+  - nfsvers=4.1
+
+  # 后端存储
   nfs:
     server: nfs-server.example.com
     path: /exported/path
 </code></pre>
-<p><strong>PersistentVolumeClaim (PVC)</strong>:</p>
+<p><strong>创建PVC</strong>：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: pvc-nfs
 spec:
   accessModes:
-  - ReadWriteMany
+  - ReadWriteOnce
+
   resources:
     requests:
-      storage: 5Gi
+      storage: 5Gi  # 请求5Gi，会绑定到10Gi的PV
+
+  storageClassName: standard
+
+  # 可选：选择特定PV
+  selector:
+    matchLabels:
+      release: "stable"
 </code></pre>
-<p><strong>StorageClass (动态供应)</strong>:</p>
-<pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: fast
-provisioner: kubernetes.io/gce-pd
-parameters:
-  type: pd-ssd
-  replication-type: regional-pd
-</code></pre>
-<p><strong>使用PVC</strong>:</p>
+<p><strong>在Pod中使用PVC</strong>：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: Pod
 metadata:
-  name: mypod
+  name: app
 spec:
   containers:
   - name: app
@@ -869,37 +2069,242 @@ spec:
     volumeMounts:
     - name: data
       mountPath: /usr/share/nginx/html
+
   volumes:
   - name: data
     persistentVolumeClaim:
       claimName: pvc-nfs
 </code></pre>
+<h4 id="523-动态供给-storageclass"><a class="header" href="#523-动态供给-storageclass">5.2.3 动态供给 (StorageClass)</a></h4>
+<p><strong>创建StorageClass</strong>：</p>
+<pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast-ssd
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+
+# 供给器
+provisioner: kubernetes.io/aws-ebs
+
+# 参数（取决于供给器）
+parameters:
+  type: gp3
+  iopsPerGB: "10"
+  encrypted: "true"
+
+# 回收策略
+reclaimPolicy: Delete  # Delete 或 Retain
+
+# 卷绑定模式
+volumeBindingMode: WaitForFirstConsumer  # Immediate 或 WaitForFirstConsumer
+
+# 允许卷扩展
+allowVolumeExpansion: true
+
+# 挂载选项
+mountOptions:
+- debug
+</code></pre>
+<p><strong>使用StorageClass创建PVC</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+
+  storageClassName: fast-ssd
+
+  resources:
+    requests:
+      storage: 10Gi
+</code></pre>
+<p><strong>卷绑定模式</strong>：</p>
+<ul>
+<li><code>Immediate</code>：PVC创建时立即绑定PV</li>
+<li><code>WaitForFirstConsumer</code>：延迟绑定，直到Pod调度完成（避免跨可用区问题）</li>
+</ul>
+<h4 id="524-卷扩展"><a class="header" href="#524-卷扩展">5.2.4 卷扩展</a></h4>
+<p><strong>前提条件</strong>：</p>
+<ul>
+<li>StorageClass设置<code>allowVolumeExpansion: true</code></li>
+<li>后端存储支持扩展</li>
+</ul>
+<p><strong>操作步骤</strong>：</p>
+<pre><code class="language-bash"># 1. 修改PVC的storage请求
+kubectl edit pvc my-pvc
+# 将 storage: 10Gi 改为 storage: 20Gi
+
+# 2. 重启使用该PVC的Pod（某些CSI驱动支持在线扩展）
+kubectl rollout restart deployment/my-app
+
+# 3. 验证
+kubectl get pvc my-pvc
+</code></pre>
+<h3 id="53-csi-container-storage-interface"><a class="header" href="#53-csi-container-storage-interface">5.3 CSI (Container Storage Interface)</a></h3>
+<h4 id="531-csi架构"><a class="header" href="#531-csi架构">5.3.1 CSI架构</a></h4>
+<pre><code>┌─────────────────────────────────────────┐
+│          Kubernetes Master              │
+│                                         │
+│  ┌────────────────────────────────┐    │
+│  │  External Provisioner          │    │
+│  │  (创建/删除卷)                  │    │
+│  └──────────────┬─────────────────┘    │
+│                 │                       │
+│  ┌──────────────▼─────────────────┐    │
+│  │  External Attacher             │    │
+│  │  (附加/分离卷)                  │    │
+│  └──────────────┬─────────────────┘    │
+│                 │                       │
+│  ┌──────────────▼─────────────────┐    │
+│  │  External Resizer              │    │
+│  │  (扩展卷)                       │    │
+│  └──────────────┬─────────────────┘    │
+└─────────────────┼─────────────────────┘
+                  │
+                  │ gRPC
+                  │
+┌─────────────────▼─────────────────────┐
+│          CSI Driver                   │
+│  (由存储厂商提供)                      │
+│                                       │
+│  ┌───────────────────────────────┐   │
+│  │  Controller Service           │   │
+│  │  - CreateVolume               │   │
+│  │  - DeleteVolume               │   │
+│  │  - ControllerPublishVolume    │   │
+│  └───────────────────────────────┘   │
+│                                       │
+│  ┌───────────────────────────────┐   │
+│  │  Node Service                 │   │
+│  │  - NodeStageVolume            │   │
+│  │  - NodePublishVolume          │   │
+│  └───────────────────────────────┘   │
+└───────────────────────────────────────┘
+</code></pre>
 <hr />
-<h2 id="6-安全"><a class="header" href="#6-安全">6. 安全</a></h2>
-<h3 id="61-rbac"><a class="header" href="#61-rbac">6.1 RBAC</a></h3>
-<p><strong>ServiceAccount</strong>:</p>
+<h2 id="六安全机制"><a class="header" href="#六安全机制">六、安全机制</a></h2>
+<h3 id="61-rbac-基于角色的访问控制"><a class="header" href="#61-rbac-基于角色的访问控制">6.1 RBAC (基于角色的访问控制)</a></h3>
+<h4 id="611-核心概念"><a class="header" href="#611-核心概念">6.1.1 核心概念</a></h4>
+<p><strong>四种资源类型</strong>：</p>
+<ol>
+<li><strong>Role</strong>：命名空间级别的权限</li>
+<li><strong>ClusterRole</strong>：集群级别的权限</li>
+<li><strong>RoleBinding</strong>：将Role绑定到用户/组/ServiceAccount</li>
+<li><strong>ClusterRoleBinding</strong>：将ClusterRole绑定到用户/组/ServiceAccount</li>
+</ol>
+<h4 id="612-role与rolebinding"><a class="header" href="#612-role与rolebinding">6.1.2 Role与RoleBinding</a></h4>
+<p><strong>创建Role</strong>：</p>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [""]  # "" 表示core API组
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get"]
+
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+</code></pre>
+<p><strong>verbs动作</strong>：</p>
+<ul>
+<li><code>get</code>：获取单个资源</li>
+<li><code>list</code>：列出资源集合</li>
+<li><code>watch</code>：监听资源变化</li>
+<li><code>create</code>：创建资源</li>
+<li><code>update</code>：更新整个资源</li>
+<li><code>patch</code>：部分更新资源</li>
+<li><code>delete</code>：删除资源</li>
+<li><code>deletecollection</code>：批量删除</li>
+</ul>
+<p><strong>创建RoleBinding</strong>：</p>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+# 绑定到用户
+- kind: User
+  name: jane
+  apiGroup: rbac.authorization.k8s.io
+
+# 绑定到组
+- kind: Group
+  name: developers
+  apiGroup: rbac.authorization.k8s.io
+
+# 绑定到ServiceAccount
+- kind: ServiceAccount
+  name: my-sa
+  namespace: default
+
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+</code></pre>
+<h4 id="613-clusterrole与clusterrolebinding"><a class="header" href="#613-clusterrole与clusterrolebinding">6.1.3 ClusterRole与ClusterRoleBinding</a></h4>
+<p><strong>创建ClusterRole</strong>：</p>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-admin-custom
+rules:
+# 所有资源的所有权限
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+
+# 非资源URL
+- nonResourceURLs: ["/healthz", "/version"]
+  verbs: ["get"]
+</code></pre>
+<p><strong>聚合ClusterRole</strong>：</p>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: monitoring
+aggregationRule:
+  clusterRoleSelectors:
+  - matchLabels:
+      rbac.example.com/aggregate-to-monitoring: "true"
+rules: []  # 由聚合自动填充
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: monitoring-pods
+  labels:
+    rbac.example.com/aggregate-to-monitoring: "true"
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+</code></pre>
+<h4 id="614-serviceaccount"><a class="header" href="#614-serviceaccount">6.1.4 ServiceAccount</a></h4>
+<p><strong>创建ServiceAccount</strong>：</p>
 <pre><code class="language-yaml">apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: my-sa
   namespace: default
-</code></pre>
-<p><strong>Role (命名空间级别)</strong>:</p>
-<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: pod-reader
-  namespace: default
-rules:
-- apiGroups: [""]
-  resources: ["pods"]
-  verbs: ["get", "watch", "list"]
-</code></pre>
-<p><strong>RoleBinding</strong>:</p>
-<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: read-pods
+  name: my-sa-binding
   namespace: default
 subjects:
 - kind: ServiceAccount
@@ -910,424 +2315,1034 @@ roleRef:
   name: pod-reader
   apiGroup: rbac.authorization.k8s.io
 </code></pre>
-<p><strong>ClusterRole (集群级别)</strong>:</p>
-<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+<p><strong>在Pod中使用</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
 metadata:
-  name: cluster-reader
+  name: my-pod
+spec:
+  serviceAccountName: my-sa
+  containers:
+  - name: app
+    image: myapp
+</code></pre>
+<p><strong>访问API Server</strong>：</p>
+<pre><code class="language-bash"># Token自动挂载到/var/run/secrets/kubernetes.io/serviceaccount/token
+TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+CACERT=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
+curl --cacert $CACERT -H "Authorization: Bearer $TOKEN" \
+  https://kubernetes.default.svc/api/v1/namespaces/default/pods
+</code></pre>
+<h3 id="62-securitycontext"><a class="header" href="#62-securitycontext">6.2 SecurityContext</a></h3>
+<h4 id="621-pod级别securitycontext"><a class="header" href="#621-pod级别securitycontext">6.2.1 Pod级别SecurityContext</a></h4>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo
+spec:
+  securityContext:
+    # 运行用户和组
+    runAsUser: 1000
+    runAsGroup: 3000
+    fsGroup: 2000
+
+    # 非root用户
+    runAsNonRoot: true
+
+    # SELinux选项
+    seLinuxOptions:
+      level: "s0:c123,c456"
+
+    # Seccomp配置
+    seccompProfile:
+      type: RuntimeDefault
+
+    # Sysctl配置
+    sysctls:
+    - name: net.ipv4.ip_forward
+      value: "1"
+
+  containers:
+  - name: app
+    image: busybox
+    command: ["sh", "-c", "sleep 3600"]
+</code></pre>
+<h4 id="622-容器级别securitycontext"><a class="header" href="#622-容器级别securitycontext">6.2.2 容器级别SecurityContext</a></h4>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: security-context-demo-2
+spec:
+  containers:
+  - name: app
+    image: nginx
+    securityContext:
+      # 允许特权提升
+      allowPrivilegeEscalation: false
+
+      # 特权容器
+      privileged: false
+
+      # 只读根文件系统
+      readOnlyRootFilesystem: true
+
+      # 运行用户
+      runAsUser: 1000
+      runAsNonRoot: true
+
+      # Capabilities
+      capabilities:
+        drop:
+        - ALL
+        add:
+        - NET_BIND_SERVICE
+</code></pre>
+<h3 id="63-pod-security-standards"><a class="header" href="#63-pod-security-standards">6.3 Pod Security Standards</a></h3>
+<h4 id="631-三个策略级别"><a class="header" href="#631-三个策略级别">6.3.1 三个策略级别</a></h4>
+<p><strong>1. Privileged</strong>：</p>
+<ul>
+<li>不受限制，允许所有特权操作</li>
+<li>适用于系统级和基础设施级工作负载</li>
+</ul>
+<p><strong>2. Baseline</strong> (基线)：</p>
+<ul>
+<li>防止已知的特权提升</li>
+<li>禁止：
+<ul>
+<li>特权容器</li>
+<li>HostPath卷</li>
+<li>HostNetwork、HostPID、HostIPC</li>
+<li>不安全的Capabilities</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. Restricted</strong> (受限)：</p>
+<ul>
+<li>严格限制，遵循最佳安全实践</li>
+<li>额外禁止：
+<ul>
+<li>以root用户运行</li>
+<li>允许特权提升</li>
+</ul>
+</li>
+</ul>
+<h4 id="632-配置pod-security-admission"><a class="header" href="#632-配置pod-security-admission">6.3.2 配置Pod Security Admission</a></h4>
+<p><strong>命名空间级别</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Namespace
+metadata:
+  name: my-namespace
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
+</code></pre>
+<p><strong>模式说明</strong>：</p>
+<ul>
+<li><code>enforce</code>：违反策略的Pod会被拒绝</li>
+<li><code>audit</code>：违反策略的Pod会被记录到审计日志</li>
+<li><code>warn</code>：违反策略的Pod会返回警告</li>
+</ul>
+<h3 id="64-secrets管理"><a class="header" href="#64-secrets管理">6.4 Secrets管理</a></h3>
+<h4 id="641-创建secret"><a class="header" href="#641-创建secret">6.4.1 创建Secret</a></h4>
+<p><strong>从字面值创建</strong>：</p>
+<pre><code class="language-bash">kubectl create secret generic db-secret \
+  --from-literal=username=admin \
+  --from-literal=password=secretpass
+</code></pre>
+<p><strong>从文件创建</strong>：</p>
+<pre><code class="language-bash">kubectl create secret generic ssh-key-secret \
+  --from-file=ssh-privatekey=~/.ssh/id_rsa \
+  --from-file=ssh-publickey=~/.ssh/id_rsa.pub
+</code></pre>
+<p><strong>YAML定义</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+data:
+  username: YWRtaW4=      # echo -n 'admin' | base64
+  password: c2VjcmV0cGFzcw==  # echo -n 'secretpass' | base64
+
+# 或使用stringData（自动base64编码）
+stringData:
+  username: admin
+  password: secretpass
+</code></pre>
+<h4 id="642-secret类型"><a class="header" href="#642-secret类型">6.4.2 Secret类型</a></h4>
+<p><strong>1. Opaque</strong> (默认)：</p>
+<pre><code class="language-yaml">type: Opaque
+</code></pre>
+<p><strong>2. kubernetes.io/service-account-token</strong>：</p>
+<pre><code class="language-yaml">type: kubernetes.io/service-account-token
+</code></pre>
+<p><strong>3. kubernetes.io/dockerconfigjson</strong>：</p>
+<pre><code class="language-bash">kubectl create secret docker-registry regcred \
+  --docker-server=&lt;your-registry-server&gt; \
+  --docker-username=&lt;your-username&gt; \
+  --docker-password=&lt;your-password&gt; \
+  --docker-email=&lt;your-email&gt;
+</code></pre>
+<p><strong>4. kubernetes.io/tls</strong>：</p>
+<pre><code class="language-bash">kubectl create secret tls tls-secret \
+  --cert=path/to/tls.crt \
+  --key=path/to/tls.key
+</code></pre>
+<h4 id="643-使用secret"><a class="header" href="#643-使用secret">6.4.3 使用Secret</a></h4>
+<p><strong>环境变量</strong>：</p>
+<pre><code class="language-yaml">env:
+- name: DB_USERNAME
+  valueFrom:
+    secretKeyRef:
+      name: db-secret
+      key: username
+- name: DB_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: db-secret
+      key: password
+</code></pre>
+<p><strong>卷挂载</strong>：</p>
+<pre><code class="language-yaml">volumeMounts:
+- name: secret-volume
+  mountPath: /etc/secret
+  readOnly: true
+
+volumes:
+- name: secret-volume
+  secret:
+    secretName: db-secret
+    items:
+    - key: username
+      path: db-username
+    - key: password
+      path: db-password
+</code></pre>
+<h4 id="644-secret最佳实践"><a class="header" href="#644-secret最佳实践">6.4.4 Secret最佳实践</a></h4>
+<ol>
+<li><strong>启用静态加密</strong>：</li>
+</ol>
+<pre><code class="language-yaml"># /etc/kubernetes/encryption-config.yaml
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+- resources:
+  - secrets
+  providers:
+  - aescbc:
+      keys:
+      - name: key1
+        secret: &lt;BASE64_ENCODED_SECRET&gt;
+  - identity: {}
+</code></pre>
+<ol start="2">
+<li><strong>限制Secret访问</strong>：</li>
+</ol>
+<pre><code class="language-yaml">apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secret-reader
 rules:
 - apiGroups: [""]
-  resources: ["nodes", "namespaces"]
-  verbs: ["get", "list"]
+  resources: ["secrets"]
+  resourceNames: ["db-secret"]  # 限制特定Secret
+  verbs: ["get"]
 </code></pre>
-<h3 id="62-networkpolicy"><a class="header" href="#62-networkpolicy">6.2 NetworkPolicy</a></h3>
-<pre><code class="language-yaml">apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: deny-all
-  namespace: default
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  - Egress
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-web-to-db
-spec:
-  podSelector:
-    matchLabels:
-      app: database
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: web
-    ports:
-    - protocol: TCP
-      port: 3306
-</code></pre>
+<ol start="3">
+<li><strong>使用外部Secret管理</strong>：</li>
+</ol>
+<ul>
+<li>Sealed Secrets</li>
+<li>External Secrets Operator</li>
+<li>Vault</li>
+<li>AWS Secrets Manager</li>
+</ul>
 <hr />
-<h2 id="7-监控与日志"><a class="header" href="#7-监控与日志">7. 监控与日志</a></h2>
-<h3 id="71-metrics-server"><a class="header" href="#71-metrics-server">7.1 Metrics Server</a></h3>
-<pre><code class="language-bash"># 安装Metrics Server
-kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-
-# 查看节点资源
-kubectl top nodes
-
-# 查看Pod资源
-kubectl top pods
+<h2 id="七调度与编排"><a class="header" href="#七调度与编排">七、调度与编排</a></h2>
+<h3 id="71-调度器工作原理"><a class="header" href="#71-调度器工作原理">7.1 调度器工作原理</a></h3>
+<h4 id="711-调度流程"><a class="header" href="#711-调度流程">7.1.1 调度流程</a></h4>
+<pre><code>┌──────────────────────────────────────────┐
+│            调度队列 (Scheduling Queue)    │
+│  ┌─────┐  ┌─────┐  ┌─────┐             │
+│  │Pod1 │  │Pod2 │  │Pod3 │  ...        │
+│  └─────┘  └─────┘  └─────┘             │
+└──────────┬───────────────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────┐
+│      预选阶段 (Filtering/Predicate)       │
+│  过滤不满足条件的节点                      │
+│  - Node1 ✓                               │
+│  - Node2 ✗ (资源不足)                    │
+│  - Node3 ✓                               │
+│  - Node4 ✗ (污点不容忍)                  │
+└──────────┬───────────────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────┐
+│      优选阶段 (Scoring/Priority)          │
+│  为节点打分排序                           │
+│  - Node1: 85分                           │
+│  - Node3: 92分 ← 最高分                  │
+└──────────┬───────────────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────┐
+│         绑定阶段 (Binding)                │
+│  将Pod绑定到最优节点                      │
+│  更新etcd中的Pod.Spec.NodeName           │
+└──────────────────────────────────────────┘
 </code></pre>
-<h3 id="72-prometheus--grafana"><a class="header" href="#72-prometheus--grafana">7.2 Prometheus + Grafana</a></h3>
-<p><strong>使用Helm安装</strong>:</p>
-<pre><code class="language-bash"># 添加Helm仓库
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
+<h3 id="72-节点亲和性-node-affinity"><a class="header" href="#72-节点亲和性-node-affinity">7.2 节点亲和性 (Node Affinity)</a></h3>
+<h4 id="721-硬亲和性-required"><a class="header" href="#721-硬亲和性-required">7.2.1 硬亲和性 (required)</a></h4>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+spec:
+  affinity:
+    nodeAffinity:
+      # 必须满足（硬性要求）
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: disktype
+            operator: In
+            values:
+            - ssd
+          - key: cpu
+            operator: Gt  # 大于
+            values:
+            - "24"
 
-# 安装kube-prometheus-stack
-helm install prometheus prometheus-community/kube-prometheus-stack \
-  --namespace monitoring \
-  --create-namespace
-
-# 访问Grafana
-kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
-# 默认用户名: admin
-# 密码: prom-operator
-</code></pre>
-<h3 id="73-日志收集-efk"><a class="header" href="#73-日志收集-efk">7.3 日志收集 (EFK)</a></h3>
-<p><strong>部署Elasticsearch + Fluentd + Kibana</strong>:</p>
-<pre><code class="language-bash"># 使用ECK Operator
-kubectl create -f https://download.elastic.co/downloads/eck/2.6.1/crds.yaml
-kubectl apply -f https://download.elastic.co/downloads/eck/2.6.1/operator.yaml
-</code></pre>
-<hr />
-<h2 id="8-调度"><a class="header" href="#8-调度">8. 调度</a></h2>
-<h3 id="81-节点选择"><a class="header" href="#81-节点选择">8.1 节点选择</a></h3>
-<p><strong>nodeSelector</strong>:</p>
-<pre><code class="language-yaml">spec:
-  nodeSelector:
-    disktype: ssd
   containers:
   - name: nginx
     image: nginx
 </code></pre>
-<p><strong>Node Affinity</strong>:</p>
-<pre><code class="language-yaml">spec:
+<p><strong>操作符</strong>：</p>
+<ul>
+<li><code>In</code>：标签值在列表中</li>
+<li><code>NotIn</code>：标签值不在列表中</li>
+<li><code>Exists</code>：标签存在（忽略values）</li>
+<li><code>DoesNotExist</code>：标签不存在</li>
+<li><code>Gt</code>：大于（数值）</li>
+<li><code>Lt</code>：小于（数值）</li>
+</ul>
+<h4 id="722-软亲和性-preferred"><a class="header" href="#722-软亲和性-preferred">7.2.2 软亲和性 (preferred)</a></h4>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-preference
+spec:
   affinity:
     nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: kubernetes.io/hostname
+      # 优先满足（软性要求）
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 80  # 权重1-100
+        preference:
+          matchExpressions:
+          - key: disktype
             operator: In
             values:
-            - worker1
-            - worker2
+            - ssd
+
+      - weight: 20
+        preference:
+          matchExpressions:
+          - key: network
+            operator: In
+            values:
+            - 10g
+
+  containers:
+  - name: nginx
+    image: nginx
 </code></pre>
-<p><strong>Pod Affinity</strong>:</p>
-<pre><code class="language-yaml">spec:
+<h3 id="73-pod亲和性与反亲和性"><a class="header" href="#73-pod亲和性与反亲和性">7.3 Pod亲和性与反亲和性</a></h3>
+<h4 id="731-pod亲和性-affinity"><a class="header" href="#731-pod亲和性-affinity">7.3.1 Pod亲和性 (Affinity)</a></h4>
+<p><strong>将Pod调度到运行特定Pod的节点</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: with-pod-affinity
+spec:
   affinity:
     podAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
       - labelSelector:
-          matchLabels:
-            app: cache
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - cache
+        topologyKey: kubernetes.io/hostname  # 拓扑域
+
+  containers:
+  - name: app
+    image: myapp
+</code></pre>
+<p><strong>拓扑域 (topologyKey)</strong>：</p>
+<ul>
+<li><code>kubernetes.io/hostname</code>：同一节点</li>
+<li><code>topology.kubernetes.io/zone</code>：同一可用区</li>
+<li><code>topology.kubernetes.io/region</code>：同一地域</li>
+</ul>
+<h4 id="732-pod反亲和性-anti-affinity"><a class="header" href="#732-pod反亲和性-anti-affinity">7.3.2 Pod反亲和性 (Anti-Affinity)</a></h4>
+<p><strong>将Pod分散到不同节点</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: with-pod-anti-affinity
+  labels:
+    app: web
+spec:
+  affinity:
+    podAntiAffinity:
+      # 硬性反亲和：同一节点不能有相同app=web的Pod
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - web
         topologyKey: kubernetes.io/hostname
+
+      # 软性反亲和：优先不同可用区
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+            - key: app
+              operator: In
+              values:
+              - web
+          topologyKey: topology.kubernetes.io/zone
+
+  containers:
+  - name: web
+    image: nginx
 </code></pre>
-<h3 id="82-污点和容忍"><a class="header" href="#82-污点和容忍">8.2 污点和容忍</a></h3>
-<p><strong>给节点打污点</strong>:</p>
-<pre><code class="language-bash">kubectl taint nodes worker1 key=value:NoSchedule
+<h3 id="74-污点-taint-与容忍度-toleration"><a class="header" href="#74-污点-taint-与容忍度-toleration">7.4 污点 (Taint) 与容忍度 (Toleration)</a></h3>
+<h4 id="741-污点"><a class="header" href="#741-污点">7.4.1 污点</a></h4>
+<p><strong>添加污点</strong>：</p>
+<pre><code class="language-bash"># 格式：kubectl taint nodes &lt;node-name&gt; &lt;key&gt;=&lt;value&gt;:&lt;effect&gt;
+kubectl taint nodes node1 gpu=true:NoSchedule
+
+# 删除污点
+kubectl taint nodes node1 gpu=true:NoSchedule-
 </code></pre>
-<p><strong>Pod容忍污点</strong>:</p>
-<pre><code class="language-yaml">spec:
+<p><strong>污点效果 (Effect)</strong>：</p>
+<ul>
+<li><code>NoSchedule</code>：不调度新Pod（已存在的Pod不受影响）</li>
+<li><code>PreferNoSchedule</code>：尽量不调度（软性限制）</li>
+<li><code>NoExecute</code>：驱逐已存在的不容忍Pod</li>
+</ul>
+<h4 id="742-容忍度"><a class="header" href="#742-容忍度">7.4.2 容忍度</a></h4>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: with-tolerations
+spec:
   tolerations:
-  - key: "key"
+  # 精确匹配
+  - key: "gpu"
     operator: "Equal"
-    value: "value"
+    value: "true"
     effect: "NoSchedule"
+
+  # 存在性匹配
+  - key: "dedicated"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+  # 容忍所有污点
+  - operator: "Exists"
+
+  # 容忍NoExecute并设置容忍时间
+  - key: "node.kubernetes.io/unreachable"
+    operator: "Exists"
+    effect: "NoExecute"
+    tolerationSeconds: 300  # 5分钟后驱逐
+
+  containers:
+  - name: app
+    image: myapp
 </code></pre>
-<h3 id="83-hpa-水平自动伸缩"><a class="header" href="#83-hpa-水平自动伸缩">8.3 HPA (水平自动伸缩)</a></h3>
+<p><strong>内置污点</strong>：</p>
+<ul>
+<li><code>node.kubernetes.io/not-ready</code>：节点未就绪</li>
+<li><code>node.kubernetes.io/unreachable</code>：节点不可达</li>
+<li><code>node.kubernetes.io/memory-pressure</code>：内存压力</li>
+<li><code>node.kubernetes.io/disk-pressure</code>：磁盘压力</li>
+<li><code>node.kubernetes.io/network-unavailable</code>：网络不可用</li>
+<li><code>node.kubernetes.io/unschedulable</code>：不可调度</li>
+</ul>
+<h3 id="75-资源配额-resourcequota"><a class="header" href="#75-资源配额-resourcequota">7.5 资源配额 (ResourceQuota)</a></h3>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-quota
+  namespace: default
+spec:
+  hard:
+    # CPU和内存
+    requests.cpu: "10"
+    requests.memory: 20Gi
+    limits.cpu: "20"
+    limits.memory: 40Gi
+
+    # 对象数量
+    pods: "10"
+    services: "5"
+    persistentvolumeclaims: "4"
+
+    # 存储
+    requests.storage: 100Gi
+
+    # 特定StorageClass
+    fast-ssd.storageclass.storage.k8s.io/requests.storage: 50Gi
+</code></pre>
+<h3 id="76-limitrange"><a class="header" href="#76-limitrange">7.6 LimitRange</a></h3>
+<pre><code class="language-yaml">apiVersion: v1
+kind: LimitRange
+metadata:
+  name: limit-range
+  namespace: default
+spec:
+  limits:
+  # Pod级别
+  - type: Pod
+    max:
+      cpu: "2"
+      memory: 2Gi
+    min:
+      cpu: 100m
+      memory: 128Mi
+
+  # 容器级别
+  - type: Container
+    max:
+      cpu: "1"
+      memory: 1Gi
+    min:
+      cpu: 50m
+      memory: 64Mi
+    default:  # 默认limits
+      cpu: 500m
+      memory: 512Mi
+    defaultRequest:  # 默认requests
+      cpu: 250m
+      memory: 256Mi
+    maxLimitRequestRatio:  # limits/requests最大比例
+      cpu: "4"
+      memory: "2"
+
+  # PVC级别
+  - type: PersistentVolumeClaim
+    max:
+      storage: 10Gi
+    min:
+      storage: 1Gi
+</code></pre>
+<hr />
+<h2 id="八实战案例与最佳实践"><a class="header" href="#八实战案例与最佳实践">八、实战案例与最佳实践</a></h2>
+<h3 id="81-高可用应用部署"><a class="header" href="#81-高可用应用部署">8.1 高可用应用部署</a></h3>
+<p><strong>完整的生产级Deployment</strong>：</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+  namespace: production
+  labels:
+    app: web
+    tier: frontend
+spec:
+  replicas: 3
+
+  # Pod分布策略
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0  # 零停机部署
+
+  minReadySeconds: 10
+  revisionHistoryLimit: 10
+
+  selector:
+    matchLabels:
+      app: web
+
+  template:
+    metadata:
+      labels:
+        app: web
+        version: v1.0.0
+    spec:
+      # 反亲和性：分散到不同节点
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: web
+            topologyKey: kubernetes.io/hostname
+
+      # 优雅终止
+      terminationGracePeriodSeconds: 30
+
+      # ServiceAccount
+      serviceAccountName: web-app-sa
+
+      # 安全上下文
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+
+      containers:
+      - name: web
+        image: myapp:v1.0.0
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+
+        # 资源限制
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+        # 生命周期钩子
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 15"]  # 等待连接排空
+
+        # 健康检查
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+
+        startupProbe:
+          httpGet:
+            path: /startup
+            port: http
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          failureThreshold: 30  # 最多5分钟启动时间
+
+        # 环境变量
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: password
+
+        # 卷挂载
+        volumeMounts:
+        - name: config
+          mountPath: /etc/config
+          readOnly: true
+        - name: cache
+          mountPath: /var/cache
+
+        # 安全上下文
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+
+      volumes:
+      - name: config
+        configMap:
+          name: app-config
+      - name: cache
+        emptyDir: {}
+</code></pre>
+<h3 id="82-hpa自动扩缩容"><a class="header" href="#82-hpa自动扩缩容">8.2 HPA自动扩缩容</a></h3>
 <pre><code class="language-yaml">apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: nginx-hpa
+  name: web-app-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: nginx-deployment
-  minReplicas: 2
+    name: web-app
+
+  minReplicas: 3
   maxReplicas: 10
+
+  # 扩缩容行为
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300  # 稳定窗口：5分钟
+      policies:
+      - type: Percent
+        value: 50  # 每次最多缩容50%
+        periodSeconds: 60
+      - type: Pods
+        value: 2  # 每次最多缩容2个
+        periodSeconds: 60
+      selectPolicy: Min  # 选择更保守的策略
+
+    scaleUp:
+      stabilizationWindowSeconds: 0  # 立即扩容
+      policies:
+      - type: Percent
+        value: 100  # 每次最多扩容100%
+        periodSeconds: 15
+      - type: Pods
+        value: 4  # 每次最多扩容4个
+        periodSeconds: 15
+      selectPolicy: Max  # 选择更激进的策略
+
+  # 指标
   metrics:
+  # CPU利用率
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 50
+        averageUtilization: 70
+
+  # 内存利用率
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+  # 自定义指标（需要Metrics Server）
+  - type: Pods
+    pods:
+      metric:
+        name: http_requests_per_second
+      target:
+        type: AverageValue
+        averageValue: "1000"
+</code></pre>
+<h3 id="83-configmap与secret最佳实践"><a class="header" href="#83-configmap与secret最佳实践">8.3 ConfigMap与Secret最佳实践</a></h3>
+<p><strong>ConfigMap版本化</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-v1
+data:
+  application.yaml: |
+    server:
+      port: 8080
+    logging:
+      level: INFO
+
+---
+apiVersion: apps/v1
+kind: Deployment
+spec:
+  template:
+    spec:
+      volumes:
+      - name: config
+        configMap:
+          name: app-config-v1  # 版本化名称
+</code></pre>
+<p><strong>不可变ConfigMap</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+immutable: true  # 不可修改，更安全、性能更好
+data:
+  app.properties: |
+    key=value
+</code></pre>
+<h3 id="84-多环境管理"><a class="header" href="#84-多环境管理">8.4 多环境管理</a></h3>
+<p><strong>使用Kustomize</strong>：</p>
+<pre><code>├── base/
+│   ├── kustomization.yaml
+│   ├── deployment.yaml
+│   └── service.yaml
+├── overlays/
+│   ├── dev/
+│   │   ├── kustomization.yaml
+│   │   └── config.yaml
+│   ├── staging/
+│   │   ├── kustomization.yaml
+│   │   └── config.yaml
+│   └── production/
+│       ├── kustomization.yaml
+│       ├── config.yaml
+│       └── hpa.yaml
+</code></pre>
+<p><strong>base/kustomization.yaml</strong>：</p>
+<pre><code class="language-yaml">apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- deployment.yaml
+- service.yaml
+
+commonLabels:
+  app: myapp
+</code></pre>
+<p><strong>overlays/production/kustomization.yaml</strong>：</p>
+<pre><code class="language-yaml">apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+- ../../base
+
+namespace: production
+
+replicas:
+- name: myapp
+  count: 5
+
+images:
+- name: myapp
+  newTag: v1.2.3
+
+resources:
+- hpa.yaml
+
+configMapGenerator:
+- name: app-config
+  files:
+  - config.yaml
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: myapp
+  spec:
+    template:
+      spec:
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+</code></pre>
+<p><strong>应用</strong>：</p>
+<pre><code class="language-bash"># 查看生成的YAML
+kubectl kustomize overlays/production
+
+# 直接应用
+kubectl apply -k overlays/production
+</code></pre>
+<h3 id="85-监控与日志"><a class="header" href="#85-监控与日志">8.5 监控与日志</a></h3>
+<p><strong>Prometheus监控</strong>：</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: myapp
+  labels:
+    app: myapp
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+    prometheus.io/path: "/metrics"
+spec:
+  selector:
+    app: myapp
+  ports:
+  - port: 8080
+</code></pre>
+<p><strong>日志收集（Fluent Bit）</strong>：</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluent-bit
+  namespace: logging
+spec:
+  selector:
+    matchLabels:
+      app: fluent-bit
+  template:
+    spec:
+      serviceAccountName: fluent-bit
+      containers:
+      - name: fluent-bit
+        image: fluent/fluent-bit:2.0
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: fluent-bit-config
+          mountPath: /fluent-bit/etc/
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: fluent-bit-config
+        configMap:
+          name: fluent-bit-config
+</code></pre>
+<h3 id="86-备份与恢复"><a class="header" href="#86-备份与恢复">8.6 备份与恢复</a></h3>
+<p><strong>使用Velero备份集群</strong>：</p>
+<pre><code class="language-bash"># 安装Velero
+velero install \
+  --provider aws \
+  --plugins velero/velero-plugin-for-aws:v1.6.0 \
+  --bucket velero-backups \
+  --backup-location-config region=us-east-1 \
+  --snapshot-location-config region=us-east-1
+
+# 备份整个集群
+velero backup create full-backup
+
+# 备份特定命名空间
+velero backup create app-backup --include-namespaces=production
+
+# 定时备份
+velero schedule create daily-backup --schedule="0 2 * * *"
+
+# 恢复
+velero restore create --from-backup full-backup
 </code></pre>
 <hr />
-<h2 id="9-运维管理"><a class="header" href="#9-运维管理">9. 运维管理</a></h2>
-<h3 id="91-常用kubectl命令"><a class="header" href="#91-常用kubectl命令">9.1 常用kubectl命令</a></h3>
-<pre><code class="language-bash"># 资源查看
-kubectl get pods -o wide
-kubectl get all -n kube-system
-kubectl describe pod nginx-pod
+<h2 id="总结与学习路径"><a class="header" href="#总结与学习路径">总结与学习路径</a></h2>
+<h3 id="kubernetes学习路线"><a class="header" href="#kubernetes学习路线">Kubernetes学习路线</a></h3>
+<pre><code>1. 基础阶段（1-2周）
+   ├─ Docker容器基础
+   ├─ Kubernetes架构理解
+   ├─ Pod、Deployment、Service
+   └─ kubectl基本命令
 
-# 日志和调试
-kubectl logs nginx-pod -f
-kubectl logs nginx-pod --previous
-kubectl exec -it nginx-pod -- /bin/bash
+2. 进阶阶段（2-4周）
+   ├─ 网络（CNI、NetworkPolicy、Ingress）
+   ├─ 存储（PV、PVC、StorageClass）
+   ├─ 配置管理（ConfigMap、Secret）
+   └─ 调度机制（亲和性、污点容忍）
 
-# 资源操作
-kubectl apply -f deployment.yaml
-kubectl delete -f deployment.yaml
-kubectl edit deployment nginx-deployment
+3. 高级阶段（4-8周）
+   ├─ 安全（RBAC、Pod Security）
+   ├─ 监控与日志（Prometheus、EFK）
+   ├─ CI/CD集成
+   └─ 高可用集群搭建
 
-# 集群信息
+4. 专家阶段（持续学习）
+   ├─ 自定义资源（CRD、Operator）
+   ├─ 服务网格（Istio、Linkerd）
+   ├─ 多集群管理
+   └─ 性能优化与故障排查
+</code></pre>
+<h3 id="实战项目建议"><a class="header" href="#实战项目建议">实战项目建议</a></h3>
+<ol>
+<li><strong>从简单开始</strong>：部署一个无状态应用（Nginx）</li>
+<li><strong>逐步增加复杂度</strong>：添加ConfigMap、Secret、Ingress</li>
+<li><strong>引入有状态应用</strong>：部署MySQL、Redis等</li>
+<li><strong>构建完整系统</strong>：前后端分离应用+数据库+缓存</li>
+<li><strong>生产级改造</strong>：添加监控、日志、备份、高可用</li>
+</ol>
+<h3 id="常用命令速查"><a class="header" href="#常用命令速查">常用命令速查</a></h3>
+<pre><code class="language-bash"># 集群信息
 kubectl cluster-info
 kubectl get nodes
-kubectl get cs
+kubectl describe node &lt;node-name&gt;
 
-# 标签操作
-kubectl label pods nginx-pod env=prod
-kubectl label pods nginx-pod env-
-
-# 资源配额
-kubectl get resourcequota
-kubectl describe quota
-</code></pre>
-<h3 id="92-故障排查"><a class="header" href="#92-故障排查">9.2 故障排查</a></h3>
-<p><strong>Pod无法启动</strong>:</p>
-<pre><code class="language-bash"># 查看Pod状态
-kubectl get pods
+# 资源操作
+kubectl get pods -A
 kubectl describe pod &lt;pod-name&gt;
+kubectl logs &lt;pod-name&gt; -f
+kubectl exec -it &lt;pod-name&gt; -- /bin/bash
 
-# 常见状态:
-# Pending: 资源不足或调度失败
-# ImagePullBackOff: 镜像拉取失败
-# CrashLoopBackOff: 容器启动后崩溃
-# Error: 容器退出
+# 创建与更新
+kubectl apply -f manifest.yaml
+kubectl delete -f manifest.yaml
+kubectl edit deployment &lt;name&gt;
 
-# 查看事件
-kubectl get events --sort-by=.metadata.creationTimestamp
-
-# 查看日志
-kubectl logs &lt;pod-name&gt; --previous
-</code></pre>
-<p><strong>Service不通</strong>:</p>
-<pre><code class="language-bash"># 检查Service
-kubectl get svc
-kubectl describe svc &lt;service-name&gt;
-
-# 检查Endpoints
-kubectl get endpoints
-
-# 测试DNS
-kubectl run -it --rm debug --image=busybox --restart=Never -- nslookup &lt;service-name&gt;
-
-# 测试连接
-kubectl run -it --rm debug --image=nicolaka/netshoot --restart=Never -- bash
-</code></pre>
-<hr />
-<h2 id="10-helm"><a class="header" href="#10-helm">10. Helm</a></h2>
-<h3 id="101-安装helm"><a class="header" href="#101-安装helm">10.1 安装Helm</a></h3>
-<pre><code class="language-bash">curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-</code></pre>
-<h3 id="102-使用helm"><a class="header" href="#102-使用helm">10.2 使用Helm</a></h3>
-<pre><code class="language-bash"># 添加仓库
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-
-# 搜索Chart
-helm search repo mysql
-
-# 安装Chart
-helm install my-mysql bitnami/mysql
-
-# 查看已安装
-helm list
-
-# 升级
-helm upgrade my-mysql bitnami/mysql
-
-# 卸载
-helm uninstall my-mysql
-</code></pre>
-<h3 id="103-创建chart"><a class="header" href="#103-创建chart">10.3 创建Chart</a></h3>
-<pre><code class="language-bash"># 创建Chart
-helm create mychart
-
-# 目录结构:
-# mychart/
-#   Chart.yaml        # Chart元数据
-#   values.yaml       # 默认配置值
-#   templates/        # 模板文件
-#     deployment.yaml
-#     service.yaml
-#     ingress.yaml
-
-# 打包Chart
-helm package mychart
-
-# 安装本地Chart
-helm install myapp ./mychart
-</code></pre>
-<hr />
-<h2 id="11-生产最佳实践"><a class="header" href="#11-生产最佳实践">11. 生产最佳实践</a></h2>
-<h3 id="111-资源配置"><a class="header" href="#111-资源配置">11.1 资源配置</a></h3>
-<pre><code class="language-yaml">spec:
-  containers:
-  - name: app
-    image: myapp:latest
-    resources:
-      requests:
-        memory: "256Mi"
-        cpu: "500m"
-      limits:
-        memory: "512Mi"
-        cpu: "1000m"
-    livenessProbe:
-      httpGet:
-        path: /health
-        port: 8080
-      initialDelaySeconds: 30
-      periodSeconds: 10
-    readinessProbe:
-      httpGet:
-        path: /ready
-        port: 8080
-      initialDelaySeconds: 5
-      periodSeconds: 5
-</code></pre>
-<h3 id="112-生产环境检查清单"><a class="header" href="#112-生产环境检查清单">11.2 生产环境检查清单</a></h3>
-<p><strong>集群层面</strong>:</p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-至少3个Master节点高可用</li>
-<li><input disabled="" type="checkbox"/>
-节点打标签分类 (生产/测试)</li>
-<li><input disabled="" type="checkbox"/>
-配置资源配额</li>
-<li><input disabled="" type="checkbox"/>
-启用RBAC</li>
-<li><input disabled="" type="checkbox"/>
-配置网络策略</li>
-<li><input disabled="" type="checkbox"/>
-etcd定期备份</li>
-</ul>
-<p><strong>应用层面</strong>:</p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-设置资源requests/limits</li>
-<li><input disabled="" type="checkbox"/>
-配置健康检查</li>
-<li><input disabled="" type="checkbox"/>
-使用滚动更新策略</li>
-<li><input disabled="" type="checkbox"/>
-配置HPA自动伸缩</li>
-<li><input disabled="" type="checkbox"/>
-使用ConfigMap/Secret管理配置</li>
-<li><input disabled="" type="checkbox"/>
-持久化数据使用PVC</li>
-</ul>
-<p><strong>监控和日志</strong>:</p>
-<ul>
-<li><input disabled="" type="checkbox"/>
-部署Prometheus监控</li>
-<li><input disabled="" type="checkbox"/>
-配置Grafana仪表板</li>
-<li><input disabled="" type="checkbox"/>
-集中化日志收集</li>
-<li><input disabled="" type="checkbox"/>
-配置告警规则</li>
-</ul>
-<h3 id="113-常见生产问题"><a class="header" href="#113-常见生产问题">11.3 常见生产问题</a></h3>
-<p><strong>问题1: Pod频繁重启</strong></p>
-<pre><code class="language-bash"># 检查资源限制
-kubectl describe pod &lt;pod-name&gt;
-
-# 增加资源限制或优化应用
-</code></pre>
-<p><strong>问题2: 集群资源不足</strong></p>
-<pre><code class="language-bash"># 查看节点资源
+# 调试
+kubectl port-forward &lt;pod-name&gt; 8080:80
 kubectl top nodes
+kubectl top pods
 
-# 添加节点或清理资源
-kubectl get pods --all-namespaces
-</code></pre>
-<p><strong>问题3: 存储卷挂载失败</strong></p>
-<pre><code class="language-bash"># 检查PV/PVC状态
-kubectl get pv,pvc
+# 扩缩容
+kubectl scale deployment &lt;name&gt; --replicas=5
+kubectl autoscale deployment &lt;name&gt; --min=2 --max=10
 
-# 查看详情
-kubectl describe pvc &lt;pvc-name&gt;
+# 滚动更新
+kubectl set image deployment/&lt;name&gt; &lt;container&gt;=&lt;image&gt;
+kubectl rollout status deployment/&lt;name&gt;
+kubectl rollout undo deployment/&lt;name&gt;
+
+# 标签与选择器
+kubectl label pods &lt;pod-name&gt; env=prod
+kubectl get pods -l env=prod
+
+# 日志与事件
+kubectl get events --sort-by='.lastTimestamp'
+kubectl logs -l app=nginx --tail=100
 </code></pre>
-<hr />
-<h2 id="12-学习验证"><a class="header" href="#12-学习验证">12. 学习验证</a></h2>
-<h3 id="验证任务1-集群部署"><a class="header" href="#验证任务1-集群部署">验证任务1: 集群部署</a></h3>
-<ul>
-<li><input disabled="" type="checkbox"/>
-使用kubeadm部署3节点集群</li>
-<li><input disabled="" type="checkbox"/>
-安装网络插件</li>
-<li><input disabled="" type="checkbox"/>
-验证所有节点Ready</li>
-</ul>
-<h3 id="验证任务2-应用部署"><a class="header" href="#验证任务2-应用部署">验证任务2: 应用部署</a></h3>
-<ul>
-<li><input disabled="" type="checkbox"/>
-创建Deployment部署nginx</li>
-<li><input disabled="" type="checkbox"/>
-创建Service暴露服务</li>
-<li><input disabled="" type="checkbox"/>
-配置Ingress实现域名访问</li>
-</ul>
-<h3 id="验证任务3-存储管理"><a class="header" href="#验证任务3-存储管理">验证任务3: 存储管理</a></h3>
-<ul>
-<li><input disabled="" type="checkbox"/>
-创建ConfigMap和Secret</li>
-<li><input disabled="" type="checkbox"/>
-配置PV和PVC</li>
-<li><input disabled="" type="checkbox"/>
-验证数据持久化</li>
-</ul>
-<h3 id="验证任务4-自动伸缩"><a class="header" href="#验证任务4-自动伸缩">验证任务4: 自动伸缩</a></h3>
-<ul>
-<li><input disabled="" type="checkbox"/>
-安装Metrics Server</li>
-<li><input disabled="" type="checkbox"/>
-配置HPA</li>
-<li><input disabled="" type="checkbox"/>
-压测验证自动扩容</li>
-</ul>
-<h3 id="验证任务5-监控运维"><a class="header" href="#验证任务5-监控运维">验证任务5: 监控运维</a></h3>
-<ul>
-<li><input disabled="" type="checkbox"/>
-部署Prometheus</li>
-<li><input disabled="" type="checkbox"/>
-配置Grafana监控面板</li>
-<li><input disabled="" type="checkbox"/>
-模拟故障并排查</li>
-</ul>
-<hr />
-<h2 id="13-扩展资源"><a class="header" href="#13-扩展资源">13. 扩展资源</a></h2>
-<h3 id="官方文档"><a class="header" href="#官方文档">官方文档</a></h3>
-<ul>
-<li>Kubernetes官方文档: https://kubernetes.io/docs/</li>
-<li>Kubernetes中文文档: https://kubernetes.io/zh-cn/docs/</li>
-<li>kubectl速查表: https://kubernetes.io/docs/reference/kubectl/cheatsheet/</li>
-</ul>
 <h3 id="学习资源"><a class="header" href="#学习资源">学习资源</a></h3>
+<p><strong>官方文档</strong>：</p>
 <ul>
-<li>Kubernetes the Hard Way: https://github.com/kelseyhightower/kubernetes-the-hard-way</li>
-<li>Play with Kubernetes: https://labs.play-with-k8s.com/</li>
+<li>Kubernetes官方文档：https://kubernetes.io/docs/</li>
+<li>Kubernetes GitHub：https://github.com/kubernetes/kubernetes</li>
 </ul>
-<h3 id="工具推荐"><a class="header" href="#工具推荐">工具推荐</a></h3>
+<p><strong>认证考试</strong>：</p>
 <ul>
-<li>K9s: 终端UI管理工具</li>
-<li>Lens: Kubernetes IDE</li>
-<li>kubectx/kubens: 上下文切换工具</li>
-<li>Kustomize: 配置管理工具</li>
+<li>CKA (Certified Kubernetes Administrator)</li>
+<li>CKAD (Certified Kubernetes Application Developer)</li>
+<li>CKS (Certified Kubernetes Security Specialist)</li>
 </ul>
-<h3 id="常见问题faq"><a class="header" href="#常见问题faq">常见问题FAQ</a></h3>
-<p><strong>Q1: Kubernetes与Docker Swarm的选择？</strong>
-A: Kubernetes功能更强大、生态更丰富，适合大规模生产环境；Swarm更简单，适合小型项目。</p>
-<p><strong>Q2: 如何选择网络插件？</strong>
-A: Flannel简单易用；Calico支持网络策略；Cilium基于eBPF性能更好。</p>
-<p><strong>Q3: StatefulSet与Deployment的区别？</strong>
-A: StatefulSet提供稳定的网络标识和有序部署，适合有状态应用；Deployment适合无状态应用。</p>
-<p><strong>Q4: 如何实现金丝雀发布？</strong>
-A: 使用Deployment的滚动更新，配合Service权重分流，或使用Istio等Service Mesh。</p>
-<p><strong>Q5: 生产环境推荐几个Master节点？</strong>
-A: 至少3个Master节点实现高可用，建议5个以上。</p>
+<p><strong>社区资源</strong>：</p>
+<ul>
+<li>Kubernetes Slack</li>
+<li>CNCF Landscape</li>
+<li>KubeCon会议</li>
+</ul>
 <hr />
-<p><strong>学习建议</strong>: Kubernetes学习曲线较陡，建议先掌握Docker基础，再学习K8s核心概念。从单节点集群开始实践，逐步掌握部署、网络、存储、监控。生产环境务必关注高可用、安全和监控。祝学习愉快！</p>
+<p><strong>最后更新时间</strong>: 2025年1月</p>
+<p><strong>本笔记涵盖Kubernetes 1.25+版本的核心知识点，持续更新中。</strong></p>
 
                     </main>
 

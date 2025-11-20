@@ -1,0 +1,670 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>C++游戏引擎开发 - 学习路线图 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="c游戏引擎开发---学习路线图"><a class="header" href="#c游戏引擎开发---学习路线图">C++游戏引擎开发 - 学习路线图</a></h1>
+<blockquote>
+<p>这是一套完整的C++游戏引擎开发学习笔记，从基础到高级，涵盖理论与实战。</p>
+</blockquote>
+<hr />
+<h2 id="-文档导航"><a class="header" href="#-文档导航">📚 文档导航</a></h2>
+<h3 id="1-游戏引擎基础"><a class="header" href="#1-游戏引擎基础">1. <a href="./%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E.html">游戏引擎基础</a></a></h3>
+<p><strong>适合人群</strong>：初学者
+<strong>学习时长</strong>：2-4周</p>
+<p><strong>核心内容</strong>：</p>
+<ul>
+<li>✅ 游戏引擎架构概述</li>
+<li>✅ OpenGL开发环境搭建</li>
+<li>✅ 图形渲染基础（VAO/VBO/EBO）</li>
+<li>✅ Shader编程入门</li>
+<li>✅ 纹理与材质系统</li>
+<li>✅ Mesh与模型加载</li>
+<li>✅ GameObject-Component架构</li>
+<li>✅ 骨骼动画系统</li>
+<li>✅ 音频系统集成（FMOD）</li>
+<li>✅ 多线程渲染基础</li>
+<li>✅ 脚本系统（Lua集成）</li>
+</ul>
+<p><strong>学习建议</strong>：</p>
+<ol>
+<li>按章节顺序学习，每个知识点都要亲手实现</li>
+<li>完成每章节后的验证标准</li>
+<li>参考开源项目 <a href="https://github.com/ThisisGame/cpp-game-engine-book">cpp-game-engine-book</a></li>
+</ol>
+<hr />
+<h3 id="2-高级主题篇"><a class="header" href="#2-高级主题篇">2. <a href="./%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E-%E9%AB%98%E7%BA%A7%E4%B8%BB%E9%A2%98.html">高级主题篇</a></a></h3>
+<p><strong>适合人群</strong>：有基础知识的进阶者
+<strong>学习时长</strong>：4-6周</p>
+<p><strong>核心内容</strong>：</p>
+<ul>
+<li>
+<p>🔥 <strong>高级光照系统</strong></p>
+<ul>
+<li>Phong光照模型完整实现</li>
+<li>PBR（基于物理渲染）</li>
+<li>多光源系统（点光源、聚光灯、方向光）</li>
+</ul>
+</li>
+<li>
+<p>🌓 <strong>阴影系统实现</strong></p>
+<ul>
+<li>Shadow Mapping基础</li>
+<li>PCF软阴影</li>
+<li>CSM级联阴影贴图</li>
+</ul>
+</li>
+<li>
+<p>⚙️ <strong>物理引擎集成</strong></p>
+<ul>
+<li>Bullet Physics集成</li>
+<li>Rigidbody组件</li>
+<li>碰撞检测系统</li>
+</ul>
+</li>
+<li>
+<p>🖼️ <strong>完整UI系统</strong></p>
+<ul>
+<li>FreeType字体渲染</li>
+<li>UI组件（Image、Button、Text）</li>
+<li>事件系统</li>
+</ul>
+</li>
+<li>
+<p>💾 <strong>场景管理与序列化</strong></p>
+<ul>
+<li>场景图系统</li>
+<li>JSON序列化/反序列化</li>
+<li>场景切换</li>
+</ul>
+</li>
+<li>
+<p>🔄 <strong>资源热加载</strong></p>
+<ul>
+<li>文件监控系统</li>
+<li>资源管理器</li>
+<li>实时重载</li>
+</ul>
+</li>
+<li>
+<p>✨ <strong>粒子系统</strong></p>
+<ul>
+<li>GPU粒子渲染</li>
+<li>发射器系统</li>
+</ul>
+</li>
+<li>
+<p>🎨 <strong>后处理效果</strong></p>
+<ul>
+<li>帧缓冲</li>
+<li>Bloom效果</li>
+<li>色差、暗角等特效</li>
+</ul>
+</li>
+</ul>
+<p><strong>学习建议</strong>：</p>
+<ol>
+<li>每个系统都独立实现一个Demo</li>
+<li>尝试组合多个系统创建复杂场景</li>
+<li>使用RenderDoc分析渲染管线</li>
+</ol>
+<hr />
+<h3 id="3-实战项目篇"><a class="header" href="#3-实战项目篇">3. <a href="./%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE.html">实战项目篇</a></a></h3>
+<p><strong>适合人群</strong>：想要完整项目经验的学习者
+<strong>学习时长</strong>：6-8周</p>
+<p><strong>项目列表</strong>：</p>
+<h4 id="-项目一第三人称射击游戏tps"><a class="header" href="#-项目一第三人称射击游戏tps">🎯 项目一：第三人称射击游戏（TPS）</a></h4>
+<p><strong>完成度</strong>：90%可玩原型</p>
+<p><strong>实现功能</strong>：</p>
+<ul>
+<li>角色控制器（WASD移动、跳跃、冲刺）</li>
+<li>第三人称相机（肩膀切换、碰撞避障）</li>
+<li>武器系统（射击、后坐力、换弹）</li>
+<li>敌人AI（巡逻、追击、攻击）</li>
+<li>血量系统</li>
+<li>游戏UI（准星、血条、弹药显示）</li>
+</ul>
+<p><strong>技术要点</strong>：</p>
+<ul>
+<li>射线检测</li>
+<li>动画状态机</li>
+<li>伤害判定</li>
+<li>AI寻路</li>
+</ul>
+<h4 id="-项目二物理解谜游戏"><a class="header" href="#-项目二物理解谜游戏">🧩 项目二：物理解谜游戏</a></h4>
+<p><strong>核心玩法</strong>：类似《Portal》的物理交互</p>
+<p><strong>实现功能</strong>：</p>
+<ul>
+<li>物体抓取/投掷系统</li>
+<li>压力板机关</li>
+<li>门控系统</li>
+<li>物理堆叠谜题</li>
+</ul>
+<p><strong>技术要点</strong>：</p>
+<ul>
+<li>复杂物理交互</li>
+<li>触发器系统</li>
+<li>状态机设计</li>
+</ul>
+<h4 id="-项目三25d平台跳跃游戏"><a class="header" href="#-项目三25d平台跳跃游戏">🏃 项目三：2.5D平台跳跃游戏</a></h4>
+<p><strong>参考</strong>：类似《空洞骑士》</p>
+<p><strong>实现功能</strong>：</p>
+<ul>
+<li>平台角色控制器</li>
+<li>土狼时间（Coyote Time）</li>
+<li>跳跃缓冲</li>
+<li>二段跳</li>
+<li>可变跳跃高度</li>
+</ul>
+<p><strong>技术要点</strong>：</p>
+<ul>
+<li>精确的物理手感调校</li>
+<li>角色动画融合</li>
+<li>关卡设计工具</li>
+</ul>
+<p><strong>学习建议</strong>：</p>
+<ol>
+<li>选择一个项目深入完成</li>
+<li>迭代优化游戏手感</li>
+<li>添加音效和视觉反馈</li>
+<li>邀请他人测试并收集反馈</li>
+</ol>
+<hr />
+<h3 id="4-性能优化与最佳实践"><a class="header" href="#4-性能优化与最佳实践">4. <a href="./%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96.html">性能优化与最佳实践</a></a></h3>
+<p><strong>适合人群</strong>：追求专业品质的开发者
+<strong>学习时长</strong>：3-4周</p>
+<p><strong>核心内容</strong>：</p>
+<h4 id="-性能分析与优化"><a class="header" href="#-性能分析与优化">📊 性能分析与优化</a></h4>
+<ul>
+<li>CPU性能分析（Chrome Tracing格式）</li>
+<li>GPU性能分析（OpenGL查询对象）</li>
+<li>帧率统计与可视化</li>
+<li>性能瓶颈识别</li>
+</ul>
+<h4 id="-内存管理"><a class="header" href="#-内存管理">🧠 内存管理</a></h4>
+<ul>
+<li>对象池（Object Pool）</li>
+<li>自定义内存分配器</li>
+<li>智能指针使用规范</li>
+<li>内存泄漏检测</li>
+</ul>
+<h4 id="-渲染优化"><a class="header" href="#-渲染优化">🎨 渲染优化</a></h4>
+<ul>
+<li>DrawCall合批（Batching）</li>
+<li>GPU实例化渲染</li>
+<li>LOD系统（Level of Detail）</li>
+<li>遮挡剔除（Occlusion Culling）</li>
+<li>视锥剔除优化</li>
+</ul>
+<h4 id="-多线程优化"><a class="header" href="#-多线程优化">⚡ 多线程优化</a></h4>
+<ul>
+<li>任务调度系统</li>
+<li>数据并行处理</li>
+<li>线程安全设计</li>
+<li>无锁数据结构</li>
+</ul>
+<h4 id="-调试技巧"><a class="header" href="#-调试技巧">🐛 调试技巧</a></h4>
+<ul>
+<li>可视化调试（线条、包围盒、射线）</li>
+<li>日志系统设计</li>
+<li>断言与错误处理</li>
+<li>RenderDoc使用技巧</li>
+</ul>
+<h4 id="-最佳实践"><a class="header" href="#-最佳实践">📖 最佳实践</a></h4>
+<ul>
+<li>Google C++代码规范</li>
+<li>项目结构组织</li>
+<li>命名规范</li>
+<li>错误处理模式</li>
+<li>代码审查清单</li>
+</ul>
+<p><strong>学习建议</strong>：</p>
+<ol>
+<li>使用性能分析工具找出瓶颈</li>
+<li>对比优化前后的性能数据</li>
+<li>建立性能基准测试</li>
+<li>学习业界最佳实践</li>
+</ol>
+<hr />
+<h2 id="-学习路径建议"><a class="header" href="#-学习路径建议">🎯 学习路径建议</a></h2>
+<h3 id="入门路径0-3个月"><a class="header" href="#入门路径0-3个月">入门路径（0-3个月）</a></h3>
+<pre><code>Week 1-2:  OpenGL环境搭建 + 基础渲染
+Week 3-4:  Shader编程 + 纹理系统
+Week 5-6:  GameObject架构 + 组件系统
+Week 7-8:  相机系统 + 输入处理
+Week 9-10: 模型加载 + 材质系统
+Week 11-12: 综合实战：创建第一个可交互场景
+</code></pre>
+<h3 id="进阶路径3-6个月"><a class="header" href="#进阶路径3-6个月">进阶路径（3-6个月）</a></h3>
+<pre><code>Week 13-14: 骨骼动画系统
+Week 15-16: 物理引擎集成
+Week 17-18: 高级光照（Phong/PBR）
+Week 19-20: 阴影系统
+Week 21-22: UI系统 + 字体渲染
+Week 23-24: 综合实战：完成TPS游戏原型
+</code></pre>
+<h3 id="高级路径6-12个月"><a class="header" href="#高级路径6-12个月">高级路径（6-12个月）</a></h3>
+<pre><code>Week 25-26: 粒子系统 + 后处理
+Week 27-28: 场景序列化 + 资源管理
+Week 29-30: 性能优化技术
+Week 31-32: 多线程渲染
+Week 33-36: 引擎编辑器开发
+Week 37-40: AI系统 + 寻路
+Week 41-48: 完整商业游戏项目
+</code></pre>
+<hr />
+<h2 id="-开发环境推荐"><a class="header" href="#-开发环境推荐">🛠️ 开发环境推荐</a></h2>
+<h3 id="ide与编译器"><a class="header" href="#ide与编译器">IDE与编译器</a></h3>
+<ul>
+<li><strong>推荐IDE</strong>: CLion（跨平台）/ Visual Studio 2022（Windows）</li>
+<li><strong>编译器</strong>: MSVC 19+ / GCC 11+ / Clang 13+</li>
+<li><strong>构建工具</strong>: CMake 3.15+</li>
+</ul>
+<h3 id="必备工具"><a class="header" href="#必备工具">必备工具</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>工具</th><th>用途</th><th>下载链接</th></tr></thead><tbody>
+<tr><td><strong>RenderDoc</strong></td><td>图形调试</td><td>https://renderdoc.org/</td></tr>
+<tr><td><strong>Nsight Graphics</strong></td><td>NVIDIA GPU调试</td><td>https://developer.nvidia.com/nsight-graphics</td></tr>
+<tr><td><strong>Blender</strong></td><td>3D建模</td><td>https://www.blender.org/</td></tr>
+<tr><td><strong>FMOD Studio</strong></td><td>音频编辑</td><td>https://www.fmod.com/</td></tr>
+<tr><td><strong>Substance Painter</strong></td><td>PBR材质制作</td><td>https://www.adobe.com/products/substance3d-painter.html</td></tr>
+</tbody></table>
+</div>
+<h3 id="依赖库"><a class="header" href="#依赖库">依赖库</a></h3>
+<pre><code class="language-cmake"># 核心库
+- GLFW 3.3+          # 窗口管理
+- GLAD               # OpenGL加载器
+- GLM 0.9.9+         # 数学库
+- stb_image          # 图像加载
+
+# 进阶库
+- Assimp 5.0+        # 模型导入
+- FreeType 2.10+     # 字体渲染
+- FMOD/OpenAL        # 音频
+- Bullet Physics     # 物理引擎
+- Sol2               # Lua绑定
+- nlohmann/json      # JSON解析
+</code></pre>
+<hr />
+<h2 id="-推荐学习资源"><a class="header" href="#-推荐学习资源">📖 推荐学习资源</a></h2>
+<h3 id="在线教程"><a class="header" href="#在线教程">在线教程</a></h3>
+<ul>
+<li><strong>LearnOpenGL</strong>: https://learnopengl.com/ (OpenGL入门圣经)</li>
+<li><strong>OpenGL Wiki</strong>: https://www.khronos.org/opengl/wiki/</li>
+<li><strong>Shadertoy</strong>: https://www.shadertoy.com/ (Shader练习)</li>
+</ul>
+<h3 id="书籍推荐"><a class="header" href="#书籍推荐">书籍推荐</a></h3>
+<ol>
+<li>
+<p><strong>《Game Engine Architecture》</strong> - Jason Gregory</p>
+<ul>
+<li>游戏引擎架构的百科全书</li>
+<li>适合：所有阶段</li>
+</ul>
+</li>
+<li>
+<p><strong>《Real-Time Rendering》</strong> - Tomas Akenine-Möller</p>
+<ul>
+<li>实时渲染技术详解</li>
+<li>适合：进阶阶段</li>
+</ul>
+</li>
+<li>
+<p><strong>《Physically Based Rendering》</strong> - Matt Pharr</p>
+<ul>
+<li>PBR渲染理论与实践</li>
+<li>适合：高级阶段</li>
+</ul>
+</li>
+<li>
+<p><strong>《Effective C++》</strong> - Scott Meyers</p>
+<ul>
+<li>C++最佳实践</li>
+<li>适合：所有阶段</li>
+</ul>
+</li>
+</ol>
+<h3 id="开源项目学习"><a class="header" href="#开源项目学习">开源项目学习</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>项目</th><th>难度</th><th>学习重点</th><th>GitHub链接</th></tr></thead><tbody>
+<tr><td><strong>cpp-game-engine-book</strong></td><td>⭐⭐</td><td>渐进式教学</td><td>https://github.com/ThisisGame/cpp-game-engine-book</td></tr>
+<tr><td><strong>Hazel Engine</strong></td><td>⭐⭐⭐</td><td>现代C++架构</td><td>https://github.com/TheCherno/Hazel</td></tr>
+<tr><td><strong>Piccolo Engine</strong></td><td>⭐⭐⭐⭐</td><td>商业级系统</td><td>https://github.com/BoomingTech/Piccolo</td></tr>
+<tr><td><strong>Lumix Engine</strong></td><td>⭐⭐⭐⭐⭐</td><td>数据驱动设计</td><td>https://github.com/nem0/LumixEngine</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="-学习检查清单"><a class="header" href="#-学习检查清单">✅ 学习检查清单</a></h2>
+<h3 id="基础阶段-"><a class="header" href="#基础阶段-">基础阶段 ✓</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+成功编译运行OpenGL窗口</li>
+<li><input disabled="" type="checkbox"/>
+绘制彩色旋转立方体</li>
+<li><input disabled="" type="checkbox"/>
+加载并显示纹理</li>
+<li><input disabled="" type="checkbox"/>
+实现基本Shader效果</li>
+<li><input disabled="" type="checkbox"/>
+创建GameObject-Component系统</li>
+<li><input disabled="" type="checkbox"/>
+实现第三人称相机</li>
+</ul>
+<h3 id="进阶阶段-"><a class="header" href="#进阶阶段-">进阶阶段 ✓</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+导入并渲染FBX模型</li>
+<li><input disabled="" type="checkbox"/>
+播放骨骼动画</li>
+<li><input disabled="" type="checkbox"/>
+集成物理引擎</li>
+<li><input disabled="" type="checkbox"/>
+实现Phong光照</li>
+<li><input disabled="" type="checkbox"/>
+添加阴影效果</li>
+<li><input disabled="" type="checkbox"/>
+创建UI系统</li>
+</ul>
+<h3 id="高级阶段-"><a class="header" href="#高级阶段-">高级阶段 ✓</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现PBR渲染</li>
+<li><input disabled="" type="checkbox"/>
+多线程渲染优化</li>
+<li><input disabled="" type="checkbox"/>
+完成场景序列化</li>
+<li><input disabled="" type="checkbox"/>
+实现资源热加载</li>
+<li><input disabled="" type="checkbox"/>
+添加粒子系统</li>
+<li><input disabled="" type="checkbox"/>
+完整游戏Demo</li>
+</ul>
+<hr />
+<h2 id="-学习建议"><a class="header" href="#-学习建议">💡 学习建议</a></h2>
+<h3 id="高效学习方法"><a class="header" href="#高效学习方法">高效学习方法</a></h3>
+<ol>
+<li><strong>理论与实践结合</strong>：看完一章立即动手实现</li>
+<li><strong>循序渐进</strong>：不要跳过基础章节</li>
+<li><strong>调试驱动学习</strong>：遇到问题深入调试，理解底层原理</li>
+<li><strong>代码复审</strong>：定期回顾代码，重构优化</li>
+<li><strong>项目驱动</strong>：尽早开始完整项目</li>
+</ol>
+<h3 id="常见陷阱"><a class="header" href="#常见陷阱">常见陷阱</a></h3>
+<p>❌ <strong>过早优化</strong>：先实现功能，再优化性能
+❌ <strong>重复造轮子</strong>：合理使用第三方库
+❌ <strong>忽视调试工具</strong>：善用RenderDoc、Profiler
+❌ <strong>代码质量低</strong>：遵循编码规范，写可维护代码
+❌ <strong>缺乏实战</strong>：理论学习要配合项目实践</p>
+<h3 id="学习里程碑"><a class="header" href="#学习里程碑">学习里程碑</a></h3>
+<ul>
+<li>✅ <strong>1个月</strong>：能独立创建基础渲染场景</li>
+<li>✅ <strong>3个月</strong>：能实现GameObject系统和基础游戏逻辑</li>
+<li>✅ <strong>6个月</strong>：能开发简单的可玩游戏原型</li>
+<li>✅ <strong>12个月</strong>：能构建完整的游戏引擎框架</li>
+</ul>
+<hr />
+<h2 id="-社区与支持"><a class="header" href="#-社区与支持">🤝 社区与支持</a></h2>
+<h3 id="问题反馈"><a class="header" href="#问题反馈">问题反馈</a></h3>
+<ul>
+<li>GitHub Issues: 提交bug和建议</li>
+<li>技术论坛：GameDev.net、Reddit r/gamedev</li>
+</ul>
+<h3 id="学习交流"><a class="header" href="#学习交流">学习交流</a></h3>
+<ul>
+<li>Discord/QQ群：加入游戏开发社区</li>
+<li>代码审查：GitHub Pull Request</li>
+<li>技术博客：分享学习心得</li>
+</ul>
+<hr />
+<h2 id="-版权声明"><a class="header" href="#-版权声明">📜 版权声明</a></h2>
+<p>本系列笔记基于以下开源项目和教程编写：</p>
+<ul>
+<li><a href="https://github.com/ThisisGame/cpp-game-engine-book">cpp-game-engine-book</a> by captainchen</li>
+<li><a href="https://learnopengl.com/">LearnOpenGL</a> by Joey de Vries</li>
+</ul>
+<p>内容遵循 <strong>CC BY-NC-SA 4.0</strong> 协议，仅供学习使用。</p>
+<hr />
+<h2 id="-开始学习"><a class="header" href="#-开始学习">🚀 开始学习</a></h2>
+<p>现在就开始你的游戏引擎开发之旅吧！</p>
+<p><strong>第一步</strong>：打开 <a href="./%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E.html">游戏引擎基础</a>，搭建OpenGL环境</p>
+<p><strong>记住</strong>：</p>
+<blockquote>
+<p>"The best way to learn game engine development is to build one."</p>
+<p>学习游戏引擎开发的最好方法就是亲手构建一个。</p>
+</blockquote>
+<p>祝你学习愉快！🎮✨</p>
+<hr />
+<p>最后更新：2025年1月</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/zeromq.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/游戏引擎-实战项目.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/zeromq.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/游戏引擎-实战项目.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,1213 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>C++设计模式完整学习指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="c设计模式完整学习指南"><a class="header" href="#c设计模式完整学习指南">C++设计模式完整学习指南</a></h1>
+<blockquote>
+<p>系统学习C++设计模式，从基础到进阶，从理论到实战</p>
+</blockquote>
+<h2 id="-文档导航"><a class="header" href="#-文档导航">📚 文档导航</a></h2>
+<p>本学习指南包含四个部分，建议按顺序学习：</p>
+<div class="table-wrapper"><table><thead><tr><th>文档</th><th>内容</th><th>适合阶段</th></tr></thead><tbody>
+<tr><td><strong><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">📖 主文档</a></strong>（本文档）</td><td>基础理论、经典GoF模式、学习路径</td><td>入门-进阶</td></tr>
+<tr><td><strong><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%AB%98%E7%BA%A7%E7%AF%87.html">🚀 高级篇</a></strong></td><td>序列模式、行为模式、解耦模式、优化模式基础</td><td>进阶</td></tr>
+<tr><td><strong><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B.html">💡 实战案例</a></strong></td><td>完整项目案例：2D游戏、粒子系统、关卡编辑器</td><td>进阶-实践</td></tr>
+<tr><td><strong><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96.html">⚡ 性能优化</a></strong></td><td>内存优化、缓存优化、多线程模式、性能测量</td><td>高级</td></tr>
+</tbody></table>
+</div>
+<p><strong>学习建议</strong>：</p>
+<ol>
+<li>初学者：先完成主文档的第一、二部分</li>
+<li>有基础者：重点学习高级篇和实战案例</li>
+<li>性能敏感项目：务必阅读性能优化篇</li>
+</ol>
+<hr />
+<h2 id="学习目标定位"><a class="header" href="#学习目标定位">学习目标定位</a></h2>
+<p><strong>目标受众</strong>: 0-5年C++开发经验的程序员、游戏开发者、希望系统掌握设计模式的工程师</p>
+<p><strong>核心目标</strong>:</p>
+<ul>
+<li>理解设计模式的本质：解决重复出现的设计问题</li>
+<li>掌握经典GoF模式在C++中的实现</li>
+<li>学习设计模式在游戏编程中的特殊应用</li>
+<li>培养架构设计思维和权衡能力</li>
+</ul>
+<hr />
+<h2 id="第一部分设计模式基础理论"><a class="header" href="#第一部分设计模式基础理论">第一部分：设计模式基础理论</a></h2>
+<h3 id="11-什么是设计模式"><a class="header" href="#11-什么是设计模式">1.1 什么是设计模式</a></h3>
+<p>设计模式是软件设计中常见问题的典型解决方案。它们就像能根据需求定制的预制蓝图，可用于解决代码中反复出现的设计问题。</p>
+<p><strong>设计模式不是：</strong></p>
+<ul>
+<li>不是可以直接复制粘贴的代码</li>
+<li>不是特定的算法或数据结构</li>
+<li>不是万能的解决方案</li>
+</ul>
+<p><strong>设计模式是：</strong></p>
+<ul>
+<li>解决特定问题的概念性方法</li>
+<li>团队沟通的共同语言</li>
+<li>经过验证的最佳实践</li>
+<li>可复用的设计思想</li>
+</ul>
+<h3 id="12-为什么游戏开发需要设计模式"><a class="header" href="#12-为什么游戏开发需要设计模式">1.2 为什么游戏开发需要设计模式</a></h3>
+<p>游戏开发面临的独特挑战：</p>
+<ol>
+<li><strong>性能要求极高</strong> - 需要每秒渲染60帧</li>
+<li><strong>代码复杂度高</strong> - AI、物理、渲染、音频等多系统交互</li>
+<li><strong>快速迭代需求</strong> - 玩法需要不断调整和实验</li>
+<li><strong>团队协作密集</strong> - 多人同时修改代码库</li>
+</ol>
+<p>设计模式能够帮助我们：</p>
+<ul>
+<li><strong>解耦系统</strong> - 减少模块间的依赖，提高可维护性</li>
+<li><strong>提高灵活性</strong> - 方便添加新功能和修改现有行为</li>
+<li><strong>优化性能</strong> - 某些模式专门为性能优化而设计</li>
+<li><strong>促进协作</strong> - 提供统一的设计语言</li>
+</ul>
+<h3 id="13-软件架构的核心原则"><a class="header" href="#13-软件架构的核心原则">1.3 软件架构的核心原则</a></h3>
+<h4 id="架构的本质"><a class="header" href="#架构的本质">架构的本质</a></h4>
+<p>软件架构的核心目标是：<strong>最小化在编写代码前需要了解的信息</strong>。</p>
+<p>一个好的架构应该：</p>
+<ul>
+<li>让改动变得容易且可预测</li>
+<li>将相关代码组织在一起</li>
+<li>隔离不相关的代码</li>
+<li>使代码易于理解和调试</li>
+</ul>
+<h4 id="编程工作流程"><a class="header" href="#编程工作流程">编程工作流程</a></h4>
+<pre><code>获得问题 → 研究代码 → 编写解决方案 → 清理代码 → 回到开始
+</code></pre>
+<p>大部分时间都花在"研究代码"阶段 - 理解现有代码如何工作。设计模式的主要作用就是减少这个阶段需要理解的代码量。</p>
+<h4 id="解耦的价值"><a class="header" href="#解耦的价值">解耦的价值</a></h4>
+<p>两块代码如果是<strong>耦合的</strong>，意味着你无法只理解其中一个。如果它们是<strong>解耦的</strong>，就可以单独理解某一块。</p>
+<p>解耦的定义：</p>
+<ul>
+<li>当一块代码有改动时，不需要修改另一块代码</li>
+<li>理解某块代码时，不需要了解另一块代码的细节</li>
+</ul>
+<h3 id="14-架构设计的权衡"><a class="header" href="#14-架构设计的权衡">1.4 架构设计的权衡</a></h3>
+<h4 id="没有银弹"><a class="header" href="#没有银弹">没有银弹</a></h4>
+<p>好的架构需要在多个目标间权衡：</p>
+<ol>
+<li><strong>开发速度</strong> - 实现功能的速度</li>
+<li><strong>可维护性</strong> - 长期保持代码整洁的能力</li>
+<li><strong>运行性能</strong> - 代码执行的效率</li>
+</ol>
+<p>这些目标往往相互冲突：</p>
+<ul>
+<li>过度抽象会降低性能和开发速度</li>
+<li>追求极致性能会牺牲灵活性</li>
+<li>快速实现功能可能留下技术债</li>
+</ul>
+<h4 id="性能-vs-灵活性"><a class="header" href="#性能-vs-灵活性">性能 vs 灵活性</a></h4>
+<p><strong>性能依赖于假设</strong>：</p>
+<ul>
+<li>敌人永远不超过256个？可以用一个字节存储ID</li>
+<li>只调用特定类型的方法？可以做静态调度</li>
+<li>所有实体同一类型？可以用连续数组存储</li>
+</ul>
+<p><strong>灵活性需要更少假设</strong>：</p>
+<ul>
+<li>使用接口可以与任何实现交互</li>
+<li>使用观察者模式方便扩展通信对象</li>
+<li>抽象层提供扩展点</li>
+</ul>
+<p><strong>实践建议</strong>：</p>
+<ul>
+<li>保持代码灵活直到确定设计</li>
+<li>设计确定后再去除抽象层提升性能</li>
+<li>让有趣的游戏变快比让快的游戏变有趣容易</li>
+</ul>
+<h4 id="何时使用原型代码"><a class="header" href="#何时使用原型代码">何时使用原型代码</a></h4>
+<p><strong>原型代码特征</strong>：</p>
+<ul>
+<li>快速验证想法</li>
+<li>不考虑架构</li>
+<li>可以有bug</li>
+<li>注定会被扔掉</li>
+</ul>
+<p><strong>使用规则</strong>：</p>
+<ul>
+<li>只用于快速实验</li>
+<li><strong>必须</strong>在实验后重写或删除</li>
+<li>明确告知团队这是原型代码</li>
+<li>不要让原型代码进入生产环境</li>
+</ul>
+<h3 id="15-追求简单"><a class="header" href="#15-追求简单">1.5 追求简单</a></h3>
+<p>最佳实践：<strong>写最简单、最直接的解决方案</strong></p>
+<p>简单代码的特征：</p>
+<ul>
+<li>容易理解其工作原理</li>
+<li>想不到其他实现方式</li>
+<li>代码量少，需要理解的内容少</li>
+<li>通常运行也快（更少的开销）</li>
+</ul>
+<p>获得简单解决方案的方法：</p>
+<ul>
+<li>正确设计数据结构和算法</li>
+<li>识别用例下隐藏的模式</li>
+<li>"蒸馏"代码而非"注水"</li>
+</ul>
+<hr />
+<h2 id="第二部分gof经典模式在c中的应用"><a class="header" href="#第二部分gof经典模式在c中的应用">第二部分：GoF经典模式在C++中的应用</a></h2>
+<h3 id="21-命令模式-command-pattern"><a class="header" href="#21-命令模式-command-pattern">2.1 命令模式 (Command Pattern)</a></h3>
+<h4 id="核心思想"><a class="header" href="#核心思想">核心思想</a></h4>
+<p><strong>命令是具现化的方法调用</strong> - 将方法调用封装成对象，使其可以存储、传递、撤销。</p>
+<h4 id="使用场景"><a class="header" href="#使用场景">使用场景</a></h4>
+<ol>
+<li><strong>配置输入</strong> - 将按键映射到游戏行为</li>
+<li><strong>撤销/重做</strong> - 实现可逆操作</li>
+<li><strong>AI行为</strong> - 将AI决策表示为命令序列</li>
+<li><strong>网络同步</strong> - 传输玩家操作</li>
+<li><strong>回放系统</strong> - 记录和重放游戏过程</li>
+</ol>
+<h4 id="实战案例1可配置输入系统"><a class="header" href="#实战案例1可配置输入系统">实战案例1：可配置输入系统</a></h4>
+<p><strong>问题</strong>：硬编码的输入处理难以配置</p>
+<pre><code class="language-cpp">// 糟糕的做法：硬编码
+void handleInput() {
+    if (isPressed(BUTTON_X)) jump();
+    else if (isPressed(BUTTON_Y)) fireGun();
+    else if (isPressed(BUTTON_A)) swapWeapon();
+}
+</code></pre>
+<p><strong>解决方案</strong>：使用命令模式</p>
+<pre><code class="language-cpp">// 1. 定义命令基类
+class Command {
+public:
+    virtual ~Command() {}
+    virtual void execute(GameActor&amp; actor) = 0;
+};
+
+// 2. 实现具体命令
+class JumpCommand : public Command {
+public:
+    virtual void execute(GameActor&amp; actor) override {
+        actor.jump();
+    }
+};
+
+class FireCommand : public Command {
+public:
+    virtual void execute(GameActor&amp; actor) override {
+        actor.fireGun();
+    }
+};
+
+// 3. 输入处理器
+class InputHandler {
+public:
+    Command* handleInput() {
+        if (isPressed(BUTTON_X)) return buttonX_;
+        if (isPressed(BUTTON_Y)) return buttonY_;
+        if (isPressed(BUTTON_A)) return buttonA_;
+        return nullptr;
+    }
+
+    void bindButton(int button, Command* command) {
+        // 配置按键绑定
+    }
+
+private:
+    Command* buttonX_;
+    Command* buttonY_;
+    Command* buttonA_;
+};
+
+// 4. 使用
+Command* command = inputHandler.handleInput();
+if (command) {
+    command-&gt;execute(player);  // 可以是玩家或AI控制的任何角色
+}
+</code></pre>
+<p><strong>优势</strong>：</p>
+<ul>
+<li>输入和行为解耦</li>
+<li>可以动态改变按键绑定</li>
+<li>同一命令可用于AI和玩家</li>
+</ul>
+<h4 id="实战案例2撤销重做系统"><a class="header" href="#实战案例2撤销重做系统">实战案例2：撤销/重做系统</a></h4>
+<pre><code class="language-cpp">class MoveUnitCommand : public Command {
+public:
+    MoveUnitCommand(Unit* unit, int x, int y)
+        : unit_(unit), x_(x), y_(y),
+          xBefore_(0), yBefore_(0) {}
+
+    virtual void execute() override {
+        // 保存移动前的位置
+        xBefore_ = unit_-&gt;x();
+        yBefore_ = unit_-&gt;y();
+
+        unit_-&gt;moveTo(x_, y_);
+    }
+
+    virtual void undo() override {
+        unit_-&gt;moveTo(xBefore_, yBefore_);
+    }
+
+private:
+    Unit* unit_;
+    int x_, y_;
+    int xBefore_, yBefore_;
+};
+
+// 命令历史管理
+class CommandHistory {
+public:
+    void execute(Command* command) {
+        command-&gt;execute();
+        history_.push_back(command);
+        current_ = history_.size() - 1;
+    }
+
+    void undo() {
+        if (current_ &gt;= 0) {
+            history_[current_]-&gt;undo();
+            current_--;
+        }
+    }
+
+    void redo() {
+        if (current_ &lt; history_.size() - 1) {
+            current_++;
+            history_[current_]-&gt;execute();
+        }
+    }
+
+private:
+    std::vector&lt;Command*&gt; history_;
+    int current_;
+};
+</code></pre>
+<h4 id="实现变体"><a class="header" href="#实现变体">实现变体</a></h4>
+<p><strong>使用函数而非类</strong> (C++11)：</p>
+<pre><code class="language-cpp">// 使用std::function
+using Command = std::function&lt;void()&gt;;
+
+Command makeMoveCommand(Unit* unit, int x, int y) {
+    return [unit, x, y]() {
+        unit-&gt;moveTo(x, y);
+    };
+}
+
+// 支持撤销的版本
+struct UndoableCommand {
+    std::function&lt;void()&gt; execute;
+    std::function&lt;void()&gt; undo;
+};
+
+UndoableCommand makeMoveCommand(Unit* unit, int x, int y) {
+    int xBefore, yBefore;
+    return {
+        [unit, x, y, &amp;xBefore, &amp;yBefore]() {
+            xBefore = unit-&gt;x();
+            yBefore = unit-&gt;y();
+            unit-&gt;moveTo(x, y);
+        },
+        [unit, &amp;xBefore, &amp;yBefore]() {
+            unit-&gt;moveTo(xBefore, yBefore);
+        }
+    };
+}
+</code></pre>
+<hr />
+<h3 id="22-享元模式-flyweight-pattern"><a class="header" href="#22-享元模式-flyweight-pattern">2.2 享元模式 (Flyweight Pattern)</a></h3>
+<h4 id="核心思想-1"><a class="header" href="#核心思想-1">核心思想</a></h4>
+<p>通过共享来支持大量细粒度对象，将对象状态分为：</p>
+<ul>
+<li><strong>固有状态</strong>（intrinsic）：可以共享的、不随环境改变的状态</li>
+<li><strong>可变状态</strong>（extrinsic）：随环境改变、不可共享的状态</li>
+</ul>
+<h4 id="使用场景-1"><a class="header" href="#使用场景-1">使用场景</a></h4>
+<ol>
+<li><strong>游戏世界</strong> - 森林中的树、地形区块</li>
+<li><strong>粒子系统</strong> - 共享纹理和网格</li>
+<li><strong>UI元素</strong> - 共享样式和资源</li>
+<li><strong>字符渲染</strong> - 字体glyph共享</li>
+</ol>
+<h4 id="实战案例森林渲染系统"><a class="header" href="#实战案例森林渲染系统">实战案例：森林渲染系统</a></h4>
+<p><strong>问题</strong>：森林中有上万棵树，每棵树都存储完整数据会耗尽内存</p>
+<pre><code class="language-cpp">// 不好的做法
+class Tree {
+private:
+    Mesh mesh_;           // 巨大的网格数据
+    Texture bark_;        // 树皮纹理
+    Texture leaves_;      // 树叶纹理
+    Vector position_;     // 位置
+    double height_;       // 高度
+    double thickness_;    // 粗细
+    Color barkTint_;     // 树皮色调
+    Color leafTint_;     // 树叶色调
+};
+</code></pre>
+<p><strong>解决方案</strong>：分离共享和独特数据</p>
+<pre><code class="language-cpp">// 共享数据：树的模型
+class TreeModel {
+public:
+    TreeModel(const Mesh&amp; mesh,
+              const Texture&amp; bark,
+              const Texture&amp; leaves)
+        : mesh_(mesh), bark_(bark), leaves_(leaves) {}
+
+    const Mesh&amp; getMesh() const { return mesh_; }
+    const Texture&amp; getBark() const { return bark_; }
+    const Texture&amp; getLeaves() const { return leaves_; }
+
+private:
+    Mesh mesh_;
+    Texture bark_;
+    Texture leaves_;
+};
+
+// 独特数据：树的实例
+class Tree {
+public:
+    Tree(TreeModel* model, const Vector&amp; position)
+        : model_(model), position_(position) {}
+
+    void render() {
+        // 使用共享的模型数据和独特的实例数据渲染
+        renderMesh(model_-&gt;getMesh(),
+                  position_,
+                  height_,
+                  thickness_,
+                  barkTint_,
+                  leafTint_);
+    }
+
+private:
+    TreeModel* model_;    // 指向共享数据
+    Vector position_;     // 实例特定数据
+    double height_;
+    double thickness_;
+    Color barkTint_;
+    Color leafTint_;
+};
+
+// 世界管理
+class Forest {
+public:
+    Forest() {
+        // 创建少量共享模型
+        oakModel_ = new TreeModel(oakMesh, oakBark, oakLeaves);
+        pineModel_ = new TreeModel(pineMesh, pineBark, pineLeaves);
+    }
+
+    void plantTree(TreeModel* model, const Vector&amp; position) {
+        trees_.push_back(Tree(model, position));
+    }
+
+    void render() {
+        for (auto&amp; tree : trees_) {
+            tree.render();
+        }
+    }
+
+private:
+    TreeModel* oakModel_;   // 所有橡树共享
+    TreeModel* pineModel_;  // 所有松树共享
+    std::vector&lt;Tree&gt; trees_;  // 成千上万的实例
+};
+</code></pre>
+<hr />
+<h3 id="23-观察者模式-observer-pattern"><a class="header" href="#23-观察者模式-observer-pattern">2.3 观察者模式 (Observer Pattern)</a></h3>
+<h4 id="核心思想-2"><a class="header" href="#核心思想-2">核心思想</a></h4>
+<p>定义对象间的一对多依赖关系，当一个对象状态改变时，所有依赖它的对象都得到通知并自动更新。</p>
+<h4 id="使用场景-2"><a class="header" href="#使用场景-2">使用场景</a></h4>
+<ol>
+<li><strong>成就系统</strong> - 游戏事件触发成就解锁</li>
+<li><strong>UI更新</strong> - 数据变化时更新显示</li>
+<li><strong>事件系统</strong> - 解耦的消息传递</li>
+<li><strong>MVC架构</strong> - Model变化通知View</li>
+</ol>
+<h4 id="实战案例成就系统"><a class="header" href="#实战案例成就系统">实战案例：成就系统</a></h4>
+<p><strong>问题</strong>：成就系统需要监听各种游戏事件，但不想让游戏代码依赖成就系统</p>
+<pre><code class="language-cpp">// 糟糕的做法：直接耦合
+void Physics::updateEntity(Entity&amp; entity) {
+    bool wasOnSurface = entity.isOnSurface();
+    entity.accelerate(GRAVITY);
+    entity.update();
+
+    if (wasOnSurface &amp;&amp; !entity.isOnSurface()) {
+        // 直接调用成就系统 - 耦合！
+        achievements.unlock(ACHIEVEMENT_FELL_OFF_BRIDGE);
+    }
+}
+</code></pre>
+<p><strong>解决方案</strong>：观察者模式</p>
+<pre><code class="language-cpp">// 1. 定义观察者接口
+class Observer {
+public:
+    virtual ~Observer() {}
+    virtual void onNotify(const Entity&amp; entity, Event event) = 0;
+};
+
+// 2. 定义被观察者基类
+class Subject {
+public:
+    void addObserver(Observer* observer) {
+        observers_.push_back(observer);
+    }
+
+    void removeObserver(Observer* observer) {
+        auto it = std::find(observers_.begin(), observers_.end(), observer);
+        if (it != observers_.end()) {
+            observers_.erase(it);
+        }
+    }
+
+protected:
+    void notify(const Entity&amp; entity, Event event) {
+        for (auto observer : observers_) {
+            observer-&gt;onNotify(entity, event);
+        }
+    }
+
+private:
+    std::vector&lt;Observer*&gt; observers_;
+};
+
+// 3. 物理系统继承Subject
+class Physics : public Subject {
+public:
+    void updateEntity(Entity&amp; entity) {
+        bool wasOnSurface = entity.isOnSurface();
+        entity.accelerate(GRAVITY);
+        entity.update();
+
+        if (wasOnSurface &amp;&amp; !entity.isOnSurface()) {
+            notify(entity, EVENT_START_FALL);  // 通知观察者
+        }
+    }
+};
+
+// 4. 成就系统实现Observer
+class Achievements : public Observer {
+public:
+    virtual void onNotify(const Entity&amp; entity, Event event) override {
+        switch (event) {
+            case EVENT_START_FALL:
+                if (entity.isHero() &amp;&amp; heroIsOnBridge_) {
+                    unlock(ACHIEVEMENT_FELL_OFF_BRIDGE);
+                }
+                break;
+        }
+    }
+
+private:
+    void unlock(Achievement achievement) {
+        // 解锁成就逻辑
+    }
+
+    bool heroIsOnBridge_;
+};
+</code></pre>
+<hr />
+<h3 id="24-单例模式-singleton-pattern"><a class="header" href="#24-单例模式-singleton-pattern">2.4 单例模式 (Singleton Pattern)</a></h3>
+<h4 id="核心思想-3"><a class="header" href="#核心思想-3">核心思想</a></h4>
+<p>确保一个类只有一个实例，并提供全局访问点。</p>
+<h4 id="为什么要避免滥用"><a class="header" href="#为什么要避免滥用">为什么要避免滥用</a></h4>
+<p>单例模式是最被滥用的设计模式之一。它看起来很方便，但带来很多问题。</p>
+<p><strong>单例的问题</strong>：</p>
+<ol>
+<li><strong>它是全局变量</strong> - 所有全局变量的问题它都有</li>
+<li><strong>难以测试</strong> - 全局状态导致测试间相互影响</li>
+<li><strong>隐藏依赖</strong> - 代码中看不出使用了什么外部资源</li>
+<li><strong>对并发不友好</strong> - 全局状态导致竞态条件</li>
+<li><strong>解决了你可能没有的问题</strong> - "只有一个实例"和"全局访问"通常不需要同时满足</li>
+</ol>
+<h4 id="经典实现"><a class="header" href="#经典实现">经典实现</a></h4>
+<pre><code class="language-cpp">class FileSystem {
+public:
+    static FileSystem&amp; instance() {
+        static FileSystem instance;  // C++11保证线程安全
+        return instance;
+    }
+
+    // 禁止拷贝
+    FileSystem(const FileSystem&amp;) = delete;
+    FileSystem&amp; operator=(const FileSystem&amp;) = delete;
+
+private:
+    FileSystem() {}  // 私有构造函数
+};
+
+// 使用
+FileSystem::instance().readFile("config.txt");
+</code></pre>
+<h4 id="替代方案"><a class="header" href="#替代方案">替代方案</a></h4>
+<p><strong>方案1：依赖注入</strong></p>
+<pre><code class="language-cpp">class Game {
+public:
+    Game(FileSystem* fs, AudioEngine* audio)
+        : fileSystem_(fs), audio_(audio) {}
+
+    void loadLevel() {
+        fileSystem_-&gt;readFile("level.dat");
+        audio_-&gt;playMusic("theme.mp3");
+    }
+
+private:
+    FileSystem* fileSystem_;
+    AudioEngine* audio_;
+};
+
+// 在main中组装
+int main() {
+    FileSystem fs;
+    AudioEngine audio;
+    Game game(&amp;fs, &amp;audio);
+}
+</code></pre>
+<hr />
+<h3 id="25-状态模式-state-pattern"><a class="header" href="#25-状态模式-state-pattern">2.5 状态模式 (State Pattern)</a></h3>
+<h4 id="核心思想-4"><a class="header" href="#核心思想-4">核心思想</a></h4>
+<p>允许对象在内部状态改变时改变其行为，对象看起来好像修改了它的类。</p>
+<h4 id="实战案例角色状态系统"><a class="header" href="#实战案例角色状态系统">实战案例：角色状态系统</a></h4>
+<p><strong>最终方案：状态模式</strong></p>
+<pre><code class="language-cpp">// 1. 状态接口
+class HeroineState {
+public:
+    virtual ~HeroineState() {}
+    virtual void handleInput(Heroine&amp; heroine, Input input) {}
+    virtual void update(Heroine&amp; heroine) {}
+    virtual void enter(Heroine&amp; heroine) {}
+    virtual void exit(Heroine&amp; heroine) {}
+};
+
+// 2. 具体状态
+class StandingState : public HeroineState {
+public:
+    virtual void enter(Heroine&amp; heroine) override {
+        heroine.setGraphics(IMAGE_STAND);
+    }
+
+    virtual void handleInput(Heroine&amp; heroine, Input input) override {
+        if (input == PRESS_B) {
+            heroine.setState(&amp;HeroineState::jumping);
+        } else if (input == PRESS_DOWN) {
+            heroine.setState(&amp;HeroineState::ducking);
+        }
+    }
+};
+
+class DuckingState : public HeroineState {
+public:
+    DuckingState() : chargeTime_(0) {}
+
+    virtual void enter(Heroine&amp; heroine) override {
+        heroine.setGraphics(IMAGE_DUCK);
+        chargeTime_ = 0;
+    }
+
+    virtual void handleInput(Heroine&amp; heroine, Input input) override {
+        if (input == RELEASE_DOWN) {
+            heroine.setState(&amp;HeroineState::standing);
+        }
+    }
+
+    virtual void update(Heroine&amp; heroine) override {
+        chargeTime_++;
+        if (chargeTime_ &gt; MAX_CHARGE) {
+            heroine.superBomb();
+        }
+    }
+
+private:
+    int chargeTime_;  // 状态特定数据
+};
+
+// 3. 英雄类
+class Heroine {
+public:
+    Heroine() : state_(&amp;HeroineState::standing) {}
+
+    void handleInput(Input input) {
+        state_-&gt;handleInput(*this, input);
+    }
+
+    void update() {
+        state_-&gt;update(*this);
+    }
+
+    void setState(HeroineState* state) {
+        if (state_ != nullptr) {
+            state_-&gt;exit(*this);
+        }
+        state_ = state;
+        state_-&gt;enter(*this);
+    }
+
+private:
+    HeroineState* state_;
+};
+</code></pre>
+<hr />
+<h3 id="26-原型模式-prototype-pattern"><a class="header" href="#26-原型模式-prototype-pattern">2.6 原型模式 (Prototype Pattern)</a></h3>
+<h4 id="核心思想-5"><a class="header" href="#核心思想-5">核心思想</a></h4>
+<p>通过复制现有对象来创建新对象，而不是通过类实例化。</p>
+<h4 id="基本实现"><a class="header" href="#基本实现">基本实现</a></h4>
+<pre><code class="language-cpp">// 抽象原型
+class Monster {
+public:
+    virtual ~Monster() {}
+    virtual Monster* clone() const = 0;
+    virtual void attack() = 0;
+};
+
+// 具体原型
+class Ghost : public Monster {
+public:
+    Ghost(int health, int speed)
+        : health_(health), speed_(speed) {}
+
+    virtual Monster* clone() const override {
+        return new Ghost(*this);  // 使用拷贝构造
+    }
+
+    virtual void attack() override {
+        // 幽灵攻击
+    }
+
+private:
+    int health_;
+    int speed_;
+};
+</code></pre>
+<hr />
+<h2 id="第三部分游戏编程特定模式"><a class="header" href="#第三部分游戏编程特定模式">第三部分：游戏编程特定模式</a></h2>
+<h3 id="31-对象池模式-object-pool-pattern"><a class="header" href="#31-对象池模式-object-pool-pattern">3.1 对象池模式 (Object Pool Pattern)</a></h3>
+<h4 id="核心思想-6"><a class="header" href="#核心思想-6">核心思想</a></h4>
+<p>预先创建一组可重用对象，避免频繁的分配和释放。</p>
+<h4 id="实现"><a class="header" href="#实现">实现</a></h4>
+<pre><code class="language-cpp">template&lt;typename T, size_t Size&gt;
+class ObjectPool {
+public:
+    ObjectPool() {
+        for (size_t i = 0; i &lt; Size; i++) {
+            pool_[i].setNext(&amp;pool_[i + 1]);
+        }
+        pool_[Size - 1].setNext(nullptr);
+        firstAvailable_ = &amp;pool_[0];
+    }
+
+    T* create() {
+        if (firstAvailable_ == nullptr) {
+            return nullptr;  // 池已满
+        }
+
+        T* object = firstAvailable_;
+        firstAvailable_ = object-&gt;getNext();
+
+        object-&gt;init();  // 初始化对象
+        return object;
+    }
+
+    void destroy(T* object) {
+        object-&gt;reset();  // 重置对象
+        object-&gt;setNext(firstAvailable_);
+        firstAvailable_ = object;
+    }
+
+private:
+    T pool_[Size];
+    T* firstAvailable_;
+};
+</code></pre>
+<hr />
+<h2 id="第四部分学习路径和实践"><a class="header" href="#第四部分学习路径和实践">第四部分：学习路径和实践</a></h2>
+<h3 id="41-从基础到进阶的学习路径"><a class="header" href="#41-从基础到进阶的学习路径">4.1 从基础到进阶的学习路径</a></h3>
+<h4 id="第一阶段理解模式本质1-2周"><a class="header" href="#第一阶段理解模式本质1-2周">第一阶段：理解模式本质（1-2周）</a></h4>
+<p><strong>学习目标</strong>：</p>
+<ul>
+<li>理解什么是设计模式</li>
+<li>知道何时使用/不使用模式</li>
+<li>理解软件架构的基本原则</li>
+</ul>
+<p><strong>实践任务</strong>：</p>
+<ol>
+<li>重构一段现有代码，识别其中的代码异味</li>
+<li>用简单的例子实现3个基础模式</li>
+<li>分析一个开源项目的架构</li>
+</ol>
+<h4 id="第二阶段掌握经典模式3-4周"><a class="header" href="#第二阶段掌握经典模式3-4周">第二阶段：掌握经典模式（3-4周）</a></h4>
+<p><strong>学习目标</strong>：</p>
+<ul>
+<li>熟练实现GoF核心模式</li>
+<li>理解每个模式的适用场景</li>
+<li>能够组合多个模式</li>
+</ul>
+<p><strong>实践任务</strong>：</p>
+<ol>
+<li>实现一个简单的游戏Demo，至少使用5个模式</li>
+<li>阅读游戏引擎源码，识别使用的模式</li>
+<li>参与代码评审，讨论设计选择</li>
+</ol>
+<h4 id="第三阶段性能优化和高级应用3-4周"><a class="header" href="#第三阶段性能优化和高级应用3-4周">第三阶段：性能优化和高级应用（3-4周）</a></h4>
+<p><strong>学习目标</strong>：</p>
+<ul>
+<li>理解模式的性能影响</li>
+<li>掌握优化技巧</li>
+<li>能够根据需求调整模式</li>
+</ul>
+<p><strong>实践任务</strong>：</p>
+<ol>
+<li>性能分析：测量不同实现的性能差异</li>
+<li>内存优化：使用对象池优化粒子系统</li>
+<li>并发编程：在多线程环境中使用模式</li>
+</ol>
+<h3 id="42-常见陷阱和避免方法"><a class="header" href="#42-常见陷阱和避免方法">4.2 常见陷阱和避免方法</a></h3>
+<h4 id="陷阱1过度设计"><a class="header" href="#陷阱1过度设计">陷阱1：过度设计</a></h4>
+<p><strong>症状</strong>：</p>
+<ul>
+<li>为了使用模式而使用模式</li>
+<li>抽象层次过多</li>
+<li>代码比需要的复杂</li>
+</ul>
+<p><strong>避免方法</strong>：</p>
+<pre><code class="language-cpp">// 不好：过度抽象
+class AnimalFactory {
+public:
+    virtual Animal* createAnimal() = 0;
+};
+
+class DogFactory : public AnimalFactory {
+    virtual Animal* createAnimal() override {
+        return new Dog();
+    }
+};
+
+// 好：直接创建
+Dog* dog = new Dog();
+</code></pre>
+<p><strong>原则</strong>：</p>
+<ul>
+<li>只在需要时添加抽象</li>
+<li>从简单开始，根据需要重构</li>
+<li>YAGNI（You Aren't Gonna Need It）</li>
+</ul>
+<h4 id="陷阱2忽视性能"><a class="header" href="#陷阱2忽视性能">陷阱2：忽视性能</a></h4>
+<p><strong>症状</strong>：</p>
+<ul>
+<li>过多的虚函数调用</li>
+<li>频繁的内存分配</li>
+<li>缓存不友好的数据结构</li>
+</ul>
+<p><strong>避免方法</strong>：</p>
+<pre><code class="language-cpp">// 不好：每次都分配
+Command* cmd = new JumpCommand();
+cmd-&gt;execute();
+delete cmd;
+
+// 好：使用对象池或静态实例
+static JumpCommand jumpCmd;
+jumpCmd.execute();
+</code></pre>
+<p><strong>原则</strong>：</p>
+<ul>
+<li>先测量再优化</li>
+<li>了解目标平台的性能特性</li>
+<li>在关键路径上谨慎使用抽象</li>
+</ul>
+<h4 id="陷阱3滥用全局状态"><a class="header" href="#陷阱3滥用全局状态">陷阱3：滥用全局状态</a></h4>
+<p><strong>症状</strong>：</p>
+<ul>
+<li>到处都是单例</li>
+<li>隐藏的依赖关系</li>
+<li>难以测试</li>
+</ul>
+<p><strong>避免方法</strong>：</p>
+<pre><code class="language-cpp">// 不好
+AudioEngine::instance().play("sound.wav");
+FileSystem::instance().load("data.txt");
+
+// 好
+class Game {
+public:
+    Game(AudioEngine&amp; audio, FileSystem&amp; fs)
+        : audio_(audio), fs_(fs) {}
+
+    void playSound() {
+        audio_.play("sound.wav");
+    }
+
+private:
+    AudioEngine&amp; audio_;
+    FileSystem&amp; fs_;
+};
+</code></pre>
+<p><strong>原则</strong>：</p>
+<ul>
+<li>优先使用依赖注入</li>
+<li>让依赖关系显式化</li>
+<li>限制全局状态的范围</li>
+</ul>
+<hr />
+<h2 id="第五部分扩展资源和进阶方向"><a class="header" href="#第五部分扩展资源和进阶方向">第五部分：扩展资源和进阶方向</a></h2>
+<h3 id="51-推荐阅读"><a class="header" href="#51-推荐阅读">5.1 推荐阅读</a></h3>
+<p><strong>必读书籍</strong>：</p>
+<ol>
+<li>《设计模式：可复用面向对象软件的基础》（GoF）</li>
+<li>《游戏编程模式》（本笔记的主要参考）</li>
+<li>《代码整洁之道》</li>
+<li>《重构：改善既有代码的设计》</li>
+</ol>
+<p><strong>进阶书籍</strong>：</p>
+<ol>
+<li>《企业应用架构模式》</li>
+<li>《面向模式的软件架构》系列</li>
+<li>《领域驱动设计》</li>
+</ol>
+<p><strong>在线资源</strong>：</p>
+<ul>
+<li>refactoring.guru - 设计模式可视化教程</li>
+<li>gameprogrammingpatterns.com - 游戏编程模式在线版</li>
+<li>GitHub - 搜索开源游戏引擎源码</li>
+</ul>
+<h3 id="52-实践项目建议"><a class="header" href="#52-实践项目建议">5.2 实践项目建议</a></h3>
+<p><strong>入门项目</strong>：</p>
+<ol>
+<li><strong>命令模式</strong>：文本编辑器（支持撤销/重做）</li>
+<li><strong>观察者模式</strong>：简单的事件系统</li>
+<li><strong>状态模式</strong>：有限状态机编辑器</li>
+</ol>
+<p><strong>进阶项目</strong>：</p>
+<ol>
+<li><strong>组合模式</strong>：游戏对象层次结构</li>
+<li><strong>策略模式</strong>：AI行为系统</li>
+<li><strong>工厂模式</strong>：关卡加载系统</li>
+</ol>
+<p><strong>综合项目</strong>：</p>
+<ol>
+<li>2D游戏引擎（SDL/SFML）</li>
+<li>粒子编辑器</li>
+<li>关卡编辑器</li>
+</ol>
+<h3 id="53-后续学习方向"><a class="header" href="#53-后续学习方向">5.3 后续学习方向</a></h3>
+<h4 id="方向1游戏引擎开发"><a class="header" href="#方向1游戏引擎开发">方向1：游戏引擎开发</a></h4>
+<p><strong>学习内容</strong>：</p>
+<ul>
+<li>渲染系统架构</li>
+<li>物理引擎集成</li>
+<li>资源管理系统</li>
+<li>场景图和空间分割</li>
+</ul>
+<p><strong>推荐引擎源码</strong>：</p>
+<ul>
+<li>Godot（C++）</li>
+<li>Cocos2d-x（C++）</li>
+<li>OGRE（C++）</li>
+</ul>
+<h4 id="方向2性能优化"><a class="header" href="#方向2性能优化">方向2：性能优化</a></h4>
+<p><strong>学习内容</strong>：</p>
+<ul>
+<li>数据导向设计（DOD）</li>
+<li>缓存优化</li>
+<li>多线程和并发</li>
+<li>SIMD和底层优化</li>
+</ul>
+<p><strong>关键模式</strong>：</p>
+<ul>
+<li>数据局部性模式</li>
+<li>脏标记模式</li>
+<li>空间分区模式</li>
+</ul>
+<h4 id="方向3工具开发"><a class="header" href="#方向3工具开发">方向3：工具开发</a></h4>
+<p><strong>学习内容</strong>：</p>
+<ul>
+<li>编辑器架构</li>
+<li>序列化和反序列化</li>
+<li>插件系统</li>
+<li>脚本集成</li>
+</ul>
+<p><strong>关键模式</strong>：</p>
+<ul>
+<li>类型对象模式</li>
+<li>组件模式</li>
+<li>服务定位器模式</li>
+</ul>
+<hr />
+<h2 id="总结设计模式的核心价值"><a class="header" href="#总结设计模式的核心价值">总结：设计模式的核心价值</a></h2>
+<h3 id="关键要点"><a class="header" href="#关键要点">关键要点</a></h3>
+<ol>
+<li><strong>模式不是目的，而是手段</strong> - 目标是写出可维护的代码</li>
+<li><strong>简单优先</strong> - 从最简单的解决方案开始</li>
+<li><strong>权衡取舍</strong> - 在性能、灵活性、开发速度间平衡</li>
+<li><strong>持续学习</strong> - 设计是一个不断进化的过程</li>
+</ol>
+<h3 id="使用设计模式的黄金法则"><a class="header" href="#使用设计模式的黄金法则">使用设计模式的黄金法则</a></h3>
+<ol>
+<li><strong>理解问题</strong> - 确保问题真的需要模式来解决</li>
+<li><strong>选择合适的模式</strong> - 不是所有问题都适合用模式</li>
+<li><strong>保持简单</strong> - 最简单的解决方案通常是最好的</li>
+<li><strong>测量性能</strong> - 在性能关键的代码中谨慎使用抽象</li>
+<li><strong>重构而非预设计</strong> - 等到需要时再引入模式</li>
+</ol>
+<h3 id="最后的建议"><a class="header" href="#最后的建议">最后的建议</a></h3>
+<p>设计模式是工具，不是教条。优秀的程序员知道：</p>
+<ul>
+<li>何时使用模式</li>
+<li>何时不使用模式</li>
+<li>如何调整模式以适应需求</li>
+<li>如何在代码质量和交付速度间平衡</li>
+</ul>
+<p><strong>记住</strong>：做出能玩的游戏永远比做出完美的架构重要。先让游戏运行起来，再根据需要重构和优化。</p>
+<hr />
+<h2 id="附录快速参考"><a class="header" href="#附录快速参考">附录：快速参考</a></h2>
+<h3 id="模式速查表"><a class="header" href="#模式速查表">模式速查表</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>模式</th><th>用途</th><th>何时使用</th><th>何时避免</th></tr></thead><tbody>
+<tr><td>命令</td><td>将请求封装为对象</td><td>需要撤销、队列、日志</td><td>简单的回调就够了</td></tr>
+<tr><td>观察者</td><td>对象间一对多通知</td><td>需要解耦的事件系统</td><td>观察者很少或固定</td></tr>
+<tr><td>状态</td><td>根据状态改变行为</td><td>复杂的状态转换</td><td>只有2-3个状态</td></tr>
+<tr><td>单例</td><td>确保唯一实例</td><td>真正需要唯一性时</td><td>只是想要全局访问</td></tr>
+<tr><td>享元</td><td>共享细粒度对象</td><td>大量相似对象</td><td>对象数量不多</td></tr>
+<tr><td>原型</td><td>通过复制创建对象</td><td>对象创建成本高</td><td>对象创建简单</td></tr>
+</tbody></table>
+</div>
+<h3 id="常见问题faq"><a class="header" href="#常见问题faq">常见问题FAQ</a></h3>
+<p><strong>Q: 我应该学习所有的GoF模式吗？</strong>
+A: 不需要。专注于游戏开发中常用的模式。本笔记覆盖的模式已经足够应对大部分场景。</p>
+<p><strong>Q: 设计模式会降低性能吗？</strong>
+A: 某些情况下会，但通常影响很小。关键是在性能关键路径上谨慎使用，并进行测量。</p>
+<p><strong>Q: 什么时候应该重构代码使用模式？</strong>
+A: 当代码出现明显的重复、难以维护或难以扩展时。不要为了使用模式而重构。</p>
+<p><strong>Q: 如何在团队中推广设计模式？</strong>
+A: 通过代码评审、技术分享、结对编程逐步推广。不要强制使用，而是展示其价值。</p>
+<p><strong>Q: 设计模式过时了吗？</strong>
+A: 核心思想永不过时，但具体实现会随语言特性演化。现代C++提供了更多工具（如lambda、智能指针），可以更简洁地实现某些模式。</p>
+<hr />
+<p><strong>学习永无止境，祝你在C++设计模式的学习之路上越走越远！</strong></p>
+<p><strong>记住</strong>：最好的学习方式是实践。立即开始一个项目，应用你学到的模式，在实践中不断改进和提高！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/设计模式-高级篇.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/database/00-sqlite3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/设计模式-高级篇.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/database/00-sqlite3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

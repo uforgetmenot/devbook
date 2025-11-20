@@ -1,0 +1,1371 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>C++设计模式完整学习指南 - 实战案例 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="c设计模式完整学习指南---实战案例"><a class="header" href="#c设计模式完整学习指南---实战案例">C++设计模式完整学习指南 - 实战案例</a></h1>
+<blockquote>
+<p>本文档提供完整的实战项目案例，展示设计模式在真实项目中的应用。</p>
+<p><strong>导航</strong>: <a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">← 返回主文档</a> | <a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%AB%98%E7%BA%A7%E7%AF%87.html">← 高级篇</a> | <a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96.html">性能优化 →</a></p>
+</blockquote>
+<hr />
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<ol>
+<li><a href="#%E6%A1%88%E4%BE%8B1%EF%BC%9A2D%E5%B9%B3%E5%8F%B0%E6%B8%B8%E6%88%8F%E6%A1%86%E6%9E%B6">案例1：2D平台游戏框架</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B2%EF%BC%9A%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F">案例2：粒子系统</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B3%EF%BC%9A%E5%85%B3%E5%8D%A1%E7%BC%96%E8%BE%91%E5%99%A8">案例3：关卡编辑器</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B4%EF%BC%9A%E6%8A%80%E8%83%BD%E7%B3%BB%E7%BB%9F">案例4：技能系统</a></li>
+<li><a href="#%E6%A1%88%E4%BE%8B5%EF%BC%9A%E5%AD%98%E6%A1%A3%E7%B3%BB%E7%BB%9F">案例5：存档系统</a></li>
+</ol>
+<hr />
+<h2 id="案例12d平台游戏框架"><a class="header" href="#案例12d平台游戏框架">案例1：2D平台游戏框架</a></h2>
+<h3 id="项目概述"><a class="header" href="#项目概述">项目概述</a></h3>
+<p>构建一个2D平台跳跃游戏的核心框架，支持：</p>
+<ul>
+<li>玩家控制和移动</li>
+<li>敌人AI</li>
+<li>可收集道具</li>
+<li>平台和障碍物</li>
+<li>碰撞检测</li>
+</ul>
+<h3 id="使用的模式"><a class="header" href="#使用的模式">使用的模式</a></h3>
+<ol>
+<li><strong>游戏循环</strong> - 主循环控制</li>
+<li><strong>更新方法</strong> - 游戏对象更新</li>
+<li><strong>组件模式</strong> - 游戏对象组成</li>
+<li><strong>状态模式</strong> - 角色状态管理</li>
+<li><strong>命令模式</strong> - 输入处理</li>
+<li><strong>对象池</strong> - 粒子和子弹</li>
+<li><strong>观察者模式</strong> - 事件系统</li>
+</ol>
+<h3 id="完整实现"><a class="header" href="#完整实现">完整实现</a></h3>
+<h4 id="1-核心游戏循环"><a class="header" href="#1-核心游戏循环">1. 核心游戏循环</a></h4>
+<pre><code class="language-cpp">class Game {
+public:
+    void run() {
+        initialize();
+
+        const double FIXED_DT = 1.0 / 60.0;
+        double currentTime = getTime();
+        double accumulator = 0.0;
+
+        while (running_) {
+            double newTime = getTime();
+            double frameTime = newTime - currentTime;
+
+            if (frameTime &gt; 0.25) {
+                frameTime = 0.25;  // 防止死亡螺旋
+            }
+
+            currentTime = newTime;
+            accumulator += frameTime;
+
+            // 输入
+            processInput();
+
+            // 固定时间步长更新
+            while (accumulator &gt;= FIXED_DT) {
+                world_.update(FIXED_DT);
+                accumulator -= FIXED_DT;
+            }
+
+            // 渲染
+            renderer_.render(accumulator / FIXED_DT);
+
+            // 限制帧率
+            limitFrameRate();
+        }
+
+        shutdown();
+    }
+
+private:
+    void initialize() {
+        // 初始化子系统
+        renderer_.initialize();
+        audio_.initialize();
+        input_.initialize();
+
+        // 加载关卡
+        world_.loadLevel("level1.json");
+    }
+
+    void processInput() {
+        input_.update();
+
+        // 处理退出
+        if (input_.isKeyPressed(KEY_ESCAPE)) {
+            running_ = false;
+        }
+
+        // 转发输入到玩家
+        if (player_) {
+            player_-&gt;handleInput(input_);
+        }
+    }
+
+    bool running_;
+    World world_;
+    Renderer renderer_;
+    AudioEngine audio_;
+    InputManager input_;
+    Player* player_;
+};
+</code></pre>
+<h4 id="2-组件化游戏对象"><a class="header" href="#2-组件化游戏对象">2. 组件化游戏对象</a></h4>
+<pre><code class="language-cpp">// 组件基类
+class Component {
+public:
+    virtual ~Component() {}
+    virtual void update(float dt) {}
+    virtual void render() {}
+
+    void setOwner(GameObject* owner) { owner_ = owner; }
+    GameObject* getOwner() { return owner_; }
+
+protected:
+    GameObject* owner_;
+};
+
+// 游戏对象
+class GameObject {
+public:
+    GameObject() : active_(true), position_(0, 0) {}
+
+    virtual ~GameObject() {
+        for (auto comp : components_) {
+            delete comp;
+        }
+    }
+
+    template&lt;typename T&gt;
+    T* addComponent() {
+        T* comp = new T();
+        comp-&gt;setOwner(this);
+        components_.push_back(comp);
+        return comp;
+    }
+
+    template&lt;typename T&gt;
+    T* getComponent() {
+        for (auto comp : components_) {
+            T* result = dynamic_cast&lt;T*&gt;(comp);
+            if (result) return result;
+        }
+        return nullptr;
+    }
+
+    void update(float dt) {
+        if (!active_) return;
+
+        for (auto comp : components_) {
+            comp-&gt;update(dt);
+        }
+    }
+
+    void render() {
+        if (!active_) return;
+
+        for (auto comp : components_) {
+            comp-&gt;render();
+        }
+    }
+
+    Vector2 getPosition() const { return position_; }
+    void setPosition(const Vector2&amp; pos) { position_ = pos; }
+
+    bool isActive() const { return active_; }
+    void setActive(bool active) { active_ = active; }
+
+private:
+    std::vector&lt;Component*&gt; components_;
+    Vector2 position_;
+    bool active_;
+};
+
+// 物理组件
+class PhysicsComponent : public Component {
+public:
+    PhysicsComponent()
+        : velocity_(0, 0), acceleration_(0, 0),
+          onGround_(false), mass_(1.0f) {}
+
+    virtual void update(float dt) override {
+        // 应用重力
+        if (!onGround_) {
+            acceleration_.y += GRAVITY;
+        }
+
+        // 更新速度和位置
+        velocity_ += acceleration_ * dt;
+
+        // 限制最大速度
+        if (velocity_.x &gt; MAX_VELOCITY) velocity_.x = MAX_VELOCITY;
+        if (velocity_.x &lt; -MAX_VELOCITY) velocity_.x = -MAX_VELOCITY;
+        if (velocity_.y &gt; MAX_FALL_SPEED) velocity_.y = MAX_FALL_SPEED;
+
+        Vector2 newPos = owner_-&gt;getPosition() + velocity_ * dt;
+        owner_-&gt;setPosition(newPos);
+
+        // 重置加速度
+        acceleration_ = Vector2(0, 0);
+    }
+
+    void applyForce(const Vector2&amp; force) {
+        acceleration_ += force / mass_;
+    }
+
+    void setVelocity(const Vector2&amp; vel) { velocity_ = vel; }
+    Vector2 getVelocity() const { return velocity_; }
+
+    void setOnGround(bool onGround) { onGround_ = onGround; }
+    bool isOnGround() const { return onGround_; }
+
+private:
+    static constexpr float GRAVITY = 980.0f;
+    static constexpr float MAX_VELOCITY = 500.0f;
+    static constexpr float MAX_FALL_SPEED = 1000.0f;
+
+    Vector2 velocity_;
+    Vector2 acceleration_;
+    bool onGround_;
+    float mass_;
+};
+
+// 渲染组件
+class SpriteComponent : public Component {
+public:
+    SpriteComponent(const std::string&amp; texturePath)
+        : texture_(loadTexture(texturePath)),
+          flip_(false) {}
+
+    virtual void render() override {
+        Vector2 pos = owner_-&gt;getPosition();
+        drawSprite(texture_, pos.x, pos.y, flip_);
+    }
+
+    void setFlip(bool flip) { flip_ = flip; }
+
+private:
+    Texture texture_;
+    bool flip_;
+};
+
+// 碰撞组件
+class ColliderComponent : public Component {
+public:
+    ColliderComponent(float width, float height)
+        : width_(width), height_(height) {}
+
+    bool checkCollision(ColliderComponent* other) {
+        Vector2 pos1 = owner_-&gt;getPosition();
+        Vector2 pos2 = other-&gt;owner_-&gt;getPosition();
+
+        return (pos1.x &lt; pos2.x + other-&gt;width_ &amp;&amp;
+                pos1.x + width_ &gt; pos2.x &amp;&amp;
+                pos1.y &lt; pos2.y + other-&gt;height_ &amp;&amp;
+                pos1.y + height_ &gt; pos2.y);
+    }
+
+    float getWidth() const { return width_; }
+    float getHeight() const { return height_; }
+
+private:
+    float width_;
+    float height_;
+};
+</code></pre>
+<h4 id="3-玩家角色使用状态模式"><a class="header" href="#3-玩家角色使用状态模式">3. 玩家角色（使用状态模式）</a></h4>
+<pre><code class="language-cpp">// 玩家状态基类
+class PlayerState {
+public:
+    virtual ~PlayerState() {}
+    virtual void enter(Player* player) {}
+    virtual void exit(Player* player) {}
+    virtual void update(Player* player, float dt) = 0;
+    virtual void handleInput(Player* player, const InputManager&amp; input) = 0;
+};
+
+// 站立状态
+class StandingState : public PlayerState {
+public:
+    virtual void enter(Player* player) override {
+        player-&gt;getComponent&lt;SpriteComponent&gt;()-&gt;setAnimation("idle");
+    }
+
+    virtual void update(Player* player, float dt) override {
+        auto physics = player-&gt;getComponent&lt;PhysicsComponent&gt;();
+
+        // 摩擦力
+        Vector2 vel = physics-&gt;getVelocity();
+        vel.x *= 0.8f;
+        physics-&gt;setVelocity(vel);
+
+        // 检查是否掉落
+        if (!physics-&gt;isOnGround()) {
+            player-&gt;setState(new FallingState());
+        }
+    }
+
+    virtual void handleInput(Player* player, const InputManager&amp; input) override {
+        auto physics = player-&gt;getComponent&lt;PhysicsComponent&gt;();
+
+        // 移动
+        if (input.isKeyPressed(KEY_LEFT)) {
+            player-&gt;setState(new RunningState(true));
+        } else if (input.isKeyPressed(KEY_RIGHT)) {
+            player-&gt;setState(new RunningState(false));
+        }
+
+        // 跳跃
+        if (input.isKeyJustPressed(KEY_SPACE) &amp;&amp; physics-&gt;isOnGround()) {
+            player-&gt;setState(new JumpingState());
+        }
+
+        // 俯卧
+        if (input.isKeyPressed(KEY_DOWN)) {
+            player-&gt;setState(new DuckingState());
+        }
+    }
+};
+
+// 奔跑状态
+class RunningState : public PlayerState {
+public:
+    RunningState(bool left) : movingLeft_(left) {}
+
+    virtual void enter(Player* player) override {
+        player-&gt;getComponent&lt;SpriteComponent&gt;()-&gt;setAnimation("run");
+        player-&gt;getComponent&lt;SpriteComponent&gt;()-&gt;setFlip(movingLeft_);
+    }
+
+    virtual void update(Player* player, float dt) override {
+        auto physics = player-&gt;getComponent&lt;PhysicsComponent&gt;();
+
+        // 应用移动力
+        float direction = movingLeft_ ? -1.0f : 1.0f;
+        physics-&gt;applyForce(Vector2(direction * RUN_FORCE, 0));
+
+        // 检查是否停止
+        if (std::abs(physics-&gt;getVelocity().x) &lt; 10.0f) {
+            player-&gt;setState(new StandingState());
+        }
+
+        // 检查是否掉落
+        if (!physics-&gt;isOnGround()) {
+            player-&gt;setState(new FallingState());
+        }
+    }
+
+    virtual void handleInput(Player* player, const InputManager&amp; input) override {
+        auto physics = player-&gt;getComponent&lt;PhysicsComponent&gt;();
+
+        // 转向
+        bool pressingLeft = input.isKeyPressed(KEY_LEFT);
+        bool pressingRight = input.isKeyPressed(KEY_RIGHT);
+
+        if (pressingLeft &amp;&amp; !movingLeft_) {
+            movingLeft_ = true;
+            player-&gt;getComponent&lt;SpriteComponent&gt;()-&gt;setFlip(true);
+        } else if (pressingRight &amp;&amp; movingLeft_) {
+            movingLeft_ = false;
+            player-&gt;getComponent&lt;SpriteComponent&gt;()-&gt;setFlip(false);
+        }
+
+        // 停止移动
+        if (!pressingLeft &amp;&amp; !pressingRight) {
+            player-&gt;setState(new StandingState());
+        }
+
+        // 跳跃
+        if (input.isKeyJustPressed(KEY_SPACE) &amp;&amp; physics-&gt;isOnGround()) {
+            player-&gt;setState(new JumpingState());
+        }
+    }
+
+private:
+    static constexpr float RUN_FORCE = 3000.0f;
+    bool movingLeft_;
+};
+
+// 跳跃状态
+class JumpingState : public PlayerState {
+public:
+    virtual void enter(Player* player) override {
+        auto physics = player-&gt;getComponent&lt;PhysicsComponent&gt;();
+        physics-&gt;setVelocity(Vector2(physics-&gt;getVelocity().x, -JUMP_VELOCITY));
+
+        player-&gt;getComponent&lt;SpriteComponent&gt;()-&gt;setAnimation("jump");
+
+        // 播放跳跃音效
+        AudioEngine::instance().playSound("jump.wav");
+    }
+
+    virtual void update(Player* player, float dt) override {
+        auto physics = player-&gt;getComponent&lt;PhysicsComponent&gt;();
+
+        // 达到最高点或开始下落
+        if (physics-&gt;getVelocity().y &gt; 0) {
+            player-&gt;setState(new FallingState());
+        }
+    }
+
+    virtual void handleInput(Player* player, const InputManager&amp; input) override {
+        auto physics = player-&gt;getComponent&lt;PhysicsComponent&gt;();
+
+        // 空中控制
+        if (input.isKeyPressed(KEY_LEFT)) {
+            physics-&gt;applyForce(Vector2(-AIR_CONTROL_FORCE, 0));
+        } else if (input.isKeyPressed(KEY_RIGHT)) {
+            physics-&gt;applyForce(Vector2(AIR_CONTROL_FORCE, 0));
+        }
+
+        // 可变高度跳跃：松开跳跃键减小上升速度
+        if (input.isKeyReleased(KEY_SPACE)) {
+            Vector2 vel = physics-&gt;getVelocity();
+            if (vel.y &lt; 0) {
+                vel.y *= 0.5f;
+                physics-&gt;setVelocity(vel);
+            }
+        }
+    }
+
+private:
+    static constexpr float JUMP_VELOCITY = 600.0f;
+    static constexpr float AIR_CONTROL_FORCE = 1500.0f;
+};
+
+// 下落状态
+class FallingState : public PlayerState {
+public:
+    virtual void enter(Player* player) override {
+        player-&gt;getComponent&lt;SpriteComponent&gt;()-&gt;setAnimation("fall");
+    }
+
+    virtual void update(Player* player, float dt) override {
+        auto physics = player-&gt;getComponent&lt;PhysicsComponent&gt;();
+
+        // 着陆
+        if (physics-&gt;isOnGround()) {
+            player-&gt;setState(new StandingState());
+
+            // 播放着陆音效
+            AudioEngine::instance().playSound("land.wav");
+        }
+    }
+
+    virtual void handleInput(Player* player, const InputManager&amp; input) override {
+        auto physics = player-&gt;getComponent&lt;PhysicsComponent&gt;();
+
+        // 空中控制
+        if (input.isKeyPressed(KEY_LEFT)) {
+            physics-&gt;applyForce(Vector2(-AIR_CONTROL_FORCE, 0));
+        } else if (input.isKeyPressed(KEY_RIGHT)) {
+            physics-&gt;applyForce(Vector2(AIR_CONTROL_FORCE, 0));
+        }
+    }
+
+private:
+    static constexpr float AIR_CONTROL_FORCE = 1500.0f;
+};
+
+// 玩家类
+class Player : public GameObject {
+public:
+    Player() : currentState_(nullptr) {
+        // 添加组件
+        addComponent&lt;PhysicsComponent&gt;();
+        addComponent&lt;SpriteComponent&gt;("player.png");
+        addComponent&lt;ColliderComponent&gt;(32, 48);
+
+        // 设置初始状态
+        setState(new StandingState());
+    }
+
+    ~Player() {
+        delete currentState_;
+    }
+
+    void setState(PlayerState* newState) {
+        if (currentState_) {
+            currentState_-&gt;exit(this);
+            delete currentState_;
+        }
+
+        currentState_ = newState;
+        currentState_-&gt;enter(this);
+    }
+
+    void update(float dt) override {
+        GameObject::update(dt);
+        if (currentState_) {
+            currentState_-&gt;update(this, dt);
+        }
+    }
+
+    void handleInput(const InputManager&amp; input) {
+        if (currentState_) {
+            currentState_-&gt;handleInput(this, input);
+        }
+    }
+
+private:
+    PlayerState* currentState_;
+};
+</code></pre>
+<h4 id="4-敌人ai使用状态模式"><a class="header" href="#4-敌人ai使用状态模式">4. 敌人AI（使用状态模式）</a></h4>
+<pre><code class="language-cpp">// 敌人AI状态
+class EnemyState {
+public:
+    virtual ~EnemyState() {}
+    virtual void enter(Enemy* enemy) {}
+    virtual void update(Enemy* enemy, float dt) = 0;
+};
+
+// 巡逻状态
+class PatrolState : public EnemyState {
+public:
+    PatrolState() : patrolRight_(true) {}
+
+    virtual void update(Enemy* enemy, float dt) override {
+        auto physics = enemy-&gt;getComponent&lt;PhysicsComponent&gt;();
+
+        // 检测到玩家
+        if (enemy-&gt;canSeePlayer()) {
+            enemy-&gt;setState(new ChaseState());
+            return;
+        }
+
+        // 巡逻移动
+        float direction = patrolRight_ ? 1.0f : -1.0f;
+        physics-&gt;applyForce(Vector2(direction * PATROL_FORCE, 0));
+
+        // 检测边缘或墙壁
+        if (enemy-&gt;isAtEdge() || enemy-&gt;isAgainstWall()) {
+            patrolRight_ = !patrolRight_;
+        }
+    }
+
+private:
+    static constexpr float PATROL_FORCE = 1000.0f;
+    bool patrolRight_;
+};
+
+// 追击状态
+class ChaseState : public EnemyState {
+public:
+    virtual void enter(Enemy* enemy) override {
+        enemy-&gt;getComponent&lt;SpriteComponent&gt;()-&gt;setAnimation("angry");
+    }
+
+    virtual void update(Enemy* enemy, float dt) override {
+        auto physics = enemy-&gt;getComponent&lt;PhysicsComponent&gt;();
+        Player* player = enemy-&gt;getTargetPlayer();
+
+        if (!player) {
+            enemy-&gt;setState(new PatrolState());
+            return;
+        }
+
+        // 失去视线
+        if (!enemy-&gt;canSeePlayer()) {
+            enemy-&gt;setState(new SearchState());
+            return;
+        }
+
+        // 追击玩家
+        Vector2 toPlayer = player-&gt;getPosition() - enemy-&gt;getPosition();
+        float direction = (toPlayer.x &gt; 0) ? 1.0f : -1.0f;
+        physics-&gt;applyForce(Vector2(direction * CHASE_FORCE, 0));
+
+        // 进入攻击范围
+        if (toPlayer.length() &lt; ATTACK_RANGE) {
+            enemy-&gt;setState(new AttackState());
+        }
+    }
+
+private:
+    static constexpr float CHASE_FORCE = 2000.0f;
+    static constexpr float ATTACK_RANGE = 50.0f;
+};
+
+// 攻击状态
+class AttackState : public EnemyState {
+public:
+    AttackState() : attackTimer_(0) {}
+
+    virtual void enter(Enemy* enemy) override {
+        enemy-&gt;getComponent&lt;SpriteComponent&gt;()-&gt;setAnimation("attack");
+        enemy-&gt;getComponent&lt;PhysicsComponent&gt;()-&gt;setVelocity(Vector2(0, 0));
+    }
+
+    virtual void update(Enemy* enemy, float dt) override {
+        attackTimer_ += dt;
+
+        if (attackTimer_ &gt;= ATTACK_DURATION) {
+            // 执行攻击
+            enemy-&gt;performAttack();
+
+            Player* player = enemy-&gt;getTargetPlayer();
+            if (player) {
+                Vector2 toPlayer = player-&gt;getPosition() - enemy-&gt;getPosition();
+                if (toPlayer.length() &lt; ATTACK_RANGE) {
+                    // 继续攻击
+                    attackTimer_ = 0;
+                } else {
+                    // 返回追击
+                    enemy-&gt;setState(new ChaseState());
+                }
+            } else {
+                enemy-&gt;setState(new PatrolState());
+            }
+        }
+    }
+
+private:
+    static constexpr float ATTACK_DURATION = 0.5f;
+    static constexpr float ATTACK_RANGE = 50.0f;
+    float attackTimer_;
+};
+
+// 敌人类
+class Enemy : public GameObject {
+public:
+    Enemy() : currentState_(nullptr), targetPlayer_(nullptr) {
+        addComponent&lt;PhysicsComponent&gt;();
+        addComponent&lt;SpriteComponent&gt;("enemy.png");
+        addComponent&lt;ColliderComponent&gt;(32, 32);
+
+        setState(new PatrolState());
+    }
+
+    ~Enemy() {
+        delete currentState_;
+    }
+
+    void setState(EnemyState* newState) {
+        if (currentState_) {
+            delete currentState_;
+        }
+        currentState_ = newState;
+        currentState_-&gt;enter(this);
+    }
+
+    void update(float dt) override {
+        GameObject::update(dt);
+        if (currentState_) {
+            currentState_-&gt;update(this, dt);
+        }
+    }
+
+    bool canSeePlayer() {
+        if (!targetPlayer_) return false;
+
+        Vector2 toPlayer = targetPlayer_-&gt;getPosition() - getPosition();
+        return toPlayer.length() &lt; VISION_RANGE;
+    }
+
+    bool isAtEdge() {
+        // 检测前方是否有平台
+        // 简化实现...
+        return false;
+    }
+
+    bool isAgainstWall() {
+        // 检测是否撞墙
+        // 简化实现...
+        return false;
+    }
+
+    void performAttack() {
+        // 执行攻击逻辑
+        if (targetPlayer_) {
+            Vector2 toPlayer = targetPlayer_-&gt;getPosition() - getPosition();
+            if (toPlayer.length() &lt; 50.0f) {
+                // 对玩家造成伤害
+                EventSystem::instance().notify(Event::PLAYER_HIT, this);
+            }
+        }
+    }
+
+    Player* getTargetPlayer() { return targetPlayer_; }
+    void setTargetPlayer(Player* player) { targetPlayer_ = player; }
+
+private:
+    static constexpr float VISION_RANGE = 300.0f;
+
+    EnemyState* currentState_;
+    Player* targetPlayer_;
+};
+</code></pre>
+<h4 id="5-世界和关卡管理"><a class="header" href="#5-世界和关卡管理">5. 世界和关卡管理</a></h4>
+<pre><code class="language-cpp">class World {
+public:
+    void loadLevel(const std::string&amp; filename) {
+        // 清空现有对象
+        clear();
+
+        // 从JSON加载关卡
+        auto json = loadJSON(filename);
+
+        // 创建平台
+        for (auto&amp; platformData : json["platforms"]) {
+            auto platform = new Platform(
+                platformData["x"],
+                platformData["y"],
+                platformData["width"],
+                platformData["height"]
+            );
+            addGameObject(platform);
+        }
+
+        // 创建敌人
+        for (auto&amp; enemyData : json["enemies"]) {
+            auto enemy = new Enemy();
+            enemy-&gt;setPosition(Vector2(enemyData["x"], enemyData["y"]));
+            enemy-&gt;setTargetPlayer(player_);
+            addGameObject(enemy);
+        }
+
+        // 创建道具
+        for (auto&amp; itemData : json["items"]) {
+            auto item = new Collectible(itemData["type"]);
+            item-&gt;setPosition(Vector2(itemData["x"], itemData["y"]));
+            addGameObject(item);
+        }
+
+        // 创建玩家
+        player_ = new Player();
+        player_-&gt;setPosition(Vector2(json["playerStart"]["x"], json["playerStart"]["y"]));
+        addGameObject(player_);
+    }
+
+    void update(float dt) {
+        // 更新所有对象
+        for (auto obj : gameObjects_) {
+            obj-&gt;update(dt);
+        }
+
+        // 碰撞检测
+        checkCollisions();
+
+        // 移除失活对象
+        removeInactiveObjects();
+    }
+
+    void render() {
+        for (auto obj : gameObjects_) {
+            obj-&gt;render();
+        }
+    }
+
+private:
+    void checkCollisions() {
+        for (size_t i = 0; i &lt; gameObjects_.size(); i++) {
+            auto col1 = gameObjects_[i]-&gt;getComponent&lt;ColliderComponent&gt;();
+            if (!col1) continue;
+
+            for (size_t j = i + 1; j &lt; gameObjects_.size(); j++) {
+                auto col2 = gameObjects_[j]-&gt;getComponent&lt;ColliderComponent&gt;();
+                if (!col2) continue;
+
+                if (col1-&gt;checkCollision(col2)) {
+                    handleCollision(gameObjects_[i], gameObjects_[j]);
+                }
+            }
+        }
+    }
+
+    void handleCollision(GameObject* a, GameObject* b) {
+        // 玩家与敌人
+        if (dynamic_cast&lt;Player*&gt;(a) &amp;&amp; dynamic_cast&lt;Enemy*&gt;(b)) {
+            handlePlayerEnemyCollision(static_cast&lt;Player*&gt;(a), static_cast&lt;Enemy*&gt;(b));
+        }
+
+        // 玩家与道具
+        if (dynamic_cast&lt;Player*&gt;(a) &amp;&amp; dynamic_cast&lt;Collectible*&gt;(b)) {
+            handlePlayerItemCollision(static_cast&lt;Player*&gt;(a), static_cast&lt;Collectible*&gt;(b));
+        }
+
+        // 更多碰撞处理...
+    }
+
+    void addGameObject(GameObject* obj) {
+        gameObjects_.push_back(obj);
+    }
+
+    void removeInactiveObjects() {
+        gameObjects_.erase(
+            std::remove_if(gameObjects_.begin(), gameObjects_.end(),
+                [](GameObject* obj) {
+                    if (!obj-&gt;isActive()) {
+                        delete obj;
+                        return true;
+                    }
+                    return false;
+                }),
+            gameObjects_.end()
+        );
+    }
+
+    void clear() {
+        for (auto obj : gameObjects_) {
+            delete obj;
+        }
+        gameObjects_.clear();
+        player_ = nullptr;
+    }
+
+    std::vector&lt;GameObject*&gt; gameObjects_;
+    Player* player_;
+};
+</code></pre>
+<h3 id="项目总结"><a class="header" href="#项目总结">项目总结</a></h3>
+<p>这个2D平台游戏框架展示了多个设计模式的协同使用：</p>
+<p><strong>关键设计决策</strong>：</p>
+<ol>
+<li>
+<p><strong>组件模式</strong> - 灵活的游戏对象组成</p>
+<ul>
+<li>优点：易于添加新功能，代码复用</li>
+<li>缺点：需要更多的内存管理</li>
+</ul>
+</li>
+<li>
+<p><strong>状态模式</strong> - 角色和AI状态管理</p>
+<ul>
+<li>优点：状态逻辑清晰分离</li>
+<li>缺点：状态较多时类数量增加</li>
+</ul>
+</li>
+<li>
+<p><strong>固定时间步长</strong> - 稳定的物理模拟</p>
+<ul>
+<li>优点：确定性，可重现</li>
+<li>缺点：需要插值才能完全平滑</li>
+</ul>
+</li>
+</ol>
+<p><strong>扩展建议</strong>：</p>
+<ol>
+<li>添加动画系统（使用状态模式）</li>
+<li>实现更复杂的AI（行为树）</li>
+<li>添加粒子效果（对象池）</li>
+<li>实现存档系统（备忘录模式）</li>
+<li>添加UI系统（观察者模式）</li>
+</ol>
+<hr />
+<h2 id="案例2粒子系统"><a class="header" href="#案例2粒子系统">案例2：粒子系统</a></h2>
+<h3 id="项目概述-1"><a class="header" href="#项目概述-1">项目概述</a></h3>
+<p>高性能粒子系统，支持：</p>
+<ul>
+<li>数千个并发粒子</li>
+<li>多种发射器类型</li>
+<li>粒子属性动画</li>
+<li>零垃圾回收压力</li>
+</ul>
+<h3 id="使用的模式-1"><a class="header" href="#使用的模式-1">使用的模式</a></h3>
+<ol>
+<li><strong>对象池</strong> - 粒子复用</li>
+<li><strong>享元模式</strong> - 共享粒子属性</li>
+<li><strong>原型模式</strong> - 复制发射器配置</li>
+<li><strong>建造者模式</strong> - 构建复杂粒子效果</li>
+</ol>
+<h3 id="完整实现-1"><a class="header" href="#完整实现-1">完整实现</a></h3>
+<pre><code class="language-cpp">// 粒子结构（轻量级）
+struct Particle {
+    Vector2 position;
+    Vector2 velocity;
+    Color color;
+    float size;
+    float lifetime;
+    float age;
+    bool active;
+
+    void init(const Vector2&amp; pos, const Vector2&amp; vel, const Color&amp; col,
+              float sz, float life) {
+        position = pos;
+        velocity = vel;
+        color = col;
+        size = sz;
+        lifetime = life;
+        age = 0;
+        active = true;
+    }
+
+    void update(float dt) {
+        if (!active) return;
+
+        age += dt;
+        if (age &gt;= lifetime) {
+            active = false;
+            return;
+        }
+
+        position += velocity * dt;
+        velocity.y += 500.0f * dt;  // 重力
+
+        // 淡出
+        float alpha = 1.0f - (age / lifetime);
+        color.a = static_cast&lt;uint8_t&gt;(255 * alpha);
+    }
+};
+
+// 粒子系统（使用对象池）
+class ParticleSystem {
+public:
+    ParticleSystem(size_t maxParticles)
+        : maxParticles_(maxParticles), pool_(new Particle[maxParticles]) {
+        // 初始化空闲列表
+        for (size_t i = 0; i &lt; maxParticles_ - 1; i++) {
+            pool_[i].active = false;
+        }
+    }
+
+    ~ParticleSystem() {
+        delete[] pool_;
+    }
+
+    void spawn(const Vector2&amp; position, const Vector2&amp; velocity,
+               const Color&amp; color, float size, float lifetime) {
+        // 从池中获取粒子
+        for (size_t i = 0; i &lt; maxParticles_; i++) {
+            if (!pool_[i].active) {
+                pool_[i].init(position, velocity, color, size, lifetime);
+                return;
+            }
+        }
+        // 池已满，丢弃
+    }
+
+    void update(float dt) {
+        for (size_t i = 0; i &lt; maxParticles_; i++) {
+            pool_[i].update(dt);
+        }
+    }
+
+    void render(Renderer&amp; renderer) {
+        for (size_t i = 0; i &lt; maxParticles_; i++) {
+            if (pool_[i].active) {
+                renderer.drawParticle(pool_[i].position,
+                                     pool_[i].size,
+                                     pool_[i].color);
+            }
+        }
+    }
+
+private:
+    size_t maxParticles_;
+    Particle* pool_;
+};
+
+// 发射器配置（享元模式）
+class EmitterConfig {
+public:
+    float spawnRate;          // 每秒生成数量
+    float particleLifetime;   // 粒子生命周期
+    float particleSize;       // 粒子大小
+    Color particleColor;      // 粒子颜色
+    Vector2 velocityMin;      // 最小速度
+    Vector2 velocityMax;      // 最大速度
+    float spread;             // 发散角度
+
+    // 复制配置（原型模式）
+    EmitterConfig* clone() const {
+        return new EmitterConfig(*this);
+    }
+};
+
+// 粒子发射器
+class ParticleEmitter {
+public:
+    ParticleEmitter(ParticleSystem* system, const EmitterConfig* config)
+        : system_(system), config_(config), spawnAccumulator_(0) {}
+
+    void setPosition(const Vector2&amp; pos) { position_ = pos; }
+
+    void update(float dt) {
+        if (!active_) return;
+
+        spawnAccumulator_ += dt;
+        float spawnInterval = 1.0f / config_-&gt;spawnRate;
+
+        while (spawnAccumulator_ &gt;= spawnInterval) {
+            spawnParticle();
+            spawnAccumulator_ -= spawnInterval;
+        }
+    }
+
+    void setActive(bool active) { active_ = active; }
+
+private:
+    void spawnParticle() {
+        // 随机速度
+        Vector2 velocity(
+            randomFloat(config_-&gt;velocityMin.x, config_-&gt;velocityMax.x),
+            randomFloat(config_-&gt;velocityMin.y, config_-&gt;velocityMax.y)
+        );
+
+        // 应用发散角度
+        float angle = randomFloat(-config_-&gt;spread, config_-&gt;spread);
+        velocity = rotateVector(velocity, angle);
+
+        system_-&gt;spawn(
+            position_,
+            velocity,
+            config_-&gt;particleColor,
+            config_-&gt;particleSize,
+            config_-&gt;particleLifetime
+        );
+    }
+
+    ParticleSystem* system_;
+    const EmitterConfig* config_;
+    Vector2 position_;
+    float spawnAccumulator_;
+    bool active_;
+};
+
+// 粒子效果建造者
+class ParticleEffectBuilder {
+public:
+    ParticleEffectBuilder() : config_(new EmitterConfig()) {
+        // 默认值
+        config_-&gt;spawnRate = 30.0f;
+        config_-&gt;particleLifetime = 1.0f;
+        config_-&gt;particleSize = 5.0f;
+        config_-&gt;particleColor = Color{255, 255, 255, 255};
+        config_-&gt;velocityMin = Vector2(-100, -200);
+        config_-&gt;velocityMax = Vector2(100, -100);
+        config_-&gt;spread = 0.5f;
+    }
+
+    ParticleEffectBuilder&amp; withSpawnRate(float rate) {
+        config_-&gt;spawnRate = rate;
+        return *this;
+    }
+
+    ParticleEffectBuilder&amp; withLifetime(float lifetime) {
+        config_-&gt;particleLifetime = lifetime;
+        return *this;
+    }
+
+    ParticleEffectBuilder&amp; withSize(float size) {
+        config_-&gt;particleSize = size;
+        return *this;
+    }
+
+    ParticleEffectBuilder&amp; withColor(const Color&amp; color) {
+        config_-&gt;particleColor = color;
+        return *this;
+    }
+
+    ParticleEffectBuilder&amp; withVelocity(const Vector2&amp; min, const Vector2&amp; max) {
+        config_-&gt;velocityMin = min;
+        config_-&gt;velocityMax = max;
+        return *this;
+    }
+
+    ParticleEffectBuilder&amp; withSpread(float spread) {
+        config_-&gt;spread = spread;
+        return *this;
+    }
+
+    EmitterConfig* build() {
+        return config_;
+    }
+
+private:
+    EmitterConfig* config_;
+};
+
+// 使用示例
+void createFireEffect() {
+    ParticleSystem particleSystem(10000);
+
+    // 使用建造者模式创建火焰效果
+    auto fireConfig = ParticleEffectBuilder()
+        .withSpawnRate(100.0f)
+        .withLifetime(0.8f)
+        .withSize(10.0f)
+        .withColor(Color{255, 100, 0, 255})
+        .withVelocity(Vector2(-50, -150), Vector2(50, -100))
+        .withSpread(0.3f)
+        .build();
+
+    ParticleEmitter fireEmitter(&amp;particleSystem, fireConfig);
+    fireEmitter.setPosition(Vector2(400, 300));
+    fireEmitter.setActive(true);
+
+    // 游戏循环
+    while (running) {
+        fireEmitter.update(deltaTime);
+        particleSystem.update(deltaTime);
+        particleSystem.render(renderer);
+    }
+}
+</code></pre>
+<hr />
+<h2 id="后续案例预览"><a class="header" href="#后续案例预览">后续案例预览</a></h2>
+<p>由于篇幅限制，以下案例将在后续部分提供：</p>
+<ul>
+<li><strong>案例3：关卡编辑器</strong> - 命令模式实现撤销/重做</li>
+<li><strong>案例4：技能系统</strong> - 组合多个模式实现灵活的技能定义</li>
+<li><strong>案例5：存档系统</strong> - 备忘录模式和序列化</li>
+</ul>
+<hr />
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>通过这些实战案例，你可以看到：</p>
+<ol>
+<li><strong>模式组合</strong> - 实际项目中通常组合使用多个模式</li>
+<li><strong>权衡取舍</strong> - 每个设计决策都有利弊</li>
+<li><strong>实践出真知</strong> - 理论知识需要通过实践巩固</li>
+</ol>
+<p><strong>学习建议</strong>：</p>
+<ol>
+<li>从简单案例开始实现</li>
+<li>逐步添加复杂性</li>
+<li>重构代码应用新模式</li>
+<li>测量性能影响</li>
+<li>记录设计决策和理由</li>
+</ol>
+<p>继续阅读：</p>
+<ul>
+<li><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">← 返回主文档</a></li>
+<li><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%AB%98%E7%BA%A7%E7%AF%87.html">← 高级篇</a></li>
+<li><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96.html">性能优化 →</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/游戏引擎.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/设计模式-性能优化.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/游戏引擎.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/设计模式-性能优化.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

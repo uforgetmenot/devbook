@@ -1,0 +1,1104 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>TCP/IP应用层协议详解 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="tcpip应用层协议详解"><a class="header" href="#tcpip应用层协议详解">TCP/IP应用层协议详解</a></h1>
+<blockquote>
+<p>本笔记是<a href="tcpip.html">TCP/IP协议学习笔记</a>的扩展部分，专注于应用层协议的深入讲解</p>
+</blockquote>
+<h2 id="-目录"><a class="header" href="#-目录">📋 目录</a></h2>
+<ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E7%AB%A0httphttps%E5%8D%8F%E8%AE%AE">第一章：HTTP/HTTPS协议</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0dns%E5%8D%8F%E8%AE%AE">第二章：DNS协议</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%E9%82%AE%E4%BB%B6%E5%8D%8F%E8%AE%AE">第三章：邮件协议</a></li>
+<li><a href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0ftp%E5%8D%8F%E8%AE%AE">第四章：FTP协议</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%94%E7%AB%A0websocket%E5%8D%8F%E8%AE%AE">第五章：WebSocket协议</a></li>
+<li><a href="#%E7%AC%AC%E5%85%AD%E7%AB%A0ssh%E5%8D%8F%E8%AE%AE">第六章：SSH协议</a></li>
+</ul>
+<hr />
+<h2 id="第一章httphttps协议"><a class="header" href="#第一章httphttps协议">第一章：HTTP/HTTPS协议</a></h2>
+<h3 id="11-http协议基础"><a class="header" href="#11-http协议基础">1.1 HTTP协议基础</a></h3>
+<h4 id="http协议概述"><a class="header" href="#http协议概述">HTTP协议概述</a></h4>
+<p><strong>HTTP (HyperText Transfer Protocol)</strong> - 超文本传输协议</p>
+<pre><code>特点：
+1. 无状态：每个请求独立，服务器不保存客户端信息
+2. 基于TCP：使用TCP作为传输层协议（HTTP/3使用QUIC）
+3. 请求-响应模式：客户端发起请求，服务器返回响应
+4. 灵活：可以传输任意类型的数据
+5. 简单：报文格式人类可读
+</code></pre>
+<h4 id="http版本演进"><a class="header" href="#http版本演进">HTTP版本演进</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>版本</th><th>发布年份</th><th>主要特性</th></tr></thead><tbody>
+<tr><td><strong>HTTP/0.9</strong></td><td>1991</td><td>只支持GET，无头部</td></tr>
+<tr><td><strong>HTTP/1.0</strong></td><td>1996</td><td>增加POST、HEAD，引入头部</td></tr>
+<tr><td><strong>HTTP/1.1</strong></td><td>1997</td><td>持久连接、管道化、缓存控制</td></tr>
+<tr><td><strong>HTTP/2</strong></td><td>2015</td><td>多路复用、头部压缩、服务器推送</td></tr>
+<tr><td><strong>HTTP/3</strong></td><td>2022</td><td>基于QUIC，UDP传输，0-RTT</td></tr>
+</tbody></table>
+</div>
+<h3 id="12-http请求和响应"><a class="header" href="#12-http请求和响应">1.2 HTTP请求和响应</a></h3>
+<h4 id="http请求格式"><a class="header" href="#http请求格式">HTTP请求格式</a></h4>
+<pre><code>GET /index.html HTTP/1.1
+Host: www.example.com
+User-Agent: Mozilla/5.0
+Accept: text/html
+Accept-Language: zh-CN,zh;q=0.9
+Connection: keep-alive
+
+[请求体 - GET请求通常为空]
+</code></pre>
+<p><strong>请求行</strong></p>
+<pre><code>方法 URL HTTP版本
+GET /path/to/resource HTTP/1.1
+</code></pre>
+<p><strong>常见HTTP方法</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>方法</th><th>说明</th><th>幂等性</th><th>安全性</th></tr></thead><tbody>
+<tr><td><strong>GET</strong></td><td>获取资源</td><td>是</td><td>是</td></tr>
+<tr><td><strong>POST</strong></td><td>提交数据</td><td>否</td><td>否</td></tr>
+<tr><td><strong>PUT</strong></td><td>更新资源</td><td>是</td><td>否</td></tr>
+<tr><td><strong>DELETE</strong></td><td>删除资源</td><td>是</td><td>否</td></tr>
+<tr><td><strong>HEAD</strong></td><td>获取头部</td><td>是</td><td>是</td></tr>
+<tr><td><strong>OPTIONS</strong></td><td>获取支持的方法</td><td>是</td><td>是</td></tr>
+<tr><td><strong>PATCH</strong></td><td>部分更新</td><td>否</td><td>否</td></tr>
+<tr><td><strong>CONNECT</strong></td><td>建立隧道</td><td>否</td><td>否</td></tr>
+<tr><td><strong>TRACE</strong></td><td>追踪请求</td><td>是</td><td>是</td></tr>
+</tbody></table>
+</div>
+<h4 id="http响应格式"><a class="header" href="#http响应格式">HTTP响应格式</a></h4>
+<pre><code>HTTP/1.1 200 OK
+Date: Mon, 07 Nov 2025 12:00:00 GMT
+Server: nginx/1.18.0
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1234
+Connection: keep-alive
+Cache-Control: max-age=3600
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+  &lt;h1&gt;Hello World&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>状态码分类</strong></p>
+<pre><code>1xx - 信息性状态码
+  100 Continue
+  101 Switching Protocols
+
+2xx - 成功状态码
+  200 OK
+  201 Created
+  204 No Content
+  206 Partial Content
+
+3xx - 重定向状态码
+  301 Moved Permanently (永久重定向)
+  302 Found (临时重定向)
+  304 Not Modified (缓存有效)
+  307 Temporary Redirect
+  308 Permanent Redirect
+
+4xx - 客户端错误
+  400 Bad Request
+  401 Unauthorized (未认证)
+  403 Forbidden (无权限)
+  404 Not Found
+  405 Method Not Allowed
+  429 Too Many Requests
+
+5xx - 服务器错误
+  500 Internal Server Error
+  502 Bad Gateway
+  503 Service Unavailable
+  504 Gateway Timeout
+</code></pre>
+<h3 id="13-http头部详解"><a class="header" href="#13-http头部详解">1.3 HTTP头部详解</a></h3>
+<h4 id="常用请求头"><a class="header" href="#常用请求头">常用请求头</a></h4>
+<pre><code class="language-python"># 内容协商
+Accept: text/html,application/json  # 可接受的内容类型
+Accept-Language: zh-CN,en          # 可接受的语言
+Accept-Encoding: gzip, deflate, br # 可接受的编码
+
+# 条件请求
+If-Modified-Since: Mon, 01 Nov 2025 00:00:00 GMT
+If-None-Match: "etag-value"
+
+# 身份认证
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Cookie: session_id=abc123; user=john
+
+# 缓存控制
+Cache-Control: no-cache, max-age=0
+Pragma: no-cache
+
+# 其他
+User-Agent: Mozilla/5.0 ...
+Referer: https://example.com/page
+Host: www.example.com
+Connection: keep-alive
+Content-Type: application/json
+Content-Length: 256
+</code></pre>
+<h4 id="常用响应头"><a class="header" href="#常用响应头">常用响应头</a></h4>
+<pre><code class="language-python"># 内容信息
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1234
+Content-Encoding: gzip
+
+# 缓存控制
+Cache-Control: public, max-age=3600
+Expires: Mon, 07 Nov 2025 13:00:00 GMT
+ETag: "686897696a7c876b7e"
+Last-Modified: Mon, 07 Nov 2025 12:00:00 GMT
+
+# 安全相关
+Strict-Transport-Security: max-age=31536000
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Content-Security-Policy: default-src 'self'
+
+# CORS跨域
+Access-Control-Allow-Origin: https://example.com
+Access-Control-Allow-Methods: GET, POST, PUT
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Max-Age: 86400
+
+# 其他
+Server: nginx/1.18.0
+Set-Cookie: session_id=abc123; HttpOnly; Secure
+Location: https://example.com/new-page
+</code></pre>
+<h3 id="14-python实现http客户端"><a class="header" href="#14-python实现http客户端">1.4 Python实现HTTP客户端</a></h3>
+<h4 id="使用requests库"><a class="header" href="#使用requests库">使用requests库</a></h4>
+<pre><code class="language-python">import requests
+
+# GET请求
+response = requests.get('https://api.github.com/users/octocat')
+print(f"状态码: {response.status_code}")
+print(f"响应头: {response.headers}")
+print(f"响应体: {response.json()}")
+
+# POST请求
+data = {'username': 'john', 'password': 'secret'}
+response = requests.post('https://httpbin.org/post', json=data)
+
+# 设置请求头
+headers = {
+    'User-Agent': 'MyApp/1.0',
+    'Authorization': 'Bearer token123'
+}
+response = requests.get('https://api.example.com/data', headers=headers)
+
+# 设置超时
+response = requests.get('https://httpbin.org/delay/3', timeout=5)
+
+# 会话保持（Cookie自动管理）
+session = requests.Session()
+session.post('https://httpbin.org/login', data={'user': 'john'})
+response = session.get('https://httpbin.org/user')  # Cookie自动发送
+</code></pre>
+<h4 id="使用urllib实现"><a class="header" href="#使用urllib实现">使用urllib实现</a></h4>
+<pre><code class="language-python">import urllib.request
+import urllib.parse
+import json
+
+# GET请求
+url = 'https://api.github.com/users/octocat'
+req = urllib.request.Request(url)
+req.add_header('User-Agent', 'Python-urllib/3.9')
+
+with urllib.request.urlopen(req, timeout=10) as response:
+    data = response.read()
+    print(f"状态码: {response.status}")
+    print(f"响应头: {dict(response.headers)}")
+    print(f"响应体: {data.decode('utf-8')}")
+
+# POST请求
+url = 'https://httpbin.org/post'
+data = {'key': 'value'}
+data_encoded = urllib.parse.urlencode(data).encode('utf-8')
+
+req = urllib.request.Request(url, data=data_encoded, method='POST')
+req.add_header('Content-Type', 'application/x-www-form-urlencoded')
+
+with urllib.request.urlopen(req) as response:
+    result = json.loads(response.read().decode('utf-8'))
+    print(result)
+</code></pre>
+<h3 id="15-python实现简单http服务器"><a class="header" href="#15-python实现简单http服务器">1.5 Python实现简单HTTP服务器</a></h3>
+<h4 id="使用httpserver模块"><a class="header" href="#使用httpserver模块">使用http.server模块</a></h4>
+<pre><code class="language-python">from http.server import HTTPServer, BaseHTTPRequestHandler
+import json
+
+class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        """处理GET请求"""
+        if self.path == '/':
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.end_headers()
+            html = '''
+            &lt;!DOCTYPE html&gt;
+            &lt;html&gt;
+            &lt;head&gt;&lt;title&gt;简单HTTP服务器&lt;/title&gt;&lt;/head&gt;
+            &lt;body&gt;
+                &lt;h1&gt;欢迎访问简单HTTP服务器&lt;/h1&gt;
+                &lt;p&gt;当前路径: /&lt;/p&gt;
+            &lt;/body&gt;
+            &lt;/html&gt;
+            '''
+            self.wfile.write(html.encode('utf-8'))
+
+        elif self.path == '/api/data':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            data = {'message': 'Hello', 'status': 'success'}
+            self.wfile.write(json.dumps(data).encode('utf-8'))
+
+        else:
+            self.send_error(404, 'Not Found')
+
+    def do_POST(self):
+        """处理POST请求"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        post_data = self.rfile.read(content_length)
+
+        try:
+            data = json.loads(post_data.decode('utf-8'))
+            print(f"收到POST数据: {data}")
+
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+
+            response = {
+                'status': 'success',
+                'received': data
+            }
+            self.wfile.write(json.dumps(response).encode('utf-8'))
+        except Exception as e:
+            self.send_error(400, f'Bad Request: {str(e)}')
+
+    def log_message(self, format, *args):
+        """自定义日志格式"""
+        print(f"{self.address_string()} - [{self.log_date_time_string()}] {format % args}")
+
+# 启动服务器
+server_address = ('', 8000)
+httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
+print(f"HTTP服务器运行在 http://localhost:8000")
+httpd.serve_forever()
+</code></pre>
+<h3 id="16-https协议"><a class="header" href="#16-https协议">1.6 HTTPS协议</a></h3>
+<h4 id="https工作原理"><a class="header" href="#https工作原理">HTTPS工作原理</a></h4>
+<pre><code>HTTPS = HTTP + TLS/SSL
+
+握手过程：
+1. 客户端 -&gt; 服务器: Client Hello
+   - 支持的TLS版本
+   - 支持的加密套件
+   - 随机数
+
+2. 服务器 -&gt; 客户端: Server Hello
+   - 选择的TLS版本
+   - 选择的加密套件
+   - 服务器证书
+   - 随机数
+
+3. 客户端验证证书
+   - 检查证书有效期
+   - 验证证书链
+   - 验证域名
+
+4. 客户端生成预主密钥
+   - 使用服务器公钥加密
+   - 发送给服务器
+
+5. 双方生成会话密钥
+   - 使用预主密钥和随机数
+   - 生成对称加密密钥
+
+6. 开始加密通信
+   - 使用对称加密传输数据
+</code></pre>
+<h4 id="python-https客户端"><a class="header" href="#python-https客户端">Python HTTPS客户端</a></h4>
+<pre><code class="language-python">import requests
+import ssl
+import urllib.request
+
+# 使用requests（自动处理证书验证）
+response = requests.get('https://www.google.com')
+
+# 忽略SSL证书验证（不推荐用于生产）
+response = requests.get('https://self-signed.badssl.com/', verify=False)
+
+# 指定CA证书
+response = requests.get('https://example.com', verify='/path/to/ca-bundle.crt')
+
+# 客户端证书认证
+response = requests.get(
+    'https://example.com',
+    cert=('/path/to/client.crt', '/path/to/client.key')
+)
+
+# urllib实现（自定义SSL上下文）
+context = ssl.create_default_context()
+# context.check_hostname = False  # 不验证主机名
+# context.verify_mode = ssl.CERT_NONE  # 不验证证书
+
+with urllib.request.urlopen('https://www.google.com', context=context) as response:
+    data = response.read()
+</code></pre>
+<hr />
+<h2 id="第二章dns协议"><a class="header" href="#第二章dns协议">第二章：DNS协议</a></h2>
+<h3 id="21-dns基础"><a class="header" href="#21-dns基础">2.1 DNS基础</a></h3>
+<h4 id="dns概述"><a class="header" href="#dns概述">DNS概述</a></h4>
+<p><strong>DNS (Domain Name System)</strong> - 域名系统</p>
+<pre><code>功能：将域名转换为IP地址
+
+示例：
+  www.example.com -&gt; 93.184.216.34
+
+DNS层次结构：
+  . (根域)
+  ├── com (顶级域)
+  │   ├── example (二级域)
+  │   │   └── www (主机名)
+  ├── org
+  ├── net
+  └── cn
+      ├── com
+      └── edu
+</code></pre>
+<h4 id="dns记录类型"><a class="header" href="#dns记录类型">DNS记录类型</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>名称</th><th>说明</th><th>示例</th></tr></thead><tbody>
+<tr><td><strong>A</strong></td><td>Address</td><td>IPv4地址</td><td>example.com -&gt; 93.184.216.34</td></tr>
+<tr><td><strong>AAAA</strong></td><td>IPv6 Address</td><td>IPv6地址</td><td>example.com -&gt; 2606:2800:220:1:248:1893:25c8:1946</td></tr>
+<tr><td><strong>CNAME</strong></td><td>Canonical Name</td><td>别名</td><td>www.example.com -&gt; example.com</td></tr>
+<tr><td><strong>MX</strong></td><td>Mail Exchange</td><td>邮件服务器</td><td>example.com -&gt; mail.example.com</td></tr>
+<tr><td><strong>NS</strong></td><td>Name Server</td><td>域名服务器</td><td>example.com -&gt; ns1.example.com</td></tr>
+<tr><td><strong>TXT</strong></td><td>Text</td><td>文本信息</td><td>用于SPF、DKIM等</td></tr>
+<tr><td><strong>SOA</strong></td><td>Start of Authority</td><td>权威信息</td><td>域管理信息</td></tr>
+<tr><td><strong>PTR</strong></td><td>Pointer</td><td>反向解析</td><td>IP -&gt; 域名</td></tr>
+<tr><td><strong>SRV</strong></td><td>Service</td><td>服务记录</td><td>指定服务位置</td></tr>
+</tbody></table>
+</div>
+<h3 id="22-dns查询过程"><a class="header" href="#22-dns查询过程">2.2 DNS查询过程</a></h3>
+<h4 id="递归查询流程"><a class="header" href="#递归查询流程">递归查询流程</a></h4>
+<pre><code>客户端查询 www.example.com:
+
+1. 客户端 -&gt; 本地DNS服务器
+   "www.example.com的IP是什么？"
+
+2. 本地DNS检查缓存
+   - 如果有缓存，直接返回
+   - 如果没有，开始迭代查询
+
+3. 本地DNS -&gt; 根DNS服务器
+   "www.example.com的IP是什么？"
+   根DNS回复："我不知道，但com域的NS是..."
+
+4. 本地DNS -&gt; com域DNS服务器
+   "www.example.com的IP是什么？"
+   com DNS回复："我不知道，但example.com的NS是..."
+
+5. 本地DNS -&gt; example.com域DNS服务器
+   "www.example.com的IP是什么？"
+   权威DNS回复："93.184.216.34"
+
+6. 本地DNS -&gt; 客户端
+   返回IP地址，并缓存结果
+</code></pre>
+<h3 id="23-python-dns编程"><a class="header" href="#23-python-dns编程">2.3 Python DNS编程</a></h3>
+<h4 id="使用socket模块"><a class="header" href="#使用socket模块">使用socket模块</a></h4>
+<pre><code class="language-python">import socket
+
+# 域名解析为IP
+hostname = 'www.google.com'
+ip_address = socket.gethostbyname(hostname)
+print(f"{hostname} -&gt; {ip_address}")
+
+# 获取所有IP地址
+addr_info = socket.getaddrinfo(hostname, None)
+for info in addr_info:
+    print(f"IP: {info[4][0]}, 类型: {info[0].name}")
+
+# 反向DNS查询（IP -&gt; 域名）
+ip = '8.8.8.8'
+hostname = socket.gethostbyaddr(ip)
+print(f"{ip} -&gt; {hostname[0]}")
+</code></pre>
+<h4 id="使用dnspython库"><a class="header" href="#使用dnspython库">使用dnspython库</a></h4>
+<pre><code class="language-python">import dns.resolver
+import dns.reversename
+
+# 查询A记录
+answers = dns.resolver.resolve('www.google.com', 'A')
+for rdata in answers:
+    print(f"A记录: {rdata.address}")
+
+# 查询AAAA记录（IPv6）
+answers = dns.resolver.resolve('www.google.com', 'AAAA')
+for rdata in answers:
+    print(f"AAAA记录: {rdata.address}")
+
+# 查询MX记录
+answers = dns.resolver.resolve('gmail.com', 'MX')
+for rdata in answers:
+    print(f"MX记录: {rdata.preference} {rdata.exchange}")
+
+# 查询NS记录
+answers = dns.resolver.resolve('google.com', 'NS')
+for rdata in answers:
+    print(f"NS记录: {rdata.target}")
+
+# 查询TXT记录
+answers = dns.resolver.resolve('google.com', 'TXT')
+for rdata in answers:
+    print(f"TXT记录: {rdata.strings}")
+
+# 反向DNS查询
+addr = dns.reversename.from_address('8.8.8.8')
+answers = dns.resolver.resolve(addr, 'PTR')
+for rdata in answers:
+    print(f"PTR记录: {rdata.target}")
+
+# 指定DNS服务器
+resolver = dns.resolver.Resolver()
+resolver.nameservers = ['8.8.8.8', '8.8.4.4']  # Google DNS
+answers = resolver.resolve('example.com', 'A')
+</code></pre>
+<h3 id="24-dns缓存"><a class="header" href="#24-dns缓存">2.4 DNS缓存</a></h3>
+<h4 id="查看dns缓存"><a class="header" href="#查看dns缓存">查看DNS缓存</a></h4>
+<pre><code class="language-bash"># Linux - systemd-resolved
+resolvectl statistics
+
+# Windows
+ipconfig /displaydns
+
+# 清除DNS缓存
+# Linux
+sudo systemd-resolve --flush-caches
+# 或
+sudo /etc/init.d/nscd restart
+
+# Windows
+ipconfig /flushdns
+
+# macOS
+sudo dscacheutil -flushcache
+sudo killall -HUP mDNSResponder
+</code></pre>
+<h4 id="python实现简单dns缓存"><a class="header" href="#python实现简单dns缓存">Python实现简单DNS缓存</a></h4>
+<pre><code class="language-python">import socket
+import time
+from functools import lru_cache
+
+class DNSCache:
+    def __init__(self, ttl=300):
+        self.cache = {}
+        self.ttl = ttl
+
+    def resolve(self, hostname):
+        """带缓存的DNS解析"""
+        current_time = time.time()
+
+        # 检查缓存
+        if hostname in self.cache:
+            ip, timestamp = self.cache[hostname]
+            if current_time - timestamp &lt; self.ttl:
+                print(f"从缓存获取: {hostname} -&gt; {ip}")
+                return ip
+
+        # 执行DNS查询
+        try:
+            ip = socket.gethostbyname(hostname)
+            self.cache[hostname] = (ip, current_time)
+            print(f"DNS查询: {hostname} -&gt; {ip}")
+            return ip
+        except socket.gaierror as e:
+            print(f"DNS查询失败: {e}")
+            return None
+
+    def clear_cache(self):
+        """清除缓存"""
+        self.cache.clear()
+        print("DNS缓存已清除")
+
+# 使用示例
+dns = DNSCache(ttl=60)
+print(dns.resolve('www.google.com'))
+time.sleep(1)
+print(dns.resolve('www.google.com'))  # 从缓存获取
+</code></pre>
+<hr />
+<h2 id="第三章邮件协议"><a class="header" href="#第三章邮件协议">第三章：邮件协议</a></h2>
+<h3 id="31-smtp协议发送邮件"><a class="header" href="#31-smtp协议发送邮件">3.1 SMTP协议（发送邮件）</a></h3>
+<h4 id="smtp基础"><a class="header" href="#smtp基础">SMTP基础</a></h4>
+<p><strong>SMTP (Simple Mail Transfer Protocol)</strong> - 简单邮件传输协议</p>
+<pre><code>默认端口：
+  25  - 标准SMTP（未加密）
+  465 - SMTPS（SSL加密）
+  587 - SMTP（STARTTLS加密）
+
+工作流程：
+1. 连接到SMTP服务器
+2. 握手（EHLO/HELO）
+3. 认证（AUTH）
+4. 发送邮件（MAIL FROM, RCPT TO, DATA）
+5. 关闭连接（QUIT）
+</code></pre>
+<h4 id="python发送邮件"><a class="header" href="#python发送邮件">Python发送邮件</a></h4>
+<pre><code class="language-python">import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+
+def send_simple_email(smtp_server, smtp_port, username, password,
+                     from_addr, to_addr, subject, body):
+    """发送简单文本邮件"""
+    # 创建消息
+    msg = MIMEText(body, 'plain', 'utf-8')
+    msg['From'] = from_addr
+    msg['To'] = to_addr
+    msg['Subject'] = subject
+
+    try:
+        # 连接SMTP服务器
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()  # 启用TLS加密
+        server.login(username, password)
+
+        # 发送邮件
+        server.send_message(msg)
+        print("邮件发送成功！")
+    except Exception as e:
+        print(f"邮件发送失败: {e}")
+    finally:
+        server.quit()
+
+def send_html_email(smtp_server, smtp_port, username, password,
+                   from_addr, to_addr, subject, html_body):
+    """发送HTML邮件"""
+    msg = MIMEMultipart('alternative')
+    msg['From'] = from_addr
+    msg['To'] = to_addr
+    msg['Subject'] = subject
+
+    # 纯文本部分
+    text = "请使用支持HTML的邮件客户端查看此邮件"
+    part1 = MIMEText(text, 'plain', 'utf-8')
+
+    # HTML部分
+    part2 = MIMEText(html_body, 'html', 'utf-8')
+
+    msg.attach(part1)
+    msg.attach(part2)
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(username, password)
+        server.send_message(msg)
+        print("HTML邮件发送成功！")
+    except Exception as e:
+        print(f"邮件发送失败: {e}")
+    finally:
+        server.quit()
+
+def send_email_with_attachment(smtp_server, smtp_port, username, password,
+                               from_addr, to_addr, subject, body, filename):
+    """发送带附件的邮件"""
+    msg = MIMEMultipart()
+    msg['From'] = from_addr
+    msg['To'] = to_addr
+    msg['Subject'] = subject
+
+    # 邮件正文
+    msg.attach(MIMEText(body, 'plain', 'utf-8'))
+
+    # 附件
+    try:
+        with open(filename, 'rb') as f:
+            part = MIMEBase('application', 'octet-stream')
+            part.set_payload(f.read())
+            encoders.encode_base64(part)
+            part.add_header(
+                'Content-Disposition',
+                f'attachment; filename= {filename}'
+            )
+            msg.attach(part)
+    except FileNotFoundError:
+        print(f"文件 {filename} 不存在")
+        return
+
+    try:
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(username, password)
+        server.send_message(msg)
+        print("带附件的邮件发送成功！")
+    except Exception as e:
+        print(f"邮件发送失败: {e}")
+    finally:
+        server.quit()
+
+# 使用示例
+smtp_config = {
+    'smtp_server': 'smtp.gmail.com',
+    'smtp_port': 587,
+    'username': 'your-email@gmail.com',
+    'password': 'your-app-password'
+}
+
+# 发送简单邮件
+send_simple_email(
+    **smtp_config,
+    from_addr='your-email@gmail.com',
+    to_addr='recipient@example.com',
+    subject='测试邮件',
+    body='这是一封测试邮件'
+)
+</code></pre>
+<h3 id="32-pop3协议接收邮件"><a class="header" href="#32-pop3协议接收邮件">3.2 POP3协议（接收邮件）</a></h3>
+<h4 id="pop3基础"><a class="header" href="#pop3基础">POP3基础</a></h4>
+<p><strong>POP3 (Post Office Protocol version 3)</strong> - 邮局协议第3版</p>
+<pre><code>默认端口：
+  110 - POP3（未加密）
+  995 - POP3S（SSL加密）
+
+特点：
+  - 下载后从服务器删除（可选）
+  - 不支持文件夹
+  - 适合单设备使用
+</code></pre>
+<h4 id="python接收邮件pop3"><a class="header" href="#python接收邮件pop3">Python接收邮件（POP3）</a></h4>
+<pre><code class="language-python">import poplib
+from email.parser import BytesParser
+from email.policy import default
+
+def receive_emails_pop3(pop_server, pop_port, username, password, use_ssl=True):
+    """使用POP3接收邮件"""
+    try:
+        # 连接到POP3服务器
+        if use_ssl:
+            server = poplib.POP3_SSL(pop_server, pop_port)
+        else:
+            server = poplib.POP3(pop_server, pop_port)
+
+        print(f"连接到 {pop_server}:{pop_port}")
+
+        # 登录
+        server.user(username)
+        server.pass_(password)
+
+        # 获取邮件数量
+        num_messages = len(server.list()[1])
+        print(f"邮箱中有 {num_messages} 封邮件")
+
+        # 读取最新的5封邮件
+        for i in range(max(1, num_messages - 4), num_messages + 1):
+            # 获取邮件
+            response, lines, octets = server.retr(i)
+
+            # 解析邮件
+            msg_data = b'\r\n'.join(lines)
+            msg = BytesParser(policy=default).parsebytes(msg_data)
+
+            # 显示邮件信息
+            print(f"\n邮件 #{i}:")
+            print(f"主题: {msg['subject']}")
+            print(f"发件人: {msg['from']}")
+            print(f"收件人: {msg['to']}")
+            print(f"日期: {msg['date']}")
+
+            # 获取邮件正文
+            if msg.is_multipart():
+                for part in msg.walk():
+                    content_type = part.get_content_type()
+                    if content_type == 'text/plain':
+                        body = part.get_payload(decode=True).decode('utf-8', errors='ignore')
+                        print(f"正文（前100字符）: {body[:100]}...")
+                        break
+            else:
+                body = msg.get_payload(decode=True).decode('utf-8', errors='ignore')
+                print(f"正文（前100字符）: {body[:100]}...")
+
+            # 可选：删除邮件
+            # server.dele(i)
+
+        # 关闭连接
+        server.quit()
+
+    except Exception as e:
+        print(f"接收邮件失败: {e}")
+
+# 使用示例
+receive_emails_pop3(
+    pop_server='pop.gmail.com',
+    pop_port=995,
+    username='your-email@gmail.com',
+    password='your-app-password',
+    use_ssl=True
+)
+</code></pre>
+<h3 id="33-imap协议高级邮件访问"><a class="header" href="#33-imap协议高级邮件访问">3.3 IMAP协议（高级邮件访问）</a></h3>
+<h4 id="imap基础"><a class="header" href="#imap基础">IMAP基础</a></h4>
+<p><strong>IMAP (Internet Message Access Protocol)</strong> - 互联网消息访问协议</p>
+<pre><code>默认端口：
+  143 - IMAP（未加密）
+  993 - IMAPS（SSL加密）
+
+特点：
+  - 邮件保留在服务器
+  - 支持文件夹和标签
+  - 适合多设备同步
+  - 可以只下载邮件头部
+</code></pre>
+<h4 id="python使用imap"><a class="header" href="#python使用imap">Python使用IMAP</a></h4>
+<pre><code class="language-python">import imaplib
+import email
+from email.header import decode_header
+
+def receive_emails_imap(imap_server, imap_port, username, password, mailbox='INBOX'):
+    """使用IMAP接收邮件"""
+    try:
+        # 连接到IMAP服务器
+        server = imaplib.IMAP4_SSL(imap_server, imap_port)
+        print(f"连接到 {imap_server}:{imap_port}")
+
+        # 登录
+        server.login(username, password)
+        print("登录成功")
+
+        # 列出所有邮箱
+        status, mailboxes = server.list()
+        print("\n可用邮箱:")
+        for mailbox_data in mailboxes:
+            print(mailbox_data.decode())
+
+        # 选择邮箱
+        status, messages = server.select(mailbox)
+        total_emails = int(messages[0])
+        print(f"\n{mailbox} 邮箱中有 {total_emails} 封邮件")
+
+        # 搜索邮件
+        # 搜索所有邮件
+        status, message_ids = server.search(None, 'ALL')
+
+        # 搜索未读邮件
+        # status, message_ids = server.search(None, 'UNSEEN')
+
+        # 搜索特定发件人
+        # status, message_ids = server.search(None, 'FROM', '"sender@example.com"')
+
+        # 搜索包含特定主题
+        # status, message_ids = server.search(None, 'SUBJECT', '"重要"')
+
+        email_ids = message_ids[0].split()
+
+        # 读取最新5封邮件
+        for email_id in email_ids[-5:]:
+            # 获取邮件
+            status, msg_data = server.fetch(email_id, '(RFC822)')
+
+            # 解析邮件
+            raw_email = msg_data[0][1]
+            msg = email.message_from_bytes(raw_email)
+
+            # 解码主题
+            subject, encoding = decode_header(msg['Subject'])[0]
+            if isinstance(subject, bytes):
+                subject = subject.decode(encoding if encoding else 'utf-8')
+
+            # 解码发件人
+            from_header = msg.get('From')
+            from_name, from_addr = email.utils.parseaddr(from_header)
+
+            print(f"\n邮件ID: {email_id.decode()}")
+            print(f"主题: {subject}")
+            print(f"发件人: {from_name} &lt;{from_addr}&gt;")
+            print(f"日期: {msg.get('Date')}")
+
+            # 获取邮件正文
+            if msg.is_multipart():
+                for part in msg.walk():
+                    content_type = part.get_content_type()
+                    content_disposition = str(part.get("Content-Disposition"))
+
+                    if content_type == "text/plain" and "attachment" not in content_disposition:
+                        body = part.get_payload(decode=True)
+                        charset = part.get_content_charset() or 'utf-8'
+                        print(f"正文: {body.decode(charset, errors='ignore')[:100]}...")
+                        break
+            else:
+                body = msg.get_payload(decode=True)
+                charset = msg.get_content_charset() or 'utf-8'
+                print(f"正文: {body.decode(charset, errors='ignore')[:100]}...")
+
+            # 标记为已读
+            # server.store(email_id, '+FLAGS', '\\Seen')
+
+            # 删除邮件
+            # server.store(email_id, '+FLAGS', '\\Deleted')
+
+        # 永久删除标记为删除的邮件
+        # server.expunge()
+
+        # 关闭邮箱
+        server.close()
+        server.logout()
+
+    except Exception as e:
+        print(f"接收邮件失败: {e}")
+
+# 使用示例
+receive_emails_imap(
+    imap_server='imap.gmail.com',
+    imap_port=993,
+    username='your-email@gmail.com',
+    password='your-app-password',
+    mailbox='INBOX'
+)
+</code></pre>
+<hr />
+<p><em>（续下一部分：FTP、WebSocket、SSH协议）</em></p>
+<hr />
+<p><strong>返回</strong>: <a href="tcpip.html">TCP/IP协议学习笔记主文档</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/network/tcpip-programming.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/network/tcpip-security.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/network/tcpip-programming.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/network/tcpip-security.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

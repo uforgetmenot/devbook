@@ -1,0 +1,760 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Blender 实战项目案例集 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/pagetoc.css">
+        <link rel="stylesheet" href="../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="blender-实战项目案例集"><a class="header" href="#blender-实战项目案例集">Blender 实战项目案例集</a></h1>
+<blockquote>
+<p>完整项目从需求分析到最终交付的全流程实战案例。</p>
+</blockquote>
+<hr />
+<h2 id="-专题导航"><a class="header" href="#-专题导航">📖 专题导航</a></h2>
+<ul>
+<li><strong><a href="./Blender.html">返回主笔记</a></strong> - Blender 核心学习路径</li>
+<li><strong>当前专题</strong>: 实战项目案例集 - 从需求到交付</li>
+</ul>
+<hr />
+<h2 id="专题概述"><a class="header" href="#专题概述">专题概述</a></h2>
+<h3 id="案例目录"><a class="header" href="#案例目录">案例目录</a></h3>
+<p>本专题包含 3 个完整的实战项目案例:</p>
+<ol>
+<li><strong>产品可视化</strong>: 科技机械臂产品渲染</li>
+<li><strong>角色动画</strong>: 卡通角色从建模到动画完整流程</li>
+<li><strong>工业仿真</strong>: 数字孪生工厂场景构建</li>
+</ol>
+<p>每个案例都包含:</p>
+<ul>
+<li>✅ 需求分析与技术规划</li>
+<li>✅ 详细的制作步骤</li>
+<li>✅ 常见问题与解决方案</li>
+<li>✅ 验收标准与交付清单</li>
+</ul>
+<hr />
+<h2 id="案例一科技机械臂产品渲染"><a class="header" href="#案例一科技机械臂产品渲染">案例一:科技机械臂产品渲染</a></h2>
+<h3 id="项目概述"><a class="header" href="#项目概述">项目概述</a></h3>
+<p><strong>项目背景</strong>: 为工业机器人公司制作六轴机械臂的高质量产品渲染图,用于官网展示和宣传材料。</p>
+<p><strong>交付要求</strong>:</p>
+<ul>
+<li>3-5 张 4K 静帧渲染图</li>
+<li>30 秒产品展示视频</li>
+<li>可互动的 WebGL 3D 模型</li>
+</ul>
+<p><strong>项目周期</strong>: 10 个工作日</p>
+<p><strong>技术栈</strong>:</p>
+<ul>
+<li>建模: 硬表面建模 + UV 展开</li>
+<li>材质: PBR 材质 + Substance Painter</li>
+<li>渲染: Cycles GPU 渲染</li>
+<li>后期: Blender Compositor + DaVinci Resolve</li>
+</ul>
+<h3 id="第一阶段需求分析与资产准备第-1-2-天"><a class="header" href="#第一阶段需求分析与资产准备第-1-2-天">第一阶段:需求分析与资产准备(第 1-2 天)</a></h3>
+<h4 id="11-需求拆解"><a class="header" href="#11-需求拆解">1.1 需求拆解</a></h4>
+<p><strong>功能需求</strong>:</p>
+<ul>
+<li>展示机械臂的 6 个关节运动能力</li>
+<li>突出精密制造与科技感</li>
+<li>呈现金属质感与工业设计细节</li>
+</ul>
+<p><strong>视觉需求</strong>:</p>
+<ul>
+<li>风格: 科技、精密、未来感</li>
+<li>色调: 冷色调(蓝-灰-白)</li>
+<li>光影: 硬光源为主,突出棱线</li>
+</ul>
+<p><strong>技术约束</strong>:</p>
+<ul>
+<li>实时渲染面数 &lt; 100k tris</li>
+<li>贴图总量 &lt; 50MB</li>
+<li>WebGL 版本需支持移动端</li>
+</ul>
+<h4 id="12-参考收集"><a class="header" href="#12-参考收集">1.2 参考收集</a></h4>
+<p><strong>竞品分析</strong>:</p>
+<ul>
+<li>ABB 机器人官网渲染风格</li>
+<li>KUKA 产品宣传视频</li>
+<li>Universal Robots 交互式 3D 展示</li>
+</ul>
+<p><strong>技术参考</strong>:</p>
+<ul>
+<li>金属材质参考(钢铁侠战甲、工业设备)</li>
+<li>灯光布局(汽车渲染、消费电子产品)</li>
+</ul>
+<h4 id="13-项目结构搭建"><a class="header" href="#13-项目结构搭建">1.3 项目结构搭建</a></h4>
+<pre><code>RobotArm_Project/
+├── 01_Reference/           # 参考图片与视频
+├── 02_Models/
+│   ├── high_poly/          # 高模(雕刻细节)
+│   └── low_poly/           # 低模(实时渲染)
+├── 03_Textures/
+│   ├── substance/          # SP 工程文件
+│   └── exported/           # 导出的贴图
+├── 04_Scenes/
+│   ├── lighting/           # 灯光场景
+│   └── animation/          # 动画场景
+├── 05_Renders/
+│   ├── still/              # 静帧渲染
+│   └── animation/          # 动画序列帧
+└── 06_Delivery/            # 最终交付文件
+</code></pre>
+<h3 id="第二阶段建模与拓扑优化第-3-4-天"><a class="header" href="#第二阶段建模与拓扑优化第-3-4-天">第二阶段:建模与拓扑优化(第 3-4 天)</a></h3>
+<h4 id="21-硬表面建模流程"><a class="header" href="#21-硬表面建模流程">2.1 硬表面建模流程</a></h4>
+<p><strong>基座建模</strong>:</p>
+<pre><code>1. 使用 Cube 建立基本形状
+2. 添加 Bevel Modifier (控制倒角)
+3. 使用 Boolean 切割散热孔
+4. Mirror Modifier 保持对称
+5. Array Modifier 复制螺栓
+</code></pre>
+<p><strong>关节建模</strong>:</p>
+<pre><code>1. Cylinder 建立关节主体
+2. Loop Cut 添加环线控制硬边
+3. Weighted Normal Modifier 优化法线
+4. 保持独立对象便于后续绑定
+</code></pre>
+<p><strong>细节添加</strong>:</p>
+<pre><code>1. 使用 Curve 对象创建电缆束
+2. Data Transfer Modifier 传递高模法线
+3. 添加 Logo 贴花(Decal)
+</code></pre>
+<h4 id="22-拓扑优化"><a class="header" href="#22-拓扑优化">2.2 拓扑优化</a></h4>
+<p><strong>优化目标</strong>:</p>
+<ul>
+<li>高模: 500k - 1M tris (用于渲染)</li>
+<li>低模: 50k - 100k tris (用于实时)</li>
+</ul>
+<p><strong>优化策略</strong>:</p>
+<ol>
+<li>使用 Decimate Modifier 降面</li>
+<li>保留轮廓边缘的细分</li>
+<li>合并不可见面</li>
+<li>检查非流形几何</li>
+</ol>
+<h3 id="第三阶段uv-展开与贴图烘焙第-5-天"><a class="header" href="#第三阶段uv-展开与贴图烘焙第-5-天">第三阶段:UV 展开与贴图烘焙(第 5 天)</a></h3>
+<h4 id="31-uv-展开策略"><a class="header" href="#31-uv-展开策略">3.1 UV 展开策略</a></h4>
+<p><strong>UDIM 布局</strong>:</p>
+<ul>
+<li>1001: 主体金属部件</li>
+<li>1002: 塑料外壳与电缆</li>
+<li>1003: Logo 与贴花</li>
+</ul>
+<p><strong>UV 展开技巧</strong>:</p>
+<pre><code>1. 按材质分离 UV 岛
+2. 关键区域(Logo)使用更大空间
+3. 隐藏面使用较小空间
+4. Minimize Stretch 优化拉伸
+</code></pre>
+<h4 id="32-贴图烘焙"><a class="header" href="#32-贴图烘焙">3.2 贴图烘焙</a></h4>
+<p><strong>Blender 内部烘焙</strong>:</p>
+<pre><code class="language-python"># 设置烘焙参数
+bpy.context.scene.render.engine = 'CYCLES'
+bpy.context.scene.cycles.bake_type = 'NORMAL'
+bpy.context.scene.render.bake.use_cage = True
+bpy.context.scene.render.bake.cage_extrusion = 0.05
+
+# 执行烘焙
+bpy.ops.object.bake(type='NORMAL')
+</code></pre>
+<p><strong>导出到 Substance Painter</strong>:</p>
+<ol>
+<li>导出低模 FBX</li>
+<li>在 SP 中烘焙 AO/Curvature/ID</li>
+<li>绘制贴图(Metallic/Roughness/Normal)</li>
+<li>导出 PBR 套件(2K/4K)</li>
+</ol>
+<h3 id="第四阶段材质与灯光第-6-7-天"><a class="header" href="#第四阶段材质与灯光第-6-7-天">第四阶段:材质与灯光(第 6-7 天)</a></h3>
+<h4 id="41-材质构建"><a class="header" href="#41-材质构建">4.1 材质构建</a></h4>
+<p><strong>金属外壳材质</strong>:</p>
+<pre><code>Principled BSDF
+├─ Base Color: RGB(0.7, 0.75, 0.8)
+├─ Metallic: 1.0
+├─ Roughness: 0.3 (贴图驱动)
+├─ Normal: 法线贴图
+└─ Clearcoat: 0.2 (清漆层)
+</code></pre>
+<p><strong>塑料部件材质</strong>:</p>
+<pre><code>Principled BSDF
+├─ Base Color: RGB(0.05, 0.05, 0.05)
+├─ Metallic: 0.0
+├─ Roughness: 0.4
+├─ Subsurface: 0.05 (轻微次表面)
+└─ Specular: 0.4
+</code></pre>
+<p><strong>发光 Logo 材质</strong>:</p>
+<pre><code>Mix Shader (Fresnel 控制)
+├─ Emission Shader (Strength: 5.0)
+└─ Principled BSDF (基础玻璃)
+</code></pre>
+<h4 id="42-灯光布局"><a class="header" href="#42-灯光布局">4.2 灯光布局</a></h4>
+<p><strong>三点布光设置</strong>:</p>
+<pre><code>Key Light (Area, 200W)
+├─ 位置: 右前上方 45°
+├─ 颜色: RGB(1.0, 0.98, 0.95) # 轻微暖色
+└─ Size: 5m x 5m
+
+Fill Light (Area, 50W)
+├─ 位置: 左前方
+└─ 颜色: RGB(0.95, 0.95, 1.0) # 轻微冷色
+
+Rim Light (Area, 100W)
+├─ 位置: 后方上方
+└─ 颜色: RGB(0.8, 0.9, 1.0) # 蓝色轮廓光
+</code></pre>
+<p><strong>HDRI 环境光</strong>:</p>
+<pre><code>World Shader
+└─ Environment Texture (工业 HDRI)
+    ├─ Strength: 0.5
+    └─ Rotation: 调整反射角度
+</code></pre>
+<h3 id="第五阶段渲染与后期第-8-9-天"><a class="header" href="#第五阶段渲染与后期第-8-9-天">第五阶段:渲染与后期(第 8-9 天)</a></h3>
+<h4 id="51-cycles-渲染设置"><a class="header" href="#51-cycles-渲染设置">5.1 Cycles 渲染设置</a></h4>
+<p><strong>渲染参数</strong>:</p>
+<pre><code>Render Properties
+├─ Device: GPU Compute
+├─ Samples: 2048
+├─ Max Bounces: 12
+├─ Denoising: OptiX
+└─ Light Paths
+    ├─ Glossy: 4
+    └─ Transmission: 8
+</code></pre>
+<p><strong>输出设置</strong>:</p>
+<pre><code>Output Properties
+├─ Resolution: 3840 x 2160
+├─ Frame Rate: 30 fps
+├─ File Format: OpenEXR (32-bit)
+└─ Color Management: Filmic
+</code></pre>
+<p><strong>多通道输出</strong>:</p>
+<ul>
+<li>Combined</li>
+<li>Diffuse</li>
+<li>Glossy</li>
+<li>Emission</li>
+<li>Cryptomatte</li>
+<li>Z-Depth</li>
+</ul>
+<h4 id="52-compositor-合成"><a class="header" href="#52-compositor-合成">5.2 Compositor 合成</a></h4>
+<p><strong>节点树</strong>:</p>
+<pre><code>Render Layers
+├─ Denoise (OptiX)
+├─ Glare (Bloom, Threshold: 1.0)
+├─ Color Balance (调整色温)
+├─ Lens Distortion (轻微畸变)
+├─ Vignette (边缘暗角)
+└─ File Output (EXR + PNG)
+</code></pre>
+<h4 id="53-动画制作"><a class="header" href="#53-动画制作">5.3 动画制作</a></h4>
+<p><strong>摄像机路径动画</strong>:</p>
+<pre><code>1. 创建 Curve 路径围绕机械臂
+2. 摄像机添加 Follow Path 约束
+3. 设置关键帧控制速度
+4. Graph Editor 调整缓入缓出
+</code></pre>
+<p><strong>机械臂运动</strong>:</p>
+<pre><code>1. 为各关节创建骨骼
+2. 设置 IK 约束
+3. 关键帧动画展示运动能力
+4. 导出 FBX 供实时引擎使用
+</code></pre>
+<h3 id="第六阶段webgl-导出与交付第-10-天"><a class="header" href="#第六阶段webgl-导出与交付第-10-天">第六阶段:WebGL 导出与交付(第 10 天)</a></h3>
+<h4 id="61-gltf-导出优化"><a class="header" href="#61-gltf-导出优化">6.1 glTF 导出优化</a></h4>
+<p><strong>优化步骤</strong>:</p>
+<ol>
+<li>Apply Modifiers (除 Armature 外)</li>
+<li>合并材质槽</li>
+<li>压缩贴图到 1K-2K</li>
+<li>导出 glTF-Binary (.glb)</li>
+</ol>
+<p><strong>导出设置</strong>:</p>
+<pre><code>Export glTF
+├─ Include: Selected Objects
+├─ Transform: +Y Up
+├─ Data
+│   ├─ UVs: ✓
+│   ├─ Normals: ✓
+│   └─ Apply Modifiers: ✓
+└─ Animation: Include
+</code></pre>
+<h4 id="62-threejs-集成"><a class="header" href="#62-threejs-集成">6.2 Three.js 集成</a></h4>
+<p><strong>基础代码</strong>:</p>
+<pre><code class="language-javascript">import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+const loader = new GLTFLoader();
+loader.load('robot_arm.glb', (gltf) =&gt; {
+    scene.add(gltf.scene);
+
+    // 添加环境光
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444);
+    scene.add(light);
+
+    // 添加交互
+    controls = new OrbitControls(camera, renderer.domElement);
+});
+</code></pre>
+<h4 id="63-交付清单"><a class="header" href="#63-交付清单">6.3 交付清单</a></h4>
+<p><strong>最终交付文件</strong>:</p>
+<pre><code>Delivery/
+├── Stills/
+│   ├── render_001_4K.png
+│   ├── render_002_4K.png
+│   └── render_003_4K.png
+├── Animation/
+│   ├── product_showcase_30s.mp4 (H.264)
+│   └── product_showcase_30s.mov (ProRes)
+├── WebGL/
+│   ├── robot_arm.glb
+│   ├── textures/
+│   └── demo.html
+├── Source/
+│   ├── robot_arm_final.blend
+│   └── textures_4K/
+└── Documentation/
+    ├── README.md
+    ├── technical_specs.pdf
+    └── rendering_guide.pdf
+</code></pre>
+<p><strong>技术文档</strong>:</p>
+<pre><code class="language-markdown"># 机械臂产品渲染 - 技术规格
+
+## 模型规格
+- 高模面数: 850k tris
+- 低模面数: 75k tris
+- UV 通道: 2 (UDIM 1001-1002)
+
+## 贴图规格
+- 分辨率: 4K (4096x4096)
+- 格式: PNG (Base Color) / EXR (Normal/Roughness)
+- 套件: Metallic/Roughness 工作流
+
+## 渲染设置
+- 引擎: Cycles GPU
+- 采样: 2048
+- 分辨率: 3840x2160
+- 色彩管理: Filmic
+
+## 性能指标
+- WebGL 帧率: 60 FPS (桌面) / 30 FPS (移动)
+- 加载时间: &lt; 3s (模型 + 贴图)
+- 文件大小: 15MB (压缩后)
+</code></pre>
+<h3 id="验收标准"><a class="header" href="#验收标准">验收标准</a></h3>
+<p><strong>质量检查清单</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+模型拓扑干净,无非流形几何</li>
+<li><input disabled="" type="checkbox"/>
+贴图无明显拉伸或接缝</li>
+<li><input disabled="" type="checkbox"/>
+材质在不同光照下表现自然</li>
+<li><input disabled="" type="checkbox"/>
+渲染无噪点,无过曝/欠曝</li>
+<li><input disabled="" type="checkbox"/>
+动画流畅,无突变或抖动</li>
+<li><input disabled="" type="checkbox"/>
+WebGL 版本在目标设备流畅运行</li>
+<li><input disabled="" type="checkbox"/>
+所有文件按规范命名和组织</li>
+<li><input disabled="" type="checkbox"/>
+技术文档完整准确</li>
+</ul>
+<p><strong>客户验收要点</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+视觉效果符合品牌调性</li>
+<li><input disabled="" type="checkbox"/>
+产品细节清晰可辨</li>
+<li><input disabled="" type="checkbox"/>
+交付格式满足后续使用需求</li>
+<li><input disabled="" type="checkbox"/>
+提供完整的源文件和文档</li>
+</ul>
+<hr />
+<h2 id="案例二卡通角色完整流程"><a class="header" href="#案例二卡通角色完整流程">案例二:卡通角色完整流程</a></h2>
+<h3 id="项目概述-1"><a class="header" href="#项目概述-1">项目概述</a></h3>
+<p><strong>项目背景</strong>: 为独立游戏制作可爱风格的卡通角色,包含建模、绑定、动画和实时渲染版本。</p>
+<p><strong>交付要求</strong>:</p>
+<ul>
+<li>完整角色模型(高模+低模)</li>
+<li>Rigify 绑定(支持面部动画)</li>
+<li>3 套动作(Idle/Walk/Jump)</li>
+<li>Unity 可用的 FBX</li>
+</ul>
+<p><strong>项目周期</strong>: 14 个工作日</p>
+<h3 id="制作流程概要"><a class="header" href="#制作流程概要">制作流程概要</a></h3>
+<h4 id="阶段-1-概念设计与草模第-1-2-天"><a class="header" href="#阶段-1-概念设计与草模第-1-2-天">阶段 1: 概念设计与草模(第 1-2 天)</a></h4>
+<ul>
+<li>角色设定与比例确定</li>
+<li>Grease Pencil 草图</li>
+<li>基础体块建模</li>
+</ul>
+<h4 id="阶段-2-精细建模第-3-5-天"><a class="header" href="#阶段-2-精细建模第-3-5-天">阶段 2: 精细建模(第 3-5 天)</a></h4>
+<ul>
+<li>头部、身体、四肢建模</li>
+<li>衣物与配饰建模</li>
+<li>拓扑优化(四边形)</li>
+</ul>
+<h4 id="阶段-3-uv-与贴图第-6-7-天"><a class="header" href="#阶段-3-uv-与贴图第-6-7-天">阶段 3: UV 与贴图(第 6-7 天)</a></h4>
+<ul>
+<li>UV 展开与打包</li>
+<li>手绘纹理或 Substance Painter</li>
+<li>材质设置(Toon Shader)</li>
+</ul>
+<h4 id="阶段-4-绑定第-8-10-天"><a class="header" href="#阶段-4-绑定第-8-10-天">阶段 4: 绑定(第 8-10 天)</a></h4>
+<ul>
+<li>Rigify 生成骨架</li>
+<li>权重绘制与测试</li>
+<li>面部 Shape Keys</li>
+<li>控制器优化</li>
+</ul>
+<h4 id="阶段-5-动画制作第-11-13-天"><a class="header" href="#阶段-5-动画制作第-11-13-天">阶段 5: 动画制作(第 11-13 天)</a></h4>
+<ul>
+<li>Idle 循环动画</li>
+<li>Walk Cycle</li>
+<li>Jump 动作</li>
+<li>NLA 组织</li>
+</ul>
+<h4 id="阶段-6-导出与集成第-14-天"><a class="header" href="#阶段-6-导出与集成第-14-天">阶段 6: 导出与集成(第 14 天)</a></h4>
+<ul>
+<li>烘焙动画</li>
+<li>FBX 导出</li>
+<li>Unity 导入测试</li>
+<li>最终交付</li>
+</ul>
+<p><em>(详细步骤省略,重点展示项目流程)</em></p>
+<hr />
+<h2 id="案例三数字孪生工厂场景"><a class="header" href="#案例三数字孪生工厂场景">案例三:数字孪生工厂场景</a></h2>
+<h3 id="项目概述-2"><a class="header" href="#项目概述-2">项目概述</a></h3>
+<p><strong>项目背景</strong>: 为智能制造企业构建数字孪生工厂,实时展示生产线运行状态。</p>
+<p><strong>技术亮点</strong>:</p>
+<ul>
+<li>Geometry Nodes 程序化布局</li>
+<li>Python 脚本读取实时数据</li>
+<li>Eevee 实时渲染</li>
+<li>网页端 3D 交互</li>
+</ul>
+<p><strong>交付要求</strong>:</p>
+<ul>
+<li>完整工厂场景模型</li>
+<li>设备运行动画</li>
+<li>数据驱动的可视化</li>
+<li>WebGL 实时展示</li>
+</ul>
+<p><strong>项目周期</strong>: 21 个工作日</p>
+<h3 id="核心技术点"><a class="header" href="#核心技术点">核心技术点</a></h3>
+<h4 id="1-geometry-nodes-自动化布局"><a class="header" href="#1-geometry-nodes-自动化布局">1. Geometry Nodes 自动化布局</a></h4>
+<p><strong>机柜阵列</strong>:</p>
+<pre><code>Grid (地面网格)
+├─ Mesh to Points (转为点)
+├─ Distribute Points (均匀分布)
+└─ Instance on Points
+    ├─ Instance: Collection Info (机柜集合)
+    ├─ Rotation: Align to Grid + Random Z
+    └─ Scale: Uniform (1.0)
+</code></pre>
+<p><strong>电缆布线</strong>:</p>
+<pre><code>Curve (路径)
+├─ Resample Curve (统一采样)
+├─ Set Curve Radius (半径: 0.05)
+└─ Curve to Mesh (生成圆柱电缆)
+</code></pre>
+<h4 id="2-python-数据驱动"><a class="header" href="#2-python-数据驱动">2. Python 数据驱动</a></h4>
+<p><strong>读取 CSV 设备状态</strong>:</p>
+<pre><code class="language-python">import bpy
+import csv
+
+# 读取数据
+with open('device_status.csv') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        device_id = row['id']
+        status = row['status']  # 'running' / 'idle' / 'error'
+
+        # 查找对应对象
+        obj = bpy.data.objects.get(f"Device_{device_id}")
+        if obj:
+            # 根据状态设置材质颜色
+            mat = obj.active_material
+            if status == 'running':
+                mat.node_tree.nodes["Emission"].inputs[0].default_value = (0, 1, 0, 1)  # 绿色
+            elif status == 'error':
+                mat.node_tree.nodes["Emission"].inputs[0].default_value = (1, 0, 0, 1)  # 红色
+</code></pre>
+<h4 id="3-实时渲染优化"><a class="header" href="#3-实时渲染优化">3. 实时渲染优化</a></h4>
+<p><strong>Eevee 设置</strong>:</p>
+<pre><code>- Ambient Occlusion: ✓
+- Bloom: ✓
+- Screen Space Reflections: ✓
+- Shadows: Cascade Size 2048
+- Simplify: Viewport Max Subdivision 2
+</code></pre>
+<p><strong>性能优化</strong>:</p>
+<ul>
+<li>使用 LOD (近/中/远)</li>
+<li>Instance 化重复对象</li>
+<li>贴图压缩与 Mipmap</li>
+<li>限制灯光数量</li>
+</ul>
+<hr />
+<h2 id="总结与最佳实践"><a class="header" href="#总结与最佳实践">总结与最佳实践</a></h2>
+<h3 id="项目管理要点"><a class="header" href="#项目管理要点">项目管理要点</a></h3>
+<ol>
+<li><strong>需求确认</strong>: 与客户充分沟通,明确交付标准</li>
+<li><strong>版本管理</strong>: 使用 Git-LFS,每个里程碑提交</li>
+<li><strong>定期汇报</strong>: 每阶段提供 Playblast 或预览渲染</li>
+<li><strong>文档记录</strong>: 记录技术决策和问题解决方案</li>
+</ol>
+<h3 id="常见坑点与规避"><a class="header" href="#常见坑点与规避">常见坑点与规避</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>预防措施</th></tr></thead><tbody>
+<tr><td>需求变更</td><td>签订明确的合同和交付清单</td></tr>
+<tr><td>渲染时间超预期</td><td>提前做性能测试,预留缓冲时间</td></tr>
+<tr><td>文件丢失</td><td>自动备份 + 版本管理 + 云存储</td></tr>
+<tr><td>客户反馈频繁</td><td>建立固定的Review节点</td></tr>
+</tbody></table>
+</div>
+<h3 id="持续改进建议"><a class="header" href="#持续改进建议">持续改进建议</a></h3>
+<ul>
+<li>建立项目模板,加速启动</li>
+<li>维护资产库,减少重复劳动</li>
+<li>记录时间消耗,优化流程</li>
+<li>收集客户反馈,迭代工作方法</li>
+</ul>
+<hr />
+<p><strong>专题版本</strong>: v1.0
+<strong>最后更新</strong>: 2025-01-06
+<strong>作者</strong>: Claude Code Tech Note Generator
+<strong>许可</strong>: CC BY-SA 4.0</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../结构/Blender-Shader材质专题.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../结构/Blender.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../结构/Blender-Shader材质专题.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../结构/Blender.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../theme/segmentit.umd.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../theme/searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

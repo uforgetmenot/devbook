@@ -53,12 +53,19 @@ def natural_sort_key(value: str) -> Sequence[object]:
 
 
 def clean_title_from_name(name: str) -> str:
+    """
+    从文件名或目录名生成标题。
+    对于文件名，去掉数字前缀（如"01-"）；
+    对于目录名，保留原样（如"3d"应保留为"3d"）。
+    """
     # Drop file extension if present
     stem = Path(name).stem
     if not stem:
         stem = name
     stem = stem.replace("_", " ").replace("-", " ").strip()
-    cleaned = re.sub(r"^\d+[\s\.]*", "", stem)
+    # 只去掉明确的编号前缀（数字后面跟空格或点）
+    # 这样"01-example"会变成"example"，但"3d"会保留为"3d"
+    cleaned = re.sub(r"^\d+[\s\.\-]+", "", stem)
     return cleaned or stem
 
 
@@ -177,11 +184,13 @@ def build_directory_node(
             entries.append(child)
 
     has_non_index_files = bool(files_without_index)
+    has_subdirs = bool(subdirs)
     has_entries = bool(entries)
 
     created_index = False
-    if not index_file and has_entries and not has_non_index_files:
-        index_file = directory / "Content.md"
+    # 如果目录有条目（文件或子目录），自动创建Contents.md作为目录索引
+    if not index_file and has_entries:
+        index_file = directory / "Contents.md"
         created_index = True
 
     default_file = find_default_file(directory)
@@ -190,13 +199,26 @@ def build_directory_node(
     elif default_file is None and files_without_index:
         default_file = files_without_index[0]
 
+    # 在写入Contents.md之前，先从entries中移除index_file，防止Contents.md包含自己的引用
+    entries_for_index = entries
+    if index_file:
+        entries_for_index = [
+            entry
+            for entry in entries
+            if not (
+                entry.source_path
+                and entry.source_path.resolve() == index_file.resolve()
+            )
+        ]
+
+    # 生成或更新Contents.md文件
     if index_file and has_entries:
         existing_heading = extract_title_from_file(index_file) if index_file.exists() else None
         index_title = existing_heading or clean_title_from_name(directory.name)
-        write_directory_index(index_file, index_title, entries, directory)
+        write_directory_index(index_file, index_title, entries_for_index, directory)
     elif index_file and created_index and not has_entries:
         index_title = clean_title_from_name(directory.name)
-        write_directory_index(index_file, index_title, entries, directory)
+        write_directory_index(index_file, index_title, entries_for_index, directory)
 
     if not default_file and not has_entries:
         return None
@@ -251,26 +273,46 @@ def format_nodes(
     depth: int = 0,
     indent_size: int = 4,
 ) -> List[str]:
+    """
+    格式化节点为SUMMARY.md的markdown格式。
+
+    规则：
+    - 有source_path的节点：显示为列表项链接
+    - 有source_path且有children的节点：作为章节，children显示在章节下
+    - 无source_path的节点：显示为章节标题
+    """
     lines: List[str] = []
     for node in nodes:
         if node.source_path:
             indent = " " * indent_size * depth
             relative_path = Path(os.path.relpath(node.source_path, start=summary_dir))
             link = relative_path.as_posix()
-            lines.append(f"{indent}- [{node.title}]({link})")
-            child_depth = depth + 1
+
+            # 如果有子节点，作为章节标题输出
+            if node.children:
+                heading_level = min(6, depth + 1)
+                if lines and lines[-1] != "":
+                    lines.append("")
+                lines.append(f"{'#' * heading_level} [{node.title}]({link})")
+                lines.append("")
+                child_depth = depth
+            else:
+                # 无子节点，输出为列表项
+                lines.append(f"{indent}- [{node.title}]({link})")
+                child_depth = depth + 1
         else:
+            # 没有source_path的节点作为章节标题
             heading_level = min(6, depth + 1)
             if lines and lines[-1] != "":
                 lines.append("")
             lines.append(f"{'#' * heading_level} {node.title}")
             lines.append("")
-            child_depth = 0
+            child_depth = depth
 
         if node.children:
             child_lines = format_nodes(node.children, summary_dir, child_depth, indent_size)
             lines.extend(child_lines)
-            if not node.source_path and child_lines and child_lines[-1] != "":
+            if child_lines and child_lines[-1] != "":
                 lines.append("")
     return lines
 

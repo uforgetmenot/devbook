@@ -1,0 +1,2228 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Fast DDS 深度技术学习笔记（第三部分） - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="fast-dds-深度技术学习笔记第三部分"><a class="header" href="#fast-dds-深度技术学习笔记第三部分">Fast DDS 深度技术学习笔记（第三部分）</a></h1>
+<blockquote>
+<p>本笔记分为4个部分，本文件为第三部分，包含模块五、模块六、模块七</p>
+<ul>
+<li><a href="fastdds.html">第一部分：技术概述、模块一、模块二</a></li>
+<li><a href="fastdds_part2.html">第二部分：模块三、模块四</a></li>
+<li><a href="fastdds_part4.html">第四部分：常见问题、验证标准、总结</a></li>
+</ul>
+</blockquote>
+<hr />
+<h2 id="模块五安全机制与实战"><a class="header" href="#模块五安全机制与实战">模块五：安全机制与实战</a></h2>
+<h3 id="51-dds-security插件架构"><a class="header" href="#51-dds-security插件架构">5.1 DDS Security插件架构</a></h3>
+<p>Fast DDS实现了完整的OMG DDS Security规范，提供端到端的安全保护。</p>
+<pre><code class="language-cpp">#include &lt;fastdds/dds/domain/DomainParticipant.hpp&gt;
+#include &lt;fastrtps/rtps/security/exceptions/SecurityException.h&gt;
+
+class DDSSecurityArchitecture {
+public:
+    // DDS Security三大插件
+    void explain_security_plugins() {
+        /*
+        DDS Security由三个可插拔插件组成：
+
+        1. Authentication Plugin（认证插件）
+           - 验证参与者身份
+           - 基于PKI的身份验证
+           - 使用X.509证书
+           - 支持Diffie-Hellman密钥交换
+
+        2. Access Control Plugin（访问控制插件）
+           - 控制谁可以访问什么
+           - 基于权限文档（Permissions）
+           - 治理文档（Governance）定义安全策略
+           - 粒度：Domain、Topic、Partition
+
+        3. Cryptographic Plugin（加密插件）
+           - 数据加密/解密
+           - 使用AES-GCM-GMAC
+           - 支持128位和256位密钥
+           - 保护RTPS消息和有效载荷
+        */
+    }
+
+    // 配置完整的安全参与者
+    DomainParticipant* create_secure_participant() {
+        using namespace eprosima::fastdds::dds;
+
+        DomainParticipantQos qos;
+
+        // ============ 1. 认证插件配置 ============
+        qos.properties().properties().emplace_back(
+            "dds.sec.auth.plugin",
+            "builtin.PKI-DH");  // 使用内置的PKI认证
+
+        // CA证书路径（用于验证其他参与者的证书）
+        qos.properties().properties().emplace_back(
+            "dds.sec.auth.builtin.PKI-DH.identity_ca",
+            "file:///etc/dds/security/ca_cert.pem");
+
+        // 本参与者的身份证书
+        qos.properties().properties().emplace_back(
+            "dds.sec.auth.builtin.PKI-DH.identity_certificate",
+            "file:///etc/dds/security/participant_cert.pem");
+
+        // 本参与者的私钥
+        qos.properties().properties().emplace_back(
+            "dds.sec.auth.builtin.PKI-DH.private_key",
+            "file:///etc/dds/security/participant_key.pem");
+
+        // 可选：私钥密码
+        // qos.properties().properties().emplace_back(
+        //     "dds.sec.auth.builtin.PKI-DH.password",
+        //     "your_password");
+
+        // ============ 2. 访问控制插件配置 ============
+        qos.properties().properties().emplace_back(
+            "dds.sec.access.plugin",
+            "builtin.Access-Permissions");
+
+        // 权限CA证书
+        qos.properties().properties().emplace_back(
+            "dds.sec.access.builtin.Access-Permissions.permissions_ca",
+            "file:///etc/dds/security/permissions_ca_cert.pem");
+
+        // 治理文档（Governance Document）
+        qos.properties().properties().emplace_back(
+            "dds.sec.access.builtin.Access-Permissions.governance",
+            "file:///etc/dds/security/governance.p7s");
+
+        // 权限文档（Permissions Document）
+        qos.properties().properties().emplace_back(
+            "dds.sec.access.builtin.Access-Permissions.permissions",
+            "file:///etc/dds/security/permissions.p7s");
+
+        // ============ 3. 加密插件配置 ============
+        qos.properties().properties().emplace_back(
+            "dds.sec.crypto.plugin",
+            "builtin.AES-GCM-GMAC");  // 使用AES-GCM加密
+
+        // 创建安全参与者
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+
+        if (!participant) {
+            std::cerr &lt;&lt; "Failed to create secure participant" &lt;&lt; std::endl;
+            std::cerr &lt;&lt; "Check security configuration and certificates" &lt;&lt; std::endl;
+        }
+
+        return participant;
+    }
+};
+</code></pre>
+<h3 id="52-生成安全证书实战流程"><a class="header" href="#52-生成安全证书实战流程">5.2 生成安全证书（实战流程）</a></h3>
+<p>完整的证书生成脚本，涵盖所有必要的证书和配置文件。</p>
+<pre><code class="language-bash">#!/bin/bash
+# generate_dds_certificates.sh
+# 生成Fast DDS安全证书的完整脚本
+
+set -e  # 遇到错误立即退出
+
+CERT_DIR="./dds_certificates"
+mkdir -p $CERT_DIR
+cd $CERT_DIR
+
+echo "=== 开始生成DDS安全证书 ==="
+
+# ============================================================
+# 第一步：生成CA根证书（用于身份验证）
+# ============================================================
+echo "1. 生成身份认证CA根证书..."
+
+# 生成EC参数
+openssl ecparam -name prime256v1 &gt; ca_ecdsaparam
+
+# 生成CA私钥和自签名证书
+openssl req -nodes -x509 -days 3650 -newkey ec:ca_ecdsaparam \
+    -keyout ca_key.pem -out ca_cert.pem \
+    -subj "/C=CN/ST=Beijing/L=Beijing/O=MyOrganization/CN=DDS_CA"
+
+echo "   ✓ CA证书已生成: ca_cert.pem, ca_key.pem"
+
+# ============================================================
+# 第二步：生成参与者证书
+# ============================================================
+echo "2. 生成参与者证书..."
+
+generate_participant_cert() {
+    local PART_NAME=$1
+    local PART_ID=$2
+
+    echo "   生成证书: ${PART_NAME}"
+
+    # 生成参与者私钥
+    openssl ecparam -name prime256v1 &gt; ${PART_NAME}_ecdsaparam
+    openssl req -nodes -new -newkey ec:${PART_NAME}_ecdsaparam \
+        -keyout ${PART_NAME}_key.pem -out ${PART_NAME}_req.pem \
+        -subj "/C=CN/ST=Beijing/L=Beijing/O=MyOrganization/CN=${PART_NAME}"
+
+    # 使用CA签名参与者证书
+    openssl x509 -req -days 3650 -in ${PART_NAME}_req.pem \
+        -CAkey ca_key.pem -CA ca_cert.pem -CAcreateserial \
+        -out ${PART_NAME}_cert.pem
+
+    echo "   ✓ ${PART_NAME} 证书已生成"
+}
+
+# 生成多个参与者的证书
+generate_participant_cert "robot_controller" 1
+generate_participant_cert "sensor_node" 2
+generate_participant_cert "monitoring_station" 3
+
+# ============================================================
+# 第三步：生成权限CA证书
+# ============================================================
+echo "3. 生成权限CA证书..."
+
+openssl req -nodes -x509 -days 3650 -newkey ec:ca_ecdsaparam \
+    -keyout permissions_ca_key.pem -out permissions_ca_cert.pem \
+    -subj "/C=CN/ST=Beijing/L=Beijing/O=MyOrganization/CN=Permissions_CA"
+
+echo "   ✓ 权限CA证书已生成"
+
+# ============================================================
+# 第四步：创建治理文档（Governance Document）
+# ============================================================
+echo "4. 创建治理文档..."
+
+cat &gt; governance.xml &lt;&lt; 'EOF'
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="http://www.omg.org/spec/DDS-SECURITY/20170901/omg_shared_ca_governance.xsd"&gt;
+    &lt;domain_access_rules&gt;
+        &lt;domain_rule&gt;
+            &lt;domains&gt;
+                &lt;id&gt;0&lt;/id&gt;
+            &lt;/domains&gt;
+            &lt;!-- 是否允许未认证的参与者 --&gt;
+            &lt;allow_unauthenticated_participants&gt;false&lt;/allow_unauthenticated_participants&gt;
+
+            &lt;!-- 是否启用加入访问控制 --&gt;
+            &lt;enable_join_access_control&gt;true&lt;/enable_join_access_control&gt;
+
+            &lt;!-- 发现保护级别 --&gt;
+            &lt;discovery_protection_kind&gt;ENCRYPT&lt;/discovery_protection_kind&gt;
+
+            &lt;!-- 活跃性保护级别 --&gt;
+            &lt;liveliness_protection_kind&gt;ENCRYPT&lt;/liveliness_protection_kind&gt;
+
+            &lt;!-- RTPS保护级别 --&gt;
+            &lt;rtps_protection_kind&gt;SIGN&lt;/rtps_protection_kind&gt;
+
+            &lt;!-- Topic访问规则 --&gt;
+            &lt;topic_access_rules&gt;
+                &lt;!-- 传感器数据Topic --&gt;
+                &lt;topic_rule&gt;
+                    &lt;topic_expression&gt;SensorData&lt;/topic_expression&gt;
+                    &lt;enable_discovery_protection&gt;true&lt;/enable_discovery_protection&gt;
+                    &lt;enable_liveliness_protection&gt;true&lt;/enable_liveliness_protection&gt;
+                    &lt;enable_read_access_control&gt;true&lt;/enable_read_access_control&gt;
+                    &lt;enable_write_access_control&gt;true&lt;/enable_write_access_control&gt;
+                    &lt;metadata_protection_kind&gt;ENCRYPT&lt;/metadata_protection_kind&gt;
+                    &lt;data_protection_kind&gt;ENCRYPT&lt;/data_protection_kind&gt;
+                &lt;/topic_rule&gt;
+
+                &lt;!-- 控制指令Topic --&gt;
+                &lt;topic_rule&gt;
+                    &lt;topic_expression&gt;ControlCommand&lt;/topic_expression&gt;
+                    &lt;enable_discovery_protection&gt;true&lt;/enable_discovery_protection&gt;
+                    &lt;enable_liveliness_protection&gt;true&lt;/enable_liveliness_protection&gt;
+                    &lt;enable_read_access_control&gt;true&lt;/enable_read_access_control&gt;
+                    &lt;enable_write_access_control&gt;true&lt;/enable_write_access_control&gt;
+                    &lt;metadata_protection_kind&gt;ENCRYPT&lt;/metadata_protection_kind&gt;
+                    &lt;data_protection_kind&gt;ENCRYPT&lt;/data_protection_kind&gt;
+                &lt;/topic_rule&gt;
+
+                &lt;!-- 公共Topic（不加密） --&gt;
+                &lt;topic_rule&gt;
+                    &lt;topic_expression&gt;PublicAnnouncement&lt;/topic_expression&gt;
+                    &lt;enable_discovery_protection&gt;false&lt;/enable_discovery_protection&gt;
+                    &lt;enable_liveliness_protection&gt;false&lt;/enable_liveliness_protection&gt;
+                    &lt;enable_read_access_control&gt;false&lt;/enable_read_access_control&gt;
+                    &lt;enable_write_access_control&gt;false&lt;/enable_write_access_control&gt;
+                    &lt;metadata_protection_kind&gt;NONE&lt;/metadata_protection_kind&gt;
+                    &lt;data_protection_kind&gt;NONE&lt;/data_protection_kind&gt;
+                &lt;/topic_rule&gt;
+            &lt;/topic_access_rules&gt;
+        &lt;/domain_rule&gt;
+    &lt;/domain_access_rules&gt;
+&lt;/dds&gt;
+EOF
+
+# 签名治理文档
+openssl smime -sign -in governance.xml -text -out governance.p7s \
+    -signer permissions_ca_cert.pem -inkey permissions_ca_key.pem
+
+echo "   ✓ 治理文档已生成并签名: governance.p7s"
+
+# ============================================================
+# 第五步：创建权限文档（Permissions Document）
+# ============================================================
+echo "5. 创建权限文档..."
+
+# 为机器人控制器创建权限
+cat &gt; robot_controller_permissions.xml &lt;&lt; 'EOF'
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="http://www.omg.org/spec/DDS-SECURITY/20170901/omg_shared_ca_permissions.xsd"&gt;
+    &lt;permissions&gt;
+        &lt;grant name="RobotControllerPermissions"&gt;
+            &lt;!-- Subject必须与参与者证书的CN匹配 --&gt;
+            &lt;subject_name&gt;CN=robot_controller,O=MyOrganization,L=Beijing,ST=Beijing,C=CN&lt;/subject_name&gt;
+
+            &lt;!-- 有效期 --&gt;
+            &lt;validity&gt;
+                &lt;not_before&gt;2025-01-01T00:00:00&lt;/not_before&gt;
+                &lt;not_after&gt;2035-01-01T00:00:00&lt;/not_after&gt;
+            &lt;/validity&gt;
+
+            &lt;!-- 允许规则 --&gt;
+            &lt;allow_rule&gt;
+                &lt;domains&gt;
+                    &lt;id&gt;0&lt;/id&gt;
+                &lt;/domains&gt;
+
+                &lt;!-- 可以发布的Topic --&gt;
+                &lt;publish&gt;
+                    &lt;topics&gt;
+                        &lt;topic&gt;ControlCommand&lt;/topic&gt;
+                        &lt;topic&gt;PublicAnnouncement&lt;/topic&gt;
+                    &lt;/topics&gt;
+                &lt;/publish&gt;
+
+                &lt;!-- 可以订阅的Topic --&gt;
+                &lt;subscribe&gt;
+                    &lt;topics&gt;
+                        &lt;topic&gt;SensorData&lt;/topic&gt;
+                        &lt;topic&gt;PublicAnnouncement&lt;/topic&gt;
+                    &lt;/topics&gt;
+                &lt;/subscribe&gt;
+            &lt;/allow_rule&gt;
+        &lt;/grant&gt;
+    &lt;/permissions&gt;
+&lt;/dds&gt;
+EOF
+
+# 签名权限文档
+openssl smime -sign -in robot_controller_permissions.xml -text \
+    -out robot_controller_permissions.p7s \
+    -signer permissions_ca_cert.pem -inkey permissions_ca_key.pem
+
+# 为传感器节点创建权限
+cat &gt; sensor_node_permissions.xml &lt;&lt; 'EOF'
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:noNamespaceSchemaLocation="http://www.omg.org/spec/DDS-SECURITY/20170901/omg_shared_ca_permissions.xsd"&gt;
+    &lt;permissions&gt;
+        &lt;grant name="SensorNodePermissions"&gt;
+            &lt;subject_name&gt;CN=sensor_node,O=MyOrganization,L=Beijing,ST=Beijing,C=CN&lt;/subject_name&gt;
+
+            &lt;validity&gt;
+                &lt;not_before&gt;2025-01-01T00:00:00&lt;/not_before&gt;
+                &lt;not_after&gt;2035-01-01T00:00:00&lt;/not_after&gt;
+            &lt;/validity&gt;
+
+            &lt;allow_rule&gt;
+                &lt;domains&gt;
+                    &lt;id&gt;0&lt;/id&gt;
+                &lt;/domains&gt;
+
+                &lt;publish&gt;
+                    &lt;topics&gt;
+                        &lt;topic&gt;SensorData&lt;/topic&gt;
+                    &lt;/topics&gt;
+                &lt;/publish&gt;
+
+                &lt;subscribe&gt;
+                    &lt;topics&gt;
+                        &lt;topic&gt;ControlCommand&lt;/topic&gt;
+                    &lt;/topics&gt;
+                &lt;/subscribe&gt;
+            &lt;/allow_rule&gt;
+        &lt;/grant&gt;
+    &lt;/permissions&gt;
+&lt;/dds&gt;
+EOF
+
+openssl smime -sign -in sensor_node_permissions.xml -text \
+    -out sensor_node_permissions.p7s \
+    -signer permissions_ca_cert.pem -inkey permissions_ca_key.pem
+
+echo "   ✓ 权限文档已生成并签名"
+
+# ============================================================
+# 第六步：生成部署目录结构
+# ============================================================
+echo "6. 组织证书到部署目录..."
+
+mkdir -p deploy/robot_controller
+mkdir -p deploy/sensor_node
+mkdir -p deploy/monitoring_station
+
+# 拷贝通用文件
+for dir in deploy/*/; do
+    cp ca_cert.pem "$dir"
+    cp permissions_ca_cert.pem "$dir"
+    cp governance.p7s "$dir"
+done
+
+# 拷贝特定文件
+cp robot_controller_cert.pem robot_controller_key.pem \
+   robot_controller_permissions.p7s deploy/robot_controller/
+
+cp sensor_node_cert.pem sensor_node_key.pem \
+   sensor_node_permissions.p7s deploy/sensor_node/
+
+echo "   ✓ 证书已组织到deploy/目录"
+
+# ============================================================
+# 第七步：生成验证脚本
+# ============================================================
+echo "7. 生成验证脚本..."
+
+cat &gt; verify_certificates.sh &lt;&lt; 'VERIFY_SCRIPT'
+#!/bin/bash
+# 验证证书链
+
+echo "验证CA证书..."
+openssl x509 -in ca_cert.pem -text -noout
+
+echo "验证参与者证书..."
+openssl verify -CAfile ca_cert.pem robot_controller_cert.pem
+openssl verify -CAfile ca_cert.pem sensor_node_cert.pem
+
+echo "验证治理文档签名..."
+openssl smime -verify -in governance.p7s -CAfile permissions_ca_cert.pem -inform smime
+
+echo "验证权限文档签名..."
+openssl smime -verify -in robot_controller_permissions.p7s -CAfile permissions_ca_cert.pem -inform smime
+openssl smime -verify -in sensor_node_permissions.p7s -CAfile permissions_ca_cert.pem -inform smime
+
+echo "所有证书验证通过！"
+VERIFY_SCRIPT
+
+chmod +x verify_certificates.sh
+
+echo "   ✓ 验证脚本已生成: verify_certificates.sh"
+
+# ============================================================
+# 第八步：生成配置示例
+# ============================================================
+echo "8. 生成配置示例..."
+
+cat &gt; DEPLOYMENT_GUIDE.md &lt;&lt; 'GUIDE'
+# DDS Security 部署指南
+
+## 目录结构
+</code></pre>
+<p>deploy/
+├── robot_controller/
+│   ├── ca_cert.pem                          # CA证书
+│   ├── permissions_ca_cert.pem              # 权限CA证书
+│   ├── governance.p7s                       # 治理文档
+│   ├── robot_controller_cert.pem            # 参与者证书
+│   ├── robot_controller_key.pem             # 参与者私钥
+│   └── robot_controller_permissions.p7s     # 权限文档
+├── sensor_node/
+│   └── ... (类似结构)</p>
+<pre><code>
+## Fast DDS配置示例
+
+```cpp
+DomainParticipantQos qos;
+
+// 认证配置
+qos.properties().properties().emplace_back(
+    "dds.sec.auth.plugin", "builtin.PKI-DH");
+qos.properties().properties().emplace_back(
+    "dds.sec.auth.builtin.PKI-DH.identity_ca",
+    "file://ca_cert.pem");
+qos.properties().properties().emplace_back(
+    "dds.sec.auth.builtin.PKI-DH.identity_certificate",
+    "file://robot_controller_cert.pem");
+qos.properties().properties().emplace_back(
+    "dds.sec.auth.builtin.PKI-DH.private_key",
+    "file://robot_controller_key.pem");
+
+// 访问控制配置
+qos.properties().properties().emplace_back(
+    "dds.sec.access.plugin", "builtin.Access-Permissions");
+qos.properties().properties().emplace_back(
+    "dds.sec.access.builtin.Access-Permissions.permissions_ca",
+    "file://permissions_ca_cert.pem");
+qos.properties().properties().emplace_back(
+    "dds.sec.access.builtin.Access-Permissions.governance",
+    "file://governance.p7s");
+qos.properties().properties().emplace_back(
+    "dds.sec.access.builtin.Access-Permissions.permissions",
+    "file://robot_controller_permissions.p7s");
+
+// 加密配置
+qos.properties().properties().emplace_back(
+    "dds.sec.crypto.plugin", "builtin.AES-GCM-GMAC");
+</code></pre>
+<h2 id="安全等级说明"><a class="header" href="#安全等级说明">安全等级说明</a></h2>
+<h3 id="发现保护discovery-protection"><a class="header" href="#发现保护discovery-protection">发现保护（Discovery Protection）</a></h3>
+<ul>
+<li>NONE: 不保护</li>
+<li>SIGN: 签名（防篡改）</li>
+<li>ENCRYPT: 加密（防窃听）</li>
+</ul>
+<h3 id="数据保护data-protection"><a class="header" href="#数据保护data-protection">数据保护（Data Protection）</a></h3>
+<ul>
+<li>NONE: 明文传输</li>
+<li>SIGN: 签名</li>
+<li>ENCRYPT: 加密</li>
+</ul>
+<h2 id="故障排查"><a class="header" href="#故障排查">故障排查</a></h2>
+<ol>
+<li>
+<p><strong>证书验证失败</strong></p>
+<ul>
+<li>检查证书路径是否正确</li>
+<li>验证证书链: <code>openssl verify -CAfile ca_cert.pem participant_cert.pem</code></li>
+</ul>
+</li>
+<li>
+<p><strong>权限被拒绝</strong></p>
+<ul>
+<li>检查Subject Name是否匹配</li>
+<li>验证权限文档签名</li>
+<li>确认Topic在allow_rule中</li>
+</ul>
+</li>
+<li>
+<p><strong>加密协商失败</strong></p>
+<ul>
+<li>检查governance.xml中的保护级别配置</li>
+<li>确保所有参与者使用相同的治理文档
+GUIDE</li>
+</ul>
+</li>
+</ol>
+<p>echo "   ✓ 部署指南已生成: DEPLOYMENT_GUIDE.md"</p>
+<p>echo ""
+echo "=== 证书生成完成！ ==="
+echo ""
+echo "生成的文件："
+echo "  - CA证书: ca_cert.pem, ca_key.pem"
+echo "  - 参与者证书: robot_controller_cert.pem, sensor_node_cert.pem, ..."
+echo "  - 治理文档: governance.p7s"
+echo "  - 权限文档: *_permissions.p7s"
+echo ""
+echo "部署目录："
+echo "  - deploy/robot_controller/"
+echo "  - deploy/sensor_node/"
+echo "  - deploy/monitoring_station/"
+echo ""
+echo "下一步："
+echo "  1. 运行验证脚本: ./verify_certificates.sh"
+echo "  2. 阅读部署指南: cat DEPLOYMENT_GUIDE.md"
+echo "  3. 将deploy/目录拷贝到各个节点"</p>
+<pre><code>
+### 5.3 安全传输实战案例
+
+```cpp
+#include &lt;fastdds/dds/domain/DomainParticipant.hpp&gt;
+#include &lt;fastdds/dds/publisher/DataWriter.hpp&gt;
+#include &lt;fastdds/dds/subscriber/DataReader.hpp&gt;
+
+class SecureRobotControlSystem {
+private:
+    DomainParticipant* participant_ = nullptr;
+    Publisher* publisher_ = nullptr;
+    Subscriber* subscriber_ = nullptr;
+    DataWriter* control_writer_ = nullptr;
+    DataReader* sensor_reader_ = nullptr;
+
+public:
+    // 初始化安全参与者
+    bool initialize_secure(const std::string&amp; cert_dir) {
+        using namespace eprosima::fastdds::dds;
+
+        DomainParticipantQos qos;
+
+        // 构建证书路径
+        std::string ca_cert = cert_dir + "/ca_cert.pem";
+        std::string identity_cert = cert_dir + "/robot_controller_cert.pem";
+        std::string private_key = cert_dir + "/robot_controller_key.pem";
+        std::string permissions_ca = cert_dir + "/permissions_ca_cert.pem";
+        std::string governance = cert_dir + "/governance.p7s";
+        std::string permissions = cert_dir + "/robot_controller_permissions.p7s";
+
+        // 认证配置
+        qos.properties().properties().emplace_back(
+            "dds.sec.auth.plugin", "builtin.PKI-DH");
+        qos.properties().properties().emplace_back(
+            "dds.sec.auth.builtin.PKI-DH.identity_ca",
+            "file://" + ca_cert);
+        qos.properties().properties().emplace_back(
+            "dds.sec.auth.builtin.PKI-DH.identity_certificate",
+            "file://" + identity_cert);
+        qos.properties().properties().emplace_back(
+            "dds.sec.auth.builtin.PKI-DH.private_key",
+            "file://" + private_key);
+
+        // 访问控制配置
+        qos.properties().properties().emplace_back(
+            "dds.sec.access.plugin", "builtin.Access-Permissions");
+        qos.properties().properties().emplace_back(
+            "dds.sec.access.builtin.Access-Permissions.permissions_ca",
+            "file://" + permissions_ca);
+        qos.properties().properties().emplace_back(
+            "dds.sec.access.builtin.Access-Permissions.governance",
+            "file://" + governance);
+        qos.properties().properties().emplace_back(
+            "dds.sec.access.builtin.Access-Permissions.permissions",
+            "file://" + permissions);
+
+        // 加密配置
+        qos.properties().properties().emplace_back(
+            "dds.sec.crypto.plugin", "builtin.AES-GCM-GMAC");
+
+        // 创建参与者
+        participant_ = DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+
+        if (!participant_) {
+            std::cerr &lt;&lt; "Failed to create secure participant" &lt;&lt; std::endl;
+            return false;
+        }
+
+        std::cout &lt;&lt; "Secure participant created successfully" &lt;&lt; std::endl;
+
+        // 创建发布者和订阅者
+        publisher_ = participant_-&gt;create_publisher(PUBLISHER_QOS_DEFAULT);
+        subscriber_ = participant_-&gt;create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+
+        return true;
+    }
+
+    // 安全错误处理
+    class SecurityErrorListener : public DomainParticipantListener {
+    public:
+        void on_participant_discovery(
+            DomainParticipant* participant,
+            eprosima::fastrtps::rtps::ParticipantDiscoveryInfo&amp;&amp; info) override {
+
+            if (info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DROPPED_PARTICIPANT) {
+                std::cerr &lt;&lt; "=== Participant Dropped (Security Failure?) ===" &lt;&lt; std::endl;
+                std::cerr &lt;&lt; "Participant: " &lt;&lt; info.info.m_participantName &lt;&lt; std::endl;
+                // 可能的原因：
+                // 1. 认证失败
+                // 2. 权限不足
+                // 3. 加密协商失败
+            }
+        }
+    };
+
+    ~SecureRobotControlSystem() {
+        if (participant_) {
+            if (control_writer_) publisher_-&gt;delete_datawriter(control_writer_);
+            if (sensor_reader_) subscriber_-&gt;delete_datareader(sensor_reader_);
+            if (publisher_) participant_-&gt;delete_publisher(publisher_);
+            if (subscriber_) participant_-&gt;delete_subscriber(subscriber_);
+            DomainParticipantFactory::get_instance()-&gt;delete_participant(participant_);
+        }
+    }
+};
+</code></pre>
+<h3 id="54-性能影响分析"><a class="header" href="#54-性能影响分析">5.4 性能影响分析</a></h3>
+<pre><code class="language-cpp">class SecurityPerformanceBenchmark {
+public:
+    struct BenchmarkResult {
+        double latency_us;
+        double throughput_mbps;
+        double cpu_usage_percent;
+    };
+
+    // 对比有无安全的性能
+    void compare_security_performance() {
+        std::cout &lt;&lt; "=== Security Performance Impact ===" &lt;&lt; std::endl;
+
+        // 场景1：无安全
+        auto nosec_result = benchmark_without_security();
+        std::cout &lt;&lt; "\n无安全:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  延迟: " &lt;&lt; nosec_result.latency_us &lt;&lt; " μs" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  吞吐量: " &lt;&lt; nosec_result.throughput_mbps &lt;&lt; " Mbps" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  CPU使用: " &lt;&lt; nosec_result.cpu_usage_percent &lt;&lt; " %" &lt;&lt; std::endl;
+
+        // 场景2：启用安全
+        auto sec_result = benchmark_with_security();
+        std::cout &lt;&lt; "\n启用安全:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  延迟: " &lt;&lt; sec_result.latency_us &lt;&lt; " μs" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  吞吐量: " &lt;&lt; sec_result.throughput_mbps &lt;&lt; " Mbps" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  CPU使用: " &lt;&lt; sec_result.cpu_usage_percent &lt;&lt; " %" &lt;&lt; std::endl;
+
+        // 性能开销
+        double latency_overhead = (sec_result.latency_us - nosec_result.latency_us)
+                                 / nosec_result.latency_us * 100;
+        double throughput_reduction = (nosec_result.throughput_mbps - sec_result.throughput_mbps)
+                                     / nosec_result.throughput_mbps * 100;
+
+        std::cout &lt;&lt; "\n性能影响:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  延迟增加: " &lt;&lt; latency_overhead &lt;&lt; " %" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  吞吐量下降: " &lt;&lt; throughput_reduction &lt;&lt; " %" &lt;&lt; std::endl;
+
+        /*
+        典型性能影响（经验值）：
+
+        1. 认证握手开销（一次性）：
+           - 10-50 ms（PKI认证）
+
+        2. 加密/解密开销（每条消息）：
+           - 小消息(&lt;1KB): 10-30 μs
+           - 中等消息(1KB-10KB): 50-100 μs
+           - 大消息(&gt;10KB): 与数据大小成正比
+
+        3. 总体性能影响：
+           - 延迟增加: 50-200 μs
+           - 吞吐量下降: 10-30%
+           - CPU使用增加: 10-20%
+
+        4. 优化建议：
+           - 使用硬件加速（AES-NI）
+           - 批量传输减少加密开销
+           - 共享内存传输不加密（本地安全）
+        */
+    }
+
+private:
+    BenchmarkResult benchmark_without_security() {
+        // 实现无安全的基准测试
+        BenchmarkResult result;
+        result.latency_us = 200.0;
+        result.throughput_mbps = 100.0;
+        result.cpu_usage_percent = 5.0;
+        return result;
+    }
+
+    BenchmarkResult benchmark_with_security() {
+        // 实现有安全的基准测试
+        BenchmarkResult result;
+        result.latency_us = 350.0;
+        result.throughput_mbps = 75.0;
+        result.cpu_usage_percent = 15.0;
+        return result;
+    }
+};
+</code></pre>
+<hr />
+<h2 id="模块六实战项目案例"><a class="header" href="#模块六实战项目案例">模块六：实战项目案例</a></h2>
+<h3 id="61-分布式传感器采集系统完整实现"><a class="header" href="#61-分布式传感器采集系统完整实现">6.1 分布式传感器采集系统（完整实现）</a></h3>
+<p>这是一个生产级别的完整示例，展示Fast DDS的所有核心功能。</p>
+<h4 id="611-idl数据类型定义"><a class="header" href="#611-idl数据类型定义">6.1.1 IDL数据类型定义</a></h4>
+<pre><code class="language-idl">// sensor_types.idl
+module sensor {
+    // 传感器类型枚举
+    enum SensorType {
+        TEMPERATURE,
+        HUMIDITY,
+        PRESSURE,
+        MOTION,
+        LIGHT,
+        SOUND
+    };
+
+    // 传感器状态枚举
+    enum SensorStatus {
+        ACTIVE,
+        IDLE,
+        ERROR,
+        MAINTENANCE,
+        OFFLINE
+    };
+
+    // 传感器读数
+    struct SensorReading {
+        @key string sensor_id;        // 传感器唯一ID（Instance键）
+        SensorType type;               // 传感器类型
+        double value;                  // 读数值
+        int64 timestamp;               // 时间戳（微秒）
+        double latitude;               // 地理位置
+        double longitude;
+        double accuracy;               // 读数精度
+    };
+
+    // 传感器状态
+    struct SensorStatusMsg {
+        @key string sensor_id;
+        SensorStatus status;
+        double battery_level;          // 电池电量（0-100）
+        int32 error_code;              // 错误码
+        string error_message;          // 错误描述
+        int64 last_update_time;
+    };
+
+    // 传感器配置
+    struct SensorConfig {
+        @key string sensor_id;
+        int32 sampling_rate_ms;        // 采样周期（毫秒）
+        double threshold_min;          // 告警阈值下限
+        double threshold_max;          // 告警阈值上限
+        bool enable_filtering;         // 启用数据滤波
+    };
+
+    // 告警消息
+    struct AlertMessage {
+        string sensor_id;
+        int64 timestamp;
+        string alert_type;             // "THRESHOLD", "BATTERY", "ERROR"
+        string description;
+        double value;
+    };
+};
+</code></pre>
+<h4 id="612-传感器节点实现"><a class="header" href="#612-传感器节点实现">6.1.2 传感器节点实现</a></h4>
+<pre><code class="language-cpp">// sensor_node.cpp
+#include &lt;fastdds/dds/domain/DomainParticipant.hpp&gt;
+#include &lt;fastdds/dds/publisher/Publisher.hpp&gt;
+#include &lt;fastdds/dds/publisher/DataWriter.hpp&gt;
+#include &lt;fastdds/dds/subscriber/Subscriber.hpp&gt;
+#include &lt;fastdds/dds/subscriber/DataReader.hpp&gt;
+#include "sensor_types.h"
+#include "sensor_typesPubSubTypes.h"
+#include &lt;thread&gt;
+#include &lt;atomic&gt;
+#include &lt;random&gt;
+
+class SensorNode {
+private:
+    std::string sensor_id_;
+    sensor::SensorType sensor_type_;
+
+    DomainParticipant* participant_;
+    Publisher* publisher_;
+    Subscriber* subscriber_;
+
+    DataWriter* reading_writer_;
+    DataWriter* status_writer_;
+    DataReader* config_reader_;
+
+    std::atomic&lt;bool&gt; running_{false};
+    std::thread publish_thread_;
+    std::thread monitor_thread_;
+
+    // 传感器配置
+    int sampling_rate_ms_ = 1000;  // 默认1秒
+    double threshold_min_ = -100.0;
+    double threshold_max_ = 100.0;
+    bool enable_filtering_ = false;
+
+    // 传感器状态
+    double battery_level_ = 100.0;
+    sensor::SensorStatus status_ = sensor::SensorStatus::ACTIVE;
+
+    // 数据生成器
+    std::mt19937 rng_{std::random_device{}()};
+    std::normal_distribution&lt;double&gt; noise_{0.0, 0.1};
+
+public:
+    SensorNode(const std::string&amp; sensor_id, sensor::SensorType type)
+        : sensor_id_(sensor_id), sensor_type_(type) {}
+
+    bool initialize(int domain_id = 0) {
+        using namespace eprosima::fastdds::dds;
+
+        // 创建参与者
+        DomainParticipantQos participant_qos;
+        participant_qos.name(sensor_id_);
+
+        // 配置混合传输（本地SHM + 远程UDP）
+        participant_qos.transport().use_builtin_transports = false;
+
+        auto shm = std::make_shared&lt;eprosima::fastdds::rtps::SharedMemTransportDescriptor&gt;();
+        auto udp = std::make_shared&lt;eprosima::fastdds::rtps::UDPv4TransportDescriptor&gt;();
+        udp-&gt;sendBufferSize = 1024 * 1024;
+        udp-&gt;receiveBufferSize = 1024 * 1024;
+
+        participant_qos.transport().user_transports.push_back(shm);
+        participant_qos.transport().user_transports.push_back(udp);
+
+        participant_ = DomainParticipantFactory::get_instance()-&gt;create_participant(
+            domain_id, participant_qos);
+
+        if (!participant_) {
+            std::cerr &lt;&lt; "Failed to create participant" &lt;&lt; std::endl;
+            return false;
+        }
+
+        // 注册类型
+        TypeSupport reading_type(new sensor::SensorReadingPubSubType());
+        TypeSupport status_type(new sensor::SensorStatusMsgPubSubType());
+        TypeSupport config_type(new sensor::SensorConfigPubSubType());
+
+        reading_type.register_type(participant_);
+        status_type.register_type(participant_);
+        config_type.register_type(participant_);
+
+        // 创建主题
+        Topic* reading_topic = participant_-&gt;create_topic(
+            "SensorReadings", "sensor::SensorReading", TOPIC_QOS_DEFAULT);
+        Topic* status_topic = participant_-&gt;create_topic(
+            "SensorStatus", "sensor::SensorStatusMsg", TOPIC_QOS_DEFAULT);
+        Topic* config_topic = participant_-&gt;create_topic(
+            "SensorConfig", "sensor::SensorConfig", TOPIC_QOS_DEFAULT);
+
+        if (!reading_topic || !status_topic || !config_topic) {
+            std::cerr &lt;&lt; "Failed to create topics" &lt;&lt; std::endl;
+            return false;
+        }
+
+        // 创建发布者
+        publisher_ = participant_-&gt;create_publisher(PUBLISHER_QOS_DEFAULT);
+        if (!publisher_) return false;
+
+        // 配置DataWriter QoS
+        DataWriterQos reading_qos;
+        reading_qos.reliability().kind = BEST_EFFORT_RELIABILITY_QOS;  // 传感器数据允许丢失
+        reading_qos.durability().kind = VOLATILE_DURABILITY_QOS;
+        reading_qos.deadline().period = Duration_t(2, 0);  // 2秒deadline
+        reading_qos.history().kind = KEEP_LAST_HISTORY_QOS;
+        reading_qos.history().depth = 1;
+
+        DataWriterQos status_qos;
+        status_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;  // 状态必须可靠
+        status_qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+        status_qos.history().kind = KEEP_LAST_HISTORY_QOS;
+        status_qos.history().depth = 10;
+
+        reading_writer_ = publisher_-&gt;create_datawriter(reading_topic, reading_qos);
+        status_writer_ = publisher_-&gt;create_datawriter(status_topic, status_qos);
+
+        if (!reading_writer_ || !status_writer_) {
+            std::cerr &lt;&lt; "Failed to create writers" &lt;&lt; std::endl;
+            return false;
+        }
+
+        // 创建订阅者（接收配置）
+        subscriber_ = participant_-&gt;create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+        if (!subscriber_) return false;
+
+        // 配置DataReader QoS
+        DataReaderQos config_qos;
+        config_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        config_qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;  // 获取最新配置
+        config_qos.history().kind = KEEP_LAST_HISTORY_QOS;
+        config_qos.history().depth = 1;
+
+        // 使用监听器接收配置
+        auto* listener = new ConfigListener(this);
+        config_reader_ = subscriber_-&gt;create_datareader(config_topic, config_qos, listener);
+
+        if (!config_reader_) {
+            std::cerr &lt;&lt; "Failed to create config reader" &lt;&lt; std::endl;
+            return false;
+        }
+
+        std::cout &lt;&lt; "Sensor node initialized: " &lt;&lt; sensor_id_ &lt;&lt; std::endl;
+        return true;
+    }
+
+    void start() {
+        running_ = true;
+        publish_thread_ = std::thread(&amp;SensorNode::publish_loop, this);
+        monitor_thread_ = std::thread(&amp;SensorNode::monitor_loop, this);
+    }
+
+    void stop() {
+        running_ = false;
+        if (publish_thread_.joinable()) publish_thread_.join();
+        if (monitor_thread_.joinable()) monitor_thread_.join();
+    }
+
+    ~SensorNode() {
+        stop();
+        cleanup();
+    }
+
+private:
+    // 配置监听器
+    class ConfigListener : public DataReaderListener {
+    private:
+        SensorNode* node_;
+
+    public:
+        ConfigListener(SensorNode* node) : node_(node) {}
+
+        void on_data_available(DataReader* reader) override {
+            sensor::SensorConfig config;
+            SampleInfo info;
+
+            while (reader-&gt;take_next_sample(&amp;config, &amp;info) == ReturnCode_t::RETCODE_OK) {
+                if (info.valid_data &amp;&amp; config.sensor_id() == node_-&gt;sensor_id_) {
+                    std::cout &lt;&lt; "Received new configuration for " &lt;&lt; node_-&gt;sensor_id_ &lt;&lt; std::endl;
+                    node_-&gt;apply_configuration(config);
+                }
+            }
+        }
+    };
+
+    void apply_configuration(const sensor::SensorConfig&amp; config) {
+        sampling_rate_ms_ = config.sampling_rate_ms();
+        threshold_min_ = config.threshold_min();
+        threshold_max_ = config.threshold_max();
+        enable_filtering_ = config.enable_filtering();
+
+        std::cout &lt;&lt; "Configuration applied:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  Sampling rate: " &lt;&lt; sampling_rate_ms_ &lt;&lt; " ms" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  Thresholds: [" &lt;&lt; threshold_min_ &lt;&lt; ", " &lt;&lt; threshold_max_ &lt;&lt; "]" &lt;&lt; std::endl;
+    }
+
+    // 发布传感器读数
+    void publish_loop() {
+        sensor::SensorReading reading;
+        reading.sensor_id(sensor_id_);
+        reading.type(sensor_type_);
+        reading.latitude(39.9042);   // 示例：北京
+        reading.longitude(116.4074);
+        reading.accuracy(0.1);
+
+        // 发送初始状态
+        publish_status();
+
+        while (running_) {
+            // 生成模拟读数
+            double base_value = get_base_value();
+            double value = base_value + noise_(rng_);
+
+            // 简单滤波
+            if (enable_filtering_) {
+                static double last_value = value;
+                value = 0.7 * last_value + 0.3 * value;  // 一阶滤波
+                last_value = value;
+            }
+
+            reading.value(value);
+            reading.timestamp(std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(
+                std::chrono::system_clock::now().time_since_epoch()).count());
+
+            // 发送读数
+            if (reading_writer_-&gt;write(&amp;reading) != ReturnCode_t::RETCODE_OK) {
+                std::cerr &lt;&lt; "Failed to write reading" &lt;&lt; std::endl;
+            }
+
+            // 检查阈值告警
+            if (value &lt; threshold_min_ || value &gt; threshold_max_) {
+                std::cout &lt;&lt; "⚠ ALERT: Value " &lt;&lt; value &lt;&lt; " out of range ["
+                          &lt;&lt; threshold_min_ &lt;&lt; ", " &lt;&lt; threshold_max_ &lt;&lt; "]" &lt;&lt; std::endl;
+                // 可以发送AlertMessage...
+            }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(sampling_rate_ms_));
+        }
+
+        // 发送离线状态
+        status_ = sensor::SensorStatus::OFFLINE;
+        publish_status();
+    }
+
+    // 监控线程（电池、状态）
+    void monitor_loop() {
+        int count = 0;
+
+        while (running_) {
+            // 模拟电池消耗
+            battery_level_ -= 0.01;
+            if (battery_level_ &lt; 0) battery_level_ = 0;
+
+            // 每10个采样周期发送一次状态
+            if (++count % 10 == 0) {
+                publish_status();
+
+                if (battery_level_ &lt; 20.0) {
+                    std::cout &lt;&lt; "⚠ WARNING: Low battery " &lt;&lt; battery_level_ &lt;&lt; "%" &lt;&lt; std::endl;
+                }
+            }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(sampling_rate_ms_));
+        }
+    }
+
+    void publish_status() {
+        sensor::SensorStatusMsg status;
+        status.sensor_id(sensor_id_);
+        status.status(status_);
+        status.battery_level(battery_level_);
+        status.error_code(0);
+        status.error_message("");
+        status.last_update_time(std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(
+            std::chrono::system_clock::now().time_since_epoch()).count());
+
+        status_writer_-&gt;write(&amp;status);
+    }
+
+    double get_base_value() {
+        // 根据传感器类型返回基准值
+        switch (sensor_type_) {
+            case sensor::SensorType::TEMPERATURE: return 25.0;
+            case sensor::SensorType::HUMIDITY: return 60.0;
+            case sensor::SensorType::PRESSURE: return 1013.25;
+            default: return 50.0;
+        }
+    }
+
+    void cleanup() {
+        if (participant_) {
+            if (reading_writer_) publisher_-&gt;delete_datawriter(reading_writer_);
+            if (status_writer_) publisher_-&gt;delete_datawriter(status_writer_);
+            if (config_reader_) subscriber_-&gt;delete_datareader(config_reader_);
+            if (publisher_) participant_-&gt;delete_publisher(publisher_);
+            if (subscriber_) participant_-&gt;delete_subscriber(subscriber_);
+
+            // 删除Topics
+            std::vector&lt;Topic*&gt; topics;
+            participant_-&gt;get_topics(topics);
+            for (auto* topic : topics) {
+                participant_-&gt;delete_topic(topic);
+            }
+
+            DomainParticipantFactory::get_instance()-&gt;delete_participant(participant_);
+        }
+    }
+};
+</code></pre>
+<h4 id="613-数据处理节点实现"><a class="header" href="#613-数据处理节点实现">6.1.3 数据处理节点实现</a></h4>
+<pre><code class="language-cpp">// data_processor.cpp
+#include &lt;deque&gt;
+#include &lt;map&gt;
+#include &lt;mutex&gt;
+#include &lt;algorithm&gt;
+
+class DataProcessor {
+private:
+    DomainParticipant* participant_;
+    Subscriber* subscriber_;
+    Publisher* publisher_;
+
+    DataReader* reading_reader_;
+    DataReader* status_reader_;
+    DataWriter* config_writer_;
+
+    struct SensorInfo {
+        std::deque&lt;double&gt; value_history;     // 历史数据
+        std::deque&lt;int64&gt; timestamp_history;  // 时间戳
+        sensor::SensorStatus status;
+        double battery_level;
+        int64 last_update_time;
+        bool online;
+
+        // 统计数据
+        double min_value = std::numeric_limits&lt;double&gt;::max();
+        double max_value = std::numeric_limits&lt;double&gt;::lowest();
+        double sum_value = 0.0;
+        int sample_count = 0;
+    };
+
+    std::map&lt;std::string, SensorInfo&gt; sensors_;
+    std::mutex sensors_mutex_;
+
+    const size_t MAX_HISTORY = 100;
+
+public:
+    bool initialize(int domain_id = 0) {
+        using namespace eprosima::fastdds::dds;
+
+        DomainParticipantQos qos;
+        qos.name("DataProcessor");
+
+        participant_ = DomainParticipantFactory::get_instance()-&gt;create_participant(
+            domain_id, qos);
+        if (!participant_) return false;
+
+        // 注册类型
+        TypeSupport reading_type(new sensor::SensorReadingPubSubType());
+        TypeSupport status_type(new sensor::SensorStatusMsgPubSubType());
+        TypeSupport config_type(new sensor::SensorConfigPubSubType());
+
+        reading_type.register_type(participant_);
+        status_type.register_type(participant_);
+        config_type.register_type(participant_);
+
+        // 创建主题
+        Topic* reading_topic = participant_-&gt;create_topic(
+            "SensorReadings", "sensor::SensorReading", TOPIC_QOS_DEFAULT);
+        Topic* status_topic = participant_-&gt;create_topic(
+            "SensorStatus", "sensor::SensorStatusMsg", TOPIC_QOS_DEFAULT);
+        Topic* config_topic = participant_-&gt;create_topic(
+            "SensorConfig", "sensor::SensorConfig", TOPIC_QOS_DEFAULT);
+
+        // 创建订阅者
+        subscriber_ = participant_-&gt;create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+        if (!subscriber_) return false;
+
+        // 读取器QoS
+        DataReaderQos reading_qos;
+        reading_qos.reliability().kind = BEST_EFFORT_RELIABILITY_QOS;
+        reading_qos.history().kind = KEEP_LAST_HISTORY_QOS;
+        reading_qos.history().depth = 10;
+
+        DataReaderQos status_qos;
+        status_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        status_qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+        status_qos.history().kind = KEEP_LAST_HISTORY_QOS;
+        status_qos.history().depth = 10;
+
+        // 使用监听器
+        auto* reading_listener = new ReadingListener(this);
+        auto* status_listener = new StatusListener(this);
+
+        reading_reader_ = subscriber_-&gt;create_datareader(
+            reading_topic, reading_qos, reading_listener);
+        status_reader_ = subscriber_-&gt;create_datareader(
+            status_topic, status_qos, status_listener);
+
+        // 创建发布者（发送配置）
+        publisher_ = participant_-&gt;create_publisher(PUBLISHER_QOS_DEFAULT);
+
+        DataWriterQos config_qos;
+        config_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        config_qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+
+        config_writer_ = publisher_-&gt;create_datawriter(config_topic, config_qos);
+
+        std::cout &lt;&lt; "Data processor initialized" &lt;&lt; std::endl;
+        return true;
+    }
+
+    // 配置传感器
+    void configure_sensor(const std::string&amp; sensor_id,
+                         int sampling_rate_ms,
+                         double threshold_min,
+                         double threshold_max) {
+        sensor::SensorConfig config;
+        config.sensor_id(sensor_id);
+        config.sampling_rate_ms(sampling_rate_ms);
+        config.threshold_min(threshold_min);
+        config.threshold_max(threshold_max);
+        config.enable_filtering(true);
+
+        if (config_writer_-&gt;write(&amp;config) == ReturnCode_t::RETCODE_OK) {
+            std::cout &lt;&lt; "Configuration sent to " &lt;&lt; sensor_id &lt;&lt; std::endl;
+        }
+    }
+
+    // 打印统计摘要
+    void print_summary() {
+        std::lock_guard&lt;std::mutex&gt; lock(sensors_mutex_);
+
+        std::cout &lt;&lt; "\n╔════════════════════════════════════════════════════════════╗" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "║          Sensor Network Summary                           ║" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "╠════════════════════════════════════════════════════════════╣" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Total sensors: " &lt;&lt; sensors_.size() &lt;&lt; std::endl;
+
+        int online_count = 0;
+        for (const auto&amp; [id, info] : sensors_) {
+            if (info.status != sensor::SensorStatus::OFFLINE) ++online_count;
+
+            std::cout &lt;&lt; "\n--- Sensor: " &lt;&lt; id &lt;&lt; " ---" &lt;&lt; std::endl;
+            std::cout &lt;&lt; "  Status: " &lt;&lt; status_to_string(info.status) &lt;&lt; std::endl;
+            std::cout &lt;&lt; "  Battery: " &lt;&lt; info.battery_level &lt;&lt; "%" &lt;&lt; std::endl;
+            std::cout &lt;&lt; "  Samples: " &lt;&lt; info.sample_count &lt;&lt; std::endl;
+
+            if (info.sample_count &gt; 0) {
+                double avg = info.sum_value / info.sample_count;
+                std::cout &lt;&lt; "  Min: " &lt;&lt; info.min_value &lt;&lt; std::endl;
+                std::cout &lt;&lt; "  Max: " &lt;&lt; info.max_value &lt;&lt; std::endl;
+                std::cout &lt;&lt; "  Avg: " &lt;&lt; avg &lt;&lt; std::endl;
+            }
+
+            // 最近数据
+            if (!info.value_history.empty()) {
+                std::cout &lt;&lt; "  Latest value: " &lt;&lt; info.value_history.back() &lt;&lt; std::endl;
+                auto now = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(
+                    std::chrono::system_clock::now().time_since_epoch()).count();
+                auto age_ms = (now - info.timestamp_history.back()) / 1000;
+                std::cout &lt;&lt; "  Data age: " &lt;&lt; age_ms &lt;&lt; " ms" &lt;&lt; std::endl;
+            }
+        }
+
+        std::cout &lt;&lt; "\nOnline sensors: " &lt;&lt; online_count &lt;&lt; "/" &lt;&lt; sensors_.size() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "╚════════════════════════════════════════════════════════════╝" &lt;&lt; std::endl;
+    }
+
+private:
+    // 读数监听器
+    class ReadingListener : public DataReaderListener {
+    private:
+        DataProcessor* processor_;
+
+    public:
+        ReadingListener(DataProcessor* processor) : processor_(processor) {}
+
+        void on_data_available(DataReader* reader) override {
+            sensor::SensorReading reading;
+            SampleInfo info;
+
+            while (reader-&gt;take_next_sample(&amp;reading, &amp;info) == ReturnCode_t::RETCODE_OK) {
+                if (info.valid_data) {
+                    processor_-&gt;process_reading(reading);
+                }
+            }
+        }
+    };
+
+    // 状态监听器
+    class StatusListener : public DataReaderListener {
+    private:
+        DataProcessor* processor_;
+
+    public:
+        StatusListener(DataProcessor* processor) : processor_(processor) {}
+
+        void on_data_available(DataReader* reader) override {
+            sensor::SensorStatusMsg status;
+            SampleInfo info;
+
+            while (reader-&gt;take_next_sample(&amp;status, &amp;info) == ReturnCode_t::RETCODE_OK) {
+                if (info.valid_data) {
+                    processor_-&gt;process_status(status);
+                }
+            }
+        }
+    };
+
+    void process_reading(const sensor::SensorReading&amp; reading) {
+        std::lock_guard&lt;std::mutex&gt; lock(sensors_mutex_);
+
+        auto&amp; info = sensors_[reading.sensor_id()];
+
+        // 添加到历史
+        info.value_history.push_back(reading.value());
+        info.timestamp_history.push_back(reading.timestamp());
+
+        // 限制历史大小
+        if (info.value_history.size() &gt; MAX_HISTORY) {
+            info.value_history.pop_front();
+            info.timestamp_history.pop_front();
+        }
+
+        // 更新统计
+        info.min_value = std::min(info.min_value, reading.value());
+        info.max_value = std::max(info.max_value, reading.value());
+        info.sum_value += reading.value();
+        info.sample_count++;
+
+        // 可以在这里添加更多分析逻辑...
+    }
+
+    void process_status(const sensor::SensorStatusMsg&amp; status) {
+        std::lock_guard&lt;std::mutex&gt; lock(sensors_mutex_);
+
+        auto&amp; info = sensors_[status.sensor_id()];
+        info.status = status.status();
+        info.battery_level = status.battery_level();
+        info.last_update_time = status.last_update_time();
+
+        if (status.status() == sensor::SensorStatus::OFFLINE) {
+            std::cout &lt;&lt; "⚠ Sensor " &lt;&lt; status.sensor_id() &lt;&lt; " went OFFLINE" &lt;&lt; std::endl;
+        }
+
+        if (status.battery_level() &lt; 20.0) {
+            std::cout &lt;&lt; "⚠ Sensor " &lt;&lt; status.sensor_id()
+                      &lt;&lt; " low battery: " &lt;&lt; status.battery_level() &lt;&lt; "%" &lt;&lt; std::endl;
+        }
+    }
+
+    std::string status_to_string(sensor::SensorStatus status) {
+        switch (status) {
+            case sensor::SensorStatus::ACTIVE: return "ACTIVE";
+            case sensor::SensorStatus::IDLE: return "IDLE";
+            case sensor::SensorStatus::ERROR: return "ERROR";
+            case sensor::SensorStatus::MAINTENANCE: return "MAINTENANCE";
+            case sensor::SensorStatus::OFFLINE: return "OFFLINE";
+            default: return "UNKNOWN";
+        }
+    }
+};
+</code></pre>
+<h4 id="614-主程序"><a class="header" href="#614-主程序">6.1.4 主程序</a></h4>
+<pre><code class="language-cpp">// main.cpp
+#include &lt;iostream&gt;
+#include &lt;csignal&gt;
+
+std::atomic&lt;bool&gt; g_running{true};
+
+void signal_handler(int signal) {
+    if (signal == SIGINT) {
+        std::cout &lt;&lt; "\nReceived SIGINT, shutting down..." &lt;&lt; std::endl;
+        g_running = false;
+    }
+}
+
+void print_usage() {
+    std::cout &lt;&lt; "Usage:" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "  sensor_system sensor &lt;id&gt; &lt;type&gt;  - Run sensor node" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "  sensor_system processor            - Run data processor" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "\nSensor types: TEMPERATURE, HUMIDITY, PRESSURE, MOTION" &lt;&lt; std::endl;
+}
+
+int main(int argc, char** argv) {
+    signal(SIGINT, signal_handler);
+
+    if (argc &lt; 2) {
+        print_usage();
+        return 1;
+    }
+
+    std::string mode = argv[1];
+
+    if (mode == "sensor") {
+        if (argc &lt; 4) {
+            print_usage();
+            return 1;
+        }
+
+        std::string sensor_id = argv[2];
+        std::string type_str = argv[3];
+
+        sensor::SensorType type;
+        if (type_str == "TEMPERATURE") type = sensor::SensorType::TEMPERATURE;
+        else if (type_str == "HUMIDITY") type = sensor::SensorType::HUMIDITY;
+        else if (type_str == "PRESSURE") type = sensor::SensorType::PRESSURE;
+        else if (type_str == "MOTION") type = sensor::SensorType::MOTION;
+        else {
+            std::cerr &lt;&lt; "Invalid sensor type: " &lt;&lt; type_str &lt;&lt; std::endl;
+            return 1;
+        }
+
+        SensorNode sensor(sensor_id, type);
+        if (!sensor.initialize()) {
+            std::cerr &lt;&lt; "Failed to initialize sensor" &lt;&lt; std::endl;
+            return 1;
+        }
+
+        sensor.start();
+        std::cout &lt;&lt; "Sensor " &lt;&lt; sensor_id &lt;&lt; " (" &lt;&lt; type_str &lt;&lt; ") running..." &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Press Ctrl+C to stop" &lt;&lt; std::endl;
+
+        while (g_running) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+
+        sensor.stop();
+
+    } else if (mode == "processor") {
+        DataProcessor processor;
+        if (!processor.initialize()) {
+            std::cerr &lt;&lt; "Failed to initialize processor" &lt;&lt; std::endl;
+            return 1;
+        }
+
+        std::cout &lt;&lt; "Data processor running..." &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Commands:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  s - Print summary" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  c &lt;id&gt; &lt;rate&gt; &lt;min&gt; &lt;max&gt; - Configure sensor" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  q - Quit" &lt;&lt; std::endl;
+
+        std::string line;
+        while (g_running &amp;&amp; std::getline(std::cin, line)) {
+            if (line == "s") {
+                processor.print_summary();
+            } else if (line == "q") {
+                break;
+            } else if (line[0] == 'c') {
+                // 解析配置命令
+                std::istringstream iss(line);
+                std::string cmd, id;
+                int rate;
+                double min_val, max_val;
+
+                if (iss &gt;&gt; cmd &gt;&gt; id &gt;&gt; rate &gt;&gt; min_val &gt;&gt; max_val) {
+                    processor.configure_sensor(id, rate, min_val, max_val);
+                } else {
+                    std::cout &lt;&lt; "Invalid command format" &lt;&lt; std::endl;
+                }
+            }
+        }
+
+    } else {
+        print_usage();
+        return 1;
+    }
+
+    std::cout &lt;&lt; "Shutdown complete" &lt;&lt; std::endl;
+    return 0;
+}
+</code></pre>
+<h4 id="615-编译与运行"><a class="header" href="#615-编译与运行">6.1.5 编译与运行</a></h4>
+<pre><code class="language-cmake"># CMakeLists.txt
+cmake_minimum_required(VERSION 3.10)
+project(SensorNetwork)
+
+set(CMAKE_CXX_STANDARD 17)
+
+find_package(fastcdr REQUIRED)
+find_package(fastrtps REQUIRED)
+
+# 生成IDL代码
+execute_process(
+    COMMAND fastddsgen -replace -typeobject sensor_types.idl
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+set(IDL_SOURCES
+    sensor_types.cxx
+    sensor_typesPubSubTypes.cxx
+    sensor_typesTypeObject.cxx
+)
+
+add_executable(sensor_system
+    main.cpp
+    sensor_node.cpp
+    data_processor.cpp
+    ${IDL_SOURCES}
+)
+
+target_link_libraries(sensor_system
+    fastrtps
+    fastcdr
+    pthread
+)
+</code></pre>
+<pre><code class="language-bash"># 编译
+mkdir build &amp;&amp; cd build
+cmake ..
+make
+
+# 运行示例
+
+# 终端1：启动数据处理器
+./sensor_system processor
+
+# 终端2-5：启动传感器节点
+./sensor_system sensor temp_01 TEMPERATURE
+./sensor_system sensor humid_01 HUMIDITY
+./sensor_system sensor press_01 PRESSURE
+./sensor_system sensor motion_01 MOTION
+
+# 在processor终端中：
+# 查看摘要
+s
+
+# 配置传感器（ID=temp_01, 采样率=500ms, 阈值20-30）
+c temp_01 500 20.0 30.0
+</code></pre>
+<hr />
+<h2 id="模块七高级特性"><a class="header" href="#模块七高级特性">模块七：高级特性</a></h2>
+<h3 id="71-内容过滤主题content-filtered-topics"><a class="header" href="#71-内容过滤主题content-filtered-topics">7.1 内容过滤主题（Content Filtered Topics）</a></h3>
+<p>内容过滤允许订阅者只接收满足特定条件的数据，减少网络流量和CPU负载。</p>
+<pre><code class="language-cpp">#include &lt;fastdds/dds/topic/ContentFilteredTopic.hpp&gt;
+
+class ContentFilteredTopicExample {
+public:
+    void create_filtered_subscription() {
+        using namespace eprosima::fastdds::dds;
+
+        // 假设已有参与者和主题
+        DomainParticipant* participant;  // 已初始化
+        Topic* sensor_topic;             // 已初始化
+
+        // 创建内容过滤主题
+        // 只订阅温度大于25的传感器读数
+        const char* filter_expression = "value &gt; %0";
+        std::vector&lt;std::string&gt; filter_parameters = {"25.0"};
+
+        ContentFilteredTopic* filtered_topic = participant-&gt;create_contentfilteredtopic(
+            "HighTemperatureReadings",     // 过滤主题名称
+            sensor_topic,                   // 原始主题
+            filter_expression,              // 过滤表达式
+            filter_parameters               // 参数
+        );
+
+        if (!filtered_topic) {
+            std::cerr &lt;&lt; "Failed to create filtered topic" &lt;&lt; std::endl;
+            return;
+        }
+
+        // 使用过滤主题创建DataReader
+        Subscriber* subscriber = participant-&gt;create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+        DataReader* reader = subscriber-&gt;create_datareader(
+            filtered_topic,
+            DATAREADER_QOS_DEFAULT
+        );
+
+        // reader现在只会接收value &gt; 25.0的数据
+    }
+
+    // 复杂过滤表达式
+    void complex_filter_examples() {
+        using namespace eprosima::fastdds::dds;
+
+        DomainParticipant* participant;
+        Topic* topic;
+
+        // 示例1：范围过滤
+        const char* range_filter = "value &gt; %0 AND value &lt; %1";
+        std::vector&lt;std::string&gt; range_params = {"20.0", "30.0"};
+        auto* filtered1 = participant-&gt;create_contentfilteredtopic(
+            "RangeFiltered", topic, range_filter, range_params);
+
+        // 示例2：字符串匹配
+        const char* string_filter = "sensor_id MATCH %0";
+        std::vector&lt;std::string&gt; string_params = {"'TEMP_*'"};  // 通配符
+        auto* filtered2 = participant-&gt;create_contentfilteredtopic(
+            "TempSensorsOnly", topic, string_filter, string_params);
+
+        // 示例3：多条件组合
+        const char* complex_filter = "(type = %0 OR type = %1) AND value &gt; %2";
+        std::vector&lt;std::string&gt; complex_params = {"'TEMPERATURE'", "'HUMIDITY'", "50.0"};
+        auto* filtered3 = participant-&gt;create_contentfilteredtopic(
+            "ComplexFiltered", topic, complex_filter, complex_params);
+    }
+
+    // 动态更新过滤参数
+    void update_filter_parameters() {
+        using namespace eprosima::fastdds::dds;
+
+        ContentFilteredTopic* filtered_topic;  // 已创建
+
+        // 更新过滤参数（阈值从25改为30）
+        std::vector&lt;std::string&gt; new_parameters = {"30.0"};
+        ReturnCode_t ret = filtered_topic-&gt;set_filter_parameters(new_parameters);
+
+        if (ret == ReturnCode_t::RETCODE_OK) {
+            std::cout &lt;&lt; "Filter parameters updated successfully" &lt;&lt; std::endl;
+        }
+    }
+
+    // 性能对比
+    void compare_with_application_filter() {
+        std::cout &lt;&lt; "=== Content Filter Performance ===" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n应用层过滤:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 所有数据都传输到订阅者" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 订阅者CPU过滤" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 网络带宽浪费" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\nContent Filtered Topic:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 发布者端过滤（不发送）" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 减少网络流量" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 减少订阅者CPU负载" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n性能提升（假设过滤掉90%数据）:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 网络带宽: 减少90%" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 订阅者CPU: 减少90%" &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h3 id="72-等待集waitset高级用法"><a class="header" href="#72-等待集waitset高级用法">7.2 等待集（WaitSet）高级用法</a></h3>
+<p>WaitSet提供事件驱动的同步机制，比轮询更高效。</p>
+<pre><code class="language-cpp">#include &lt;fastdds/dds/core/condition/WaitSet.hpp&gt;
+#include &lt;fastdds/dds/core/condition/StatusCondition.hpp&gt;
+
+class WaitSetAdvancedUsage {
+public:
+    // 基础WaitSet用法
+    void basic_waitset_example() {
+        using namespace eprosima::fastdds::dds;
+
+        DataReader* reader;  // 已创建
+
+        // 创建WaitSet
+        WaitSet wait_set;
+
+        // 获取StatusCondition
+        StatusCondition&amp; condition = reader-&gt;get_statuscondition();
+
+        // 设置感兴趣的状态
+        condition.set_enabled_statuses(StatusMask::data_available());
+
+        // 将条件附加到WaitSet
+        wait_set.attach_condition(condition);
+
+        // 等待事件
+        ConditionSeq active_conditions;
+        Duration_t timeout(10, 0);  // 10秒超时
+
+        ReturnCode_t ret = wait_set.wait(active_conditions, timeout);
+
+        if (ret == ReturnCode_t::RETCODE_OK) {
+            // 有事件发生
+            for (Condition* cond : active_conditions) {
+                if (cond == &amp;condition) {
+                    // 有数据可用
+                    HelloWorld sample;
+                    SampleInfo info;
+                    reader-&gt;take_next_sample(&amp;sample, &amp;info);
+                }
+            }
+        } else if (ret == ReturnCode_t::RETCODE_TIMEOUT) {
+            std::cout &lt;&lt; "WaitSet timeout" &lt;&lt; std::endl;
+        }
+
+        // 清理
+        wait_set.detach_condition(condition);
+    }
+
+    // 多Reader WaitSet
+    class MultiReaderWaitSet {
+    private:
+        WaitSet wait_set_;
+        std::vector&lt;DataReader*&gt; readers_;
+        std::vector&lt;StatusCondition*&gt; conditions_;
+
+    public:
+        void add_reader(DataReader* reader) {
+            readers_.push_back(reader);
+
+            StatusCondition&amp; condition = reader-&gt;get_statuscondition();
+            condition.set_enabled_statuses(StatusMask::data_available());
+            wait_set_.attach_condition(condition);
+
+            conditions_.push_back(&amp;condition);
+        }
+
+        void wait_and_process(Duration_t timeout = Duration_t(eprosima::fastrtps::c_TimeInfinite)) {
+            using namespace eprosima::fastdds::dds;
+
+            ConditionSeq active_conditions;
+            ReturnCode_t ret = wait_set_.wait(active_conditions, timeout);
+
+            if (ret == ReturnCode_t::RETCODE_OK) {
+                for (Condition* cond : active_conditions) {
+                    // 找到对应的reader
+                    auto it = std::find(conditions_.begin(), conditions_.end(), cond);
+                    if (it != conditions_.end()) {
+                        size_t index = std::distance(conditions_.begin(), it);
+                        process_reader(readers_[index]);
+                    }
+                }
+            }
+        }
+
+    private:
+        void process_reader(DataReader* reader) {
+            // 读取并处理数据
+            HelloWorld sample;
+            SampleInfo info;
+
+            while (reader-&gt;take_next_sample(&amp;sample, &amp;info) == ReturnCode_t::RETCODE_OK) {
+                if (info.valid_data) {
+                    std::cout &lt;&lt; "Received from reader: " &lt;&lt; sample.message() &lt;&lt; std::endl;
+                }
+            }
+        }
+    };
+
+    // GuardCondition使用
+    void guard_condition_example() {
+        using namespace eprosima::fastdds::dds;
+
+        WaitSet wait_set;
+        GuardCondition guard_condition;
+
+        // 附加GuardCondition
+        wait_set.attach_condition(guard_condition);
+
+        // 在另一个线程中触发
+        std::thread trigger_thread([&amp;guard_condition]() {
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+            guard_condition.set_trigger_value(true);  // 触发WaitSet
+        });
+
+        // 等待
+        ConditionSeq active_conditions;
+        wait_set.wait(active_conditions, Duration_t(5, 0));
+
+        std::cout &lt;&lt; "Guard condition triggered" &lt;&lt; std::endl;
+
+        // 重置
+        guard_condition.set_trigger_value(false);
+
+        trigger_thread.join();
+        wait_set.detach_condition(guard_condition);
+    }
+};
+</code></pre>
+<h3 id="73-监控和统计"><a class="header" href="#73-监控和统计">7.3 监控和统计</a></h3>
+<pre><code class="language-cpp">class MonitoringAndStatistics {
+public:
+    // 获取DataWriter统计
+    void get_writer_statistics() {
+        using namespace eprosima::fastdds::dds;
+
+        DataWriter* writer;  // 已创建
+
+        // 发布匹配状态
+        PublicationMatchedStatus pub_status;
+        writer-&gt;get_publication_matched_status(pub_status);
+
+        std::cout &lt;&lt; "=== DataWriter Statistics ===" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Matched readers (current): " &lt;&lt; pub_status.current_count &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Matched readers (total): " &lt;&lt; pub_status.total_count &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Last matched reader: " &lt;&lt; pub_status.last_subscription_handle &lt;&lt; std::endl;
+
+        // 活跃性丢失状态
+        LivelinessLostStatus liveliness_status;
+        writer-&gt;get_liveliness_lost_status(liveliness_status);
+        std::cout &lt;&lt; "Liveliness lost: " &lt;&lt; liveliness_status.total_count &lt;&lt; std::endl;
+
+        // Offered Deadline Missed
+        OfferedDeadlineMissedStatus deadline_status;
+        writer-&gt;get_offered_deadline_missed_status(deadline_status);
+        std::cout &lt;&lt; "Deadline missed: " &lt;&lt; deadline_status.total_count &lt;&lt; std::endl;
+    }
+
+    // 获取DataReader统计
+    void get_reader_statistics() {
+        using namespace eprosima::fastdds::dds;
+
+        DataReader* reader;  // 已创建
+
+        // 订阅匹配状态
+        SubscriptionMatchedStatus sub_status;
+        reader-&gt;get_subscription_matched_status(sub_status);
+
+        std::cout &lt;&lt; "=== DataReader Statistics ===" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Matched writers (current): " &lt;&lt; sub_status.current_count &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Matched writers (total): " &lt;&lt; sub_status.total_count &lt;&lt; std::endl;
+
+        // Requested Deadline Missed
+        RequestedDeadlineMissedStatus deadline_status;
+        reader-&gt;get_requested_deadline_missed_status(deadline_status);
+        std::cout &lt;&lt; "Deadline missed: " &lt;&lt; deadline_status.total_count &lt;&lt; std::endl;
+
+        // Sample Lost（丢失的样本）
+        SampleLostStatus lost_status;
+        reader-&gt;get_sample_lost_status(lost_status);
+        std::cout &lt;&lt; "Samples lost: " &lt;&lt; lost_status.total_count &lt;&lt; std::endl;
+
+        // Sample Rejected（被拒绝的样本）
+        SampleRejectedStatus rejected_status;
+        reader-&gt;get_sample_rejected_status(rejected_status);
+        std::cout &lt;&lt; "Samples rejected: " &lt;&lt; rejected_status.total_count &lt;&lt; std::endl;
+    }
+
+    // 实时监控类
+    class RealtimeMonitor {
+    private:
+        DataWriter* writer_;
+        std::thread monitor_thread_;
+        std::atomic&lt;bool&gt; running_{false};
+
+    public:
+        RealtimeMonitor(DataWriter* writer) : writer_(writer) {}
+
+        void start() {
+            running_ = true;
+            monitor_thread_ = std::thread(&amp;RealtimeMonitor::monitor_loop, this);
+        }
+
+        void stop() {
+            running_ = false;
+            if (monitor_thread_.joinable()) {
+                monitor_thread_.join();
+            }
+        }
+
+    private:
+        void monitor_loop() {
+            using namespace eprosima::fastdds::dds;
+
+            while (running_) {
+                PublicationMatchedStatus status;
+                writer_-&gt;get_publication_matched_status(status);
+
+                if (status.current_count_change != 0) {
+                    if (status.current_count_change &gt; 0) {
+                        std::cout &lt;&lt; "✓ New reader matched (total: "
+                                  &lt;&lt; status.current_count &lt;&lt; ")" &lt;&lt; std::endl;
+                    } else {
+                        std::cout &lt;&lt; "✗ Reader disconnected (total: "
+                                  &lt;&lt; status.current_count &lt;&lt; ")" &lt;&lt; std::endl;
+                    }
+                }
+
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+        }
+    };
+};
+</code></pre>
+<h3 id="74-xml配置文件"><a class="header" href="#74-xml配置文件">7.4 XML配置文件</a></h3>
+<p>XML配置文件允许在不重新编译的情况下修改QoS和传输设置。</p>
+<pre><code class="language-xml">&lt;!-- fastdds_profile.xml --&gt;
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;dds&gt;
+    &lt;profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles"&gt;
+
+        &lt;!-- DomainParticipant配置 --&gt;
+        &lt;participant profile_name="MyParticipantProfile"&gt;
+            &lt;rtps&gt;
+                &lt;name&gt;MyRobotController&lt;/name&gt;
+
+                &lt;!-- 传输配置 --&gt;
+                &lt;useBuiltinTransports&gt;false&lt;/useBuiltinTransports&gt;
+                &lt;userTransports&gt;
+                    &lt;transport_id&gt;SHM_Transport&lt;/transport_id&gt;
+                    &lt;transport_id&gt;UDP_Transport&lt;/transport_id&gt;
+                &lt;/userTransports&gt;
+
+                &lt;!-- 发现配置 --&gt;
+                &lt;builtin&gt;
+                    &lt;discovery_config&gt;
+                        &lt;leaseDuration&gt;
+                            &lt;sec&gt;20&lt;/sec&gt;
+                        &lt;/leaseDuration&gt;
+                        &lt;leaseDuration_announcementperiod&gt;
+                            &lt;sec&gt;5&lt;/sec&gt;
+                        &lt;/leaseDuration_announcementperiod&gt;
+                    &lt;/discovery_config&gt;
+                &lt;/builtin&gt;
+            &lt;/rtps&gt;
+        &lt;/participant&gt;
+
+        &lt;!-- 传输描述符 --&gt;
+        &lt;transport_descriptors&gt;
+            &lt;transport_descriptor&gt;
+                &lt;transport_id&gt;SHM_Transport&lt;/transport_id&gt;
+                &lt;type&gt;SHM&lt;/type&gt;
+                &lt;maxMessageSize&gt;65500&lt;/maxMessageSize&gt;
+                &lt;segmentSize&gt;2097152&lt;/segmentSize&gt;
+            &lt;/transport_descriptor&gt;
+
+            &lt;transport_descriptor&gt;
+                &lt;transport_id&gt;UDP_Transport&lt;/transport_id&gt;
+                &lt;type&gt;UDPv4&lt;/type&gt;
+                &lt;sendBufferSize&gt;1048576&lt;/sendBufferSize&gt;
+                &lt;receiveBufferSize&gt;1048576&lt;/receiveBufferSize&gt;
+            &lt;/transport_descriptor&gt;
+        &lt;/transport_descriptors&gt;
+
+        &lt;!-- DataWriter QoS配置 --&gt;
+        &lt;data_writer profile_name="SensorDataWriter"&gt;
+            &lt;qos&gt;
+                &lt;reliability&gt;
+                    &lt;kind&gt;BEST_EFFORT&lt;/kind&gt;
+                &lt;/reliability&gt;
+
+                &lt;durability&gt;
+                    &lt;kind&gt;VOLATILE&lt;/kind&gt;
+                &lt;/durability&gt;
+
+                &lt;deadline&gt;
+                    &lt;period&gt;
+                        &lt;sec&gt;0&lt;/sec&gt;
+                        &lt;nanosec&gt;100000000&lt;/nanosec&gt;  &lt;!-- 100ms --&gt;
+                    &lt;/period&gt;
+                &lt;/deadline&gt;
+
+                &lt;history&gt;
+                    &lt;kind&gt;KEEP_LAST&lt;/kind&gt;
+                    &lt;depth&gt;1&lt;/depth&gt;
+                &lt;/history&gt;
+            &lt;/qos&gt;
+        &lt;/data_writer&gt;
+
+        &lt;!-- DataReader QoS配置 --&gt;
+        &lt;data_reader profile_name="SensorDataReader"&gt;
+            &lt;qos&gt;
+                &lt;reliability&gt;
+                    &lt;kind&gt;BEST_EFFORT&lt;/kind&gt;
+                &lt;/reliability&gt;
+
+                &lt;durability&gt;
+                    &lt;kind&gt;VOLATILE&lt;/kind&gt;
+                &lt;/durability&gt;
+
+                &lt;history&gt;
+                    &lt;kind&gt;KEEP_LAST&lt;/kind&gt;
+                    &lt;depth&gt;10&lt;/depth&gt;
+                &lt;/history&gt;
+            &lt;/qos&gt;
+        &lt;/data_reader&gt;
+
+    &lt;/profiles&gt;
+&lt;/dds&gt;
+</code></pre>
+<pre><code class="language-cpp">// 使用XML配置
+class XMLConfigurationUsage {
+public:
+    void use_xml_profiles() {
+        using namespace eprosima::fastdds::dds;
+
+        // 加载XML文件
+        DomainParticipantFactory::get_instance()-&gt;load_XML_profiles_file("fastdds_profile.xml");
+
+        // 使用Profile创建参与者
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant_with_profile(
+                0,  // Domain ID
+                "MyParticipantProfile"  // Profile名称
+            );
+
+        // 使用Profile创建DataWriter
+        Publisher* publisher = participant-&gt;create_publisher(PUBLISHER_QOS_DEFAULT);
+        Topic* topic = participant-&gt;create_topic("SensorData", "SensorReading", TOPIC_QOS_DEFAULT);
+
+        DataWriter* writer = publisher-&gt;create_datawriter_with_profile(
+            topic,
+            "SensorDataWriter"  // Profile名称
+        );
+
+        // 使用Profile创建DataReader
+        Subscriber* subscriber = participant-&gt;create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+
+        DataReader* reader = subscriber-&gt;create_datareader_with_profile(
+            topic,
+            "SensorDataReader"  // Profile名称
+        );
+    }
+
+    // 环境变量配置
+    void use_environment_variable() {
+        // 设置环境变量指定XML文件
+        // export FASTRTPS_DEFAULT_PROFILES_FILE=/path/to/fastdds_profile.xml
+
+        // Fast DDS会自动加载该文件
+        using namespace eprosima::fastdds::dds;
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant_with_profile(
+                0, "MyParticipantProfile");
+    }
+};
+</code></pre>
+<hr />
+<blockquote>
+<p>📝 <strong>继续阅读：</strong> <a href="fastdds_part4.html">第四部分 - 常见问题、验证标准、总结</a></p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/fastdds_part2.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/fastdds_part4.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/fastdds_part2.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/fastdds_part4.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

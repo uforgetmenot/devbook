@@ -1,0 +1,1862 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Spring Cloud Alibaba 完整指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="spring-cloud-alibaba-完整指南"><a class="header" href="#spring-cloud-alibaba-完整指南">Spring Cloud Alibaba 完整指南</a></h1>
+<h2 id="一概述简介"><a class="header" href="#一概述简介">一、概述简介</a></h2>
+<h3 id="什么是spring-cloud-alibaba"><a class="header" href="#什么是spring-cloud-alibaba">什么是Spring Cloud Alibaba</a></h3>
+<ul>
+<li>基于Spring Boot开发的一站式微服务解决方案(1-3年经验必学)</li>
+<li>阿里巴巴开源的微服务组件集</li>
+<li>完美适配国内开发环境</li>
+<li>替代Netflix已停更组件(Alibaba方案更优)</li>
+</ul>
+<h3 id="核心组件"><a class="header" href="#核心组件">核心组件</a></h3>
+<p>本指南涵盖以下核心内容:</p>
+<ol>
+<li>快速搭建Spring Cloud Alibaba微服务体系</li>
+<li>使用Nacos实现服务注册发现与配置管理</li>
+<li>使用Sentinel进行流量控制与熔断降级</li>
+<li>使用RocketMQ实现消息驱动通信</li>
+<li>微服务链路追踪与监控方案</li>
+</ol>
+<hr />
+<h2 id="二spring-cloud-alibaba-组件对比"><a class="header" href="#二spring-cloud-alibaba-组件对比">二、Spring Cloud Alibaba 组件对比</a></h2>
+<h3 id="11-核心组件对比"><a class="header" href="#11-核心组件对比">1.1 核心组件对比</a></h3>
+<h4 id="组件替换表"><a class="header" href="#组件替换表">组件替换表</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>Netflix组件</th><th>Alibaba组件</th><th>核心功能</th><th>成熟度</th></tr></thead><tbody>
+<tr><td>Eureka</td><td>Nacos</td><td>服务注册发现</td><td>★★★★★</td></tr>
+<tr><td>Config</td><td>Nacos Config</td><td>配置管理</td><td>★★★★★</td></tr>
+<tr><td>Hystrix</td><td>Sentinel</td><td>熔断降级/限流</td><td>★★★★★</td></tr>
+<tr><td>Zuul/Gateway</td><td>Spring Cloud Gateway</td><td>网关</td><td>★★★★</td></tr>
+<tr><td>-</td><td>RocketMQ</td><td>消息队列</td><td>★★★★★</td></tr>
+<tr><td>-</td><td>Seata</td><td>分布式事务</td><td>★★★★</td></tr>
+</tbody></table>
+</div>
+<h4 id="微服务架构图"><a class="header" href="#微服务架构图">微服务架构图</a></h4>
+<pre><code>
+                     Client Layer
+              (Web / Mobile / Third Party)
+                       ↓
+                       │
+                       ↓
+                 Spring Cloud Gateway
+    (API网关: 路由/认证/限流/监控)
+         ↓              ↓              ↓
+         │              │              │
+         ↓              ↓              ↓
+  User Service      Order        Product
+                    Service      Service
+    │      │       │    │       │       │
+    ↓      ↓       ↓    ↓       ↓       ↓
+           ↓         ↓    ↓         ↓
+               Nacos (注册与配置)
+                       ↓
+                       │
+                       ↓
+         Sentinel (限流/降级/熔断)
+                       ↓
+                       │
+                       ↓
+         RocketMQ (消息队列/异步通信)
+
+</code></pre>
+<h3 id="12-环境准备与版本兼容"><a class="header" href="#12-环境准备与版本兼容">1.2 环境准备与版本兼容</a></h3>
+<h4 id="推荐版本组合-2024最新"><a class="header" href="#推荐版本组合-2024最新">推荐版本组合 (2024最新)</a></h4>
+<pre><code class="language-xml">&lt;properties&gt;
+    &lt;spring-boot.version&gt;2.7.18&lt;/spring-boot.version&gt;
+    &lt;spring-cloud.version&gt;2021.0.8&lt;/spring-cloud.version&gt;
+    &lt;spring-cloud-alibaba.version&gt;2021.0.5.0&lt;/spring-cloud-alibaba.version&gt;
+    &lt;nacos.version&gt;2.2.4&lt;/nacos.version&gt;
+    &lt;sentinel.version&gt;1.8.6&lt;/sentinel.version&gt;
+&lt;/properties&gt;
+</code></pre>
+<h4 id="依赖管理配置"><a class="header" href="#依赖管理配置">依赖管理配置</a></h4>
+<pre><code class="language-xml">&lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+        &lt;!-- Spring Boot --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;${spring-boot.version}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+
+        &lt;!-- Spring Cloud --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;${spring-cloud.version}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+
+        &lt;!-- Spring Cloud Alibaba --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-cloud-alibaba-dependencies&lt;/artifactId&gt;
+            &lt;version&gt;${spring-cloud-alibaba.version}&lt;/version&gt;
+            &lt;type&gt;pom&lt;/type&gt;
+            &lt;scope&gt;import&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+&lt;/dependencyManagement&gt;
+</code></pre>
+<hr />
+<h2 id="三nacos-服务注册与配置管理"><a class="header" href="#三nacos-服务注册与配置管理">三、Nacos 服务注册与配置管理</a></h2>
+<h3 id="21-nacos核心概念"><a class="header" href="#21-nacos核心概念">2.1 Nacos核心概念</a></h3>
+<h4 id="命名空间分层"><a class="header" href="#命名空间分层">命名空间分层</a></h4>
+<pre><code>Namespace (命名空间 - 环境隔离)
+  ↓ Group (分组 - 业务分类)
+    ↓ Service/DataId (服务/配置)
+      ↓ Cluster (集群)
+        ↓ Instance (实例)
+</code></pre>
+<h4 id="环境划分最佳实践"><a class="header" href="#环境划分最佳实践">环境划分最佳实践</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>环境</th><th>Namespace</th><th>Group</th><th>用途</th></tr></thead><tbody>
+<tr><td>开发环境</td><td>dev</td><td>DEFAULT_GROUP</td><td>日常开发与本地测试</td></tr>
+<tr><td>测试环境</td><td>test</td><td>DEFAULT_GROUP</td><td>QA测试验证</td></tr>
+<tr><td>预发布</td><td>pre</td><td>DEFAULT_GROUP</td><td>生产前验证</td></tr>
+<tr><td>生产环境</td><td>prod</td><td>PROD_GROUP</td><td>线上生产环境(高可用集群)</td></tr>
+</tbody></table>
+</div>
+<h3 id="22-nacos服务器部署"><a class="header" href="#22-nacos服务器部署">2.2 Nacos服务器部署</a></h3>
+<h4 id="单机模式部署-开发环境"><a class="header" href="#单机模式部署-开发环境">单机模式部署 (开发环境)</a></h4>
+<pre><code class="language-bash"># 下载Nacos 2.2.4
+wget https://github.com/alibaba/nacos/releases/download/2.2.4/nacos-server-2.2.4.tar.gz
+tar -zxvf nacos-server-2.2.4.tar.gz
+cd nacos/bin
+
+# 单机启动模式
+sh startup.sh -m standalone
+
+# Windows启动
+startup.cmd -m standalone
+
+# 访问控制台: http://localhost:8848/nacos
+# 默认账号/密码: nacos/nacos
+</code></pre>
+<h4 id="集群模式部署-生产环境"><a class="header" href="#集群模式部署-生产环境">集群模式部署 (生产环境)</a></h4>
+<p><strong>步骤1: 配置数据库</strong></p>
+<pre><code class="language-sql">-- 创建nacos数据库
+CREATE DATABASE nacos_config CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+-- 执行初始化SQL脚本 (conf/mysql-schema.sql)
+USE nacos_config;
+SOURCE /path/to/nacos/conf/mysql-schema.sql;
+</code></pre>
+<p><strong>步骤2: 修改配置 (conf/application.properties)</strong></p>
+<pre><code class="language-properties"># 数据库配置
+spring.datasource.platform=mysql
+db.num=1
+db.url.0=jdbc:mysql://127.0.0.1:3306/nacos_config?characterEncoding=utf8&amp;connectTimeout=1000&amp;socketTimeout=3000&amp;autoReconnect=true&amp;useSSL=false
+db.user.0=root
+db.password.0=yourpassword
+
+# 集群配置
+nacos.inetutils.ip-address=192.168.1.101
+</code></pre>
+<p><strong>步骤3: 配置集群节点 (conf/cluster.conf)</strong></p>
+<pre><code>192.168.1.101:8848
+192.168.1.102:8848
+192.168.1.103:8848
+</code></pre>
+<p><strong>步骤4: 启动集群</strong></p>
+<pre><code class="language-bash"># 每个节点分别执行
+sh startup.sh
+
+# 验证集群状态
+curl http://192.168.1.101:8848/nacos/v1/ns/operator/metrics
+</code></pre>
+<h3 id="23-服务注册发现"><a class="header" href="#23-服务注册发现">2.3 服务注册发现</a></h3>
+<h4 id="231-服务提供者配置"><a class="header" href="#231-服务提供者配置">2.3.1 服务提供者配置</a></h4>
+<p><strong>Maven依赖</strong></p>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;!-- Nacos服务发现 --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- 负载均衡 --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-loadbalancer&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<p><strong>application.yml配置</strong></p>
+<pre><code class="language-yaml">server:
+  port: 8081
+
+spring:
+  application:
+    name: product-service  # 服务名
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848  # Nacos地址
+        namespace: dev  # 命名空间ID
+        group: DEFAULT_GROUP
+        cluster-name: BJ  # 集群名称
+        metadata:  # 元数据(用于灰度发布等自定义策略)
+          version: 1.0.0
+          region: beijing
+        # 健康检查配置
+        heart-beat-interval: 5000  # 心跳间隔(ms)
+        heart-beat-timeout: 15000  # 心跳超时(ms)
+        ip-delete-timeout: 30000   # IP删除超时(ms)
+
+# 开启健康检查端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+</code></pre>
+<p><strong>启动类配置</strong></p>
+<pre><code class="language-java">package com.example.product;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+
+@SpringBootApplication
+@EnableDiscoveryClient  // 开启服务发现
+public class ProductServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(ProductServiceApplication.class, args);
+    }
+}
+</code></pre>
+<p><strong>提供RESTful接口</strong></p>
+<pre><code class="language-java">package com.example.product.controller;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+    @Value("${server.port}")
+    private String port;
+
+    @GetMapping("/{id}")
+    public Map&lt;String, Object&gt; getProduct(@PathVariable Long id) {
+        Map&lt;String, Object&gt; result = new HashMap&lt;&gt;();
+        result.put("id", id);
+        result.put("name", "iPhone 15 Pro");
+        result.put("price", 7999);
+        result.put("stock", 100);
+        result.put("provider", "product-service:" + port);
+        return result;
+    }
+
+    @PostMapping("/deduct-stock")
+    public Map&lt;String, Object&gt; deductStock(@RequestParam Long productId,
+                                           @RequestParam Integer quantity) {
+        Map&lt;String, Object&gt; result = new HashMap&lt;&gt;();
+        result.put("success", true);
+        result.put("productId", productId);
+        result.put("deductedQuantity", quantity);
+        result.put("remainingStock", 95);
+        return result;
+    }
+}
+</code></pre>
+<h4 id="232-服务消费者配置"><a class="header" href="#232-服务消费者配置">2.3.2 服务消费者配置</a></h4>
+<p><strong>application.yml配置</strong></p>
+<pre><code class="language-yaml">server:
+  port: 8082
+
+spring:
+  application:
+    name: order-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: dev
+        group: DEFAULT_GROUP
+</code></pre>
+<p><strong>配置RestTemplate + LoadBalancer</strong></p>
+<pre><code class="language-java">package com.example.order.config;
+
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
+
+@Configuration
+public class RestTemplateConfig {
+
+    @Bean
+    @LoadBalanced  // 开启负载均衡
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+}
+</code></pre>
+<p><strong>服务调用示例</strong></p>
+<pre><code class="language-java">package com.example.order.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import java.util.HashMap;
+import java.util.Map;
+
+@Service
+public class OrderService {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    /**
+     * 创建订单 - 演示跨服务调用
+     */
+    public Map&lt;String, Object&gt; createOrder(Long userId, Long productId, Integer quantity) {
+        // 1. 调用商品服务获取商品信息
+        String productUrl = "http://product-service/api/products/" + productId;
+        Map productInfo = restTemplate.getForObject(productUrl, Map.class);
+
+        // 2. 调用商品服务扣减库存
+        String deductUrl = "http://product-service/api/products/deduct-stock" +
+                          "?productId=" + productId + "&amp;quantity=" + quantity;
+        Map deductResult = restTemplate.postForObject(deductUrl, null, Map.class);
+
+        // 3. 生成订单
+        Map&lt;String, Object&gt; order = new HashMap&lt;&gt;();
+        order.put("orderId", System.currentTimeMillis());
+        order.put("userId", userId);
+        order.put("productInfo", productInfo);
+        order.put("quantity", quantity);
+        order.put("totalAmount", (Integer)productInfo.get("price") * quantity);
+        order.put("stockDeductResult", deductResult);
+
+        return order;
+    }
+}
+</code></pre>
+<p><strong>Controller层</strong></p>
+<pre><code class="language-java">package com.example.order.controller;
+
+import com.example.order.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/orders")
+public class OrderController {
+
+    @Autowired
+    private OrderService orderService;
+
+    @PostMapping("/create")
+    public Map&lt;String, Object&gt; createOrder(@RequestParam Long userId,
+                                          @RequestParam Long productId,
+                                          @RequestParam Integer quantity) {
+        return orderService.createOrder(userId, productId, quantity);
+    }
+}
+</code></pre>
+<h3 id="24-nacos配置管理功能"><a class="header" href="#24-nacos配置管理功能">2.4 Nacos配置管理功能</a></h3>
+<h4 id="241-配置中心集成"><a class="header" href="#241-配置中心集成">2.4.1 配置中心集成</a></h4>
+<p><strong>Maven依赖</strong></p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-config&lt;/artifactId&gt;
+&lt;/dependency&gt;
+
+&lt;!-- Bootstrap启用
+依赖 (Spring Cloud 2020+ 必需) --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-bootstrap&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p><strong>bootstrap.yml配置 (优先级高于application.yml)</strong></p>
+<pre><code class="language-yaml">spring:
+  application:
+    name: order-service
+  cloud:
+    nacos:
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: dev
+        group: DEFAULT_GROUP
+        file-extension: yaml  # 配置文件格式
+        # 共享配置
+        shared-configs:
+          - data-id: common-mysql.yaml
+            group: MIDDLEWARE_GROUP
+            refresh: true
+          - data-id: common-redis.yaml
+            group: MIDDLEWARE_GROUP
+            refresh: true
+        # 扩展配置
+        extension-configs:
+          - data-id: order-service-dev.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: dev
+
+  profiles:
+    active: dev  # 当前激活环境
+</code></pre>
+<h4 id="242-在nacos控制台创建配置"><a class="header" href="#242-在nacos控制台创建配置">2.4.2 在Nacos控制台创建配置</a></h4>
+<p><strong>配置列表</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>Data ID</th><th>Group</th><th>配置格式</th><th>说明</th></tr></thead><tbody>
+<tr><td>order-service.yaml</td><td>DEFAULT_GROUP</td><td>YAML</td><td>基础配置</td></tr>
+<tr><td>order-service-dev.yaml</td><td>DEFAULT_GROUP</td><td>YAML</td><td>开发环境配置</td></tr>
+<tr><td>common-mysql.yaml</td><td>MIDDLEWARE_GROUP</td><td>YAML</td><td>MySQL共享配置</td></tr>
+<tr><td>common-redis.yaml</td><td>MIDDLEWARE_GROUP</td><td>YAML</td><td>Redis共享配置</td></tr>
+</tbody></table>
+</div>
+<p><strong>order-service.yaml (基础配置)</strong></p>
+<pre><code class="language-yaml"># 业务配置
+business:
+  order:
+    timeout: 30
+    max-items: 100
+
+# 功能开关
+feature:
+  new-ui: false
+  promotion: true
+</code></pre>
+<p><strong>order-service-dev.yaml (环境配置)</strong></p>
+<pre><code class="language-yaml">server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/order_dev?useSSL=false
+    username: root
+    password: dev123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+</code></pre>
+<p><strong>common-redis.yaml (共享配置)</strong></p>
+<pre><code class="language-yaml">spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 20
+        max-idle: 10
+        min-idle: 5
+</code></pre>
+<h4 id="243-动态刷新配置"><a class="header" href="#243-动态刷新配置">2.4.3 动态刷新配置</a></h4>
+<p><strong>方式1: @RefreshScope注解</strong></p>
+<pre><code class="language-java">package com.example.order.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Component;
+
+@Data
+@Component
+@RefreshScope  // 开启动态刷新
+@ConfigurationProperties(prefix = "business.order")
+public class OrderProperties {
+    private Integer timeout;
+    private Integer maxItems;
+}
+</code></pre>
+<p><strong>使用配置</strong></p>
+<pre><code class="language-java">package com.example.order.controller;
+
+import com.example.order.config.OrderProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/config")
+@RefreshScope
+public class ConfigController {
+
+    @Autowired
+    private OrderProperties orderProperties;
+
+    @Value("${feature.promotion:false}")
+    private Boolean promotionEnabled;
+
+    @GetMapping("/current")
+    public Map&lt;String, Object&gt; getCurrentConfig() {
+        Map&lt;String, Object&gt; config = new HashMap&lt;&gt;();
+        config.put("timeout", orderProperties.getTimeout());
+        config.put("maxItems", orderProperties.getMaxItems());
+        config.put("promotionEnabled", promotionEnabled);
+        return config;
+    }
+}
+</code></pre>
+<p><strong>方式2: ConfigurationProperties (自动刷新)</strong></p>
+<pre><code class="language-java">package com.example.order.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+
+@Data
+@Component
+@ConfigurationProperties(prefix = "feature")
+public class FeatureProperties {
+    private Boolean newUi;
+    private Boolean promotion;
+}
+</code></pre>
+<h4 id="244-监听配置变更"><a class="header" href="#244-监听配置变更">2.4.4 监听配置变更</a></h4>
+<pre><code class="language-java">package com.example.order.listener;
+
+import com.alibaba.nacos.api.config.annotation.NacosConfigListener;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
+public class ConfigChangeListener {
+
+    /**
+     * 监听指定配置变更
+     */
+    @NacosConfigListener(dataId = "order-service.yaml", groupId = "DEFAULT_GROUP")
+    public void onConfigChange(String newConfig) {
+        log.info("配置发生变更,新配置内容: \n{}", newConfig);
+        // 执行自定义逻辑
+        // 例如: 刷新缓存、重新加载规则等
+    }
+}
+</code></pre>
+<h3 id="25-配置优先级说明"><a class="header" href="#25-配置优先级说明">2.5 配置优先级说明</a></h3>
+<h4 id="配置加载优先级-从高到低"><a class="header" href="#配置加载优先级-从高到低">配置加载优先级 (从高到低)</a></h4>
+<pre><code>1. 启动命令行参数 (java -Dserver.port=8080)
+2. 系统环境变量
+3. Nacos远程配置 (扩展配置)
+4. Nacos远程配置 (共享配置)
+5. Nacos远程配置 (主配置 Data ID)
+6. bootstrap.yml / bootstrap.properties
+7. application.yml / application.properties
+</code></pre>
+<h4 id="配置拆分最佳实践"><a class="header" href="#配置拆分最佳实践">配置拆分最佳实践</a></h4>
+<pre><code class="language-yaml"># 基础配置拆分 (相对稳定)
+order-service.yaml:
+  - 业务参数
+  - 功能开关
+  - 常量定义
+
+# 环境配置拆分 (环境相关)
+order-service-{profile}.yaml:
+  - 数据库连接
+  - 中间件地址
+  - 日志级别
+
+# 中间件共享拆分 (跨服务共享)
+common-mysql.yaml
+common-redis.yaml
+common-mq.yaml
+</code></pre>
+<hr />
+<h2 id="四sentinel-流量控制与熔断降级"><a class="header" href="#四sentinel-流量控制与熔断降级">四、Sentinel 流量控制与熔断降级</a></h2>
+<h3 id="31-sentinel核心概念"><a class="header" href="#31-sentinel核心概念">3.1 Sentinel核心概念</a></h3>
+<h4 id="功能对比"><a class="header" href="#功能对比">功能对比</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>功能特性</th><th>Hystrix</th><th>Sentinel</th><th>备注说明</th></tr></thead><tbody>
+<tr><td>限流方式</td><td>线程池</td><td>QPS/并发线程/调用关系</td><td>Sentinel更灵活</td></tr>
+<tr><td>熔断策略</td><td>失败比例</td><td>慢调用/异常比例/异常数</td><td>Sentinel规则更丰富</td></tr>
+<tr><td>实时监控</td><td>有限</td><td>可视化Dashboard实时</td><td>Sentinel体验更好</td></tr>
+<tr><td>规则配置</td><td>代码/配置文件</td><td>Dashboard/Nacos持久化</td><td>Sentinel更易用</td></tr>
+<tr><td>社区活跃度</td><td>已停更</td><td>活跃维护</td><td>Sentinel是更优选择</td></tr>
+</tbody></table>
+</div>
+<h4 id="资源保护流程图"><a class="header" href="#资源保护流程图">资源保护流程图</a></h4>
+<pre><code>请求进入 → 限流规则检测 → 熔断规则检测 → 热点规则检测 → 业务逻辑
+         ↓ 超限            ↓ 熔断触发         ↓ 热点限流       ↓
+      BlockException      BlockException    BlockException   正常返回/异常
+         ↓                   ↓                   ↓
+      限流降级方法          熔断降级方法         热点降级方法
+</code></pre>
+<h3 id="32-sentinel集成步骤"><a class="header" href="#32-sentinel集成步骤">3.2 Sentinel集成步骤</a></h3>
+<h4 id="321-maven依赖"><a class="header" href="#321-maven依赖">3.2.1 Maven依赖</a></h4>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;!-- Sentinel核心 --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- Sentinel Dashboard通信 --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.csp&lt;/groupId&gt;
+        &lt;artifactId&gt;sentinel-transport-simple-http&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- Sentinel与Nacos数据源整合(可选) --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.csp&lt;/groupId&gt;
+        &lt;artifactId&gt;sentinel-datasource-nacos&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<h4 id="322-配置sentinel"><a class="header" href="#322-配置sentinel">3.2.2 配置Sentinel</a></h4>
+<pre><code class="language-yaml">spring:
+  application:
+    name: order-service
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8080  # Sentinel控制台地址
+        port: 8719  # Dashboard通信端口
+      # 启动时立即加载连接Dashboard
+      eager: true
+      # 日志配置
+      log:
+        dir: ./logs/sentinel
+      # Web过滤器配置
+      web-context-unify: false  # 关闭URL PATH聚合
+
+      # 数据源绑定Nacos
+      datasource:
+        # 流控规则
+        flow-rules:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            data-id: ${spring.application.name}-flow-rules
+            group-id: SENTINEL_GROUP
+            data-type: json
+            rule-type: flow
+        # 熔断规则
+        degrade-rules:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            data-id: ${spring.application.name}-degrade-rules
+            group-id: SENTINEL_GROUP
+            data-type: json
+            rule-type: degrade
+        # 热点规则
+        param-flow-rules:
+          nacos:
+            server-addr: 127.0.0.1:8848
+            data-id: ${spring.application.name}-param-flow-rules
+            group-id: SENTINEL_GROUP
+            data-type: json
+            rule-type: param-flow
+
+# Feign整合Sentinel
+feign:
+  sentinel:
+    enabled: true
+</code></pre>
+<h4 id="323-启动sentinel-dashboard"><a class="header" href="#323-启动sentinel-dashboard">3.2.3 启动Sentinel Dashboard</a></h4>
+<pre><code class="language-bash"># 下载Sentinel Dashboard
+wget https://github.com/alibaba/Sentinel/releases/download/1.8.6/sentinel-dashboard-1.8.6.jar
+
+# 启动Dashboard (默认端口8080)
+java -Dserver.port=8080 \
+     -Dcsp.sentinel.dashboard.server=localhost:8080 \
+     -Dproject.name=sentinel-dashboard \
+     -jar sentinel-dashboard-1.8.6.jar
+
+# 访问控制台: http://localhost:8080
+# 默认账号/密码: sentinel/sentinel
+</code></pre>
+<h3 id="33-流量控制规则"><a class="header" href="#33-流量控制规则">3.3 流量控制规则</a></h3>
+<h4 id="331-基本限流示例"><a class="header" href="#331-基本限流示例">3.3.1 基本限流示例</a></h4>
+<pre><code class="language-java">package com.example.order.service;
+
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
+@Service
+public class ProductService {
+
+    /**
+     * 查询商品详情 - 带限流保护
+     *
+     * @param productId 商品ID
+     * @return 商品信息
+     */
+    @SentinelResource(
+        value = "getProductDetail",  // 资源名
+        blockHandler = "handleBlock",  // 限流降级方法
+        fallback = "handleFallback"   // 异常降级方法
+    )
+    public Map&lt;String, Object&gt; getProductDetail(Long productId) {
+        // 模拟数据库查询
+        if (productId == null || productId &lt;= 0) {
+            throw new IllegalArgumentException("商品ID无效");
+        }
+
+        Map&lt;String, Object&gt; product = new HashMap&lt;&gt;();
+        product.put("id", productId);
+        product.put("name", "商品-" + productId);
+        product.put("price", 99.99);
+        product.put("stock", 1000);
+
+        log.info("查询商品详情: {}", productId);
+        return product;
+    }
+
+    /**
+     * 限流降级方法 (BlockException)
+     */
+    public Map&lt;String, Object&gt; handleBlock(Long productId, BlockException ex) {
+        log.warn("商品查询被限流: productId={}, reason={}",
+                 productId, ex.getClass().getSimpleName());
+
+        Map&lt;String, Object&gt; result = new HashMap&lt;&gt;();
+        result.put("code", 429);
+        result.put("message", "系统繁忙,请稍后重试");
+        result.put("productId", productId);
+        return result;
+    }
+
+    /**
+     * 异常降级方法 (业务异常)
+     */
+    public Map&lt;String, Object&gt; handleFallback(Long productId, Throwable ex) {
+        log.error("商品查询异常: productId={}", productId, ex);
+
+        Map&lt;String, Object&gt; result = new HashMap&lt;&gt;();
+        result.put("code", 500);
+        result.put("message", "服务异常: " + ex.getMessage());
+        result.put("productId", productId);
+        return result;
+    }
+}
+</code></pre>
+<h4 id="332-流控规则配置"><a class="header" href="#332-流控规则配置">3.3.2 流控规则配置</a></h4>
+<p><strong>直接限流模式 (单资源限流)</strong></p>
+<pre><code class="language-json">[
+  {
+    "resource": "getProductDetail",
+    "limitApp": "default",
+    "grade": 1,
+    "count": 10,
+    "strategy": 0,
+    "controlBehavior": 0,
+    "clusterMode": false
+  }
+]
+</code></pre>
+<p>配置说明:</p>
+<ul>
+<li><code>resource</code>: 资源名称</li>
+<li><code>limitApp</code>: 来源应用(default表示所有)</li>
+<li><code>grade</code>: 阈值类型(0=并发线程, 1=QPS)</li>
+<li><code>count</code>: 阈值</li>
+<li><code>strategy</code>: 流控模式(0=直接, 1=关联, 2=链路)</li>
+<li><code>controlBehavior</code>: 流控效果(0=快速失败, 1=Warm Up, 2=排队等待)</li>
+</ul>
+<p><strong>关联模式 (关联资源限流)</strong></p>
+<pre><code class="language-json">[
+  {
+    "resource": "createOrder",
+    "limitApp": "default",
+    "grade": 1,
+    "count": 5,
+    "strategy": 1,
+    "refResource": "queryOrder",
+    "controlBehavior": 0
+  }
+]
+</code></pre>
+<p>说明: 当<code>queryOrder</code>资源QPS超过阈值时,限流<code>createOrder</code>资源</p>
+<p><strong>链路模式 (入口限流)</strong></p>
+<pre><code class="language-json">[
+  {
+    "resource": "getProductDetail",
+    "limitApp": "default",
+    "grade": 1,
+    "count": 20,
+    "strategy": 2,
+    "refResource": "orderEntry",
+    "controlBehavior": 0
+  }
+]
+</code></pre>
+<h4 id="333-流控效果"><a class="header" href="#333-流控效果">3.3.3 流控效果</a></h4>
+<p><strong>Warm Up (预热模式)</strong></p>
+<pre><code class="language-json">[
+  {
+    "resource": "flashSale",
+    "grade": 1,
+    "count": 1000,
+    "controlBehavior": 1,
+    "warmUpPeriodSec": 10,
+    "maxQueueingTimeMs": 0
+  }
+]
+</code></pre>
+<p>说明: 初始流量从阈值的1/3开始,10秒内逐渐增加到设定阈值(适用于秒杀场景)</p>
+<p><strong>排队等待 (匀速通过)</strong></p>
+<pre><code class="language-json">[
+  {
+    "resource": "sendMessage",
+    "grade": 1,
+    "count": 10,
+    "controlBehavior": 2,
+    "maxQueueingTimeMs": 5000
+  }
+]
+</code></pre>
+<p>说明: 请求排队,每100ms处理1个请求, 超时5秒</p>
+<h3 id="34-熔断降级规则"><a class="header" href="#34-熔断降级规则">3.4 熔断降级规则</a></h3>
+<h4 id="341-慢调用熔断"><a class="header" href="#341-慢调用熔断">3.4.1 慢调用熔断</a></h4>
+<pre><code class="language-java">package com.example.order.service;
+
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import java.util.Random;
+
+@Slf4j
+@Service
+public class PaymentService {
+
+    private Random random = new Random();
+
+    /**
+     * 调用支付接口 - 模拟慢调用
+     */
+    @SentinelResource(
+        value = "callPaymentApi",
+        blockHandler = "paymentBlockHandler",
+        fallback = "paymentFallback"
+    )
+    public String callPaymentApi(String orderId) {
+        // 模拟30%概率慢调用(超过1秒)
+        int delay = random.nextInt(100) &lt; 30 ? 1500 : 100;
+
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+
+        return "支付成功: " + orderId;
+    }
+
+    public String paymentBlockHandler(String orderId, BlockException ex) {
+        log.warn("支付接口被熔断: {}", orderId);
+        return "支付系统繁忙,请稍后重试";
+    }
+
+    public String paymentFallback(String orderId, Throwable ex) {
+        log.error("支付接口异常: {}", orderId, ex);
+        return "支付服务异常: " + ex.getMessage();
+    }
+}
+</code></pre>
+<p><strong>慢调用熔断配置</strong></p>
+<pre><code class="language-json">[
+  {
+    "resource": "callPaymentApi",
+    "grade": 0,
+    "count": 1000,
+    "timeWindow": 10,
+    "minRequestAmount": 5,
+    "slowRatioThreshold": 0.3,
+    "statIntervalMs": 1000
+  }
+]
+</code></pre>
+<p>配置说明:</p>
+<ul>
+<li><code>grade</code>: 熔断规则(0=慢调用比例, 1=异常比例, 2=异常数)</li>
+<li><code>count</code>: 慢调用临界响应时间(毫秒)</li>
+<li><code>slowRatioThreshold</code>: 慢调用比例阈值(0.3=30%)</li>
+<li><code>minRequestAmount</code>: 最小请求数</li>
+<li><code>timeWindow</code>: 熔断时长(秒)</li>
+</ul>
+<h4 id="342-异常比例熔断"><a class="header" href="#342-异常比例熔断">3.4.2 异常比例熔断</a></h4>
+<pre><code class="language-java">@SentinelResource(
+    value = "queryStock",
+    blockHandler = "stockBlockHandler",
+    fallback = "stockFallback"
+)
+public Integer queryStock(Long productId) {
+    // 模拟40%概率业务异常
+    if (random.nextInt(100) &lt; 40) {
+        throw new RuntimeException("库存查询失败");
+    }
+    return 1000;
+}
+</code></pre>
+<p><strong>异常比例熔断规则</strong></p>
+<pre><code class="language-json">[
+  {
+    "resource": "queryStock",
+    "grade": 1,
+    "count": 0.5,
+    "timeWindow": 10,
+    "minRequestAmount": 5,
+    "statIntervalMs": 1000
+  }
+]
+</code></pre>
+<p>说明: 当1秒内请求数≥5,异常比例≥50%时,触发熔断10秒</p>
+<h3 id="35-热点参数限流"><a class="header" href="#35-热点参数限流">3.5 热点参数限流</a></h3>
+<pre><code class="language-java">package com.example.order.controller;
+
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
+import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+    /**
+     * 商品查询接口 - 热点参数限流
+     * 对特定商品(如爆款商品)进行单独限流
+     */
+    @GetMapping("/{id}")
+    @SentinelResource(
+        value = "getProduct",
+        blockHandler = "handleHotBlock"
+    )
+    public Map&lt;String, Object&gt; getProduct(@PathVariable("id") Long productId) {
+        Map&lt;String, Object&gt; result = new HashMap&lt;&gt;();
+        result.put("id", productId);
+        result.put("name", "商品-" + productId);
+        result.put("price", 99.99);
+        return result;
+    }
+
+    public Map&lt;String, Object&gt; handleHotBlock(Long productId, BlockException ex) {
+        Map&lt;String, Object&gt; result = new HashMap&lt;&gt;();
+        result.put("code", 429);
+        result.put("message", "商品访问过于频繁");
+        result.put("productId", productId);
+        return result;
+    }
+}
+</code></pre>
+<p><strong>热点规则配置</strong></p>
+<pre><code class="language-json">[
+  {
+    "resource": "getProduct",
+    "grade": 1,
+    "paramIdx": 0,
+    "count": 10,
+    "durationInSec": 1,
+    "paramFlowItemList": [
+      {
+        "object": "1001",
+        "classType": "long",
+        "count": 5
+      },
+      {
+        "object": "1002",
+        "classType": "long",
+        "count": 3
+      }
+    ]
+  }
+]
+</code></pre>
+<p>说明:</p>
+<ul>
+<li>默认限制: 每秒10次请求</li>
+<li>特殊商品1001: 每秒5次请求</li>
+<li>特殊商品1002: 每秒3次请求</li>
+</ul>
+<h3 id="36-系统自适应限流"><a class="header" href="#36-系统自适应限流">3.6 系统自适应限流</a></h3>
+<pre><code class="language-json">[
+  {
+    "highestSystemLoad": 8.0,
+    "avgRt": 1000,
+    "maxThread": 100,
+    "qps": 500,
+    "highestCpuUsage": 0.8
+  }
+]
+</code></pre>
+<p>说明:</p>
+<ul>
+<li><code>highestSystemLoad</code>: 最大系统负载(Load1)</li>
+<li><code>avgRt</code>: 所有资源平均响应时间</li>
+<li><code>maxThread</code>: 所有资源最大并发线程数</li>
+<li><code>qps</code>: 所有资源总QPS阈值</li>
+<li><code>highestCpuUsage</code>: 最大CPU使用率</li>
+</ul>
+<hr />
+<h2 id="五openfeign声明式调用"><a class="header" href="#五openfeign声明式调用">五、OpenFeign声明式调用</a></h2>
+<h3 id="41-openfeign集成"><a class="header" href="#41-openfeign集成">4.1 OpenFeign集成</a></h3>
+<h4 id="maven依赖"><a class="header" href="#maven依赖">Maven依赖</a></h4>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;!-- OpenFeign --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- 负载均衡 --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-loadbalancer&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- Sentinel整合 --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<h4 id="启用feign客户端"><a class="header" href="#启用feign客户端">启用Feign客户端</a></h4>
+<pre><code class="language-java">package com.example.order;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients  // 启用Feign客户端扫描
+public class OrderServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderServiceApplication.class, args);
+    }
+}
+</code></pre>
+<h3 id="42-定义feign客户端"><a class="header" href="#42-定义feign客户端">4.2 定义Feign客户端</a></h3>
+<pre><code class="language-java">package com.example.order.feign;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+
+/**
+ * 商品服务Feign客户端
+ */
+@FeignClient(
+    name = "product-service",  // 服务名
+    path = "/api/products",    // 统一路径前缀
+    fallbackFactory = ProductFeignFallbackFactory.class  // 降级工厂
+)
+public interface ProductFeignClient {
+
+    /**
+     * 查询商品详情
+     */
+    @GetMapping("/{id}")
+    Map&lt;String, Object&gt; getProduct(@PathVariable("id") Long id);
+
+    /**
+     * 扣减库存
+     */
+    @PostMapping("/deduct-stock")
+    Map&lt;String, Object&gt; deductStock(@RequestParam("productId") Long productId,
+                                   @RequestParam("quantity") Integer quantity);
+}
+</code></pre>
+<h3 id="43-feign降级处理"><a class="header" href="#43-feign降级处理">4.3 Feign降级处理</a></h3>
+<pre><code class="language-java">package com.example.order.feign;
+
+import feign.hystrix.FallbackFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
+@Component
+public class ProductFeignFallbackFactory implements FallbackFactory&lt;ProductFeignClient&gt; {
+
+    @Override
+    public ProductFeignClient create(Throwable cause) {
+        return new ProductFeignClient() {
+            @Override
+            public Map&lt;String, Object&gt; getProduct(Long id) {
+                log.error("调用商品服务失败: id={}", id, cause);
+
+                Map&lt;String, Object&gt; result = new HashMap&lt;&gt;();
+                result.put("code", 500);
+                result.put("message", "商品服务暂不可用");
+                result.put("productId", id);
+                return result;
+            }
+
+            @Override
+            public Map&lt;String, Object&gt; deductStock(Long productId, Integer quantity) {
+                log.error("扣减库存失败: productId={}, quantity={}",
+                         productId, quantity, cause);
+
+                Map&lt;String, Object&gt; result = new HashMap&lt;&gt;();
+                result.put("success", false);
+                result.put("message", "库存服务暂不可用");
+                return result;
+            }
+        };
+    }
+}
+</code></pre>
+<h3 id="44-feign配置"><a class="header" href="#44-feign配置">4.4 Feign配置</a></h3>
+<pre><code class="language-yaml">feign:
+  client:
+    config:
+      default:  # 全局配置
+        connectTimeout: 5000  # 连接超时(ms)
+        readTimeout: 10000    # 读取超时(ms)
+        loggerLevel: BASIC    # 日志级别
+      product-service:  # 特定服务配置
+        connectTimeout: 3000
+        readTimeout: 8000
+        loggerLevel: FULL
+
+  # HTTP客户端配置
+  httpclient:
+    enabled: true
+    max-connections: 200
+    max-connections-per-route: 50
+
+  # 压缩配置
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
+
+  # Sentinel整合
+  sentinel:
+    enabled: true
+
+# 日志配置
+logging:
+  level:
+    com.example.order.feign: DEBUG
+</code></pre>
+<hr />
+<h2 id="六高级应用场景"><a class="header" href="#六高级应用场景">六、高级应用场景</a></h2>
+<h3 id="51-典型电商订单流程"><a class="header" href="#51-典型电商订单流程">5.1 典型电商订单流程</a></h3>
+<pre><code>用户下单 → Gateway → Order Service → Product Service
+                                 → Payment Service
+                                 → Inventory Service
+                                 → User Service
+</code></pre>
+<h3 id="52-网关配置spring-cloud-gateway"><a class="header" href="#52-网关配置spring-cloud-gateway">5.2 网关配置(Spring Cloud Gateway)</a></h3>
+<h4 id="maven依赖-1"><a class="header" href="#maven依赖-1">Maven依赖</a></h4>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-gateway&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-alibaba-nacos-discovery&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-alibaba-sentinel-gateway&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<h4 id="gateway配置"><a class="header" href="#gateway配置">Gateway配置</a></h4>
+<pre><code class="language-yaml">server:
+  port: 9000
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+    gateway:
+      discovery:
+        locator:
+          enabled: true  # 启用服务发现路由
+          lower-case-service-id: true
+
+      routes:
+        # 订单服务路由
+        - id: order-service-route
+          uri: lb://order-service
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - StripPrefix=0
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+
+        # 商品服务路由
+        - id: product-service-route
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - StripPrefix=0
+
+      # 全局默认过滤器配置
+      default-filters:
+        - AddResponseHeader=X-Response-Time, ${responseTime}
+</code></pre>
+<h3 id="53-灰度发布方案"><a class="header" href="#53-灰度发布方案">5.3 灰度发布方案</a></h3>
+<h4 id="基于元数据的灰度路由"><a class="header" href="#基于元数据的灰度路由">基于元数据的灰度路由</a></h4>
+<p><strong>服务提供者配置</strong></p>
+<pre><code class="language-yaml">spring:
+  cloud:
+    nacos:
+      discovery:
+        metadata:
+          version: v2  # 灰度版本号
+          region: beijing
+</code></pre>
+<p><strong>自定义负载均衡器</strong></p>
+<pre><code class="language-java">package com.example.gateway.loadbalancer;
+
+import com.alibaba.cloud.nacos.NacosServiceInstance;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.*;
+import org.springframework.cloud.loadbalancer.core.*;
+import org.springframework.http.HttpHeaders;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+public class GrayLoadBalancer implements ReactorServiceInstanceLoadBalancer {
+
+    private final String serviceId;
+    private final ObjectProvider&lt;ServiceInstanceListSupplier&gt; serviceInstanceListSupplierProvider;
+    private final Random random = new Random();
+
+    public GrayLoadBalancer(ObjectProvider&lt;ServiceInstanceListSupplier&gt; serviceInstanceListSupplierProvider,
+                           String serviceId) {
+        this.serviceId = serviceId;
+        this.serviceInstanceListSupplierProvider = serviceInstanceListSupplierProvider;
+    }
+
+    @Override
+    public Mono&lt;Response&lt;ServiceInstance&gt;&gt; choose(Request request) {
+        ServiceInstanceListSupplier supplier = serviceInstanceListSupplierProvider.getIfAvailable();
+
+        return supplier.get(request).next().map(instances -&gt; {
+            if (instances.isEmpty()) {
+                return new EmptyResponse();
+            }
+
+            // 从请求头获取灰度参数
+            DefaultRequestContext requestContext = (DefaultRequestContext) request.getContext();
+            String grayVersion = requestContext.getClientRequest()
+                .getHeaders()
+                .getFirst("X-Gray-Version");
+
+            List&lt;ServiceInstance&gt; targetInstances;
+
+            if ("v2".equals(grayVersion)) {
+                // 灰度用户: 路由到v2版本
+                targetInstances = instances.stream()
+                    .filter(instance -&gt; "v2".equals(instance.getMetadata().get("version")))
+                    .collect(Collectors.toList());
+            } else {
+                // 正常用户: 路由到v1版本
+                targetInstances = instances.stream()
+                    .filter(instance -&gt; !"v2".equals(instance.getMetadata().get("version")))
+                    .collect(Collectors.toList());
+            }
+
+            if (targetInstances.isEmpty()) {
+                targetInstances = instances;
+            }
+
+            int index = random.nextInt(targetInstances.size());
+            return new DefaultResponse(targetInstances.get(index));
+        });
+    }
+}
+</code></pre>
+<h3 id="54-链路追踪sleuth--zipkin"><a class="header" href="#54-链路追踪sleuth--zipkin">5.4 链路追踪(Sleuth + Zipkin)</a></h3>
+<h4 id="maven依赖-2"><a class="header" href="#maven依赖-2">Maven依赖</a></h4>
+<pre><code class="language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-sleuth&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-sleuth-zipkin&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre>
+<h4 id="配置"><a class="header" href="#配置">配置</a></h4>
+<pre><code class="language-yaml">spring:
+  sleuth:
+    sampler:
+      probability: 1.0  # 采样率(1.0=100%)
+  zipkin:
+    base-url: http://localhost:9411  # Zipkin服务器地址
+    sender:
+      type: web  # 发送类型(web/rabbit/kafka)
+</code></pre>
+<hr />
+<h2 id="七学习路径规划"><a class="header" href="#七学习路径规划">七、学习路径规划</a></h2>
+<h3 id="61-学习阶段"><a class="header" href="#61-学习阶段">6.1 学习阶段</a></h3>
+<h4 id="阶段1-基础环境搭建-第1天"><a class="header" href="#阶段1-基础环境搭建-第1天">阶段1: 基础环境搭建 (第1天)</a></h4>
+<ul>
+<li><input disabled="" type="checkbox"/>
+部署Nacos集群(至少3节点)</li>
+<li><input disabled="" type="checkbox"/>
+部署Sentinel Dashboard</li>
+<li><input disabled="" type="checkbox"/>
+配置数据库与Nacos数据持久化</li>
+</ul>
+<h4 id="阶段2-核心功能-第2-5天"><a class="header" href="#阶段2-核心功能-第2-5天">阶段2: 核心功能 (第2-5天)</a></h4>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现服务注册发现</li>
+<li><input disabled="" type="checkbox"/>
+实现配置管理动态刷新</li>
+<li><input disabled="" type="checkbox"/>
+实现流量控制与熔断降级</li>
+<li><input disabled="" type="checkbox"/>
+实现OpenFeign声明式调用</li>
+</ul>
+<h4 id="阶段3-进阶应用-第6-10天"><a class="header" href="#阶段3-进阶应用-第6-10天">阶段3: 进阶应用 (第6-10天)</a></h4>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现基于3个以上微服务的订单系统</li>
+<li><input disabled="" type="checkbox"/>
+实现Gateway网关路由</li>
+<li><input disabled="" type="checkbox"/>
+规则数据源绑定Nacos</li>
+<li><input disabled="" type="checkbox"/>
+灰度发布与链路追踪</li>
+</ul>
+<h4 id="阶段4-生产实践-第11-15天"><a class="header" href="#阶段4-生产实践-第11-15天">阶段4: 生产实践 (第11-15天)</a></h4>
+<ul>
+<li><input disabled="" type="checkbox"/>
+实现Nacos控制台权限管理</li>
+<li><input disabled="" type="checkbox"/>
+实现Sentinel Dashboard限流规则管理</li>
+<li><input disabled="" type="checkbox"/>
+压测与降级策略验证</li>
+</ul>
+<h3 id="62-实战项目"><a class="header" href="#62-实战项目">6.2 实战项目</a></h3>
+<h4 id="项目1-商品服务"><a class="header" href="#项目1-商品服务">项目1: 商品服务</a></h4>
+<p><strong>步骤:</strong></p>
+<ol>
+<li>创建product-service微服务</li>
+<li>注册到Nacos</li>
+<li>提供商品查询与库存扣减接口</li>
+<li>配置Sentinel流控规则: QPS限制50</li>
+</ol>
+<h4 id="项目2-订单服务调用商品服务"><a class="header" href="#项目2-订单服务调用商品服务">项目2: 订单服务调用商品服务</a></h4>
+<p><strong>步骤:</strong></p>
+<ol>
+<li>使用OpenFeign调用商品服务</li>
+<li>实现降级逻辑: 商品服务不可用时返回友好提示</li>
+<li>配置熔断规则: 异常比例超过50%时熔断10秒</li>
+</ol>
+<h4 id="项目3-配置中心实践"><a class="header" href="#项目3-配置中心实践">项目3: 配置中心实践</a></h4>
+<p><strong>步骤:</strong></p>
+<ol>
+<li>数据库连接信息配置到Nacos</li>
+<li>实现配置动态刷新</li>
+<li>配置环境隔离: dev/test/prod</li>
+</ol>
+<hr />
+<h2 id="八扩展组件介绍"><a class="header" href="#八扩展组件介绍">八、扩展组件介绍</a></h2>
+<h3 id="71-扩展组件"><a class="header" href="#71-扩展组件">7.1 扩展组件</a></h3>
+<h4 id="rocketmq消息队列"><a class="header" href="#rocketmq消息队列">RocketMQ消息队列</a></h4>
+<ul>
+<li>消息驱动: 订单服务发送消息</li>
+<li>削峰填谷: 秒杀场景流量缓冲</li>
+<li>异步解耦: 订单与物流解耦</li>
+</ul>
+<h4 id="dubbo-rpc框架"><a class="header" href="#dubbo-rpc框架">Dubbo RPC框架</a></h4>
+<ul>
+<li>高性能RPC调用</li>
+<li>丰富负载均衡规则</li>
+<li>服务治理</li>
+</ul>
+<h4 id="seata分布式事务"><a class="header" href="#seata分布式事务">Seata分布式事务</a></h4>
+<ul>
+<li>AT模式: 自动补偿</li>
+<li>TCC模式: 手动补偿</li>
+<li>Saga模式: 长事务</li>
+</ul>
+<h3 id="72-生产环境建议"><a class="header" href="#72-生产环境建议">7.2 生产环境建议</a></h3>
+<h4 id="高可用架构"><a class="header" href="#高可用架构">高可用架构</a></h4>
+<ol>
+<li>Nacos集群部署(3节点以上)</li>
+<li>Sentinel Dashboard高可用</li>
+<li>Gateway集群部署</li>
+<li>数据库主从架构</li>
+<li>Redis哨兵/集群</li>
+</ol>
+<h4 id="监控体系"><a class="header" href="#监控体系">监控体系</a></h4>
+<ol>
+<li>Prometheus + Grafana监控</li>
+<li>ELK日志分析</li>
+<li>Zipkin/Skywalking链路追踪</li>
+<li>Sentinel实时监控大盘</li>
+</ol>
+<h4 id="安全加固"><a class="header" href="#安全加固">安全加固</a></h4>
+<ol>
+<li>Gateway接口认证(JWT/OAuth2)</li>
+<li>服务间通信加密(HTTPS)</li>
+<li>敏感配置加密存储</li>
+<li>限流防刷</li>
+</ol>
+<h3 id="73-学习资源推荐"><a class="header" href="#73-学习资源推荐">7.3 学习资源推荐</a></h3>
+<h4 id="官方文档"><a class="header" href="#官方文档">官方文档</a></h4>
+<ul>
+<li><a href="https://sca.aliyun.com/">Spring Cloud Alibaba官方文档</a></li>
+<li><a href="https://nacos.io/zh-cn/docs/what-is-nacos.html">Nacos官方文档</a></li>
+<li><a href="https://sentinelguard.io/zh-cn/docs/introduction.html">Sentinel官方文档</a></li>
+</ul>
+<h4 id="开源项目"><a class="header" href="#开源项目">开源项目</a></h4>
+<ul>
+<li><a href="https://github.com/macrozheng/mall-swarm">mall-swarm</a> - 典型电商微服务</li>
+<li><a href="https://gitee.com/log4j/pig">pig</a> - 微服务权限管理系统</li>
+<li><a href="https://gitee.com/y_project/RuoYi-Cloud">ruoyi-cloud</a> - 若依微服务</li>
+</ul>
+<h4 id="视频教程推荐"><a class="header" href="#视频教程推荐">视频教程推荐</a></h4>
+<ul>
+<li>尚硅谷Spring Cloud Alibaba教程</li>
+<li>黑马程序员微服务专题</li>
+<li>马士兵教育微服务实战项目</li>
+</ul>
+<hr />
+<h2 id="附录a-常见问题"><a class="header" href="#附录a-常见问题">附录A: 常见问题</a></h2>
+<h3 id="a1-注册失败"><a class="header" href="#a1-注册失败">A.1 注册失败</a></h3>
+<p><strong>问题:</strong> 服务无法注册到Nacos控制台</p>
+<p><strong>排查步骤:</strong></p>
+<ol>
+<li>检查Nacos服务器是否正常启动</li>
+<li>检查网络连接: <code>telnet nacos-server 8848</code></li>
+<li>检查namespace是否正确</li>
+<li>查看应用日志错误信息</li>
+<li>确认版本是否兼容</li>
+</ol>
+<h3 id="a2-配置不生效"><a class="header" href="#a2-配置不生效">A.2 配置不生效</a></h3>
+<p><strong>问题:</strong> 修改Nacos配置后服务未生效</p>
+<p><strong>排查步骤:</strong></p>
+<ol>
+<li>确认是否添加<code>@RefreshScope</code>注解</li>
+<li>确认Data ID与Group是否匹配</li>
+<li>确认bootstrap.yml中命名空间</li>
+<li>检查服务日志是否收到配置变更信息</li>
+<li>确认Nacos客户端是否正常连接配置中心</li>
+</ol>
+<h3 id="a3-sentinel不生效"><a class="header" href="#a3-sentinel不生效">A.3 Sentinel不生效</a></h3>
+<p><strong>问题:</strong> 配置流控规则后仍未限流</p>
+<p><strong>排查步骤:</strong></p>
+<ol>
+<li>确认资源名是否正确</li>
+<li>确认Dashboard通信是否正常</li>
+<li>检查规则是否正确下发</li>
+<li>检查请求数是否达到阈值</li>
+<li>查看数据源配置</li>
+</ol>
+<hr />
+<h2 id="附录b-配置文件模板"><a class="header" href="#附录b-配置文件模板">附录B: 配置文件模板</a></h2>
+<h3 id="b1-nacos配置模板"><a class="header" href="#b1-nacos配置模板">B.1 Nacos配置模板</a></h3>
+<pre><code class="language-yaml"># common-mysql.yaml (数据库共享配置)
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-test-query: SELECT 1
+
+# common-redis.yaml (Redis共享配置)
+spring:
+  redis:
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 20
+        max-idle: 10
+        min-idle: 5
+        max-wait: 3000
+
+# application-prod.yaml (生产环境配置)
+spring:
+  datasource:
+    url: jdbc:mysql://prod-db:3306/order_db?useSSL=true
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  redis:
+    host: prod-redis
+    port: 6379
+    password: ${REDIS_PASSWORD}
+</code></pre>
+<h3 id="b2-sentinel规则模板"><a class="header" href="#b2-sentinel规则模板">B.2 Sentinel规则模板</a></h3>
+<pre><code class="language-json">{
+  "flow": [
+    {
+      "resource": "/api/orders/create",
+      "grade": 1,
+      "count": 100,
+      "controlBehavior": 2,
+      "maxQueueingTimeMs": 3000
+    }
+  ],
+  "degrade": [
+    {
+      "resource": "callPaymentApi",
+      "grade": 0,
+      "count": 1000,
+      "timeWindow": 30,
+      "minRequestAmount": 10,
+      "slowRatioThreshold": 0.5
+    }
+  ],
+  "system": [
+    {
+      "highestSystemLoad": 10.0,
+      "avgRt": 1000,
+      "maxThread": 200,
+      "qps": 1000,
+      "highestCpuUsage": 0.9
+    }
+  ]
+}
+</code></pre>
+<hr />
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>Spring Cloud Alibaba为我们提供了完整的微服务体系解决方案:</p>
+<ol>
+<li><strong>服务治理</strong>: Nacos提供服务注册发现与配置管理统一平台</li>
+<li><strong>流量控制</strong>: Sentinel实现流控、熔断、降级全方位保护</li>
+<li><strong>易用性</strong>: Spring Cloud无缝集成,开箱即用</li>
+<li><strong>高可用</strong>: 生产级组件支持,支持3节点以上集群</li>
+<li><strong>社区活跃</strong>: 阿里维护,持续更新</li>
+</ol>
+<h3 id="开发建议"><a class="header" href="#开发建议">开发建议</a></h3>
+<ol>
+<li><strong>初学者</strong>: 先掌握Nacos与Sentinel基础,理解核心概念后再深入</li>
+<li><strong>团队协作</strong>: 统一使用中心化配置管理模式</li>
+<li><strong>性能优化</strong>: 根据实际业务场景调优,逐步迭代降级方案</li>
+<li><strong>监控体系</strong>: 统一日志、监控、链路追踪,保持系统可观测性</li>
+</ol>
+<h3 id="进阶学习"><a class="header" href="#进阶学习">进阶学习</a></h3>
+<ol>
+<li>中间件绑定Nacos+Sentinel配置</li>
+<li>灰度发布,实现金丝雀部署</li>
+<li>分布式事务Seata实战</li>
+<li>结合容器化技术.实现自动化运维</li>
+</ol>
+<hr />
+<p><strong>文档版本:</strong> v1.0
+<strong>更新日期:</strong> 2025-01-06
+<strong>适用版本:</strong> Spring Cloud 2021.x + Spring Cloud Alibaba 2021.x
+<strong>作者:</strong> 微服务架构团队</p>
+<hr />
+<h2 id="快速参考卡"><a class="header" href="#快速参考卡">快速参考卡</a></h2>
+<h3 id="核心依赖版本"><a class="header" href="#核心依赖版本">核心依赖版本</a></h3>
+<pre><code class="language-xml">&lt;spring-cloud.version&gt;2021.0.8&lt;/spring-cloud.version&gt;
+&lt;spring-cloud-alibaba.version&gt;2021.0.5.0&lt;/spring-cloud-alibaba.version&gt;
+</code></pre>
+<h3 id="nacos核心配置"><a class="header" href="#nacos核心配置">Nacos核心配置</a></h3>
+<pre><code class="language-yaml">spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: ${env}
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+        namespace: ${env}
+</code></pre>
+<h3 id="sentinel核心注解"><a class="header" href="#sentinel核心注解">Sentinel核心注解</a></h3>
+<pre><code class="language-java">@SentinelResource(
+    value = "resourceName",
+    blockHandler = "handleBlock",
+    fallback = "handleFallback"
+)
+</code></pre>
+<h3 id="openfeign核心配置"><a class="header" href="#openfeign核心配置">OpenFeign核心配置</a></h3>
+<pre><code class="language-yaml">feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 10000
+  sentinel:
+    enabled: true
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/springcloud/springboot.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/springcloud/springcloud.dubbo.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/springcloud/springboot.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/springcloud/springcloud.dubbo.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

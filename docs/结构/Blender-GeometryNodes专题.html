@@ -1,0 +1,932 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Blender Geometry Nodes 程序化工作流专题 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/pagetoc.css">
+        <link rel="stylesheet" href="../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="blender-geometry-nodes-程序化工作流专题"><a class="header" href="#blender-geometry-nodes-程序化工作流专题">Blender Geometry Nodes 程序化工作流专题</a></h1>
+<blockquote>
+<p>从基础 Field 概念到大型程序化资产的完整实践指南,将 Geometry Nodes 融入团队生产管线。</p>
+</blockquote>
+<hr />
+<h2 id="-专题导航"><a class="header" href="#-专题导航">📖 专题导航</a></h2>
+<ul>
+<li><strong><a href="./Blender.html">返回主笔记</a></strong> - Blender 核心学习路径</li>
+<li><strong>当前专题</strong>: Geometry Nodes 程序化建模深度实践</li>
+</ul>
+<hr />
+<h2 id="专题概述"><a class="header" href="#专题概述">专题概述</a></h2>
+<h3 id="学习目标"><a class="header" href="#学习目标">学习目标</a></h3>
+<p>✅ 理解 Geometry Nodes 的核心理念:Field 机制与 Geometry 数据结构
+✅ 掌握常用节点语义与实际应用场景
+✅ 能够独立开发程序化资产(道路、建筑、机械组件等)
+✅ 将 Geometry Nodes 融入生产管线,提升效率</p>
+<h3 id="适用人群"><a class="header" href="#适用人群">适用人群</a></h3>
+<ul>
+<li>已完成 Blender 基础建模学习的用户</li>
+<li>希望提升建模效率,减少重复劳动的技术美术</li>
+<li>需要制作大量参数化资产的项目团队</li>
+<li>对程序化建模和数据驱动内容感兴趣的开发者</li>
+</ul>
+<h3 id="前置要求"><a class="header" href="#前置要求">前置要求</a></h3>
+<ul>
+<li>熟悉 Blender 基本建模操作</li>
+<li>理解 Modifier 系统的工作原理</li>
+<li>了解基本的数学概念(向量、坐标系)</li>
+<li>(可选)具备基础编程思维</li>
+</ul>
+<hr />
+<h2 id="第一章核心理念与基础概念"><a class="header" href="#第一章核心理念与基础概念">第一章:核心理念与基础概念</a></h2>
+<h3 id="11-什么是-geometry-nodes"><a class="header" href="#11-什么是-geometry-nodes">1.1 什么是 Geometry Nodes</a></h3>
+<p><strong>定义</strong>:
+Geometry Nodes 是 Blender 的程序化建模系统,通过节点图形界面构建参数化的几何体生成与变换流程。</p>
+<p><strong>核心优势</strong>:</p>
+<ol>
+<li><strong>参数化</strong>:通过参数控制模型,无需重新建模</li>
+<li><strong>非破坏性</strong>:保留原始几何,节点树可随时调整</li>
+<li><strong>可复用</strong>:节点组可保存为资产,跨项目使用</li>
+<li><strong>高效率</strong>:实例化技术处理大量对象时性能优异</li>
+<li><strong>可扩展</strong>:结合 Python 可实现复杂的数据驱动效果</li>
+</ol>
+<h3 id="12-field-字段机制"><a class="header" href="#12-field-字段机制">1.2 Field (字段)机制</a></h3>
+<p><strong>Field 概念</strong>:
+Field 是 Geometry Nodes 的核心概念,代表在几何体每个元素(点、边、面)上求值的函数。</p>
+<p><strong>理解 Field</strong>:</p>
+<pre><code>传统建模: 顶点位置 = 固定坐标 (0.5, 1.2, 0.8)
+Field 思维: 顶点位置 = 函数(索引, 时间, 随机种子...)
+
+例如:
+position = original_position + noise(index) * amplitude
+</code></pre>
+<p><strong>Field 类型</strong>:</p>
+<ul>
+<li><strong>标量 Field</strong>: 单一数值,如距离、索引、权重</li>
+<li><strong>向量 Field</strong>: 三维向量,如位置、法线、速度</li>
+<li><strong>颜色 Field</strong>: RGBA 颜色值</li>
+<li><strong>布尔 Field</strong>: True/False,用于筛选和条件判断</li>
+</ul>
+<p><strong>实际应用</strong>:</p>
+<pre><code>场景: 根据高度给地形上色
+
+高度 Field -&gt; 比较节点 -&gt; 颜色 Field
+altitude &gt; 100m ? 雪白色 : 草绿色
+</code></pre>
+<h3 id="13-geometry-数据结构"><a class="header" href="#13-geometry-数据结构">1.3 Geometry 数据结构</a></h3>
+<p><strong>四大几何类型</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>说明</th><th>适用场景</th><th>属性示例</th></tr></thead><tbody>
+<tr><td><strong>Mesh</strong></td><td>网格(点、边、面)</td><td>通用建模</td><td>Position, Normal, UV</td></tr>
+<tr><td><strong>Curve</strong></td><td>曲线</td><td>路径、管道、线缆</td><td>Position, Radius, Tilt</td></tr>
+<tr><td><strong>Point Cloud</strong></td><td>点云</td><td>粒子效果、散布</td><td>Position, Radius, Color</td></tr>
+<tr><td><strong>Volume</strong></td><td>体积</td><td>烟雾、流体、SDF</td><td>Density, Temperature</td></tr>
+</tbody></table>
+</div>
+<p><strong>Geometry 操作</strong>:</p>
+<ul>
+<li><strong>Join Geometry</strong>: 合并多个几何体</li>
+<li><strong>Geometry to Mesh</strong>: 转换为网格</li>
+<li><strong>Mesh to Points</strong>: 提取顶点为点云</li>
+<li><strong>Separate Geometry</strong>: 根据条件筛选几何</li>
+</ul>
+<h3 id="14-实例化instance思想"><a class="header" href="#14-实例化instance思想">1.4 实例化(Instance)思想</a></h3>
+<p><strong>为什么使用实例</strong>:</p>
+<ul>
+<li>内存效率:1000 个实例只存储 1 份几何数据</li>
+<li>渲染性能:GPU 可批量处理实例</li>
+<li>修改方便:修改源对象,所有实例自动更新</li>
+</ul>
+<p><strong>实例化工作流</strong>:</p>
+<pre><code>1. 创建基础几何(高模或低模)
+2. 使用 "Instance on Points" 节点在点上生成实例
+3. 通过 Field 控制每个实例的:
+   - 位置 (Position)
+   - 旋转 (Rotation)
+   - 缩放 (Scale)
+4. (可选) "Realize Instances" 转为实际几何
+</code></pre>
+<p><strong>典型应用</strong>:</p>
+<ul>
+<li>森林:在地形点上实例化树木</li>
+<li>建筑:在网格上实例化窗户、门</li>
+<li>机械:在路径上实例化螺栓、管道接头</li>
+</ul>
+<hr />
+<h2 id="第二章常用节点语义图谱"><a class="header" href="#第二章常用节点语义图谱">第二章:常用节点语义图谱</a></h2>
+<h3 id="21-数据输入节点"><a class="header" href="#21-数据输入节点">2.1 数据输入节点</a></h3>
+<h4 id="object-info--collection-info"><a class="header" href="#object-info--collection-info">Object Info / Collection Info</a></h4>
+<p><strong>功能</strong>: 引入外部对象或集合</p>
+<p><strong>参数</strong>:</p>
+<ul>
+<li><code>Object/Collection</code>: 选择要引入的对象</li>
+<li><code>As Instance</code>: 勾选后以实例方式引入(推荐)</li>
+<li><code>Transform Space</code>: 坐标空间(相对/世界)</li>
+</ul>
+<p><strong>实战技巧</strong>:</p>
+<pre><code>场景: 森林系统
+
+Collection Info (树木集合)
+├─ As Instance: ✓ (减少内存)
+└─ Random (随机选择树种) -&gt; Instance on Points
+</code></pre>
+<h4 id="scene-time"><a class="header" href="#scene-time">Scene Time</a></h4>
+<p><strong>功能</strong>: 获取当前场景时间,用于动画驱动</p>
+<p><strong>输出</strong>:</p>
+<ul>
+<li><code>Frame</code>: 当前帧数</li>
+<li><code>Seconds</code>: 当前时间(秒)</li>
+</ul>
+<p><strong>应用示例</strong>:</p>
+<pre><code class="language-python">Scene Time -&gt; Math (除法, 10) -&gt; Rotation
+# 每 10 帧旋转一圈
+</code></pre>
+<h3 id="22-几何操作节点"><a class="header" href="#22-几何操作节点">2.2 几何操作节点</a></h3>
+<h4 id="join-geometry"><a class="header" href="#join-geometry">Join Geometry</a></h4>
+<p><strong>功能</strong>: 合并多个几何输入为一个</p>
+<p><strong>使用场景</strong>:</p>
+<ul>
+<li>将多个部件组合成完整模型</li>
+<li>合并不同处理分支的结果</li>
+</ul>
+<p><strong>注意事项</strong>:</p>
+<ul>
+<li>合并后属性可能不一致,需使用 <code>Store Named Attribute</code> 处理</li>
+<li>大量几何合并会影响性能,考虑保持实例化</li>
+</ul>
+<h4 id="separate-geometry"><a class="header" href="#separate-geometry">Separate Geometry</a></h4>
+<p><strong>功能</strong>: 根据布尔条件筛选几何</p>
+<p><strong>工作流程</strong>:</p>
+<pre><code>输入几何 -&gt; Separate Geometry (Selection: Field)
+├─ Selection (True 的部分)
+└─ Inverted (False 的部分)
+</code></pre>
+<p><strong>实战案例</strong>:</p>
+<pre><code>场景: 只保留高度大于 5m 的建筑
+
+Mesh -&gt; Position (Z) -&gt; Compare (&gt; 5.0) -&gt; Separate Geometry
+</code></pre>
+<h3 id="23-字段计算节点"><a class="header" href="#23-字段计算节点">2.3 字段计算节点</a></h3>
+<h4 id="math"><a class="header" href="#math">Math</a></h4>
+<p><strong>功能</strong>: 数学运算(加减乘除、三角函数、取整等)</p>
+<p><strong>常用操作</strong>:</p>
+<ul>
+<li><code>Add/Subtract/Multiply/Divide</code>: 四则运算</li>
+<li><code>Sin/Cos/Tan</code>: 三角函数(周期性运动)</li>
+<li><code>Round/Floor/Ceil</code>: 取整</li>
+<li><code>Modulo</code>: 取余(循环模式)</li>
+<li><code>Power</code>: 幂运算(非线性缩放)</li>
+</ul>
+<p><strong>技巧</strong>:</p>
+<pre><code># 创建周期性波动
+Index -&gt; Math (Sin) -&gt; Math (Multiply, 0.5) -&gt; Position Offset
+
+# 每 N 个元素分组
+Index -&gt; Math (Modulo, N) -&gt; Compare (= 0) -&gt; Selection
+</code></pre>
+<h4 id="vector-math"><a class="header" href="#vector-math">Vector Math</a></h4>
+<p><strong>功能</strong>: 向量运算</p>
+<p><strong>常用操作</strong>:</p>
+<ul>
+<li><code>Add/Subtract</code>: 向量加减(位移)</li>
+<li><code>Multiply/Divide</code>: 向量缩放</li>
+<li><code>Dot Product</code>: 点积(投影、夹角)</li>
+<li><code>Cross Product</code>: 叉积(垂直向量)</li>
+<li><code>Normalize</code>: 归一化(单位向量)</li>
+<li><code>Length</code>: 向量长度</li>
+</ul>
+<p><strong>实战应用</strong>:</p>
+<pre><code># 物体朝向目标
+Position (Object) -&gt; Vector Math (Subtract, Target) -&gt; Normalize -&gt; Rotation
+</code></pre>
+<h4 id="map-range"><a class="header" href="#map-range">Map Range</a></h4>
+<p><strong>功能</strong>: 值域映射(线性缩放)</p>
+<p><strong>参数</strong>:</p>
+<pre><code>From Min, From Max -&gt; To Min, To Max
+
+例如:
+高度 [0, 100] -&gt; 颜色 [绿色, 白色]
+</code></pre>
+<p><strong>Clamp 选项</strong>: 限制输出在目标范围内</p>
+<h3 id="24-拓扑调整节点"><a class="header" href="#24-拓扑调整节点">2.4 拓扑调整节点</a></h3>
+<h4 id="subdivision-surface"><a class="header" href="#subdivision-surface">Subdivision Surface</a></h4>
+<p><strong>功能</strong>: 细分平滑</p>
+<p><strong>参数</strong>:</p>
+<ul>
+<li><code>Level</code>: 细分级别(1-6)</li>
+<li><code>UV Smooth</code>: 保持 UV 连续</li>
+<li><code>Boundary Smooth</code>: 边界平滑方式</li>
+</ul>
+<p><strong>性能提示</strong>:</p>
+<ul>
+<li>每增加 1 级,面数约为 4 倍</li>
+<li>尽量在节点树末端使用,减少中间计算量</li>
+</ul>
+<h4 id="mesh-to-points"><a class="header" href="#mesh-to-points">Mesh to Points</a></h4>
+<p><strong>功能</strong>: 提取网格顶点为点云</p>
+<p><strong>应用</strong>:</p>
+<pre><code>Mesh -&gt; Mesh to Points -&gt; Instance on Points (散布对象)
+</code></pre>
+<h4 id="points-to-vertices"><a class="header" href="#points-to-vertices">Points to Vertices</a></h4>
+<p><strong>功能</strong>: 点云转换为顶点(可连接成线)</p>
+<p><strong>配合使用</strong>:</p>
+<pre><code>Points to Vertices -&gt; Mesh Line (连接为折线)
+</code></pre>
+<h3 id="25-实例管理节点"><a class="header" href="#25-实例管理节点">2.5 实例管理节点</a></h3>
+<h4 id="instance-on-points"><a class="header" href="#instance-on-points">Instance on Points</a></h4>
+<p><strong>功能</strong>: 在点位置生成实例</p>
+<p><strong>关键参数</strong>:</p>
+<ul>
+<li><code>Points</code>: 输入点几何</li>
+<li><code>Instance</code>: 要实例化的对象(Object Info / Collection Info)</li>
+<li><code>Pick Instance</code>: 是否随机选择(Collection 中)</li>
+<li><code>Rotation</code>: 实例旋转</li>
+<li><code>Scale</code>: 实例缩放</li>
+</ul>
+<p><strong>高级用法</strong>:</p>
+<pre><code># 根据法线方向旋转实例
+Normal -&gt; Align Euler to Vector -&gt; Rotation (Instance on Points)
+
+# 根据高度随机缩放
+Position (Z) -&gt; Map Range -&gt; Scale (Instance on Points)
+</code></pre>
+<h4 id="realize-instances"><a class="header" href="#realize-instances">Realize Instances</a></h4>
+<p><strong>功能</strong>: 将实例转换为实际几何</p>
+<p><strong>使用时机</strong>:</p>
+<ul>
+<li>需要对实例几何进行进一步编辑</li>
+<li>导出到不支持实例的格式</li>
+<li>应用后续修改器(如 Boolean)</li>
+</ul>
+<p><strong>注意</strong>: 会显著增加内存占用和处理时间</p>
+<h3 id="26-模式控制节点"><a class="header" href="#26-模式控制节点">2.6 模式控制节点</a></h3>
+<h4 id="switch"><a class="header" href="#switch">Switch</a></h4>
+<p><strong>功能</strong>: 条件分支选择</p>
+<p><strong>工作方式</strong>:</p>
+<pre><code>Switch (Boolean)
+├─ False: 输入 A
+└─ True: 输入 B
+
+输出根据 Boolean 选择 A 或 B
+</code></pre>
+<p><strong>应用场景</strong>:</p>
+<pre><code># 白天/夜晚灯光切换
+Time -&gt; Compare (&gt; 18:00) -&gt; Switch (Day Light / Night Light)
+</code></pre>
+<h4 id="compare"><a class="header" href="#compare">Compare</a></h4>
+<p><strong>功能</strong>: 比较运算,输出布尔值</p>
+<p><strong>操作类型</strong>:</p>
+<ul>
+<li><code>A = B</code>, <code>A ≠ B</code></li>
+<li><code>A &lt; B</code>, <code>A ≤ B</code></li>
+<li><code>A &gt; B</code>, <code>A ≥ B</code></li>
+</ul>
+<p><strong>组合使用</strong>:</p>
+<pre><code># 筛选高度在 10-20m 之间的对象
+Position (Z) -&gt; Compare (&gt; 10) -&gt; Boolean Math (AND)
+Position (Z) -&gt; Compare (&lt; 20) -&gt; Boolean Math (AND)
+</code></pre>
+<hr />
+<h2 id="第三章实战案例---工业园景观快速生成"><a class="header" href="#第三章实战案例---工业园景观快速生成">第三章:实战案例 - 工业园景观快速生成</a></h2>
+<h3 id="31-需求分析"><a class="header" href="#31-需求分析">3.1 需求分析</a></h3>
+<p><strong>项目目标</strong>:
+自动生成一片包含道路、绿化、建筑体块的工业园区,参数可驱动:</p>
+<ul>
+<li>道路宽度</li>
+<li>建筑高度范围</li>
+<li>绿植密度</li>
+</ul>
+<p><strong>技术拆解</strong>:</p>
+<ol>
+<li>道路生成(基于曲线)</li>
+<li>地块划分(距离场)</li>
+<li>建筑体块实例化</li>
+<li>绿化散布</li>
+</ol>
+<h3 id="32-道路生成系统"><a class="header" href="#32-道路生成系统">3.2 道路生成系统</a></h3>
+<h4 id="步骤-1-准备道路中线"><a class="header" href="#步骤-1-准备道路中线">步骤 1: 准备道路中线</a></h4>
+<pre><code>1. 创建 Curve 对象(道路中心线)
+2. 在 Geometry Nodes 中引入:
+   Curve -&gt; Resample Curve (统一采样)
+</code></pre>
+<h4 id="步骤-2-道路宽度控制"><a class="header" href="#步骤-2-道路宽度控制">步骤 2: 道路宽度控制</a></h4>
+<pre><code>节点流程:
+Curve -&gt; Set Curve Radius (使用自定义属性 road_width)
+     -&gt; Curve to Mesh (Profile: 矩形或自定义形状)
+     -&gt; Set Material (沥青材质)
+</code></pre>
+<p><strong>代码实现</strong>:</p>
+<pre><code>Group Input (road_width: Float)
+├─ Curve (道路中线)
+└─ Set Curve Radius (radius = road_width / 2)
+    └─ Curve to Mesh
+        ├─ Profile Curve: Rectangle (width=1, height=0.1)
+        └─ Fill Caps: True
+</code></pre>
+<h3 id="33-地块划分系统"><a class="header" href="#33-地块划分系统">3.3 地块划分系统</a></h3>
+<h4 id="步骤-3-使用距离场划分用地"><a class="header" href="#步骤-3-使用距离场划分用地">步骤 3: 使用距离场划分用地</a></h4>
+<pre><code>Geometry Proximity (道路) -&gt; 输出 Distance Field
+├─ 距离 &lt; 10m: 道路及绿化带
+├─ 距离 10-50m: 可建设用地
+└─ 距离 &gt; 50m: 绿化用地
+</code></pre>
+<p><strong>节点实现</strong>:</p>
+<pre><code>Grid (地块基础网格)
+├─ Mesh to Points (转为点云)
+└─ Geometry Proximity
+    ├─ Target: 道路几何
+    └─ Distance -&gt; Compare (&gt; 10) -&gt; Boolean Math (AND)
+                -&gt; Compare (&lt; 50) -&gt; Separate Geometry
+</code></pre>
+<h3 id="34-建筑体块实例化"><a class="header" href="#34-建筑体块实例化">3.4 建筑体块实例化</a></h3>
+<h4 id="步骤-4-建筑散布"><a class="header" href="#步骤-4-建筑散布">步骤 4: 建筑散布</a></h4>
+<pre><code>可建设用地点云
+├─ Distribute Points on Faces (Poisson Disk)
+│   └─ Distance Min: 20m (建筑间距)
+└─ Instance on Points
+    ├─ Instance: Collection Info (建筑体块集合)
+    ├─ Pick Instance: True (随机选择)
+    ├─ Rotation: Random Value (旋转角度)
+    └─ Scale: Random Value (高度变化)
+</code></pre>
+<p><strong>高度控制</strong>:</p>
+<pre><code>Group Input (building_height_min, building_height_max)
+└─ Random Value (Min, Max)
+   └─ Combine XYZ (X=1, Y=1, Z=Random) -&gt; Scale
+</code></pre>
+<h3 id="35-绿化布置系统"><a class="header" href="#35-绿化布置系统">3.5 绿化布置系统</a></h3>
+<h4 id="步骤-5-植被散布"><a class="header" href="#步骤-5-植被散布">步骤 5: 植被散布</a></h4>
+<pre><code>绿化用地点云
+├─ Distribute Points on Faces
+│   ├─ Density: Group Input (vegetation_density)
+│   └─ Seed: Random
+└─ Instance on Points
+    ├─ Instance: Collection Info (树木、灌木集合)
+    ├─ Pick Instance: True
+    ├─ Rotation: Align to Normal + Random Z
+    └─ Scale: Random Value (0.8 - 1.2)
+</code></pre>
+<h3 id="36-参数化控制面板"><a class="header" href="#36-参数化控制面板">3.6 参数化控制面板</a></h3>
+<h4 id="步骤-6-暴露参数"><a class="header" href="#步骤-6-暴露参数">步骤 6: 暴露参数</a></h4>
+<pre><code class="language-python">Group Input 节点添加以下参数:
+
+# 道路参数
+- road_width: Float (默认 8.0, 范围 4-12)
+
+# 建筑参数
+- building_height_min: Float (默认 10.0)
+- building_height_max: Float (默认 30.0)
+- building_density: Float (默认 0.5, 范围 0-1)
+
+# 绿化参数
+- vegetation_density: Float (默认 100, 范围 10-500)
+- tree_scale_variation: Float (默认 0.2, 范围 0-0.5)
+
+# 全局参数
+- random_seed: Integer (默认 0)
+</code></pre>
+<p><strong>使用方式</strong>:</p>
+<ol>
+<li>将节点组保存为 Asset</li>
+<li>在 Asset Browser 中添加预览缩略图</li>
+<li>团队成员可直接 Append 使用</li>
+</ol>
+<h3 id="37-性能优化建议"><a class="header" href="#37-性能优化建议">3.7 性能优化建议</a></h3>
+<p><strong>优化策略</strong>:</p>
+<ol>
+<li>
+<p><strong>保持实例化</strong>:</p>
+<ul>
+<li>尽量使用 <code>Instance on Points</code></li>
+<li>避免过早 <code>Realize Instances</code></li>
+</ul>
+</li>
+<li>
+<p><strong>控制点云密度</strong>:</p>
+<pre><code>Distribute Points: 使用 Poisson Disk 而非 Random
+└─ 更均匀分布,避免聚集
+</code></pre>
+</li>
+<li>
+<p><strong>使用 Bounding Box 预览</strong>:</p>
+<pre><code>Viewport Display -&gt; Display As: Bounding Box
+└─ 编辑节点树时加速视口
+</code></pre>
+</li>
+<li>
+<p><strong>分段调试</strong>:</p>
+<pre><code>使用 Viewer 节点逐段查看结果
+└─ 快速定位问题节点
+</code></pre>
+</li>
+</ol>
+<hr />
+<h2 id="第四章geometry-nodes-在管线中的应用"><a class="header" href="#第四章geometry-nodes-在管线中的应用">第四章:Geometry Nodes 在管线中的应用</a></h2>
+<h3 id="41-程序化资产库建设"><a class="header" href="#41-程序化资产库建设">4.1 程序化资产库建设</a></h3>
+<p><strong>资产类型</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>分类</th><th>资产示例</th><th>参数示例</th></tr></thead><tbody>
+<tr><td>建筑元素</td><td>楼梯、栏杆、窗户阵列</td><td>台阶数、间距、样式</td></tr>
+<tr><td>机械组件</td><td>螺栓阵列、管道系统、电缆束</td><td>数量、直径、路径</td></tr>
+<tr><td>自然元素</td><td>岩石散布、草地、树林</td><td>密度、随机种子、高度</td></tr>
+<tr><td>基础设施</td><td>道路、围栏、路灯</td><td>长度、宽度、间距</td></tr>
+</tbody></table>
+</div>
+<p><strong>标准化流程</strong>:</p>
+<ol>
+<li>创建参数化节点组</li>
+<li>设置合理的默认值和范围</li>
+<li>添加清晰的输入输出标签</li>
+<li>保存为 Asset,添加预览图</li>
+<li>编写使用文档</li>
+</ol>
+<h3 id="42-特效驱动"><a class="header" href="#42-特效驱动">4.2 特效驱动</a></h3>
+<p><strong>应用场景</strong>:</p>
+<p><strong>案例 1: 粒子聚合效果</strong></p>
+<pre><code>Simulation Nodes
+├─ 初始位置:随机散布
+├─ 每帧:向目标位置移动
+└─ 速度衰减:模拟阻力
+</code></pre>
+<p><strong>案例 2: 流水线产品运动</strong></p>
+<pre><code>Curve (传送带路径)
+├─ Sample Curve (根据时间采样位置)
+└─ Instance on Points (产品实例)
+    └─ Rotation: 沿路径切线方向
+</code></pre>
+<h3 id="43-数据交互"><a class="header" href="#43-数据交互">4.3 数据交互</a></h3>
+<p><strong>通过 Store Named Attribute 传递数据</strong>:</p>
+<pre><code class="language-python"># 存储自定义属性
+Store Named Attribute
+├─ Name: "object_id"
+├─ Value: Index (或其他 Field)
+└─ Data Type: Integer
+
+# 在 Shader 中读取
+Attribute Node (Name: "object_id") -&gt; ColorRamp -&gt; Base Color
+</code></pre>
+<p><strong>与 Python 配合</strong>:</p>
+<pre><code class="language-python">import bpy
+
+# 读取外部 CSV 数据
+import csv
+data = []
+with open('data.csv') as f:
+    reader = csv.reader(f)
+    data = list(reader)
+
+# 将数据传递给 Geometry Nodes
+modifier = obj.modifiers["GeometryNodes"]
+modifier["Input_Data"] = data
+</code></pre>
+<h3 id="44-动态摄影机系统"><a class="header" href="#44-动态摄影机系统">4.4 动态摄影机系统</a></h3>
+<p><strong>应用</strong>: 使用 Geometry Nodes 控制摄像机沿路径运动</p>
+<pre><code>Curve (摄像机路径)
+├─ Sample Curve (Position: Frame / Total_Frames)
+│   └─ Position -&gt; Camera Location
+└─ Curve Tangent -&gt; Align Rotation -&gt; Camera Rotation
+</code></pre>
+<p><strong>参数控制</strong>:</p>
+<ul>
+<li><code>Speed</code>: 通过 Math 节点调节采样速率</li>
+<li><code>Focal Length</code>: 使用 Map Range 动态调整景深</li>
+<li><code>Look At Target</code>: 添加 Empty 作为注视目标</li>
+</ul>
+<hr />
+<h2 id="第五章进阶技术与最佳实践"><a class="header" href="#第五章进阶技术与最佳实践">第五章:进阶技术与最佳实践</a></h2>
+<h3 id="51-simulation-nodes模拟节点"><a class="header" href="#51-simulation-nodes模拟节点">5.1 Simulation Nodes(模拟节点)</a></h3>
+<p><strong>功能</strong>: 基于时间的模拟系统(实验性功能)</p>
+<p><strong>应用场景</strong>:</p>
+<ul>
+<li>粒子系统</li>
+<li>群体行为(Boids)</li>
+<li>布料模拟的简化版</li>
+</ul>
+<p><strong>基础概念</strong>:</p>
+<pre><code>Simulation Zone
+├─ Initial State: 初始状态
+├─ Simulation Loop: 每帧执行
+│   ├─ Read Previous State
+│   ├─ Apply Forces/Logic
+│   └─ Write New State
+└─ Output: 最终结果
+</code></pre>
+<h3 id="52-性能分析与优化"><a class="header" href="#52-性能分析与优化">5.2 性能分析与优化</a></h3>
+<p><strong>性能瓶颈识别</strong>:</p>
+<ol>
+<li>使用 <code>Overlay -&gt; Statistics</code> 查看实时统计</li>
+<li>观察节点执行时间(未来版本可能支持 Profiler)</li>
+</ol>
+<p><strong>优化清单</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+尽量保持实例化,避免 Realize Instances</li>
+<li><input disabled="" type="checkbox"/>
+减少不必要的 Subdivision</li>
+<li><input disabled="" type="checkbox"/>
+使用 Bounding Box 预览模式</li>
+<li><input disabled="" type="checkbox"/>
+合并相似的节点树分支</li>
+<li><input disabled="" type="checkbox"/>
+避免在循环中进行复杂计算</li>
+<li><input disabled="" type="checkbox"/>
+使用 LOD 技术,根据距离调整细节</li>
+</ul>
+<h3 id="53-调试技巧"><a class="header" href="#53-调试技巧">5.3 调试技巧</a></h3>
+<p><strong>Viewer 节点</strong>:</p>
+<pre><code>任意节点输出 -&gt; Viewer (Shift + Ctrl + 左键)
+└─ 在 Spreadsheet Editor 中查看数据
+</code></pre>
+<p><strong>Spreadsheet Editor</strong>:</p>
+<ul>
+<li>查看每个点/边/面的属性值</li>
+<li>验证 Field 计算结果</li>
+<li>检查 Instance 数据</li>
+</ul>
+<p><strong>常见错误排查</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>可能原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>没有输出</td><td>未连接 Group Output</td><td>检查节点树末端连接</td></tr>
+<tr><td>实例显示错误</td><td>坐标空间不一致</td><td>统一使用相对或世界坐标</td></tr>
+<tr><td>性能卡顿</td><td>过早 Realize Instances</td><td>延迟到最后执行</td></tr>
+<tr><td>属性丢失</td><td>Join Geometry 后属性不匹配</td><td>使用 Store Named Attribute 明确存储</td></tr>
+</tbody></table>
+</div>
+<h3 id="54-节点组复用策略"><a class="header" href="#54-节点组复用策略">5.4 节点组复用策略</a></h3>
+<p><strong>资产库组织</strong>:</p>
+<pre><code>BlenderAssets/
+├── GeometryNodes/
+│   ├── Architecture/
+│   │   ├── Window_Array.blend
+│   │   └── Staircase_Parametric.blend
+│   ├── Mechanical/
+│   │   ├── Bolt_Array.blend
+│   │   └── Pipe_System.blend
+│   └── Nature/
+│       └── Vegetation_Scatter.blend
+</code></pre>
+<p><strong>版本管理</strong>:</p>
+<ul>
+<li>节点组命名: <code>功能_版本_作者</code> (如 <code>Stairs_v003_alice</code>)</li>
+<li>使用 Git 管理 .blend 文件</li>
+<li>记录更新日志</li>
+</ul>
+<hr />
+<h2 id="第六章实战练习与挑战"><a class="header" href="#第六章实战练习与挑战">第六章:实战练习与挑战</a></h2>
+<h3 id="练习-1-参数化螺旋楼梯"><a class="header" href="#练习-1-参数化螺旋楼梯">练习 1: 参数化螺旋楼梯</a></h3>
+<p><strong>目标</strong>: 创建可调节层数、半径、旋转角度的螺旋楼梯</p>
+<p><strong>参数</strong>:</p>
+<ul>
+<li>层数 (Floors): Integer</li>
+<li>半径 (Radius): Float</li>
+<li>每层旋转角度 (Rotation per Floor): Float</li>
+<li>台阶宽度 (Step Width): Float</li>
+</ul>
+<p><strong>提示</strong>:</p>
+<pre><code>Curve (Spiral) -&gt; Resample -&gt; Instance on Points (台阶模型)
+├─ Rotation: 根据 Index 计算旋转
+└─ Position: 根据 Index 计算高度
+</code></pre>
+<h3 id="练习-2-程序化机柜布线系统"><a class="header" href="#练习-2-程序化机柜布线系统">练习 2: 程序化机柜布线系统</a></h3>
+<p><strong>目标</strong>: 在机柜中自动生成连接设备的电缆</p>
+<p><strong>技术要点</strong>:</p>
+<ul>
+<li>使用 <code>Curve</code> 对象定义电缆路径</li>
+<li><code>Curve to Mesh</code> 生成电缆几何</li>
+<li><code>Array</code> Modifier 复制多根电缆</li>
+<li>通过 <code>Random</code> 节点增加变化</li>
+</ul>
+<h3 id="练习-3-数据驱动的可视化图表"><a class="header" href="#练习-3-数据驱动的可视化图表">练习 3: 数据驱动的可视化图表</a></h3>
+<p><strong>目标</strong>: 读取 CSV 数据,生成 3D 柱状图</p>
+<p><strong>步骤</strong>:</p>
+<ol>
+<li>Python 脚本读取 CSV</li>
+<li>将数据传递给 Geometry Nodes</li>
+<li>使用 <code>Cube</code> + <code>Scale</code> 生成柱体</li>
+<li>根据数值映射颜色</li>
+</ol>
+<hr />
+<h2 id="附录-a-geometry-nodes-常用节点速查"><a class="header" href="#附录-a-geometry-nodes-常用节点速查">附录 A: Geometry Nodes 常用节点速查</a></h2>
+<h3 id="输入类"><a class="header" href="#输入类">输入类</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>节点</th><th>功能</th><th>常用参数</th></tr></thead><tbody>
+<tr><td>Group Input</td><td>节点组输入</td><td>自定义参数</td></tr>
+<tr><td>Object Info</td><td>引入外部对象</td><td>Object, As Instance</td></tr>
+<tr><td>Collection Info</td><td>引入集合</td><td>Collection, Separate Children</td></tr>
+<tr><td>Scene Time</td><td>场景时间</td><td>Frame, Seconds</td></tr>
+</tbody></table>
+</div>
+<h3 id="几何操作"><a class="header" href="#几何操作">几何操作</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>节点</th><th>功能</th><th>关键提示</th></tr></thead><tbody>
+<tr><td>Join Geometry</td><td>合并几何</td><td>注意属性一致性</td></tr>
+<tr><td>Separate Geometry</td><td>条件筛选</td><td>使用 Boolean Field</td></tr>
+<tr><td>Merge by Distance</td><td>合并重复点</td><td>类似 Remove Doubles</td></tr>
+<tr><td>Convex Hull</td><td>凸包</td><td>包裹点云生成外壳</td></tr>
+</tbody></table>
+</div>
+<h3 id="实例化"><a class="header" href="#实例化">实例化</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>节点</th><th>功能</th><th>性能提示</th></tr></thead><tbody>
+<tr><td>Instance on Points</td><td>点上生成实例</td><td>保持实例化提升性能</td></tr>
+<tr><td>Realize Instances</td><td>实例转实际几何</td><td>延迟到必要时使用</td></tr>
+<tr><td>Rotate Instances</td><td>旋转实例</td><td>不会 Realize</td></tr>
+<tr><td>Scale Instances</td><td>缩放实例</td><td>不会 Realize</td></tr>
+</tbody></table>
+</div>
+<h3 id="曲线操作"><a class="header" href="#曲线操作">曲线操作</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>节点</th><th>功能</th><th>应用场景</th></tr></thead><tbody>
+<tr><td>Curve to Mesh</td><td>曲线转网格</td><td>管道、道路</td></tr>
+<tr><td>Resample Curve</td><td>重新采样</td><td>统一点分布</td></tr>
+<tr><td>Trim Curve</td><td>裁剪曲线</td><td>动画路径</td></tr>
+<tr><td>Curve Tangent</td><td>曲线切线</td><td>对齐实例朝向</td></tr>
+</tbody></table>
+</div>
+<h3 id="数学运算"><a class="header" href="#数学运算">数学运算</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>节点</th><th>功能</th><th>常用操作</th></tr></thead><tbody>
+<tr><td>Math</td><td>数学运算</td><td>Sin/Cos(周期), Modulo(循环)</td></tr>
+<tr><td>Vector Math</td><td>向量运算</td><td>Add/Normalize/Dot Product</td></tr>
+<tr><td>Map Range</td><td>值域映射</td><td>线性缩放</td></tr>
+<tr><td>Random Value</td><td>随机数</td><td>添加变化</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="附录-b-学习资源推荐"><a class="header" href="#附录-b-学习资源推荐">附录 B: 学习资源推荐</a></h2>
+<h3 id="官方资源"><a class="header" href="#官方资源">官方资源</a></h3>
+<ul>
+<li><strong>Blender Manual - Geometry Nodes</strong>: <a href="https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/">https://docs.blender.org/manual/en/latest/modeling/geometry_nodes/</a></li>
+<li><strong>Blender Studio 示例项目</strong>: 研究官方 Open Movies 的节点树</li>
+</ul>
+<h3 id="视频教程"><a class="header" href="#视频教程">视频教程</a></h3>
+<ul>
+<li><strong>Erindale (YouTube)</strong>: Geometry Nodes 深度教程</li>
+<li><strong>Blender Guru</strong>: 初学者友好的入门系列</li>
+<li><strong>Default Cube</strong>: 进阶技巧与案例分析</li>
+</ul>
+<h3 id="社区与插件"><a class="header" href="#社区与插件">社区与插件</a></h3>
+<ul>
+<li><strong>Geometry Nodes Cookbook</strong>: 社区维护的节点配方集合</li>
+<li><strong>Sverchok</strong>: 更强大的程序化建模插件(兼容 Geometry Nodes)</li>
+</ul>
+<h3 id="实践项目"><a class="header" href="#实践项目">实践项目</a></h3>
+<ul>
+<li>参与 Blender Artists 论坛的 Geometry Nodes 挑战</li>
+<li>在 ArtStation 分享参数化资产</li>
+<li>为开源项目贡献节点组</li>
+</ul>
+<hr />
+<h2 id="附录-c-常见问题-faq"><a class="header" href="#附录-c-常见问题-faq">附录 C: 常见问题 FAQ</a></h2>
+<p><strong>Q1: Geometry Nodes 与 Modifier 有什么区别?</strong>
+A: Modifier 是预定义的功能,Geometry Nodes 是完全可编程的节点系统,灵活性更高。</p>
+<p><strong>Q2: 如何导出 Geometry Nodes 生成的几何?</strong>
+A: 使用 <code>Realize Instances</code>,然后 <code>Apply Modifier</code> 将结果烘焙为静态网格。</p>
+<p><strong>Q3: Geometry Nodes 可以用于动画吗?</strong>
+A: 可以,通过 <code>Scene Time</code> 节点驱动参数,或使用 <code>Simulation Nodes</code> 实现基于物理的模拟。</p>
+<p><strong>Q4: 如何在团队中共享节点组?</strong>
+A: 将节点组保存为 Asset,通过共享 .blend 文件或 Asset Library 路径分发。</p>
+<p><strong>Q5: 性能瓶颈如何优化?</strong>
+A: 保持实例化、减少 Subdivision、使用 Bounding Box 预览、延迟 Realize Instances。</p>
+<hr />
+<h2 id="结语"><a class="header" href="#结语">结语</a></h2>
+<p>Geometry Nodes 是 Blender 最具潜力的功能之一,掌握它可以显著提升建模效率和创作自由度。</p>
+<p><strong>持续学习建议</strong>:</p>
+<ol>
+<li>每周尝试一个新节点或节点组合</li>
+<li>分析优秀项目的节点树结构</li>
+<li>参与社区讨论,分享经验</li>
+<li>结合项目实际需求,开发定制化资产</li>
+</ol>
+<p><strong>记住</strong>:</p>
+<blockquote>
+<p>"Geometry Nodes 不是用来替代传统建模,而是用来增强和加速创作流程。"</p>
+</blockquote>
+<hr />
+<p><strong>专题版本</strong>: v1.0
+<strong>最后更新</strong>: 2025-01-06
+<strong>作者</strong>: Claude Code Tech Note Generator
+<strong>许可</strong>: CC BY-SA 4.0</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../硬件/硬件设计.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../结构/Blender-Python自动化专题.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../硬件/硬件设计.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../结构/Blender-Python自动化专题.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../theme/segmentit.umd.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../theme/searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

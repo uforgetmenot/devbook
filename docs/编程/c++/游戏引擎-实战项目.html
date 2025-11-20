@@ -1,0 +1,3077 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>C++游戏引擎开发 - 实战项目指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="c游戏引擎开发---实战项目指南"><a class="header" href="#c游戏引擎开发---实战项目指南">C++游戏引擎开发 - 实战项目指南</a></h1>
+<blockquote>
+<p>本文档提供完整的实战项目案例，从零开始构建可玩的游戏Demo。</p>
+</blockquote>
+<hr />
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<ul>
+<li><a href="#%E4%B8%80%E7%AC%AC%E4%B8%89%E4%BA%BA%E7%A7%B0%E5%B0%84%E5%87%BB%E6%B8%B8%E6%88%8F">一、第三人称射击游戏</a></li>
+<li><a href="#%E4%BA%8C%E7%89%A9%E7%90%86%E8%A7%A3%E8%B0%9C%E6%B8%B8%E6%88%8F">二、物理解谜游戏</a></li>
+<li><a href="#%E4%B8%89%E5%B9%B3%E5%8F%B0%E8%B7%B3%E8%B7%83%E6%B8%B8%E6%88%8F">三、平台跳跃游戏</a></li>
+<li><a href="#%E5%9B%9B%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E6%88%98">四、性能优化实战</a></li>
+<li><a href="#%E4%BA%94%E5%BC%95%E6%93%8E%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7">五、引擎调试技巧</a></li>
+</ul>
+<hr />
+<h2 id="一第三人称射击游戏"><a class="header" href="#一第三人称射击游戏">一、第三人称射击游戏</a></h2>
+<h3 id="11-项目需求分析"><a class="header" href="#11-项目需求分析">1.1 项目需求分析</a></h3>
+<h4 id="核心功能列表"><a class="header" href="#核心功能列表">核心功能列表</a></h4>
+<pre><code>TPS游戏核心系统
+├── 角色控制系统
+│   ├── WASD移动
+│   ├── 鼠标视角控制
+│   ├── 跳跃与下蹲
+│   └── 冲刺功能
+├── 相机系统
+│   ├── 第三人称跟随
+│   ├── 肩膀切换
+│   ├── 碰撞检测避障
+│   └── 瞄准模式（缩放）
+├── 武器系统
+│   ├── 射击检测（Raycast）
+│   ├── 后坐力模拟
+│   ├── 弹药管理
+│   └── 换弹动画
+├── 敌人AI
+│   ├── 巡逻路径
+│   ├── 追击玩家
+│   ├── 攻击判定
+│   └── 血量系统
+└── UI系统
+    ├── 准星显示
+    ├── 血量条
+    ├── 弹药显示
+    └── 击杀提示
+</code></pre>
+<h3 id="12-角色控制器实现"><a class="header" href="#12-角色控制器实现">1.2 角色控制器实现</a></h3>
+<h4 id="c角色控制器"><a class="header" href="#c角色控制器">C++角色控制器</a></h4>
+<pre><code class="language-cpp">// tps_character_controller.h
+class TPSCharacterController : public Component {
+private:
+    Rigidbody* rigidbody;
+    Camera* followCamera;
+
+    // 移动参数
+    float moveSpeed = 5.0f;
+    float sprintSpeed = 8.0f;
+    float jumpForce = 10.0f;
+    float rotationSpeed = 720.0f;
+
+    // 状态
+    bool isGrounded = false;
+    bool isSprinting = false;
+    bool isCrouching = false;
+
+    // 输入
+    float horizontalInput = 0.0f;
+    float verticalInput = 0.0f;
+    float mouseX = 0.0f;
+    float mouseY = 0.0f;
+
+public:
+    TPSCharacterController(GameObject* go) : Component(go) {}
+
+    void start() override {
+        rigidbody = gameObject-&gt;getComponent&lt;Rigidbody&gt;();
+        followCamera = GameObject::find("MainCamera")-&gt;getComponent&lt;Camera&gt;();
+    }
+
+    void update(float deltaTime) override {
+        handleInput();
+        updateMovement(deltaTime);
+        updateRotation(deltaTime);
+        checkGrounded();
+    }
+
+    void handleInput() {
+        // 移动输入
+        horizontalInput = 0.0f;
+        verticalInput = 0.0f;
+
+        if (Input::getKey(GLFW_KEY_W)) verticalInput += 1.0f;
+        if (Input::getKey(GLFW_KEY_S)) verticalInput -= 1.0f;
+        if (Input::getKey(GLFW_KEY_A)) horizontalInput -= 1.0f;
+        if (Input::getKey(GLFW_KEY_D)) horizontalInput += 1.0f;
+
+        // 冲刺
+        isSprinting = Input::getKey(GLFW_KEY_LEFT_SHIFT);
+
+        // 跳跃
+        if (Input::getKeyDown(GLFW_KEY_SPACE) &amp;&amp; isGrounded) {
+            rigidbody-&gt;addImpulse(glm::vec3(0.0f, jumpForce, 0.0f));
+        }
+
+        // 下蹲
+        if (Input::getKeyDown(GLFW_KEY_C)) {
+            isCrouching = !isCrouching;
+            // 调整碰撞体高度
+        }
+
+        // 鼠标输入
+        glm::vec2 mouseDelta = Input::getMouseDelta();
+        mouseX = mouseDelta.x;
+        mouseY = mouseDelta.y;
+    }
+
+    void updateMovement(float deltaTime) {
+        if (horizontalInput == 0.0f &amp;&amp; verticalInput == 0.0f) return;
+
+        // 获取相机前方向（Y轴归零）
+        glm::vec3 cameraForward = followCamera-&gt;getGameObject()-&gt;getTransform()-&gt;forward();
+        cameraForward.y = 0.0f;
+        cameraForward = glm::normalize(cameraForward);
+
+        glm::vec3 cameraRight = followCamera-&gt;getGameObject()-&gt;getTransform()-&gt;right();
+        cameraRight.y = 0.0f;
+        cameraRight = glm::normalize(cameraRight);
+
+        // 计算移动方向
+        glm::vec3 moveDirection = cameraForward * verticalInput + cameraRight * horizontalInput;
+        moveDirection = glm::normalize(moveDirection);
+
+        // 应用速度
+        float currentSpeed = isSprinting ? sprintSpeed : moveSpeed;
+        glm::vec3 velocity = rigidbody-&gt;getVelocity();
+        velocity.x = moveDirection.x * currentSpeed;
+        velocity.z = moveDirection.z * currentSpeed;
+        rigidbody-&gt;setVelocity(velocity);
+    }
+
+    void updateRotation(float deltaTime) {
+        if (horizontalInput == 0.0f &amp;&amp; verticalInput == 0.0f) return;
+
+        // 角色朝向移动方向
+        glm::vec3 cameraForward = followCamera-&gt;getGameObject()-&gt;getTransform()-&gt;forward();
+        cameraForward.y = 0.0f;
+        cameraForward = glm::normalize(cameraForward);
+
+        glm::vec3 cameraRight = followCamera-&gt;getGameObject()-&gt;getTransform()-&gt;right();
+        cameraRight.y = 0.0f;
+        cameraRight = glm::normalize(cameraRight);
+
+        glm::vec3 targetDirection = cameraForward * verticalInput + cameraRight * horizontalInput;
+        targetDirection = glm::normalize(targetDirection);
+
+        // 平滑旋转
+        float targetAngle = std::atan2(targetDirection.x, targetDirection.z);
+        float currentAngle = std::atan2(
+            gameObject-&gt;getTransform()-&gt;forward().x,
+            gameObject-&gt;getTransform()-&gt;forward().z
+        );
+
+        float angleDiff = targetAngle - currentAngle;
+        // 规范化角度差到[-π, π]
+        while (angleDiff &gt; glm::pi&lt;float&gt;()) angleDiff -= 2.0f * glm::pi&lt;float&gt;();
+        while (angleDiff &lt; -glm::pi&lt;float&gt;()) angleDiff += 2.0f * glm::pi&lt;float&gt;();
+
+        float rotationAmount = glm::radians(rotationSpeed) * deltaTime;
+        if (std::abs(angleDiff) &lt; rotationAmount) {
+            currentAngle = targetAngle;
+        } else {
+            currentAngle += glm::sign(angleDiff) * rotationAmount;
+        }
+
+        glm::quat rotation = glm::angleAxis(currentAngle, glm::vec3(0.0f, 1.0f, 0.0f));
+        gameObject-&gt;getTransform()-&gt;setRotation(rotation);
+    }
+
+    void checkGrounded() {
+        // 射线检测
+        glm::vec3 origin = gameObject-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f);
+        glm::vec3 hitPoint;
+
+        isGrounded = PhysicsWorld::getInstance().raycast(origin, origin + direction * 0.6f, hitPoint);
+    }
+};
+</code></pre>
+<h3 id="13-第三人称相机"><a class="header" href="#13-第三人称相机">1.3 第三人称相机</a></h3>
+<pre><code class="language-cpp">// tps_camera.h
+class TPSCamera : public Component {
+private:
+    Camera* camera;
+    GameObject* target;
+
+    float distance = 5.0f;
+    float minDistance = 2.0f;
+    float maxDistance = 10.0f;
+
+    float yaw = 0.0f;
+    float pitch = 15.0f;
+    float minPitch = -30.0f;
+    float maxPitch = 60.0f;
+
+    float mouseSensitivity = 0.1f;
+    float scrollSensitivity = 1.0f;
+
+    glm::vec3 shoulderOffset = glm::vec3(0.5f, 0.5f, 0.0f);
+    bool isRightShoulder = true;
+
+public:
+    TPSCamera(GameObject* go) : Component(go) {}
+
+    void start() override {
+        camera = gameObject-&gt;getComponent&lt;Camera&gt;();
+        target = GameObject::find("Player");
+    }
+
+    void lateUpdate(float deltaTime) override {
+        handleInput();
+        updatePosition();
+        handleCollision();
+    }
+
+    void handleInput() {
+        // 鼠标旋转
+        glm::vec2 mouseDelta = Input::getMouseDelta();
+        yaw += mouseDelta.x * mouseSensitivity;
+        pitch -= mouseDelta.y * mouseSensitivity;
+        pitch = glm::clamp(pitch, minPitch, maxPitch);
+
+        // 滚轮缩放
+        float scroll = Input::getMouseScroll();
+        distance -= scroll * scrollSensitivity;
+        distance = glm::clamp(distance, minDistance, maxDistance);
+
+        // 切换肩膀
+        if (Input::getKeyDown(GLFW_KEY_V)) {
+            isRightShoulder = !isRightShoulder;
+        }
+    }
+
+    void updatePosition() {
+        if (!target) return;
+
+        // 计算相机位置
+        glm::vec3 targetPos = target-&gt;getTransform()-&gt;getPosition();
+
+        float yawRad = glm::radians(yaw);
+        float pitchRad = glm::radians(pitch);
+
+        glm::vec3 offset;
+        offset.x = distance * std::cos(pitchRad) * std::sin(yawRad);
+        offset.y = distance * std::sin(pitchRad);
+        offset.z = distance * std::cos(pitchRad) * std::cos(yawRad);
+
+        // 肩膀偏移
+        glm::vec3 shoulder = shoulderOffset;
+        if (!isRightShoulder) shoulder.x = -shoulder.x;
+
+        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), yawRad, glm::vec3(0, 1, 0));
+        glm::vec3 rotatedShoulder = glm::vec3(rotation * glm::vec4(shoulder, 0.0f));
+
+        glm::vec3 desiredPosition = targetPos + rotatedShoulder + offset;
+        gameObject-&gt;getTransform()-&gt;setPosition(desiredPosition);
+
+        // 相机朝向目标
+        glm::vec3 lookTarget = targetPos + glm::vec3(0.0f, 1.5f, 0.0f);  // 角色胸部位置
+        glm::vec3 direction = glm::normalize(lookTarget - desiredPosition);
+
+        float lookYaw = std::atan2(direction.x, direction.z);
+        float lookPitch = std::asin(-direction.y);
+
+        glm::quat rotation_quat = glm::quat(glm::vec3(lookPitch, lookYaw, 0.0f));
+        gameObject-&gt;getTransform()-&gt;setRotation(rotation_quat);
+    }
+
+    void handleCollision() {
+        // 相机与墙壁碰撞检测
+        glm::vec3 targetPos = target-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 cameraPos = gameObject-&gt;getTransform()-&gt;getPosition();
+
+        glm::vec3 direction = cameraPos - targetPos;
+        float currentDistance = glm::length(direction);
+
+        glm::vec3 hitPoint;
+        bool hit = PhysicsWorld::getInstance().raycast(targetPos, cameraPos, hitPoint);
+
+        if (hit) {
+            float hitDistance = glm::length(hitPoint - targetPos);
+            if (hitDistance &lt; currentDistance) {
+                // 相机拉近避免穿墙
+                glm::vec3 newPosition = targetPos + glm::normalize(direction) * (hitDistance - 0.2f);
+                gameObject-&gt;getTransform()-&gt;setPosition(newPosition);
+            }
+        }
+    }
+
+    void setTarget(GameObject* newTarget) { target = newTarget; }
+    void setDistance(float dist) { distance = dist; }
+};
+</code></pre>
+<h3 id="14-武器系统"><a class="header" href="#14-武器系统">1.4 武器系统</a></h3>
+<pre><code class="language-cpp">// weapon_system.h
+class Weapon : public Component {
+public:
+    struct WeaponStats {
+        std::string name;
+        int maxAmmo;
+        int currentAmmo;
+        int magazineSize;
+        float fireRate;        // 每秒射击次数
+        float damage;
+        float range;
+        float recoilAmount;
+        float reloadTime;
+    };
+
+private:
+    WeaponStats stats;
+    float fireTimer = 0.0f;
+    bool isReloading = false;
+    float reloadTimer = 0.0f;
+
+    Camera* fpCamera;
+    LineRenderer* bulletTracer;
+
+public:
+    Weapon(GameObject* go) : Component(go) {}
+
+    void initialize(const WeaponStats&amp; weaponStats) {
+        stats = weaponStats;
+        stats.currentAmmo = stats.magazineSize;
+    }
+
+    void update(float deltaTime) override {
+        fireTimer += deltaTime;
+
+        // 换弹逻辑
+        if (isReloading) {
+            reloadTimer += deltaTime;
+            if (reloadTimer &gt;= stats.reloadTime) {
+                finishReload();
+            }
+            return;
+        }
+
+        // 射击输入
+        if (Input::getMouseButton(0)) {  // 左键
+            if (canFire()) {
+                fire();
+            }
+        }
+
+        // 换弹输入
+        if (Input::getKeyDown(GLFW_KEY_R)) {
+            if (stats.currentAmmo &lt; stats.magazineSize &amp;&amp; stats.maxAmmo &gt; 0) {
+                startReload();
+            }
+        }
+    }
+
+    bool canFire() {
+        return !isReloading &amp;&amp;
+               stats.currentAmmo &gt; 0 &amp;&amp;
+               fireTimer &gt;= (1.0f / stats.fireRate);
+    }
+
+    void fire() {
+        stats.currentAmmo--;
+        fireTimer = 0.0f;
+
+        // 射线检测
+        glm::vec3 rayOrigin = fpCamera-&gt;getGameObject()-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 rayDirection = fpCamera-&gt;getGameObject()-&gt;getTransform()-&gt;forward();
+
+        // 添加随机扩散（后坐力）
+        rayDirection.x += randomFloat(-stats.recoilAmount, stats.recoilAmount);
+        rayDirection.y += randomFloat(-stats.recoilAmount, stats.recoilAmount);
+        rayDirection = glm::normalize(rayDirection);
+
+        glm::vec3 hitPoint;
+        glm::vec3 rayEnd = rayOrigin + rayDirection * stats.range;
+
+        bool hit = PhysicsWorld::getInstance().raycast(rayOrigin, rayEnd, hitPoint);
+
+        if (hit) {
+            // 命中处理
+            GameObject* hitObject = getHitObject(hitPoint);
+            if (hitObject) {
+                Health* health = hitObject-&gt;getComponent&lt;Health&gt;();
+                if (health) {
+                    health-&gt;takeDamage(stats.damage);
+                }
+            }
+
+            // 显示子弹轨迹
+            showBulletTracer(rayOrigin, hitPoint);
+
+            // 生成击中特效
+            spawnImpactEffect(hitPoint);
+        } else {
+            showBulletTracer(rayOrigin, rayEnd);
+        }
+
+        // 播放射击音效
+        AudioEngine::getInstance().playSound("gunshot", rayOrigin);
+
+        // 相机后坐力
+        applyRecoil();
+
+        // 如果弹匣空了，自动换弹
+        if (stats.currentAmmo == 0 &amp;&amp; stats.maxAmmo &gt; 0) {
+            startReload();
+        }
+    }
+
+    void startReload() {
+        isReloading = true;
+        reloadTimer = 0.0f;
+
+        // 播放换弹动画
+        Animator* animator = gameObject-&gt;getComponent&lt;Animator&gt;();
+        if (animator) {
+            animator-&gt;play("Reload");
+        }
+
+        // 播放换弹音效
+        AudioEngine::getInstance().playSound("reload", gameObject-&gt;getTransform()-&gt;getPosition());
+    }
+
+    void finishReload() {
+        int ammoNeeded = stats.magazineSize - stats.currentAmmo;
+        int ammoToReload = std::min(ammoNeeded, stats.maxAmmo);
+
+        stats.currentAmmo += ammoToReload;
+        stats.maxAmmo -= ammoToReload;
+
+        isReloading = false;
+        reloadTimer = 0.0f;
+    }
+
+    void applyRecoil() {
+        // 相机抖动
+        TPSCamera* tpsCamera = fpCamera-&gt;getGameObject()-&gt;getComponent&lt;TPSCamera&gt;();
+        if (tpsCamera) {
+            // 添加随机相机偏移
+            float recoilX = randomFloat(-2.0f, 2.0f);
+            float recoilY = randomFloat(1.0f, 3.0f);  // 向上为主
+            // tpsCamera-&gt;addRecoil(recoilX, recoilY);
+        }
+    }
+
+    void showBulletTracer(const glm::vec3&amp; start, const glm::vec3&amp; end) {
+        // 创建临时线条渲染器
+        GameObject* tracerObj = new GameObject("BulletTracer");
+        LineRenderer* tracer = tracerObj-&gt;addComponent&lt;LineRenderer&gt;();
+        tracer-&gt;setPoints(start, end);
+        tracer-&gt;setColor(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+        tracer-&gt;setWidth(0.02f);
+
+        // 0.1秒后销毁
+        tracerObj-&gt;destroyAfter(0.1f);
+    }
+
+    void spawnImpactEffect(const glm::vec3&amp; position) {
+        // 生成粒子效果
+        GameObject* effectObj = new GameObject("ImpactEffect");
+        effectObj-&gt;getTransform()-&gt;setPosition(position);
+
+        ParticleSystem* particles = effectObj-&gt;addComponent&lt;ParticleSystem&gt;();
+        particles-&gt;setEmitRate(50.0f);
+        particles-&gt;setLifetime(0.5f);
+        particles-&gt;setSize(0.1f);
+
+        effectObj-&gt;destroyAfter(1.0f);
+    }
+
+    GameObject* getHitObject(const glm::vec3&amp; hitPoint) {
+        // 通过物理射线获取击中的GameObject
+        // 具体实现依赖物理引擎
+        return nullptr;
+    }
+
+    float randomFloat(float min, float max) {
+        return min + static_cast&lt;float&gt;(rand()) / (static_cast&lt;float&gt;(RAND_MAX / (max - min)));
+    }
+
+    // Getters
+    const WeaponStats&amp; getStats() const { return stats; }
+    bool getIsReloading() const { return isReloading; }
+};
+</code></pre>
+<h3 id="15-敌人ai系统"><a class="header" href="#15-敌人ai系统">1.5 敌人AI系统</a></h3>
+<pre><code class="language-cpp">// enemy_ai.h
+class EnemyAI : public Component {
+public:
+    enum State {
+        PATROL,
+        CHASE,
+        ATTACK,
+        DEAD
+    };
+
+private:
+    State currentState = PATROL;
+
+    GameObject* player;
+    Rigidbody* rigidbody;
+    Animator* animator;
+    Health* health;
+
+    // 巡逻
+    std::vector&lt;glm::vec3&gt; patrolPoints;
+    int currentPatrolIndex = 0;
+    float patrolWaitTime = 2.0f;
+    float patrolWaitTimer = 0.0f;
+
+    // 追击
+    float chaseSpeed = 4.0f;
+    float detectionRange = 15.0f;
+    float loseTargetRange = 20.0f;
+
+    // 攻击
+    float attackRange = 2.0f;
+    float attackDamage = 10.0f;
+    float attackCooldown = 1.5f;
+    float attackTimer = 0.0f;
+
+public:
+    EnemyAI(GameObject* go) : Component(go) {}
+
+    void start() override {
+        player = GameObject::find("Player");
+        rigidbody = gameObject-&gt;getComponent&lt;Rigidbody&gt;();
+        animator = gameObject-&gt;getComponent&lt;Animator&gt;();
+        health = gameObject-&gt;getComponent&lt;Health&gt;();
+
+        // 设置巡逻点
+        patrolPoints = {
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(10.0f, 0.0f, 0.0f),
+            glm::vec3(10.0f, 0.0f, 10.0f),
+            glm::vec3(0.0f, 0.0f, 10.0f)
+        };
+
+        // 监听死亡事件
+        if (health) {
+            health-&gt;onDeath = [this]() {
+                onDeath();
+            };
+        }
+    }
+
+    void update(float deltaTime) override {
+        if (currentState == DEAD) return;
+
+        // 检测玩家距离
+        float distanceToPlayer = glm::length(
+            player-&gt;getTransform()-&gt;getPosition() -
+            gameObject-&gt;getTransform()-&gt;getPosition()
+        );
+
+        // 状态转换
+        switch (currentState) {
+            case PATROL:
+                if (distanceToPlayer &lt; detectionRange) {
+                    changeState(CHASE);
+                } else {
+                    updatePatrol(deltaTime);
+                }
+                break;
+
+            case CHASE:
+                if (distanceToPlayer &lt; attackRange) {
+                    changeState(ATTACK);
+                } else if (distanceToPlayer &gt; loseTargetRange) {
+                    changeState(PATROL);
+                } else {
+                    updateChase(deltaTime);
+                }
+                break;
+
+            case ATTACK:
+                if (distanceToPlayer &gt; attackRange) {
+                    changeState(CHASE);
+                } else {
+                    updateAttack(deltaTime);
+                }
+                break;
+        }
+    }
+
+    void changeState(State newState) {
+        if (currentState == newState) return;
+
+        // 退出旧状态
+        switch (currentState) {
+            case PATROL:
+                patrolWaitTimer = 0.0f;
+                break;
+            case CHASE:
+                break;
+            case ATTACK:
+                attackTimer = 0.0f;
+                break;
+        }
+
+        currentState = newState;
+
+        // 进入新状态
+        switch (newState) {
+            case PATROL:
+                if (animator) animator-&gt;play("Walk");
+                break;
+            case CHASE:
+                if (animator) animator-&gt;play("Run");
+                break;
+            case ATTACK:
+                if (animator) animator-&gt;play("Attack");
+                break;
+        }
+    }
+
+    void updatePatrol(float deltaTime) {
+        glm::vec3 currentPos = gameObject-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 targetPos = patrolPoints[currentPatrolIndex];
+
+        float distance = glm::length(targetPos - currentPos);
+
+        if (distance &lt; 0.5f) {
+            // 到达巡逻点，等待
+            patrolWaitTimer += deltaTime;
+            if (patrolWaitTimer &gt;= patrolWaitTime) {
+                currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.size();
+                patrolWaitTimer = 0.0f;
+            }
+        } else {
+            // 移动到巡逻点
+            glm::vec3 direction = glm::normalize(targetPos - currentPos);
+            rigidbody-&gt;setVelocity(direction * 2.0f);  // 慢速巡逻
+
+            // 朝向移动方向
+            lookAt(targetPos);
+        }
+    }
+
+    void updateChase(float deltaTime) {
+        glm::vec3 playerPos = player-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 currentPos = gameObject-&gt;getTransform()-&gt;getPosition();
+
+        glm::vec3 direction = glm::normalize(playerPos - currentPos);
+        rigidbody-&gt;setVelocity(direction * chaseSpeed);
+
+        lookAt(playerPos);
+    }
+
+    void updateAttack(float deltaTime) {
+        // 停止移动
+        rigidbody-&gt;setVelocity(glm::vec3(0.0f));
+
+        // 朝向玩家
+        lookAt(player-&gt;getTransform()-&gt;getPosition());
+
+        // 攻击计时
+        attackTimer += deltaTime;
+        if (attackTimer &gt;= attackCooldown) {
+            performAttack();
+            attackTimer = 0.0f;
+        }
+    }
+
+    void performAttack() {
+        // 播放攻击动画
+        if (animator) {
+            animator-&gt;play("Attack");
+        }
+
+        // 对玩家造成伤害
+        Health* playerHealth = player-&gt;getComponent&lt;Health&gt;();
+        if (playerHealth) {
+            playerHealth-&gt;takeDamage(attackDamage);
+        }
+
+        // 播放攻击音效
+        AudioEngine::getInstance().playSound("enemy_attack",
+            gameObject-&gt;getTransform()-&gt;getPosition());
+    }
+
+    void lookAt(const glm::vec3&amp; target) {
+        glm::vec3 currentPos = gameObject-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 direction = target - currentPos;
+        direction.y = 0.0f;  // 只在水平面旋转
+
+        if (glm::length(direction) &gt; 0.01f) {
+            direction = glm::normalize(direction);
+            float angle = std::atan2(direction.x, direction.z);
+            glm::quat rotation = glm::angleAxis(angle, glm::vec3(0.0f, 1.0f, 0.0f));
+            gameObject-&gt;getTransform()-&gt;setRotation(rotation);
+        }
+    }
+
+    void onDeath() {
+        changeState(DEAD);
+
+        // 播放死亡动画
+        if (animator) {
+            animator-&gt;play("Death");
+        }
+
+        // 禁用碰撞和AI
+        rigidbody-&gt;setEnabled(false);
+        this-&gt;setEnabled(false);
+
+        // 3秒后销毁
+        gameObject-&gt;destroyAfter(3.0f);
+
+        // 播放死亡音效
+        AudioEngine::getInstance().playSound("enemy_death",
+            gameObject-&gt;getTransform()-&gt;getPosition());
+    }
+
+    void setPatrolPoints(const std::vector&lt;glm::vec3&gt;&amp; points) {
+        patrolPoints = points;
+    }
+};
+</code></pre>
+<h3 id="16-血量系统"><a class="header" href="#16-血量系统">1.6 血量系统</a></h3>
+<pre><code class="language-cpp">// health.h
+class Health : public Component {
+private:
+    float maxHealth = 100.0f;
+    float currentHealth = 100.0f;
+    bool isDead = false;
+
+public:
+    std::function&lt;void()&gt; onDeath;
+    std::function&lt;void(float)&gt; onDamage;
+    std::function&lt;void(float)&gt; onHeal;
+
+    Health(GameObject* go) : Component(go) {}
+
+    void takeDamage(float amount) {
+        if (isDead) return;
+
+        currentHealth -= amount;
+        currentHealth = glm::max(0.0f, currentHealth);
+
+        if (onDamage) {
+            onDamage(amount);
+        }
+
+        // 显示伤害数字
+        showDamageNumber(amount);
+
+        if (currentHealth &lt;= 0.0f) {
+            die();
+        }
+    }
+
+    void heal(float amount) {
+        if (isDead) return;
+
+        currentHealth += amount;
+        currentHealth = glm::min(maxHealth, currentHealth);
+
+        if (onHeal) {
+            onHeal(amount);
+        }
+    }
+
+    void die() {
+        if (isDead) return;
+
+        isDead = true;
+
+        if (onDeath) {
+            onDeath();
+        }
+    }
+
+    void showDamageNumber(float damage) {
+        // 在3D空间生成浮动伤害数字
+        GameObject* damageText = new GameObject("DamageNumber");
+        damageText-&gt;getTransform()-&gt;setPosition(
+            gameObject-&gt;getTransform()-&gt;getPosition() + glm::vec3(0.0f, 2.0f, 0.0f)
+        );
+
+        // 添加UI文字组件并设置动画
+        // ... 实现浮动效果
+
+        damageText-&gt;destroyAfter(1.0f);
+    }
+
+    float getHealth() const { return currentHealth; }
+    float getMaxHealth() const { return maxHealth; }
+    float getHealthPercentage() const { return currentHealth / maxHealth; }
+    bool getIsDead() const { return isDead; }
+
+    void setMaxHealth(float max) {
+        maxHealth = max;
+        currentHealth = glm::min(currentHealth, maxHealth);
+    }
+};
+</code></pre>
+<h3 id="17-游戏主循环集成"><a class="header" href="#17-游戏主循环集成">1.7 游戏主循环集成</a></h3>
+<pre><code class="language-cpp">// tps_game_main.cpp
+int main() {
+    // 初始化引擎
+    Engine engine(1920, 1080, "TPS Game Demo");
+    engine.initialize();
+
+    // 加载场景
+    Scene* scene = new Scene("MainScene");
+
+    // 创建地面
+    GameObject* ground = new GameObject("Ground");
+    ground-&gt;getTransform()-&gt;setPosition(glm::vec3(0.0f, -0.5f, 0.0f));
+    ground-&gt;getTransform()-&gt;setScale(glm::vec3(50.0f, 1.0f, 50.0f));
+
+    MeshRenderer* groundRenderer = ground-&gt;addComponent&lt;MeshRenderer&gt;();
+    groundRenderer-&gt;setMesh(ResourceManager::getMesh("cube"));
+    groundRenderer-&gt;setMaterial(ResourceManager::getMaterial("ground"));
+
+    Rigidbody* groundRb = ground-&gt;addComponent&lt;Rigidbody&gt;();
+    groundRb-&gt;setMass(0.0f);  // 静态物体
+    groundRb-&gt;initialize(new btBoxShape(btVector3(50.0f, 1.0f, 50.0f)));
+
+    scene-&gt;addGameObject(ground);
+
+    // 创建玩家
+    GameObject* player = new GameObject("Player");
+    player-&gt;getTransform()-&gt;setPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+
+    MeshRenderer* playerRenderer = player-&gt;addComponent&lt;MeshRenderer&gt;();
+    playerRenderer-&gt;setMesh(ResourceManager::getMesh("character"));
+    playerRenderer-&gt;setMaterial(ResourceManager::getMaterial("character"));
+
+    Animator* playerAnimator = player-&gt;addComponent&lt;Animator&gt;();
+    playerAnimator-&gt;loadAnimation("idle", "animations/idle.fbx");
+    playerAnimator-&gt;loadAnimation("walk", "animations/walk.fbx");
+    playerAnimator-&gt;loadAnimation("run", "animations/run.fbx");
+
+    Rigidbody* playerRb = player-&gt;addComponent&lt;Rigidbody&gt;();
+    playerRb-&gt;setMass(80.0f);
+    playerRb-&gt;initialize(new btCapsuleShape(0.5f, 1.8f));
+
+    TPSCharacterController* controller = player-&gt;addComponent&lt;TPSCharacterController&gt;();
+
+    Health* playerHealth = player-&gt;addComponent&lt;Health&gt;();
+    playerHealth-&gt;setMaxHealth(100.0f);
+    playerHealth-&gt;onDeath = []() {
+        std::cout &lt;&lt; "Player died!" &lt;&lt; std::endl;
+        // 显示游戏结束UI
+    };
+
+    scene-&gt;addGameObject(player);
+
+    // 创建武器
+    GameObject* rifle = new GameObject("Rifle");
+    rifle-&gt;setParent(player);
+    rifle-&gt;getTransform()-&gt;setPosition(glm::vec3(0.3f, 1.2f, 0.5f));
+
+    MeshRenderer* rifleRenderer = rifle-&gt;addComponent&lt;MeshRenderer&gt;();
+    rifleRenderer-&gt;setMesh(ResourceManager::getMesh("rifle"));
+    rifleRenderer-&gt;setMaterial(ResourceManager::getMaterial("metal"));
+
+    Weapon* weapon = rifle-&gt;addComponent&lt;Weapon&gt;();
+    Weapon::WeaponStats rifleStats;
+    rifleStats.name = "Assault Rifle";
+    rifleStats.maxAmmo = 120;
+    rifleStats.currentAmmo = 30;
+    rifleStats.magazineSize = 30;
+    rifleStats.fireRate = 10.0f;
+    rifleStats.damage = 25.0f;
+    rifleStats.range = 100.0f;
+    rifleStats.recoilAmount = 0.02f;
+    rifleStats.reloadTime = 2.0f;
+    weapon-&gt;initialize(rifleStats);
+
+    // 创建相机
+    GameObject* cameraObj = new GameObject("MainCamera");
+    cameraObj-&gt;getTransform()-&gt;setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
+
+    Camera* camera = cameraObj-&gt;addComponent&lt;Camera&gt;();
+    camera-&gt;setAspectRatio(16.0f / 9.0f);
+    camera-&gt;setFOV(60.0f);
+
+    TPSCamera* tpsCamera = cameraObj-&gt;addComponent&lt;TPSCamera&gt;();
+    tpsCamera-&gt;setTarget(player);
+
+    scene-&gt;addGameObject(cameraObj);
+    scene-&gt;setMainCamera(camera);
+
+    // 创建敌人
+    for (int i = 0; i &lt; 5; i++) {
+        GameObject* enemy = new GameObject("Enemy_" + std::to_string(i));
+        enemy-&gt;getTransform()-&gt;setPosition(glm::vec3(
+            randomFloat(-20.0f, 20.0f),
+            2.0f,
+            randomFloat(-20.0f, 20.0f)
+        ));
+
+        MeshRenderer* enemyRenderer = enemy-&gt;addComponent&lt;MeshRenderer&gt;();
+        enemyRenderer-&gt;setMesh(ResourceManager::getMesh("enemy"));
+        enemyRenderer-&gt;setMaterial(ResourceManager::getMaterial("enemy"));
+
+        Animator* enemyAnimator = enemy-&gt;addComponent&lt;Animator&gt;();
+        enemyAnimator-&gt;loadAnimation("walk", "animations/enemy_walk.fbx");
+        enemyAnimator-&gt;loadAnimation("run", "animations/enemy_run.fbx");
+        enemyAnimator-&gt;loadAnimation("attack", "animations/enemy_attack.fbx");
+        enemyAnimator-&gt;loadAnimation("death", "animations/enemy_death.fbx");
+
+        Rigidbody* enemyRb = enemy-&gt;addComponent&lt;Rigidbody&gt;();
+        enemyRb-&gt;setMass(70.0f);
+        enemyRb-&gt;initialize(new btCapsuleShape(0.5f, 1.8f));
+
+        EnemyAI* ai = enemy-&gt;addComponent&lt;EnemyAI&gt;();
+
+        Health* enemyHealth = enemy-&gt;addComponent&lt;Health&gt;();
+        enemyHealth-&gt;setMaxHealth(100.0f);
+
+        scene-&gt;addGameObject(enemy);
+    }
+
+    // 创建光照
+    LightingSystem* lighting = scene-&gt;getLightingSystem();
+
+    LightingSystem::DirectionalLight dirLight;
+    dirLight.direction = glm::vec3(-0.3f, -1.0f, -0.5f);
+    dirLight.ambient = glm::vec3(0.2f);
+    dirLight.diffuse = glm::vec3(0.8f);
+    dirLight.specular = glm::vec3(1.0f);
+    lighting-&gt;setDirectionalLight(dirLight);
+
+    // 游戏主循环
+    float lastFrame = 0.0f;
+    while (!engine.shouldClose()) {
+        float currentFrame = engine.getTime();
+        float deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // 更新
+        scene-&gt;update(deltaTime);
+
+        // 渲染
+        engine.beginFrame();
+        scene-&gt;render(camera);
+
+        // UI渲染
+        renderGameUI(player, weapon);
+
+        engine.endFrame();
+    }
+
+    // 清理
+    delete scene;
+    engine.shutdown();
+
+    return 0;
+}
+
+void renderGameUI(GameObject* player, Weapon* weapon) {
+    // 准星
+    renderCrosshair();
+
+    // 血量条
+    Health* health = player-&gt;getComponent&lt;Health&gt;();
+    if (health) {
+        renderHealthBar(health-&gt;getHealthPercentage());
+    }
+
+    // 弹药显示
+    if (weapon) {
+        const auto&amp; stats = weapon-&gt;getStats();
+        renderAmmoDisplay(stats.currentAmmo, stats.maxAmmo);
+
+        if (weapon-&gt;getIsReloading()) {
+            renderReloadingText();
+        }
+    }
+}
+
+void renderCrosshair() {
+    Font* font = ResourceManager::getFont("default");
+    font-&gt;renderText("+", 960 - 10, 540 - 10, 2.0f, glm::vec3(1.0f), 1920, 1080);
+}
+
+void renderHealthBar(float percentage) {
+    // 使用UIImage绘制血量条背景和前景
+    UIImage* healthBarBg = /* ... */;
+    UIImage* healthBarFill = /* ... */;
+
+    healthBarFill-&gt;setSize(glm::vec2(200.0f * percentage, 20.0f));
+}
+
+void renderAmmoDisplay(int current, int reserve) {
+    Font* font = ResourceManager::getFont("default");
+    std::string ammoText = std::to_string(current) + " / " + std::to_string(reserve);
+    font-&gt;renderText(ammoText, 1700, 50, 1.0f, glm::vec3(1.0f), 1920, 1080);
+}
+
+void renderReloadingText() {
+    Font* font = ResourceManager::getFont("default");
+    font-&gt;renderText("RELOADING...", 860, 540, 1.5f, glm::vec3(1.0f, 1.0f, 0.0f), 1920, 1080);
+}
+</code></pre>
+<hr />
+<h2 id="二物理解谜游戏"><a class="header" href="#二物理解谜游戏">二、物理解谜游戏</a></h2>
+<h3 id="21-项目概述"><a class="header" href="#21-项目概述">2.1 项目概述</a></h3>
+<p>创建类似《Portal》或《The Witness》的物理解谜游戏。</p>
+<h4 id="核心机制"><a class="header" href="#核心机制">核心机制</a></h4>
+<pre><code>物理解谜游戏
+├── 物理交互
+│   ├── 抓取/投掷物体
+│   ├── 压力板触发
+│   ├── 重力操控
+│   └── 物体堆叠
+├── 解谜元素
+│   ├── 激光反射
+│   ├── 按钮与门
+│   ├── 传送门
+│   └── 时间倒流
+└── 关卡系统
+    ├── 关卡加载
+    ├── 检查点
+    ├── 计时与评分
+    └── 关卡编辑器
+</code></pre>
+<h3 id="22-物体抓取系统"><a class="header" href="#22-物体抓取系统">2.2 物体抓取系统</a></h3>
+<pre><code class="language-cpp">// object_grabber.h
+class ObjectGrabber : public Component {
+private:
+    Camera* camera;
+    GameObject* grabbedObject;
+    Rigidbody* grabbedRigidbody;
+
+    float grabRange = 3.0f;
+    float holdDistance = 2.0f;
+    float throwForce = 15.0f;
+
+    bool isHolding = false;
+
+public:
+    ObjectGrabber(GameObject* go) : Component(go) {}
+
+    void start() override {
+        camera = gameObject-&gt;getComponent&lt;Camera&gt;();
+    }
+
+    void update(float deltaTime) override {
+        if (Input::getKeyDown(GLFW_KEY_E)) {
+            if (isHolding) {
+                releaseObject();
+            } else {
+                tryGrabObject();
+            }
+        }
+
+        if (isHolding) {
+            updateHeldObject();
+
+            // 投掷
+            if (Input::getMouseButtonDown(0)) {
+                throwObject();
+            }
+        }
+    }
+
+    void tryGrabObject() {
+        glm::vec3 rayOrigin = gameObject-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 rayDirection = camera-&gt;getGameObject()-&gt;getTransform()-&gt;forward();
+
+        glm::vec3 hitPoint;
+        bool hit = PhysicsWorld::getInstance().raycast(
+            rayOrigin,
+            rayOrigin + rayDirection * grabRange,
+            hitPoint
+        );
+
+        if (hit) {
+            // 获取击中的物体
+            GameObject* hitObject = /* 从物理世界获取 */;
+
+            if (hitObject &amp;&amp; hitObject-&gt;hasTag("Grabbable")) {
+                grabObject(hitObject);
+            }
+        }
+    }
+
+    void grabObject(GameObject* obj) {
+        grabbedObject = obj;
+        grabbedRigidbody = obj-&gt;getComponent&lt;Rigidbody&gt;();
+
+        if (grabbedRigidbody) {
+            // 设置为运动学模式
+            grabbedRigidbody-&gt;setKinematic(true);
+            isHolding = true;
+        }
+    }
+
+    void updateHeldObject() {
+        if (!grabbedObject) return;
+
+        glm::vec3 targetPos = gameObject-&gt;getTransform()-&gt;getPosition() +
+                              camera-&gt;getGameObject()-&gt;getTransform()-&gt;forward() * holdDistance;
+
+        // 平滑移动到目标位置
+        glm::vec3 currentPos = grabbedObject-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 newPos = glm::mix(currentPos, targetPos, 0.2f);
+
+        grabbedRigidbody-&gt;setKinematicTarget(newPos, grabbedObject-&gt;getTransform()-&gt;getRotation());
+    }
+
+    void releaseObject() {
+        if (!grabbedObject) return;
+
+        grabbedRigidbody-&gt;setKinematic(false);
+
+        grabbedObject = nullptr;
+        grabbedRigidbody = nullptr;
+        isHolding = false;
+    }
+
+    void throwObject() {
+        if (!grabbedObject) return;
+
+        grabbedRigidbody-&gt;setKinematic(false);
+
+        glm::vec3 throwDirection = camera-&gt;getGameObject()-&gt;getTransform()-&gt;forward();
+        grabbedRigidbody-&gt;addImpulse(throwDirection * throwForce);
+
+        grabbedObject = nullptr;
+        grabbedRigidbody = nullptr;
+        isHolding = false;
+    }
+};
+</code></pre>
+<h3 id="23-压力板机关"><a class="header" href="#23-压力板机关">2.3 压力板机关</a></h3>
+<pre><code class="language-cpp">// pressure_plate.h
+class PressurePlate : public Component {
+private:
+    std::vector&lt;GameObject*&gt; triggerObjects;  // 在压力板上的物体
+    bool isActivated = false;
+    float requiredWeight = 50.0f;  // 需要的总重量
+
+public:
+    std::function&lt;void()&gt; onActivated;
+    std::function&lt;void()&gt; onDeactivated;
+
+    PressurePlate(GameObject* go) : Component(go) {}
+
+    void start() override {
+        // 添加触发器碰撞体
+        BoxCollider* collider = gameObject-&gt;addComponent&lt;BoxCollider&gt;();
+        collider-&gt;setIsTrigger(true);
+        collider-&gt;setSize(glm::vec3(2.0f, 0.2f, 2.0f));
+
+        // 注册碰撞回调
+        collider-&gt;onTriggerEnter = [this](GameObject* other) {
+            onTriggerEnter(other);
+        };
+
+        collider-&gt;onTriggerExit = [this](GameObject* other) {
+            onTriggerExit(other);
+        };
+    }
+
+    void onTriggerEnter(GameObject* other) {
+        triggerObjects.push_back(other);
+        checkActivation();
+    }
+
+    void onTriggerExit(GameObject* other) {
+        auto it = std::find(triggerObjects.begin(), triggerObjects.end(), other);
+        if (it != triggerObjects.end()) {
+            triggerObjects.erase(it);
+        }
+        checkActivation();
+    }
+
+    void checkActivation() {
+        float totalWeight = 0.0f;
+
+        for (auto obj : triggerObjects) {
+            Rigidbody* rb = obj-&gt;getComponent&lt;Rigidbody&gt;();
+            if (rb) {
+                totalWeight += rb-&gt;getMass();
+            }
+        }
+
+        bool shouldBeActivated = totalWeight &gt;= requiredWeight;
+
+        if (shouldBeActivated &amp;&amp; !isActivated) {
+            activate();
+        } else if (!shouldBeActivated &amp;&amp; isActivated) {
+            deactivate();
+        }
+    }
+
+    void activate() {
+        isActivated = true;
+
+        // 视觉反馈：改变材质颜色
+        MeshRenderer* renderer = gameObject-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (renderer) {
+            renderer-&gt;getMaterial()-&gt;setColor(glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+        }
+
+        // 播放音效
+        AudioEngine::getInstance().playSound("plate_activate",
+            gameObject-&gt;getTransform()-&gt;getPosition());
+
+        if (onActivated) {
+            onActivated();
+        }
+    }
+
+    void deactivate() {
+        isActivated = false;
+
+        MeshRenderer* renderer = gameObject-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (renderer) {
+            renderer-&gt;getMaterial()-&gt;setColor(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
+        }
+
+        AudioEngine::getInstance().playSound("plate_deactivate",
+            gameObject-&gt;getTransform()-&gt;getPosition());
+
+        if (onDeactivated) {
+            onDeactivated();
+        }
+    }
+
+    bool getIsActivated() const { return isActivated; }
+    void setRequiredWeight(float weight) { requiredWeight = weight; }
+};
+</code></pre>
+<h3 id="24-门控系统"><a class="header" href="#24-门控系统">2.4 门控系统</a></h3>
+<pre><code class="language-cpp">// door.h
+class Door : public Component {
+public:
+    enum DoorState {
+        CLOSED,
+        OPENING,
+        OPEN,
+        CLOSING
+    };
+
+private:
+    DoorState state = CLOSED;
+
+    glm::vec3 closedPosition;
+    glm::vec3 openPosition;
+    float openSpeed = 2.0f;
+    float currentTime = 0.0f;
+
+    bool requiresKey = false;
+    std::string requiredKeyID;
+
+public:
+    Door(GameObject* go) : Component(go) {}
+
+    void start() override {
+        closedPosition = gameObject-&gt;getTransform()-&gt;getPosition();
+        openPosition = closedPosition + glm::vec3(0.0f, 3.0f, 0.0f);  // 向上移动
+    }
+
+    void update(float deltaTime) override {
+        switch (state) {
+            case OPENING:
+                currentTime += deltaTime * openSpeed;
+                if (currentTime &gt;= 1.0f) {
+                    currentTime = 1.0f;
+                    state = OPEN;
+                }
+                updatePosition();
+                break;
+
+            case CLOSING:
+                currentTime -= deltaTime * openSpeed;
+                if (currentTime &lt;= 0.0f) {
+                    currentTime = 0.0f;
+                    state = CLOSED;
+                }
+                updatePosition();
+                break;
+        }
+    }
+
+    void open() {
+        if (state == CLOSED || state == CLOSING) {
+            state = OPENING;
+            AudioEngine::getInstance().playSound("door_open",
+                gameObject-&gt;getTransform()-&gt;getPosition());
+        }
+    }
+
+    void close() {
+        if (state == OPEN || state == OPENING) {
+            state = CLOSING;
+            AudioEngine::getInstance().playSound("door_close",
+                gameObject-&gt;getTransform()-&gt;getPosition());
+        }
+    }
+
+    void toggle() {
+        if (state == CLOSED || state == CLOSING) {
+            open();
+        } else {
+            close();
+        }
+    }
+
+    void updatePosition() {
+        glm::vec3 newPos = glm::mix(closedPosition, openPosition, currentTime);
+        gameObject-&gt;getTransform()-&gt;setPosition(newPos);
+    }
+
+    bool canOpen(GameObject* actor) {
+        if (!requiresKey) return true;
+
+        Inventory* inventory = actor-&gt;getComponent&lt;Inventory&gt;();
+        if (inventory) {
+            return inventory-&gt;hasItem(requiredKeyID);
+        }
+
+        return false;
+    }
+
+    DoorState getState() const { return state; }
+    void setRequiresKey(bool requires, const std::string&amp; keyID = "") {
+        requiresKey = requires;
+        requiredKeyID = keyID;
+    }
+};
+</code></pre>
+<hr />
+<h2 id="三平台跳跃游戏"><a class="header" href="#三平台跳跃游戏">三、平台跳跃游戏</a></h2>
+<h3 id="31-25d角色控制器"><a class="header" href="#31-25d角色控制器">3.1 2.5D角色控制器</a></h3>
+<pre><code class="language-cpp">// platformer_controller.h
+class PlatformerController : public Component {
+private:
+    Rigidbody* rigidbody;
+    Animator* animator;
+
+    float moveSpeed = 8.0f;
+    float jumpForce = 12.0f;
+    float gravity = -25.0f;
+    float maxFallSpeed = -20.0f;
+
+    bool isGrounded = false;
+    bool isFacingRight = true;
+
+    float coyoteTime = 0.15f;  // 土狼时间
+    float coyoteTimeCounter = 0.0f;
+
+    float jumpBufferTime = 0.2f;  // 跳跃缓冲
+    float jumpBufferCounter = 0.0f;
+
+    int maxAirJumps = 1;
+    int currentAirJumps = 0;
+
+public:
+    PlatformerController(GameObject* go) : Component(go) {}
+
+    void start() override {
+        rigidbody = gameObject-&gt;getComponent&lt;Rigidbody&gt;();
+        animator = gameObject-&gt;getComponent&lt;Animator&gt;();
+    }
+
+    void update(float deltaTime) override {
+        float horizontalInput = 0.0f;
+        if (Input::getKey(GLFW_KEY_A)) horizontalInput = -1.0f;
+        if (Input::getKey(GLFW_KEY_D)) horizontalInput = 1.0f;
+
+        // 检查接地
+        checkGrounded();
+
+        // 土狼时间
+        if (isGrounded) {
+            coyoteTimeCounter = coyoteTime;
+            currentAirJumps = maxAirJumps;  // 重置空中跳跃次数
+        } else {
+            coyoteTimeCounter -= deltaTime;
+        }
+
+        // 跳跃缓冲
+        if (Input::getKeyDown(GLFW_KEY_SPACE)) {
+            jumpBufferCounter = jumpBufferTime;
+        } else {
+            jumpBufferCounter -= deltaTime;
+        }
+
+        // 跳跃逻辑
+        if (jumpBufferCounter &gt; 0.0f) {
+            if (coyoteTimeCounter &gt; 0.0f) {
+                // 正常跳跃
+                jump();
+                jumpBufferCounter = 0.0f;
+            } else if (currentAirJumps &gt; 0) {
+                // 二段跳
+                jump();
+                currentAirJumps--;
+                jumpBufferCounter = 0.0f;
+            }
+        }
+
+        // 可变跳跃高度（松开跳跃键提前结束上升）
+        if (Input::getKeyUp(GLFW_KEY_SPACE) &amp;&amp; rigidbody-&gt;getVelocity().y &gt; 0.0f) {
+            glm::vec3 vel = rigidbody-&gt;getVelocity();
+            vel.y *= 0.5f;
+            rigidbody-&gt;setVelocity(vel);
+        }
+
+        // 水平移动
+        glm::vec3 velocity = rigidbody-&gt;getVelocity();
+        velocity.x = horizontalInput * moveSpeed;
+
+        // 限制下落速度
+        if (velocity.y &lt; maxFallSpeed) {
+            velocity.y = maxFallSpeed;
+        }
+
+        rigidbody-&gt;setVelocity(velocity);
+
+        // 翻转角色朝向
+        if (horizontalInput &gt; 0 &amp;&amp; !isFacingRight) {
+            flip();
+        } else if (horizontalInput &lt; 0 &amp;&amp; isFacingRight) {
+            flip();
+        }
+
+        // 更新动画
+        updateAnimations(horizontalInput);
+    }
+
+    void jump() {
+        glm::vec3 vel = rigidbody-&gt;getVelocity();
+        vel.y = jumpForce;
+        rigidbody-&gt;setVelocity(vel);
+
+        AudioEngine::getInstance().playSound("jump",
+            gameObject-&gt;getTransform()-&gt;getPosition());
+    }
+
+    void checkGrounded() {
+        glm::vec3 origin = gameObject-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 direction = glm::vec3(0.0f, -1.0f, 0.0f);
+        glm::vec3 hitPoint;
+
+        isGrounded = PhysicsWorld::getInstance().raycast(
+            origin,
+            origin + direction * 0.6f,
+            hitPoint
+        );
+    }
+
+    void flip() {
+        isFacingRight = !isFacingRight;
+
+        glm::vec3 scale = gameObject-&gt;getTransform()-&gt;getScale();
+        scale.x *= -1.0f;
+        gameObject-&gt;getTransform()-&gt;setScale(scale);
+    }
+
+    void updateAnimations(float horizontalInput) {
+        if (!animator) return;
+
+        if (!isGrounded) {
+            if (rigidbody-&gt;getVelocity().y &gt; 0) {
+                animator-&gt;play("Jump");
+            } else {
+                animator-&gt;play("Fall");
+            }
+        } else if (std::abs(horizontalInput) &gt; 0.01f) {
+            animator-&gt;play("Run");
+        } else {
+            animator-&gt;play("Idle");
+        }
+    }
+};
+</code></pre>
+<h3 id="32-关卡设计工具"><a class="header" href="#32-关卡设计工具">3.2 关卡设计工具</a></h3>
+<pre><code class="language-cpp">// level_editor.h
+class LevelEditor {
+public:
+    enum EditorMode {
+        SELECT,
+        PLACE,
+        MOVE,
+        ROTATE,
+        DELETE
+    };
+
+private:
+    EditorMode currentMode = SELECT;
+    GameObject* selectedObject = nullptr;
+
+    // 预制体库
+    std::map&lt;std::string, GameObject*&gt; prefabs;
+
+    // 关卡数据
+    std::vector&lt;GameObject*&gt; levelObjects;
+
+    Camera* editorCamera;
+    bool isPlaying = false;
+
+public:
+    LevelEditor() {
+        // 加载预制体
+        loadPrefabs();
+    }
+
+    void loadPrefabs() {
+        // 平台
+        GameObject* platformPrefab = new GameObject("Platform");
+        platformPrefab-&gt;addComponent&lt;MeshRenderer&gt;()-&gt;setMesh(ResourceManager::getMesh("cube"));
+        prefabs["platform"] = platformPrefab;
+
+        // 敌人
+        GameObject* enemyPrefab = new GameObject("Enemy");
+        enemyPrefab-&gt;addComponent&lt;MeshRenderer&gt;()-&gt;setMesh(ResourceManager::getMesh("sphere"));
+        prefabs["enemy"] = enemyPrefab;
+
+        // 可收集物
+        GameObject* coinPrefab = new GameObject("Coin");
+        coinPrefab-&gt;addComponent&lt;MeshRenderer&gt;()-&gt;setMesh(ResourceManager::getMesh("coin"));
+        prefabs["coin"] = coinPrefab;
+    }
+
+    void update(float deltaTime) {
+        if (isPlaying) {
+            // 游戏模式：更新所有对象
+            for (auto obj : levelObjects) {
+                obj-&gt;update(deltaTime);
+            }
+        } else {
+            // 编辑模式：处理编辑器输入
+            handleEditorInput();
+        }
+    }
+
+    void handleEditorInput() {
+        // 模式切换
+        if (Input::getKeyDown(GLFW_KEY_1)) currentMode = SELECT;
+        if (Input::getKeyDown(GLFW_KEY_2)) currentMode = PLACE;
+        if (Input::getKeyDown(GLFW_KEY_3)) currentMode = MOVE;
+        if (Input::getKeyDown(GLFW_KEY_4)) currentMode = ROTATE;
+        if (Input::getKeyDown(GLFW_KEY_5)) currentMode = DELETE;
+
+        switch (currentMode) {
+            case SELECT:
+                handleSelectMode();
+                break;
+            case PLACE:
+                handlePlaceMode();
+                break;
+            case MOVE:
+                handleMoveMode();
+                break;
+            case ROTATE:
+                handleRotateMode();
+                break;
+            case DELETE:
+                handleDeleteMode();
+                break;
+        }
+
+        // 播放/停止
+        if (Input::getKeyDown(GLFW_KEY_SPACE)) {
+            togglePlayMode();
+        }
+
+        // 保存关卡
+        if (Input::getKey(GLFW_KEY_LEFT_CONTROL) &amp;&amp; Input::getKeyDown(GLFW_KEY_S)) {
+            saveLevel("level.json");
+        }
+
+        // 加载关卡
+        if (Input::getKey(GLFW_KEY_LEFT_CONTROL) &amp;&amp; Input::getKeyDown(GLFW_KEY_O)) {
+            loadLevel("level.json");
+        }
+    }
+
+    void handleSelectMode() {
+        if (Input::getMouseButtonDown(0)) {
+            // 射线检测选择物体
+            glm::vec3 rayOrigin = editorCamera-&gt;getGameObject()-&gt;getTransform()-&gt;getPosition();
+            glm::vec3 rayDirection = editorCamera-&gt;screenPointToRay(Input::getMousePosition());
+
+            glm::vec3 hitPoint;
+            GameObject* hitObject = raycastObjects(rayOrigin, rayDirection, hitPoint);
+
+            if (hitObject) {
+                selectedObject = hitObject;
+                std::cout &lt;&lt; "Selected: " &lt;&lt; hitObject-&gt;getName() &lt;&lt; std::endl;
+            } else {
+                selectedObject = nullptr;
+            }
+        }
+    }
+
+    void handlePlaceMode() {
+        // 显示预览
+        if (Input::getMouseButtonDown(0)) {
+            // 获取鼠标在世界空间的位置
+            glm::vec3 worldPos = getMouseWorldPosition();
+
+            // 实例化预制体
+            GameObject* newObj = instantiatePrefab("platform", worldPos);
+            levelObjects.push_back(newObj);
+        }
+    }
+
+    void handleMoveMode() {
+        if (selectedObject &amp;&amp; Input::getMouseButton(0)) {
+            glm::vec3 worldPos = getMouseWorldPosition();
+            selectedObject-&gt;getTransform()-&gt;setPosition(worldPos);
+        }
+    }
+
+    void handleRotateMode() {
+        if (selectedObject) {
+            if (Input::getKey(GLFW_KEY_Q)) {
+                glm::quat rotation = selectedObject-&gt;getTransform()-&gt;getRotation();
+                rotation = glm::rotate(rotation, glm::radians(90.0f) * Time::deltaTime, glm::vec3(0, 1, 0));
+                selectedObject-&gt;getTransform()-&gt;setRotation(rotation);
+            }
+        }
+    }
+
+    void handleDeleteMode() {
+        if (selectedObject &amp;&amp; Input::getMouseButtonDown(0)) {
+            deleteObject(selectedObject);
+            selectedObject = nullptr;
+        }
+    }
+
+    void togglePlayMode() {
+        isPlaying = !isPlaying;
+
+        if (isPlaying) {
+            // 保存当前状态
+            saveTemporaryState();
+            std::cout &lt;&lt; "Play Mode" &lt;&lt; std::endl;
+        } else {
+            // 恢复状态
+            loadTemporaryState();
+            std::cout &lt;&lt; "Edit Mode" &lt;&lt; std::endl;
+        }
+    }
+
+    void saveLevel(const std::string&amp; filename) {
+        json levelJson;
+        levelJson["levelName"] = "My Level";
+
+        json objectsJson = json::array();
+        for (auto obj : levelObjects) {
+            objectsJson.push_back(serializeGameObject(obj));
+        }
+        levelJson["objects"] = objectsJson;
+
+        std::ofstream file(filename);
+        file &lt;&lt; levelJson.dump(4);
+        file.close();
+
+        std::cout &lt;&lt; "Level saved to " &lt;&lt; filename &lt;&lt; std::endl;
+    }
+
+    void loadLevel(const std::string&amp; filename) {
+        std::ifstream file(filename);
+        if (!file.is_open()) {
+            std::cerr &lt;&lt; "Failed to open level file: " &lt;&lt; filename &lt;&lt; std::endl;
+            return;
+        }
+
+        json levelJson;
+        file &gt;&gt; levelJson;
+        file.close();
+
+        // 清除现有对象
+        clearLevel();
+
+        // 加载对象
+        for (auto&amp; objJson : levelJson["objects"]) {
+            GameObject* obj = deserializeGameObject(objJson);
+            levelObjects.push_back(obj);
+        }
+
+        std::cout &lt;&lt; "Level loaded from " &lt;&lt; filename &lt;&lt; std::endl;
+    }
+
+    void clearLevel() {
+        for (auto obj : levelObjects) {
+            delete obj;
+        }
+        levelObjects.clear();
+        selectedObject = nullptr;
+    }
+
+    GameObject* raycastObjects(const glm::vec3&amp; origin, const glm::vec3&amp; direction, glm::vec3&amp; hitPoint) {
+        // 简化版本：检测AABB碰撞
+        float closestDistance = FLT_MAX;
+        GameObject* hitObject = nullptr;
+
+        for (auto obj : levelObjects) {
+            MeshRenderer* renderer = obj-&gt;getComponent&lt;MeshRenderer&gt;();
+            if (renderer) {
+                AABB bounds = renderer-&gt;getMesh()-&gt;getBounds();
+                // 变换到世界空间
+                // ... 射线-AABB相交测试
+            }
+        }
+
+        return hitObject;
+    }
+
+    glm::vec3 getMouseWorldPosition() {
+        glm::vec2 mousePos = Input::getMousePosition();
+        // 转换到世界空间（假设Y=0平面）
+        glm::vec3 rayOrigin = editorCamera-&gt;getGameObject()-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 rayDir = editorCamera-&gt;screenPointToRay(mousePos);
+
+        // 与Y=0平面相交
+        float t = -rayOrigin.y / rayDir.y;
+        return rayOrigin + rayDir * t;
+    }
+
+    GameObject* instantiatePrefab(const std::string&amp; prefabName, const glm::vec3&amp; position) {
+        auto it = prefabs.find(prefabName);
+        if (it == prefabs.end()) return nullptr;
+
+        // 克隆预制体
+        GameObject* newObj = cloneGameObject(it-&gt;second);
+        newObj-&gt;getTransform()-&gt;setPosition(position);
+        return newObj;
+    }
+
+    void deleteObject(GameObject* obj) {
+        auto it = std::find(levelObjects.begin(), levelObjects.end(), obj);
+        if (it != levelObjects.end()) {
+            levelObjects.erase(it);
+            delete obj;
+        }
+    }
+
+    void render() {
+        // 渲染所有关卡对象
+        for (auto obj : levelObjects) {
+            MeshRenderer* renderer = obj-&gt;getComponent&lt;MeshRenderer&gt;();
+            if (renderer) {
+                renderer-&gt;render(editorCamera);
+            }
+        }
+
+        // 渲染选中物体的轮廓
+        if (selectedObject) {
+            renderSelectionOutline(selectedObject);
+        }
+
+        // 渲染编辑器UI
+        renderEditorUI();
+    }
+
+    void renderSelectionOutline(GameObject* obj) {
+        MeshRenderer* renderer = obj-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (renderer) {
+            AABB bounds = renderer-&gt;getMesh()-&gt;getBounds();
+            Debug::drawBox(bounds, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+        }
+    }
+
+    void renderEditorUI() {
+        Font* font = ResourceManager::getFont("editor");
+
+        // 模式指示器
+        std::string modeText = "Mode: ";
+        switch (currentMode) {
+            case SELECT: modeText += "Select (1)"; break;
+            case PLACE: modeText += "Place (2)"; break;
+            case MOVE: modeText += "Move (3)"; break;
+            case ROTATE: modeText += "Rotate (4)"; break;
+            case DELETE: modeText += "Delete (5)"; break;
+        }
+        font-&gt;renderText(modeText, 10, 10, 1.0f, glm::vec3(1.0f), 1920, 1080);
+
+        // 播放模式指示器
+        std::string playText = isPlaying ? "PLAYING (Space to Stop)" : "EDITING (Space to Play)";
+        font-&gt;renderText(playText, 10, 50, 1.0f,
+                        isPlaying ? glm::vec3(0.0f, 1.0f, 0.0f) : glm::vec3(1.0f), 1920, 1080);
+
+        // 选中物体信息
+        if (selectedObject) {
+            std::string objInfo = "Selected: " + selectedObject-&gt;getName();
+            font-&gt;renderText(objInfo, 10, 90, 1.0f, glm::vec3(1.0f, 1.0f, 0.0f), 1920, 1080);
+        }
+
+        // 提示信息
+        font-&gt;renderText("Ctrl+S: Save | Ctrl+O: Load", 10, 1050, 0.8f, glm::vec3(0.7f), 1920, 1080);
+    }
+
+    void saveTemporaryState() {
+        // 保存临时状态用于Play模式
+    }
+
+    void loadTemporaryState() {
+        // 恢复临时状态
+    }
+
+    json serializeGameObject(GameObject* obj) {
+        json objJson;
+        objJson["name"] = obj-&gt;getName();
+
+        Transform* transform = obj-&gt;getTransform();
+        objJson["position"] = {transform-&gt;getPosition().x, transform-&gt;getPosition().y, transform-&gt;getPosition().z};
+        objJson["rotation"] = {transform-&gt;getRotation().x, transform-&gt;getRotation().y,
+                               transform-&gt;getRotation().z, transform-&gt;getRotation().w};
+        objJson["scale"] = {transform-&gt;getScale().x, transform-&gt;getScale().y, transform-&gt;getScale().z};
+
+        return objJson;
+    }
+
+    GameObject* deserializeGameObject(const json&amp; objJson) {
+        GameObject* obj = new GameObject(objJson["name"]);
+
+        Transform* transform = obj-&gt;getTransform();
+        transform-&gt;setPosition(glm::vec3(objJson["position"][0], objJson["position"][1], objJson["position"][2]));
+        transform-&gt;setRotation(glm::quat(objJson["rotation"][3], objJson["rotation"][0],
+                                         objJson["rotation"][1], objJson["rotation"][2]));
+        transform-&gt;setScale(glm::vec3(objJson["scale"][0], objJson["scale"][1], objJson["scale"][2]));
+
+        return obj;
+    }
+
+    GameObject* cloneGameObject(GameObject* original) {
+        // 简化版本：创建新对象并复制属性
+        GameObject* clone = new GameObject(original-&gt;getName());
+        // ... 复制组件
+        return clone;
+    }
+};
+</code></pre>
+<h3 id="33-收集物与检查点系统"><a class="header" href="#33-收集物与检查点系统">3.3 收集物与检查点系统</a></h3>
+<pre><code class="language-cpp">// collectible.h
+class Collectible : public Component {
+private:
+    enum Type {
+        COIN,
+        GEM,
+        POWER_UP,
+        HEALTH
+    };
+
+    Type type;
+    int value;
+    bool isCollected = false;
+
+    float rotationSpeed = 90.0f;
+    float bobHeight = 0.2f;
+    float bobSpeed = 2.0f;
+    float bobTimer = 0.0f;
+
+    glm::vec3 originalPosition;
+
+public:
+    Collectible(GameObject* go, Type t = COIN, int v = 1)
+        : Component(go), type(t), value(v) {}
+
+    void start() override {
+        originalPosition = gameObject-&gt;getTransform()-&gt;getPosition();
+
+        // 添加触发器
+        BoxCollider* collider = gameObject-&gt;addComponent&lt;BoxCollider&gt;();
+        collider-&gt;setIsTrigger(true);
+        collider-&gt;setSize(glm::vec3(0.5f));
+
+        collider-&gt;onTriggerEnter = [this](GameObject* other) {
+            if (other-&gt;hasTag("Player")) {
+                collect(other);
+            }
+        };
+    }
+
+    void update(float deltaTime) override {
+        if (isCollected) return;
+
+        // 旋转动画
+        Transform* transform = gameObject-&gt;getTransform();
+        glm::quat rotation = transform-&gt;getRotation();
+        rotation = glm::rotate(rotation, glm::radians(rotationSpeed * deltaTime), glm::vec3(0, 1, 0));
+        transform-&gt;setRotation(rotation);
+
+        // 上下浮动动画
+        bobTimer += deltaTime * bobSpeed;
+        float bobOffset = std::sin(bobTimer) * bobHeight;
+        transform-&gt;setPosition(originalPosition + glm::vec3(0, bobOffset, 0));
+    }
+
+    void collect(GameObject* collector) {
+        if (isCollected) return;
+        isCollected = true;
+
+        // 给玩家添加分数/物品
+        PlayerInventory* inventory = collector-&gt;getComponent&lt;PlayerInventory&gt;();
+        if (inventory) {
+            switch (type) {
+                case COIN:
+                    inventory-&gt;addCoins(value);
+                    break;
+                case GEM:
+                    inventory-&gt;addGems(value);
+                    break;
+                case POWER_UP:
+                    inventory-&gt;activatePowerUp(value);
+                    break;
+                case HEALTH:
+                    Health* health = collector-&gt;getComponent&lt;Health&gt;();
+                    if (health) health-&gt;heal(value);
+                    break;
+            }
+        }
+
+        // 播放收集音效
+        AudioEngine::getInstance().playSound("collect", gameObject-&gt;getTransform()-&gt;getPosition());
+
+        // 生成收集特效
+        spawnCollectEffect();
+
+        // 销毁物体
+        gameObject-&gt;destroy();
+    }
+
+    void spawnCollectEffect() {
+        GameObject* effectObj = new GameObject("CollectEffect");
+        effectObj-&gt;getTransform()-&gt;setPosition(gameObject-&gt;getTransform()-&gt;getPosition());
+
+        ParticleSystem* particles = effectObj-&gt;addComponent&lt;ParticleSystem&gt;();
+        particles-&gt;setEmitRate(50.0f);
+        particles-&gt;setLifetime(0.5f);
+        particles-&gt;setStartColor(glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+        particles-&gt;setEndColor(glm::vec4(1.0f, 1.0f, 0.0f, 0.0f));
+
+        effectObj-&gt;destroyAfter(1.0f);
+    }
+};
+
+// checkpoint.h
+class Checkpoint : public Component {
+private:
+    bool isActivated = false;
+    glm::vec3 respawnPosition;
+    glm::quat respawnRotation;
+
+    GameObject* visualIndicator;
+
+public:
+    Checkpoint(GameObject* go) : Component(go) {}
+
+    void start() override {
+        respawnPosition = gameObject-&gt;getTransform()-&gt;getPosition();
+        respawnRotation = gameObject-&gt;getTransform()-&gt;getRotation();
+
+        // 创建视觉指示器
+        visualIndicator = new GameObject("CheckpointIndicator");
+        visualIndicator-&gt;setParent(gameObject);
+        visualIndicator-&gt;getTransform()-&gt;setPosition(glm::vec3(0, 1, 0));
+
+        MeshRenderer* renderer = visualIndicator-&gt;addComponent&lt;MeshRenderer&gt;();
+        renderer-&gt;setMesh(ResourceManager::getMesh("flag"));
+        renderer-&gt;setMaterial(ResourceManager::getMaterial(isActivated ? "checkpoint_active" : "checkpoint_inactive"));
+
+        // 添加触发器
+        BoxCollider* collider = gameObject-&gt;addComponent&lt;BoxCollider&gt;();
+        collider-&gt;setIsTrigger(true);
+        collider-&gt;setSize(glm::vec3(2.0f, 3.0f, 2.0f));
+
+        collider-&gt;onTriggerEnter = [this](GameObject* other) {
+            if (other-&gt;hasTag("Player") &amp;&amp; !isActivated) {
+                activate(other);
+            }
+        };
+    }
+
+    void activate(GameObject* player) {
+        isActivated = true;
+
+        // 更新材质
+        MeshRenderer* renderer = visualIndicator-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (renderer) {
+            renderer-&gt;setMaterial(ResourceManager::getMaterial("checkpoint_active"));
+        }
+
+        // 保存玩家状态
+        PlayerController* controller = player-&gt;getComponent&lt;PlayerController&gt;();
+        if (controller) {
+            controller-&gt;setLastCheckpoint(this);
+        }
+
+        // 播放激活音效
+        AudioEngine::getInstance().playSound("checkpoint", gameObject-&gt;getTransform()-&gt;getPosition());
+
+        // 显示UI提示
+        showActivationUI();
+
+        std::cout &lt;&lt; "Checkpoint activated!" &lt;&lt; std::endl;
+    }
+
+    void respawnPlayer(GameObject* player) {
+        player-&gt;getTransform()-&gt;setPosition(respawnPosition);
+        player-&gt;getTransform()-&gt;setRotation(respawnRotation);
+
+        // 重置玩家状态
+        Health* health = player-&gt;getComponent&lt;Health&gt;();
+        if (health) {
+            health-&gt;heal(health-&gt;getMaxHealth());
+        }
+
+        Rigidbody* rb = player-&gt;getComponent&lt;Rigidbody&gt;();
+        if (rb) {
+            rb-&gt;setVelocity(glm::vec3(0.0f));
+        }
+    }
+
+    void showActivationUI() {
+        // 显示 "Checkpoint Activated!" 文字
+        Font* font = ResourceManager::getFont("game");
+        // ... UI显示逻辑
+    }
+
+    glm::vec3 getRespawnPosition() const { return respawnPosition; }
+    bool getIsActivated() const { return isActivated; }
+};
+</code></pre>
+<h3 id="34-相机效果增强"><a class="header" href="#34-相机效果增强">3.4 相机效果增强</a></h3>
+<pre><code class="language-cpp">// camera_effects.h
+class CameraEffects : public Component {
+private:
+    Camera* camera;
+
+    // 相机抖动
+    struct ScreenShake {
+        float intensity = 0.0f;
+        float duration = 0.0f;
+        float timer = 0.0f;
+        glm::vec3 originalPosition;
+    } shake;
+
+    // 相机跟随平滑
+    float smoothSpeed = 10.0f;
+    GameObject* followTarget = nullptr;
+    glm::vec3 offset = glm::vec3(0, 0, 10);
+
+public:
+    CameraEffects(GameObject* go) : Component(go) {}
+
+    void start() override {
+        camera = gameObject-&gt;getComponent&lt;Camera&gt;();
+    }
+
+    void update(float deltaTime) override {
+        // 更新相机抖动
+        if (shake.timer &gt; 0.0f) {
+            shake.timer -= deltaTime;
+
+            if (shake.timer &lt;= 0.0f) {
+                // 抖动结束，恢复原位
+                gameObject-&gt;getTransform()-&gt;setPosition(shake.originalPosition);
+                shake.intensity = 0.0f;
+            } else {
+                // 应用抖动
+                float shakeAmount = shake.intensity * (shake.timer / shake.duration);
+                glm::vec3 randomOffset = glm::vec3(
+                    randomFloat(-1.0f, 1.0f),
+                    randomFloat(-1.0f, 1.0f),
+                    randomFloat(-1.0f, 1.0f)
+                ) * shakeAmount;
+
+                gameObject-&gt;getTransform()-&gt;setPosition(shake.originalPosition + randomOffset);
+            }
+        }
+
+        // 平滑跟随目标
+        if (followTarget) {
+            glm::vec3 targetPosition = followTarget-&gt;getTransform()-&gt;getPosition() + offset;
+            glm::vec3 currentPosition = gameObject-&gt;getTransform()-&gt;getPosition();
+
+            glm::vec3 newPosition = glm::mix(currentPosition, targetPosition, smoothSpeed * deltaTime);
+            gameObject-&gt;getTransform()-&gt;setPosition(newPosition);
+        }
+    }
+
+    void startShake(float intensity, float duration) {
+        shake.intensity = intensity;
+        shake.duration = duration;
+        shake.timer = duration;
+        shake.originalPosition = gameObject-&gt;getTransform()-&gt;getPosition();
+    }
+
+    void setFollowTarget(GameObject* target) {
+        followTarget = target;
+    }
+
+    void setOffset(const glm::vec3&amp; newOffset) {
+        offset = newOffset;
+    }
+
+private:
+    float randomFloat(float min, float max) {
+        return min + static_cast&lt;float&gt;(rand()) / (static_cast&lt;float&gt;(RAND_MAX / (max - min)));
+    }
+};
+</code></pre>
+<hr />
+<h2 id="四性能优化实战"><a class="header" href="#四性能优化实战">四、性能优化实战</a></h2>
+<h3 id="41-帧率分析与优化"><a class="header" href="#41-帧率分析与优化">4.1 帧率分析与优化</a></h3>
+<h4 id="实时性能监控"><a class="header" href="#实时性能监控">实时性能监控</a></h4>
+<pre><code class="language-cpp">// performance_monitor.h
+class PerformanceMonitor {
+private:
+    struct FrameData {
+        float cpuTime;      // CPU时间（毫秒）
+        float gpuTime;      // GPU时间（毫秒）
+        int drawCalls;      // Draw Call数量
+        int triangles;      // 三角形数量
+        int textureBinds;   // 纹理绑定次数
+        int stateChanges;   // 状态切换次数
+    };
+
+    std::deque&lt;FrameData&gt; frameHistory;
+    size_t maxHistorySize = 120;  // 保存2秒数据（60fps）
+
+    FrameData currentFrame;
+    FPSCounter fpsCounter;
+    GPUProfiler gpuProfiler;
+
+public:
+    void beginFrame() {
+        currentFrame = FrameData{};
+        fpsCounter.update(Time::deltaTime);
+    }
+
+    void endFrame() {
+        frameHistory.push_back(currentFrame);
+        if (frameHistory.size() &gt; maxHistorySize) {
+            frameHistory.pop_front();
+        }
+    }
+
+    void recordDrawCall(int triangleCount) {
+        currentFrame.drawCalls++;
+        currentFrame.triangles += triangleCount;
+    }
+
+    void recordTextureBinding() {
+        currentFrame.textureBinds++;
+    }
+
+    void recordStateChange() {
+        currentFrame.stateChanges++;
+    }
+
+    void renderOverlay() {
+        Font* font = ResourceManager::getFont("debug");
+
+        // FPS信息
+        char buffer[256];
+        sprintf(buffer, "FPS: %.1f (%.2f ms)", fpsCounter.getFPS(), fpsCounter.getFrameTime());
+        font-&gt;renderText(buffer, 10, 10, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f), 1920, 1080);
+
+        // CPU/GPU时间
+        sprintf(buffer, "CPU: %.2f ms | GPU: %.2f ms",
+                currentFrame.cpuTime, currentFrame.gpuTime);
+        font-&gt;renderText(buffer, 10, 40, 1.0f, glm::vec3(1.0f, 1.0f, 0.0f), 1920, 1080);
+
+        // Draw Call信息
+        sprintf(buffer, "Draw Calls: %d | Triangles: %d",
+                currentFrame.drawCalls, currentFrame.triangles);
+        font-&gt;renderText(buffer, 10, 70, 1.0f, glm::vec3(1.0f, 0.5f, 0.0f), 1920, 1080);
+
+        // 纹理与状态
+        sprintf(buffer, "Texture Binds: %d | State Changes: %d",
+                currentFrame.textureBinds, currentFrame.stateChanges);
+        font-&gt;renderText(buffer, 10, 100, 1.0f, glm::vec3(0.5f, 1.0f, 1.0f), 1920, 1080);
+
+        // 性能图表
+        renderPerformanceGraph();
+    }
+
+    void renderPerformanceGraph() {
+        // 绘制帧时间曲线图
+        if (frameHistory.size() &lt; 2) return;
+
+        std::vector&lt;glm::vec2&gt; points;
+        float maxTime = 33.33f;  // 30fps = 33.33ms
+
+        for (size_t i = 0; i &lt; frameHistory.size(); i++) {
+            float x = 10.0f + (i / (float)maxHistorySize) * 400.0f;
+            float y = 150.0f + (1.0f - frameHistory[i].cpuTime / maxTime) * 100.0f;
+            points.push_back(glm::vec2(x, y));
+        }
+
+        // 使用LineRenderer绘制曲线
+        for (size_t i = 1; i &lt; points.size(); i++) {
+            Debug::drawLine(glm::vec3(points[i-1], 0), glm::vec3(points[i], 0),
+                           glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));
+        }
+    }
+
+    void printReport() {
+        std::cout &lt;&lt; "=== Performance Report ===" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Average FPS: " &lt;&lt; fpsCounter.getAverageFPS() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Min FPS: " &lt;&lt; fpsCounter.getMinFPS() &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Max FPS: " &lt;&lt; fpsCounter.getMaxFPS() &lt;&lt; std::endl;
+
+        // 计算平均值
+        if (!frameHistory.empty()) {
+            float avgDrawCalls = 0.0f;
+            float avgTriangles = 0.0f;
+
+            for (const auto&amp; frame : frameHistory) {
+                avgDrawCalls += frame.drawCalls;
+                avgTriangles += frame.triangles;
+            }
+
+            avgDrawCalls /= frameHistory.size();
+            avgTriangles /= frameHistory.size();
+
+            std::cout &lt;&lt; "Average Draw Calls: " &lt;&lt; avgDrawCalls &lt;&lt; std::endl;
+            std::cout &lt;&lt; "Average Triangles: " &lt;&lt; avgTriangles &lt;&lt; std::endl;
+        }
+    }
+
+    float getAverageCPUTime() const {
+        if (frameHistory.empty()) return 0.0f;
+        float sum = 0.0f;
+        for (const auto&amp; frame : frameHistory) sum += frame.cpuTime;
+        return sum / frameHistory.size();
+    }
+
+    float getAverageGPUTime() const {
+        if (frameHistory.empty()) return 0.0f;
+        float sum = 0.0f;
+        for (const auto&amp; frame : frameHistory) sum += frame.gpuTime;
+        return sum / frameHistory.size();
+    }
+};
+</code></pre>
+<h3 id="42-渲染优化实战"><a class="header" href="#42-渲染优化实战">4.2 渲染优化实战</a></h3>
+<h4 id="drawcall合批实战"><a class="header" href="#drawcall合批实战">DrawCall合批实战</a></h4>
+<pre><code class="language-cpp">// 优化前：每个物体单独绘制
+void Scene::render_Unoptimized(Camera* camera) {
+    for (auto obj : gameObjects) {
+        MeshRenderer* renderer = obj-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (renderer) {
+            Shader* shader = renderer-&gt;getMaterial()-&gt;getShader();
+            shader-&gt;use();
+            shader-&gt;setMat4("model", obj-&gt;getTransform()-&gt;getWorldMatrix());
+            shader-&gt;setMat4("view", camera-&gt;getViewMatrix());
+            shader-&gt;setMat4("projection", camera-&gt;getProjectionMatrix());
+
+            renderer-&gt;getMaterial()-&gt;apply();
+            renderer-&gt;getMesh()-&gt;draw();  // DrawCall!
+        }
+    }
+}
+// 结果：1000个物体 = 1000个DrawCall
+
+// 优化后：使用批渲染
+void Scene::render_Optimized(Camera* camera) {
+    batchRenderer.clear();
+
+    // 收集所有渲染器
+    for (auto obj : gameObjects) {
+        MeshRenderer* renderer = obj-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (renderer) {
+            batchRenderer.addRenderer(renderer);
+        }
+    }
+
+    // 批量渲染
+    batchRenderer.render(camera);
+}
+// 结果：1000个物体 = 10-20个DrawCall（根据材质和网格分组）
+</code></pre>
+<h4 id="视锥剔除实战"><a class="header" href="#视锥剔除实战">视锥剔除实战</a></h4>
+<pre><code class="language-cpp">// frustum_culling.h
+class FrustumCuller {
+private:
+    struct Plane {
+        glm::vec3 normal;
+        float distance;
+
+        float distanceToPoint(const glm::vec3&amp; point) const {
+            return glm::dot(normal, point) + distance;
+        }
+    };
+
+    Plane frustumPlanes[6];  // Left, Right, Bottom, Top, Near, Far
+
+public:
+    void updateFrustum(const glm::mat4&amp; viewProjection) {
+        // 从视图投影矩阵提取平面
+        glm::mat4 vp = glm::transpose(viewProjection);
+
+        // Left
+        frustumPlanes[0].normal = glm::vec3(vp[3] + vp[0]);
+        frustumPlanes[0].distance = vp[3][3] + vp[0][3];
+
+        // Right
+        frustumPlanes[1].normal = glm::vec3(vp[3] - vp[0]);
+        frustumPlanes[1].distance = vp[3][3] - vp[0][3];
+
+        // Bottom
+        frustumPlanes[2].normal = glm::vec3(vp[3] + vp[1]);
+        frustumPlanes[2].distance = vp[3][3] + vp[1][3];
+
+        // Top
+        frustumPlanes[3].normal = glm::vec3(vp[3] - vp[1]);
+        frustumPlanes[3].distance = vp[3][3] - vp[1][3];
+
+        // Near
+        frustumPlanes[4].normal = glm::vec3(vp[3] + vp[2]);
+        frustumPlanes[4].distance = vp[3][3] + vp[2][3];
+
+        // Far
+        frustumPlanes[5].normal = glm::vec3(vp[3] - vp[2]);
+        frustumPlanes[5].distance = vp[3][3] - vp[2][3];
+
+        // 归一化所有平面
+        for (int i = 0; i &lt; 6; i++) {
+            float length = glm::length(frustumPlanes[i].normal);
+            frustumPlanes[i].normal /= length;
+            frustumPlanes[i].distance /= length;
+        }
+    }
+
+    bool isAABBVisible(const AABB&amp; aabb) const {
+        for (int i = 0; i &lt; 6; i++) {
+            // 获取正向顶点
+            glm::vec3 positiveVertex = aabb.min;
+            if (frustumPlanes[i].normal.x &gt;= 0) positiveVertex.x = aabb.max.x;
+            if (frustumPlanes[i].normal.y &gt;= 0) positiveVertex.y = aabb.max.y;
+            if (frustumPlanes[i].normal.z &gt;= 0) positiveVertex.z = aabb.max.z;
+
+            // 如果正向顶点在平面外侧，则整个AABB在外侧
+            if (frustumPlanes[i].distanceToPoint(positiveVertex) &lt; 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool isSphereVisible(const glm::vec3&amp; center, float radius) const {
+        for (int i = 0; i &lt; 6; i++) {
+            float distance = frustumPlanes[i].distanceToPoint(center);
+            if (distance &lt; -radius) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
+
+// 在Scene中应用
+void Scene::renderWithCulling(Camera* camera) {
+    FrustumCuller culler;
+    glm::mat4 vp = camera-&gt;getProjectionMatrix() * camera-&gt;getViewMatrix();
+    culler.updateFrustum(vp);
+
+    int visibleCount = 0;
+    int totalCount = 0;
+
+    for (auto obj : gameObjects) {
+        totalCount++;
+
+        MeshRenderer* renderer = obj-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (!renderer) continue;
+
+        // 获取世界空间AABB
+        AABB worldAABB = renderer-&gt;getMesh()-&gt;getBounds();
+        worldAABB.transform(obj-&gt;getTransform()-&gt;getWorldMatrix());
+
+        // 视锥剔除
+        if (culler.isAABBVisible(worldAABB)) {
+            visibleCount++;
+            renderer-&gt;render(camera);
+        }
+    }
+
+    std::cout &lt;&lt; "Visible: " &lt;&lt; visibleCount &lt;&lt; " / " &lt;&lt; totalCount &lt;&lt; std::endl;
+}
+</code></pre>
+<h3 id="43-内存优化实战"><a class="header" href="#43-内存优化实战">4.3 内存优化实战</a></h3>
+<h4 id="对象池使用示例"><a class="header" href="#对象池使用示例">对象池使用示例</a></h4>
+<pre><code class="language-cpp">// 游戏中的子弹管理
+class GameManager {
+private:
+    ObjectPool&lt;Bullet&gt; bulletPool;
+    std::vector&lt;Bullet*&gt; activeBullets;
+
+public:
+    GameManager() : bulletPool(100) {}  // 预分配100个子弹
+
+    void spawnBullet(const glm::vec3&amp; position, const glm::vec3&amp; direction) {
+        Bullet* bullet = bulletPool.acquire();
+        if (bullet) {
+            bullet-&gt;initialize(position, direction);
+            activeBullets.push_back(bullet);
+        }
+    }
+
+    void update(float deltaTime) {
+        for (auto it = activeBullets.begin(); it != activeBullets.end();) {
+            Bullet* bullet = *it;
+            bullet-&gt;update(deltaTime);
+
+            if (bullet-&gt;shouldDestroy()) {
+                bulletPool.release(bullet);
+                it = activeBullets.erase(it);
+            } else {
+                ++it;
+            }
+        }
+
+        // 打印池信息
+        std::cout &lt;&lt; "Active bullets: " &lt;&lt; activeBullets.size()
+                  &lt;&lt; " / Pool capacity: " &lt;&lt; bulletPool.getCapacity() &lt;&lt; std::endl;
+    }
+};
+
+// 对比：不使用对象池
+class GameManager_Unoptimized {
+private:
+    std::vector&lt;Bullet*&gt; bullets;
+
+public:
+    void spawnBullet(const glm::vec3&amp; position, const glm::vec3&amp; direction) {
+        Bullet* bullet = new Bullet();  // 动态分配！性能杀手！
+        bullet-&gt;initialize(position, direction);
+        bullets.push_back(bullet);
+    }
+
+    void update(float deltaTime) {
+        for (auto it = bullets.begin(); it != bullets.end();) {
+            Bullet* bullet = *it;
+            bullet-&gt;update(deltaTime);
+
+            if (bullet-&gt;shouldDestroy()) {
+                delete bullet;  // 动态释放！内存碎片！
+                it = bullets.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    }
+};
+
+// 性能对比（每秒生成100个子弹，每个子弹存活3秒）：
+// 不使用对象池：大量new/delete操作，内存碎片化，性能下降20-30%
+// 使用对象池：几乎无动态分配，性能提升显著，内存稳定
+</code></pre>
+<hr />
+<h2 id="五引擎调试技巧"><a class="header" href="#五引擎调试技巧">五、引擎调试技巧</a></h2>
+<h3 id="51-可视化调试系统"><a class="header" href="#51-可视化调试系统">5.1 可视化调试系统</a></h3>
+<pre><code class="language-cpp">// 使用Debug绘制类进行可视化调试
+
+void PlayerController::update(float deltaTime) {
+    // 1. 调试玩家前方向
+    glm::vec3 position = transform-&gt;getPosition();
+    glm::vec3 forward = transform-&gt;forward();
+    Debug::drawRay(position, forward, 5.0f);  // 绘制5单位长的射线
+
+    // 2. 调试碰撞体
+    BoxCollider* collider = getComponent&lt;BoxCollider&gt;();
+    if (collider) {
+        AABB bounds = collider-&gt;getBounds();
+        Debug::drawBox(bounds, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f));  // 绿色包围盒
+    }
+
+    // 3. 调试射线检测
+    glm::vec3 rayStart = position + glm::vec3(0, 1, 0);
+    glm::vec3 rayEnd = rayStart + forward * 10.0f;
+    glm::vec3 hitPoint;
+
+    bool hit = PhysicsWorld::getInstance().raycast(rayStart, rayEnd, hitPoint);
+    if (hit) {
+        // 绘制射线到击中点（红色）
+        Debug::drawLine(rayStart, hitPoint, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+        // 绘制击中点标记
+        Debug::drawSphere(hitPoint, 0.2f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    } else {
+        // 绘制完整射线（黄色）
+        Debug::drawLine(rayStart, rayEnd, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    }
+}
+
+void AIController::update(float deltaTime) {
+    // 调试AI视野
+    glm::vec3 eyePos = transform-&gt;getPosition() + glm::vec3(0, 1.5f, 0);
+    glm::vec3 forward = transform-&gt;forward();
+
+    // 绘制视野锥体
+    float viewDistance = 15.0f;
+    float viewAngle = 60.0f;  // 度
+
+    glm::vec3 leftEdge = glm::rotate(forward, glm::radians(-viewAngle/2), glm::vec3(0, 1, 0));
+    glm::vec3 rightEdge = glm::rotate(forward, glm::radians(viewAngle/2), glm::vec3(0, 1, 0));
+
+    Debug::drawRay(eyePos, leftEdge, viewDistance);
+    Debug::drawRay(eyePos, rightEdge, viewDistance);
+    Debug::drawLine(eyePos + leftEdge * viewDistance,
+                   eyePos + rightEdge * viewDistance,
+                   glm::vec4(1.0f, 0.5f, 0.0f, 1.0f));
+
+    // 如果检测到玩家，绘制到玩家的连线
+    if (canSeePlayer) {
+        Debug::drawLine(eyePos, playerPosition, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), 0.1f);
+    }
+}
+</code></pre>
+<h3 id="52-日志系统应用"><a class="header" href="#52-日志系统应用">5.2 日志系统应用</a></h3>
+<pre><code class="language-cpp">// 分级日志使用示例
+
+class ResourceManager {
+public:
+    static Texture* loadTexture(const std::string&amp; path) {
+        LOG_INFO("Loading texture: ", path);
+
+        if (!std::filesystem::exists(path)) {
+            LOG_ERROR("Texture file not found: ", path);
+            return nullptr;
+        }
+
+        Texture* texture = new Texture();
+        bool success = texture-&gt;loadFromFile(path);
+
+        if (!success) {
+            LOG_ERROR("Failed to decode texture: ", path);
+            delete texture;
+            return nullptr;
+        }
+
+        LOG_INFO("Texture loaded successfully: ", path,
+                 " (", texture-&gt;getWidth(), "x", texture-&gt;getHeight(), ")");
+
+        return texture;
+    }
+
+    static Mesh* loadMesh(const std::string&amp; path) {
+        LOG_DEBUG("Attempting to load mesh: ", path);
+
+        Assimp::Importer importer;
+        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+
+        if (!scene || scene-&gt;mFlags &amp; AI_SCENE_FLAGS_INCOMPLETE || !scene-&gt;mRootNode) {
+            LOG_ERROR("Assimp error: ", importer.GetErrorString());
+            return nullptr;
+        }
+
+        LOG_DEBUG("Scene loaded, processing ", scene-&gt;mNumMeshes, " meshes");
+
+        Mesh* mesh = processMesh(scene-&gt;mMeshes[0], scene);
+
+        LOG_INFO("Mesh loaded: ", path,
+                 " (", mesh-&gt;getVertexCount(), " vertices, ",
+                 mesh-&gt;getIndexCount() / 3, " triangles)");
+
+        return mesh;
+    }
+};
+
+// 物理系统调试
+class PhysicsWorld {
+public:
+    void stepSimulation(float deltaTime) {
+        LOG_TRACE("PhysicsWorld::stepSimulation(", deltaTime, ")");
+
+        int numCollisions = checkCollisions();
+
+        if (numCollisions &gt; 0) {
+            LOG_DEBUG("Detected ", numCollisions, " collisions this frame");
+        }
+
+        dynamicsWorld-&gt;stepSimulation(deltaTime, 10);
+    }
+
+    void addRigidBody(btRigidBody* body) {
+        if (!body) {
+            LOG_WARNING("Attempted to add null rigidbody to physics world");
+            return;
+        }
+
+        dynamicsWorld-&gt;addRigidBody(body);
+        LOG_DEBUG("Added rigidbody to physics world (mass: ", body-&gt;getMass(), ")");
+    }
+};
+
+// 游戏逻辑调试
+class Player : public Component {
+public:
+    void takeDamage(float amount) {
+        LOG_INFO("Player taking damage: ", amount);
+
+        health -= amount;
+
+        if (health &lt;= 0) {
+            LOG_WARNING("Player health reached zero!");
+            die();
+        } else {
+            LOG_DEBUG("Player health: ", health, " / ", maxHealth);
+        }
+    }
+
+    void collectItem(Item* item) {
+        LOG_INFO("Player collected item: ", item-&gt;getName());
+
+        inventory.addItem(item);
+
+        LOG_DEBUG("Inventory size: ", inventory.getItemCount(), " / ", inventory.getMaxSize());
+    }
+};
+</code></pre>
+<h3 id="53-性能瓶颈定位"><a class="header" href="#53-性能瓶颈定位">5.3 性能瓶颈定位</a></h3>
+<pre><code class="language-cpp">// 使用Profiler定位性能瓶颈
+
+void Scene::update(float deltaTime) {
+    PROFILE_FUNCTION();
+
+    {
+        PROFILE_SCOPE("Physics Update");
+        physicsWorld-&gt;stepSimulation(deltaTime);
+        // 如果这个区域耗时过长，说明物理计算是瓶颈
+    }
+
+    {
+        PROFILE_SCOPE("GameObject Updates");
+        for (auto obj : gameObjects) {
+            PROFILE_SCOPE("Single GameObject");
+            obj-&gt;update(deltaTime);
+        }
+        // 如果单个GameObject耗时过长，进一步细化
+    }
+
+    {
+        PROFILE_SCOPE("Animation System");
+        animationSystem-&gt;update(deltaTime);
+    }
+
+    {
+        PROFILE_SCOPE("Particle Systems");
+        for (auto ps : particleSystems) {
+            ps-&gt;update(deltaTime);
+        }
+    }
+
+    {
+        PROFILE_SCOPE("AI Updates");
+        for (auto ai : aiControllers) {
+            ai-&gt;update(deltaTime);
+        }
+    }
+}
+
+void Renderer::render(Scene* scene, Camera* camera) {
+    PROFILE_FUNCTION();
+
+    gpuProfiler.beginQuery("Shadow Pass");
+    {
+        PROFILE_SCOPE("CPU: Shadow Pass");
+        renderShadows(scene);
+    }
+    gpuProfiler.endQuery("Shadow Pass");
+
+    gpuProfiler.beginQuery("Geometry Pass");
+    {
+        PROFILE_SCOPE("CPU: Geometry Pass");
+        renderGeometry(scene, camera);
+    }
+    gpuProfiler.endQuery("Geometry Pass");
+
+    gpuProfiler.beginQuery("Lighting Pass");
+    {
+        PROFILE_SCOPE("CPU: Lighting Pass");
+        renderLighting(scene, camera);
+    }
+    gpuProfiler.endQuery("Lighting Pass");
+
+    // 每60帧输出一次报告
+    static int frameCount = 0;
+    if (++frameCount % 60 == 0) {
+        Profiler::getInstance().printReport();
+        gpuProfiler.collectResults();
+        gpuProfiler.printResults();
+    }
+}
+
+// 输出示例：
+// === CPU Profiling Results ===
+// Scene::update: 8.5 ms
+//   ├─ Physics Update: 3.2 ms (38%)
+//   ├─ GameObject Updates: 2.1 ms (25%)
+//   ├─ Animation System: 1.8 ms (21%)
+//   ├─ Particle Systems: 0.9 ms (11%)
+//   └─ AI Updates: 0.5 ms (6%)
+//
+// Renderer::render: 12.3 ms
+//   ├─ Shadow Pass: 4.1 ms (33%)
+//   ├─ Geometry Pass: 5.2 ms (42%)
+//   └─ Lighting Pass: 3.0 ms (24%)
+//
+// === GPU Profiling Results ===
+// Shadow Pass: 2.3 ms
+// Geometry Pass: 6.8 ms
+// Lighting Pass: 4.1 ms
+</code></pre>
+<h3 id="54-常见问题诊断"><a class="header" href="#54-常见问题诊断">5.4 常见问题诊断</a></h3>
+<pre><code class="language-cpp">// 问题1：内存泄漏检测
+class MemoryLeakDetector {
+private:
+    struct Allocation {
+        void* address;
+        size_t size;
+        std::string file;
+        int line;
+    };
+
+    std::map&lt;void*, Allocation&gt; allocations;
+    size_t totalAllocated = 0;
+
+public:
+    void* trackAllocation(size_t size, const char* file, int line) {
+        void* ptr = malloc(size);
+
+        Allocation alloc;
+        alloc.address = ptr;
+        alloc.size = size;
+        alloc.file = file;
+        alloc.line = line;
+
+        allocations[ptr] = alloc;
+        totalAllocated += size;
+
+        return ptr;
+    }
+
+    void trackDeallocation(void* ptr) {
+        auto it = allocations.find(ptr);
+        if (it != allocations.end()) {
+            totalAllocated -= it-&gt;second.size;
+            allocations.erase(it);
+        }
+        free(ptr);
+    }
+
+    void printLeaks() {
+        if (allocations.empty()) {
+            std::cout &lt;&lt; "No memory leaks detected!" &lt;&lt; std::endl;
+            return;
+        }
+
+        std::cout &lt;&lt; "=== MEMORY LEAKS DETECTED ===" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Total leaked: " &lt;&lt; totalAllocated &lt;&lt; " bytes" &lt;&lt; std::endl;
+
+        for (const auto&amp; pair : allocations) {
+            const Allocation&amp; alloc = pair.second;
+            std::cout &lt;&lt; "Leak: " &lt;&lt; alloc.size &lt;&lt; " bytes at "
+                      &lt;&lt; alloc.file &lt;&lt; ":" &lt;&lt; alloc.line &lt;&lt; std::endl;
+        }
+    }
+};
+
+// 问题2：无限循环检测
+class InfiniteLoopDetector {
+private:
+    std::chrono::time_point&lt;std::chrono::high_resolution_clock&gt; loopStartTime;
+    float maxLoopTime = 5.0f;  // 5秒超时
+
+public:
+    void beginLoop() {
+        loopStartTime = std::chrono::high_resolution_clock::now();
+    }
+
+    void checkLoop(const std::string&amp; location) {
+        auto now = std::chrono::high_resolution_clock::now();
+        float elapsed = std::chrono::duration&lt;float&gt;(now - loopStartTime).count();
+
+        if (elapsed &gt; maxLoopTime) {
+            LOG_FATAL("Infinite loop detected at: ", location,
+                     " (running for ", elapsed, " seconds)");
+            // 触发断点或终止程序
+            __debugbreak();
+        }
+    }
+};
+
+// 问题3：悬空指针检测
+template&lt;typename T&gt;
+class SafePointer {
+private:
+    T* ptr;
+    bool valid;
+
+public:
+    SafePointer(T* p = nullptr) : ptr(p), valid(p != nullptr) {}
+
+    T* operator-&gt;() {
+        if (!valid) {
+            LOG_ERROR("Attempted to dereference invalid pointer!");
+            return nullptr;
+        }
+        return ptr;
+    }
+
+    T&amp; operator*() {
+        if (!valid) {
+            LOG_ERROR("Attempted to dereference invalid pointer!");
+            throw std::runtime_error("Invalid pointer access");
+        }
+        return *ptr;
+    }
+
+    void invalidate() {
+        valid = false;
+        ptr = nullptr;
+    }
+
+    bool isValid() const { return valid; }
+};
+</code></pre>
+<hr />
+<p><strong>总结</strong>：本实战项目篇提供了完整的游戏实现案例，包括：</p>
+<ol>
+<li><strong>第三人称射击游戏（TPS）</strong>：角色控制、相机、武器、敌人AI、血量系统</li>
+<li><strong>物理解谜游戏</strong>：物体抓取、压力板、门控系统</li>
+<li><strong>平台跳跃游戏</strong>：精确手感、关卡编辑器、收集物、检查点</li>
+<li><strong>性能优化实战</strong>：实时监控、DrawCall合批、视锥剔除、对象池应用</li>
+<li><strong>引擎调试技巧</strong>：可视化调试、日志系统、性能瓶颈定位、常见问题诊断</li>
+</ol>
+<p>配合其他文档使用，可以构建完整的商业级游戏！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/游戏引擎-README.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/游戏引擎-性能优化.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/游戏引擎-README.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/游戏引擎-性能优化.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

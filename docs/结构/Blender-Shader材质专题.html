@@ -1,0 +1,725 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Blender Shader 材质实战配方专题 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/pagetoc.css">
+        <link rel="stylesheet" href="../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="blender-shader-材质实战配方专题"><a class="header" href="#blender-shader-材质实战配方专题">Blender Shader 材质实战配方专题</a></h1>
+<blockquote>
+<p>10 套常用材质的节点构建步骤与调优技巧,快速积累可复用的材质方案。</p>
+</blockquote>
+<hr />
+<h2 id="-专题导航"><a class="header" href="#-专题导航">📖 专题导航</a></h2>
+<ul>
+<li><strong><a href="./Blender.html">返回主笔记</a></strong> - Blender 核心学习路径</li>
+<li><strong>当前专题</strong>: Shader 材质节点实战配方</li>
+</ul>
+<hr />
+<h2 id="专题概述"><a class="header" href="#专题概述">专题概述</a></h2>
+<h3 id="学习目标"><a class="header" href="#学习目标">学习目标</a></h3>
+<p>✅ 掌握 10 种常用材质的节点构建方法
+✅ 理解 PBR 材质的核心原理与参数调优
+✅ 能够独立设计和调试复杂材质节点树
+✅ 建立个人材质库,提升工作效率</p>
+<h3 id="适用人群"><a class="header" href="#适用人群">适用人群</a></h3>
+<ul>
+<li>完成 Blender 基础材质学习的用户</li>
+<li>需要快速制作真实感材质的设计师</li>
+<li>希望建立材质资产库的技术美术</li>
+<li>对程序化材质感兴趣的开发者</li>
+</ul>
+<hr />
+<h2 id="第一章材质配方速查表"><a class="header" href="#第一章材质配方速查表">第一章:材质配方速查表</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>材质名称</th><th>核心特性</th><th>难度</th><th>应用场景</th></tr></thead><tbody>
+<tr><td>磨砂金属</td><td>高粗糙度、法线随机</td><td>⭐⭐</td><td>工业设备、武器</td></tr>
+<tr><td>拉丝铝</td><td>方向纹理、各向异性</td><td>⭐⭐⭐</td><td>厨具、电子产品</td></tr>
+<tr><td>透明玻璃</td><td>折射、反射、厚度</td><td>⭐⭐</td><td>容器、窗户</td></tr>
+<tr><td>次表面皮肤</td><td>SSS、色散、油脂</td><td>⭐⭐⭐⭐</td><td>角色、有机物</td></tr>
+<tr><td>科技发光面板</td><td>发光、扫描线、动画</td><td>⭐⭐⭐</td><td>UI、科幻道具</td></tr>
+<tr><td>旧木材</td><td>颜色分层、年轮、凹凸</td><td>⭐⭐⭐</td><td>家具、建筑</td></tr>
+<tr><td>油漆剥落</td><td>噪声遮罩、分层</td><td>⭐⭐⭐⭐</td><td>废弃场景、旧物</td></tr>
+<tr><td>雾化玻璃</td><td>模糊、散射</td><td>⭐⭐</td><td>浴室、装饰</td></tr>
+<tr><td>霓虹灯牌</td><td>发光、辉光、边缘</td><td>⭐⭐⭐</td><td>招牌、夜景</td></tr>
+<tr><td>赛博金属反光</td><td>高光、划痕、清漆</td><td>⭐⭐⭐⭐</td><td>科幻机械、未来感</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="第二章材质配方详解"><a class="header" href="#第二章材质配方详解">第二章:材质配方详解</a></h2>
+<h3 id="配方-1-磨砂金属-brushed-metal"><a class="header" href="#配方-1-磨砂金属-brushed-metal">配方 1: 磨砂金属 (Brushed Metal)</a></h3>
+<p><strong>效果描述</strong>: 表面有细微瑕疵和随机纹理的哑光金属</p>
+<p><strong>节点结构</strong>:</p>
+<pre><code>Principled BSDF
+├─ Base Color: RGB(0.8, 0.8, 0.8)
+├─ Metallic: 1.0
+├─ Roughness: Noise Texture -&gt; ColorRamp (0.4-0.7)
+│   └─ Scale: 100-200
+├─ Normal: Noise Texture -&gt; Bump
+    └─ Strength: 0.1-0.3
+</code></pre>
+<p><strong>详细步骤</strong>:</p>
+<ol>
+<li>
+<p><strong>添加 Principled BSDF</strong></p>
+<ul>
+<li>Base Color: 浅灰色 <code>(0.8, 0.8, 0.8)</code></li>
+<li>Metallic: <code>1.0</code></li>
+</ul>
+</li>
+<li>
+<p><strong>创建粗糙度变化</strong>:</p>
+<pre><code>Add -&gt; Texture -&gt; Noise Texture
+├─ Scale: 150
+├─ Detail: 4
+└─ Distortion: 0.5
+
+-&gt; ColorRamp
+├─ Stop 1 (Pos: 0.4): Black (0.4 Roughness)
+└─ Stop 2 (Pos: 0.7): White (0.7 Roughness)
+
+-&gt; Principled BSDF (Roughness)
+</code></pre>
+</li>
+<li>
+<p><strong>添加法线细节</strong>:</p>
+<pre><code>Noise Texture (复用上面的)
+-&gt; Bump Node
+├─ Strength: 0.2
+├─ Distance: 1.0
+└─ -&gt; Principled BSDF (Normal)
+</code></pre>
+</li>
+</ol>
+<p><strong>调优建议</strong>:</p>
+<ul>
+<li><strong>Noise Scale</strong>: <code>50-200</code> 控制瑕疵大小</li>
+<li><strong>ColorRamp 范围</strong>: 调整金属光泽度</li>
+<li><strong>Bump Strength</strong>: 不要超过 <code>0.5</code>,避免过度凹凸</li>
+</ul>
+<hr />
+<h3 id="配方-2-拉丝铝-anisotropic-aluminum"><a class="header" href="#配方-2-拉丝铝-anisotropic-aluminum">配方 2: 拉丝铝 (Anisotropic Aluminum)</a></h3>
+<p><strong>效果描述</strong>: 具有方向性拉丝纹理的金属表面</p>
+<p><strong>节点结构</strong>:</p>
+<pre><code>Wave Texture (Bands, Y 方向)
+└─ ColorRamp -&gt; Anisotropic BSDF (Roughness)
+
+Mix Shader (Fresnel 控制)
+├─ Anisotropic BSDF (拉丝效果)
+└─ Glossy BSDF (镜面反射)
+</code></pre>
+<p><strong>详细步骤</strong>:</p>
+<ol>
+<li>
+<p><strong>创建拉丝纹理</strong>:</p>
+<pre><code>Wave Texture
+├─ Wave Type: Bands
+├─ Direction: Y (竖直拉丝)
+├─ Scale: 20
+└─ Distortion: 0.5
+
+-&gt; ColorRamp (压缩对比度)
+-&gt; Anisotropic BSDF (Roughness)
+</code></pre>
+</li>
+<li>
+<p><strong>设置各向异性参数</strong>:</p>
+<pre><code>Anisotropic BSDF
+├─ Color: RGB(0.9, 0.9, 0.9)
+├─ Roughness: 0.3 (从 Wave Texture 驱动)
+├─ Anisotropic: 0.8 (拉丝强度)
+└─ Rotation: 0.0 (Y 方向)
+</code></pre>
+</li>
+<li>
+<p><strong>混合镜面反射</strong>:</p>
+<pre><code>Fresnel Node (IOR: 1.5)
+-&gt; Mix Shader (Factor)
+├─ Shader 1: Anisotropic BSDF
+└─ Shader 2: Glossy BSDF (Sharp: Roughness 0.05)
+</code></pre>
+</li>
+</ol>
+<p><strong>调优建议</strong>:</p>
+<ul>
+<li><strong>Wave Scale</strong>: 控制拉丝密度 (<code>10-50</code>)</li>
+<li><strong>Anisotropic Value</strong>: <code>0.6-0.95</code> 控制拉丝明显程度</li>
+<li><strong>Rotation</strong>: 旋转拉丝方向 (<code>0.0-1.0</code> 对应 <code>0°-360°</code>)</li>
+</ul>
+<hr />
+<h3 id="配方-3-透明玻璃-clear-glass"><a class="header" href="#配方-3-透明玻璃-clear-glass">配方 3: 透明玻璃 (Clear Glass)</a></h3>
+<p><strong>效果描述</strong>: 具有真实折射和反射的透明玻璃</p>
+<p><strong>节点结构</strong>:</p>
+<pre><code>Glass BSDF
+├─ IOR: 1.45 (玻璃折射率)
+└─ Roughness: 0.0-0.05
+
+Mix Shader (Light Path 控制阴影)
+├─ Transparent BSDF (阴影射线)
+└─ Glass BSDF (其他射线)
+
+Volume Absorption (可选,着色玻璃)
+└─ Color: 轻微色偏
+</code></pre>
+<p><strong>详细步骤</strong>:</p>
+<ol>
+<li>
+<p><strong>基础玻璃材质</strong>:</p>
+<pre><code>Glass BSDF
+├─ Color: RGB(1.0, 1.0, 1.0)
+├─ Roughness: 0.01
+└─ IOR: 1.45
+</code></pre>
+</li>
+<li>
+<p><strong>解决阴影问题</strong>:</p>
+<pre><code>Light Path (Is Shadow Ray)
+-&gt; Mix Shader (Factor)
+├─ Shader 1: Glass BSDF
+└─ Shader 2: Transparent BSDF
+
+# 阴影射线使用透明,其他射线使用玻璃
+</code></pre>
+</li>
+<li>
+<p><strong>添加体积吸收</strong> (可选):</p>
+<pre><code>Volume Absorption
+├─ Color: RGB(0.95, 0.98, 1.0) # 轻微蓝色
+└─ Density: 0.05
+
+-&gt; Material Output (Volume)
+</code></pre>
+</li>
+</ol>
+<p><strong>Eevee 特殊设置</strong>:</p>
+<ul>
+<li>启用 <code>Screen Space Refraction</code></li>
+<li>设置 <code>Refraction Depth</code>: 根据玻璃厚度调整</li>
+<li>启用 <code>Blend Mode -&gt; Alpha Blend</code></li>
+</ul>
+<p><strong>调优建议</strong>:</p>
+<ul>
+<li><strong>IOR 参考值</strong>:
+<ul>
+<li>玻璃: <code>1.45-1.5</code></li>
+<li>水: <code>1.33</code></li>
+<li>钻石: <code>2.42</code></li>
+</ul>
+</li>
+<li><strong>Roughness</strong>: 0.0 = 完全光滑,0.1 = 磨砂玻璃</li>
+</ul>
+<hr />
+<h3 id="配方-4-次表面皮肤-subsurface-skin"><a class="header" href="#配方-4-次表面皮肤-subsurface-skin">配方 4: 次表面皮肤 (Subsurface Skin)</a></h3>
+<p><strong>效果描述</strong>: 具有次表面散射效果的真实皮肤</p>
+<p><strong>节点结构</strong>:</p>
+<pre><code>Principled BSDF
+├─ Base Color: 皮肤贴图
+├─ Subsurface: 0.2-0.4
+├─ Subsurface Radius: RGB(1.0, 0.2, 0.1) # 红色散射最远
+├─ Subsurface Color: 偏红色调
+├─ Roughness: 0.4
+└─ Specular: 0.5
+</code></pre>
+<p><strong>详细步骤</strong>:</p>
+<ol>
+<li>
+<p><strong>加载皮肤贴图</strong>:</p>
+<pre><code>Image Texture (Base Color Map)
+-&gt; Principled BSDF (Base Color)
+
+Image Texture (Roughness Map)
+-&gt; Principled BSDF (Roughness)
+
+Image Texture (Normal Map)
+-&gt; Normal Map Node
+-&gt; Principled BSDF (Normal)
+</code></pre>
+</li>
+<li>
+<p><strong>设置次表面参数</strong>:</p>
+<pre><code>Principled BSDF
+├─ Subsurface: 0.3
+├─ Subsurface Radius:
+│   R: 1.0 (红光散射最远)
+│   G: 0.2 (绿光中等)
+│   B: 0.1 (蓝光最少)
+├─ Subsurface Color: RGB(0.9, 0.6, 0.5)
+└─ Subsurface Method: Random Walk (更真实)
+</code></pre>
+</li>
+<li>
+<p><strong>添加油脂高光</strong>:</p>
+<pre><code>Principled BSDF
+├─ Specular: 0.5
+├─ Specular Tint: 0.1 (轻微着色)
+└─ Sheen: 0.2 (绒毛效果)
+</code></pre>
+</li>
+</ol>
+<p><strong>调优建议</strong>:</p>
+<ul>
+<li><strong>Subsurface Value</strong>:
+<ul>
+<li>厚部位(如手臂): <code>0.2-0.3</code></li>
+<li>薄部位(如耳朵): <code>0.4-0.6</code></li>
+</ul>
+</li>
+<li><strong>Subsurface Radius</strong>: 根据皮肤类型调整红绿蓝比例</li>
+<li><strong>Specular</strong>: 油性皮肤 <code>0.6-0.8</code>,干燥皮肤 <code>0.3-0.5</code></li>
+</ul>
+<hr />
+<h3 id="配方-5-科技发光面板-tech-glowing-panel"><a class="header" href="#配方-5-科技发光面板-tech-glowing-panel">配方 5: 科技发光面板 (Tech Glowing Panel)</a></h3>
+<p><strong>效果描述</strong>: 带有扫描线和闪烁效果的科幻UI面板</p>
+<p><strong>节点结构</strong>:</p>
+<pre><code>Gradient Texture (扫描线)
+-&gt; Math (Sine, 频率控制)
+-&gt; ColorRamp (颜色映射)
+-&gt; Emission Shader
+
+Mix Shader (与基础材质混合)
+├─ Principled BSDF (面板基础)
+└─ Emission (发光部分)
+</code></pre>
+<p><strong>详细步骤</strong>:</p>
+<ol>
+<li>
+<p><strong>创建扫描线</strong>:</p>
+<pre><code>Texture Coordinate (Generated)
+-&gt; Separate XYZ (选择 Y 或 Z)
+-&gt; Math (Multiply, 10) # 控制扫描线密度
+-&gt; Math (Sine) # 生成周期性波形
+-&gt; ColorRamp
+</code></pre>
+</li>
+<li>
+<p><strong>添加闪烁效果</strong>:</p>
+<pre><code>Scene Time (Seconds)
+-&gt; Math (Multiply, 2.0) # 闪烁频率
+-&gt; Math (Sine)
+-&gt; Map Range (0-1 -&gt; 0.5-1.0) # 避免完全熄灭
+-&gt; Math (Multiply) # 与扫描线相乘
+</code></pre>
+</li>
+<li>
+<p><strong>设置发光</strong>:</p>
+<pre><code>ColorRamp (扫描线)
+-&gt; ColorRamp (颜色映射)
+├─ Stop 1: RGB(0.0, 0.5, 1.0) # 蓝色
+└─ Stop 2: RGB(0.0, 1.0, 1.0) # 青色
+
+-&gt; Emission Shader
+└─ Strength: 5.0-10.0
+</code></pre>
+</li>
+<li>
+<p><strong>与基础材质混合</strong>:</p>
+<pre><code>Noise Texture (遮罩)
+-&gt; ColorRamp (控制发光区域)
+-&gt; Mix Shader (Factor)
+├─ Principled BSDF (黑色塑料)
+└─ Emission (发光)
+</code></pre>
+</li>
+</ol>
+<p><strong>Eevee 特效增强</strong>:</p>
+<ul>
+<li>启用 <code>Bloom</code> (强度 0.1-0.3)</li>
+<li>调整 <code>Bloom Threshold</code>: 0.8</li>
+</ul>
+<p><strong>调优建议</strong>:</p>
+<ul>
+<li><strong>扫描线密度</strong>: Math (Multiply) 值 <code>5-20</code></li>
+<li><strong>闪烁频率</strong>: Scene Time (Multiply) 值 <code>1-5</code></li>
+<li><strong>Emission Strength</strong>: Eevee 用 <code>2-5</code>,Cycles 用 <code>5-15</code></li>
+</ul>
+<hr />
+<h3 id="配方-6-旧木材-aged-wood"><a class="header" href="#配方-6-旧木材-aged-wood">配方 6: 旧木材 (Aged Wood)</a></h3>
+<p><strong>效果描述</strong>: 具有年轮、颜色变化和凹凸的真实木材</p>
+<p><strong>节点结构</strong>:</p>
+<pre><code>Wave Texture (年轮) + Voronoi (随机变化)
+-&gt; ColorRamp (颜色分层)
+-&gt; Principled BSDF (Base Color)
+
+Bump (凹凸细节)
+└─ -&gt; Normal
+</code></pre>
+<p><strong>详细步骤</strong>:</p>
+<ol>
+<li>
+<p><strong>创建年轮纹理</strong>:</p>
+<pre><code>Texture Coordinate (Object)
+-&gt; Mapping (Rotation X: 90°) # 让年轮沿 Z 轴
+-&gt; Wave Texture
+├─ Wave Type: Bands
+├─ Scale: 5
+└─ Distortion: 0.5
+</code></pre>
+</li>
+<li>
+<p><strong>添加随机变化</strong>:</p>
+<pre><code>Voronoi Texture
+├─ Scale: 3
+└─ F1 Output
+
+-&gt; Math (Add) # 与 Wave Texture 叠加
+-&gt; Wave Texture
+</code></pre>
+</li>
+<li>
+<p><strong>颜色分层</strong>:</p>
+<pre><code>Combined Texture
+-&gt; ColorRamp
+├─ Stop 1 (0.0): RGB(0.3, 0.2, 0.1) # 深褐色
+├─ Stop 2 (0.5): RGB(0.6, 0.4, 0.2) # 中棕色
+└─ Stop 3 (1.0): RGB(0.8, 0.6, 0.3) # 浅黄色
+
+-&gt; Principled BSDF (Base Color)
+</code></pre>
+</li>
+<li>
+<p><strong>添加凹凸</strong>:</p>
+<pre><code>Wave Texture (复用)
+-&gt; Bump Node
+├─ Strength: 0.5
+└─ Distance: 0.1
+
+-&gt; Principled BSDF (Normal)
+</code></pre>
+</li>
+<li>
+<p><strong>设置材质参数</strong>:</p>
+<pre><code>Principled BSDF
+├─ Roughness: 0.7
+├─ Specular: 0.2
+└─ Sheen: 0.3 (模拟绒毛)
+</code></pre>
+</li>
+</ol>
+<p><strong>调优建议</strong>:</p>
+<ul>
+<li><strong>年轮Scale</strong>: <code>3-8</code> 控制年轮密度</li>
+<li><strong>ColorRamp</strong>: 根据木材种类调整颜色
+<ul>
+<li>橡木: 浅黄褐色</li>
+<li>胡桃木: 深棕色</li>
+<li>松木: 淡黄色</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="第三章材质调试技巧"><a class="header" href="#第三章材质调试技巧">第三章:材质调试技巧</a></h2>
+<h3 id="31-node-wrangler-快捷键"><a class="header" href="#31-node-wrangler-快捷键">3.1 Node Wrangler 快捷键</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>快捷键</th><th>功能</th><th>说明</th></tr></thead><tbody>
+<tr><td><code>Ctrl + T</code></td><td>自动贴图设置</td><td>自动创建 Image Texture + Mapping + Coord</td></tr>
+<tr><td><code>Ctrl + Shift + 左键</code></td><td>预览节点</td><td>临时连接到输出,查看中间结果</td></tr>
+<tr><td><code>Ctrl + J</code></td><td>创建 Frame</td><td>将选中节点组织到 Frame 中</td></tr>
+<tr><td><code>Shift + A</code> -&gt; <code>Layout</code> -&gt; <code>Frame</code></td><td>手动创建 Frame</td><td>组织节点树</td></tr>
+</tbody></table>
+</div>
+<h3 id="32-常见材质问题排查"><a class="header" href="#32-常见材质问题排查">3.2 常见材质问题排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>可能原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>材质全黑</td><td>缺少光源/法线反转</td><td>添加灯光,重计算法线</td></tr>
+<tr><td>贴图显示错误</td><td>UV 未展开/坐标错误</td><td>检查 UV,使用 Generated 坐标</td></tr>
+<tr><td>Eevee vs Cycles 差异大</td><td>Eevee 不支持某些节点</td><td>使用兼容节点,或针对渲染器定制</td></tr>
+<tr><td>材质反射过强</td><td>Specular 过高</td><td>降低 Specular 到 0.3-0.5</td></tr>
+<tr><td>透明材质显示错误</td><td>Blend Mode 设置错误</td><td>设置为 Alpha Blend/Alpha Clip</td></tr>
+</tbody></table>
+</div>
+<h3 id="33-性能优化建议"><a class="header" href="#33-性能优化建议">3.3 性能优化建议</a></h3>
+<p><strong>节点树优化</strong>:</p>
+<ol>
+<li><strong>减少纹理节点</strong>: 合并贴图(如 AO 与 Roughness)</li>
+<li><strong>使用简化节点</strong>: Eevee 中避免过深的节点树</li>
+<li><strong>缓存节点组</strong>: 重复使用的节点保存为 Node Group</li>
+</ol>
+<p><strong>贴图优化</strong>:</p>
+<ol>
+<li><strong>压缩贴图</strong>: 使用 JPEG(Color) 和 PNG(Alpha/Normal)</li>
+<li><strong>降低分辨率</strong>: 远景物体使用 1K-2K 贴图</li>
+<li><strong>使用 Mipmap</strong>: Blender 自动处理,但注意 Filter 设置</li>
+</ol>
+<hr />
+<h2 id="第四章材质库管理"><a class="header" href="#第四章材质库管理">第四章:材质库管理</a></h2>
+<h3 id="41-材质命名规范"><a class="header" href="#41-材质命名规范">4.1 材质命名规范</a></h3>
+<pre><code>&lt;类型&gt;_&lt;描述&gt;_&lt;变体&gt;
+
+例如:
+MAT_Metal_Brushed_001
+MAT_Glass_Frosted_Blue
+MAT_Wood_Oak_Aged
+</code></pre>
+<h3 id="42-asset-browser-组织"><a class="header" href="#42-asset-browser-组织">4.2 Asset Browser 组织</a></h3>
+<pre><code>MaterialLibrary.blend
+├── Metals/
+│   ├── MAT_Metal_Brushed
+│   ├── MAT_Metal_Rusted
+│   └── MAT_Metal_Chrome
+├── Glass/
+│   ├── MAT_Glass_Clear
+│   └── MAT_Glass_Frosted
+└── Organic/
+    ├── MAT_Skin_Fair
+    └── MAT_Wood_Oak
+</code></pre>
+<h3 id="43-材质参数暴露"><a class="header" href="#43-材质参数暴露">4.3 材质参数暴露</a></h3>
+<p><strong>使用 Group Input</strong>:</p>
+<pre><code>将关键参数(如颜色、粗糙度)暴露为节点组输入
+-&gt; 在 Asset Browser 中添加预览图
+-&gt; 编写使用文档
+</code></pre>
+<hr />
+<h2 id="附录材质节点速查"><a class="header" href="#附录材质节点速查">附录:材质节点速查</a></h2>
+<h3 id="核心节点"><a class="header" href="#核心节点">核心节点</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>节点</th><th>功能</th><th>关键参数</th></tr></thead><tbody>
+<tr><td>Principled BSDF</td><td>PBR 主材质</td><td>Metallic, Roughness, Normal</td></tr>
+<tr><td>Mix Shader</td><td>混合两个材质</td><td>Fac (Factor)</td></tr>
+<tr><td>ColorRamp</td><td>值域映射</td><td>颜色断点位置</td></tr>
+<tr><td>Bump</td><td>法线贴图</td><td>Strength, Distance</td></tr>
+<tr><td>Noise Texture</td><td>噪声纹理</td><td>Scale, Detail, Distortion</td></tr>
+</tbody></table>
+</div>
+<h3 id="高级节点"><a class="header" href="#高级节点">高级节点</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>节点</th><th>功能</th><th>应用场景</th></tr></thead><tbody>
+<tr><td>Layer Weight</td><td>边缘检测</td><td>Fresnel 效果</td></tr>
+<tr><td>Geometry</td><td>几何信息</td><td>Position, Normal, Pointiness</td></tr>
+<tr><td>Light Path</td><td>光线路径</td><td>Is Camera/Shadow Ray 判断</td></tr>
+<tr><td>Math</td><td>数学运算</td><td>程序化效果</td></tr>
+<tr><td>Value</td><td>参数输入</td><td>可暴露为滑杆</td></tr>
+</tbody></table>
+</div>
+<hr />
+<p><strong>专题版本</strong>: v1.0
+<strong>最后更新</strong>: 2025-01-06
+<strong>作者</strong>: Claude Code Tech Note Generator
+<strong>许可</strong>: CC BY-SA 4.0</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../结构/Blender-Python自动化专题.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../结构/Blender-实战项目案例集.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../结构/Blender-Python自动化专题.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../结构/Blender-实战项目案例集.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../theme/segmentit.umd.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../theme/searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

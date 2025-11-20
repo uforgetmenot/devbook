@@ -183,39 +183,50 @@
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="blender-全栈实战学习笔记"><a class="header" href="#blender-全栈实战学习笔记">Blender 全栈实战学习笔记</a></h1>
 <blockquote>
-<p>面向 0-5 年经验的三维内容创作者、转行学习者与需要快速建立 Blender 生产能力的技术人员。遵循“概念—步骤—实战—验证—扩展”节奏，确保每一知识点都能在真实项目中落地。</p>
+<p>面向 0-5 年经验的三维内容创作者、转行学习者与需要快速建立 Blender 生产能力的技术人员。遵循"概念—步骤—实战—验证—扩展"节奏,确保每一知识点都能在真实项目中落地。</p>
 </blockquote>
+<hr />
+<h2 id="-笔记导航"><a class="header" href="#-笔记导航">📚 笔记导航</a></h2>
+<p>本学习笔记采用模块化结构,主文件包含核心学习路径,专题内容独立成章:</p>
+<ul>
+<li><strong>[主文件]</strong> Blender.md - 核心学习路径与基础知识体系</li>
+<li><strong>[专题]</strong> <a href="./Blender-GeometryNodes%E4%B8%93%E9%A2%98.html">Blender-GeometryNodes专题.md</a> - 程序化建模深度实践</li>
+<li><strong>[专题]</strong> <a href="./Blender-Shader%E6%9D%90%E8%B4%A8%E4%B8%93%E9%A2%98.html">Blender-Shader材质专题.md</a> - 10套实战材质配方与节点技巧</li>
+<li><strong>[专题]</strong> <a href="./Blender-Python%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B8%93%E9%A2%98.html">Blender-Python自动化专题.md</a> - 插件开发与脚本自动化</li>
+<li><strong>[专题]</strong> <a href="./Blender-%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE%E6%A1%88%E4%BE%8B%E9%9B%86.html">Blender-实战项目案例集.md</a> - 完整项目从需求到交付</li>
+</ul>
 <hr />
 <h2 id="学习地图速览"><a class="header" href="#学习地图速览">学习地图速览</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>学习阶段</th><th>核心目标</th><th>关键能力</th><th>代表实战项目</th><th>预估时长</th></tr></thead><tbody>
-<tr><td>第 0 阶段：环境准备</td><td>完成 Blender 环境搭建与界面认知</td><td>熟悉界面、视图、文件管理</td><td>快速重建官方 Startup 场景</td><td>1-2 天</td></tr>
-<tr><td>第 1 阶段：基础操控入门</td><td>掌握基础导航、建模与材质</td><td>操作内置对象，理解变换、修改器</td><td>制作一个带材质的小型桌面摆件</td><td>7-10 天</td></tr>
-<tr><td>第 2 阶段：精细建模与贴图</td><td>建立高低模 workflow，掌握 UV 与 PBR</td><td>创建复杂道具或场景</td><td>科技产品硬表面建模</td><td>10-14 天</td></tr>
-<tr><td>第 3 阶段：动画与模拟</td><td>理解关键帧、曲线编辑、物理系统</td><td>完成角色或机械动画</td><td>机械臂运动与粒子特效结合</td><td>14-21 天</td></tr>
-<tr><td>第 4 阶段：渲染与合成</td><td>精准控制光影、材质与渲染器参数</td><td>生成生产级画面并完成合成</td><td>Cycles 渲染 + Eevee 实时预览项目</td><td>7-10 天</td></tr>
-<tr><td>第 5 阶段：项目交付与扩展</td><td>完成从建模到交付流程，掌握脚本自动化与插件生态</td><td>输出多格式资源，对接 DCC/LBE 流程</td><td>完整产品广告短片交付</td><td>14 天</td></tr>
+<tr><td>第 0 阶段:环境准备</td><td>完成 Blender 环境搭建与界面认知</td><td>熟悉界面、视图、文件管理</td><td>快速重建官方 Startup 场景</td><td>1-2 天</td></tr>
+<tr><td>第 1 阶段:基础操控入门</td><td>掌握基础导航、建模与材质</td><td>操作内置对象,理解变换、修改器</td><td>制作一个带材质的小型桌面摆件</td><td>7-10 天</td></tr>
+<tr><td>第 2 阶段:精细建模与贴图</td><td>建立高低模 workflow,掌握 UV 与 PBR</td><td>创建复杂道具或场景</td><td>科技产品硬表面建模</td><td>10-14 天</td></tr>
+<tr><td>第 3 阶段:动画与模拟</td><td>理解关键帧、曲线编辑、物理系统</td><td>完成角色或机械动画</td><td>机械臂运动与粒子特效结合</td><td>14-21 天</td></tr>
+<tr><td>第 4 阶段:渲染与合成</td><td>精准控制光影、材质与渲染器参数</td><td>生成生产级画面并完成合成</td><td>Cycles 渲染 + Eevee 实时预览项目</td><td>7-10 天</td></tr>
+<tr><td>第 5 阶段:项目交付与扩展</td><td>完成从建模到交付流程,掌握脚本自动化与插件生态</td><td>输出多格式资源,对接 DCC/LBE 流程</td><td>完整产品广告短片交付</td><td>14 天</td></tr>
 </tbody></table>
 </div>
 <hr />
 <h2 id="学习者画像与前置要求"><a class="header" href="#学习者画像与前置要求">学习者画像与前置要求</a></h2>
+<h3 id="目标学习者定位"><a class="header" href="#目标学习者定位">目标学习者定位</a></h3>
 <ul>
-<li><strong>定位</strong>：具备基础计算机操作能力，对三维创作或图形渲染感兴趣的技术人员、设计师或开发者。</li>
-<li><strong>背景假设</strong>：
-<ul>
-<li>可能来自前端/游戏/工业设计/影视等领域，对三维软件的认知零散。</li>
-<li>熟悉基本的线性代数概念（向量、矩阵）可加速理解空间变换，但不是硬性要求。</li>
-<li>具备一定英文阅读能力，更容易利用官方文档与国外资源。</li>
+<li><strong>技术背景</strong>:具备基础计算机操作能力,对三维创作或图形渲染感兴趣的技术人员、设计师或开发者</li>
+<li><strong>来源领域</strong>:可能来自前端/游戏/工业设计/影视等领域,对三维软件的认知零散</li>
+<li><strong>数学基础</strong>:熟悉基本的线性代数概念(向量、矩阵)可加速理解空间变换,但不是硬性要求</li>
+<li><strong>语言能力</strong>:具备一定英文阅读能力,更容易利用官方文档与国外资源</li>
 </ul>
-</li>
-<li><strong>学习目标</strong>：
+<h3 id="核心学习目标"><a class="header" href="#核心学习目标">核心学习目标</a></h3>
 <ol>
-<li>独立完成 Blender 场景从建模到渲染的完整流程。</li>
-<li>能够针对不同项目需求（影视、游戏、工业可视化）选择合适的建模/贴图/渲染策略。</li>
-<li>具备一定的插件开发或 Python 脚本自动化能力，提高生产效率。</li>
-<li>建立可复用的资产库，支撑持续项目交付。</li>
+<li><strong>独立完成全流程</strong>:从建模到渲染的完整场景制作流程</li>
+<li><strong>项目需求适配</strong>:能够针对不同项目需求(影视、游戏、工业可视化)选择合适的建模/贴图/渲染策略</li>
+<li><strong>自动化能力</strong>:具备一定的插件开发或 Python 脚本自动化能力,提高生产效率</li>
+<li><strong>资产库建设</strong>:建立可复用的资产库,支撑持续项目交付</li>
 </ol>
-</li>
-<li><strong>学习约束</strong>：每周建议投入 12-15 小时，持续 8-12 周，可根据项目紧急程度调整节奏。</li>
+<h3 id="学习时间规划"><a class="header" href="#学习时间规划">学习时间规划</a></h3>
+<ul>
+<li><strong>周投入</strong>:每周建议投入 12-15 小时</li>
+<li><strong>学习周期</strong>:持续 8-12 周</li>
+<li><strong>调整机制</strong>:可根据项目紧急程度调整节奏</li>
 </ul>
 <hr />
 <h2 id="学习路径总览"><a class="header" href="#学习路径总览">学习路径总览</a></h2>
@@ -246,1868 +257,1855 @@
     输出与资产管理       : 4d
 </code></pre>
 <blockquote>
-<p><strong>使用建议</strong>：可将甘特图视为基准节奏，根据自身底层能力调整。每个阶段建议至少完成 1-2 个实战项目，并记录问题与解决方案，构建个人知识库。</p>
+<p><strong>使用建议</strong>:可将甘特图视为基准节奏,根据自身底层能力调整。每个阶段建议至少完成 1-2 个实战项目,并记录问题与解决方案,构建个人知识库。</p>
 </blockquote>
 <hr />
 <h2 id="环境与工具准备"><a class="header" href="#环境与工具准备">环境与工具准备</a></h2>
 <h3 id="硬件与操作系统建议"><a class="header" href="#硬件与操作系统建议">硬件与操作系统建议</a></h3>
+<h4 id="推荐配置"><a class="header" href="#推荐配置">推荐配置</a></h4>
 <ul>
-<li><strong>GPU</strong>：推荐 Nvidia RTX 3060 及以上，显存 ≥ 8GB。若主要使用 Eevee，可适度降低标准；Cycles 渲染或复杂模拟需要更高配置。</li>
-<li><strong>CPU</strong>：建议 6 核以上，主频 ≥ 3.0GHz；涉及多线程模拟（烟雾、布料）时越高越好。</li>
-<li><strong>内存</strong>：至少 16GB，推荐 32GB 以上以满足高精度场景编辑与多软件并行。</li>
-<li><strong>存储</strong>：SSD 是必须，Blender 项目、纹理、缓存建议使用 NVMe SSD；大型素材可放置在高速外部存储。</li>
-<li><strong>外设</strong>：搭载滚轮与中键的鼠标；有条件可使用数位板和 3Dconnexion SpaceMouse；双屏配置能显著提升效率。</li>
+<li><strong>GPU</strong>:推荐 Nvidia RTX 3060 及以上,显存 ≥ 8GB
+<ul>
+<li>主要使用 Eevee 可适度降低标准</li>
+<li>Cycles 渲染或复杂模拟需要更高配置</li>
+</ul>
+</li>
+<li><strong>CPU</strong>:建议 6 核以上,主频 ≥ 3.0GHz
+<ul>
+<li>涉及多线程模拟(烟雾、布料)时越高越好</li>
+</ul>
+</li>
+<li><strong>内存</strong>:至少 16GB,推荐 32GB 以上
+<ul>
+<li>满足高精度场景编辑与多软件并行需求</li>
+</ul>
+</li>
+<li><strong>存储</strong>:SSD 必须,推荐 NVMe SSD
+<ul>
+<li>Blender 项目、纹理、缓存使用 NVMe SSD</li>
+<li>大型素材可放置在高速外部存储</li>
+</ul>
+</li>
+<li><strong>外设</strong>:
+<ul>
+<li>搭载滚轮与中键的鼠标(必需)</li>
+<li>数位板(可选,雕刻建模时提升效率)</li>
+<li>3Dconnexion SpaceMouse(可选,专业三维导航)</li>
+<li>双屏配置(推荐,显著提升效率)</li>
+</ul>
+</li>
 </ul>
 <h3 id="软件安装与版本管理"><a class="header" href="#软件安装与版本管理">软件安装与版本管理</a></h3>
+<h4 id="下载与安装"><a class="header" href="#下载与安装">下载与安装</a></h4>
 <ol>
-<li><strong>下载渠道</strong>：优先使用 <a href="https://www.blender.org/download/">Blender 官方站点</a> 或 <a href="https://store.steampowered.com/app/365670/Blender/">Steam</a> 获取最新 LTS/Stable 版本。</li>
-<li><strong>版本策略</strong>：
+<li>
+<p><strong>官方渠道</strong></p>
 <ul>
-<li>生产项目建议使用 LTS（Long-term Support）版本，当前主流为 3.x LTS；</li>
-<li>想预览新特性可并行安装最新 Stable 或 Beta 版本，使用便携版避免覆盖；</li>
-<li>可通过 <code>blender --version</code> 与 <code>blender --background --python-expr "print('Hello')"</code> 在命令行快速验证安装成功。</li>
+<li><a href="https://www.blender.org/download/">Blender 官方站点</a></li>
+<li><a href="https://store.steampowered.com/app/365670/Blender/">Steam 版本</a></li>
 </ul>
 </li>
-<li><strong>多版本共存</strong>：
+<li>
+<p><strong>版本选择策略</strong></p>
 <ul>
-<li>Windows：下载 ZIP 便携版，解压到独立文件夹，自定义 <code>blender.exe</code> 快捷方式；</li>
-<li>macOS：通过 DMG/Universal 版本安装，多版本放置在 <code>/Applications</code> 子目录；</li>
-<li>Linux：推荐使用 Snap (<code>sudo snap install blender --classic</code>) 或 Flatpak (<code>flatpak install flathub org.blender.Blender</code>)，或直接下载 tarball 解压运行；</li>
-<li>使用 Blender Launcher / Steam 可自动完成更新与切换。</li>
+<li><strong>生产项目</strong>:使用 LTS(Long-term Support)版本,当前主流为 3.x LTS</li>
+<li><strong>新特性体验</strong>:并行安装最新 Stable 或 Beta 版本,使用便携版避免覆盖</li>
+<li><strong>版本验证</strong>:
+<pre><code class="language-bash">blender --version
+blender --background --python-expr "print('Hello')"
+</code></pre>
+</li>
 </ul>
 </li>
-<li><strong>必备依赖</strong>：
+<li>
+<p><strong>多版本共存方案</strong></p>
 <ul>
-<li>GPU 驱动更新到最新稳定版；</li>
-<li>安装 FFmpeg（Blender 内置，但 CLI 输出需要单独安装）；</li>
-<li>如需结合外部渲染引擎（如 Octane、Redshift），提前确认硬件与许可证。</li>
+<li><strong>Windows</strong>:下载 ZIP 便携版,解压到独立文件夹,自定义快捷方式</li>
+<li><strong>macOS</strong>:通过 DMG/Universal 版本安装,多版本放置在 <code>/Applications</code> 子目录</li>
+<li><strong>Linux</strong>:
+<pre><code class="language-bash"># Snap 安装
+sudo snap install blender --classic
+
+# Flatpak 安装
+flatpak install flathub org.blender.Blender
+
+# 或下载 tarball 直接解压运行
+</code></pre>
+</li>
+<li><strong>版本管理工具</strong>:使用 Blender Launcher 或 Steam 自动完成更新与切换</li>
+</ul>
+</li>
+<li>
+<p><strong>必备依赖</strong></p>
+<ul>
+<li>GPU 驱动更新到最新稳定版</li>
+<li>安装 FFmpeg(Blender 内置,但 CLI 输出需要单独安装)</li>
+<li>外部渲染引擎(如 Octane、Redshift)需提前确认硬件与许可证</li>
 </ul>
 </li>
 </ol>
 <h3 id="初始配置与工作目录规范"><a class="header" href="#初始配置与工作目录规范">初始配置与工作目录规范</a></h3>
-<ul>
-<li><strong>资源目录规划</strong>：建议建立如下结构，保持项目可迁移性。</li>
-</ul>
+<h4 id="资源目录规划"><a class="header" href="#资源目录规划">资源目录规划</a></h4>
+<p>建议建立如下结构,保持项目可迁移性:</p>
 <pre><code class="language-bash">BlenderProjects/
-  ├── 00_Assets/          # 通用资产：HDRI、纹理、模型库
-  ├── 01_Study/           # 学习练习项目，包含阶段性案例
+  ├── 00_Assets/          # 通用资产:HDRI、纹理、模型库
+  ├── 01_Study/           # 学习练习项目,包含阶段性案例
   ├── 02_Commercial/      # 商业项目文件夹
   └── templates/          # 自定义 Startup 文件与渲染 preset
 </code></pre>
-<ul>
-<li>
-<p><strong>Startup File 自定义</strong>：</p>
+<h4 id="startup-file-自定义"><a class="header" href="#startup-file-自定义">Startup File 自定义</a></h4>
 <ol>
-<li>调整首选项（快捷键、主题、添加/移除插件、视图单位）。</li>
-<li>建立常用 Collection、摄像机与灯光模板。</li>
-<li>执行 <code>File -&gt; Defaults -&gt; Save Startup File</code>，保存为团队统一标准。</li>
+<li>调整首选项(快捷键、主题、添加/移除插件、视图单位)</li>
+<li>建立常用 Collection、摄像机与灯光模板</li>
+<li>执行 <code>File -&gt; Defaults -&gt; Save Startup File</code>,保存为团队统一标准</li>
 </ol>
-</li>
-<li>
-<p><strong>首选项同步</strong>：</p>
+<h4 id="首选项同步"><a class="header" href="#首选项同步">首选项同步</a></h4>
 <ul>
-<li>使用 <code>File -&gt; Defaults -&gt; Save Preferences</code> 将配置写入用户目录；</li>
-<li>在多台设备之间，可拷贝 <code>~/Library/Application Support/Blender/&lt;version&gt;/config</code>（macOS）或 <code>%APPDATA%\Blender Foundation\Blender\&lt;version&gt;\config</code>（Windows）实现同步；</li>
-<li>利用 Blender Cloud 或 Git 管理 <code>config</code> 与 <code>scripts</code> 文件夹，确保一致性。</li>
+<li>使用 <code>File -&gt; Defaults -&gt; Save Preferences</code> 将配置写入用户目录</li>
+<li><strong>多设备同步</strong>:
+<ul>
+<li>macOS: <code>~/Library/Application Support/Blender/&lt;version&gt;/config</code></li>
+<li>Windows: <code>%APPDATA%\Blender Foundation\Blender\&lt;version&gt;\config</code></li>
+<li>利用 Blender Cloud 或 Git 管理 <code>config</code> 与 <code>scripts</code> 文件夹</li>
 </ul>
 </li>
 </ul>
 <h3 id="插件与脚本生态"><a class="header" href="#插件与脚本生态">插件与脚本生态</a></h3>
+<h4 id="官方内置插件"><a class="header" href="#官方内置插件">官方内置插件</a></h4>
+<p>通过 <code>Edit -&gt; Preferences -&gt; Add-ons</code> 启用,推荐:</p>
 <ul>
-<li><strong>官方内置插件（Add-ons）</strong>：通过 <code>Edit -&gt; Preferences -&gt; Add-ons</code> 启用，推荐：
-<ul>
-<li><code>Node Wrangler</code>：增强 Shader Editor 操作。</li>
-<li><code>LoopTools</code>：快速建模辅助。</li>
-<li><code>Bool Tool</code>：布尔操作脚本化。</li>
-<li><code>Sketchfab</code>/<code>BlenderKit</code>：快速获取云端资产。</li>
+<li><strong>Node Wrangler</strong>:增强 Shader Editor 操作</li>
+<li><strong>LoopTools</strong>:快速建模辅助</li>
+<li><strong>Bool Tool</strong>:布尔操作脚本化</li>
+<li><strong>Sketchfab/BlenderKit</strong>:快速获取云端资产</li>
 </ul>
-</li>
-<li><strong>第三方插件推荐</strong>：
-<ul>
-<li><strong>建模效率</strong>：HardOps/Boxcutter、Machin3Tools、Speedflow。</li>
-<li><strong>贴图与材质</strong>：Extreme PBR、Simplicage Library。</li>
-<li><strong>动画与绑定</strong>：Auto Rig Pro、Rigify (官方内置)、Animation Nodes。</li>
-<li><strong>渲染增强</strong>：K-Cycles、Physical Starlight and Atmosphere。</li>
-<li><strong>生产管理</strong>：Clean Panels、Asset Browser Manager。</li>
-</ul>
-</li>
-<li><strong>插件安装方法</strong>：
+<h4 id="第三方插件推荐"><a class="header" href="#第三方插件推荐">第三方插件推荐</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>分类</th><th>插件</th><th>功能说明</th></tr></thead><tbody>
+<tr><td>建模效率</td><td>HardOps/Boxcutter、Machin3Tools、Speedflow</td><td>硬表面建模加速</td></tr>
+<tr><td>贴图与材质</td><td>Extreme PBR、Simplicage Library</td><td>材质库管理</td></tr>
+<tr><td>动画与绑定</td><td>Auto Rig Pro、Rigify(官方)、Animation Nodes</td><td>自动绑定与动画节点</td></tr>
+<tr><td>渲染增强</td><td>K-Cycles、Physical Starlight and Atmosphere</td><td>渲染优化与真实天光</td></tr>
+<tr><td>生产管理</td><td>Clean Panels、Asset Browser Manager</td><td>界面优化与资产管理</td></tr>
+</tbody></table>
+</div>
+<h4 id="插件安装方法"><a class="header" href="#插件安装方法">插件安装方法</a></h4>
 <ol>
-<li>下载 <code>.zip</code> 或 <code>.py</code> 文件；</li>
-<li>在 <code>Preferences -&gt; Add-ons -&gt; Install</code> 选择文件；</li>
-<li>勾选启用，必要时在 <code>N</code> 面板找到功能；</li>
-<li>定期更新版本，记录变更日志。</li>
+<li>下载 <code>.zip</code> 或 <code>.py</code> 文件</li>
+<li>在 <code>Preferences -&gt; Add-ons -&gt; Install</code> 选择文件</li>
+<li>勾选启用,必要时在 <code>N</code> 面板找到功能</li>
+<li>定期更新版本,记录变更日志</li>
 </ol>
-</li>
-</ul>
 <h3 id="blender-与其他工具联动"><a class="header" href="#blender-与其他工具联动">Blender 与其他工具联动</a></h3>
+<h4 id="dcc-软件集成"><a class="header" href="#dcc-软件集成">DCC 软件集成</a></h4>
 <ul>
-<li><strong>DCC</strong>：与 Maya、3ds Max 通过 <code>FBX/OBJ/Alembic</code> 交互，注意轴向差异（Blender 默认 Z 轴向上）。</li>
-<li><strong>游戏引擎</strong>：与 Unreal Engine、Unity 配合时，使用 <code>glTF</code> 或专用插件（如 UE 官方 Send to Unreal）；</li>
-<li><strong>纹理软件</strong>：Substance 3D Painter/Designer、Quixel Mixer；导出 PBR 套件后导入 Blender Shader；</li>
-<li><strong>版本管理</strong>：
+<li><strong>Maya/3ds Max</strong>:通过 <code>FBX/OBJ/Alembic</code> 交互
 <ul>
-<li>使用 Git-LFS 或 Perforce 管理大文件；</li>
-<li>Blender 支持 <code>.blend</code> 文件作为二进制增量存储，可结合 <code>--background --python</code> 实现自动打包。</li>
+<li>注意轴向差异(Blender 默认 Z 轴向上)</li>
+<li>统一单位系统与坐标系</li>
 </ul>
 </li>
+</ul>
+<h4 id="游戏引擎对接"><a class="header" href="#游戏引擎对接">游戏引擎对接</a></h4>
+<ul>
+<li><strong>Unreal Engine</strong>:
+<ul>
+<li>使用 <code>glTF</code> 或专用插件(UE 官方 Send to Unreal)</li>
+<li>配置 Datasmith 支持场景更新</li>
+</ul>
+</li>
+<li><strong>Unity</strong>:
+<ul>
+<li>导出 glTF 或 FBX</li>
+<li>使用 HDRP/URP 材质系统</li>
+</ul>
+</li>
+</ul>
+<h4 id="纹理软件协作"><a class="header" href="#纹理软件协作">纹理软件协作</a></h4>
+<ul>
+<li><strong>Substance 3D Painter/Designer</strong>:导出 PBR 套件后导入 Blender Shader</li>
+<li><strong>Quixel Mixer</strong>:使用 Megascans 资产库</li>
+</ul>
+<h4 id="版本管理"><a class="header" href="#版本管理">版本管理</a></h4>
+<ul>
+<li>使用 Git-LFS 或 Perforce 管理大文件</li>
+<li>Blender 支持 <code>.blend</code> 文件作为二进制增量存储</li>
+<li>可结合 <code>--background --python</code> 实现自动打包</li>
 </ul>
 <blockquote>
-<p><strong>错误预防</strong>：确保资产路径使用相对路径，开启 <code>File -&gt; External Data -&gt; Automatically Pack into .blend</code> 仅适用于小型项目，大型项目需自建素材服务器。</p>
+<p><strong>错误预防</strong>:确保资产路径使用相对路径,开启 <code>File -&gt; External Data -&gt; Automatically Pack into .blend</code> 仅适用于小型项目,大型项目需自建素材服务器。</p>
 </blockquote>
 <hr />
-<h2 id="模块一基础入门第-1-阶段"><a class="header" href="#模块一基础入门第-1-阶段">模块一：基础入门（第 1 阶段）</a></h2>
+<h2 id="模块一基础入门第-1-阶段"><a class="header" href="#模块一基础入门第-1-阶段">模块一:基础入门(第 1 阶段)</a></h2>
 <h3 id="模块目标"><a class="header" href="#模块目标">模块目标</a></h3>
-<ul>
-<li>熟练掌握 Blender 界面、导航与常用快捷键。</li>
-<li>理解对象模式（Object Mode）与编辑模式（Edit Mode）的区别与切换逻辑。</li>
-<li>能够创建基础几何体，并进行移动（G）、旋转（R）、缩放（S）等操作。</li>
-<li>理解 Modifier（修改器）工作原理，完成简单非破坏性建模。</li>
-<li>能够为模型添加基本材质与贴图，并输出首个渲染结果。</li>
-</ul>
+<p>✅ 熟练掌握 Blender 界面、导航与常用快捷键
+✅ 理解对象模式(Object Mode)与编辑模式(Edit Mode)的区别与切换逻辑
+✅ 能够创建基础几何体,并进行移动(G)、旋转(R)、缩放(S)等操作
+✅ 理解 Modifier(修改器)工作原理,完成简单非破坏性建模
+✅ 能够为模型添加基本材质与贴图,并输出首个渲染结果</p>
 <h3 id="核心知识点拆解"><a class="header" href="#核心知识点拆解">核心知识点拆解</a></h3>
-<ol>
-<li><strong>界面导航与视图控制</strong>：
+<h4 id="1-界面导航与视图控制"><a class="header" href="#1-界面导航与视图控制">1. 界面导航与视图控制</a></h4>
+<p><strong>3D 视口操作</strong>:</p>
 <ul>
-<li>3D 视口：<code>Shift + 中键</code> 平移、<code>中键</code> 旋转视角、<code>滚轮</code> 缩放。</li>
-<li>视图快捷键：数字键盘 <code>1/3/7</code> 对应前/侧/顶视图；<code>Ctrl + 数字键</code> 切换到相反方向；<code>0</code> 切换到摄像机视图。</li>
-<li>工作区（Layout、Modeling、UV Editing、Shading、Animation、Rendering 等）切换与自定义。</li>
+<li><code>Shift + 中键</code>:平移视图</li>
+<li><code>中键</code>:旋转视角</li>
+<li><code>滚轮</code>:缩放视图</li>
 </ul>
-</li>
-<li><strong>对象管理与 Collection</strong>：
+<p><strong>视图快捷键</strong>:</p>
 <ul>
-<li><code>Outliner</code> 中管理层级、隐藏/显示、集合（Collection）的使用；</li>
-<li><code>Alt + H</code> 取消隐藏，<code>H</code> 隐藏选中对象。</li>
+<li>数字键盘 <code>1/3/7</code>:前/侧/顶视图</li>
+<li><code>Ctrl + 数字键</code>:切换到相反方向</li>
+<li><code>0</code>:切换到摄像机视图</li>
+<li><code>Home</code>:聚焦所有对象</li>
+<li><code>.</code>(小数点):聚焦选中对象</li>
 </ul>
-</li>
-<li><strong>变换与对齐</strong>：
+<p><strong>工作区</strong>:</p>
 <ul>
-<li>使用 gizmo 控制，熟悉 Snap (<code>Shift + Tab</code>) 与对齐选项；</li>
-<li><code>Shift + S</code> 光标与对象的对齐方式，<code>Ctrl + A</code> 应用变换。</li>
+<li>Layout、Modeling、UV Editing、Shading、Animation、Rendering 等</li>
+<li>可自定义工作区并保存</li>
 </ul>
-</li>
-<li><strong>基础建模</strong>：
+<h4 id="2-对象管理与-collection"><a class="header" href="#2-对象管理与-collection">2. 对象管理与 Collection</a></h4>
+<p><strong>Outliner 管理</strong>:</p>
 <ul>
-<li>编辑模式下顶点/边/面切换（<code>1/2/3</code>）；</li>
-<li><code>E</code> 拉伸、<code>I</code> 内插面、<code>Ctrl + R</code> 环切；</li>
-<li>修改器如 <code>Subdivision Surface</code>、<code>Mirror</code> 的使用流程。</li>
+<li>层级管理、隐藏/显示</li>
+<li>Collection(集合)组织对象</li>
+<li><code>Alt + H</code>:取消隐藏</li>
+<li><code>H</code>:隐藏选中对象</li>
 </ul>
-</li>
-<li><strong>材质与渲染</strong>：
+<p><strong>选择技巧</strong>:</p>
 <ul>
-<li>Eevee 与 Cycles 渲染器区别，<code>Viewport Shading</code> 四模式；</li>
-<li>基于 Principled BSDF 的 PBR 材质节点介绍；</li>
-<li><code>F12</code> 渲染静帧，输出设置（分辨率、采样、色彩空间）。</li>
+<li><code>A</code>:全选/取消全选</li>
+<li><code>Alt + A</code>:取消选择</li>
+<li><code>Box Select</code> (B):框选</li>
+<li><code>Circle Select</code> (C):圈选</li>
 </ul>
-</li>
-</ol>
-<h3 id="实战案例桌面造型小摆件"><a class="header" href="#实战案例桌面造型小摆件">实战案例：桌面造型小摆件</a></h3>
+<h4 id="3-变换与对齐"><a class="header" href="#3-变换与对齐">3. 变换与对齐</a></h4>
+<p><strong>基础变换</strong>:</p>
+<ul>
+<li><code>G</code>:移动(Grab)</li>
+<li><code>R</code>:旋转(Rotate)</li>
+<li><code>S</code>:缩放(Scale)</li>
+<li>按 <code>X/Y/Z</code> 锁定轴向</li>
+<li>按 <code>Shift + X/Y/Z</code> 排除轴向</li>
+</ul>
+<p><strong>精确控制</strong>:</p>
+<ul>
+<li>数字键输入精确数值</li>
+<li><code>Shift</code>:精细调整</li>
+<li><code>Ctrl</code>:按步长调整</li>
+<li><code>Shift + S</code>:光标与对象的对齐菜单</li>
+<li><code>Ctrl + A</code>:应用变换</li>
+</ul>
+<h4 id="4-基础建模"><a class="header" href="#4-基础建模">4. 基础建模</a></h4>
+<p><strong>编辑模式</strong>:</p>
+<ul>
+<li><code>Tab</code>:切换对象模式/编辑模式</li>
+<li><code>1/2/3</code>:顶点/边/面选择模式</li>
+</ul>
+<p><strong>常用操作</strong>:</p>
+<ul>
+<li><code>E</code>:拉伸(Extrude)</li>
+<li><code>I</code>:内插面(Inset)</li>
+<li><code>Ctrl + R</code>:环切(Loop Cut)</li>
+<li><code>K</code>:刀切(Knife)</li>
+<li><code>F</code>:补面</li>
+<li><code>X</code>:删除菜单</li>
+</ul>
+<p><strong>修改器系统</strong>:</p>
+<ul>
+<li><code>Subdivision Surface</code>:平滑细分</li>
+<li><code>Mirror</code>:镜像建模</li>
+<li><code>Array</code>:阵列复制</li>
+<li><code>Bevel</code>:倒角</li>
+<li><code>Boolean</code>:布尔运算</li>
+</ul>
+<h4 id="5-材质与渲染入门"><a class="header" href="#5-材质与渲染入门">5. 材质与渲染入门</a></h4>
+<p><strong>渲染器选择</strong>:</p>
+<ul>
+<li><strong>Eevee</strong>:实时渲染引擎,快速预览</li>
+<li><strong>Cycles</strong>:路径追踪渲染器,高质量输出</li>
+</ul>
+<p><strong>Viewport Shading 四模式</strong>:</p>
+<ul>
+<li><code>Z</code> 键切换:线框/实体/材质预览/渲染预览</li>
+</ul>
+<p><strong>基础材质</strong>:</p>
+<ul>
+<li>Principled BSDF:基于物理的材质节点</li>
+<li>基础参数:Base Color、Metallic、Roughness、Normal</li>
+</ul>
+<p><strong>渲染输出</strong>:</p>
+<ul>
+<li><code>F12</code>:渲染当前帧</li>
+<li><code>Ctrl + F12</code>:渲染动画</li>
+<li>输出设置:分辨率、采样、色彩空间</li>
+</ul>
+<h3 id="实战案例桌面造型小摆件"><a class="header" href="#实战案例桌面造型小摆件">实战案例:桌面造型小摆件</a></h3>
 <blockquote>
-<p><strong>案例目标</strong>：在 2 小时内完成一个包含主体模型、材质和简单灯光的桌面摆件（如带灯座的小夜灯）。</p>
+<p><strong>案例目标</strong>:在 2 小时内完成一个包含主体模型、材质和简单灯光的桌面摆件(如带灯座的小夜灯)。</p>
 </blockquote>
+<h4 id="步骤-1初始化项目"><a class="header" href="#步骤-1初始化项目">步骤 1:初始化项目</a></h4>
 <ol>
-<li><strong>初始化项目</strong>：
-<ul>
-<li>使用默认立方体，先应用缩放 (<code>Ctrl + A</code>)；</li>
-<li>切换到 <code>Edit Mode</code>，使用 <code>Loop Cut</code> 切割出灯罩形状。</li>
-</ul>
-</li>
-<li><strong>建立造型</strong>：
-<ul>
-<li>使用 <code>Modifier -&gt; Subdivision Surface</code> 平滑灯罩；</li>
-<li>添加 <code>Solidify</code> 修改器控制厚度；</li>
-<li>使用 <code>Bevel</code> 修改器增强棱线。</li>
-</ul>
-</li>
-<li><strong>材质设置</strong>：
-<ul>
-<li>创建两种材质：灯罩玻璃（半透明、发光）与底座金属；</li>
-<li>在 Shader Editor 中使用 <code>Principled BSDF</code>、<code>Emission</code>，配合 <code>Mix Shader</code>。</li>
-</ul>
-</li>
-<li><strong>灯光布局</strong>：
-<ul>
-<li>添加 <code>Area Light</code> 模拟环境灯；</li>
-<li>复制灯罩材质内的 <code>Emission Strength</code> 形成灯光发光效果。</li>
-</ul>
-</li>
-<li><strong>摄像机与渲染</strong>：
-<ul>
-<li><code>Ctrl + Alt + 0</code> 将摄像机对准当前视角；</li>
-<li>设置 Eevee 渲染器，启用 <code>Bloom</code> 表现发光；</li>
-<li><code>Output Properties</code> 中设置分辨率 1920x1080，保存输出。</li>
-</ul>
-</li>
-<li><strong>成果验证</strong>：
-<ul>
-<li>渲染图像无明显法线错误与面闪；</li>
-<li>模型拓扑清晰，面数可控；</li>
-<li>材质表现符合预期，发光部分不过曝。</li>
-</ul>
-</li>
+<li>使用默认立方体,先应用缩放 (<code>Ctrl + A</code>)</li>
+<li>切换到 <code>Edit Mode</code> (<code>Tab</code>)</li>
+<li>使用 <code>Loop Cut</code> (<code>Ctrl + R</code>) 切割出灯罩形状</li>
 </ol>
-<h3 id="常见错误与排查"><a class="header" href="#常见错误与排查">常见错误与排查</a></h3>
+<h4 id="步骤-2建立造型"><a class="header" href="#步骤-2建立造型">步骤 2:建立造型</a></h4>
+<ol>
+<li>使用 <code>Modifier -&gt; Subdivision Surface</code> 平滑灯罩</li>
+<li>添加 <code>Solidify</code> 修改器控制厚度</li>
+<li>使用 <code>Bevel</code> 修改器增强棱线</li>
+<li>调整参数直到形态满意</li>
+</ol>
+<h4 id="步骤-3材质设置"><a class="header" href="#步骤-3材质设置">步骤 3:材质设置</a></h4>
+<ol>
+<li>切换到 Shading 工作区</li>
+<li>创建两种材质:
 <ul>
-<li><strong>法线反转</strong>：进入 <code>Edit Mode</code> 全选（<code>A</code>），<code>Shift + N</code> 重计算法线。</li>
-<li><strong>Modifier 应用顺序混乱</strong>：遵循 Mirror -&gt; Boolean -&gt; Bevel -&gt; Subdivision 的常见顺序；可利用自定义 Stack 模板。</li>
-<li><strong>材质发黑</strong>：检查是否开启 <code>Use Nodes</code>，以及灯光是否足够；切换渲染模式预览。</li>
-<li><strong>缩放异常</strong>：未应用变换导致；确保 <code>Ctrl + A</code> 应用 Location/Rotation/Scale。</li>
+<li><strong>灯罩玻璃</strong>:半透明、发光
+<ul>
+<li>Transmission: 1.0</li>
+<li>Roughness: 0.1</li>
+<li>添加 Emission 节点</li>
 </ul>
+</li>
+<li><strong>底座金属</strong>:
+<ul>
+<li>Metallic: 1.0</li>
+<li>Roughness: 0.3</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>在 Shader Editor 中使用 <code>Principled BSDF</code></li>
+</ol>
+<h4 id="步骤-4灯光布局"><a class="header" href="#步骤-4灯光布局">步骤 4:灯光布局</a></h4>
+<ol>
+<li>添加 <code>Area Light</code> (<code>Shift + A -&gt; Light -&gt; Area</code>)</li>
+<li>调整灯光位置和强度</li>
+<li>在灯罩材质中添加 <code>Emission</code> 节点模拟发光</li>
+</ol>
+<h4 id="步骤-5摄像机与渲染"><a class="header" href="#步骤-5摄像机与渲染">步骤 5:摄像机与渲染</a></h4>
+<ol>
+<li>调整视角到理想位置</li>
+<li><code>Ctrl + Alt + 0</code>:将摄像机对准当前视角</li>
+<li>切换到 Eevee 渲染器</li>
+<li>启用 <code>Bloom</code> 效果表现发光</li>
+<li>设置输出:
+<ul>
+<li>分辨率:1920x1080</li>
+<li>采样:64(预览)或 128(最终)</li>
+</ul>
+</li>
+<li><code>F12</code> 渲染并保存输出</li>
+</ol>
+<h4 id="步骤-6成果验证"><a class="header" href="#步骤-6成果验证">步骤 6:成果验证</a></h4>
+<p>✅ 渲染图像无明显法线错误与面闪
+✅ 模型拓扑清晰,面数可控(&lt; 10k)
+✅ 材质表现符合预期,发光部分不过曝
+✅ 文件已按目录规范保存</p>
+<h3 id="常见错误与排查"><a class="header" href="#常见错误与排查">常见错误与排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>法线反转(模型发黑)</td><td>面朝向错误</td><td><code>Edit Mode</code> 全选 (<code>A</code>), <code>Shift + N</code> 重计算法线</td></tr>
+<tr><td>Modifier 应用顺序混乱</td><td>不理解修改器堆叠逻辑</td><td>遵循 Mirror -&gt; Boolean -&gt; Bevel -&gt; Subdivision 顺序</td></tr>
+<tr><td>材质发黑</td><td>未开启节点或缺少灯光</td><td>检查 <code>Use Nodes</code>,添加光源</td></tr>
+<tr><td>缩放异常</td><td>未应用变换</td><td><code>Ctrl + A</code> 应用 Location/Rotation/Scale</td></tr>
+<tr><td>视图操作卡顿</td><td>对象太多或细分过高</td><td>使用 Simplify,降低视口细分级别</td></tr>
+</tbody></table>
+</div>
 <h3 id="阶段小结与-checklist"><a class="header" href="#阶段小结与-checklist">阶段小结与 Checklist</a></h3>
 <ul>
 <li><input disabled="" type="checkbox"/>
-熟悉 Blender 主要界面板块与常用快捷键。</li>
+熟悉 Blender 主要界面板块与常用快捷键</li>
 <li><input disabled="" type="checkbox"/>
-能使用 Pivot、Snap、3D Cursor 提高变换精度。</li>
+能使用 Pivot、Snap、3D Cursor 提高变换精度</li>
 <li><input disabled="" type="checkbox"/>
-能创建并管理 Collection，保持场景整洁。</li>
+能创建并管理 Collection,保持场景整洁</li>
 <li><input disabled="" type="checkbox"/>
-至少完成 1 个包含多材质的静帧作品。</li>
+至少完成 1 个包含多材质的静帧作品</li>
 <li><input disabled="" type="checkbox"/>
-将项目文件与渲染输出按照既定目录归档。</li>
+将项目文件与渲染输出按照既定目录归档</li>
 </ul>
 <hr />
-<h2 id="模块二建模进阶第-2-阶段"><a class="header" href="#模块二建模进阶第-2-阶段">模块二：建模进阶（第 2 阶段）</a></h2>
+<h2 id="模块二建模进阶第-2-阶段"><a class="header" href="#模块二建模进阶第-2-阶段">模块二:建模进阶(第 2 阶段)</a></h2>
 <h3 id="模块目标-1"><a class="header" href="#模块目标-1">模块目标</a></h3>
-<ul>
-<li>建立硬表面与有机建模两套 workflow，理解拓扑优化原则。</li>
-<li>掌握常用修改器（Array、Boolean、Lattice、Data Transfer）组合使用。</li>
-<li>熟悉高模/低模生产流程，能与游戏引擎实时资产对接。</li>
-<li>理解 Box Modeling、Spline Modeling、Sculpting 的适用场景。</li>
-<li>掌握 UV 展开、贴图烘焙的基础流程，为材质阶段做准备。</li>
-</ul>
+<p>✅ 建立硬表面与有机建模两套 workflow,理解拓扑优化原则
+✅ 掌握常用修改器(Array、Boolean、Lattice、Data Transfer)组合使用
+✅ 熟悉高模/低模生产流程,能与游戏引擎实时资产对接
+✅ 理解 Box Modeling、Spline Modeling、Sculpting 的适用场景
+✅ 掌握 UV 展开、贴图烘焙的基础流程</p>
 <h3 id="核心知识点拆解-1"><a class="header" href="#核心知识点拆解-1">核心知识点拆解</a></h3>
+<h4 id="1-硬表面建模流程"><a class="header" href="#1-硬表面建模流程">1. 硬表面建模流程</a></h4>
+<p><strong>工作流程</strong>:</p>
 <ol>
-<li><strong>硬表面建模流程</strong>：
+<li><strong>参考准备</strong>:从 blueprint 或实物照片开始</li>
+<li><strong>Box Modeling</strong>:先用基础几何体搭框架</li>
+<li><strong>逐步细化</strong>:添加环线、拉伸、内插</li>
+<li><strong>布尔运算</strong>:使用 Boolean 切割结构细节</li>
+<li><strong>边缘处理</strong>:使用 Bevel、Weighted Normal</li>
+</ol>
+<p><strong>关键技术</strong>:</p>
 <ul>
-<li>从参考图（blueprint）与 <code>Grease Pencil</code> 标注开始；</li>
-<li>Box → Detail：先用基础几何体搭框架，再逐步细化；</li>
-<li>精准布尔：使用 <code>Boxcutter</code> + <code>HardOps</code> 或原生 <code>Boolean</code>；</li>
-<li>控制锐边：<code>Weighted Normal</code>、<code>Bevel</code> 设置 <code>Limit Method</code>、<code>Profile</code>。</li>
+<li><strong>精准布尔</strong>:使用 <code>Boxcutter</code> + <code>HardOps</code> 或原生 <code>Boolean</code></li>
+<li><strong>锐边控制</strong>:
+<ul>
+<li><code>Weighted Normal</code> modifier</li>
+<li><code>Bevel</code> 设置 <code>Limit Method</code>、<code>Profile</code></li>
+<li><code>Mean Crease</code> 控制细分边缘</li>
 </ul>
 </li>
-<li><strong>有机建模与雕刻</strong>：
-<ul>
-<li>使用 <code>Dyntopo</code> 进行快速草模；</li>
-<li>利用 <code>Remesh</code> 与 <code>Multiresolution</code> 控制细节层级；</li>
-<li><code>Sculpt Tools UI</code>、<code>Pose</code>、<code>Grab</code>、<code>Clay Strips</code>、<code>Inflate</code> 等常用笔刷。</li>
 </ul>
-</li>
-<li><strong>拓扑优化</strong>：
+<h4 id="2-有机建模与雕刻"><a class="header" href="#2-有机建模与雕刻">2. 有机建模与雕刻</a></h4>
+<p><strong>雕刻工作流</strong>:</p>
+<ol>
+<li><strong>基础形态</strong>:使用 <code>Dyntopo</code> 快速草模</li>
+<li><strong>细节雕刻</strong>:利用 <code>Multiresolution</code> 控制细节层级</li>
+<li><strong>笔刷工具</strong>:
 <ul>
-<li>面向动画：保持四边形拓扑、边流顺畅、关节处增加环线；</li>
-<li>面向渲染：控制面数，关注高光过渡区域；</li>
-<li>利用 <code>Quadriflow Remesh</code>、<code>Retopoflow</code>（插件）进行重拓扑。</li>
-</ul>
-</li>
-<li><strong>精细细节与曲面</strong>：
-<ul>
-<li><code>Shrinkwrap</code> 与 <code>Surface Deform</code> 建立曲面贴合关系；</li>
-<li>NURBS/Spline 生成曲面，适合汽车、工业设计；</li>
-<li><code>Curve</code> 转网格 (<code>Alt + C</code>)，应用后继续细化。</li>
-</ul>
-</li>
-<li><strong>UV 展开与贴图准备</strong>：
-<ul>
-<li>标记缝隙：<code>Ctrl + E</code> -&gt; Mark Seam；</li>
-<li>使用 <code>UV Editing</code> 工作区展开，确保无明显拉伸；</li>
-<li>利用 <code>UDIM</code> 管理大面积纹理；</li>
-<li>导出 UV Layout 供贴图软件使用。</li>
+<li><code>Grab</code>:大范围变形</li>
+<li><code>Clay Strips</code>:添加体积</li>
+<li><code>Inflate</code>:膨胀</li>
+<li><code>Pose</code>:姿态调整</li>
+<li><code>Crease</code>:折痕</li>
 </ul>
 </li>
 </ol>
-<h3 id="实战案例-a科技机械臂硬表面建模"><a class="header" href="#实战案例-a科技机械臂硬表面建模">实战案例 A：科技机械臂硬表面建模</a></h3>
+<p><strong>Remesh 技术</strong>:</p>
+<ul>
+<li><code>Voxel Remesh</code>:快速重建拓扑</li>
+<li><code>Quadriflow</code>:生成四边形拓扑</li>
+<li><code>Dyntopo</code>:动态拓扑,边雕边调整</li>
+</ul>
+<h4 id="3-拓扑优化"><a class="header" href="#3-拓扑优化">3. 拓扑优化</a></h4>
+<p><strong>面向动画的拓扑</strong>:</p>
+<ul>
+<li>保持四边形拓扑</li>
+<li>边流顺畅,跟随肌肉结构</li>
+<li>关节处增加环线</li>
+<li>避免极点(5条以上边汇聚)</li>
+</ul>
+<p><strong>面向渲染的拓扑</strong>:</p>
+<ul>
+<li>控制面数在预算内</li>
+<li>关注高光过渡区域</li>
+<li>使用法线贴图传递高模细节</li>
+</ul>
+<p><strong>重拓扑工具</strong>:</p>
+<ul>
+<li><code>Retopoflow</code> 插件</li>
+<li><code>Quad Draw</code> 手动重建</li>
+<li><code>Shrinkwrap</code> modifier 贴合高模</li>
+</ul>
+<h4 id="4-曲面建模技术"><a class="header" href="#4-曲面建模技术">4. 曲面建模技术</a></h4>
+<p><strong>NURBS/Spline 建模</strong>:</p>
+<ul>
+<li>适合汽车、工业设计</li>
+<li><code>Curve</code> 对象 -&gt; 转网格 (<code>Alt + C</code>)</li>
+<li>使用 <code>Bevel</code> 控制厚度</li>
+<li><code>Array</code> + <code>Curve Modifier</code> 沿路径排列</li>
+</ul>
+<p><strong>精细细节控制</strong>:</p>
+<ul>
+<li><code>Shrinkwrap</code>:曲面贴合</li>
+<li><code>Surface Deform</code>:柔性绑定</li>
+<li><code>Lattice</code>:格子变形</li>
+</ul>
+<h4 id="5-uv-展开与贴图准备"><a class="header" href="#5-uv-展开与贴图准备">5. UV 展开与贴图准备</a></h4>
+<p><strong>UV 展开流程</strong>:</p>
+<ol>
+<li><strong>标记缝隙</strong>:<code>Ctrl + E</code> -&gt; Mark Seam</li>
+<li><strong>智能展开</strong>:<code>U</code> -&gt; Smart UV Project 或 Unwrap</li>
+<li><strong>UV 编辑</strong>:在 UV Editor 中调整岛屿</li>
+<li><strong>最小化拉伸</strong>:<code>UV -&gt; Minimize Stretch</code></li>
+</ol>
+<p><strong>高级技术</strong>:</p>
+<ul>
+<li><strong>UDIM</strong>:管理大面积纹理,多个贴图区块</li>
+<li><strong>UV 打包</strong>:使用 <code>UV Packmaster</code> 插件优化空间利用</li>
+<li><strong>导出 UV Layout</strong>:供 Substance Painter 等软件使用</li>
+</ul>
+<h3 id="实战案例科技机械臂硬表面建模"><a class="header" href="#实战案例科技机械臂硬表面建模">实战案例:科技机械臂硬表面建模</a></h3>
 <blockquote>
-<p><strong>案例需求</strong>：为虚拟工厂场景制作一款六轴机械臂，要求结构可运动，拓扑干净，可导入 Unreal Engine 实现实时展示。</p>
+<p><strong>案例需求</strong>:为虚拟工厂场景制作一款六轴机械臂,要求结构可运动,拓扑干净,可导入 Unreal Engine 实现实时展示。</p>
 </blockquote>
+<h4 id="需求分析"><a class="header" href="#需求分析">需求分析</a></h4>
+<ul>
+<li>参考真实机械臂(ABB、KUKA)结构</li>
+<li>收集正视/侧视图</li>
+<li>拆解为:基座、关节、传动杆、末端执行器</li>
+</ul>
+<h4 id="建模流程详解"><a class="header" href="#建模流程详解">建模流程详解</a></h4>
+<p><strong>1. Blocking 阶段</strong></p>
+<pre><code>使用 Cube、Cylinder 组合建立基本形状
+保持低面数,专注于比例和结构
+将各部分组织到不同 Collection
+</code></pre>
+<p><strong>2. 细化阶段</strong></p>
+<ul>
+<li>添加 <code>Subdivision Surface</code> 辅助控制曲面</li>
+<li>适度增加环线控制硬边</li>
+<li>使用 <code>Loop Tools</code> 对齐和整理边线</li>
+</ul>
+<p><strong>3. 布尔运算</strong></p>
+<ul>
+<li>利用 <code>Difference</code> 切割结构细节</li>
+<li>布尔后使用 <code>Bevel</code> 修饰边缘</li>
+<li>保持干净的拓扑结构</li>
+</ul>
+<p><strong>4. 细节添加</strong></p>
+<ul>
+<li><code>Array</code> 处理重复结构(螺钉、散热孔)</li>
+<li>结合 <code>Empty</code> 控制阵列方向</li>
+<li><code>Mirror</code> 沿中心轴镜像</li>
+</ul>
+<p><strong>5. 数据传递</strong></p>
+<ul>
+<li>使用 <code>Data Transfer</code> modifier</li>
+<li>将精细高模的 Normal 转移到低模</li>
+<li>保持视觉效果同时降低面数</li>
+</ul>
+<h4 id="uv-与贴图准备"><a class="header" href="#uv-与贴图准备">UV 与贴图准备</a></h4>
 <ol>
-<li><strong>需求分析与拆解</strong>：
-<ul>
-<li>参考真实机械臂（ABB、KUKA）结构，收集正视/侧视图；</li>
-<li>将模型拆解为基座、关节、传动杆、末端执行器等组件。</li>
-</ul>
-</li>
-<li><strong>建模流程</strong>：
-<ul>
-<li><code>Outline</code>：使用 <code>Cube</code>、<code>Cylinder</code> 组合建立基本形状；</li>
-<li><code>Blocking</code>：添加 <code>Subdivision</code> 辅助控制曲面，适度增加环线控制硬边；</li>
-<li><code>Boolean</code>：利用 <code>Difference</code> 切割结构细节，使用 <code>Bevel</code> 修饰；</li>
-<li><code>Array</code>：处理重复结构（如螺钉、散热孔），结合 <code>Empty</code> 控制方向；</li>
-<li><code>Mirror</code>：沿中心轴镜像，确保关节对称；</li>
-<li><code>Data Transfer</code>：将精细高模的 <code>Normal</code> 转移到低模上。</li>
-</ul>
-</li>
-<li><strong>运动性保证</strong>：
-<ul>
-<li>关节部位保持独立对象；</li>
-<li>保留旋转轴位置与方向，备用于后续绑定。</li>
-</ul>
-</li>
-<li><strong>UV 与贴图准备</strong>：
-<ul>
-<li>将机械臂分为几大 UDIM Tile（1001、1002）；</li>
-<li>确保关键区域（logo、转角）拉伸最小；</li>
-<li>导出低模 + 法线贴图，为 Substance Painter 烘焙准备。</li>
-</ul>
-</li>
-<li><strong>成果检验</strong>：
-<ul>
-<li>拓扑全部四边形，法线流畅；</li>
-<li>面数控制在实时渲染可接受范围（如 50k-100k tris）；</li>
-<li>FBX 导出后在 UE 中导入测试，骨骼与动画保持正确。</li>
-</ul>
-</li>
+<li>将机械臂分为几大 UDIM Tile(1001、1002)</li>
+<li>确保关键区域(logo、转角)拉伸最小</li>
+<li>导出低模 FBX + 法线贴图</li>
+<li>为 Substance Painter 烘焙准备</li>
 </ol>
-<h3 id="实战案例-b有机角色雕刻到拓扑"><a class="header" href="#实战案例-b有机角色雕刻到拓扑">实战案例 B：有机角色雕刻到拓扑</a></h3>
-<ol>
-<li><strong>草模</strong>：使用 <code>Sculpt</code> 模式的 <code>Dyntopo</code> 快速雕刻角色体块；</li>
-<li><strong>细化</strong>：利用 <code>Multires</code> 与 <code>Detail Flood Fill</code>；</li>
-<li><strong>重拓扑</strong>：使用 <code>Retopology</code> 插件或 <code>Quad Draw</code>；</li>
-<li><strong>多分辨率处理</strong>：
-<ul>
-<li>保存高模细节到 <code>Multires</code>；</li>
-<li>以低模导出烘焙法线；</li>
-</ul>
-</li>
-<li><strong>结果评估</strong>：关节区域环线均匀，面数在 30k 左右，满足绑定需求。</li>
-</ol>
+<h4 id="成果检验标准"><a class="header" href="#成果检验标准">成果检验标准</a></h4>
+<p>✅ 拓扑全部四边形,法线流畅
+✅ 面数控制在 50k-100k tris(实时渲染标准)
+✅ 关节部位保持独立对象
+✅ FBX 导出后在 UE 中测试无问题
+✅ UV 无明显拉伸和重叠</p>
 <h3 id="常见问题与解决方案"><a class="header" href="#常见问题与解决方案">常见问题与解决方案</a></h3>
-<ul>
-<li><strong>布尔产生非流形几何</strong>：在布尔前应用变换并检查法线；必要时 <code>Mesh -&gt; Clean Up -&gt; Merge by Distance</code>。</li>
-<li><strong>雕刻时卡顿</strong>：开启 <code>Simplify</code> 调整细分限制，或切换 <code>Clay Strips</code> + <code>Auto Smooth</code> 控制细节；</li>
-<li><strong>重拓扑困难</strong>：使用 <code>Grease Pencil</code> 绘制拓扑流线，结合 <code>Poly Build</code> 工具；</li>
-<li><strong>UV 拉伸严重</strong>：利用 <code>UV -&gt; Minimize Stretch</code>，必要时拆分为更多 UV 岛。</li>
-</ul>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>布尔产生非流形几何</td><td>面重叠、法线错误</td><td>布尔前应用变换,检查法线;<code>Mesh -&gt; Clean Up -&gt; Merge by Distance</code></td></tr>
+<tr><td>雕刻时卡顿</td><td>面数过高</td><td>开启 <code>Simplify</code>,调整细分限制;使用 <code>Decimate</code> 降低面数</td></tr>
+<tr><td>重拓扑困难</td><td>不熟悉拓扑流线</td><td>使用 <code>Grease Pencil</code> 绘制流线,结合 <code>Poly Build</code> 工具</td></tr>
+<tr><td>UV 拉伸严重</td><td>展开方法不当</td><td>多次 Mark Seam,利用 <code>Minimize Stretch</code>;拆分为更多 UV 岛</td></tr>
+<tr><td>修改器顺序错误</td><td>不理解堆叠逻辑</td><td>遵循 Mirror -&gt; Boolean -&gt; Bevel -&gt; Subdivision 标准流程</td></tr>
+</tbody></table>
+</div>
 <h3 id="阶段-checklist"><a class="header" href="#阶段-checklist">阶段 Checklist</a></h3>
 <ul>
 <li><input disabled="" type="checkbox"/>
-能针对不同类型模型选择合适的建模策略。</li>
+能针对不同类型模型选择合适的建模策略</li>
 <li><input disabled="" type="checkbox"/>
-完成至少一个硬表面与一个有机模型案例。</li>
+完成至少一个硬表面与一个有机模型案例</li>
 <li><input disabled="" type="checkbox"/>
-能独立完成低模、UV 展开并准备贴图烘焙。</li>
+能独立完成低模、UV 展开并准备贴图烘焙</li>
 <li><input disabled="" type="checkbox"/>
-掌握常用修改器组合，能写下个人建模模板。</li>
+掌握常用修改器组合,建立个人建模模板</li>
 <li><input disabled="" type="checkbox"/>
-在 Git 或 DCC Asset Library 中整理模型资产。</li>
+在资产库中整理至少 5 个可复用模型</li>
 </ul>
 <hr />
-<h2 id="模块三材质贴图与灯光渲染第-3-阶段"><a class="header" href="#模块三材质贴图与灯光渲染第-3-阶段">模块三：材质、贴图与灯光渲染（第 3 阶段）</a></h2>
+<h2 id="模块三材质贴图与灯光渲染第-3-阶段"><a class="header" href="#模块三材质贴图与灯光渲染第-3-阶段">模块三:材质、贴图与灯光渲染(第 3 阶段)</a></h2>
 <h3 id="模块目标-2"><a class="header" href="#模块目标-2">模块目标</a></h3>
-<ul>
-<li>深入理解 PBR（Physically Based Rendering）材质参数与节点结构。</li>
-<li>熟悉 Blender Shader Editor，能构建复杂节点树并复用。</li>
-<li>掌握贴图烘焙流程：高到低模法线、AO、Curvature、ID、Roughness 等。</li>
-<li>熟悉 HDRI、三点布光、区域光等灯光布局方法。</li>
-<li>掌握 Eevee 与 Cycles 渲染器参数优化，理解降噪、采样和性能调优。</li>
-</ul>
+<p>✅ 深入理解 PBR(Physically Based Rendering)材质参数与节点结构
+✅ 熟悉 Blender Shader Editor,能构建复杂节点树并复用
+✅ 掌握贴图烘焙流程:高到低模法线、AO、Curvature 等
+✅ 熟悉 HDRI、三点布光、区域光等灯光布局方法
+✅ 掌握 Eevee 与 Cycles 渲染器参数优化</p>
 <h3 id="核心知识点拆解-2"><a class="header" href="#核心知识点拆解-2">核心知识点拆解</a></h3>
+<h4 id="1-pbr-材质基础"><a class="header" href="#1-pbr-材质基础">1. PBR 材质基础</a></h4>
+<p><strong>PBR 核心通道</strong>:</p>
+<ul>
+<li><strong>Base Color</strong>:固有色(漫反射颜色)</li>
+<li><strong>Metallic</strong>:金属度(0=非金属,1=金属)</li>
+<li><strong>Roughness</strong>:粗糙度(0=光滑,1=粗糙)</li>
+<li><strong>Normal</strong>:法线贴图(表面细节)</li>
+<li><strong>AO</strong>:环境光遮蔽(凹陷处变暗)</li>
+</ul>
+<p><strong>材质类型</strong>:</p>
+<ul>
+<li><strong>金属(Metal)</strong>:Metallic=1,较低的 Roughness</li>
+<li><strong>非金属(Dielectric)</strong>:Metallic=0,变化的 Roughness</li>
+<li><strong>次表面散射(SSS)</strong>:皮肤、蜡烛等半透明材质</li>
+<li><strong>透明(Transmission)</strong>:玻璃、水等</li>
+</ul>
+<h4 id="2-shader-editor-进阶"><a class="header" href="#2-shader-editor-进阶">2. Shader Editor 进阶</a></h4>
+<p><strong>Node Wrangler 快捷键</strong>:</p>
+<ul>
+<li><code>Ctrl + T</code>:自动创建贴图节点组</li>
+<li><code>Ctrl + Shift + 左键</code>:预览节点输出</li>
+<li><code>Ctrl + J</code>:合并选中节点为 Frame</li>
+</ul>
+<p><strong>常用节点组合</strong>:</p>
+<pre><code>Principled BSDF (核心)
+├─ Image Texture (贴图输入)
+├─ ColorRamp (控制渐变)
+├─ Mix Shader (混合材质)
+├─ Layer Weight (边缘控制)
+├─ Fresnel (菲涅尔效果)
+└─ Attribute (获取自定义属性)
+</code></pre>
+<p><strong>节点复用</strong>:</p>
+<ul>
+<li>选中节点组 -&gt; <code>Ctrl + G</code>:创建 Node Group</li>
+<li>在 Asset Browser 中标记为资产</li>
+<li>团队共享 assets.blend 文件</li>
+</ul>
+<h4 id="3-贴图烘焙流程"><a class="header" href="#3-贴图烘焙流程">3. 贴图烘焙流程</a></h4>
+<p><strong>烘焙类型</strong>:</p>
+<ul>
+<li><strong>Normal</strong>:法线贴图(高模细节-&gt;低模)</li>
+<li><strong>AO</strong>:环境光遮蔽</li>
+<li><strong>Curvature</strong>:曲率贴图(用于程序化贴图遮罩)</li>
+<li><strong>Diffuse</strong>:漫反射颜色</li>
+<li><strong>Roughness/Metallic</strong>:PBR 参数贴图</li>
+</ul>
+<p><strong>Blender 内部烘焙</strong>:</p>
 <ol>
-<li><strong>PBR 基础</strong>：
+<li>准备高模和低模</li>
+<li>UV 展开低模</li>
+<li>在 Image Editor 创建空白贴图(32-bit float)</li>
+<li>选择低模,<code>Shift</code> 选择高模</li>
+<li><code>Render Properties -&gt; Bake</code>:
 <ul>
-<li>基础通道：Base Color、Metallic、Roughness、Normal、AO。</li>
-<li>介质分类：金属（Metal）、非金属（Dielectric）；</li>
-<li>次表面散射（SSS）、半透明（Transmission）。</li>
-</ul>
-</li>
-<li><strong>Shader Editor 进阶</strong>：
-<ul>
-<li><code>Node Wrangler</code> 快捷 <code>Ctrl + T</code> 创建贴图节点；</li>
-<li><code>Mix Shader</code>、<code>Layer Weight</code>、<code>ColorRamp</code> 控制效果；</li>
-<li><code>Attribute</code> 节点获取自定义顶点颜色、UV；</li>
-<li>通过 <code>Group</code> 复用节点树。</li>
-</ul>
-</li>
-<li><strong>贴图与烘焙</strong>：
-<ul>
-<li>使用 Substance Painter 导出 <code>Metallic/Roughness/Normal</code>；</li>
-<li>Blender 内部烘焙：启用 Cycles，设置 <code>Cage</code>，<code>Bake</code> AO/Normal；</li>
-<li><code>Image Editor</code> 创建空白贴图（32-bit float），<code>Select</code> 高/低模，执行 <code>Bake</code>。</li>
-</ul>
-</li>
-<li><strong>灯光理论与布光</strong>：
-<ul>
-<li>三点布光（Key、Fill、Rim）；</li>
-<li>HDRI 环境光控制；</li>
-<li>面光源与体积光配合，营造氛围。</li>
-</ul>
-</li>
-<li><strong>渲染器选择与设置</strong>：
-<ul>
-<li><strong>Eevee</strong>：实时预览，适合快速迭代；启用 <code>SSAO</code>、<code>Bloom</code>、<code>Screen Space Reflection</code>；</li>
-<li><strong>Cycles</strong>：路径追踪，支持 CPU/GPU、Adaptive Sampling、Denoise（OpenImageDenoise、OptiX）。</li>
+<li>设置 <code>Cage</code> 避免表面偏移</li>
+<li>选择 Bake 类型</li>
+<li>点击 <code>Bake</code> 执行</li>
 </ul>
 </li>
 </ol>
-<h3 id="实战案例科技产品场景渲染"><a class="header" href="#实战案例科技产品场景渲染">实战案例：科技产品场景渲染</a></h3>
+<p><strong>Substance Painter 工作流</strong>:</p>
 <ol>
-<li><strong>场景准备</strong>：
+<li>从 Blender 导出低模 FBX</li>
+<li>在 SP 中烘焙 AO/Normal/Curvature</li>
+<li>绘制贴图</li>
+<li>导出 Metallic/Roughness/Normal 套件</li>
+<li>导入 Blender Shader</li>
+</ol>
+<h4 id="4-灯光理论与布光"><a class="header" href="#4-灯光理论与布光">4. 灯光理论与布光</a></h4>
+<p><strong>三点布光法</strong>:</p>
 <ul>
-<li>导入机械臂模型与配套环境；</li>
-<li>使用 <code>Asset Browser</code> 进行材质与灯光快速布置。</li>
+<li><strong>Key Light</strong>:主光源,最强,定义主要明暗</li>
+<li><strong>Fill Light</strong>:辅光,填充阴影,强度约为主光 1/3-1/2</li>
+<li><strong>Rim Light</strong>:轮廓光,从背后打亮边缘</li>
+</ul>
+<p><strong>HDRI 环境光</strong>:</p>
+<ul>
+<li>使用 HDRIHaven、PolyHaven 等资源</li>
+<li><code>World Properties -&gt; Surface -&gt; Environment Texture</code></li>
+<li>调整 <code>Strength</code> 控制强度</li>
+<li>使用 <code>Mapping</code> 节点旋转方向</li>
+</ul>
+<p><strong>光源类型</strong>:</p>
+<ul>
+<li><strong>Point Light</strong>:点光源,全方向发光</li>
+<li><strong>Sun Light</strong>:太阳光,平行光</li>
+<li><strong>Spot Light</strong>:聚光灯,锥形照射</li>
+<li><strong>Area Light</strong>:面光源,柔和阴影</li>
+</ul>
+<p><strong>体积光</strong>:</p>
+<ul>
+<li><code>Volume Scatter</code>:光线散射(雾气效果)</li>
+<li><code>Volume Absorption</code>:光线吸收(着色雾气)</li>
+</ul>
+<h4 id="5-渲染器配置"><a class="header" href="#5-渲染器配置">5. 渲染器配置</a></h4>
+<p><strong>Eevee(实时渲染)</strong>:</p>
+<ul>
+<li>启用 <code>Ambient Occlusion</code>(SSAO)</li>
+<li>启用 <code>Bloom</code>(辉光效果)</li>
+<li>启用 <code>Screen Space Reflections</code>(SSR)</li>
+<li>启用 <code>Shadows</code> 并调整质量</li>
+<li>适合:快速预览、实时演示、风格化渲染</li>
+</ul>
+<p><strong>Cycles(路径追踪)</strong>:</p>
+<ul>
+<li>设置 <code>Samples</code>:预览 128-256,最终 512-2048</li>
+<li>启用 <code>Adaptive Sampling</code>:自动优化采样</li>
+<li>启用 <code>Denoising</code>:
+<ul>
+<li><code>OpenImageDenoise</code>:CPU 降噪</li>
+<li><code>OptiX</code>:Nvidia GPU 降噪(更快)</li>
 </ul>
 </li>
-<li><strong>材质构建</strong>：
+<li>调整 <code>Light Paths</code>:
 <ul>
-<li>金属外壳：<code>Principled BSDF</code> + <code>Flakes</code> 程序纹理；</li>
-<li>塑料部件：<code>Subsurface</code> + <code>Roughness</code> 控制；</li>
-<li>屏幕 UI：使用发光贴图 + <code>Alpha Clip</code>。</li>
+<li>Diffuse/Glossy/Transmission Bounces:控制反弹次数</li>
+<li>Clamp Indirect:限制噪点</li>
 </ul>
 </li>
-<li><strong>灯光策略</strong>：
+<li>适合:最终渲染、产品可视化、写实效果</li>
+</ul>
+<h3 id="实战案例科技产品场景渲染"><a class="header" href="#实战案例科技产品场景渲染">实战案例:科技产品场景渲染</a></h3>
+<h4 id="场景准备"><a class="header" href="#场景准备">场景准备</a></h4>
+<ol>
+<li>导入机械臂模型</li>
+<li>使用 <code>Asset Browser</code> 快速布置环境</li>
+<li>添加背景平面和反射面</li>
+</ol>
+<h4 id="材质构建"><a class="header" href="#材质构建">材质构建</a></h4>
+<p><strong>金属外壳</strong>:</p>
+<pre><code>Principled BSDF
+├─ Base Color: 灰色(0.8)
+├─ Metallic: 1.0
+├─ Roughness: 0.3
+└─ Normal: 添加细微划痕法线
+</code></pre>
+<p><strong>塑料部件</strong>:</p>
+<pre><code>Principled BSDF
+├─ Base Color: 黑色(0.05)
+├─ Metallic: 0.0
+├─ Roughness: 0.4
+├─ Subsurface: 0.1 (轻微次表面)
+└─ Subsurface Color: 微红色调
+</code></pre>
+<p><strong>屏幕 UI</strong>:</p>
+<pre><code>Mix Shader
+├─ Emission (发光贴图)
+└─ Principled BSDF (玻璃表面)
+</code></pre>
+<h4 id="灯光策略"><a class="header" href="#灯光策略">灯光策略</a></h4>
+<ol>
+<li>
+<p><strong>HDRI 基础环境光</strong>:</p>
 <ul>
-<li>使用 HDRI 作为基础环境光，结合三点布光突出主体；</li>
-<li>添加体积雾气（<code>Volume Scatter</code> + <code>Volume Absorption</code>）。</li>
+<li>使用工业环境 HDRI</li>
+<li>Strength: 0.5-1.0</li>
 </ul>
 </li>
-<li><strong>渲染优化</strong>：
+<li>
+<p><strong>三点布光</strong>:</p>
 <ul>
-<li>Cycles GPU 渲染：设置 <code>Samples</code> 1024，启用 <code>Adaptive Sampling</code>；</li>
-<li><code>Render Properties -&gt; Denoising -&gt; OptiX</code>；</li>
-<li>输出多通道（Diffuse、Glossy、AO、Emission）供后期合成。</li>
+<li>Key: Area Light(右前上方),强度 100W</li>
+<li>Fill: Area Light(左前方),强度 30W</li>
+<li>Rim: Area Light(后方),强度 50W</li>
 </ul>
 </li>
-<li><strong>合成节点</strong>：
+<li>
+<p><strong>体积雾气</strong>:</p>
 <ul>
-<li>使用 <code>Compositor</code> 中的 <code>Glare</code>、<code>Color Balance</code>；</li>
-<li>添加 <code>Cryptomatte</code> 方便局部调色。</li>
-</ul>
-</li>
-<li><strong>验证标准</strong>：
-<ul>
-<li>纹理无拉伸与接缝；</li>
-<li>光影过渡自然，无噪点；</li>
-<li>输出 EXR 与压缩格式，尺寸符合交付要求。</li>
+<li>添加 Cube 作为体积域</li>
+<li><code>Volume Scatter</code> + <code>Volume Absorption</code></li>
+<li>Density: 0.01-0.05</li>
 </ul>
 </li>
 </ol>
-<h3 id="常见问题与解决方案-1"><a class="header" href="#常见问题与解决方案-1">常见问题与解决方案</a></h3>
+<h4 id="渲染优化"><a class="header" href="#渲染优化">渲染优化</a></h4>
+<p><strong>Cycles GPU 设置</strong>:</p>
 <ul>
-<li><strong>渲染噪点</strong>：提高采样、启用 <code>Denoise</code>、优化灯光数量。</li>
-<li><strong>颜色失真</strong>：确认色彩空间（使用 Filmic），避免 sRGB 到 Linear 的误差。</li>
-<li><strong>贴图偏移</strong>：检查 UV 与节点链接；利用 <code>Vector</code> 节点调整。</li>
-<li><strong>Eevee 与 Cycles 材质不一致</strong>：使用兼容节点，或针对 Eevee 定制材质。</li>
+<li>Device: GPU Compute</li>
+<li>Samples: 1024</li>
+<li>Adaptive Sampling: 启用,Threshold 0.01</li>
+<li>Denoising: OptiX (Nvidia) 或 OpenImageDenoise</li>
 </ul>
+<p><strong>输出多通道</strong>:</p>
+<ul>
+<li><code>View Layer -&gt; Passes</code> 启用:
+<ul>
+<li>Diffuse Color</li>
+<li>Glossy</li>
+<li>AO</li>
+<li>Emission</li>
+<li>Cryptomatte</li>
+</ul>
+</li>
+</ul>
+<h4 id="合成节点"><a class="header" href="#合成节点">合成节点</a></h4>
+<p>切换到 Compositing 工作区:</p>
+<pre><code>Render Layers
+├─ Glare (辉光效果)
+├─ Color Balance (调色)
+├─ Lens Distortion (镜头畸变)
+└─ Cryptomatte (精确蒙版)
+</code></pre>
+<h4 id="成果验证"><a class="header" href="#成果验证">成果验证</a></h4>
+<p>✅ 纹理无拉伸与接缝
+✅ 光影过渡自然,无明显噪点
+✅ 输出 EXR(32-bit)与 PNG(8-bit)
+✅ 渲染时间在可接受范围内(&lt; 5min/frame)</p>
+<h3 id="专题资源链接"><a class="header" href="#专题资源链接">专题资源链接</a></h3>
+<blockquote>
+<p><strong>深度学习</strong>:详细的 Shader 材质配方和节点技巧,请参考 <a href="./Blender-Shader%E6%9D%90%E8%B4%A8%E4%B8%93%E9%A2%98.html">Blender-Shader材质专题.md</a></p>
+</blockquote>
 <h3 id="阶段-checklist-1"><a class="header" href="#阶段-checklist-1">阶段 Checklist</a></h3>
 <ul>
 <li><input disabled="" type="checkbox"/>
-熟悉 Principled Shader 全部参数。</li>
+熟悉 Principled Shader 全部参数</li>
 <li><input disabled="" type="checkbox"/>
-能独立完成贴图烘焙，导出标准 PBR 套件。</li>
+能独立完成贴图烘焙,导出标准 PBR 套件</li>
 <li><input disabled="" type="checkbox"/>
-能在 2 小时内布光并完成一次高质量静帧渲染。</li>
+能在 2 小时内布光并完成高质量静帧渲染</li>
 <li><input disabled="" type="checkbox"/>
-能使用 Compositor 完成基础调色、景深与特效。</li>
+能使用 Compositor 完成基础调色与特效</li>
 <li><input disabled="" type="checkbox"/>
-产出材质库并建立分类标签。</li>
+建立个人材质库(至少 20 组)</li>
 </ul>
 <hr />
-<h2 id="学习路径阶段总结"><a class="header" href="#学习路径阶段总结">学习路径阶段总结</a></h2>
-<blockquote>
-<p>完成前三个模块后，学习者应具备独立建模与渲染静态作品的能力。接下来将进入动画、模拟、管线自动化等高级主题。</p>
-</blockquote>
-<hr />
-<h2 id="模块四动画绑定与物理模拟第-4-阶段"><a class="header" href="#模块四动画绑定与物理模拟第-4-阶段">模块四：动画、绑定与物理模拟（第 4 阶段）</a></h2>
+<h2 id="模块四动画绑定与物理模拟第-4-阶段"><a class="header" href="#模块四动画绑定与物理模拟第-4-阶段">模块四:动画、绑定与物理模拟(第 4 阶段)</a></h2>
 <h3 id="模块目标-3"><a class="header" href="#模块目标-3">模块目标</a></h3>
-<ul>
-<li>掌握关键帧、曲线编辑器（Graph Editor）与 Dope Sheet 的协同使用。</li>
-<li>理解骨骼（Armature）系统、权重绘制以及常见约束（Constraint）设置。</li>
-<li>熟悉非线性动画编辑（NLA）与动作复用流程。</li>
-<li>掌握布料、刚体、粒子、烟雾等物理系统的基础原理与参数调优。</li>
-<li>理解 Geometry Nodes 与动画、特效的结合方式，能创建程序化效果。</li>
-</ul>
+<p>✅ 掌握关键帧、曲线编辑器(Graph Editor)与 Dope Sheet 协同使用
+✅ 理解骨骼(Armature)系统、权重绘制与常见约束(Constraint)
+✅ 熟悉非线性动画编辑(NLA)与动作复用
+✅ 掌握布料、刚体、粒子、烟雾等物理系统基础
+✅ 理解 Geometry Nodes 与动画的结合方式</p>
 <h3 id="核心知识点拆解-3"><a class="header" href="#核心知识点拆解-3">核心知识点拆解</a></h3>
+<h4 id="1-动画基础"><a class="header" href="#1-动画基础">1. 动画基础</a></h4>
+<p><strong>关键帧操作</strong>:</p>
+<ul>
+<li><code>I</code>:插入关键帧</li>
+<li><code>Alt + I</code>:删除关键帧</li>
+<li>支持属性:Location、Rotation、Scale、Custom Properties、Shape Keys</li>
+</ul>
+<p><strong>插值模式</strong>:</p>
+<ul>
+<li><code>Bezier</code>:平滑曲线,可调节切线</li>
+<li><code>Linear</code>:线性插值</li>
+<li><code>Constant</code>:阶跃,无过渡</li>
+<li><code>Ease In/Out</code>:缓入缓出</li>
+</ul>
+<p><strong>Graph Editor(曲线编辑器)</strong>:</p>
+<ul>
+<li>调节曲线切线控制运动节奏</li>
+<li>关键帧加权</li>
+<li>F-Curve Modifiers:
+<ul>
+<li><code>Cycles</code>:循环重复</li>
+<li><code>Noise</code>:添加随机抖动</li>
+<li><code>Ping Pong</code>:来回循环</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-骨骼绑定系统"><a class="header" href="#2-骨骼绑定系统">2. 骨骼绑定系统</a></h4>
+<p><strong>Armature 创建</strong>:</p>
 <ol>
-<li><strong>动画基础</strong>：
-<ul>
-<li>关键帧类型：<code>Loc/Rot/Scale</code>、<code>Custom Properties</code>、<code>Shape Keys</code>；</li>
-<li>插值模式：<code>Bezier</code>、<code>Linear</code>、<code>Constant</code>，以及缓入缓出（Ease In/Out）；</li>
-<li><code>Graph Editor</code>：调节曲线切线、关键帧加权、F-Curve Modifiers（Ping Pong、Cycles）。</li>
-</ul>
-</li>
-<li><strong>骨骼绑定与 IK/FK</strong>：
-<ul>
-<li>创建骨架：使用 <code>Armature</code>，在正交视图中布置骨骼；</li>
-<li>父子关系与骨骼层级（Bone Hierarchy）；</li>
-<li>Inverse Kinematics（IK）与 Forward Kinematics（FK）的切换；</li>
-<li>常用约束：<code>Copy Rotation</code>、<code>Copy Location</code>、<code>Limit Rotation</code>、<code>Track To</code>；</li>
-<li>权重绘制（Weight Paint）：<code>Normalize All</code>、<code>Vertex Group</code> 管理。</li>
-</ul>
-</li>
-<li><strong>角色面部与形态动画</strong>：
-<ul>
-<li>使用 <code>Shape Keys</code> 制作表情；</li>
-<li>驱动器（Driver）连接 Slider 与骨骼控制；</li>
-<li><code>Pose Library</code> 与 <code>Asset Browser</code> 联动。</li>
-</ul>
-</li>
-<li><strong>非线性动画编辑（NLA）</strong>：
-<ul>
-<li>将动作（Action）推至 NLA 轨道，实现叠加与重用；</li>
-<li><code>Strip</code> 的混合模式（Add、Substract）与淡入淡出；</li>
-<li>动作剪辑与修改器（Time、Speed Control）。</li>
-</ul>
-</li>
-<li><strong>物理模拟系统</strong>：
-<ul>
-<li>刚体（Rigid Body）：主动/被动刚体、碰撞组、质量与阻尼；</li>
-<li>布料（Cloth）：质量、碰撞、风场控制；</li>
-<li>粒子（Particles）：发射器、力场、渲染模式（对象/集合）；</li>
-<li>烟雾与火焰（Smoke/Fire）：域（Domain）、流体（Flow）、解析精度；</li>
-<li>流体（Fluid）：Flip Fluids / Mantaflow 设置，缓存管理。</li>
-</ul>
-</li>
-<li><strong>Geometry Nodes</strong>：
-<ul>
-<li>节点类型：Geometry、Attribute、Field；</li>
-<li>通过 <code>Point Instance</code>、<code>Instance on Points</code> 生成大量对象；</li>
-<li>借助 <code>Scene Time</code>、<code>Value</code> 驱动动画参数；</li>
-<li>结合 <code>Simulation Nodes</code> 实现粒子、群体行为。</li>
-</ul>
-</li>
+<li><code>Shift + A -&gt; Armature -&gt; Single Bone</code></li>
+<li>在 <code>Edit Mode</code> 中添加和调整骨骼</li>
+<li>建立父子关系(选中子骨骼,<code>Shift</code> 选父骨骼,<code>Ctrl + P</code>)</li>
 </ol>
-<h3 id="实战案例-a机械臂装配动画与动力学联动"><a class="header" href="#实战案例-a机械臂装配动画与动力学联动">实战案例 A：机械臂装配动画与动力学联动</a></h3>
+<p><strong>IK vs FK</strong>:</p>
+<ul>
+<li><strong>Forward Kinematics (FK)</strong>:从父到子传递运动,适合机械臂</li>
+<li><strong>Inverse Kinematics (IK)</strong>:从子到父反向计算,适合角色腿部</li>
+</ul>
+<p><strong>常用约束</strong>:</p>
+<ul>
+<li><code>Copy Rotation</code>:复制旋转</li>
+<li><code>Copy Location</code>:复制位置</li>
+<li><code>Limit Rotation</code>:限制旋转范围</li>
+<li><code>Track To</code>:始终朝向目标</li>
+</ul>
+<p><strong>权重绘制</strong>:</p>
+<ul>
+<li><code>Ctrl + Tab</code>:切换到 Weight Paint 模式</li>
+<li><code>Normalize All</code>:规范化所有权重</li>
+<li><code>Vertex Group</code> 管理各骨骼影响范围</li>
+</ul>
+<h4 id="3-形态动画"><a class="header" href="#3-形态动画">3. 形态动画</a></h4>
+<p><strong>Shape Keys(形态键)</strong>:</p>
+<ul>
+<li>用于面部表情、口型同步</li>
+<li><code>Value</code>:控制形态强度(0-1)</li>
+<li>可添加关键帧制作表情动画</li>
+</ul>
+<p><strong>Driver(驱动器)</strong>:</p>
+<ul>
+<li>通过表达式控制属性</li>
+<li>连接 Slider 与骨骼控制</li>
+<li>例:<code>#frame / 10</code> 让属性随时间变化</li>
+</ul>
+<h4 id="4-非线性动画编辑nla"><a class="header" href="#4-非线性动画编辑nla">4. 非线性动画编辑(NLA)</a></h4>
+<p><strong>NLA Editor</strong>:</p>
+<ul>
+<li>将动作(Action)推至 NLA 轨道</li>
+<li>实现动作叠加、混合、重用</li>
+<li><code>Strip</code> 的混合模式:Add、Subtract、Multiply</li>
+</ul>
+<p><strong>动作管理</strong>:</p>
+<ul>
+<li><code>Fake User</code>:保护动作不被删除</li>
+<li><code>Push Down</code>:将当前动作推入 NLA</li>
+<li><code>Time Remapping</code>:调整播放速度</li>
+</ul>
+<h4 id="5-物理模拟系统"><a class="header" href="#5-物理模拟系统">5. 物理模拟系统</a></h4>
+<p><strong>刚体(Rigid Body)</strong>:</p>
+<ul>
+<li><code>Active</code>:主动刚体,受重力和力场影响</li>
+<li><code>Passive</code>:被动刚体,不移动但可碰撞</li>
+<li><code>Collision Groups</code>:控制哪些对象相互碰撞</li>
+<li>调整 <code>Mass</code>(质量)、<code>Friction</code>(摩擦)、<code>Bounciness</code>(弹性)</li>
+</ul>
+<p><strong>布料(Cloth)</strong>:</p>
+<ul>
+<li><code>Quality Steps</code>:模拟精度(越高越稳定)</li>
+<li><code>Stiffness</code>:布料硬度</li>
+<li><code>Damping</code>:阻尼(减少震荡)</li>
+<li><code>Collision</code>:碰撞设置(Distance、Self Collision)</li>
+</ul>
+<p><strong>粒子(Particles)</strong>:</p>
+<ul>
+<li><code>Emitter</code>:发射器类型</li>
+<li><code>Number</code>:粒子数量</li>
+<li><code>Lifetime</code>:生命周期</li>
+<li><code>Force Fields</code>:力场(重力、风、涡流)</li>
+<li>渲染模式:Object、Collection、Path</li>
+</ul>
+<p><strong>烟雾与火焰(Smoke/Fire)</strong>:</p>
+<ul>
+<li><code>Domain</code>:模拟域(计算空间)</li>
+<li><code>Flow</code>:流体发射器</li>
+<li><code>Resolution</code>:解析精度(越高越细腻,越慢)</li>
+<li><code>Vorticity</code>:涡流强度</li>
+</ul>
+<p><strong>流体(Fluid)</strong>:</p>
+<ul>
+<li><code>Mantaflow</code>:Blender 内置流体系统</li>
+<li>类型:Liquid、Gas</li>
+<li>缓存管理:保存到磁盘以加速预览</li>
+</ul>
+<h4 id="6-geometry-nodes-动画"><a class="header" href="#6-geometry-nodes-动画">6. Geometry Nodes 动画</a></h4>
+<p><strong>基础概念</strong>:</p>
+<ul>
+<li>通过 <code>Scene Time</code> 节点获取时间</li>
+<li>使用 <code>Value</code> 节点驱动参数变化</li>
+<li><code>Instance on Points</code> 创建程序化动画</li>
+</ul>
+<p><strong>应用场景</strong>:</p>
+<ul>
+<li>大量对象的程序化运动</li>
+<li>粒子群体行为模拟</li>
+<li>参数化动画效果</li>
+</ul>
 <blockquote>
-<p><strong>案例目标</strong>：制作机械臂抓取零件并放置到流水线的动画，结合刚体模拟与摄像机运动。</p>
+<p><strong>深度学习</strong>:详细的 Geometry Nodes 程序化工作流,请参考 <a href="./Blender-GeometryNodes%E4%B8%93%E9%A2%98.html">Blender-GeometryNodes专题.md</a></p>
 </blockquote>
+<h3 id="实战案例机械臂装配动画"><a class="header" href="#实战案例机械臂装配动画">实战案例:机械臂装配动画</a></h3>
+<blockquote>
+<p><strong>案例目标</strong>:制作机械臂抓取零件并放置到流水线的动画,结合刚体模拟与摄像机运动。</p>
+</blockquote>
+<h4 id="骨骼搭建"><a class="header" href="#骨骼搭建">骨骼搭建</a></h4>
 <ol>
-<li><strong>骨骼搭建</strong>：
-<ul>
-<li>为机械臂各关节创建骨骼链，使用 <code>Copy Rotation</code> 保持与模型轴向一致；</li>
-<li>末端夹具建立 <code>IK</code> 控制器，配置 <code>Pole Target</code> 避免关节翻转。</li>
-</ul>
-</li>
-<li><strong>关键帧与曲线调优</strong>：
-<ul>
-<li>使用 <code>Auto Keying</code> 记录关键帧；</li>
-<li>在 <code>Graph Editor</code> 中调整缓入缓出，使机械臂运动符合真实机械特性。</li>
-</ul>
-</li>
-<li><strong>刚体模拟</strong>：
-<ul>
-<li>将零件设为 <code>Passive</code>，被抓取时切换为 <code>Active</code>；</li>
-<li>使用 <code>Rigid Body Constraint</code> 实现短暂吸附；</li>
-<li>控制缓存帧范围与子帧精度，确保稳定。</li>
-</ul>
-</li>
-<li><strong>摄像机与渲染</strong>：
-<ul>
-<li>添加 <code>Empty</code> 作为摄像机目标，使用 <code>Track To</code> 约束；</li>
-<li>应用运动模糊与景深突出主体。</li>
-</ul>
-</li>
-<li><strong>交互与导出</strong>：
-<ul>
-<li>将动画烘焙为 <code>Action</code>，导出 FBX 到 Unreal，测试动画播放；</li>
-<li>在 UE 中设置 Niagara 粒子搭配零件飞溅特效。</li>
-</ul>
-</li>
+<li>为机械臂各关节创建骨骼链</li>
+<li>使用 <code>Copy Rotation</code> 约束保持与模型轴向一致</li>
+<li>末端夹具建立 <code>IK</code> 控制器</li>
+<li>配置 <code>Pole Target</code> 避免关节翻转</li>
 </ol>
-<h3 id="实战案例-b角色行走循环与布料效果"><a class="header" href="#实战案例-b角色行走循环与布料效果">实战案例 B：角色行走循环与布料效果</a></h3>
+<h4 id="关键帧动画"><a class="header" href="#关键帧动画">关键帧动画</a></h4>
 <ol>
-<li><strong>Rigify 绑定</strong>：
-<ul>
-<li>启用 <code>Rigify</code> 插件，生成人形骨架；</li>
-<li>调整骨骼位置，生成控制器；</li>
-<li>使用 <code>Automatic Weights</code> 绑定，必要时手动修正权重。</li>
-</ul>
-</li>
-<li><strong>动作捕捉/自制动作</strong>：
-<ul>
-<li>使用 <code>Dope Sheet</code> / <code>Action Editor</code> 创建 walk cycle；</li>
-<li>应用 <code>Pose Breakdowner</code>、<code>Pose Slide</code> 微调姿势；</li>
-<li>使用 <code>NLA</code> 将动作循环，并控制速度。</li>
-</ul>
-</li>
-<li><strong>布料模拟</strong>：
-<ul>
-<li>角色衣物单独建模，设置为 Cloth；</li>
-<li>调整 <code>Quality Steps</code>、<code>Stiffness</code>、<code>Collision</code>；</li>
-<li>缓存至磁盘，观察碰撞是否穿模，必要时增加 <code>Substeps</code>。</li>
-</ul>
-</li>
-<li><strong>效果增强</strong>：
-<ul>
-<li>使用 <code>Motion Paths</code> 检查骨骼移动轨迹；</li>
-<li>曲线编辑器中添加 <code>Noise</code> Modifier 模拟自然抖动；</li>
-<li>添加 <code>Grease Pencil</code> 注解记录反馈点。</li>
-</ul>
-</li>
+<li>使用 <code>Auto Keying</code> 记录关键帧</li>
+<li>在 <code>Graph Editor</code> 中调整缓入缓出</li>
+<li>使机械臂运动符合真实机械特性</li>
 </ol>
-<h3 id="常见问题与解决策略"><a class="header" href="#常见问题与解决策略">常见问题与解决策略</a></h3>
-<ul>
-<li><strong>骨骼翻腕</strong>：调整 <code>Pole Target</code> 位置，或使用 <code>IK</code> Chain Length 限制；</li>
-<li><strong>权重穿插</strong>：开启 <code>Auto Normalize</code>，在 Weight Paint 中逐骨骼校正；</li>
-<li><strong>布料穿模</strong>：提高碰撞步数，检查缩放是否应用；</li>
-<li><strong>粒子抖动</strong>：增加缓存样本，使用 <code>Subframe</code> 控制；</li>
-<li><strong>模拟缓存丢失</strong>：启用 <code>Disk Cache</code>，并在版本管理中备份缓存目录。</li>
-</ul>
+<h4 id="刚体模拟"><a class="header" href="#刚体模拟">刚体模拟</a></h4>
+<ol>
+<li>将零件设为 <code>Passive</code> 初始状态</li>
+<li>被抓取时使用关键帧切换为 <code>Active</code></li>
+<li>使用 <code>Rigid Body Constraint</code> 实现吸附</li>
+<li>控制缓存帧范围与子帧精度</li>
+</ol>
+<h4 id="成果输出"><a class="header" href="#成果输出">成果输出</a></h4>
+<p>✅ 动画流畅无卡顿
+✅ 物理模拟稳定无穿模
+✅ 摄像机运动自然
+✅ 导出 FBX 到 Unreal Engine 测试通过</p>
+<h3 id="常见问题与解决方案-1"><a class="header" href="#常见问题与解决方案-1">常见问题与解决方案</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>骨骼翻腕</td><td>Pole Target 位置不当</td><td>调整 Pole Target,或使用 IK Chain Length 限制</td></tr>
+<tr><td>权重穿插</td><td>权重分配不合理</td><td>开启 Auto Normalize,在 Weight Paint 中逐骨骼校正</td></tr>
+<tr><td>布料穿模</td><td>碰撞距离过小</td><td>提高 Quality Steps,检查缩放是否应用</td></tr>
+<tr><td>粒子抖动</td><td>缓存精度不足</td><td>增加缓存样本,使用 Subframe 控制</td></tr>
+<tr><td>模拟缓存丢失</td><td>项目移动或重命名</td><td>启用 Disk Cache,并在版本管理中备份缓存目录</td></tr>
+</tbody></table>
+</div>
 <h3 id="阶段-checklist-2"><a class="header" href="#阶段-checklist-2">阶段 Checklist</a></h3>
 <ul>
 <li><input disabled="" type="checkbox"/>
-熟悉关键帧、曲线编辑器与 Dope Sheet 的联动。</li>
+熟悉关键帧、曲线编辑器与 Dope Sheet</li>
 <li><input disabled="" type="checkbox"/>
-能够为角色或机械建立骨骼并完成动作制作。</li>
+能够为角色或机械建立骨骼并完成动作制作</li>
 <li><input disabled="" type="checkbox"/>
-能在项目中使用至少一种物理模拟（布料/粒子/烟雾）。</li>
+在项目中使用至少一种物理模拟</li>
 <li><input disabled="" type="checkbox"/>
-理解 Geometry Nodes 动画驱动的基本方法。</li>
+完成至少一个 10-30 秒的动画片段</li>
 <li><input disabled="" type="checkbox"/>
-完成至少一个 10-30 秒的动画片段并输出预览。</li>
+理解 NLA 编辑器的动作复用机制</li>
 </ul>
 <hr />
-<h2 id="模块五渲染合成与输出第-5-阶段"><a class="header" href="#模块五渲染合成与输出第-5-阶段">模块五：渲染、合成与输出（第 5 阶段）</a></h2>
+<h2 id="模块五渲染合成与输出第-5-阶段"><a class="header" href="#模块五渲染合成与输出第-5-阶段">模块五:渲染、合成与输出(第 5 阶段)</a></h2>
 <h3 id="模块目标-4"><a class="header" href="#模块目标-4">模块目标</a></h3>
-<ul>
-<li>根据项目需求在 Cycles、Eevee、第三方渲染器之间做出选择。</li>
-<li>熟悉渲染层（Render Layers）与视图层（View Layer），灵活输出 AOV。</li>
-<li>掌握合成节点（Compositor）工作流，实现调色、景深、特效。</li>
-<li>针对不同交付场景（影视、实时、XR）配置输出格式与色彩管理。</li>
-<li>建立渲染优化思路，平衡质量与性能。</li>
-</ul>
+<p>✅ 根据项目需求在 Cycles、Eevee 之间选择渲染器
+✅ 熟悉渲染层(Render Layers)与 AOV 输出
+✅ 掌握合成节点(Compositor)工作流
+✅ 针对不同交付场景配置输出格式与色彩管理
+✅ 建立渲染优化思路,平衡质量与性能</p>
 <h3 id="核心知识点拆解-4"><a class="header" href="#核心知识点拆解-4">核心知识点拆解</a></h3>
+<h4 id="1-渲染器深度配置"><a class="header" href="#1-渲染器深度配置">1. 渲染器深度配置</a></h4>
+<p><strong>Cycles 高级参数</strong>:</p>
+<pre><code>Render Properties
+├─ Device: GPU Compute (Nvidia/AMD)
+├─ Samples: 512-2048 (最终渲染)
+├─ Light Paths
+│  ├─ Max Bounces: 12 (总反弹)
+│  ├─ Diffuse: 4
+│  ├─ Glossy: 4
+│  ├─ Transmission: 12
+│  └─ Clamp Indirect: 10 (控制火点)
+├─ Performance
+│  ├─ Tiles: Auto
+│  └─ Persistent Data: 启用
+└─ Denoising: OptiX/OpenImageDenoise
+</code></pre>
+<p><strong>Eevee 高级设置</strong>:</p>
+<pre><code>Render Properties
+├─ Sampling
+│  ├─ Viewport: 16
+│  └─ Render: 64-128
+├─ Ambient Occlusion: 启用
+├─ Bloom: 启用 (辉光)
+├─ Screen Space Reflections: 启用
+├─ Shadows
+│  ├─ Cube Size: 2048
+│  └─ Cascade Size: 2048
+└─ Volumetrics: 启用 (体积光)
+</code></pre>
+<h4 id="2-渲染层与通道"><a class="header" href="#2-渲染层与通道">2. 渲染层与通道</a></h4>
+<p><strong>View Layer 管理</strong>:</p>
+<ul>
+<li>使用 <code>Collections</code> 控制可见性</li>
+<li>每个 View Layer 可独立设置</li>
+<li>适合分层渲染(角色/背景/特效)</li>
+</ul>
+<p><strong>Passes(通道)输出</strong>:</p>
+<ul>
+<li><code>Combined</code>:最终合成结果</li>
+<li><code>Diffuse Color</code>:漫反射颜色</li>
+<li><code>Glossy</code>:镜面反射</li>
+<li><code>Shadow</code>:阴影</li>
+<li><code>AO</code>:环境光遮蔽</li>
+<li><code>Emission</code>:发光</li>
+<li><code>Z-Depth</code>:深度信息</li>
+<li><code>Cryptomatte</code>:精确蒙版</li>
+<li><code>Mist</code>:雾气深度</li>
+</ul>
+<p><strong>Light Groups</strong>:</p>
+<ul>
+<li>分离不同灯光的影响</li>
+<li>后期可独立调整每组灯光强度</li>
+</ul>
+<h4 id="3-合成节点流程"><a class="header" href="#3-合成节点流程">3. 合成节点流程</a></h4>
+<p><strong>基础合成流程</strong>:</p>
+<pre><code>Render Layers
+├─ Glare (辉光/星芒效果)
+├─ Color Balance (调色)
+├─ RGB Curves (曲线调整)
+├─ Lens Distortion (镜头畸变)
+├─ Vignette (暗角)
+└─ Denoise (降噪)
+</code></pre>
+<p><strong>高级技巧</strong>:</p>
+<ul>
+<li><code>Cryptomatte</code>:通过对象/材质精确选择</li>
+<li><code>Vector Blur</code>:运动模糊(使用 Vector Pass)</li>
+<li><code>Defocus</code>:景深(使用 Z Pass)</li>
+<li><code>Mix</code> 节点:混合多个渲染层</li>
+</ul>
+<p><strong>节点复用</strong>:</p>
+<ul>
+<li>将合成节点保存为 <code>Node Group</code></li>
+<li>在 Asset Browser 中管理</li>
+<li>跨项目复用调色预设</li>
+</ul>
+<h4 id="4-色彩管理"><a class="header" href="#4-色彩管理">4. 色彩管理</a></h4>
+<p><strong>色彩空间</strong>:</p>
+<ul>
+<li><strong>Filmic</strong>:电影级色彩管理(推荐)</li>
+<li><strong>Standard</strong>:传统 sRGB</li>
+<li><strong>False Color</strong>:检查曝光</li>
+</ul>
+<p><strong>View Transform</strong>:</p>
+<ul>
+<li><code>Filmic</code>:默认,动态范围大</li>
+<li><code>Filmic Log</code>:对数,更多细节</li>
+<li><code>Standard</code>:传统 sRGB</li>
+</ul>
+<p><strong>Look</strong>:</p>
+<ul>
+<li><code>None</code></li>
+<li><code>Medium Contrast</code></li>
+<li><code>High Contrast</code></li>
+<li><code>Very High Contrast</code></li>
+</ul>
+<p><strong>LUT 应用</strong>:</p>
+<ul>
+<li>使用外部 LUT 文件</li>
+<li>统一项目色调</li>
+</ul>
+<h4 id="5-输出与交付"><a class="header" href="#5-输出与交付">5. 输出与交付</a></h4>
+<p><strong>图像序列输出</strong>:</p>
+<ul>
+<li><strong>EXR</strong>:32-bit,支持多通道,适合后期</li>
+<li><strong>PNG</strong>:8/16-bit,无损压缩</li>
+<li><strong>TIFF</strong>:支持 16-bit,高质量</li>
+</ul>
+<p><strong>视频编码</strong>:</p>
+<ul>
+<li><strong>FFmpeg</strong>:
+<ul>
+<li>H.264:通用格式,适合网络</li>
+<li>H.265:更高压缩率</li>
+<li>ProRes:专业视频编辑</li>
+</ul>
+</li>
+<li><strong>设置</strong>:
+<ul>
+<li>比特率:根据质量需求调整</li>
+<li>关键帧间隔:24-30</li>
+</ul>
+</li>
+</ul>
+<p><strong>多格式导出</strong>:</p>
+<ul>
+<li><code>File -&gt; Export</code>:
+<ul>
+<li>FBX:游戏引擎</li>
+<li>OBJ:通用 3D 格式</li>
+<li>glTF/GLB:Web3D、实时渲染</li>
+<li>Alembic:复杂动画缓存</li>
+</ul>
+</li>
+</ul>
+<h4 id="6-性能优化"><a class="header" href="#6-性能优化">6. 性能优化</a></h4>
+<p><strong>渲染优化策略</strong>:</p>
 <ol>
-<li><strong>渲染器配置</strong>：
+<li>
+<p><strong>Render Region</strong>:</p>
 <ul>
-<li>Cycles：路径追踪参数、光线反弹（Diffuse/Glossy/Transmission/Bounce）、<code>Clamp</code> 噪点控制；</li>
-<li>Eevee：光照缓存（Irradiance Volume、Reflection Cubemap）、<code>Shadow</code> 设置；</li>
-<li>外部渲染：Octane、Redshift、Arnold 插件安装与流程。</li>
+<li><code>Ctrl + B</code>:框选渲染区域</li>
+<li>局部测试光照和材质</li>
 </ul>
 </li>
-<li><strong>渲染层与通道</strong>：
+<li>
+<p><strong>Simplify</strong>:</p>
 <ul>
-<li><code>View Layer</code> 管理场景元素，使用 <code>Collections</code> 控制显示；</li>
-<li><code>Passes</code> 输出（Diffuse Color、Glossy、Shadow、Cryptomatte、Z-Depth）；</li>
-<li>使用 <code>Light Groups</code> 分离灯光影响。</li>
+<li>限制最大细分</li>
+<li>限制贴图尺寸</li>
+<li>降低 AO 和 SSS 质量</li>
 </ul>
 </li>
-<li><strong>合成节点流程</strong>：
+<li>
+<p><strong>分布式渲染</strong>:</p>
 <ul>
-<li>线性工作流：加载 <code>Render Layers</code>，使用 <code>Glare</code>、<code>Color Balance</code>、<code>Vector Blur</code>；</li>
-<li><code>Cryptomatte</code> 精准选择；</li>
-<li>使用 <code>Viewer</code> 节点实时预览；</li>
-<li>将合成节点保存为 <code>Node Group</code>，复用在不同项目。</li>
+<li><strong>Flamenco</strong>:官方渲染农场管理</li>
+<li><strong>Deadline</strong>:商业渲染队列系统</li>
+<li><strong>Blender Network Render</strong>:简单网络渲染</li>
 </ul>
 </li>
-<li><strong>后期与调色</strong>：
+<li>
+<p><strong>缓存管理</strong>:</p>
 <ul>
-<li>Blender 内部色彩管理：<code>Filmic</code>、<code>Filmic Log</code>、<code>Standard</code>；</li>
-<li>LUT 应用、对白平衡、色调映射（Tone Mapping）；</li>
-<li>景深（Z Pass + Defocus）、运动模糊（Vector Pass + Vector Blur）。</li>
-</ul>
-</li>
-<li><strong>输出与交付</strong>：
-<ul>
-<li>序列帧（EXR、PNG）：适用于后期合成；</li>
-<li>视频编码：FFmpeg（MP4/H.264/H.265）、ProRes；</li>
-<li>多格式导出：<code>File -&gt; Export -&gt;</code> FBX/OBJ/GLTF/Alembic；</li>
-<li>使用 <code>Compositor</code> 添加水印、片尾 LOGO。</li>
-</ul>
-</li>
-<li><strong>性能优化</strong>：
-<ul>
-<li>使用 <code>Render -&gt; Render Region</code> 进行局部测试；</li>
-<li>分布式渲染：Blender Network Render、Flamenco、Deadline；</li>
-<li>使用 <code>Simplify</code> 限制最大细分、贴图尺寸；</li>
-<li>渲染统计（<code>Viewport -&gt; Overlay -&gt; Statistics</code>）监控面数、内存使用。</li>
+<li>物理模拟缓存到磁盘</li>
+<li>定期清理临时文件</li>
 </ul>
 </li>
 </ol>
-<h3 id="实战案例产品广告短片渲染流程"><a class="header" href="#实战案例产品广告短片渲染流程">实战案例：产品广告短片渲染流程</a></h3>
+<h3 id="实战案例产品广告短片渲染"><a class="header" href="#实战案例产品广告短片渲染">实战案例:产品广告短片渲染</a></h3>
+<h4 id="场景拆层"><a class="header" href="#场景拆层">场景拆层</a></h4>
 <ol>
-<li><strong>场景拆层</strong>：
+<li>将产品主体、背景、特效分离到不同 View Layer</li>
+<li>使用 <code>Holdout</code> 实现遮罩</li>
+<li>每层单独渲染,后期合成</li>
+</ol>
+<h4 id="灯光设计"><a class="header" href="#灯光设计">灯光设计</a></h4>
+<p><strong>Light Rig 搭建</strong>:</p>
 <ul>
-<li>将产品主体、背景、特效分离到不同 <code>View Layer</code>；</li>
-<li>使用 <code>Holdout</code> 实现遮罩。</li>
+<li><strong>Key Light</strong>:Area Light,100W,右前上方</li>
+<li><strong>Fill Light</strong>:Area Light,30W,左前方</li>
+<li><strong>Rim Light</strong>:Area Light,50W,后方</li>
+<li><strong>HDRI</strong>:环境光,强度 0.5</li>
 </ul>
-</li>
-<li><strong>灯光与相机</strong>：
+<h4 id="摄像机设置"><a class="header" href="#摄像机设置">摄像机设置</a></h4>
+<ol>
+<li>添加 <code>Camera Depth of Field</code></li>
+<li>焦点对象:产品主体</li>
+<li>F-Stop: 2.8(浅景深)</li>
+<li>在 <code>Graph Editor</code> 中为摄像机添加缓动</li>
+</ol>
+<h4 id="渲染与合成"><a class="header" href="#渲染与合成">渲染与合成</a></h4>
+<p><strong>Cycles 渲染设置</strong>:</p>
 <ul>
-<li>建立 <code>Light Rig</code>：主光（Key）、辅光（Fill）、轮廓光（Rim），外加 <code>Area Light</code> 做柔光；</li>
-<li>使用 <code>Camera Depth of Field</code> 突出细节；</li>
-<li>在 <code>Graph Editor</code> 中为摄像机添加缓动。</li>
+<li>分辨率:3840x2160(4K)</li>
+<li>采样:2048</li>
+<li>Denoising:OptiX</li>
+<li>输出 Passes:Cryptomatte、Z、Emission、Mist</li>
 </ul>
-</li>
-<li><strong>渲染与合成</strong>：
+<p><strong>Compositor 合成</strong>:</p>
+<pre><code>Render Layers
+├─ Denoise (OptiX)
+├─ Color Balance (调色)
+├─ Glare (Bloom 辉光)
+├─ Lens Distortion (轻微畸变)
+├─ Vignette (暗角)
+└─ Cryptomatte (精确蒙版)
+</code></pre>
+<h4 id="后期整合"><a class="header" href="#后期整合">后期整合</a></h4>
+<ol>
+<li>导出序列帧(EXR)</li>
+<li>导入 DaVinci Resolve 或 Blender Video Sequencer</li>
+<li>加入音效、BGM</li>
+<li>色彩空间转换(HDR/SDR)</li>
+<li>输出多版本:
 <ul>
-<li>Cycles GPU 渲染，分辨率 3840x2160，采样 2048；</li>
-<li>输出 <code>Cryptomatte</code>、<code>Z</code>、<code>Emission</code>、<code>Mist</code>；</li>
-<li>在 Compositor 中完成调色、Bloom、暗角，并叠加字体。</li>
-</ul>
-</li>
-<li><strong>后期整合</strong>：
-<ul>
-<li>导入序列帧到 Blender Video Sequencer 或 DaVinci Resolve；</li>
-<li>加入音效、BGM，使用 <code>Color Space Transform</code> 做 HDR/SDR 转换；</li>
-<li>输出多版本（8-bit H.264、10-bit ProRes），并生成社交媒体短版。</li>
+<li>8-bit H.264(社交媒体)</li>
+<li>10-bit ProRes(客户交付)</li>
 </ul>
 </li>
 </ol>
-<h3 id="常见问题与解决策略-1"><a class="header" href="#常见问题与解决策略-1">常见问题与解决策略</a></h3>
-<ul>
-<li><strong>渲染闪烁</strong>：确保 <code>Sampling</code> 足够，使用 <code>Temporal Stabilization</code>（Eevee）或提高 <code>Motion Blur</code> 的 subframe。</li>
-<li><strong>色彩管理混乱</strong>：统一使用 ACES 或 Filmic，导出时保持颜色空间一致；</li>
-<li><strong>输出序列丢帧</strong>：使用 <code>Overwrite</code> 选项，渲染前清理缓存；</li>
-<li><strong>GPU 内存不足</strong>：切换 CPU 渲染或开启 <code>Out-of-core</code>，降低贴图尺寸；</li>
-<li><strong>合成节点性能低</strong>：启用 <code>Performance -&gt; Chunk Size</code> 调优。</li>
-</ul>
+<h3 id="常见问题排查"><a class="header" href="#常见问题排查">常见问题排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>渲染闪烁</td><td>采样不足</td><td>提高 Samples,使用 Temporal Stabilization</td></tr>
+<tr><td>色彩管理混乱</td><td>色彩空间不一致</td><td>统一使用 Filmic,导出时保持色彩空间</td></tr>
+<tr><td>输出序列丢帧</td><td>渲染中断</td><td>使用 Overwrite 选项,渲染前清理缓存</td></tr>
+<tr><td>GPU 内存不足</td><td>场景过大</td><td>切换 CPU 渲染,开启 Out-of-core,降低贴图</td></tr>
+<tr><td>合成节点性能低</td><td>节点树复杂</td><td>启用 Chunk Size 调优,分段合成</td></tr>
+</tbody></table>
+</div>
 <h3 id="阶段-checklist-3"><a class="header" href="#阶段-checklist-3">阶段 Checklist</a></h3>
 <ul>
 <li><input disabled="" type="checkbox"/>
-能根据项目需求确定渲染器与输出设置。</li>
+能根据项目需求确定渲染器与输出设置</li>
 <li><input disabled="" type="checkbox"/>
-熟练使用 View Layer、Passes 分层渲染并进行后期合成。</li>
+熟练使用 View Layer、Passes 分层渲染</li>
 <li><input disabled="" type="checkbox"/>
-至少完成一个 10 秒以上的广告或产品渲染片段。</li>
+完成至少一个 10 秒以上的渲染片段</li>
 <li><input disabled="" type="checkbox"/>
-具备基础色彩管理知识，能处理 HDR/SDR 输出。</li>
+具备基础色彩管理知识</li>
 <li><input disabled="" type="checkbox"/>
-了解分布式渲染与渲染农场接入流程。</li>
+了解分布式渲染接入流程</li>
 </ul>
 <hr />
-<h2 id="模块六项目管线自动化与协作第-6-阶段"><a class="header" href="#模块六项目管线自动化与协作第-6-阶段">模块六：项目管线、自动化与协作（第 6 阶段）</a></h2>
+<h2 id="模块六项目管线自动化与协作第-6-阶段"><a class="header" href="#模块六项目管线自动化与协作第-6-阶段">模块六:项目管线、自动化与协作(第 6 阶段)</a></h2>
 <h3 id="模块目标-5"><a class="header" href="#模块目标-5">模块目标</a></h3>
-<ul>
-<li>建立团队统一的项目结构、命名规范与资产管理策略。</li>
-<li>掌握 Blender Python API 基础，编写脚本提升重复任务效率。</li>
-<li>理解跨软件协作流程，与版本控制、任务管理系统集成。</li>
-<li>能够搭建渲染自动化、批处理导出、日志监控等管线工具。</li>
-<li>从项目需求到交付全流程把控质量，并制定回顾与优化机制。</li>
-</ul>
+<p>✅ 建立团队统一的项目结构、命名规范与资产管理策略
+✅ 掌握 Blender Python API 基础,编写脚本提升效率
+✅ 理解跨软件协作流程,与版本控制系统集成
+✅ 搭建渲染自动化、批处理导出等管线工具
+✅ 从项目需求到交付全流程把控质量</p>
 <h3 id="项目组织与命名规范"><a class="header" href="#项目组织与命名规范">项目组织与命名规范</a></h3>
-<ol>
-<li><strong>目录结构与命名</strong>：
+<h4 id="目录结构标准"><a class="header" href="#目录结构标准">目录结构标准</a></h4>
+<pre><code class="language-bash">ProjectName_YYYYMM/
+├── README.md              # 项目说明
+├── scenes/                # 场景文件
+│   ├── shot_001_v001.blend
+│   └── shot_002_v001.blend
+├── assets/                # 资产库
+│   ├── models/
+│   ├── materials/
+│   └── hdri/
+├── textures/              # 纹理贴图
+├── renders/               # 渲染输出
+│   ├── shot_001/
+│   └── shot_002/
+├── cache/                 # 模拟缓存
+├── scripts/               # 自动化脚本
+└── docs/                  # 技术文档
+</code></pre>
+<h4 id="命名规范"><a class="header" href="#命名规范">命名规范</a></h4>
+<p><strong>文件命名</strong>:</p>
+<pre><code>&lt;类型&gt;_&lt;描述&gt;_&lt;版本&gt;_&lt;作者&gt;.blend
+
+例如:
+scene_factoryLayout_v003_zwang.blend
+asset_robotArm_v002_alice.blend
+</code></pre>
+<p><strong>对象命名</strong>:</p>
+<pre><code>&lt;前缀&gt;_&lt;描述&gt;_&lt;序号&gt;
+
+前缀规范:
+- CHR: 角色
+- PROP: 道具
+- ENV: 环境
+- CAM: 摄像机
+- LGT: 灯光
+
+例如:
+CHR_Worker_001
+PROP_RobotArm_001
+ENV_Factory_Floor
+</code></pre>
+<h3 id="版本管理-1"><a class="header" href="#版本管理-1">版本管理</a></h3>
+<h4 id="git-工作流"><a class="header" href="#git-工作流">Git 工作流</a></h4>
+<p><strong>仓库结构</strong>:</p>
+<pre><code>project-repo/
+├── .gitignore
+├── .gitattributes         # Git-LFS 配置
+├── blender/               # Blender 文件
+├── assets/                # 大文件(Git-LFS)
+└── scripts/               # Python 脚本
+</code></pre>
+<p><strong>.gitignore 配置</strong>:</p>
+<pre><code># Blender 自动保存
+*.blend1
+*.blend2
+
+# 缓存文件
+cache/
+*.abc
+
+# 临时文件
+tmp/
+*.tmp
+</code></pre>
+<p><strong>.gitattributes (Git-LFS)</strong>:</p>
+<pre><code>*.blend filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.exr filter=lfs diff=lfs merge=lfs -text
+*.hdr filter=lfs diff=lfs merge=lfs -text
+</code></pre>
+<h4 id="任务管理"><a class="header" href="#任务管理">任务管理</a></h4>
+<p><strong>推荐工具</strong>:</p>
 <ul>
-<li><code>ProjectName_YYYYMM/</code> 作为顶层目录，内含 <code>scenes/</code>, <code>assets/</code>, <code>textures/</code>, <code>renders/</code>, <code>cache/</code>；</li>
-<li>命名格式：<code>&lt;类型&gt;_&lt;描述&gt;_&lt;版本&gt;_&lt;作者&gt;</code>，如 <code>scene_factoryLayout_v003_zwang.blend</code>；</li>
-<li>使用 <code>README.md</code> 记录项目背景、依赖、渲染设置。</li>
+<li><strong>ShotGrid</strong>(原 Shotgun):专业影视管线</li>
+<li><strong>ftrack</strong>:项目跟踪与资产管理</li>
+<li><strong>Notion</strong>:灵活的知识库与任务看板</li>
+<li><strong>Jira</strong>:软件团队项目管理</li>
 </ul>
-</li>
-<li><strong>版本管理</strong>：
-<ul>
-<li><code>.blend</code> 文件采用增量版本，关键节点做 <code>Save Copy</code>；</li>
-<li>使用 Git-LFS 存储贴图、缓存；</li>
-<li>结合 <code>git hooks</code> 自动同步 <code>render settings</code>、<code>asset index</code>；</li>
-<li>通过 <code>ShotGrid</code>、<code>ftrack</code> 或 <code>Notion</code> 等工具跟踪任务状态。</li>
-</ul>
-</li>
-</ol>
 <h3 id="blender-python-自动化"><a class="header" href="#blender-python-自动化">Blender Python 自动化</a></h3>
+<h4 id="基础概念"><a class="header" href="#基础概念">基础概念</a></h4>
+<p><strong>核心模块</strong>:</p>
+<ul>
+<li><code>bpy.data</code>:访问 Blender 数据(对象、材质、纹理等)</li>
+<li><code>bpy.context</code>:当前上下文(选中对象、活动场景等)</li>
+<li><code>bpy.ops</code>:操作符(执行命令)</li>
+</ul>
+<p><strong>脚本执行方式</strong>:</p>
 <ol>
-<li><strong>基础概念</strong>：
-<ul>
-<li><code>bpy</code> 模块：<code>bpy.data</code>（数据）、<code>bpy.context</code>（上下文）、<code>bpy.ops</code>（操作）；</li>
-<li>脚本执行方式：<code>Text Editor</code>、<code>Scripting</code> 工作区、命令行 <code>blender --background --python script.py</code>；</li>
-<li>注册自定义面板、操作符（Operator）及属性。</li>
-</ul>
-</li>
-<li><strong>常见脚本场景</strong>：
-<ul>
-<li>批量导入/导出模型格式：</li>
-</ul>
+<li><strong>Text Editor</strong>:内部编辑器,<code>Alt + P</code> 运行</li>
+<li><strong>Scripting 工作区</strong>:专门的脚本环境</li>
+<li><strong>命令行</strong>:
+<pre><code class="language-bash">blender --background --python script.py
+</code></pre>
 </li>
 </ol>
+<h4 id="实用脚本示例"><a class="header" href="#实用脚本示例">实用脚本示例</a></h4>
+<p><strong>批量导入 FBX</strong>:</p>
 <pre><code class="language-python">import bpy
 from pathlib import Path
 
 input_dir = Path("/path/to/fbx")
+
 for fbx in input_dir.glob("*.fbx"):
     bpy.ops.import_scene.fbx(filepath=str(fbx))
-    # 自定义处理逻辑
-    bpy.ops.export_scene.gltf(filepath=str(fbx.with_suffix('.glb')))
+    # 自定义处理
+    obj = bpy.context.selected_objects[0]
+    obj.location = (0, 0, 0)
 </code></pre>
-<ul>
-<li>自动命名与清理：</li>
-</ul>
+<p><strong>批量重命名</strong>:</p>
 <pre><code class="language-python">import bpy
 
 for obj in bpy.data.objects:
     if obj.type == 'MESH':
-        obj.name = obj.name.replace(' ', '_')
+        # 规范化命名
+        obj.name = obj.name.replace(' ', '_').upper()
+        # 启用自动平滑
         obj.data.use_auto_smooth = True
 </code></pre>
-<ul>
-<li>批量渲染：</li>
-</ul>
+<p><strong>批量渲染多视图层</strong>:</p>
 <pre><code class="language-python">import bpy
 
 scene = bpy.context.scene
 render = scene.render
 render.engine = 'CYCLES'
-render.filepath = '/mnt/render/output_'
 
-for index, view_layer in enumerate(scene.view_layers):
+for view_layer in scene.view_layers:
     scene.view_layers.active = view_layer
-    render.filepath = f"/mnt/render/{view_layer.name}_{index:03d}"
+    render.filepath = f"/mnt/render/{view_layer.name}_"
     bpy.ops.render.render(write_still=True)
 </code></pre>
-<ol start="3">
-<li><strong>自定义工具开发流程</strong>：
-<ul>
-<li>定义 Operator (<code>bpy.types.Operator</code>)，注册按键快捷方式；</li>
-<li>使用 <code>Panel</code> 将功能集成到 UI；</li>
-<li>打包为插件：创建 <code>__init__.py</code>、<code>bl_info</code>、注册函数。</li>
-</ul>
-</li>
-<li><strong>脚本发布与更新</strong>：
-<ul>
-<li>使用 Git 管理；</li>
-<li>提供 <code>Changelog</code>、<code>README</code>；</li>
-<li>通过 <code>Preferences -&gt; Add-ons -&gt; Install</code> 分发给团队。</li>
-</ul>
-</li>
-</ol>
+<blockquote>
+<p><strong>深度学习</strong>:完整的插件开发教程和高级自动化案例,请参考 <a href="./Blender-Python%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B8%93%E9%A2%98.html">Blender-Python自动化专题.md</a></p>
+</blockquote>
 <h3 id="协作与交付流程"><a class="header" href="#协作与交付流程">协作与交付流程</a></h3>
+<h4 id="生产阶段划分"><a class="header" href="#生产阶段划分">生产阶段划分</a></h4>
+<p><strong>Pre-production(前期)</strong>:</p>
+<ul>
+<li>分镜设计</li>
+<li>资产清单</li>
+<li>风格指引</li>
+<li>技术可行性评估</li>
+</ul>
+<p><strong>Production(制作)</strong>:</p>
+<ul>
+<li>建模</li>
+<li>贴图</li>
+<li>动画</li>
+<li>灯光</li>
+<li>渲染</li>
+</ul>
+<p><strong>Post-production(后期)</strong>:</p>
+<ul>
+<li>合成</li>
+<li>剪辑</li>
+<li>调色</li>
+<li>音效</li>
+<li>交付</li>
+</ul>
+<h4 id="质量控制"><a class="header" href="#质量控制">质量控制</a></h4>
+<p><strong>每日流程</strong>:</p>
 <ol>
-<li><strong>需求与可行性评估</strong>：
-<ul>
-<li>评估场景复杂度、动画时长、渲染分辨率；</li>
-<li>估算人力与渲染资源，制定里程碑。</li>
-</ul>
-</li>
-<li><strong>生产阶段</strong>：
-<ul>
-<li>Pre-production：分镜、资产清单、风格指引；</li>
-<li>Production：建模、贴图、动画、灯光、渲染并行；</li>
-<li>Post-production：合成、剪辑、调色、交付。</li>
-</ul>
-</li>
-<li><strong>质量控制</strong>：
-<ul>
-<li>每日提交 <code>Playblast</code> 或 Viewport 录屏；</li>
-<li>使用 <code>Shot Review</code>（如 SyncSketch）收集反馈；</li>
-<li>建立 QA 检查表（拓扑、材质、灯光、渲染参数）。</li>
-</ul>
-</li>
-<li><strong>交付与归档</strong>：
-<ul>
-<li>输出最终版本（EXR/MP4/GLB 等）；</li>
-<li>整理源文件、缓存、脚本到归档服务器；</li>
-<li>编写项目总结，记录问题与解决方案。</li>
-</ul>
-</li>
+<li>提交 <code>Playblast</code> 或 Viewport 录屏</li>
+<li>使用 <code>Shot Review</code> 工具(如 SyncSketch)收集反馈</li>
+<li>更新任务状态</li>
 </ol>
-<h3 id="案例中小型团队广告项目管线实践"><a class="header" href="#案例中小型团队广告项目管线实践">案例：中小型团队广告项目管线实践</a></h3>
+<p><strong>QA 检查表</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+拓扑无非流形几何</li>
+<li><input disabled="" type="checkbox"/>
+材质无缺失贴图</li>
+<li><input disabled="" type="checkbox"/>
+灯光无过曝或死黑</li>
+<li><input disabled="" type="checkbox"/>
+渲染参数符合规范</li>
+<li><input disabled="" type="checkbox"/>
+文件命名符合规范</li>
+<li><input disabled="" type="checkbox"/>
+版本已提交到仓库</li>
+</ul>
+<h4 id="交付与归档"><a class="header" href="#交付与归档">交付与归档</a></h4>
+<p><strong>最终交付清单</strong>:</p>
 <ol>
-<li><strong>项目启动</strong>：
-<ul>
-<li>使用 Notion 创建项目模板，列出镜头（Shot）与资产（Asset）；</li>
-<li>在 Git 仓库中初始化 <code>Blender Template</code>。</li>
-</ul>
-</li>
-<li><strong>资产流程</strong>：
-<ul>
-<li>资产建模完成后，推送到 Asset Library；</li>
-<li>通过 <code>Asset Browser</code> 分享，自动记录版本号；</li>
-<li>使用 Python 脚本生成资产列表（CSV），同步给策划与客户。</li>
-</ul>
-</li>
-<li><strong>渲染自动化</strong>：
-<ul>
-<li>采用 Flamenco 搭建渲染队列，配置 Worker 节点；</li>
-<li>设置任务模板（场景路径、视图层、帧范围、采样）；</li>
-<li>渲染完成后自动发布至 NAS，对接通知机器人。</li>
-</ul>
-</li>
-<li><strong>交付总结</strong>：
-<ul>
-<li>按阶段（建模/材质/动画/渲染）整理回顾文档；</li>
-<li>记录脚本使用情况与改进建议，为下一项目迭代。</li>
-</ul>
-</li>
+<li>最终渲染文件(EXR/MP4/MOV)</li>
+<li>源文件(打包的 .blend)</li>
+<li>资产库(模型、材质、贴图)</li>
+<li>技术文档(README、参数说明)</li>
+<li>项目总结报告</li>
 </ol>
-<h3 id="常见问题与解决策略-2"><a class="header" href="#常见问题与解决策略-2">常见问题与解决策略</a></h3>
+<p><strong>归档策略</strong>:</p>
 <ul>
-<li><strong>团队命名不统一</strong>：制定命名规范手册，使用脚本自动检测；</li>
-<li><strong>插件版本不一致</strong>：建立插件仓库，使用启动脚本同步；</li>
-<li><strong>渲染排队冲突</strong>：使用调度工具或队列优先级，预留紧急通道；</li>
-<li><strong>Python 脚本失效</strong>：在脚本中加入版本检测，使用 <code>try/except</code> 捕获 API 变更；</li>
-<li><strong>文件丢失</strong>：开启自动备份，将 <code>autosave</code> 间隔设为 2-3 分钟，并定期备份。</li>
+<li>整理到归档服务器</li>
+<li>保留 3 个月热备份</li>
+<li>重要项目长期归档</li>
 </ul>
+<h3 id="常见问题排查-1"><a class="header" href="#常见问题排查-1">常见问题排查</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>问题</th><th>原因</th><th>解决方案</th></tr></thead><tbody>
+<tr><td>团队命名不统一</td><td>缺乏规范</td><td>制定命名手册,使用脚本自动检测</td></tr>
+<tr><td>插件版本不一致</td><td>未统一管理</td><td>建立插件仓库,使用启动脚本同步</td></tr>
+<tr><td>渲染排队冲突</td><td>无调度机制</td><td>使用 Flamenco 等工具,设置优先级</td></tr>
+<tr><td>Python 脚本失效</td><td>API 版本变更</td><td>脚本中加入版本检测,使用 try/except</td></tr>
+<tr><td>文件丢失</td><td>无备份机制</td><td>开启自动备份,设置 2-3 分钟间隔</td></tr>
+</tbody></table>
+</div>
 <h3 id="阶段-checklist-4"><a class="header" href="#阶段-checklist-4">阶段 Checklist</a></h3>
 <ul>
 <li><input disabled="" type="checkbox"/>
-建立统一的项目目录和命名规范，并落地在至少一个真实项目中。</li>
+建立统一的项目目录和命名规范</li>
 <li><input disabled="" type="checkbox"/>
-编写并部署至少两个 Blender Python 脚本或工具命令。</li>
+编写并部署至少 2 个自动化脚本</li>
 <li><input disabled="" type="checkbox"/>
-熟悉渲染队列或分布式渲染的搭建与使用。</li>
+熟悉渲染队列或分布式渲染</li>
 <li><input disabled="" type="checkbox"/>
-建立资产库管理流程，并完成一次资产更新迭代。</li>
+建立资产库管理流程</li>
 <li><input disabled="" type="checkbox"/>
-能清晰描述项目从需求到交付的每个环节与风险控制点。</li>
+清晰描述项目从需求到交付的每个环节</li>
 </ul>
 <hr />
-<h2 id="实战项目路线与评估"><a class="header" href="#实战项目路线与评估">实战项目路线与评估</a></h2>
-<p>为帮助学习者将各模块知识融会贯通，设计以下三条实战项目路线，可根据职业目标选择：</p>
-<ol>
-<li>
-<p><strong>产品可视化路线</strong></p>
-<ul>
-<li>阶段 1：完成桌面摆件（基础操作）。</li>
-<li>阶段 2：制作科技机械臂（硬表面 + 材质灯光）。</li>
-<li>阶段 3：制作 30 秒产品广告短片（动画 + 渲染 + 合成）。</li>
-<li>阶段 4：编写脚本批量输出多版本（自动化）。</li>
-</ul>
-</li>
-<li>
-<p><strong>角色动画路线</strong></p>
-<ul>
-<li>阶段 1：完成低模角色建模与 UV。</li>
-<li>阶段 2：雕刻高模、烘焙贴图。</li>
-<li>阶段 3：Rigify 绑定 + 动作片段（走跑跳）。</li>
-<li>阶段 4：布料/头发模拟 + 场景渲染。</li>
-<li>阶段 5：输出 Unreal Engine 实时展示版本。</li>
-</ul>
-</li>
-<li>
-<p><strong>数字孪生/工业仿真路线</strong></p>
-<ul>
-<li>阶段 1：重建工厂或机房基础场景。</li>
-<li>阶段 2：制作关键设备模型，建立参数化控制。</li>
-<li>阶段 3：结合 Geometry Nodes 与 Python，制作数据驱动动画。</li>
-<li>阶段 4：整合到 WebGL 或 XR 平台，完成实时互动演示。</li>
-</ul>
-</li>
-</ol>
-<blockquote>
-<p><strong>提示</strong>：每条路线都应在阶段结束时进行回顾，记录遇到的技术问题、解决方法以及时间消耗，为下一阶段做准备。</p>
-</blockquote>
-<hr />
-<h2 id="常见-bug故障排查速查表"><a class="header" href="#常见-bug故障排查速查表">常见 Bug/故障排查速查表</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>问题现象</th><th>可能原因</th><th>排查步骤</th><th>解决方案</th><th>预防策略</th></tr></thead><tbody>
-<tr><td>模型渲染出现黑斑</td><td>法线反转、采样不足</td><td>切换到 Normal 显示，检查采样数</td><td>重新计算法线、增加采样或启用 Denoise</td><td>建模过程中保持拓扑干净，及时应用变换</td></tr>
-<tr><td>布料穿插</td><td>碰撞距离过小、缓存不足</td><td>检查 Cloth 设置、开启自碰撞</td><td>增加质量步骤与子步，适度增厚衣物</td><td>使用缩放一致的模型，提前做好测试</td></tr>
-<tr><td>渲染卡顿</td><td>贴图过大、光线反弹过多</td><td>检查材质贴图大小，观察渲染统计</td><td>使用 <code>Simplify</code> 限制，设置合理 Bounce 值</td><td>建立贴图尺寸规范，渲染前做性能测试</td></tr>
-<tr><td>插件失效</td><td>版本不兼容、依赖缺失</td><td>查看 Console 报错</td><td>更新插件或 Blender 版本，补齐依赖库</td><td>在团队内统一插件版本，编写更新指引</td></tr>
-<tr><td>FBX 导出骨骼错误</td><td>命名不规范、缩放未应用</td><td>检查骨骼命名、单位设置</td><td>应用变换（<code>Ctrl + A</code>），确保骨骼朝向正确</td><td>建立导出前 Checklist，并使用脚本自动化检查</td></tr>
-<tr><td>渲染输出颜色偏差</td><td>色彩空间设置不一致</td><td>检查 View Transform、导出设置</td><td>使用正确的色彩管理方案（如 Filmic）</td><td>记录项目色彩设定，交付时附色彩说明</td></tr>
+<h2 id="实战项目路线图"><a class="header" href="#实战项目路线图">实战项目路线图</a></h2>
+<p>为帮助学习者将各模块知识融会贯通,设计以下三条实战项目路线:</p>
+<h3 id="路线一产品可视化"><a class="header" href="#路线一产品可视化">路线一:产品可视化</a></h3>
+<p><strong>适合人群</strong>:工业设计、产品渲染、广告制作</p>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>项目</th><th>核心技能</th><th>预期成果</th></tr></thead><tbody>
+<tr><td>1</td><td>桌面摆件</td><td>基础建模、材质、渲染</td><td>静帧渲染图</td></tr>
+<tr><td>2</td><td>科技机械臂</td><td>硬表面建模、PBR 材质</td><td>高质量产品渲染</td></tr>
+<tr><td>3</td><td>30 秒产品广告</td><td>动画、灯光、合成</td><td>短视频成片</td></tr>
+<tr><td>4</td><td>批量输出自动化</td><td>Python 脚本、管线</td><td>自动化工具集</td></tr>
+</tbody></table>
+</div>
+<h3 id="路线二角色动画"><a class="header" href="#路线二角色动画">路线二:角色动画</a></h3>
+<p><strong>适合人群</strong>:游戏开发、动画制作、角色设计</p>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>项目</th><th>核心技能</th><th>预期成果</th></tr></thead><tbody>
+<tr><td>1</td><td>低模角色建模</td><td>建模基础、UV 展开</td><td>角色模型</td></tr>
+<tr><td>2</td><td>高模雕刻</td><td>雕刻、贴图烘焙</td><td>PBR 贴图套件</td></tr>
+<tr><td>3</td><td>角色绑定</td><td>Rigify、权重绘制</td><td>完整 Rig</td></tr>
+<tr><td>4</td><td>动作制作</td><td>关键帧、曲线编辑</td><td>走/跑/跳动作</td></tr>
+<tr><td>5</td><td>实时引擎导出</td><td>FBX/glTF、引擎对接</td><td>UE/Unity 可用资产</td></tr>
+</tbody></table>
+</div>
+<h3 id="路线三数字孪生工业仿真"><a class="header" href="#路线三数字孪生工业仿真">路线三:数字孪生/工业仿真</a></h3>
+<p><strong>适合人群</strong>:工业可视化、XR 开发、数据可视化</p>
+<div class="table-wrapper"><table><thead><tr><th>阶段</th><th>项目</th><th>核心技能</th><th>预期成果</th></tr></thead><tbody>
+<tr><td>1</td><td>工厂场景基础建模</td><td>建模、场景组织</td><td>场景模型</td></tr>
+<tr><td>2</td><td>关键设备详细建模</td><td>硬表面、参数化</td><td>设备资产库</td></tr>
+<tr><td>3</td><td>数据驱动动画</td><td>Geometry Nodes、Python</td><td>程序化动画</td></tr>
+<tr><td>4</td><td>实时交互集成</td><td>WebGL/XR、优化</td><td>交互演示系统</td></tr>
 </tbody></table>
 </div>
 <hr />
 <h2 id="学习成果验证标准"><a class="header" href="#学习成果验证标准">学习成果验证标准</a></h2>
-<ol>
-<li>
-<p><strong>技能闯关任务</strong></p>
+<h3 id="1-技能闯关任务"><a class="header" href="#1-技能闯关任务">1. 技能闯关任务</a></h3>
+<p><strong>基础级</strong>:</p>
 <ul>
-<li>✅ 在 90 分钟内，独立完成一个包含 5 个以上对象的静态场景建模与 Eevee 渲染预览。</li>
-<li>✅ 在 3 天内，从零搭建一个含 Rigify 绑定与 15 秒动画的角色片段，并交付含布料模拟的成品视频。</li>
-<li>✅ 编写一个 Blender Python 脚本，实现对指定目录下所有 FBX 文件的批量导入、重命名、自动渲染预览输出。</li>
+<li>✅ 90 分钟内完成 5 个以上对象的静态场景 + Eevee 渲染</li>
 </ul>
-</li>
-<li>
-<p><strong>质量量化指标</strong></p>
+<p><strong>中级</strong>:</p>
 <ul>
-<li>几何拓扑：关键关节区域四边形比例 ≥ 90%，不存在非流形面与重复顶点。</li>
-<li>渲染质量：Cycles 噪点水平（在 1920x1080 分辨率 256 采样下）低于 0.015（依据 NLM 去噪测量）。</li>
-<li>贴图一致性：PBR 材质在 Eevee 与 Cycles 中显示差异不超过 10%（通过采样关键像素 RGB 对比）。</li>
-<li>动画平滑度：在曲线编辑器中消除尖刺，动作曲线最大加速度变化率（jerk）控制在合理范围，确保视觉自然。</li>
+<li>✅ 3 天内完成含 Rigify 绑定的 15 秒角色动画 + 布料模拟</li>
 </ul>
-</li>
-<li>
-<p><strong>项目交付验收</strong></p>
+<p><strong>高级</strong>:</p>
 <ul>
-<li>提供完整项目文件（包含 <code>.blend</code>、贴图、缓存、脚本），目录结构符合规范。</li>
-<li>输出 1 份技术文档，描述项目流程、使用工具、关键参数与问题解决方案。</li>
-<li>若目标平台为实时引擎，需提供导入演示视频或运行截图，并附性能指标（帧率、面数、贴图内存）。</li>
+<li>✅ 编写批处理脚本:批量导入、重命名、渲染预览输出</li>
 </ul>
-</li>
-<li>
-<p><strong>团队协作指标</strong></p>
+<h3 id="2-质量量化指标"><a class="header" href="#2-质量量化指标">2. 质量量化指标</a></h3>
+<p><strong>几何拓扑</strong>:</p>
 <ul>
-<li>在项目管理工具中，每个资产或镜头的状态更新及时率 ≥ 95%。</li>
-<li>脚本工具使用反馈至少 3 条，形成迭代 backlog。</li>
-<li>渲染队列任务失败率低于 5%，建立追踪与报警机制。</li>
+<li>关键区域四边形比例 ≥ 90%</li>
+<li>无非流形面与重复顶点</li>
 </ul>
-</li>
-</ol>
+<p><strong>渲染质量</strong>:</p>
+<ul>
+<li>Cycles 噪点水平(1080p, 256 采样)&lt; 0.015</li>
+<li>Eevee 帧率 ≥ 30 FPS</li>
+</ul>
+<p><strong>贴图一致性</strong>:</p>
+<ul>
+<li>PBR 材质在 Eevee/Cycles 显示差异 &lt; 10%</li>
+</ul>
+<p><strong>动画平滑度</strong>:</p>
+<ul>
+<li>曲线编辑器无尖刺</li>
+<li>最大加速度变化率(jerk)在合理范围</li>
+</ul>
+<h3 id="3-项目交付验收"><a class="header" href="#3-项目交付验收">3. 项目交付验收</a></h3>
+<p><strong>必需文件</strong>:</p>
+<ul>
+<li>完整项目文件(.blend + 贴图 + 缓存 + 脚本)</li>
+<li>目录结构符合规范</li>
+<li>技术文档(README、参数说明)</li>
+</ul>
+<p><strong>实时引擎验收</strong>:</p>
+<ul>
+<li>提供导入演示视频或截图</li>
+<li>附性能指标(帧率、面数、贴图内存)</li>
+</ul>
+<h3 id="4-团队协作指标"><a class="header" href="#4-团队协作指标">4. 团队协作指标</a></h3>
+<ul>
+<li>任务状态更新及时率 ≥ 95%</li>
+<li>脚本工具使用反馈 ≥ 3 条</li>
+<li>渲染队列任务失败率 &lt; 5%</li>
+</ul>
 <hr />
 <h2 id="扩展资源与进阶路径"><a class="header" href="#扩展资源与进阶路径">扩展资源与进阶路径</a></h2>
+<h3 id="官方资源"><a class="header" href="#官方资源">官方资源</a></h3>
 <ul>
-<li>
-<p><strong>官方资源</strong></p>
-<ul>
-<li>Blender 官方文档：<a href="https://docs.blender.org/">https://docs.blender.org/</a></li>
-<li>Blender Studio &amp; Open Projects：研究官方项目结构与作业标准。</li>
-<li>Blender Today / Blender Nation：关注最新版本特性与插件。</li>
+<li><strong>Blender 官方文档</strong>:<a href="https://docs.blender.org/">https://docs.blender.org/</a></li>
+<li><strong>Blender Studio &amp; Open Projects</strong>:研究官方项目结构</li>
+<li><strong>Blender Today / Blender Nation</strong>:最新版本特性与插件</li>
 </ul>
-</li>
-<li>
-<p><strong>学习社区与课程</strong></p>
+<h3 id="学习社区与课程"><a class="header" href="#学习社区与课程">学习社区与课程</a></h3>
+<p><strong>国际平台</strong>:</p>
 <ul>
-<li>CG Cookie、FlipNormals、Gumroad 高质量课程。</li>
-<li>国内社区：哔哩哔哩（BlenderCN）、知乎专栏、QQ群/Discord。</li>
-<li>建议参与 Daily Challenge（如 Artstation Weekly）积累作品。</li>
+<li>CG Cookie、FlipNormals、Gumroad 高质量课程</li>
+<li>Blender StackExchange 问答社区</li>
+<li>BlenderArtists 论坛</li>
 </ul>
-</li>
-<li>
-<p><strong>工具与插件</strong></p>
+<p><strong>国内社区</strong>:</p>
 <ul>
-<li><strong>资产管理</strong>：Simple Asset Manager、Blender Asset Tracer。</li>
-<li><strong>渲染辅助</strong>：Lighting Setup Add-on、Gaffer。</li>
-<li><strong>几何节点</strong>：Geometry Nodes Cookbook、Erindale 学习资源。</li>
-<li><strong>Python 开发</strong>：<code>blender-python-template</code>、Text Editor Tools。</li>
+<li>哔哩哔哩 BlenderCN</li>
+<li>知乎 Blender 专栏</li>
+<li>QQ 群/Discord 中文社区</li>
 </ul>
-</li>
-<li>
-<p><strong>进阶方向</strong></p>
-<ol>
-<li><strong>电影级管线</strong>：与 Houdini、Nuke 联动，将 Blender 用于 previz、lookdev 与轻量渲染。</li>
-<li><strong>实时引擎</strong>：学习 USD、Alembic、Nvidia Omniverse 流程，接入 Unreal/Natron。</li>
-<li><strong>几何节点程序化</strong>：深入 Field、Simulation、Solvers，构建程序化资产库。</li>
-<li><strong>技术美术（TA）</strong>：强化脚本、Shader、性能优化，与游戏引擎团队协作。</li>
-<li><strong>XR/交互体验</strong>：结合 WebXR、Three.js、Babylon.js，实现实时 3D 体验。</li>
-</ol>
-</li>
+<p><strong>推荐频道</strong>:</p>
+<ul>
+<li>Grant Abbitt:基础建模与场景设计</li>
+<li>Ian Hubert:超高速场景搭建</li>
+<li>Erindale:Geometry Nodes 深入</li>
+<li>Ducky 3D:材质与节点特效</li>
+</ul>
+<h3 id="进阶方向"><a class="header" href="#进阶方向">进阶方向</a></h3>
+<p><strong>1. 电影级管线</strong>:</p>
+<ul>
+<li>与 Houdini、Nuke 联动</li>
+<li>Blender 用于 previz、lookdev</li>
+<li>学习 VFX 行业标准流程</li>
+</ul>
+<p><strong>2. 实时引擎深度集成</strong>:</p>
+<ul>
+<li>学习 USD、Alembic 格式</li>
+<li>Nvidia Omniverse 流程</li>
+<li>接入 Unreal/Unity 实时管线</li>
+</ul>
+<p><strong>3. 几何节点程序化</strong>:</p>
+<ul>
+<li>深入 Field、Simulation、Solvers</li>
+<li>构建程序化资产库</li>
+<li>开发自定义节点插件</li>
+</ul>
+<p><strong>4. 技术美术(TA)</strong>:</p>
+<ul>
+<li>强化脚本、Shader、性能优化</li>
+<li>与游戏引擎团队协作</li>
+<li>开发管线工具集</li>
+</ul>
+<p><strong>5. XR/交互体验</strong>:</p>
+<ul>
+<li>结合 WebXR、Three.js、Babylon.js</li>
+<li>实现实时 3D 交互体验</li>
+<li>VR/AR 内容制作</li>
 </ul>
 <hr />
-<h2 id="持续提升与复盘"><a class="header" href="#持续提升与复盘">持续提升与复盘</a></h2>
-<ol>
-<li>
-<p><strong>学习节奏建议</strong></p>
+<h2 id="持续提升与复盘机制"><a class="header" href="#持续提升与复盘机制">持续提升与复盘机制</a></h2>
+<h3 id="学习节奏建议"><a class="header" href="#学习节奏建议">学习节奏建议</a></h3>
+<p><strong>3-2-1 复盘模型</strong>:</p>
 <ul>
-<li>采用 “3-2-1” 复盘模型：每完成 3 个练习，总结 2 个问题，整理 1 篇技术笔记。</li>
-<li>每周至少一次作品打磨与点评（自评 + 外部反馈）。</li>
-<li>每月选定一个主题（如硬表面、动画、节点），制作专题作品集。</li>
+<li>完成 3 个练习</li>
+<li>总结 2 个问题</li>
+<li>整理 1 篇技术笔记</li>
 </ul>
-</li>
-<li>
-<p><strong>知识图谱构建</strong></p>
+<p><strong>周度节奏</strong>:</p>
 <ul>
-<li>使用思维导图或 Obsidian 建立知识关联；</li>
-<li>将脚本、节点树、材质预设整理为可引用片段；</li>
-<li>与团队共享最佳实践，形成标准化模板。</li>
+<li>每周至少一次作品打磨与点评</li>
+<li>记录学习日志,跟踪进度</li>
+<li>参与社区分享或挑战</li>
 </ul>
-</li>
-<li>
-<p><strong>性能与工作流优化</strong></p>
+<p><strong>月度专题</strong>:</p>
 <ul>
-<li>持续测试硬件升级对渲染效率的影响，评估性价比；</li>
-<li>引入自动化测试脚本（如渲染时间检测、资产引用检查）；</li>
-<li>关注官方/社区更新，评估是否纳入新版本与插件。</li>
+<li>选定一个主题(硬表面/动画/节点)</li>
+<li>制作专题作品集</li>
+<li>总结最佳实践</li>
 </ul>
-</li>
-<li>
-<p><strong>作品集策略</strong></p>
+<h3 id="知识图谱构建"><a class="header" href="#知识图谱构建">知识图谱构建</a></h3>
+<p><strong>工具推荐</strong>:</p>
 <ul>
-<li>建立主题明确的作品集（产品、角色、建筑等）；</li>
-<li>每个项目附上技术说明、参数、问题与优化点；</li>
-<li>制作 Demo Reel，控制在 1-2 分钟，突出核心技能。</li>
+<li>思维导图(XMind、MindNode)</li>
+<li>知识库(Obsidian、Notion)</li>
+<li>代码片段(GitHub Gist)</li>
 </ul>
-</li>
-<li>
-<p><strong>社群与合作</strong></p>
+<p><strong>管理策略</strong>:</p>
 <ul>
-<li>参与 Blender 官方开发者周会或社区讨论；</li>
-<li>与程序员合作开发插件，与设计师合作完成综合项目；</li>
-<li>关注招聘市场需求，调整学习重点（如实时渲染、脚本化）。</li>
+<li>整理脚本、节点树、材质预设</li>
+<li>建立可引用的知识片段</li>
+<li>与团队共享最佳实践</li>
 </ul>
-</li>
-</ol>
+<h3 id="作品集策略"><a class="header" href="#作品集策略">作品集策略</a></h3>
+<p><strong>作品集组织</strong>:</p>
+<ul>
+<li>建立主题明确的作品集(产品/角色/建筑)</li>
+<li>每个项目附技术说明</li>
+<li>记录参数、问题与优化点</li>
+</ul>
+<p><strong>Demo Reel 制作</strong>:</p>
+<ul>
+<li>控制在 1-2 分钟</li>
+<li>突出核心技能</li>
+<li>高质量渲染,专业配乐</li>
+</ul>
+<h3 id="社群与合作"><a class="header" href="#社群与合作">社群与合作</a></h3>
+<ul>
+<li>参与 Blender 官方开发者周会</li>
+<li>与程序员合作开发插件</li>
+<li>与设计师合作综合项目</li>
+<li>关注招聘市场需求,调整学习重点</li>
+</ul>
 <hr />
-<h2 id="附录-a快捷键与命令速查按工作流分类"><a class="header" href="#附录-a快捷键与命令速查按工作流分类">附录 A：快捷键与命令速查（按工作流分类）</a></h2>
+<h2 id="附录-a快捷键速查按工作流分类"><a class="header" href="#附录-a快捷键速查按工作流分类">附录 A:快捷键速查(按工作流分类)</a></h2>
 <h3 id="视图与导航"><a class="header" href="#视图与导航">视图与导航</a></h3>
-<ul>
-<li><code>Shift + 空格</code>：全屏显示当前区域</li>
-<li><code>Ctrl + 空格</code>：最大化/恢复区域</li>
-<li><code>Shift + C</code>：重置 3D 光标与视图中心</li>
-<li><code>Ctrl + Alt + Q</code>：四视图切换</li>
-</ul>
+<div class="table-wrapper"><table><thead><tr><th>快捷键</th><th>功能</th></tr></thead><tbody>
+<tr><td><code>中键</code></td><td>旋转视图</td></tr>
+<tr><td><code>Shift + 中键</code></td><td>平移视图</td></tr>
+<tr><td><code>滚轮</code></td><td>缩放视图</td></tr>
+<tr><td><code>数字键 1/3/7</code></td><td>前/侧/顶视图</td></tr>
+<tr><td><code>数字键 0</code></td><td>摄像机视图</td></tr>
+<tr><td><code>Home</code></td><td>聚焦所有对象</td></tr>
+<tr><td><code>.</code> (小数点)</td><td>聚焦选中对象</td></tr>
+<tr><td><code>Shift + 空格</code></td><td>全屏当前区域</td></tr>
+<tr><td><code>Ctrl + 空格</code></td><td>最大化/恢复区域</td></tr>
+<tr><td><code>Shift + C</code></td><td>重置 3D 光标与视图</td></tr>
+</tbody></table>
+</div>
+<h3 id="选择与变换"><a class="header" href="#选择与变换">选择与变换</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>快捷键</th><th>功能</th></tr></thead><tbody>
+<tr><td><code>A</code></td><td>全选/取消全选</td></tr>
+<tr><td><code>B</code></td><td>框选</td></tr>
+<tr><td><code>C</code></td><td>圈选</td></tr>
+<tr><td><code>G</code></td><td>移动</td></tr>
+<tr><td><code>R</code></td><td>旋转</td></tr>
+<tr><td><code>S</code></td><td>缩放</td></tr>
+<tr><td><code>X/Y/Z</code></td><td>锁定轴向</td></tr>
+<tr><td><code>Shift + X/Y/Z</code></td><td>排除轴向</td></tr>
+<tr><td><code>Shift + D</code></td><td>复制</td></tr>
+<tr><td><code>Alt + D</code></td><td>关联复制</td></tr>
+<tr><td><code>Ctrl + A</code></td><td>应用变换</td></tr>
+<tr><td><code>Shift + S</code></td><td>光标/对象对齐菜单</td></tr>
+</tbody></table>
+</div>
 <h3 id="建模"><a class="header" href="#建模">建模</a></h3>
-<ul>
-<li><code>Ctrl + B</code>：倒角</li>
-<li><code>Ctrl + Shift + B</code>：顶点倒角</li>
-<li><code>Alt + S</code>：边法线方向缩放（厚度调整）</li>
-<li><code>Shift + R</code>：重复上一次动作</li>
-<li><code>F</code>：补面；<code>Alt + F</code>：自动三角化</li>
-<li><code>M</code>：合并顶点（At Center/At Cursor）</li>
-<li><code>Ctrl + Shift + R</code>：多环切（Loop Cut）</li>
-</ul>
-<h3 id="雕刻"><a class="header" href="#雕刻">雕刻</a></h3>
-<ul>
-<li><code>Shift + R</code>：调整笔刷半径</li>
-<li><code>Shift + F</code>：调整笔刷强度</li>
-<li><code>Ctrl + Shift + F</code>：设置笔刷倾斜角度</li>
-<li><code>F</code>：更改笔刷半径</li>
-</ul>
+<div class="table-wrapper"><table><thead><tr><th>快捷键</th><th>功能</th></tr></thead><tbody>
+<tr><td><code>Tab</code></td><td>切换对象/编辑模式</td></tr>
+<tr><td><code>1/2/3</code></td><td>顶点/边/面模式</td></tr>
+<tr><td><code>E</code></td><td>拉伸</td></tr>
+<tr><td><code>I</code></td><td>内插面</td></tr>
+<tr><td><code>Ctrl + R</code></td><td>环切</td></tr>
+<tr><td><code>K</code></td><td>刀切</td></tr>
+<tr><td><code>F</code></td><td>补面</td></tr>
+<tr><td><code>X</code></td><td>删除菜单</td></tr>
+<tr><td><code>Ctrl + B</code></td><td>倒角</td></tr>
+<tr><td><code>Ctrl + Shift + B</code></td><td>顶点倒角</td></tr>
+<tr><td><code>Alt + S</code></td><td>法线方向缩放</td></tr>
+<tr><td><code>Shift + N</code></td><td>重计算法线</td></tr>
+<tr><td><code>M</code></td><td>合并顶点</td></tr>
+</tbody></table>
+</div>
+<h3 id="材质与渲染"><a class="header" href="#材质与渲染">材质与渲染</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>快捷键</th><th>功能</th></tr></thead><tbody>
+<tr><td><code>Z</code></td><td>视图着色模式切换</td></tr>
+<tr><td><code>F12</code></td><td>渲染当前帧</td></tr>
+<tr><td><code>Ctrl + F12</code></td><td>渲染动画</td></tr>
+<tr><td><code>Ctrl + B</code> (渲染视图)</td><td>设置渲染区域</td></tr>
+<tr><td><code>Ctrl + Alt + B</code></td><td>取消渲染区域</td></tr>
+</tbody></table>
+</div>
 <h3 id="动画"><a class="header" href="#动画">动画</a></h3>
-<ul>
-<li><code>I</code>：插入关键帧</li>
-<li><code>Alt + I</code>：删除关键帧</li>
-<li><code>Shift + E</code>：关键帧插值菜单</li>
-<li><code>Shift + Ctrl + Alt + C</code>：设置骨骼 IK 约束</li>
-<li><code>Ctrl + Shift + C</code>：添加约束</li>
-</ul>
-<h3 id="渲染与合成"><a class="header" href="#渲染与合成">渲染与合成</a></h3>
-<ul>
-<li><code>F12</code>：渲染当前帧</li>
-<li><code>Ctrl + F12</code>：渲染动画</li>
-<li><code>Ctrl + B</code>（渲染里程）：设置渲染区域</li>
-<li><code>Ctrl + Alt + B</code>：取消渲染区域</li>
-<li><code>Ctrl + J</code>：合并节点树中选中节点</li>
-<li><code>Ctrl + Shift + 点击</code>（Node Wrangler）：预览节点输出</li>
-</ul>
-<h3 id="python-层面"><a class="header" href="#python-层面">Python 层面</a></h3>
-<ul>
-<li><code>Alt + P</code>：在脚本编辑器运行脚本</li>
-<li><code>Ctrl + 空格</code>：自动补全（需开启）</li>
-<li><code>Info</code> 面板：查看操作对应的 Python 命令</li>
-</ul>
-<hr />
-<h2 id="附录-b常用模板与表单"><a class="header" href="#附录-b常用模板与表单">附录 B：常用模板与表单</a></h2>
-<ol>
-<li><strong>项目需求模板</strong></li>
-</ol>
-<pre><code class="language-markdown"># 项目名称
-- 客户/需求方：
-- 项目周期：
-- 目标交付：
-- 分辨率与帧率：
-- 风格参考：
-- 技术约束：
-
-## 资产列表
-| 名称 | 类型 | 负责人 | 计划完成 | 状态 | 备注 |
-
-## 镜头列表
-| Shot ID | 描述 | 时长 | 负责人 | 状态 | 风险 |
-
-## 渲染配置
-- 渲染器：
-- 分辨率：
-- 采样：
-- 输出格式：
-</code></pre>
-<ol start="2">
-<li><strong>每日进度与风险记录</strong></li>
-</ol>
-<pre><code class="language-markdown">## 日期：YYYY-MM-DD
-### 今日完成
-- [ ] 任务 1
-- [ ] 任务 2
-
-### 明日计划
-- [ ] 任务 3
-
-### 风险与问题
-- 风险描述：
-- 影响范围：
-- 解决方案/负责人：
-</code></pre>
-<ol start="3">
-<li><strong>渲染农场任务模板（Flamenco）</strong></li>
-</ol>
-<pre><code class="language-json">{
-  "job": {
-    "name": "ProjectName_Shot010",
-    "frames": "100-250",
-    "chunk_size": 5,
-    "command": "blender",
-    "command_args": [
-      "--background",
-      "//scenes/shot010.blend",
-      "--render-output",
-      "//renders/shot010_",
-      "--render-frame"
-    ],
-    "env": {
-      "BLENDER_USER_SCRIPTS": "//scripts"
-    }
-  }
-}
-</code></pre>
-<ol start="4">
-<li><strong>资产更新表</strong></li>
-</ol>
-<pre><code class="language-csv">asset_name,asset_type,version,artist,status,update_notes
-robot_arm,prop,v005,alice,approved,"增加末端执行器细节"
-control_panel,prop,v003,bob,in_review,"待补充法线贴图"
-factory_floor,environment,v002,carol,wip,"重新布光"
-</code></pre>
-<hr />
-<h2 id="附录-c性能测试与-benchmark-建议"><a class="header" href="#附录-c性能测试与-benchmark-建议">附录 C：性能测试与 Benchmark 建议</a></h2>
-<div class="table-wrapper"><table><thead><tr><th>测试项目</th><th>工具/脚本</th><th>指标</th><th>目标值</th><th>备注</th></tr></thead><tbody>
-<tr><td>Viewport FPS</td><td>Viewport Statistics</td><td>帧率</td><td>≥ 24 FPS</td><td>场景选择代表镜头</td></tr>
-<tr><td>渲染时间</td><td>Python 脚本统计</td><td>单帧耗时</td><td>&lt; 10 min (4K)</td><td>Cycles GPU, 2048 采样</td></tr>
-<tr><td>内存占用</td><td>系统监控/GPU-Z</td><td>峰值显存</td><td>&lt; 90%</td><td>防止溢出</td></tr>
-<tr><td>贴图管理</td><td>自编脚本扫描</td><td>贴图尺寸/数量</td><td>100% 符合规范</td><td>限制 8K 贴图数量</td></tr>
-<tr><td>脚本稳定性</td><td>单元测试</td><td>成功率</td><td>≥ 98%</td><td>关键自动化脚本</td></tr>
+<div class="table-wrapper"><table><thead><tr><th>快捷键</th><th>功能</th></tr></thead><tbody>
+<tr><td><code>I</code></td><td>插入关键帧</td></tr>
+<tr><td><code>Alt + I</code></td><td>删除关键帧</td></tr>
+<tr><td><code>空格</code></td><td>播放/暂停动画</td></tr>
+<tr><td><code>Shift + ←/→</code></td><td>跳转到首/尾帧</td></tr>
+</tbody></table>
+</div>
+<h3 id="node-editor"><a class="header" href="#node-editor">Node Editor</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>快捷键</th><th>功能 (需 Node Wrangler)</th></tr></thead><tbody>
+<tr><td><code>Ctrl + T</code></td><td>自动创建贴图节点组</td></tr>
+<tr><td><code>Ctrl + Shift + 左键</code></td><td>预览节点输出</td></tr>
+<tr><td><code>Ctrl + J</code></td><td>合并节点为 Frame</td></tr>
 </tbody></table>
 </div>
 <hr />
-<h2 id="后续行动计划建议"><a class="header" href="#后续行动计划建议">后续行动计划建议</a></h2>
-<ol>
-<li><strong>建立个人作品集路线图</strong>：围绕三条实战路线，各自规划 2-3 个代表作品，设定完成时间。</li>
-<li><strong>制定学习复盘节奏</strong>：每周撰写学习日志，总结问题与关键收获，定期复查 Checklist。</li>
-<li><strong>参与社区与竞赛</strong>：每季度至少参加一次 Blender 社区活动或比赛，检验综合能力。</li>
-<li><strong>扩展跨领域技能</strong>：结合摄影、灯光、编程、UI 设计等知识，增强作品表现力。</li>
-<li><strong>保持版本更新与技术前瞻</strong>：关注 Blender 官方 Roadmap，提前评估 Geometry Nodes、Real-time Compositor 等新特性。</li>
-</ol>
-<hr />
-<blockquote>
-<p>通过以上结构化学习与实践安排，学习者可以逐步构建起 Blender 的系统知识体系，并将技能应用到真实生产环境中。持续迭代、主动复盘与团队协作将是实现长期成长的关键。</p>
-</blockquote>
-<hr />
-<h2 id="专题拓展篇从实战项目反推能力图谱"><a class="header" href="#专题拓展篇从实战项目反推能力图谱">专题拓展篇：从实战项目反推能力图谱</a></h2>
-<h3 id="专题一geometry-nodes-程序化工作流"><a class="header" href="#专题一geometry-nodes-程序化工作流">专题一：Geometry Nodes 程序化工作流</a></h3>
-<blockquote>
-<p>目标：建立从基础 Field 概念到大型程序化资产的完整实践指南，将 Geometry Nodes 融入团队生产管线。</p>
-</blockquote>
-<h4 id="1-核心理念"><a class="header" href="#1-核心理念">1. 核心理念</a></h4>
-<ul>
-<li><strong>字段（Field）机制</strong>：理解每个节点输出的数值或向量可在任意点、边、面上求值。</li>
-<li><strong>Geometry 数据结构</strong>：Mesh、Curve、Point Cloud、Volume 四大类型及其属性（Attribute）。</li>
-<li><strong>实例化（Instance）思想</strong>：尽量使用实例避免重复几何，大幅提升性能。</li>
-<li><strong>程序化迭代</strong>：节点树可通过 <code>Group</code> 封装，形成可复用资产。</li>
-</ul>
-<h4 id="2-常用节点语义图谱"><a class="header" href="#2-常用节点语义图谱">2. 常用节点语义图谱</a></h4>
-<div class="table-wrapper"><table><thead><tr><th>节点类型</th><th>代表节点</th><th>用途说明</th><th>实战提示</th></tr></thead><tbody>
-<tr><td>数据输入</td><td><code>Object Info</code>、<code>Collection Info</code></td><td>引入外部物体或集合</td><td>勾选 <code>As Instance</code> 减少内存</td></tr>
-<tr><td>几何操作</td><td><code>Join Geometry</code>、<code>Separate Geometry</code></td><td>合并或筛选几何</td><td>搭配 <code>Boolean</code> 控制流程</td></tr>
-<tr><td>字段计算</td><td><code>Math</code>、<code>Vector Math</code>、<code>Color Ramp</code></td><td>处理标量、向量、颜色</td><td>可使用 <code>Map Range</code> 控制范围</td></tr>
-<tr><td>拓扑调整</td><td><code>Subdivision</code>、<code>Triangulate</code>、<code>Dual Mesh</code></td><td>改变拓扑结构</td><td>留意 UV/法线变化</td></tr>
-<tr><td>实例管理</td><td><code>Point Instance</code>、<code>Instance on Points</code></td><td>在点上生成实例</td><td>与 <code>Random Value</code> 结合随机化</td></tr>
-<tr><td>模式控制</td><td><code>Switch</code>、<code>Compare</code>、<code>Boolean Math</code></td><td>控制条件分支</td><td>可通过自定义属性驱动</td></tr>
-<tr><td>输出</td><td><code>Group Output</code>、<code>Store Named Attribute</code></td><td>输出最终几何或属性</td><td>善用 <code>Named Attribute</code> 与 Shader 交互</td></tr>
-</tbody></table>
-</div>
-<h4 id="3-实战案例工业园景观快速生成"><a class="header" href="#3-实战案例工业园景观快速生成">3. 实战案例：工业园景观快速生成</a></h4>
-<p><strong>需求</strong>：自动生成一片包含道路、绿化、建筑体块的工业园区，参数可驱动道路宽度、建筑高度、绿植密度。</p>
-<ol>
-<li><strong>数据准备</strong>：
-<ul>
-<li>导入参考曲线（道路中线）作为 <code>Curve</code>。</li>
-<li>使用 <code>Store Named Attribute</code> 将道路宽度写入属性 <code>road_width</code>。</li>
-</ul>
-</li>
-<li><strong>道路生成</strong>：
-<ul>
-<li><code>Curve to Mesh</code>：使用 <code>Curve Circle</code> 控制道路横截面宽度。</li>
-<li>添加 <code>Set Material</code> 指定沥青材质。</li>
-</ul>
-</li>
-<li><strong>地块划分</strong>：
-<ul>
-<li>使用 <code>Geometry Proximity</code> 获取到道路的距离字段；</li>
-<li>利用 <code>Compare</code> 判断距离阈值，将距离较远区域作为可建造用地。</li>
-</ul>
-</li>
-<li><strong>建筑体块</strong>：
-<ul>
-<li>将可建区域转换为点云，使用 <code>Poisson Disk</code> 分布控制密度；</li>
-<li><code>Instance on Points</code> 放置基础建筑体，使用 <code>Random Value</code> 控制高度、朝向；</li>
-<li>使用 <code>Realize Instances</code> 将关键建筑转为实体供细化。</li>
-</ul>
-</li>
-<li><strong>绿化布置</strong>：
-<ul>
-<li>根据距离字段与随机种子生成绿化点位；</li>
-<li><code>Instance on Points</code> 引用树木集合，使用 <code>Scale</code> 随机化。</li>
-</ul>
-</li>
-<li><strong>参数化控制</strong>：
-<ul>
-<li>通过 <code>Group Input</code> 暴露参数：道路宽度、建筑高度范围、绿化密度；</li>
-<li>将节点树保存为资产，自定义缩略图。</li>
-</ul>
-</li>
-</ol>
-<h4 id="4-几何节点在管线中的应用"><a class="header" href="#4-几何节点在管线中的应用">4. 几何节点在管线中的应用</a></h4>
-<ul>
-<li><strong>程序化资产</strong>：建立道路、楼梯、栏杆、机柜等模块的节点资产库，减少重复建模。</li>
-<li><strong>特效驱动</strong>：使用 <code>Simulation Nodes</code> 创建粒子聚合、流水线产品运动轨迹。</li>
-<li><strong>数据交互</strong>：通过 <code>Store Named Attribute</code> 向 Shader 传递自定义属性，实现图案/色彩的 procedural control。</li>
-<li><strong>动态摄影机</strong>：使用 <code>Curve</code> + <code>Sample Curve</code> 控制摄像机沿路径运动，参数化调节速度与焦距。</li>
-<li><strong>性能优化</strong>：尽量保持实例化，设置 <code>Display As Bounding Box</code> 预览；对大型节点树使用 <code>Viewer</code> 节点逐段调试。</li>
-</ul>
-<h4 id="5-进阶挑战"><a class="header" href="#5-进阶挑战">5. 进阶挑战</a></h4>
-<ul>
-<li>开发 <code>Geometry Nodes</code> 资产库管理脚本，自动更新版本和预览。</li>
-<li>与 Python 配合，读取外部 JSON/CSV 数据，驱动节点参数，实现数据可视化。</li>
-<li>将节点树导出为自定义资产包，与团队共享并编写使用手册。</li>
-</ul>
-<hr />
-<h3 id="专题二shader-节点实战配方"><a class="header" href="#专题二shader-节点实战配方">专题二：Shader 节点实战配方</a></h3>
-<blockquote>
-<p>目标：提供 10 套常用材质的节点构建步骤，让学习者快速积累可复用的材质方案。</p>
-</blockquote>
-<div class="table-wrapper"><table><thead><tr><th>材质</th><th>核心特性</th><th>关键节点</th><th>具体步骤</th><th>调优建议</th></tr></thead><tbody>
-<tr><td>磨砂金属</td><td>高粗糙度、法线随机</td><td><code>Noise Texture</code>、<code>ColorRamp</code>、<code>Principled BSDF</code></td><td>1. 使用 Noise 控制粗糙度；2. 添加 <code>Bump</code> 赋予细纹；3. 通过 <code>ColorRamp</code> 控制反射衰减</td><td>将 <code>Noise</code> 缩放设为 50-200，模拟微小瑕疵</td></tr>
-<tr><td>拉丝铝</td><td>方向纹理</td><td><code>Wave Texture</code>、<code>Anisotropic</code></td><td>1. <code>Wave Texture</code> 设置 Directional；2. 将 <code>Vector Rotate</code> 对齐纹理方向；3. 使用 Anisotropic Shader 控制高光</td><td>通过 <code>Anisotropic Rotation</code> 调整拉丝方向</td></tr>
-<tr><td>透明玻璃</td><td>折射、反射</td><td><code>Glass BSDF</code>、<code>Mix Shader</code></td><td>1. 使用 <code>Light Path -&gt; Is Shadow Ray</code> 混合；2. 控制 IOR=1.45；3. 添加 <code>Volume Absorption</code> 模拟色偏</td><td>Eevee 中打开 <code>Screen Space Refraction</code></td></tr>
-<tr><td>次表面皮肤</td><td>半透明、色散</td><td><code>Principled BSDF</code>（Subsurface）、<code>Texture Coordinate</code></td><td>1. 设置 Subsurface=0.2-0.4；2. 使用三层贴图：Color、Roughness、Normal；3. 添加 <code>Subsurface Radius</code> 控制色散</td><td>结合 <code>Specular Tint</code> 与 <code>Sheen</code> 模拟油脂</td></tr>
-<tr><td>科技发光面板</td><td>发光、扫描线</td><td><code>Emission</code>、<code>Gradient Texture</code>、<code>Math</code></td><td>1. <code>Gradient</code> 生成扫描线；2. 使用 <code>Sine</code> 叠加闪烁；3. <code>ColorRamp</code> 控制颜色；4. <code>Mix Shader</code> 与基础材质混合</td><td>配合 <code>Drivers</code> 或 <code>Geometry Nodes</code> 控制动画节奏</td></tr>
-<tr><td>旧木材</td><td>颜色分层、凹凸</td><td><code>Noise</code>、<code>Voronoi</code>、<code>Bump</code></td><td>1. <code>Voronoi</code> 生成年轮；2. <code>Noise</code> 叠加随机；3. 使用 <code>Bump</code> 模拟凹凸；4. <code>Roughness</code> 设置较高</td><td>引入贴图混合以提高真实度</td></tr>
-<tr><td>油漆剥落</td><td>噪声遮罩</td><td><code>Noise</code>、<code>ColorRamp</code>、<code>Mix</code></td><td>1. 构建 <code>Noise</code> 遮罩；2. 使用 <code>ColorRamp</code> 控制剥落区域；3. <code>Mix Shader</code> 将金属底层与油漆顶层融合；4. 添加 <code>Bump</code> 增强边缘</td><td>使用 <code>Ambient Occlusion</code> 控制缝隙剥落程度</td></tr>
-<tr><td>雾化玻璃</td><td>模糊、散射</td><td><code>Noise</code>、<code>Voronoi</code>、<code>Principled BSDF</code></td><td>1. <code>Noise</code> 控制 Roughness；2. <code>Voronoi</code> 添加细节；3. <code>Emission</code> 模拟背光</td><td>根据厚度调整 <code>Transmission</code> 与 <code>Alpha</code></td></tr>
-<tr><td>霓虹灯牌</td><td>发光、辉光</td><td><code>Emission</code>、<code>Layer Weight</code>、<code>Bevel</code></td><td>1. 使用 <code>Layer Weight -&gt; Facing</code> 控制边缘亮度；2. 添加 <code>Bevel Shader</code> 软化边缘；3. <code>Mix Shader</code> 添加透明背景</td><td>在 Eevee 中启用 Bloom，调整半径</td></tr>
-<tr><td>赛博金属反光</td><td>高光、贴图</td><td><code>Fresnel</code>、<code>Metallic</code>、<code>Clearcoat</code></td><td>1. <code>Fresnel</code> 控制边缘亮度；2. <code>Clearcoat</code> 增加第二层高光；3. <code>Noise Texture</code> 添加微小划痕；4. 使用 <code>Mapping</code> 控制方向</td><td>渲染时使用 HDRI 环境提升反射品质</td></tr>
-</tbody></table>
-</div>
-<blockquote>
-<p><strong>操作建议</strong>：为每种材质制作节点组，并在 <code>Asset Browser</code> 中归档。构建材质库时记录使用场景、渲染需求与性能指标。</p>
-</blockquote>
-<h4 id="shader-调试技巧"><a class="header" href="#shader-调试技巧">Shader 调试技巧</a></h4>
-<ul>
-<li>使用 <code>Ctrl + Shift + 左键</code>（Node Wrangler）预览任意节点输出。</li>
-<li><code>View -&gt; Texture Paint -&gt; Stencil</code> 绘制遮罩，自定义破损效果。</li>
-<li>将参数暴露为 <code>Custom Properties</code>，通过驱动器控制材质动画。</li>
-<li>在渲染层输出 <code>Emission</code>、<code>Glossy</code> 等通道，便于后期调色。</li>
-</ul>
-<hr />
-<h3 id="专题三python-插件开发深度实践"><a class="header" href="#专题三python-插件开发深度实践">专题三：Python 插件开发深度实践</a></h3>
-<blockquote>
-<p>目标：通过完整的插件案例，帮助学习者从脚本编写推进到 UI 定制、事件响应与批处理，真正融入生产流程。</p>
-</blockquote>
-<h4 id="案例团队资产命名与导出助手"><a class="header" href="#案例团队资产命名与导出助手">案例：团队资产命名与导出助手</a></h4>
-<p><strong>功能需求</strong>：</p>
-<ul>
-<li>自动校验对象命名是否符合规范（前缀 + 功能 + 序号）。</li>
-<li>批量导出选中对象为 FBX，并自动生成缩略图。</li>
-<li>在界面中显示校验结果，支持一键修复。</li>
-</ul>
-<pre><code class="language-python">bl_info = {
-    "name": "Asset Naming &amp; Export Helper",
-    "author": "Tech Artist Team",
-    "version": (1, 0, 0),
-    "blender": (3, 6, 0),
-    "description": "Check naming conventions, auto export FBX and thumbnails.",
-    "category": "Pipeline",
-}
-
-import bpy
-import os
-from pathlib import Path
-import re
-
-NAMING_PATTERN = re.compile(r"^(CHR|PROP|ENV)_[A-Za-z0-9]+_[0-9]{3}$")
-
-class ASSETCHECK_OT_check(bpy.types.Operator):
-    bl_idname = "assetcheck.check"
-    bl_label = "检查命名"
-    report_items: bpy.props.CollectionProperty(type=bpy.types.PropertyGroup)
-
-    def execute(self, context):
-        scene = context.scene
-        report_items = scene.assetcheck_report
-        report_items.clear()
-        for obj in bpy.data.objects:
-            if obj.type in {"MESH", "EMPTY", "ARMATURE"}:
-                item = report_items.add()
-                item.name = obj.name
-                item["is_valid"] = bool(NAMING_PATTERN.match(obj.name))
-        self.report({'INFO'}, "命名检查完成")
-        return {'FINISHED'}
-
-class ASSETCHECK_OT_fix(bpy.types.Operator):
-    bl_idname = "assetcheck.fix"
-    bl_label = "自动修复命名"
-
-    def execute(self, context):
-        for obj in bpy.data.objects:
-            if not NAMING_PATTERN.match(obj.name):
-                prefix = "PROP"
-                if obj.type == 'ARMATURE':
-                    prefix = 'CHR'
-                obj.name = f"{prefix}_{obj.name.upper()}_001"
-        self.report({'INFO'}, "命名已修复，记得人工校验")
-        return {'FINISHED'}
-
-class ASSETCHECK_OT_export(bpy.types.Operator):
-    bl_idname = "assetcheck.export"
-    bl_label = "批量导出 FBX"
-
-    directory: bpy.props.StringProperty(subtype='DIR_PATH')
-
-    def execute(self, context):
-        output_dir = Path(self.directory)
-        output_dir.mkdir(parents=True, exist_ok=True)
-        for obj in context.selected_objects:
-            filepath = output_dir / f"{obj.name}.fbx"
-            bpy.ops.object.select_all(action='DESELECT')
-            obj.select_set(True)
-            context.view_layer.objects.active = obj
-            bpy.ops.export_scene.fbx(
-                filepath=str(filepath),
-                use_selection=True,
-                apply_unit_scale=True,
-                bake_anim=False,
-            )
-            # 生成缩略图
-            thumb = output_dir / f"{obj.name}_thumb.png"
-            bpy.ops.view3d.camera_to_view_selected()
-            context.scene.render.filepath = str(thumb)
-            bpy.ops.render.render(write_still=True)
-        self.report({'INFO'}, "导出完成")
-        return {'FINISHED'}
-
-    def invoke(self, context, event):
-        context.window_manager.fileselect_add(self)
-        return {'RUNNING_MODAL'}
-
-class ASSETCHECK_UL_report(bpy.types.UIList):
-    bl_idname = "ASSETCHECK_UL_report"
-
-    def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
-        is_valid = item.get("is_valid", False)
-        icon_name = 'CHECKMARK' if is_valid else 'ERROR'
-        layout.label(text=item.name, icon=icon_name)
-
-class ASSETCHECK_PT_panel(bpy.types.Panel):
-    bl_label = "资产命名与导出助手"
-    bl_space_type = 'VIEW_3D'
-    bl_region_type = 'UI'
-    bl_category = 'Pipeline'
-
-    def draw(self, context):
-        layout = self.layout
-        scene = context.scene
-        layout.operator("assetcheck.check", icon='FILE_REFRESH')
-        layout.operator("assetcheck.fix", icon='BRUSH_DATA')
-        layout.template_list("ASSETCHECK_UL_report", "", scene, "assetcheck_report", scene, "assetcheck_index")
-        layout.operator("assetcheck.export", icon='EXPORT')
-
-classes = (
-    ASSETCHECK_OT_check,
-    ASSETCHECK_OT_fix,
-    ASSETCHECK_OT_export,
-    ASSETCHECK_UL_report,
-    ASSETCHECK_PT_panel,
-)
-
-def register():
-    for cls in classes:
-        bpy.utils.register_class(cls)
-    bpy.types.Scene.assetcheck_report = bpy.props.CollectionProperty(type=bpy.types.PropertyGroup)
-    bpy.types.Scene.assetcheck_index = bpy.props.IntProperty(default=0)
-
-def unregister():
-    for cls in reversed(classes):
-        bpy.utils.unregister_class(cls)
-    del bpy.types.Scene.assetcheck_report
-    del bpy.types.Scene.assetcheck_index
-
-if __name__ == "__main__":
-    register()
-</code></pre>
-<h4 id="关键实现说明"><a class="header" href="#关键实现说明">关键实现说明</a></h4>
-<ul>
-<li>使用 <code>bpy.types.Scene</code> 自定义属性存储报告结果，方便 UIList 展示。</li>
-<li>通过 <code>template_list</code> 构建交互界面，可快速查看每个对象命名状态。</li>
-<li>导出时自动聚焦对象摄像机，并渲染缩略图，适用资产库维护。</li>
-<li>可拓展功能：导出日志、邮件通知、与项目管理系统对接。</li>
-</ul>
-<h4 id="插件迭代路线"><a class="header" href="#插件迭代路线">插件迭代路线</a></h4>
-<ol>
-<li><strong>V1.1</strong>：增加配置文件（YAML/JSON）定义命名规则与输出格式。</li>
-<li><strong>V1.2</strong>：支持批量检查材质、贴图路径，输出报告。</li>
-<li><strong>V1.3</strong>：接入渲染农场 API，一键推送渲染任务。</li>
-<li><strong>V2.0</strong>：图形界面美化，增加进度条、错误高亮，与团队账号体系整合。</li>
-</ol>
-<hr />
-<h3 id="专题四blender-与实时引擎的协同流程"><a class="header" href="#专题四blender-与实时引擎的协同流程">专题四：Blender 与实时引擎的协同流程</a></h3>
-<blockquote>
-<p>目标：构建 Unreal Engine / Unity 实时可视化项目的全流程操作指南。</p>
-</blockquote>
-<h4 id="1-资产准备"><a class="header" href="#1-资产准备">1. 资产准备</a></h4>
-<ul>
-<li>统一单位：Blender 设置为公制（Metric），比例 0.01；Unity 默认单位为米，UE 支持厘米。</li>
-<li>应用变换：导出前 <code>Ctrl + A</code> 应用 Location/Rotation/Scale。</li>
-<li>动画烘焙：<code>Action</code> 中的关键帧转换为 Bake，确保导出后动作不丢失。</li>
-<li>材质命名：遵循 <code>MAT_</code> 前缀，方便引擎中自动匹配 Shader。</li>
-</ul>
-<h4 id="2-导出设置"><a class="header" href="#2-导出设置">2. 导出设置</a></h4>
-<ul>
-<li><strong>glTF</strong>：适合 PBR 工作流，导出时勾选 <code>Include -&gt; Selected Objects</code>，设置 <code>Apply Modifiers</code>。</li>
-<li><strong>FBX</strong>：
-<ul>
-<li>设置 <code>Forward = -Z Forward</code>，<code>Up = Y Up</code>；</li>
-<li>勾选 <code>Apply Transform</code>；</li>
-<li>如果含骨骼，勾选 <code>Add Leaf Bones = False</code>，<code>Bake Animation</code> 按需设置。</li>
-</ul>
-</li>
-<li><strong>USD</strong>：对接 Omniverse 或 Unreal 时可使用。</li>
-</ul>
-<h4 id="3-unreal-engine-workflow"><a class="header" href="#3-unreal-engine-workflow">3. Unreal Engine Workflow</a></h4>
-<ol>
-<li>安装官方插件 <code>Send to Unreal</code>，在 Blender 中选择对象 &gt; <code>File -&gt; Send to Unreal</code>。</li>
-<li>在 UE 中设置 <code>Import Settings</code>：
-<ul>
-<li><code>Normal Import Method</code> = <code>Import Normals and Tangents</code>；</li>
-<li><code>Material Import Method</code> = <code>Do Not Create Material</code>（若使用引擎材质）；</li>
-<li><code>Skeleton</code> 指定共用骨架。</li>
-</ul>
-</li>
-<li>配置 <code>Datasmith</code> 场景更新，适合多次迭代。</li>
-<li>构建 <code>Blueprint</code>：将 Blender 动画转换为 Level Sequence。</li>
-<li>使用 <code>Control Rig</code> 或 Niagara 增强实时特效。</li>
-</ol>
-<h4 id="4-unity-workflow"><a class="header" href="#4-unity-workflow">4. Unity Workflow</a></h4>
-<ol>
-<li>导出 glTF 或 FBX，放入 <code>Assets</code> 目录。</li>
-<li>使用 Unity HDRP/URP 材质球，导入 Blender PBR 贴图（Albedo/Metallic/Normal/AO）。</li>
-<li>若使用动画，创建 <code>Animator Controller</code>，设置状态机。</li>
-<li>配置 <code>ProBuilder</code> 或 <code>Cinemachine</code> 进行实时预演。</li>
-<li>结合 Timeline 制作摄像机动画与特效。</li>
-</ol>
-<h4 id="5-性能优化与调试"><a class="header" href="#5-性能优化与调试">5. 性能优化与调试</a></h4>
-<ul>
-<li>贴图压缩：在引擎中使用平台特定压缩格式（如 ASTC、BC7）。</li>
-<li>LOD：在 Blender 中创建多级 LOD，对应命名 <code>LOD0/LOD1</code>，导入引擎时自动识别。</li>
-<li>光照贴图：使用 Blender UV Channel 2 整理光照图，导出后在引擎中烘焙。</li>
-<li>动画压缩：在引擎中设置关键帧精度、压缩模式。</li>
-<li>Debug：使用引擎 Profiler/Stat 命令检测性能瓶颈。</li>
-</ul>
-<h4 id="6-常见问题"><a class="header" href="#6-常见问题">6. 常见问题</a></h4>
-<ul>
-<li>导入缩放错误：检查 <code>Apply Transform</code> 与引擎单位设置。</li>
-<li>动画破损：确认骨骼命名一致，导出时 Bake 动画并禁用 Add Leaf Bones。</li>
-<li>材质异常：引擎 Shader 模型与 Blender 不一致，需重新构建材质图。</li>
-<li>光照表现差：确保法线正确，使用 Lightmass/Enlighten 烘焙光照。</li>
-</ul>
-<hr />
-<h3 id="专题五xr虚拟现实交付要点"><a class="header" href="#专题五xr虚拟现实交付要点">专题五：XR/虚拟现实交付要点</a></h3>
-<blockquote>
-<p>目标：指导学习者将 Blender 作品拓展到 VR/AR/XR 场景，关注性能与交互体验。</p>
-</blockquote>
-<h4 id="xr-项目关键指标"><a class="header" href="#xr-项目关键指标">XR 项目关键指标</a></h4>
-<ul>
-<li><strong>帧率目标</strong>：VR 至少 72 FPS（Quest 2），高端 PC VR 90/120 FPS；AR 体验 ≥ 60 FPS。</li>
-<li><strong>面数限制</strong>：单帧总面数控制在 500k 以下（含实例），关键对象 ≤ 50k。</li>
-<li><strong>贴图规格</strong>：主要材质 2K，重要对象可用 4K；优先使用图集（Atlas）。</li>
-<li><strong>交互延迟</strong>：输入到反馈延迟不超过 20ms。</li>
-</ul>
-<h4 id="资产优化策略"><a class="header" href="#资产优化策略">资产优化策略</a></h4>
-<ol>
-<li>使用 <code>Decimate</code>、<code>Quad Remesh</code> 输出低模版本。</li>
-<li>贴图合并：<code>UV Packmaster</code>、<code>Tiles UV</code> 创建贴图图集。</li>
-<li>材质合并：使用 Geometry Nodes 或 Python 脚本合并材质槽。</li>
-<li>实例化：在引擎内使用 GPU Instancing / HLOD。</li>
-<li>动画优化：尽量使用骨骼动画替代形态键，减少 CPU 计算。</li>
-</ol>
-<h4 id="工作流建议"><a class="header" href="#工作流建议">工作流建议</a></h4>
-<ol>
-<li>在 Blender 中建立 VR 相机预设（FOV 110、IPD 配置）。</li>
-<li>通过 <code>XR Interaction Toolkit</code> (Unity) 或 <code>OpenXR</code> (UE) 进行交互设计。</li>
-<li>使用 <code>Baking</code> 将复杂 Shader 转换为贴图，减少实时计算。</li>
-<li>在 Blender 中使用 <code>MeasureIt</code> 插件确认尺寸比例，确保 VR 中体验真实。</li>
-<li>对交互对象设定 <code>Collider</code>，并输出辅助碰撞模型（低面数）。</li>
-</ol>
-<h4 id="测试与验证"><a class="header" href="#测试与验证">测试与验证</a></h4>
-<ul>
-<li>在真实设备上测试性能，使用 RenderDoc/Frame Debugger 检查瓶颈。</li>
-<li>记录用户反馈，尤其是舒适度、眩晕问题。</li>
-<li>持续对比不同优化策略的效果，形成团队最佳实践库。</li>
-</ul>
-<hr />
-<h3 id="专题六十二周系统训练营计划"><a class="header" href="#专题六十二周系统训练营计划">专题六：十二周系统训练营计划</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>周次</th><th>主题</th><th>关键目标</th><th>实战任务</th><th>评估方式</th></tr></thead><tbody>
-<tr><td>第 1 周</td><td>环境搭建与界面</td><td>完成软件安装、自定义 Startup</td><td>复刻官方 Startup 场景，记录快捷键</td><td>提交操作录屏+Checklist</td></tr>
-<tr><td>第 2 周</td><td>基础建模</td><td>掌握对象模式与编辑模式</td><td>制作桌面摆件，应用 3 个修改器</td><td>作品截图+拓扑检查表</td></tr>
-<tr><td>第 3 周</td><td>进阶建模策略</td><td>学习硬表面布尔与 Bevel</td><td>制作机械零件，输出版本对比</td><td>提交前后效果对比图</td></tr>
-<tr><td>第 4 周</td><td>UV 与贴图</td><td>完成 UV 分拆与贴图烘焙</td><td>为零件制作 PBR 材质套件</td><td>Substance 导出截图+节点图</td></tr>
-<tr><td>第 5 周</td><td>光照与渲染</td><td>理解三点布光、HDRI 使用</td><td>为模型制作灯光演示</td><td>提交 Eevee/Cycles 双版本</td></tr>
-<tr><td>第 6 周</td><td>Geometry Nodes 入门</td><td>学习 Field 概念与实例化</td><td>构建参数化楼梯或栏杆</td><td>节点截图+参数描述</td></tr>
-<tr><td>第 7 周</td><td>角色建模与绑定</td><td>建立角色低模与 Rigify 绑定</td><td>制作行走循环</td><td>Playblast + Rig 说明</td></tr>
-<tr><td>第 8 周</td><td>物理模拟</td><td>掌握布料/粒子基础参数</td><td>制作布料飘动效果</td><td>模拟缓存文件+渲染预览</td></tr>
-<tr><td>第 9 周</td><td>合成与调色</td><td>熟悉 Compositor 节点</td><td>对现有作品做后期调色</td><td>节点配置文件</td></tr>
-<tr><td>第 10 周</td><td>Python 自动化</td><td>编写简单批处理脚本</td><td>自动重命名+导出 FBX 脚本</td><td>代码提交+效果视频</td></tr>
-<tr><td>第 11 周</td><td>实时引擎互通</td><td>掌握 glTF/FBX 导出与引擎导入</td><td>将作品导入 UE/Unity 并设置材质</td><td>引擎中运行录屏</td></tr>
-<tr><td>第 12 周</td><td>综合项目</td><td>完成 30-60 秒综合短片</td><td>整合建模、动画、渲染、后期</td><td>提交成片+项目文档</td></tr>
-</tbody></table>
-</div>
-<blockquote>
-<p>建议每周至少安排一次在线/线下 Review，让导师或同伴提供反馈，形成闭环学习机制。</p>
-</blockquote>
-<hr />
-<h3 id="专题七常见-faq精选-40-问"><a class="header" href="#专题七常见-faq精选-40-问">专题七：常见 FAQ（精选 40 问）</a></h3>
-<ol>
-<li><strong>问：Blender 与 Maya 相比适合什么项目？</strong>
-<ul>
-<li>答：Blender 在单兵或小团队环境更灵活，适合产品可视化、独立动画、实时内容开发。Maya 在大型影视、绑定管线有深厚积累。Blender 通过插件与脚本可补齐定位。</li>
-</ul>
-</li>
-<li><strong>问：学习 Blender 前需要掌握哪些数学？</strong>
-<ul>
-<li>答：基础线性代数（向量、矩阵乘法、点积）、三角函数、基础物理（力、加速度）足以应对大部分 3D 场景。对动画和物理模拟深入研究可继续学习微积分、动力学。</li>
-</ul>
-</li>
-<li><strong>问：如何避免布尔建模产生杂乱拓扑？</strong>
-<ul>
-<li>答：在布尔前确保对象缩放已应用，法线正确；使用高分辨源几何进行布尔，完成后使用 <code>Remesh</code> 或 <code>Quadriflow</code> 清理；配合 <code>Weighted Normal</code> 保持平滑。</li>
-</ul>
-</li>
-<li><strong>问：Cycles 渲染噪点多怎么办？</strong>
-<ul>
-<li>答：提高采样、使用 <code>Adaptive Sampling</code>、启用 <code>Denoising</code>；减少难渲染的光线（如多重反射透明材质），也可通过 <code>Light Paths -&gt; Clamp</code> 限制极端值。</li>
-</ul>
-</li>
-<li><strong>问：如何管理大型项目的素材？</strong>
-<ul>
-<li>答：建立 Asset Browser 分类，使用版本号和责任人标签，借助 Git-LFS 或 SVN 管理大文件，确保路径相对化。</li>
-</ul>
-</li>
-<li><strong>问：Geometry Nodes 与传统模型结合方式？</strong>
-<ul>
-<li>答：传统模型负责基础形态，Geometry Nodes 负责细节或重复元素。通过 <code>Collection Info</code> 引入传统模型作为输入，使用节点增加参数化能力。</li>
-</ul>
-</li>
-<li><strong>问：如何与团队共享自定义节点组？</strong>
-<ul>
-<li>答：使用 <code>Asset Browser</code> 标记节点组为资产，将 <code>assets.blend</code> 存放在共享目录，团队成员在 <code>Preferences -&gt; File Paths -&gt; Asset Libraries</code> 中添加路径。</li>
-</ul>
-</li>
-<li><strong>问：渲染时 GPU 崩溃怎么办？</strong>
-<ul>
-<li>答：降低采样，关闭部分特效（如体积光），增加虚拟内存；升级驱动；必要时切换 CPU 渲染或分批渲染。</li>
-</ul>
-</li>
-<li><strong>问：如何捕获 Blender 操作日志？</strong>
-<ul>
-<li>答：<code>Window -&gt; Toggle System Console</code> 查看操作对应的 Python 命令，可将命令复制到脚本；也可在 Scripting 工作区查看 <code>Info</code> 面板记录。</li>
-</ul>
-</li>
-<li><strong>问：Eevee 与 Cycles 如何协作？</strong>
-<ul>
-<li>答：Eevee 用于快速预览与迭代，Cycles 用于最终高质量渲染。可在 Eevee 中调试材质，再切换到 Cycles 做精调。</li>
-</ul>
-</li>
-<li><strong>问：如何制作 NPR（非真实感）渲染？</strong>
-<ul>
-<li>答：使用 <code>Freestyle</code> 线条渲染，结合 <code>Shader to RGB</code> 节点实现色块。推荐 ToonKit、Stylized NPR 插件。</li>
-</ul>
-</li>
-<li><strong>问：有没有推荐的 Blender 配套脚本语言资源？</strong>
-<ul>
-<li>答：官方 API 文档，YouTube 频道（Blender Python, CG Cookie Scripting），社区 <code>Blender StackExchange</code>。</li>
-</ul>
-</li>
-<li><strong>问：如何快速定位缺失贴图？</strong>
-<ul>
-<li>答：<code>File -&gt; External Data -&gt; Find Missing Files</code> 指定根目录；Python 脚本遍历 <code>bpy.data.images</code> 检查 <code>filepath</code>。</li>
-</ul>
-</li>
-<li><strong>问：导出 glTF 后贴图丢失？</strong>
-<ul>
-<li>答：确认贴图路径相对，勾选 <code>Include -&gt; Selected Objects</code>，并在导出面板启用 <code>Images -&gt; Automatic Packing</code>。</li>
-</ul>
-</li>
-<li><strong>问：如何在 Blender 中实现批量渲染不同材质？</strong>
-<ul>
-<li>答：使用 Python 脚本遍历材质集合，替换对象材质后调用渲染命令。</li>
-</ul>
-</li>
-<li><strong>问：布料模拟导致模型震动？</strong>
-<ul>
-<li>答：降低布料质量或增加阻尼，检查碰撞体是否有尖锐角，必要时使用代理碰撞体。</li>
-</ul>
-</li>
-<li><strong>问：怎样在 Blender 做景深？</strong>
-<ul>
-<li>答：选中摄像机，启用 Depth of Field，指定焦点对象或距离；在 Cycles 中更真实，Eevee 需开启 DOF。</li>
-</ul>
-</li>
-<li><strong>问：如何同步多个 Blender 实例的首选项？</strong>
-<ul>
-<li>答：拷贝 <code>config</code> 文件夹到共享位置，或使用 <code>Blender Launcher</code> 支持云同步。</li>
-</ul>
-</li>
-<li><strong>问：Modifier 堆叠顺序有无原则？</strong>
-<ul>
-<li>答：通常 Mirror/Array -&gt; Boolean -&gt; Bevel -&gt; Subdivision，确保拓扑先成型再平滑。</li>
-</ul>
-</li>
-<li><strong>问：如何保持场景帧率流畅？</strong>
-<ul>
-<li>答：减少视口曝光对象，使用 <code>Collection Visibility</code>、<code>Viewport Display</code>，开启 Simplify 降低分辨率与细分。</li>
-</ul>
-</li>
-<li><strong>问：是否需要学习雕刻？</strong>
-<ul>
-<li>答：取决于目标。如果涉及角色或有机模型，雕刻必不可少；工业、建筑项目可专注硬表面。</li>
-</ul>
-</li>
-<li><strong>问：如何使用 Blender 做摄影测量重建？</strong>
-<ul>
-<li>答：使用外部工具（RealityCapture、Metashape）生成模型，再导入 Blender 做清理与材质。</li>
-</ul>
-</li>
-<li><strong>问：Blender 是否支持 USD？</strong>
-<ul>
-<li>答：官方提供 USD 插件，支持导入/导出，可对接 Omniverse、Pixar 管线。</li>
-</ul>
-</li>
-<li><strong>问：如何做多人协同编辑？</strong>
-<ul>
-<li>答：目前无原生协同，需要通过版本管理、任务分配分拆场景，使用 <code>Library Overrides</code> 合并。</li>
-</ul>
-</li>
-<li><strong>问：如何制作 NPR/卡通材质边缘描边？</strong>
-<ul>
-<li>答：使用 <code>Freestyle</code> 或在材质中利用 <code>Layer Weight</code> + <code>ColorRamp</code> 模拟边缘暗化。</li>
-</ul>
-</li>
-<li><strong>问：怎样管理大量摄像机？</strong>
-<ul>
-<li>答：使用 <code>Markers</code> 与 <code>Bind Camera to Marker</code>；自动命名脚本记录镜头。</li>
-</ul>
-</li>
-<li><strong>问：插件冲突怎么办？</strong>
-<ul>
-<li>答：逐一禁用测试，在 Console 查看报错，更新到兼容版本；必要时联系插件作者。</li>
-</ul>
-</li>
-<li><strong>问：如何渲染透明背景？</strong>
-<ul>
-<li>答：在 <code>Render Properties -&gt; Film -&gt; Transparent</code>；输出 PNG 或 EXR。</li>
-</ul>
-</li>
-<li><strong>问：如何制作体积光？</strong>
-<ul>
-<li>答：添加 <code>Volume Scatter</code>/<code>Volume Absorption</code> 到世界或对象；在 Eevee 中需开启 Volumetrics。</li>
-</ul>
-</li>
-<li><strong>问：可否使用 Blender 做 CAD 精度建模？</strong>
-<ul>
-<li>答：Blender 支持精确单位与 <code>MeasureIt</code>，但缺乏历史记录。可结合 <code>CAD Sketcher</code> 插件提升精度。</li>
-</ul>
-</li>
-<li><strong>问：怎么将 Blender 场景转换为 Web 展示？</strong>
-<ul>
-<li>答：导出 glTF/GLB，使用 Three.js/Babylon.js 加载；需进行贴图压缩与性能优化。</li>
-</ul>
-</li>
-<li><strong>问：如何测试渲染输出颜色？</strong>
-<ul>
-<li>答：使用色卡（Color Checker），渲染后比对标准值，或在后期软件中校准。</li>
-</ul>
-</li>
-<li><strong>问：渲染时提示 Out of Memory？</strong>
-<ul>
-<li>答：降低渲染分辨率、采样，关闭未使用的 Collection，启用 <code>Persistent Data</code> 减少重复加载。</li>
-</ul>
-</li>
-<li><strong>问：如何在 Blender 里制作动态图表？</strong>
-<ul>
-<li>答：使用 Geometry Nodes 读取 CSV 数据，转换为点阵或曲线，再配合动画驱动。</li>
-</ul>
-</li>
-<li><strong>问：可以在 Blender 中做脚本化建模吗？</strong>
-<ul>
-<li>答：可以，使用 Python 直接操作 Mesh Data，或结合 Geometry Nodes 实现。</li>
-</ul>
-</li>
-<li><strong>问：如何保持工作文件整洁？</strong>
-<ul>
-<li>答：定期删除未使用数据（<code>File -&gt; Clean Up</code>），使用 <code>Outliner</code> 统一命名，启用颜色标签。</li>
-</ul>
-</li>
-<li><strong>问：如何在 Blender 中实现实时协作审阅？</strong>
-<ul>
-<li>答：可通过共享屏幕、VR 录屏、或使用外部审阅平台（SyncSketch）；Blender 本身暂不支持在线协同编辑。</li>
-</ul>
-</li>
-<li><strong>问：布料模拟如何导入游戏引擎？</strong>
-<ul>
-<li>答：将布料烘焙为骨骼动画或 Alembic 缓存，注意面数与贴图资源；实时布料则需引擎内重新设置。</li>
-</ul>
-</li>
-<li><strong>问：如何在 Blender 中进行音频同步？</strong>
-<ul>
-<li>答：使用 Video Sequencer 导入音频，启用 <code>A/V Sync</code>，在动画过程中参考波形线。</li>
-</ul>
-</li>
-<li><strong>问：Blender 学习瓶颈如何突破？</strong>
-<ul>
-<li>答：短时间集中完成完整项目；加入社区挑战；分析优秀项目文件，拆解其材质、节点、脚本。</li>
-</ul>
-</li>
-</ol>
-<hr />
-<h2 id="附录-d术语对照表中英双语"><a class="header" href="#附录-d术语对照表中英双语">附录 D：术语对照表（中英双语）</a></h2>
+<h2 id="附录-b术语对照表中英双语"><a class="header" href="#附录-b术语对照表中英双语">附录 B:术语对照表(中英双语)</a></h2>
 <div class="table-wrapper"><table><thead><tr><th>中文</th><th>英文</th><th>说明</th></tr></thead><tbody>
 <tr><td>对象模式</td><td>Object Mode</td><td>操作整体对象的模式</td></tr>
 <tr><td>编辑模式</td><td>Edit Mode</td><td>编辑顶点、边、面的模式</td></tr>
-<tr><td>修改器</td><td>Modifier</td><td>对象的非破坏性操作工具</td></tr>
+<tr><td>修改器</td><td>Modifier</td><td>非破坏性操作工具</td></tr>
 <tr><td>关键帧</td><td>Keyframe</td><td>记录动画属性的时间点</td></tr>
 <tr><td>曲线编辑器</td><td>Graph Editor</td><td>调整动画曲线的窗口</td></tr>
-<tr><td>骨骼</td><td>Armature</td><td>控制角色或机械的骨架</td></tr>
+<tr><td>骨骼</td><td>Armature</td><td>控制角色/机械的骨架</td></tr>
 <tr><td>权重</td><td>Weight</td><td>骨骼对顶点的影响权重</td></tr>
 <tr><td>粒子系统</td><td>Particle System</td><td>创建粒子效果的系统</td></tr>
 <tr><td>几何节点</td><td>Geometry Nodes</td><td>程序化建模与效果系统</td></tr>
 <tr><td>实例</td><td>Instance</td><td>引用同一几何的轻量拷贝</td></tr>
-<tr><td>渲染层</td><td>Render Layer/View Layer</td><td>控制渲染输出的层级</td></tr>
-<tr><td>域</td><td>Domain</td><td>物理模拟的空间范围</td></tr>
-<tr><td>贴图烘焙</td><td>Baking</td><td>将信息写入贴图，供材质/引擎使用</td></tr>
+<tr><td>渲染层</td><td>View Layer</td><td>控制渲染输出的层级</td></tr>
+<tr><td>贴图烘焙</td><td>Baking</td><td>将信息写入贴图</td></tr>
 <tr><td>资产浏览器</td><td>Asset Browser</td><td>管理可复用资产的界面</td></tr>
 <tr><td>驱动器</td><td>Driver</td><td>用表达式控制属性的系统</td></tr>
 <tr><td>形态键</td><td>Shape Key</td><td>控制模型形变的关键值</td></tr>
-<tr><td>HDRI</td><td>High Dynamic Range Image</td><td>高动态范围图像，用于环境光</td></tr>
-<tr><td>LOD</td><td>Level of Detail</td><td>模型细节等级</td></tr>
-<tr><td>UV</td><td>UV Coordinates</td><td>将 3D 模型展开到 2D 平面的方式</td></tr>
+<tr><td>HDRI</td><td>High Dynamic Range Image</td><td>高动态范围环境光</td></tr>
+<tr><td>UV</td><td>UV Coordinates</td><td>3D 模型展开到 2D 的方式</td></tr>
 <tr><td>NLA</td><td>Nonlinear Animation</td><td>非线性动画编辑器</td></tr>
 </tbody></table>
 </div>
 <hr />
-<h2 id="附录-e实践-checklist-总表打印版"><a class="header" href="#附录-e实践-checklist-总表打印版">附录 E：实践 checklist 总表（打印版）</a></h2>
+<h2 id="附录-c常见-bug-排查速查表"><a class="header" href="#附录-c常见-bug-排查速查表">附录 C:常见 Bug 排查速查表</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>问题现象</th><th>可能原因</th><th>排查步骤</th><th>解决方案</th><th>预防策略</th></tr></thead><tbody>
+<tr><td>模型渲染发黑</td><td>法线反转、采样不足</td><td>切换法线显示,检查采样</td><td>重计算法线,增加采样</td><td>保持拓扑干净,应用变换</td></tr>
+<tr><td>布料穿插</td><td>碰撞距离小、缓存不足</td><td>检查布料设置</td><td>增加质量步骤和子步</td><td>使用统一缩放模型</td></tr>
+<tr><td>渲染卡顿</td><td>贴图过大、反弹过多</td><td>检查材质和统计</td><td>使用 Simplify,降低反弹</td><td>建立贴图规范</td></tr>
+<tr><td>插件失效</td><td>版本不兼容</td><td>查看 Console 报错</td><td>更新插件或 Blender</td><td>统一插件版本</td></tr>
+<tr><td>FBX 导出错误</td><td>命名不规范、未应用变换</td><td>检查命名和单位</td><td>应用变换,规范命名</td><td>建立导出 Checklist</td></tr>
+<tr><td>色彩偏差</td><td>色彩空间不一致</td><td>检查 View Transform</td><td>使用正确色彩管理</td><td>记录项目色彩设定</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="附录-d学习-checklist-总表"><a class="header" href="#附录-d学习-checklist-总表">附录 D:学习 Checklist 总表</a></h2>
 <pre><code class="language-markdown"># Blender 学习实践 Checklist
+
+## 基础阶段
 - [ ] 完成环境搭建与首选项配置
 - [ ] 设定统一目录结构与命名规范
 - [ ] 完成基础建模作品 3 个
+- [ ] 熟悉 Blender 主要快捷键(至少 30 个)
+
+## 建模阶段
 - [ ] 完成硬表面作品 2 个
-- [ ] 建立材质库并归档 20 组材质
-- [ ] 完成角色建模与绑定练习
-- [ ] 制作 30 秒动画短片（含布料/粒子）
-- [ ] 在 Unreal/Unity 中完成一次导入测试
-- [ ] 开发或部署 3 个 Python 自动化脚本
-- [ ] 运行渲染农场任务并验证结果
-- [ ] 撰写至少 6 篇技术笔记或复盘
+- [ ] 完成有机模型(雕刻)1 个
+- [ ] 掌握 UV 展开和贴图烘焙
+
+## 材质与渲染
+- [ ] 建立材质库(至少 20 组)
+- [ ] 完成产品级渲染作品 1 个
+- [ ] 能在 2 小时内完成高质量静帧
+
+## 动画与模拟
+- [ ] 完成角色建模与 Rigify 绑定
+- [ ] 制作 30 秒动画短片
+- [ ] 使用至少一种物理模拟(布料/粒子)
+
+## 项目与自动化
+- [ ] 开发或部署 3 个 Python 脚本
+- [ ] 在 Unreal/Unity 完成导入测试
+- [ ] 运行渲染农场任务
+- [ ] 撰写至少 6 篇技术笔记
+
+## 作品集
 - [ ] 完成 1 次作品集更新与分享
+- [ ] 制作 Demo Reel(1-2 分钟)
 </code></pre>
 <hr />
-<h2 id="附录-f资源索引与工具一览"><a class="header" href="#附录-f资源索引与工具一览">附录 F：资源索引与工具一览</a></h2>
-<h3 id="视频教程频道"><a class="header" href="#视频教程频道">视频教程频道</a></h3>
+<h2 id="后续行动建议"><a class="header" href="#后续行动建议">后续行动建议</a></h2>
+<h3 id="1-建立个人作品集路线图"><a class="header" href="#1-建立个人作品集路线图">1. 建立个人作品集路线图</a></h3>
+<p>根据职业目标选择一条实战路线:</p>
 <ul>
-<li>Blender 官方频道：版本更新、功能演示。</li>
-<li>Grant Abbitt：基础建模与场景设计。</li>
-<li>Ian Hubert：超高速场景搭建技巧。</li>
-<li>Erindale：Geometry Nodes 深入案例。</li>
-<li>Ducky 3D：材质与节点特效。</li>
+<li>产品可视化路线</li>
+<li>角色动画路线</li>
+<li>数字孪生/工业仿真路线</li>
 </ul>
-<h3 id="学习网站"><a class="header" href="#学习网站">学习网站</a></h3>
+<p>规划 2-3 个代表作品,设定完成时间</p>
+<h3 id="2-制定学习复盘节奏"><a class="header" href="#2-制定学习复盘节奏">2. 制定学习复盘节奏</a></h3>
 <ul>
-<li>Blender Guru、CG Boost、CG Cookie、Blender StackExchange。</li>
-<li>国内：BlenderCN、次元客、优设动效社区。</li>
+<li><strong>每周</strong>:撰写学习日志,总结关键收获</li>
+<li><strong>每月</strong>:复查 Checklist,调整学习计划</li>
+<li><strong>每季度</strong>:作品集更新,参加社区活动</li>
 </ul>
-<h3 id="工具与插件分类清单"><a class="header" href="#工具与插件分类清单">工具与插件分类清单</a></h3>
-<div class="table-wrapper"><table><thead><tr><th>分类</th><th>插件</th><th>功能</th><th>备注</th></tr></thead><tbody>
-<tr><td>建模</td><td>HardOps、Boxcutter、Machin3Tools</td><td>硬表面高效建模</td><td>付费，结合使用效果最佳</td></tr>
-<tr><td>节点</td><td>Animation Nodes、Sverchok</td><td>程序化动画、建模扩展</td><td>Geometry Nodes 前身，仍有价值</td></tr>
-<tr><td>材质</td><td>Extreme PBR、Materialiq</td><td>材质库管理</td><td>支持 PBR 快速赋值</td></tr>
-<tr><td>灯光</td><td>Gaffer、Physical Starlight and Atmosphere</td><td>灯光预设、体积</td><td>场景光照快速搭建</td></tr>
-<tr><td>动画</td><td>Auto Rig Pro、Animaide</td><td>快速绑定、曲线编辑</td><td>Auto Rig Pro 支持自动权重优化</td></tr>
-<tr><td>渲染</td><td>K-Cycles、Render+</td><td>渲染调优</td><td>K-Cycles 优化 Cycles 输出</td></tr>
-<tr><td>管线</td><td>Flamenco、Blender Launcher</td><td>渲染队列、版本管理</td><td>Flamenco 官方渲染管理方案</td></tr>
-</tbody></table>
-</div>
-<h3 id="书籍推荐"><a class="header" href="#书籍推荐">书籍推荐</a></h3>
+<h3 id="3-参与社区与竞赛"><a class="header" href="#3-参与社区与竞赛">3. 参与社区与竞赛</a></h3>
 <ul>
-<li>《Blender Secrets》：实用技巧合集。</li>
-<li>《The Complete Guide to Blender Graphics》：系统学习路径。</li>
-<li>《Procedural Worlds with Blender》：Geometry Nodes 深度解析。</li>
-<li>《Blender for Technical Artists》：脚本与自动化专向。</li>
+<li>每季度至少参加一次 Blender 社区活动或比赛</li>
+<li>在 BlenderArtists、ArtStation 分享作品</li>
+<li>参与 Daily Challenge 积累经验</li>
+</ul>
+<h3 id="4-扩展跨领域技能"><a class="header" href="#4-扩展跨领域技能">4. 扩展跨领域技能</a></h3>
+<p>结合其他技能增强作品表现力:</p>
+<ul>
+<li><strong>摄影</strong>:理解构图、光影</li>
+<li><strong>编程</strong>:深化脚本能力</li>
+<li><strong>UI 设计</strong>:提升界面审美</li>
+<li><strong>音效制作</strong>:完善作品呈现</li>
+</ul>
+<h3 id="5-保持技术前瞻"><a class="header" href="#5-保持技术前瞻">5. 保持技术前瞻</a></h3>
+<ul>
+<li>关注 Blender 官方 Roadmap</li>
+<li>提前评估新特性(Geometry Nodes、Real-time Compositor)</li>
+<li>跟踪行业趋势(USD、Omniverse、XR)</li>
 </ul>
 <hr />
+<h2 id="结语"><a class="header" href="#结语">结语</a></h2>
+<p>通过以上结构化学习与实践安排,学习者可以逐步构建起 Blender 的系统知识体系,并将技能应用到真实生产环境中。</p>
+<p><strong>成功关键要素</strong>:</p>
+<ol>
+<li><strong>持续迭代</strong>:每个项目都比上一个更好</li>
+<li><strong>主动复盘</strong>:总结问题,形成个人知识库</li>
+<li><strong>团队协作</strong>:与他人合作,学习最佳实践</li>
+<li><strong>保持热情</strong>:三维创作是技术与艺术的结合,享受创造的过程</li>
+</ol>
+<p><strong>记住</strong>:</p>
+<blockquote>
+<p>"The best way to learn Blender is by doing. Start small, iterate fast, and never stop creating."</p>
+</blockquote>
+<p>祝你在 Blender 学习之旅中收获满满! 🎨🚀</p>
+<hr />
+<p><strong>笔记版本</strong>: v2.0 (模块化结构)
+<strong>最后更新</strong>: 2025-01-06
+<strong>维护者</strong>: Claude Code Tech Note Generator
+<strong>许可</strong>: CC BY-SA 4.0</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../硬件/硬件设计.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../结构/Blender-实战项目案例集.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../编程/Content.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../编程/3d/BabylonJS.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -2117,11 +2115,11 @@ if __name__ == "__main__":
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../硬件/硬件设计.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../结构/Blender-实战项目案例集.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../编程/Content.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../编程/3d/BabylonJS.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

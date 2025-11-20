@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>数字电路 - 开发</title>
+        <title>数字电路学习笔记 - 开发</title>
 
 
         <!-- Custom HTML head -->
@@ -181,42 +181,2098 @@
                         <div class="sidetoc"><nav class="pagetoc"></nav></div>
 
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="数字电路"><a class="header" href="#数字电路">数字电路</a></h1>
-<h2 id="学习路线图"><a class="header" href="#学习路线图">学习路线图</a></h2>
-<h3 id="学习目标"><a class="header" href="#学习目标">学习目标</a></h3>
-<ul>
-<li><strong>初级目标</strong>（0-3个月）：掌握数字电路基础理论，能够分析简单的组合逻辑电路</li>
-<li><strong>中级目标</strong>（3-6个月）：熟练设计时序逻辑电路，掌握FPGA基本开发流程</li>
-<li><strong>高级目标</strong>（6-12个月）：能够完成复杂数字系统设计，具备实际项目开发能力</li>
-</ul>
-<h3 id="学习验证标准"><a class="header" href="#学习验证标准">学习验证标准</a></h3>
+<h1 id="数字电路学习笔记"><a class="header" href="#数字电路学习笔记">数字电路学习笔记</a></h1>
+<h2 id="-目录导航"><a class="header" href="#-目录导航">📋 目录导航</a></h2>
 <ol>
-<li><strong>理论验证</strong>：能够正确分析逻辑电路真值表，化简逻辑函数</li>
-<li><strong>设计验证</strong>：独立完成简单计数器、状态机的设计</li>
-<li><strong>实践验证</strong>：使用HDL语言实现并仿真验证设计</li>
-<li><strong>项目验证</strong>：完成至少一个完整的FPGA小项目（如数字时钟、频率计等）</li>
-<li><strong>调试验证</strong>：能够分析并解决常见的时序、竞争冒险问题</li>
+<li><a href="#%E5%AD%A6%E4%B9%A0%E6%8C%87%E5%8D%97">学习指南</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E4%B8%80%E6%95%B0%E5%AD%97%E7%94%B5%E8%B7%AF%E5%9F%BA%E7%A1%80%E4%B8%8E%E9%80%BB%E8%BE%91%E4%BB%A3%E6%95%B0">模块一：数字电路基础与逻辑代数</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E4%BA%8C%E7%BB%84%E5%90%88%E9%80%BB%E8%BE%91%E7%94%B5%E8%B7%AF">模块二：组合逻辑电路</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E4%B8%89%E6%97%B6%E5%BA%8F%E9%80%BB%E8%BE%91%E7%94%B5%E8%B7%AF">模块三：时序逻辑电路</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E5%9B%9B%E7%A1%AC%E4%BB%B6%E6%8F%8F%E8%BF%B0%E8%AF%AD%E8%A8%80%E4%B8%8E%E4%BB%BF%E7%9C%9F">模块四：硬件描述语言与仿真</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E4%BA%94fpga%E8%AE%BE%E8%AE%A1%E5%AE%9E%E6%88%98">模块五：FPGA设计实战</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E5%85%AD%E9%AB%98%E7%BA%A7%E4%B8%BB%E9%A2%98%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1">模块六：高级主题与系统设计</a></li>
+<li><a href="#%E6%A8%A1%E5%9D%97%E4%B8%83%E6%95%B0%E5%AD%97%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1%E8%BF%9B%E9%98%B6">模块七：数字系统设计进阶</a></li>
+<li><a href="#%E5%AD%A6%E4%B9%A0%E6%88%90%E6%9E%9C%E9%AA%8C%E8%AF%81">学习成果验证</a></li>
+<li><a href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7">常见问题与调试技巧</a></li>
+<li><a href="#%E6%89%A9%E5%B1%95%E8%B5%84%E6%BA%90%E4%B8%8E%E8%BF%9B%E9%98%B6%E5%BB%BA%E8%AE%AE">扩展资源与进阶建议</a></li>
 </ol>
-<h2 id="概述"><a class="header" href="#概述">概述</a></h2>
-<p>数字电路是处理数字信号的电子电路，使用离散的电压电平来表示逻辑状态（通常为0和1）。数字电路是现代电子系统的基础，广泛应用于计算机、通信设备、消费电子产品等领域。</p>
-<h3 id="数字电路的应用领域"><a class="header" href="#数字电路的应用领域">数字电路的应用领域</a></h3>
+<hr />
+<h2 id="学习指南"><a class="header" href="#学习指南">学习指南</a></h2>
+<h3 id="-关于本笔记"><a class="header" href="#-关于本笔记">📌 关于本笔记</a></h3>
+<p>本笔记是一份系统化的数字电路学习资源,面向有0-5年开发经验的硬件工程师、嵌入式开发者及希望深入理解计算机底层原理的学习者。笔记遵循从理论到实践、从基础到进阶的学习路径,每个模块都配备了完整的理论讲解、实战代码示例和验证方案。</p>
+<h3 id="-学习目标"><a class="header" href="#-学习目标">🎯 学习目标</a></h3>
+<p>完成本笔记的学习后,你将能够:</p>
+<div class="table-wrapper"><table><thead><tr><th>学习目标</th><th>具体描述</th></tr></thead><tbody>
+<tr><td><strong>理论基础</strong></td><td>深入理解数字逻辑、布尔代数、组合逻辑和时序逻辑的原理</td></tr>
+<tr><td><strong>工具掌握</strong></td><td>熟练使用Verilog/VHDL进行数字电路设计和仿真</td></tr>
+<tr><td><strong>工程实践</strong></td><td>能够在FPGA或ASIC工具链中完成完整的设计流程</td></tr>
+<tr><td><strong>系统设计</strong></td><td>能够设计中等复杂度的数字系统,如控制器、数据通路等</td></tr>
+<tr><td><strong>故障排查</strong></td><td>能够独立调试数字电路设计中的逻辑和时序问题</td></tr>
+</tbody></table>
+</div>
+<h3 id="-学习路径"><a class="header" href="#-学习路径">📚 学习路径</a></h3>
+<pre><code>第1周：基础理论（30-40小时）
+  ├─ 数字信号基础与逻辑门
+  ├─ 布尔代数与逻辑化简
+  └─ 真值表与逻辑表达式
+
+第2-3周：组合逻辑（40-50小时）
+  ├─ 加法器、乘法器设计
+  ├─ 多路选择器、译码器
+  └─ 算术逻辑单元(ALU)设计
+
+第4-5周：时序逻辑（40-50小时）
+  ├─ 锁存器与触发器
+  ├─ 计数器与寄存器
+  └─ 有限状态机(FSM)
+
+第6-7周：HDL工具链（50-60小时）
+  ├─ Verilog语言与RTL设计
+  ├─ 仿真与验证
+  └─ 综合与优化
+
+第8-10周：FPGA设计（60-80小时）
+  ├─ FPGA架构与设计工具
+  ├─ 完整设计流程
+  └─ 综合布局布线
+
+第11-12周：系统设计与优化（50-70小时）
+  ├─ 系统级设计方法
+  ├─ 性能优化与分析
+  └─ 完整项目实战
+</code></pre>
+<h3 id="-环境搭建"><a class="header" href="#-环境搭建">🛠️ 环境搭建</a></h3>
+<h4 id="必备工具"><a class="header" href="#必备工具">必备工具</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>工具类型</th><th>推荐产品</th><th>用途</th><th>开源替代</th></tr></thead><tbody>
+<tr><td><strong>仿真工具</strong></td><td>ModelSim、VCS</td><td>Verilog/VHDL仿真、功能验证</td><td>iverilog+gtkwave</td></tr>
+<tr><td><strong>综合工具</strong></td><td>Vivado、ISE、Quartus</td><td>RTL综合、优化</td><td>Yosys</td></tr>
+<tr><td><strong>FPGA工具</strong></td><td>Vivado(Xilinx)、Quartus(Intel)</td><td>FPGA设计完整流程</td><td>-</td></tr>
+<tr><td><strong>波形查看</strong></td><td>GTKWave</td><td>仿真结果波形分析</td><td>开源</td></tr>
+<tr><td><strong>编辑器</strong></td><td>VS Code+Verilog插件</td><td>代码编写</td><td>-</td></tr>
+</tbody></table>
+</div>
+<h4 id="安装步骤以开源工具为例"><a class="header" href="#安装步骤以开源工具为例">安装步骤（以开源工具为例）</a></h4>
+<p><strong>1. 安装iverilog和gtkwave（Linux/Ubuntu）：</strong></p>
+<pre><code class="language-bash"># 更新包管理器
+sudo apt-get update
+
+# 安装iverilog（Verilog编译器）
+sudo apt-get install -y iverilog
+
+# 安装gtkwave（波形查看工具）
+sudo apt-get install -y gtkwave
+
+# 验证安装
+iverilog -v
+gtkwave --version
+</code></pre>
+<p><strong>2. 安装VS Code Verilog插件：</strong></p>
+<pre><code>打开VS Code → 扩展(Extensions) → 搜索"Verilog" →
+安装"Verilog-HDL/SystemVerilog" (作者: mshr-h)
+</code></pre>
+<p><strong>3. 创建项目目录结构：</strong></p>
+<pre><code class="language-bash">mkdir -p ~/digital-circuit-learning
+cd ~/digital-circuit-learning
+mkdir -p {source,testbench,simulation,build}
+
+# 创建初始配置文件
+cat &gt; Makefile &lt;&lt; 'EOF'
+VERILOG_FILES = $(wildcard source/*.v)
+TB_FILES = $(wildcard testbench/*_tb.v)
+BUILD_DIR = build
+SIMULATION_DIR = simulation
+
+.PHONY: all clean simulate
+
+all: compile
+
+compile:
+	@echo "Compiling Verilog files..."
+	iverilog -o $(BUILD_DIR)/design.vvp $(VERILOG_FILES) $(TB_FILES)
+
+simulate: compile
+	@echo "Running simulation..."
+	vvp $(BUILD_DIR)/design.vvp -vcd
+	gtkwave $(SIMULATION_DIR)/waveform.vcd &amp;
+
+clean:
+	rm -rf $(BUILD_DIR)/*.vvp
+	rm -rf $(SIMULATION_DIR)/*.vcd
+
+help:
+	@echo "Available targets:"
+	@echo "  make compile   - Compile Verilog files"
+	@echo "  make simulate  - Run simulation and view waveform"
+	@echo "  make clean     - Clean generated files"
+EOF
+
+chmod +x Makefile
+</code></pre>
+<hr />
+<h2 id="模块一数字电路基础与逻辑代数"><a class="header" href="#模块一数字电路基础与逻辑代数">模块一：数字电路基础与逻辑代数</a></h2>
+<h3 id="11-数字信号与数制基础"><a class="header" href="#11-数字信号与数制基础">1.1 数字信号与数制基础</a></h3>
+<h4 id="数字信号的本质"><a class="header" href="#数字信号的本质">数字信号的本质</a></h4>
+<p>数字电路处理的是离散值信号,与模拟信号的连续性相反。在实际电子系统中,数字信号通常用两个电压级来表示逻辑值:</p>
+<div class="table-wrapper"><table><thead><tr><th>逻辑值</th><th>电压范围（TTL）</th><th>电压范围（CMOS 3.3V）</th><th>含义</th></tr></thead><tbody>
+<tr><td>逻辑1（HIGH）</td><td>≥2.4V</td><td>≥2.4V</td><td>高电平、真、是</td></tr>
+<tr><td>逻辑0（LOW）</td><td>≤0.4V</td><td>≤0.8V</td><td>低电平、假、否</td></tr>
+<tr><td>不确定（X）</td><td>0.4V~2.4V</td><td>0.8V~2.4V</td><td>不确定态（仿真用）</td></tr>
+</tbody></table>
+</div>
+<p><strong>为什么需要数字信号？</strong></p>
+<ol>
+<li><strong>抗干扰能力强</strong>：在一定范围内的噪声不会影响逻辑值识别</li>
+<li><strong>易于集成</strong>：数字电路便于集成到芯片上,提高集成度</li>
+<li><strong>便于处理</strong>：易于进行复杂的逻辑运算和控制</li>
+<li><strong>易于存储</strong>：可以长期稳定保存信息</li>
+</ol>
+<h4 id="数制与转换"><a class="header" href="#数制与转换">数制与转换</a></h4>
+<p><strong>十进制到二进制的转换方法：</strong></p>
+<p>整数部分：除2取余法（从下往上读）</p>
+<pre><code>10进制：45
+45 ÷ 2 = 22 ... 1
+22 ÷ 2 = 11 ... 0
+11 ÷ 2 = 5  ... 1
+5  ÷ 2 = 2  ... 1
+2  ÷ 2 = 1  ... 0
+1  ÷ 2 = 0  ... 1
+结果：101101(二进制) = 32+8+4+1 = 45
+</code></pre>
+<p>小数部分：乘2取整法（从上往下读）</p>
+<pre><code>0.625 × 2 = 1.25 → 取1
+0.25 × 2 = 0.5  → 取0
+0.5 × 2 = 1.0   → 取1
+结果：0.101(二进制) = 1/2 + 1/8 = 0.625
+</code></pre>
+<p><strong>十六进制的应用</strong>：</p>
+<p>由于二进制书写冗长,在电路设计中广泛使用十六进制:</p>
 <ul>
-<li><strong>计算机系统</strong>：CPU、内存、总线控制器</li>
-<li><strong>通信设备</strong>：调制解调器、编解码器、数字信号处理</li>
-<li><strong>消费电子</strong>：手机、平板电脑、智能家居设备</li>
-<li><strong>工业控制</strong>：PLC、运动控制器、传感器接口</li>
-<li><strong>汽车电子</strong>：发动机控制单元、信息娱乐系统</li>
-<li><strong>医疗设备</strong>：医学影像处理、监护仪、诊断设备</li>
+<li>1字节 = 8位二进制 = 2位十六进制</li>
+<li>便于描述总线宽度、地址、数据</li>
 </ul>
-<h2 id="数字电路基础"><a class="header" href="#数字电路基础">数字电路基础</a></h2>
-<h3 id="数字信号特点"><a class="header" href="#数字信号特点">数字信号特点</a></h3>
+<pre><code>二进制：1111_0101_1010_0011
+十六进制：F5A3
+</code></pre>
+<h4 id="实战数制转换验证工具"><a class="header" href="#实战数制转换验证工具">实战：数制转换验证工具</a></h4>
+<p><strong>Python脚本实现数制转换（digital_convert.py）：</strong></p>
+<pre><code class="language-python">#!/usr/bin/env python3
+"""
+数字电路数制转换工具
+支持 2/8/10/16 进制转换
+"""
+
+class DigitalConvert:
+    @staticmethod
+    def dec_to_bin(num, bits=8):
+        """十进制转二进制"""
+        if num &lt; 0:
+            # 使用补码表示负数
+            num = (1 &lt;&lt; bits) + num
+        return format(num, f'0{bits}b')
+
+    @staticmethod
+    def bin_to_dec(binary_str):
+        """二进制转十进制"""
+        return int(binary_str, 2)
+
+    @staticmethod
+    def hex_to_bin(hex_str):
+        """十六进制转二进制"""
+        hex_str = hex_str.replace('0x', '').replace('0X', '')
+        return bin(int(hex_str, 16))[2:].zfill(len(hex_str) * 4)
+
+    @staticmethod
+    def bin_to_hex(binary_str):
+        """二进制转十六进制"""
+        decimal = int(binary_str, 2)
+        return hex(decimal)[2:].upper()
+
+    @staticmethod
+    def print_conversion(value, source_base=10, target_bases=[2, 8, 10, 16]):
+        """打印各进制转换结果"""
+        # 先转为十进制
+        if source_base == 10:
+            decimal = value
+        elif source_base == 2:
+            decimal = int(str(value), 2)
+        elif source_base == 16:
+            decimal = int(str(value), 16)
+        else:
+            decimal = int(value, source_base)
+
+        print(f"\n原值: {value} (基数: {source_base})")
+        print(f"十进制: {decimal}")
+
+        for base in target_bases:
+            if base == 2:
+                print(f"二进制: {bin(decimal)[2:]}")
+            elif base == 8:
+                print(f"八进制: {oct(decimal)[2:]}")
+            elif base == 10:
+                print(f"十进制: {decimal}")
+            elif base == 16:
+                print(f"十六进制: {hex(decimal)[2:].upper()}")
+
+# 使用示例
+if __name__ == "__main__":
+    conv = DigitalConvert()
+
+    # 示例1: 十进制到其他进制
+    print("=" * 40)
+    print("示例1: 十进制45转换")
+    conv.print_conversion(45, source_base=10)
+
+    # 示例2: 十六进制到其他进制
+    print("\n" + "=" * 40)
+    print("示例2: 十六进制0xFF转换")
+    conv.print_conversion("FF", source_base=16)
+
+    # 示例3: 二进制补码表示负数
+    print("\n" + "=" * 40)
+    print("示例3: 8位二进制表示")
+    print(f"十进制 45: {conv.dec_to_bin(45, bits=8)}")
+    print(f"十进制 -45: {conv.dec_to_bin(-45, bits=8)}")
+    print(f"补码 11010011 转十进制: {conv.bin_to_dec('11010011') - 256}")
+</code></pre>
+<h3 id="12-逻辑门与基本运算"><a class="header" href="#12-逻辑门与基本运算">1.2 逻辑门与基本运算</a></h3>
+<h4 id="基本逻辑门"><a class="header" href="#基本逻辑门">基本逻辑门</a></h4>
+<p>数字电路中的所有复杂逻辑都由基本逻辑门组合而成。理解这些门电路的工作原理是掌握数字电路的基础。</p>
+<p><strong>AND（与）门</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>A</th><th>B</th><th>Y = A·B</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>1</td></tr>
+</tbody></table>
+</div>
+<p>特性：只有当所有输入都为1时,输出才为1</p>
+<p>应用场景：</p>
 <ul>
-<li><strong>离散性</strong>：只有有限个取值状态</li>
-<li><strong>抗干扰性</strong>：对噪声有较强的抵抗能力</li>
-<li><strong>可存储性</strong>：信息可以长期保存</li>
-<li><strong>可处理性</strong>：便于进行逻辑运算和算术运算</li>
+<li>条件控制：两个条件都满足才执行操作</li>
+<li>使能信号：需要多个使能条件都有效才能工作</li>
 </ul>
-<h4 id="实战示例数字信号与模拟信号对比"><a class="header" href="#实战示例数字信号与模拟信号对比">实战示例：数字信号与模拟信号对比</a></h4>
+<p><strong>OR（或）门</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>A</th><th>B</th><th>Y = A+B</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>1</td></tr>
+</tbody></table>
+</div>
+<p>特性：只要有一个输入为1,输出就为1</p>
+<p>应用场景：</p>
+<ul>
+<li>中断信号合并：任何中断源都可以触发中断</li>
+<li>报警系统：任何传感器报警都发出警报</li>
+</ul>
+<p><strong>XOR（异或）门</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>A</th><th>B</th><th>Y = A⊕B</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td></tr>
+<tr><td>1</td><td>0</td><td>1</td></tr>
+<tr><td>1</td><td>1</td><td>0</td></tr>
+</tbody></table>
+</div>
+<p>特性：输入不同时输出为1。表达式：Y = A·B̄ + Ā·B</p>
+<p>应用场景：</p>
+<ul>
+<li>比较：判断两个信号是否相同</li>
+<li>加法器设计：作为半加法器的核心</li>
+<li>奇偶校验：检测数据位是否出现翻转</li>
+</ul>
+<h4 id="实战用verilog描述基本逻辑门"><a class="header" href="#实战用verilog描述基本逻辑门">实战：用Verilog描述基本逻辑门</a></h4>
+<p><strong>文件：source/logic_gates.v</strong></p>
+<pre><code class="language-verilog">// 数字电路 - 基本逻辑门模块
+// 描述所有基本逻辑门的行为
+
+module logic_gates (
+    input  wire a,
+    input  wire b,
+    output wire and_out,    // AND输出
+    output wire or_out,     // OR输出
+    output wire not_a,      // NOT(A)
+    output wire not_b,      // NOT(B)
+    output wire nand_out,   // NAND输出
+    output wire nor_out,    // NOR输出
+    output wire xor_out,    // XOR输出
+    output wire xnor_out    // XNOR输出
+);
+
+    // 基本门电路描述
+    assign and_out  = a &amp; b;           // 与门
+    assign or_out   = a | b;           // 或门
+    assign not_a    = ~a;              // 非门A
+    assign not_b    = ~b;              // 非门B
+    assign nand_out = ~(a &amp; b);        // 与非门
+    assign nor_out  = ~(a | b);        // 或非门
+    assign xor_out  = a ^ b;           // 异或门
+    assign xnor_out = ~(a ^ b);        // 同或门
+
+endmodule
+</code></pre>
+<h3 id="13-布尔代数与逻辑化简"><a class="header" href="#13-布尔代数与逻辑化简">1.3 布尔代数与逻辑化简</a></h3>
+<h4 id="布尔代数的基本定律"><a class="header" href="#布尔代数的基本定律">布尔代数的基本定律</a></h4>
+<p>布尔代数是数字电路设计的数学基础,掌握这些定律能够化简复杂的逻辑表达式,减少所需的逻辑门数量。</p>
+<p><strong>基本定律</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>定律名称</th><th>表达式</th><th>验证例子</th></tr></thead><tbody>
+<tr><td>交换律</td><td>A+B = B+A; A·B = B·A</td><td>3+5 = 5+3</td></tr>
+<tr><td>结合律</td><td>(A+B)+C = A+(B+C); (A·B)·C = A·(B·C)</td><td>(1+2)+3 = 1+(2+3)</td></tr>
+<tr><td>分配律</td><td>A·(B+C) = A·B + A·C</td><td>2×(3+4) = 2×3 + 2×4</td></tr>
+<tr><td>吸收律</td><td>A + A·B = A; A·(A+B) = A</td><td>A已经包含A·B的所有情况</td></tr>
+<tr><td>相邻项消去</td><td>A·B + A·B̄ = A</td><td>两项仅一个变量不同</td></tr>
+<tr><td>幂等律</td><td>A+A = A; A·A = A</td><td>1+1 = 1, 2×2 = 2</td></tr>
+<tr><td>互补律</td><td>A + Ā = 1; A·Ā = 0</td><td>真+假 = 真</td></tr>
+<tr><td>对合律</td><td>Ā̄ = A</td><td>非非 = 恒等</td></tr>
+<tr><td>德摩根定律</td><td>(A+B)̄ = Ā·B̄; (A·B)̄ = Ā+B̄</td><td>重要！用于变换</td></tr>
+</tbody></table>
+</div>
+<p><strong>德摩根定律详解</strong></p>
+<p>德摩根定律是逻辑化简中最重要的定律,它提供了在AND和OR之间转换的方法。</p>
+<p><strong>第一形式：</strong> (A+B)̄ = Ā·B̄
+含义：求和的反等于各项反的积</p>
+<p><strong>第二形式：</strong> (A·B)̄ = Ā+B̄
+含义：乘积的反等于各项反的和</p>
+<hr />
+<h2 id="模块二组合逻辑电路"><a class="header" href="#模块二组合逻辑电路">模块二：组合逻辑电路</a></h2>
+<h3 id="21-加法器设计"><a class="header" href="#21-加法器设计">2.1 加法器设计</a></h3>
+<h4 id="半加法器half-adder"><a class="header" href="#半加法器half-adder">半加法器（Half Adder）</a></h4>
+<p>半加法器是最基本的算术组件,用于两个单位二进制数相加。</p>
+<p><strong>工作原理分析</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>A</th><th>B</th><th>S(Sum)</th><th>Cy(Carry)</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>0</td><td>1</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>1</td></tr>
+</tbody></table>
+</div>
+<p><strong>逻辑表达式</strong></p>
+<ul>
+<li>S = A ⊕ B = AB̄ + ĀB</li>
+<li>Cy = A·B</li>
+</ul>
+<h4 id="全加法器full-adder"><a class="header" href="#全加法器full-adder">全加法器（Full Adder）</a></h4>
+<p>全加法器在半加法器基础上增加了进位输入（Cin）,使其可以级联处理多位加法。</p>
+<p><strong>逻辑表达式</strong></p>
+<ul>
+<li>S = A ⊕ B ⊕ Cin</li>
+<li>Cout = AB + (A ⊕ B)·Cin = AB + ACin + BCin</li>
+</ul>
+<h4 id="实战verilog实现多位加法器"><a class="header" href="#实战verilog实现多位加法器">实战：Verilog实现多位加法器</a></h4>
+<p><strong>文件：source/adder.v</strong></p>
+<pre><code class="language-verilog">// 数字电路 - 加法器设计模块
+
+// 半加法器 (Half Adder)
+module half_adder (
+    input  wire a,      // 输入A
+    input  wire b,      // 输入B
+    output wire sum,    // 和
+    output wire carry   // 进位
+);
+
+    assign sum   = a ^ b;      // 异或：和的位
+    assign carry = a &amp; b;      // 与：进位
+
+endmodule
+
+// 全加法器 (Full Adder)
+module full_adder (
+    input  wire a,      // 输入A
+    input  wire b,      // 输入B
+    input  wire cin,    // 进位输入
+    output wire sum,    // 和
+    output wire cout    // 进位输出
+);
+
+    assign sum  = a ^ b ^ cin;
+    assign cout = (a &amp; b) | ((a ^ b) &amp; cin);
+
+endmodule
+
+// N位行波进位加法器
+module ripple_carry_adder #(
+    parameter WIDTH = 8  // 位宽,默认8位
+) (
+    input  wire [WIDTH-1:0] a,      // 第一个加数
+    input  wire [WIDTH-1:0] b,      // 第二个加数
+    input  wire            cin,     // 进位输入
+    output wire [WIDTH-1:0] sum,    // 求和结果
+    output wire            cout     // 进位输出
+);
+
+    wire [WIDTH:0] carry;
+    assign carry[0] = cin;
+
+    genvar i;
+    generate
+        for (i = 0; i &lt; WIDTH; i = i + 1) begin : adder_bits
+            full_adder fa_i (
+                .a(a[i]),
+                .b(b[i]),
+                .cin(carry[i]),
+                .sum(sum[i]),
+                .cout(carry[i+1])
+            );
+        end
+    endgenerate
+
+    assign cout = carry[WIDTH];
+
+endmodule
+</code></pre>
+<h3 id="22-多路选择器与译码器"><a class="header" href="#22-多路选择器与译码器">2.2 多路选择器与译码器</a></h3>
+<h4 id="多路选择器multiplexer"><a class="header" href="#多路选择器multiplexer">多路选择器（Multiplexer）</a></h4>
+<p>多路选择器是一个组合电路,根据控制信号选择多个输入中的一个进行输出。</p>
+<p><strong>2选1多路选择器</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>S</th><th>Y</th></tr></thead><tbody>
+<tr><td>0</td><td>I0</td></tr>
+<tr><td>1</td><td>I1</td></tr>
+</tbody></table>
+</div>
+<p>表达式：Y = S̄·I0 + S·I1</p>
+<p><strong>4选1多路选择器</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>S1</th><th>S0</th><th>Y</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>I0</td></tr>
+<tr><td>0</td><td>1</td><td>I1</td></tr>
+<tr><td>1</td><td>0</td><td>I2</td></tr>
+<tr><td>1</td><td>1</td><td>I3</td></tr>
+</tbody></table>
+</div>
+<h4 id="译码器decoder"><a class="header" href="#译码器decoder">译码器（Decoder）</a></h4>
+<p>译码器是多路选择器的对偶,一个输入被译码为多个输出中的一个激活。</p>
+<p><strong>3-8译码器</strong></p>
+<p>输入为3位地址码,输出为8条输出线,其中一条被选中为1,其余为0。</p>
+<h4 id="实战verilog实现"><a class="header" href="#实战verilog实现">实战：Verilog实现</a></h4>
+<p><strong>文件：source/mux_decoder.v</strong></p>
+<pre><code class="language-verilog">// 数字电路 - 多路选择器与译码器
+
+// 2选1多路选择器
+module mux2to1 (
+    input  wire in0,
+    input  wire in1,
+    input  wire sel,
+    output wire out
+);
+
+    assign out = sel ? in1 : in0;
+
+endmodule
+
+// 4选1多路选择器
+module mux4to1 (
+    input  wire [3:0] in,
+    input  wire [1:0] sel,
+    output wire       out
+);
+
+    assign out = in[sel];
+
+endmodule
+
+// 3-8译码器
+module decoder3to8 (
+    input  wire [2:0] a,
+    input  wire       enable,
+    output wire [7:0] y
+);
+
+    assign y[0] = enable &amp; ~a[2] &amp; ~a[1] &amp; ~a[0];
+    assign y[1] = enable &amp; ~a[2] &amp; ~a[1] &amp;  a[0];
+    assign y[2] = enable &amp; ~a[2] &amp;  a[1] &amp; ~a[0];
+    assign y[3] = enable &amp; ~a[2] &amp;  a[1] &amp;  a[0];
+    assign y[4] = enable &amp;  a[2] &amp; ~a[1] &amp; ~a[0];
+    assign y[5] = enable &amp;  a[2] &amp; ~a[1] &amp;  a[0];
+    assign y[6] = enable &amp;  a[2] &amp;  a[1] &amp; ~a[0];
+    assign y[7] = enable &amp;  a[2] &amp;  a[1] &amp;  a[0];
+
+endmodule
+</code></pre>
+<h3 id="23-算术逻辑单元alu"><a class="header" href="#23-算术逻辑单元alu">2.3 算术逻辑单元（ALU）</a></h3>
+<h4 id="alu的基本结构"><a class="header" href="#alu的基本结构">ALU的基本结构</a></h4>
+<p>算术逻辑单元是数字系统（尤其是CPU）的核心部件,负责执行算术运算和逻辑运算。</p>
+<p><strong>算术运算</strong>：加法、减法、乘法、除法
+<strong>逻辑运算</strong>：AND、OR、XOR、NOT
+<strong>移位运算</strong>：左移、右移、旋转</p>
+<h4 id="实战8位简化alu设计"><a class="header" href="#实战8位简化alu设计">实战：8位简化ALU设计</a></h4>
+<p><strong>文件：source/alu.v</strong></p>
+<pre><code class="language-verilog">// 数字电路 - 算术逻辑单元(ALU)
+
+// 8位简化ALU
+module alu_8bit (
+    input  wire [7:0] a,
+    input  wire [7:0] b,
+    input  wire [3:0] operation,
+    output reg  [7:0] result,
+    output wire       zero_flag,
+    output wire       carry_flag,
+    output wire       overflow_flag
+);
+
+    wire [8:0] adder_result;
+    wire [8:0] sub_result;
+
+    assign adder_result = a + b;
+    assign sub_result = a - b;
+
+    always @(*) begin
+        case(operation)
+            4'b0000: result = adder_result[7:0];         // 加法
+            4'b0001: result = sub_result[7:0];           // 减法
+            4'b0010: result = a &amp; b;                     // 与
+            4'b0011: result = a | b;                     // 或
+            4'b0100: result = a ^ b;                     // 异或
+            4'b0101: result = ~a;                        // A的反
+            4'b0110: result = ~b;                        // B的反
+            4'b0111: result = {a[6:0], 1'b0};            // 左移1位
+            4'b1000: result = {1'b0, a[7:1]};            // 右移1位
+            4'b1001: result = {a[6:0], a[7]};            // 循环左移
+            4'b1010: result = {a[0], a[7:1]};            // 循环右移
+            default: result = 8'h00;
+        endcase
+    end
+
+    assign zero_flag = (result == 8'h00) ? 1'b1 : 1'b0;
+    assign carry_flag = adder_result[8];
+    assign overflow_flag = (operation == 4'b0000) ?
+                          ((a[7] == b[7]) &amp;&amp; (a[7] != result[7])) :
+                          1'b0;
+
+endmodule
+</code></pre>
+<hr />
+<h2 id="模块三时序逻辑电路"><a class="header" href="#模块三时序逻辑电路">模块三：时序逻辑电路</a></h2>
+<h3 id="31-锁存器与触发器"><a class="header" href="#31-锁存器与触发器">3.1 锁存器与触发器</a></h3>
+<h4 id="锁存器latch"><a class="header" href="#锁存器latch">锁存器（Latch）</a></h4>
+<p>锁存器是具有记忆功能的组合逻辑,能够保持输入信号的状态。</p>
+<p><strong>SR锁存器（用NOR门构成）</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>S(Set)</th><th>R(Reset)</th><th>Qn+1</th><th>Q̄n+1</th><th>说明</th></tr></thead><tbody>
+<tr><td>0</td><td>0</td><td>Qn</td><td>Q̄n</td><td>保持状态</td></tr>
+<tr><td>0</td><td>1</td><td>0</td><td>1</td><td>复位</td></tr>
+<tr><td>1</td><td>0</td><td>1</td><td>0</td><td>置位</td></tr>
+<tr><td>1</td><td>1</td><td>0</td><td>0</td><td><strong>禁止态</strong></td></tr>
+</tbody></table>
+</div>
+<h4 id="触发器flip-flop"><a class="header" href="#触发器flip-flop">触发器（Flip-Flop）</a></h4>
+<p>触发器是时钟控制的存储元件,只在时钟的特定边沿（上升沿或下降沿）对输入进行采样。</p>
+<p><strong>D触发器</strong></p>
+<p>最常用的触发器类型,通常采用主从结构实现。</p>
+<p>真值表（上升沿触发）：</p>
+<div class="table-wrapper"><table><thead><tr><th>时刻</th><th>D</th><th>Qn+1</th></tr></thead><tbody>
+<tr><td>上升沿</td><td>0</td><td>0</td></tr>
+<tr><td>上升沿</td><td>1</td><td>1</td></tr>
+<tr><td>其他时刻</td><td>-</td><td>Qn</td></tr>
+</tbody></table>
+</div>
+<h4 id="实战verilog实现触发器"><a class="header" href="#实战verilog实现触发器">实战：Verilog实现触发器</a></h4>
+<p><strong>文件：source/flip_flops.v</strong></p>
+<pre><code class="language-verilog">// 数字电路 - 触发器设计
+
+// D锁存器（带使能信号）
+module d_latch (
+    input  wire d,
+    input  wire enable,
+    output reg  q,
+    output wire qb
+);
+
+    assign qb = ~q;
+
+    always @(*) begin
+        if (enable)
+            q = d;
+    end
+
+endmodule
+
+// D触发器（上升沿触发）
+module d_flip_flop (
+    input  wire d,
+    input  wire clock,
+    input  wire reset_n,
+    output reg  q,
+    output wire qb
+);
+
+    assign qb = ~q;
+
+    always @(posedge clock or negedge reset_n) begin
+        if (!reset_n)
+            q &lt;= 1'b0;
+        else
+            q &lt;= d;
+    end
+
+endmodule
+
+// JK触发器
+module jk_flip_flop (
+    input  wire j,
+    input  wire k,
+    input  wire clock,
+    input  wire reset_n,
+    output reg  q,
+    output wire qb
+);
+
+    assign qb = ~q;
+
+    always @(posedge clock or negedge reset_n) begin
+        if (!reset_n)
+            q &lt;= 1'b0;
+        else begin
+            case ({j, k})
+                2'b00: q &lt;= q;
+                2'b01: q &lt;= 1'b0;
+                2'b10: q &lt;= 1'b1;
+                2'b11: q &lt;= ~q;
+            endcase
+        end
+    end
+
+endmodule
+
+// T触发器（计数触发器）
+module t_flip_flop (
+    input  wire t,
+    input  wire clock,
+    input  wire reset_n,
+    output reg  q,
+    output wire qb
+);
+
+    assign qb = ~q;
+
+    always @(posedge clock or negedge reset_n) begin
+        if (!reset_n)
+            q &lt;= 1'b0;
+        else if (t)
+            q &lt;= ~q;
+        else
+            q &lt;= q;
+    end
+
+endmodule
+</code></pre>
+<h3 id="32-计数器设计"><a class="header" href="#32-计数器设计">3.2 计数器设计</a></h3>
+<h4 id="二进制计数器"><a class="header" href="#二进制计数器">二进制计数器</a></h4>
+<p>最基本的计数器是用T触发器级联构成的二进制增计数器。</p>
+<p><strong>4位二进制计数器工作原理</strong></p>
+<pre><code>初始值：Q3 Q2 Q1 Q0 = 0000
+第1个时钟脉冲：0001
+第2个时钟脉冲：0010
+第3个时钟脉冲：0011
+...
+第16个时钟脉冲：0000（溢出,回到0）
+</code></pre>
+<h4 id="实战设计可配置的计数器"><a class="header" href="#实战设计可配置的计数器">实战：设计可配置的计数器</a></h4>
+<p><strong>文件：source/counter.v</strong></p>
+<pre><code class="language-verilog">// 数字电路 - 计数器设计
+
+// N位二进制增计数器
+module binary_counter #(
+    parameter WIDTH = 4,
+    parameter MAX = 15
+) (
+    input  wire                 clock,
+    input  wire                 reset_n,
+    input  wire                 enable,
+    output wire [WIDTH-1:0]     count,
+    output wire                 overflow
+);
+
+    reg [WIDTH-1:0] counter;
+
+    assign count = counter;
+    assign overflow = (counter == MAX) ? 1'b1 : 1'b0;
+
+    always @(posedge clock or negedge reset_n) begin
+        if (!reset_n)
+            counter &lt;= {WIDTH{1'b0}};
+        else if (enable) begin
+            if (counter == MAX)
+                counter &lt;= {WIDTH{1'b0}};
+            else
+                counter &lt;= counter + 1;
+        end
+    end
+
+endmodule
+
+// 十进制计数器（0-9）
+module decimal_counter (
+    input  wire         clock,
+    input  wire         reset_n,
+    input  wire         enable,
+    output wire [3:0]   count,
+    output wire         overflow
+);
+
+    reg [3:0] counter;
+
+    assign count = counter;
+    assign overflow = enable &amp; (counter == 4'b1001);
+
+    always @(posedge clock or negedge reset_n) begin
+        if (!reset_n)
+            counter &lt;= 4'b0000;
+        else if (enable) begin
+            if (counter == 4'b1001)
+                counter &lt;= 4'b0000;
+            else
+                counter &lt;= counter + 1;
+        end
+    end
+
+endmodule
+
+// 可配置的模N计数器
+module modulo_n_counter #(
+    parameter WIDTH = 4,
+    parameter MODULUS = 10
+) (
+    input  wire                     clock,
+    input  wire                     reset_n,
+    input  wire                     enable,
+    output wire [WIDTH-1:0]         count,
+    output wire                     terminal_count
+);
+
+    reg [WIDTH-1:0] counter;
+
+    assign count = counter;
+    assign terminal_count = (counter == (MODULUS - 1));
+
+    always @(posedge clock or negedge reset_n) begin
+        if (!reset_n)
+            counter &lt;= {WIDTH{1'b0}};
+        else if (enable) begin
+            if (counter == (MODULUS - 1))
+                counter &lt;= {WIDTH{1'b0}};
+            else
+                counter &lt;= counter + 1;
+        end
+    end
+
+endmodule
+</code></pre>
+<h3 id="33-有限状态机fsm"><a class="header" href="#33-有限状态机fsm">3.3 有限状态机（FSM）</a></h3>
+<h4 id="状态机基础"><a class="header" href="#状态机基础">状态机基础</a></h4>
+<p>有限状态机是时序逻辑电路的核心设计模式,广泛应用于控制系统、通信协议、数字信号处理等领域。</p>
+<p><strong>状态机的三要素：</strong></p>
+<ol>
+<li><strong>状态集合</strong>：系统可能处于的所有状态</li>
+<li><strong>输入集合</strong>：影响状态转换的输入信号</li>
+<li><strong>转移函数</strong>：定义状态如何根据输入转换</li>
+</ol>
+<p><strong>状态机分类：</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>描述</th><th>输出特点</th></tr></thead><tbody>
+<tr><td><strong>Moore型</strong></td><td>输出只依赖于当前状态</td><td>输出稳定,无毛刺</td></tr>
+<tr><td><strong>Mealy型</strong></td><td>输出依赖于当前状态和输入</td><td>响应快,可能有毛刺</td></tr>
+</tbody></table>
+</div>
+<h4 id="状态机设计方法"><a class="header" href="#状态机设计方法">状态机设计方法</a></h4>
+<p><strong>三段式状态机（推荐）：</strong></p>
+<pre><code class="language-verilog">// 第一段：状态寄存器（时序逻辑）
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n)
+        current_state &lt;= IDLE;
+    else
+        current_state &lt;= next_state;
+end
+
+// 第二段：下一状态逻辑（组合逻辑）
+always @(*) begin
+    case(current_state)
+        IDLE: begin
+            if (start)
+                next_state = PROCESS;
+            else
+                next_state = IDLE;
+        end
+        PROCESS: begin
+            if (done)
+                next_state = FINISH;
+            else
+                next_state = PROCESS;
+        end
+        FINISH: begin
+            next_state = IDLE;
+        end
+        default: next_state = IDLE;
+    endcase
+end
+
+// 第三段：输出逻辑（组合或时序）
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n)
+        output_signal &lt;= 1'b0;
+    else begin
+        case(current_state)
+            IDLE: output_signal &lt;= 1'b0;
+            PROCESS: output_signal &lt;= 1'b1;
+            FINISH: output_signal &lt;= 1'b0;
+            default: output_signal &lt;= 1'b0;
+        endcase
+    end
+end
+</code></pre>
+<h4 id="实战自动售货机控制器"><a class="header" href="#实战自动售货机控制器">实战：自动售货机控制器</a></h4>
+<p><strong>设计需求：</strong></p>
+<ul>
+<li>商品价格：50分</li>
+<li>接受硬币：10分、25分</li>
+<li>找零功能：退还多余硬币</li>
+</ul>
+<p><strong>状态定义：</strong></p>
+<ul>
+<li>IDLE：等待投币（累计金额=0）</li>
+<li>AMOUNT_10：已投10分</li>
+<li>AMOUNT_20：已投20分</li>
+<li>AMOUNT_25：已投25分</li>
+<li>AMOUNT_35：已投35分</li>
+<li>AMOUNT_45：已投45分</li>
+<li>DISPENSE：出货并找零</li>
+</ul>
+<p><strong>文件：source/vending_machine.v</strong></p>
+<pre><code class="language-verilog">// 自动售货机状态机设计
+
+module vending_machine (
+    input  wire       clk,
+    input  wire       rst_n,
+    input  wire       coin_10,    // 投入10分硬币
+    input  wire       coin_25,    // 投入25分硬币
+    output reg        dispense,   // 出货信号
+    output reg  [1:0] change,     // 找零（00=0分, 01=10分, 10=20分）
+    output reg  [5:0] amount      // 当前累计金额
+);
+
+    // 状态定义
+    localparam IDLE       = 3'd0;
+    localparam AMOUNT_10  = 3'd1;
+    localparam AMOUNT_20  = 3'd2;
+    localparam AMOUNT_25  = 3'd3;
+    localparam AMOUNT_35  = 3'd4;
+    localparam AMOUNT_45  = 3'd5;
+    localparam DISPENSE   = 3'd6;
+
+    reg [2:0] current_state, next_state;
+
+    // 状态寄存器
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            current_state &lt;= IDLE;
+        else
+            current_state &lt;= next_state;
+    end
+
+    // 下一状态逻辑
+    always @(*) begin
+        case(current_state)
+            IDLE: begin
+                if (coin_10)
+                    next_state = AMOUNT_10;
+                else if (coin_25)
+                    next_state = AMOUNT_25;
+                else
+                    next_state = IDLE;
+            end
+
+            AMOUNT_10: begin
+                if (coin_10)
+                    next_state = AMOUNT_20;
+                else if (coin_25)
+                    next_state = AMOUNT_35;
+                else
+                    next_state = AMOUNT_10;
+            end
+
+            AMOUNT_20: begin
+                if (coin_10)
+                    next_state = AMOUNT_35;  // 修正：20+10=30,但跳到35状态便于管理
+                else if (coin_25)
+                    next_state = AMOUNT_45;
+                else
+                    next_state = AMOUNT_20;
+            end
+
+            AMOUNT_25: begin
+                if (coin_10)
+                    next_state = AMOUNT_35;
+                else if (coin_25)
+                    next_state = DISPENSE;  // 50分,直接出货
+                else
+                    next_state = AMOUNT_25;
+            end
+
+            AMOUNT_35: begin
+                if (coin_10)
+                    next_state = AMOUNT_45;
+                else if (coin_25)
+                    next_state = DISPENSE;  // 60分,出货并找零
+                else
+                    next_state = AMOUNT_35;
+            end
+
+            AMOUNT_45: begin
+                if (coin_10 || coin_25)
+                    next_state = DISPENSE;  // 达到50分以上
+                else
+                    next_state = AMOUNT_45;
+            end
+
+            DISPENSE: begin
+                next_state = IDLE;  // 出货后回到初始状态
+            end
+
+            default: next_state = IDLE;
+        endcase
+    end
+
+    // 输出逻辑
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            dispense &lt;= 1'b0;
+            change &lt;= 2'b00;
+            amount &lt;= 6'd0;
+        end else begin
+            case(current_state)
+                IDLE: begin
+                    dispense &lt;= 1'b0;
+                    change &lt;= 2'b00;
+                    amount &lt;= 6'd0;
+                end
+
+                AMOUNT_10: begin
+                    dispense &lt;= 1'b0;
+                    amount &lt;= 6'd10;
+                end
+
+                AMOUNT_20: begin
+                    dispense &lt;= 1'b0;
+                    amount &lt;= 6'd20;
+                end
+
+                AMOUNT_25: begin
+                    dispense &lt;= 1'b0;
+                    amount &lt;= 6'd25;
+                end
+
+                AMOUNT_35: begin
+                    dispense &lt;= 1'b0;
+                    amount &lt;= 6'd35;
+                end
+
+                AMOUNT_45: begin
+                    dispense &lt;= 1'b0;
+                    amount &lt;= 6'd45;
+                end
+
+                DISPENSE: begin
+                    dispense &lt;= 1'b1;
+                    // 计算找零
+                    if (amount == 6'd50)
+                        change &lt;= 2'b00;  // 不找零
+                    else if (amount == 6'd55 || amount == 6'd60)
+                        change &lt;= 2'b01;  // 找10分
+                    else if (amount &gt;= 6'd65)
+                        change &lt;= 2'b10;  // 找20分
+                    else
+                        change &lt;= 2'b00;
+                end
+
+                default: begin
+                    dispense &lt;= 1'b0;
+                    change &lt;= 2'b00;
+                    amount &lt;= 6'd0;
+                end
+            endcase
+        end
+    end
+
+endmodule
+</code></pre>
+<p><strong>文件：testbench/vending_machine_tb.v</strong></p>
+<pre><code class="language-verilog">// 自动售货机测试平台
+
+module vending_machine_tb;
+
+    reg clk, rst_n;
+    reg coin_10, coin_25;
+    wire dispense;
+    wire [1:0] change;
+    wire [5:0] amount;
+
+    // 时钟生成
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    // 实例化售货机
+    vending_machine vm (
+        .clk(clk),
+        .rst_n(rst_n),
+        .coin_10(coin_10),
+        .coin_25(coin_25),
+        .dispense(dispense),
+        .change(change),
+        .amount(amount)
+    );
+
+    initial begin
+        $dumpfile("simulation/vending_machine.vcd");
+        $dumpvars(0, vending_machine_tb);
+
+        $display("\n========== 自动售货机测试 ==========");
+
+        // 初始化
+        rst_n = 0;
+        coin_10 = 0;
+        coin_25 = 0;
+        #20;
+        rst_n = 1;
+
+        // 测试场景1：投入2个25分硬币（正好50分）
+        $display("\n场景1：投入2个25分硬币");
+        #10; coin_25 = 1;
+        #10; coin_25 = 0;
+        #10; coin_25 = 1;
+        #10; coin_25 = 0;
+        #20;
+        $display("出货：%b, 找零：%d分, 累计：%d分", dispense, change*10, amount);
+
+        // 测试场景2：投入5个10分硬币（正好50分）
+        $display("\n场景2：投入5个10分硬币");
+        #20;
+        repeat(5) begin
+            coin_10 = 1;
+            #10;
+            coin_10 = 0;
+            #10;
+        end
+        #20;
+        $display("出货：%b, 找零：%d分", dispense, change*10);
+
+        // 测试场景3：投入60分（需要找零10分）
+        $display("\n场景3：投入60分（需找零）");
+        #20;
+        coin_25 = 1; #10; coin_25 = 0;
+        #10;
+        coin_10 = 1; #10; coin_10 = 0;
+        #10;
+        coin_25 = 1; #10; coin_25 = 0;
+        #20;
+        $display("出货：%b, 找零：%d分", dispense, change*10);
+
+        #50;
+        $finish;
+    end
+
+endmodule
+</code></pre>
+<hr />
+<h2 id="模块四硬件描述语言与仿真"><a class="header" href="#模块四硬件描述语言与仿真">模块四：硬件描述语言与仿真</a></h2>
+<h3 id="41-verilog基础语法"><a class="header" href="#41-verilog基础语法">4.1 Verilog基础语法</a></h3>
+<h4 id="verilog的设计结构"><a class="header" href="#verilog的设计结构">Verilog的设计结构</a></h4>
+<p>Verilog代码的基本框架包括三个主要部分：模块定义、端口声明和内部逻辑实现。</p>
+<pre><code class="language-verilog">module module_name (
+    // 端口声明
+    input   wire    clk,
+    output  reg     data_out
+);
+
+    // 内部信号和参数声明
+    reg    [7:0]    internal_reg;
+    wire   [3:0]    internal_wire;
+
+    // 初始块（仿真用）
+    initial begin
+        // 初始化操作
+    end
+
+    // 时钟敏感块
+    always @(posedge clk) begin
+        // 时序逻辑
+    end
+
+    // 组合逻辑（连续赋值）
+    assign internal_wire = internal_reg[3:0];
+
+endmodule
+</code></pre>
+<h4 id="数据类型"><a class="header" href="#数据类型">数据类型</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>类型</th><th>说明</th><th>用途</th></tr></thead><tbody>
+<tr><td><strong>wire</strong></td><td>组合逻辑连接,不保存值</td><td>组合逻辑的输入、输出、内部连接</td></tr>
+<tr><td><strong>reg</strong></td><td>顺序逻辑存储,可在always块中赋值</td><td>时序逻辑、计数器、寄存器</td></tr>
+<tr><td><strong>input</strong></td><td>模块输入端口</td><td>接收外部信号</td></tr>
+<tr><td><strong>output</strong></td><td>模块输出端口</td><td>输出内部信号</td></tr>
+<tr><td><strong>parameter</strong></td><td>参数常量</td><td>参数化模块</td></tr>
+<tr><td><strong>localparam</strong></td><td>局部参数常量</td><td>仅在模块内使用</td></tr>
+</tbody></table>
+</div>
+<h4 id="运算符"><a class="header" href="#运算符">运算符</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>运算符</th><th>说明</th><th>例子</th></tr></thead><tbody>
+<tr><td><code>+, -, *, /</code></td><td>算术运算</td><td><code>a + b</code></td></tr>
+<tr><td><code>&amp;, |, ^, ~</code></td><td>按位运算</td><td><code>a &amp; b</code></td></tr>
+<tr><td><code>&amp;&amp;, ||, !</code></td><td>逻辑运算</td><td><code>(a &gt; b) &amp;&amp; (c &lt; d)</code></td></tr>
+<tr><td><code>&lt;&lt;, &gt;&gt;</code></td><td>移位运算</td><td><code>data &lt;&lt; 1</code></td></tr>
+<tr><td><code>==, !=, &lt;, &gt;</code></td><td>比较运算</td><td><code>count == 10</code></td></tr>
+<tr><td><code>?:</code></td><td>三元运算符</td><td><code>sel ? in1 : in0</code></td></tr>
+<tr><td><code>{,}</code></td><td>拼接运算符</td><td><code>{high_byte, low_byte}</code></td></tr>
+</tbody></table>
+</div>
+<h4 id="赋值方式"><a class="header" href="#赋值方式">赋值方式</a></h4>
+<p><strong>1. 连续赋值（用于组合逻辑）</strong></p>
+<pre><code class="language-verilog">assign output_signal = input_a &amp; input_b;
+</code></pre>
+<p><strong>2. 块赋值（用于时序逻辑）</strong></p>
+<pre><code class="language-verilog">always @(posedge clk) begin
+    q &lt;= d;             // 非阻塞赋值（时序逻辑推荐）
+end
+
+always @(*) begin
+    out = in1 | in2;    // 阻塞赋值（组合逻辑推荐）
+end
+</code></pre>
+<h3 id="42-testbench编写与仿真验证"><a class="header" href="#42-testbench编写与仿真验证">4.2 Testbench编写与仿真验证</a></h3>
+<h4 id="testbench的基本结构"><a class="header" href="#testbench的基本结构">Testbench的基本结构</a></h4>
+<pre><code class="language-verilog">module stimulus_module_testbench;
+
+    // 定义仿真信号
+    reg  input_signal;
+    wire output_signal;
+
+    // 实例化被测试模块
+    module_under_test dut (
+        .input(input_signal),
+        .output(output_signal)
+    );
+
+    // 生成激励信号
+    initial begin
+        // VCD波形文件
+        $dumpfile("waveform.vcd");
+        $dumpvars(0, stimulus_module_testbench);
+
+        // 测试激励序列
+        input_signal = 1'b0;
+        #10;
+        input_signal = 1'b1;
+        #10;
+
+        $display("仿真完成");
+        $finish;
+    end
+
+endmodule
+</code></pre>
+<h4 id="系统任务与函数"><a class="header" href="#系统任务与函数">系统任务与函数</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>系统任务</th><th>功能</th><th>示例</th></tr></thead><tbody>
+<tr><td><code>$display</code></td><td>显示信息</td><td><code>$display("Value = %d", var);</code></td></tr>
+<tr><td><code>$monitor</code></td><td>监控变量变化</td><td><code>$monitor("Time=%t, data=%h", $time, data);</code></td></tr>
+<tr><td><code>$dumpfile</code></td><td>指定波形文件</td><td><code>$dumpfile("wave.vcd");</code></td></tr>
+<tr><td><code>$dumpvars</code></td><td>指定记录变量</td><td><code>$dumpvars(0, testbench);</code></td></tr>
+<tr><td><code>$time</code></td><td>当前仿真时间</td><td><code>$display("Time=%t", $time);</code></td></tr>
+<tr><td><code>$random</code></td><td>生成随机数</td><td><code>data = $random % 256;</code></td></tr>
+<tr><td><code>$finish</code></td><td>结束仿真</td><td><code>$finish;</code></td></tr>
+<tr><td><code>$stop</code></td><td>暂停仿真</td><td><code>$stop;</code></td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="模块五fpga设计实战"><a class="header" href="#模块五fpga设计实战">模块五：FPGA设计实战</a></h2>
+<h3 id="51-fpga开发流程"><a class="header" href="#51-fpga开发流程">5.1 FPGA开发流程</a></h3>
+<h4 id="典型的fpga设计流程"><a class="header" href="#典型的fpga设计流程">典型的FPGA设计流程</a></h4>
+<pre><code>1. 设计规格   → 确定功能需求、性能指标、接口定义
+                ↓
+2. RTL设计    → 用Verilog/VHDL描述硬件逻辑
+                ↓
+3. 功能仿真   → 验证逻辑正确性
+                ↓
+4. 综合       → 将RTL转换为门级电路
+                ↓
+5. 布局布线   → 将门级电路映射到FPGA物理资源
+                ↓
+6. 时序分析   → 检查是否满足时序约束
+                ↓
+7. 生成配置文件 → 生成比特流文件
+                ↓
+8. 下载配置    → 将比特流下载到FPGA
+                ↓
+9. 硬件测试    → 在实际硬件上验证功能
+</code></pre>
+<h4 id="约束文件xdc"><a class="header" href="#约束文件xdc">约束文件（XDC）</a></h4>
+<p>约束文件定义了逻辑信号与FPGA物理引脚的对应关系以及时序要求。</p>
+<p><strong>XDC约束文件示例（Xilinx）：</strong></p>
+<pre><code class="language-tcl"># 时钟约束
+create_clock -period 10 -name clk [get_ports clk]
+
+# 端口位置约束
+set_property PACKAGE_PIN P13 [get_ports clk]
+set_property PACKAGE_PIN D19 [get_ports rst]
+set_property PACKAGE_PIN G19 [get_ports led0]
+set_property PACKAGE_PIN J19 [get_ports led1]
+
+# IO电压标准
+set_property IOSTANDARD LVCMOS33 [get_ports clk]
+set_property IOSTANDARD LVCMOS33 [get_ports rst]
+set_property IOSTANDARD LVCMOS33 [get_ports led*]
+
+# 时序约束
+set_false_path -from [get_ports rst]
+</code></pre>
+<h3 id="52-实战项目led闪烁控制系统"><a class="header" href="#52-实战项目led闪烁控制系统">5.2 实战项目：LED闪烁控制系统</a></h3>
+<h4 id="项目需求"><a class="header" href="#项目需求">项目需求</a></h4>
+<p>设计一个LED闪烁控制系统,能够产生可配置的闪烁频率和占空比。</p>
+<p><strong>功能规格</strong></p>
+<ul>
+<li>输入时钟：100MHz</li>
+<li>输出：控制LED的信号</li>
+<li>闪烁频率范围：1Hz ~ 10Hz（可配置）</li>
+<li>占空比：可调（默认50%）</li>
+</ul>
+<p><strong>文件：source/led_blinker.v</strong></p>
+<pre><code class="language-verilog">// LED闪烁控制器
+
+module led_blinker #(
+    parameter CLK_FREQ = 100_000_000,
+    parameter BLINK_FREQ = 1
+) (
+    input  wire         clk,
+    input  wire         rst_n,
+    output wire         led_out
+);
+
+    localparam HALF_PERIOD = CLK_FREQ / (2 * BLINK_FREQ);
+    localparam COUNTER_WIDTH = $clog2(HALF_PERIOD);
+
+    reg [COUNTER_WIDTH:0] counter;
+    reg led_state;
+
+    assign led_out = led_state;
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            counter &lt;= 0;
+            led_state &lt;= 1'b0;
+        end else begin
+            if (counter == (HALF_PERIOD - 1)) begin
+                counter &lt;= 0;
+                led_state &lt;= ~led_state;
+            end else begin
+                counter &lt;= counter + 1;
+            end
+        end
+    end
+
+endmodule
+</code></pre>
+<h3 id="53-fpga设计最佳实践"><a class="header" href="#53-fpga设计最佳实践">5.3 FPGA设计最佳实践</a></h3>
+<h4 id="时序设计原则"><a class="header" href="#时序设计原则">时序设计原则</a></h4>
+<ol>
+<li>
+<p><strong>同步设计</strong></p>
+<ul>
+<li>所有寄存器在同一时钟域中</li>
+<li>避免异步信号直接进入关键逻辑</li>
+</ul>
+</li>
+<li>
+<p><strong>时钟约束</strong></p>
+<pre><code class="language-tcl">create_clock -period 10 -name sys_clk [get_ports clk]
+set_false_path -from [get_ports async_reset]
+</code></pre>
+</li>
+<li>
+<p><strong>管道设计</strong></p>
+<pre><code class="language-verilog">always @(posedge clk) begin
+    result1 &lt;= input1 + input2;
+    result2 &lt;= result1 * coefficient;
+end
+</code></pre>
+</li>
+</ol>
+<h4 id="功耗优化"><a class="header" href="#功耗优化">功耗优化</a></h4>
+<ol>
+<li>
+<p><strong>时钟门控</strong></p>
+<pre><code class="language-verilog">wire gated_clock;
+assign gated_clock = clock &amp; enable;
+</code></pre>
+</li>
+<li>
+<p><strong>低功耗设计模式</strong></p>
+<pre><code class="language-verilog">always @(posedge clk) begin
+    if (idle_counter == MAX_IDLE) begin
+        power_mode &lt;= LOW_POWER;
+    end
+end
+</code></pre>
+</li>
+</ol>
+<hr />
+<h2 id="模块六高级主题与系统设计"><a class="header" href="#模块六高级主题与系统设计">模块六：高级主题与系统设计</a></h2>
+<h3 id="61-总线设计与接口协议"><a class="header" href="#61-总线设计与接口协议">6.1 总线设计与接口协议</a></h3>
+<h4 id="apb总线advanced-peripheral-bus"><a class="header" href="#apb总线advanced-peripheral-bus">APB总线（Advanced Peripheral Bus）</a></h4>
+<p>APB是ARM公司定义的低速外设总线,广泛用于SoC设计中的外设接口。</p>
+<p><strong>APB总线信号</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>信号</th><th>方向</th><th>说明</th></tr></thead><tbody>
+<tr><td>pclk</td><td>输入</td><td>时钟</td></tr>
+<tr><td>preset_n</td><td>输入</td><td>复位（低有效）</td></tr>
+<tr><td>paddr[31:0]</td><td>输出</td><td>地址总线</td></tr>
+<tr><td>pwrite</td><td>输出</td><td>写使能（1=写,0=读）</td></tr>
+<tr><td>pwdata[31:0]</td><td>输出</td><td>写数据</td></tr>
+<tr><td>prdata[31:0]</td><td>输入</td><td>读数据</td></tr>
+<tr><td>psel</td><td>输出</td><td>从机选择（高有效）</td></tr>
+<tr><td>penable</td><td>输出</td><td>使能信号（高有效）</td></tr>
+<tr><td>pready</td><td>输入</td><td>从机就绪（高有效）</td></tr>
+</tbody></table>
+</div>
+<p><strong>文件：source/apb_slave.v</strong></p>
+<pre><code class="language-verilog">// APB从机接口实现
+
+module apb_slave #(
+    parameter ADDR_WIDTH = 12,
+    parameter DATA_WIDTH = 32,
+    parameter NUM_REGS = 16
+) (
+    input  wire                         pclk,
+    input  wire                         preset_n,
+    input  wire [ADDR_WIDTH-1:0]        paddr,
+    input  wire                         pwrite,
+    input  wire [DATA_WIDTH-1:0]        pwdata,
+    output wire [DATA_WIDTH-1:0]        prdata,
+    input  wire                         psel,
+    input  wire                         penable,
+    output wire                         pready,
+    output wire                         pslverr
+);
+
+    reg [NUM_REGS-1:0][DATA_WIDTH-1:0] registers;
+
+    assign pready = 1'b1;
+    assign pslverr = 1'b0;
+
+    assign prdata = psel ? registers[paddr[$clog2(NUM_REGS)-1:0]] : {DATA_WIDTH{1'b0}};
+
+    always @(posedge pclk or negedge preset_n) begin
+        if (!preset_n) begin
+            registers &lt;= '{default:0};
+        end else if (psel &amp;&amp; penable &amp;&amp; pwrite) begin
+            registers[paddr[$clog2(NUM_REGS)-1:0]] &lt;= pwdata;
+        end
+    end
+
+endmodule
+</code></pre>
+<h3 id="62-跨时钟域设计"><a class="header" href="#62-跨时钟域设计">6.2 跨时钟域设计</a></h3>
+<h4 id="跨时钟域问题"><a class="header" href="#跨时钟域问题">跨时钟域问题</a></h4>
+<p>当信号从一个时钟域传递到另一个时钟域时,可能会出现亚稳态、数据丢失等问题。</p>
+<p><strong>常见问题：</strong></p>
+<ol>
+<li><strong>亚稳态</strong>：触发器的建立时间和保持时间不满足</li>
+<li><strong>数据丢失</strong>：快时钟域到慢时钟域的数据传递</li>
+<li><strong>数据相关性</strong>：多位数据的一致性</li>
+</ol>
+<h4 id="解决方案"><a class="header" href="#解决方案">解决方案</a></h4>
+<p><strong>1. 单bit信号同步（双寄存器同步）</strong></p>
+<pre><code class="language-verilog">module sync_2ff (
+    input  wire clk_dst,
+    input  wire rst_n,
+    input  wire signal_in,
+    output wire signal_out
+);
+
+    reg sync_ff1, sync_ff2;
+
+    always @(posedge clk_dst or negedge rst_n) begin
+        if (!rst_n) begin
+            sync_ff1 &lt;= 1'b0;
+            sync_ff2 &lt;= 1'b0;
+        end else begin
+            sync_ff1 &lt;= signal_in;
+            sync_ff2 &lt;= sync_ff1;
+        end
+    end
+
+    assign signal_out = sync_ff2;
+
+endmodule
+</code></pre>
+<p><strong>2. 多bit信号同步（Gray码转换）</strong></p>
+<pre><code class="language-verilog">// 二进制转Gray码
+module bin2gray #(parameter WIDTH = 4) (
+    input  wire [WIDTH-1:0] bin,
+    output wire [WIDTH-1:0] gray
+);
+
+    assign gray = bin ^ (bin &gt;&gt; 1);
+
+endmodule
+
+// Gray码转二进制
+module gray2bin #(parameter WIDTH = 4) (
+    input  wire [WIDTH-1:0] gray,
+    output wire [WIDTH-1:0] bin
+);
+
+    genvar i;
+    generate
+        for (i = 0; i &lt; WIDTH; i = i + 1) begin : gray_decode
+            assign bin[i] = ^(gray &gt;&gt; i);
+        end
+    endgenerate
+
+endmodule
+</code></pre>
+<p><strong>3. 异步FIFO</strong></p>
+<p>异步FIFO是解决跨时钟域数据传输的经典方案。</p>
+<pre><code class="language-verilog">module async_fifo #(
+    parameter DATA_WIDTH = 8,
+    parameter ADDR_WIDTH = 4
+) (
+    // 写时钟域
+    input  wire                     wr_clk,
+    input  wire                     wr_rst_n,
+    input  wire                     wr_en,
+    input  wire [DATA_WIDTH-1:0]    wr_data,
+    output wire                     wr_full,
+
+    // 读时钟域
+    input  wire                     rd_clk,
+    input  wire                     rd_rst_n,
+    input  wire                     rd_en,
+    output wire [DATA_WIDTH-1:0]    rd_data,
+    output wire                     rd_empty
+);
+
+    localparam DEPTH = 1 &lt;&lt; ADDR_WIDTH;
+
+    // 双口RAM
+    reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+
+    // 读写指针（Gray码）
+    reg [ADDR_WIDTH:0] wr_ptr_gray, rd_ptr_gray;
+    reg [ADDR_WIDTH:0] wr_ptr_bin, rd_ptr_bin;
+
+    // 同步后的指针
+    reg [ADDR_WIDTH:0] wr_ptr_gray_sync1, wr_ptr_gray_sync2;
+    reg [ADDR_WIDTH:0] rd_ptr_gray_sync1, rd_ptr_gray_sync2;
+
+    // 写操作
+    always @(posedge wr_clk or negedge wr_rst_n) begin
+        if (!wr_rst_n)
+            wr_ptr_bin &lt;= 0;
+        else if (wr_en &amp;&amp; !wr_full) begin
+            mem[wr_ptr_bin[ADDR_WIDTH-1:0]] &lt;= wr_data;
+            wr_ptr_bin &lt;= wr_ptr_bin + 1;
+        end
+    end
+
+    // 读操作
+    always @(posedge rd_clk or negedge rd_rst_n) begin
+        if (!rd_rst_n)
+            rd_ptr_bin &lt;= 0;
+        else if (rd_en &amp;&amp; !rd_empty)
+            rd_ptr_bin &lt;= rd_ptr_bin + 1;
+    end
+
+    assign rd_data = mem[rd_ptr_bin[ADDR_WIDTH-1:0]];
+
+    // 二进制转Gray码
+    always @(posedge wr_clk or negedge wr_rst_n) begin
+        if (!wr_rst_n)
+            wr_ptr_gray &lt;= 0;
+        else
+            wr_ptr_gray &lt;= wr_ptr_bin ^ (wr_ptr_bin &gt;&gt; 1);
+    end
+
+    always @(posedge rd_clk or negedge rd_rst_n) begin
+        if (!rd_rst_n)
+            rd_ptr_gray &lt;= 0;
+        else
+            rd_ptr_gray &lt;= rd_ptr_bin ^ (rd_ptr_bin &gt;&gt; 1);
+    end
+
+    // 同步写指针到读时钟域
+    always @(posedge rd_clk or negedge rd_rst_n) begin
+        if (!rd_rst_n) begin
+            wr_ptr_gray_sync1 &lt;= 0;
+            wr_ptr_gray_sync2 &lt;= 0;
+        end else begin
+            wr_ptr_gray_sync1 &lt;= wr_ptr_gray;
+            wr_ptr_gray_sync2 &lt;= wr_ptr_gray_sync1;
+        end
+    end
+
+    // 同步读指针到写时钟域
+    always @(posedge wr_clk or negedge wr_rst_n) begin
+        if (!wr_rst_n) begin
+            rd_ptr_gray_sync1 &lt;= 0;
+            rd_ptr_gray_sync2 &lt;= 0;
+        end else begin
+            rd_ptr_gray_sync1 &lt;= rd_ptr_gray;
+            rd_ptr_gray_sync2 &lt;= rd_ptr_gray_sync1;
+        end
+    end
+
+    // 空满标志
+    assign wr_full = (wr_ptr_gray == {~rd_ptr_gray_sync2[ADDR_WIDTH:ADDR_WIDTH-1],
+                                      rd_ptr_gray_sync2[ADDR_WIDTH-2:0]});
+    assign rd_empty = (rd_ptr_gray == wr_ptr_gray_sync2);
+
+endmodule
+</code></pre>
+<hr />
+<h2 id="模块七数字系统设计进阶"><a class="header" href="#模块七数字系统设计进阶">模块七：数字系统设计进阶</a></h2>
+<h3 id="71-流水线设计技术"><a class="header" href="#71-流水线设计技术">7.1 流水线设计技术</a></h3>
+<h4 id="流水线的基本概念"><a class="header" href="#流水线的基本概念">流水线的基本概念</a></h4>
+<p>流水线是提高数字系统吞吐量的重要技术。通过将复杂操作分解为多个阶段,每个阶段在不同时钟周期执行,可以显著提高系统性能。</p>
+<p><strong>流水线的关键指标：</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>指标</th><th>定义</th><th>计算方法</th></tr></thead><tbody>
+<tr><td><strong>吞吐量</strong></td><td>单位时间内完成的操作数</td><td>1 / 时钟周期</td></tr>
+<tr><td><strong>延迟</strong></td><td>单个操作完成所需时间</td><td>流水线级数 × 时钟周期</td></tr>
+<tr><td><strong>加速比</strong></td><td>相对于非流水线的性能提升</td><td>理想情况下等于流水线级数</td></tr>
+</tbody></table>
+</div>
+<h4 id="实战流水线乘法器"><a class="header" href="#实战流水线乘法器">实战：流水线乘法器</a></h4>
+<p><strong>文件：source/pipeline_multiplier.v</strong></p>
+<pre><code class="language-verilog">// 流水线乘法器（3级流水线）
+
+module pipeline_multiplier #(
+    parameter WIDTH = 8
+) (
+    input  wire                     clk,
+    input  wire                     rst_n,
+    input  wire [WIDTH-1:0]         a_in,
+    input  wire [WIDTH-1:0]         b_in,
+    input  wire                     valid_in,
+    output reg  [2*WIDTH-1:0]       result,
+    output reg                      valid_out
+);
+
+    // 流水线阶段1：输入寄存
+    reg [WIDTH-1:0] a_stage1, b_stage1;
+    reg valid_stage1;
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            a_stage1 &lt;= 0;
+            b_stage1 &lt;= 0;
+            valid_stage1 &lt;= 0;
+        end else begin
+            a_stage1 &lt;= a_in;
+            b_stage1 &lt;= b_in;
+            valid_stage1 &lt;= valid_in;
+        end
+    end
+
+    // 流水线阶段2：部分积计算
+    reg [2*WIDTH-1:0] partial_product;
+    reg valid_stage2;
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            partial_product &lt;= 0;
+            valid_stage2 &lt;= 0;
+        end else begin
+            partial_product &lt;= a_stage1 * b_stage1;
+            valid_stage2 &lt;= valid_stage1;
+        end
+    end
+
+    // 流水线阶段3：结果输出
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            result &lt;= 0;
+            valid_out &lt;= 0;
+        end else begin
+            result &lt;= partial_product;
+            valid_out &lt;= valid_stage2;
+        end
+    end
+
+endmodule
+</code></pre>
+<h3 id="72-内存设计"><a class="header" href="#72-内存设计">7.2 内存设计</a></h3>
+<h4 id="单口ram"><a class="header" href="#单口ram">单口RAM</a></h4>
+<pre><code class="language-verilog">module single_port_ram #(
+    parameter DATA_WIDTH = 8,
+    parameter ADDR_WIDTH = 10
+) (
+    input  wire                     clk,
+    input  wire                     we,
+    input  wire [ADDR_WIDTH-1:0]    addr,
+    input  wire [DATA_WIDTH-1:0]    din,
+    output reg  [DATA_WIDTH-1:0]    dout
+);
+
+    localparam DEPTH = 1 &lt;&lt; ADDR_WIDTH;
+    reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+
+    always @(posedge clk) begin
+        if (we)
+            mem[addr] &lt;= din;
+        dout &lt;= mem[addr];
+    end
+
+endmodule
+</code></pre>
+<h4 id="双口ram"><a class="header" href="#双口ram">双口RAM</a></h4>
+<pre><code class="language-verilog">module dual_port_ram #(
+    parameter DATA_WIDTH = 8,
+    parameter ADDR_WIDTH = 10
+) (
+    input  wire                     clk,
+
+    // 端口A
+    input  wire                     we_a,
+    input  wire [ADDR_WIDTH-1:0]    addr_a,
+    input  wire [DATA_WIDTH-1:0]    din_a,
+    output reg  [DATA_WIDTH-1:0]    dout_a,
+
+    // 端口B
+    input  wire                     we_b,
+    input  wire [ADDR_WIDTH-1:0]    addr_b,
+    input  wire [DATA_WIDTH-1:0]    din_b,
+    output reg  [DATA_WIDTH-1:0]    dout_b
+);
+
+    localparam DEPTH = 1 &lt;&lt; ADDR_WIDTH;
+    reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+
+    // 端口A操作
+    always @(posedge clk) begin
+        if (we_a)
+            mem[addr_a] &lt;= din_a;
+        dout_a &lt;= mem[addr_a];
+    end
+
+    // 端口B操作
+    always @(posedge clk) begin
+        if (we_b)
+            mem[addr_b] &lt;= din_b;
+        dout_b &lt;= mem[addr_b];
+    end
+
+endmodule
+</code></pre>
+<h3 id="73-uart通信协议实现"><a class="header" href="#73-uart通信协议实现">7.3 UART通信协议实现</a></h3>
+<p>UART（Universal Asynchronous Receiver/Transmitter）是最常用的串行通信协议。</p>
+<h4 id="uart协议基础"><a class="header" href="#uart协议基础">UART协议基础</a></h4>
+<p><strong>帧格式：</strong></p>
+<pre><code>起始位(1bit) + 数据位(5-9bit) + 奇偶校验位(可选) + 停止位(1-2bit)
+
+标准配置：8N1（8位数据,无校验,1位停止位）
+</code></pre>
+<p><strong>波特率：</strong>
+常见波特率：9600, 19200, 38400, 57600, 115200</p>
+<h4 id="uart发送器实现"><a class="header" href="#uart发送器实现">UART发送器实现</a></h4>
+<p><strong>文件：source/uart_tx.v</strong></p>
+<pre><code class="language-verilog">// UART发送器
+
+module uart_tx #(
+    parameter CLK_FREQ = 50_000_000,
+    parameter BAUD_RATE = 115200
+) (
+    input  wire       clk,
+    input  wire       rst_n,
+    input  wire [7:0] tx_data,
+    input  wire       tx_start,
+    output reg        tx,
+    output wire       tx_busy
+);
+
+    localparam BAUD_DIV = CLK_FREQ / BAUD_RATE;
+    localparam IDLE = 2'b00;
+    localparam START = 2'b01;
+    localparam DATA = 2'b10;
+    localparam STOP = 2'b11;
+
+    reg [1:0] state;
+    reg [$clog2(BAUD_DIV)-1:0] baud_counter;
+    reg [2:0] bit_index;
+    reg [7:0] tx_shift_reg;
+
+    assign tx_busy = (state != IDLE);
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            state &lt;= IDLE;
+            tx &lt;= 1'b1;
+            baud_counter &lt;= 0;
+            bit_index &lt;= 0;
+            tx_shift_reg &lt;= 0;
+        end else begin
+            case(state)
+                IDLE: begin
+                    tx &lt;= 1'b1;
+                    if (tx_start) begin
+                        tx_shift_reg &lt;= tx_data;
+                        state &lt;= START;
+                        baud_counter &lt;= 0;
+                    end
+                end
+
+                START: begin
+                    tx &lt;= 1'b0;  // 起始位
+                    if (baud_counter == BAUD_DIV - 1) begin
+                        baud_counter &lt;= 0;
+                        state &lt;= DATA;
+                        bit_index &lt;= 0;
+                    end else begin
+                        baud_counter &lt;= baud_counter + 1;
+                    end
+                end
+
+                DATA: begin
+                    tx &lt;= tx_shift_reg[bit_index];
+                    if (baud_counter == BAUD_DIV - 1) begin
+                        baud_counter &lt;= 0;
+                        if (bit_index == 7)
+                            state &lt;= STOP;
+                        else
+                            bit_index &lt;= bit_index + 1;
+                    end else begin
+                        baud_counter &lt;= baud_counter + 1;
+                    end
+                end
+
+                STOP: begin
+                    tx &lt;= 1'b1;  // 停止位
+                    if (baud_counter == BAUD_DIV - 1) begin
+                        baud_counter &lt;= 0;
+                        state &lt;= IDLE;
+                    end else begin
+                        baud_counter &lt;= baud_counter + 1;
+                    end
+                end
+
+                default: state &lt;= IDLE;
+            endcase
+        end
+    end
+
+endmodule
+</code></pre>
+<h4 id="uart接收器实现"><a class="header" href="#uart接收器实现">UART接收器实现</a></h4>
+<p><strong>文件：source/uart_rx.v</strong></p>
+<pre><code class="language-verilog">// UART接收器
+
+module uart_rx #(
+    parameter CLK_FREQ = 50_000_000,
+    parameter BAUD_RATE = 115200
+) (
+    input  wire       clk,
+    input  wire       rst_n,
+    input  wire       rx,
+    output reg  [7:0] rx_data,
+    output reg        rx_valid
+);
+
+    localparam BAUD_DIV = CLK_FREQ / BAUD_RATE;
+    localparam IDLE = 2'b00;
+    localparam START = 2'b01;
+    localparam DATA = 2'b10;
+    localparam STOP = 2'b11;
+
+    reg [1:0] state;
+    reg [$clog2(BAUD_DIV)-1:0] baud_counter;
+    reg [2:0] bit_index;
+    reg [7:0] rx_shift_reg;
+    reg [1:0] rx_sync;
+
+    // RX信号同步
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            rx_sync &lt;= 2'b11;
+        else
+            rx_sync &lt;= {rx_sync[0], rx};
+    end
+
+    wire rx_synced = rx_sync[1];
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            state &lt;= IDLE;
+            baud_counter &lt;= 0;
+            bit_index &lt;= 0;
+            rx_shift_reg &lt;= 0;
+            rx_data &lt;= 0;
+            rx_valid &lt;= 0;
+        end else begin
+            rx_valid &lt;= 0;
+
+            case(state)
+                IDLE: begin
+                    if (rx_synced == 0) begin  // 检测到起始位
+                        state &lt;= START;
+                        baud_counter &lt;= 0;
+                    end
+                end
+
+                START: begin
+                    if (baud_counter == BAUD_DIV / 2) begin
+                        if (rx_synced == 0) begin  // 确认起始位
+                            state &lt;= DATA;
+                            baud_counter &lt;= 0;
+                            bit_index &lt;= 0;
+                        end else begin
+                            state &lt;= IDLE;  // 假起始位
+                        end
+                    end else begin
+                        baud_counter &lt;= baud_counter + 1;
+                    end
+                end
+
+                DATA: begin
+                    if (baud_counter == BAUD_DIV - 1) begin
+                        baud_counter &lt;= 0;
+                        rx_shift_reg[bit_index] &lt;= rx_synced;
+                        if (bit_index == 7)
+                            state &lt;= STOP;
+                        else
+                            bit_index &lt;= bit_index + 1;
+                    end else begin
+                        baud_counter &lt;= baud_counter + 1;
+                    end
+                end
+
+                STOP: begin
+                    if (baud_counter == BAUD_DIV - 1) begin
+                        if (rx_synced == 1) begin  // 确认停止位
+                            rx_data &lt;= rx_shift_reg;
+                            rx_valid &lt;= 1;
+                        end
+                        state &lt;= IDLE;
+                    end else begin
+                        baud_counter &lt;= baud_counter + 1;
+                    end
+                end
+
+                default: state &lt;= IDLE;
+            endcase
+        end
+    end
+
+endmodule
+</code></pre>
+<hr />
+<h2 id="学习成果验证"><a class="header" href="#学习成果验证">学习成果验证</a></h2>
+<h3 id="检验标准"><a class="header" href="#检验标准">检验标准</a></h3>
+<p>完成本模块学习后,你应该能够达到以下检验标准:</p>
+<h4 id="标准1理论基础掌握"><a class="header" href="#标准1理论基础掌握">标准1：理论基础掌握</a></h4>
+<p><strong>评估方式</strong>：通过以下问题的回答</p>
+<ul>
+<li>能正确解释布尔代数中的基本定律,并运用其化简逻辑表达式</li>
+<li>能够区分组合逻辑和时序逻辑,说明它们的应用场景</li>
+<li>能够理解触发器的工作原理,说明异步和同步的区别</li>
+<li>能够分析一个中等复杂度的状态机,推导出其时序表</li>
+</ul>
+<h4 id="标准2hdl编程能力"><a class="header" href="#标准2hdl编程能力">标准2：HDL编程能力</a></h4>
+<p><strong>评估方式</strong>：完成以下编程任务</p>
+<ul>
+<li>能用Verilog描述给定的组合逻辑电路</li>
+<li>能用Verilog设计时序逻辑模块,包含正确的时钟敏感性</li>
+<li>能编写完整的Testbench并进行仿真</li>
+<li>能进行波形分析并调试设计</li>
+</ul>
+<p><strong>验证项目</strong></p>
+<pre><code>任务1：实现一个4位加法器,包含完整的Testbench
+任务2：设计一个自动售货机的状态机,支持多种硬币
+任务3：设计一个16×8的RAM读写控制器
+</code></pre>
+<h4 id="标准3工程设计能力"><a class="header" href="#标准3工程设计能力">标准3：工程设计能力</a></h4>
+<p><strong>评估方式</strong>：独立完成一个完整的设计项目</p>
+<ul>
+<li>能够理解设计规格并转化为技术方案</li>
+<li>能够进行模块划分,明确模块间的接口</li>
+<li>能够考虑时序、功耗、面积等多个因素</li>
+<li>能够进行系统集成和验证</li>
+</ul>
+<h4 id="标准4故障诊断能力"><a class="header" href="#标准4故障诊断能力">标准4：故障诊断能力</a></h4>
+<p><strong>评估方式</strong>：能够快速定位和解决设计问题</p>
+<ul>
+<li>能根据仿真波形判断问题所在</li>
+<li>能使用调试工具进行信号追踪</li>
+<li>能分析时序违规并提出解决方案</li>
+<li>能处理综合和布局布线中的错误</li>
+</ul>
+<hr />
+<h2 id="常见问题与调试技巧"><a class="header" href="#常见问题与调试技巧">常见问题与调试技巧</a></h2>
+<h3 id="q1仿真运行后无任何输出"><a class="header" href="#q1仿真运行后无任何输出">Q1：仿真运行后无任何输出</a></h3>
+<p><strong>问题原因</strong></p>
+<ul>
+<li>
+<p>Testbench中没有生成VCD波形文件</p>
+</li>
+<li>
+<p>仿真提前结束（<span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">ini</span><span class="mord mathnormal">s</span><span class="mord mathnormal">h</span><span class="mord cjk_fallback">被提前调用）</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord cjk_fallback">模块没有正确实例化</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">∗</span><span class="mord cjk_fallback">解决方案</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord">∗</span><span class="mord">‘‘‘</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">ini</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ia</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">b</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mord mathnormal">in</span></span></span></span>dumpfile("waveform.vcd");
+$dumpvars(0, testbench_name);</p>
+<p>// 测试激励
+...</p>
+<p>#1000;
+$finish;
+end</p>
+</li>
+</ul>
+<pre><code>
+### Q2：复位信号不起作用
+
+**解决方案**
+```verilog
+always @(posedge clk or negedge reset_n) begin
+    if (!reset_n) begin
+        register &lt;= 8'h00;
+        state &lt;= IDLE;
+    end else begin
+        // 正常操作
+    end
+end
+</code></pre>
+<h3 id="q3时序不满足"><a class="header" href="#q3时序不满足">Q3：时序不满足</a></h3>
+<p><strong>解决方案</strong></p>
+<pre><code class="language-tcl"># 查看关键路径
+report_timing -delay_type max
+
+# 使用管道技术
+# 在高频路径上添加寄存器
+</code></pre>
+<h3 id="q4综合失败"><a class="header" href="#q4综合失败">Q4：综合失败</a></h3>
+<p><strong>检查清单</strong></p>
+<pre><code class="language-verilog">// 可综合
+always @(posedge clk) begin
+    // 只有同步操作
+    // 明确的状态转移
+end
+</code></pre>
+<hr />
+<h2 id="扩展资源与进阶建议"><a class="header" href="#扩展资源与进阶建议">扩展资源与进阶建议</a></h2>
+<h3 id="推荐学习资源"><a class="header" href="#推荐学习资源">推荐学习资源</a></h3>
+<h4 id="参考书籍"><a class="header" href="#参考书籍">参考书籍</a></h4>
+<ol>
+<li><strong>《Verilog HDL 高级数字设计》</strong> - Michael D. Ciletti</li>
+<li><strong>《数字集成电路 - 电路、逻辑和设计》</strong> - Rabaey &amp; Chandrakasan</li>
+<li><strong>《FPGA设计实战》</strong> - 刘冠武</li>
+<li><strong>《The Art of FPGA Design》</strong> - Ken Coffman</li>
+</ol>
+<h4 id="开源工具和项目"><a class="header" href="#开源工具和项目">开源工具和项目</a></h4>
+<ol>
+<li>
+<p><strong>开源FPGA工具链</strong></p>
+<pre><code class="language-bash">git clone https://github.com/YosysHQ/yosys.git
+git clone https://github.com/YosysHQ/nextpnr.git
+</code></pre>
+</li>
+<li>
+<p><strong>Verilog模拟器</strong></p>
+<pre><code class="language-bash">sudo apt-get install iverilog gtkwave
+</code></pre>
+</li>
+<li>
+<p><strong>学习项目</strong></p>
+<ul>
+<li><strong>CV32E40P</strong> (RISC-V处理器)</li>
+<li><strong>OpenTitan</strong> (安全芯片)</li>
+<li><strong>LiteX</strong> - 构建定制SoC的框架</li>
+</ul>
+</li>
+</ol>
+<h3 id="进阶学习路径"><a class="header" href="#进阶学习路径">进阶学习路径</a></h3>
+<h4 id="第一阶段系统级设计3-6个月"><a class="header" href="#第一阶段系统级设计3-6个月">第一阶段：系统级设计（3-6个月）</a></h4>
+<p><strong>学习内容</strong></p>
+<ul>
+<li>微架构设计（指令集、流水线、缓存）</li>
+<li>系统级总线设计（AXI, Wishbone）</li>
+<li>内存子系统设计</li>
+<li>互连网络</li>
+</ul>
+<h4 id="第二阶段硬件设计流程3-6个月"><a class="header" href="#第二阶段硬件设计流程3-6个月">第二阶段：硬件设计流程（3-6个月）</a></h4>
+<p><strong>学习内容</strong></p>
+<ul>
+<li>RTL综合优化技术</li>
+<li>静态时序分析（STA）</li>
+<li>功耗分析和优化</li>
+<li>形式化验证基础</li>
+</ul>
+<h4 id="第三阶段芯片设计6-12个月"><a class="header" href="#第三阶段芯片设计6-12个月">第三阶段：芯片设计（6-12个月）</a></h4>
+<p><strong>学习内容</strong></p>
+<ul>
+<li>物理设计（Layout）</li>
+<li>时钟树综合（CTS）</li>
+<li>功耗完整性（PI）分析</li>
+<li>电磁兼容性（EMC）考虑</li>
+<li>流片前的完整验证</li>
+</ul>
+<hr />
+<h2 id="总结与后续行动"><a class="header" href="#总结与后续行动">总结与后续行动</a></h2>
+<h3 id="核心要点回顾"><a class="header" href="#核心要点回顾">核心要点回顾</a></h3>
+<ol>
+<li>
+<p><strong>数字电路是计算机的基础</strong></p>
+<ul>
+<li>从逻辑门到复杂系统的递进过程</li>
+<li>理论与实践相结合的重要性</li>
+</ul>
+</li>
+<li>
+<p><strong>系统化学习的重要性</strong></p>
+<ul>
+<li>从基础理论到工程实践</li>
+<li>循序渐进地掌握每个模块</li>
+</ul>
+</li>
+<li>
+<p><strong>动手实践不可替代</strong></p>
+<ul>
+<li>通过编写Verilog代码加深理解</li>
+<li>通过仿真和硬件验证掌握设计</li>
+</ul>
+</li>
+<li>
+<p><strong>持续优化的设计理念</strong></p>
+<ul>
+<li>性能、功耗、面积的权衡</li>
+<li>遵循设计最佳实践</li>
+</ul>
+</li>
+</ol>
+<h3 id="下一步行动计划"><a class="header" href="#下一步行动计划">下一步行动计划</a></h3>
+<p><strong>第1-2周：巩固基础</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+完成所有模块的理论学习</li>
+<li><input disabled="" type="checkbox"/>
+运行所有提供的代码示例</li>
+<li><input disabled="" type="checkbox"/>
+尝试修改代码参数观察结果</li>
+</ul>
+<p><strong>第3-4周：动手实践</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+设计3个独立的小项目</li>
+<li><input disabled="" type="checkbox"/>
+编写完整的Testbench</li>
+<li><input disabled="" type="checkbox"/>
+学会使用调试工具</li>
+</ul>
+<p><strong>第5-8周：深化理解</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+完成综合设计项目</li>
+<li><input disabled="" type="checkbox"/>
+学习FPGA设计流程</li>
+<li><input disabled="" type="checkbox"/>
+研究优化技术</li>
+</ul>
+<p><strong>第9-12周：系统集成</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+完成系统级设计</li>
+<li><input disabled="" type="checkbox"/>
+学习芯片设计基础</li>
+<li><input disabled="" type="checkbox"/>
+参加实际项目</li>
+</ul>
+<p>祝你学习进步,早日成为数字电路设计的高手！</p>
 
                     </main>
 

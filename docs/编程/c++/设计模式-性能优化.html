@@ -1,0 +1,1217 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>C++设计模式完整学习指南 - 性能优化专题 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="c设计模式完整学习指南---性能优化专题"><a class="header" href="#c设计模式完整学习指南---性能优化专题">C++设计模式完整学习指南 - 性能优化专题</a></h1>
+<blockquote>
+<p>本文档深入探讨设计模式的性能优化技巧和高性能编程实践。</p>
+<p><strong>导航</strong>: <a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">← 返回主文档</a> | <a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%AB%98%E7%BA%A7%E7%AF%87.html">← 高级篇</a> | <a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B.html">← 实战案例</a></p>
+</blockquote>
+<hr />
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<ol>
+<li><a href="#%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%8E%9F%E5%88%99">性能优化原则</a></li>
+<li><a href="#%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96">内存优化</a></li>
+<li><a href="#CPU%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96">CPU缓存优化</a></li>
+<li><a href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%BC%8F">多线程模式</a></li>
+<li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E9%87%8F%E5%B7%A5%E5%85%B7">性能测量工具</a></li>
+</ol>
+<hr />
+<h2 id="第一章性能优化原则"><a class="header" href="#第一章性能优化原则">第一章：性能优化原则</a></h2>
+<h3 id="11-优化的黄金法则"><a class="header" href="#11-优化的黄金法则">1.1 优化的黄金法则</a></h3>
+<p><strong>1. 先测量，再优化</strong></p>
+<pre><code class="language-cpp">// 错误的做法：盲目优化
+void badApproach() {
+    // 花费大量时间优化不是瓶颈的代码
+    optimizeRarelyCalledFunction();
+}
+
+// 正确的做法：基于数据优化
+void goodApproach() {
+    // 1. 使用性能分析工具找到热点
+    Profiler profiler;
+    profiler.start();
+
+    runGame();
+
+    profiler.stop();
+    profiler.generateReport();  // 显示哪些函数最耗时
+
+    // 2. 只优化真正的瓶颈
+    optimizeBottleneck();
+}
+</code></pre>
+<p><strong>2. 80/20法则</strong></p>
+<p>通常80%的运行时间花在20%的代码上。找到这20%并优化它们。</p>
+<pre><code class="language-cpp">// 性能分析报告示例
+// Function              | Calls    | Total Time | % Time
+// ---------------------|----------|------------|-------
+// Physics::update()     | 60,000   | 450ms      | 45%    &lt;- 优化这个
+// Render::draw()        | 60,000   | 300ms      | 30%    &lt;- 和这个
+// AI::think()           | 1,000    | 150ms      | 15%
+// Audio::process()      | 60,000   | 100ms      | 10%
+</code></pre>
+<p><strong>3. 知道何时停止优化</strong></p>
+<pre><code class="language-cpp">class PerformanceTarget {
+public:
+    bool isAcceptable() {
+        return frameTime_ &lt;= TARGET_FRAME_TIME &amp;&amp;
+               memoryUsage_ &lt;= TARGET_MEMORY;
+    }
+
+private:
+    static constexpr float TARGET_FRAME_TIME = 16.67f;  // 60 FPS
+    static constexpr size_t TARGET_MEMORY = 512 * 1024 * 1024;  // 512 MB
+
+    float frameTime_;
+    size_t memoryUsage_;
+};
+
+// 当达到目标就停止优化，去做更重要的事
+if (performanceTarget.isAcceptable()) {
+    // 把时间花在添加新功能上
+    implementNewFeatures();
+} else {
+    // 继续优化
+    optimizeCriticalPath();
+}
+</code></pre>
+<hr />
+<h2 id="第二章内存优化"><a class="header" href="#第二章内存优化">第二章：内存优化</a></h2>
+<h3 id="21-对象池深度优化"><a class="header" href="#21-对象池深度优化">2.1 对象池深度优化</a></h3>
+<h4 id="基础对象池"><a class="header" href="#基础对象池">基础对象池</a></h4>
+<pre><code class="language-cpp">template&lt;typename T, size_t POOL_SIZE&gt;
+class ObjectPool {
+public:
+    ObjectPool() : firstAvailable_(nullptr) {
+        // 构建空闲列表
+        for (size_t i = 0; i &lt; POOL_SIZE - 1; i++) {
+            pool_[i].setNext(&amp;pool_[i + 1]);
+        }
+        pool_[POOL_SIZE - 1].setNext(nullptr);
+        firstAvailable_ = &amp;pool_[0];
+    }
+
+    T* allocate() {
+        if (firstAvailable_ == nullptr) {
+            return nullptr;  // 池已满
+        }
+
+        T* object = firstAvailable_;
+        firstAvailable_ = object-&gt;getNext();
+
+        new (object) T();  // 就地构造
+        return object;
+    }
+
+    void deallocate(T* object) {
+        object-&gt;~T();  // 显式析构
+        object-&gt;setNext(firstAvailable_);
+        firstAvailable_ = object;
+    }
+
+private:
+    T pool_[POOL_SIZE];
+    T* firstAvailable_;
+};
+</code></pre>
+<h4 id="增长型对象池"><a class="header" href="#增长型对象池">增长型对象池</a></h4>
+<pre><code class="language-cpp">template&lt;typename T&gt;
+class GrowableObjectPool {
+public:
+    GrowableObjectPool(size_t initialSize = 256)
+        : chunkSize_(initialSize) {
+        allocateChunk();
+    }
+
+    ~GrowableObjectPool() {
+        for (auto chunk : chunks_) {
+            delete[] chunk;
+        }
+    }
+
+    T* allocate() {
+        if (firstAvailable_ == nullptr) {
+            allocateChunk();
+        }
+
+        T* object = firstAvailable_;
+        firstAvailable_ = object-&gt;getNext();
+        new (object) T();
+        return object;
+    }
+
+    void deallocate(T* object) {
+        object-&gt;~T();
+        object-&gt;setNext(firstAvailable_);
+        firstAvailable_ = object;
+    }
+
+private:
+    void allocateChunk() {
+        T* chunk = reinterpret_cast&lt;T*&gt;(new uint8_t[sizeof(T) * chunkSize_]);
+        chunks_.push_back(chunk);
+
+        // 将新chunk链入空闲列表
+        for (size_t i = 0; i &lt; chunkSize_ - 1; i++) {
+            chunk[i].setNext(&amp;chunk[i + 1]);
+        }
+        chunk[chunkSize_ - 1].setNext(firstAvailable_);
+        firstAvailable_ = chunk;
+    }
+
+    size_t chunkSize_;
+    T* firstAvailable_;
+    std::vector&lt;T*&gt; chunks_;
+};
+</code></pre>
+<h4 id="线程安全对象池"><a class="header" href="#线程安全对象池">线程安全对象池</a></h4>
+<pre><code class="language-cpp">template&lt;typename T, size_t POOL_SIZE&gt;
+class ThreadSafeObjectPool {
+public:
+    T* allocate() {
+        std::lock_guard&lt;std::mutex&gt; lock(mutex_);
+
+        if (firstAvailable_ == nullptr) {
+            return nullptr;
+        }
+
+        T* object = firstAvailable_;
+        firstAvailable_ = object-&gt;getNext();
+        new (object) T();
+        return object;
+    }
+
+    void deallocate(T* object) {
+        object-&gt;~T();
+
+        std::lock_guard&lt;std::mutex&gt; lock(mutex_);
+        object-&gt;setNext(firstAvailable_);
+        firstAvailable_ = object;
+    }
+
+private:
+    T pool_[POOL_SIZE];
+    T* firstAvailable_;
+    std::mutex mutex_;
+};
+</code></pre>
+<h4 id="无锁对象池高级"><a class="header" href="#无锁对象池高级">无锁对象池（高级）</a></h4>
+<pre><code class="language-cpp">template&lt;typename T, size_t POOL_SIZE&gt;
+class LockFreeObjectPool {
+public:
+    T* allocate() {
+        Node* oldHead = head_.load(std::memory_order_acquire);
+
+        while (oldHead != nullptr) {
+            Node* newHead = oldHead-&gt;next;
+
+            // CAS: 如果head仍然是oldHead，将其更新为newHead
+            if (head_.compare_exchange_weak(oldHead, newHead,
+                                           std::memory_order_release,
+                                           std::memory_order_acquire)) {
+                new (&amp;oldHead-&gt;object) T();
+                return &amp;oldHead-&gt;object;
+            }
+            // CAS失败，oldHead已被更新，重试
+        }
+
+        return nullptr;  // 池已空
+    }
+
+    void deallocate(T* object) {
+        Node* node = reinterpret_cast&lt;Node*&gt;(
+            reinterpret_cast&lt;uint8_t*&gt;(object) - offsetof(Node, object)
+        );
+
+        object-&gt;~T();
+
+        Node* oldHead = head_.load(std::memory_order_acquire);
+        do {
+            node-&gt;next = oldHead;
+        } while (!head_.compare_exchange_weak(oldHead, node,
+                                             std::memory_order_release,
+                                             std::memory_order_acquire));
+    }
+
+private:
+    struct Node {
+        union {
+            T object;
+            uint8_t storage[sizeof(T)];
+        };
+        Node* next;
+    };
+
+    Node pool_[POOL_SIZE];
+    std::atomic&lt;Node*&gt; head_;
+};
+</code></pre>
+<h3 id="22-自定义内存分配器"><a class="header" href="#22-自定义内存分配器">2.2 自定义内存分配器</a></h3>
+<pre><code class="language-cpp">// 线性分配器（栈式分配）
+class LinearAllocator {
+public:
+    LinearAllocator(size_t size)
+        : buffer_(new uint8_t[size]),
+          size_(size),
+          offset_(0) {}
+
+    ~LinearAllocator() {
+        delete[] buffer_;
+    }
+
+    void* allocate(size_t size, size_t alignment = alignof(std::max_align_t)) {
+        // 对齐偏移量
+        size_t padding = 0;
+        size_t alignedOffset = offset_;
+
+        if (alignment != 0 &amp;&amp; (offset_ % alignment) != 0) {
+            padding = alignment - (offset_ % alignment);
+            alignedOffset = offset_ + padding;
+        }
+
+        if (alignedOffset + size &gt; size_) {
+            return nullptr;  // 内存不足
+        }
+
+        void* ptr = buffer_ + alignedOffset;
+        offset_ = alignedOffset + size;
+
+        return ptr;
+    }
+
+    void reset() {
+        offset_ = 0;  // 重置分配器，超快！
+    }
+
+private:
+    uint8_t* buffer_;
+    size_t size_;
+    size_t offset_;
+};
+
+// 使用示例：每帧临时对象
+class FrameAllocator {
+public:
+    FrameAllocator() : allocator_(10 * 1024 * 1024) {}  // 10 MB
+
+    void* allocate(size_t size) {
+        return allocator_.allocate(size);
+    }
+
+    void endFrame() {
+        allocator_.reset();  // 一次清空所有临时对象
+    }
+
+private:
+    LinearAllocator allocator_;
+};
+
+// 游戏循环
+void gameLoop() {
+    FrameAllocator frameAllocator;
+
+    while (running) {
+        // 使用临时内存
+        auto tempData = frameAllocator.allocate(1024);
+
+        update();
+        render();
+
+        // 帧结束，清空所有临时分配
+        frameAllocator.endFrame();
+    }
+}
+</code></pre>
+<hr />
+<h2 id="第三章cpu缓存优化"><a class="header" href="#第三章cpu缓存优化">第三章：CPU缓存优化</a></h2>
+<h3 id="31-数据局部性优化"><a class="header" href="#31-数据局部性优化">3.1 数据局部性优化</a></h3>
+<h4 id="问题指针跳转"><a class="header" href="#问题指针跳转">问题：指针跳转</a></h4>
+<pre><code class="language-cpp">// 糟糕：缓存失效
+class BadParticle {
+    Vector3* position;      // 指针1
+    Vector3* velocity;      // 指针2
+    Color* color;           // 指针3
+    float* lifetime;        // 指针4
+};
+
+std::vector&lt;BadParticle*&gt; particles;  // 又一层指针
+
+void updateBad() {
+    for (auto p : particles) {  // 缓存失效
+        p-&gt;position-&gt;x += p-&gt;velocity-&gt;x;  // 多次缓存失效
+    }
+}
+</code></pre>
+<h4 id="解决方案结构体数组soa"><a class="header" href="#解决方案结构体数组soa">解决方案：结构体数组（SoA）</a></h4>
+<pre><code class="language-cpp">// 好：连续内存，缓存友好
+struct ParticleSystem {
+    std::vector&lt;Vector3&gt; positions;   // 连续
+    std::vector&lt;Vector3&gt; velocities;  // 连续
+    std::vector&lt;Color&gt; colors;        // 连续
+    std::vector&lt;float&gt; lifetimes;     // 连续
+
+    void update() {
+        size_t count = positions.size();
+
+        for (size_t i = 0; i &lt; count; i++) {
+            positions[i] += velocities[i];  // 顺序访问，缓存命中
+        }
+    }
+};
+</code></pre>
+<h4 id="性能对比"><a class="header" href="#性能对比">性能对比</a></h4>
+<pre><code class="language-cpp">class PerformanceTest {
+public:
+    void testAoS() {  // Array of Structures
+        struct Particle {
+            Vector3 pos, vel;
+            Color color;
+            float life;
+        };
+
+        std::vector&lt;Particle&gt; particles(10000);
+
+        auto start = now();
+        for (int i = 0; i &lt; 1000; i++) {
+            for (auto&amp; p : particles) {
+                p.pos += p.vel;
+            }
+        }
+        auto duration = now() - start;
+        std::cout &lt;&lt; "AoS: " &lt;&lt; duration &lt;&lt; "ms\n";
+    }
+
+    void testSoA() {  // Structure of Arrays
+        struct ParticleSystem {
+            std::vector&lt;Vector3&gt; pos, vel;
+            std::vector&lt;Color&gt; color;
+            std::vector&lt;float&gt; life;
+        } particles;
+
+        particles.pos.resize(10000);
+        particles.vel.resize(10000);
+
+        auto start = now();
+        for (int i = 0; i &lt; 1000; i++) {
+            for (size_t j = 0; j &lt; particles.pos.size(); j++) {
+                particles.pos[j] += particles.vel[j];
+            }
+        }
+        auto duration = now() - start;
+        std::cout &lt;&lt; "SoA: " &lt;&lt; duration &lt;&lt; "ms\n";
+    }
+};
+
+// 典型结果：
+// AoS: 150ms
+// SoA: 50ms  &lt;- 3倍加速！
+</code></pre>
+<h3 id="32-热冷数据分离"><a class="header" href="#32-热冷数据分离">3.2 热/冷数据分离</a></h3>
+<pre><code class="language-cpp">// 不好：混合热数据和冷数据
+struct Entity {
+    // 热数据（每帧访问）
+    Vector3 position;
+    Vector3 velocity;
+    float health;
+
+    // 冷数据（很少访问）
+    std::string name;
+    std::string description;
+    Texture* icon;
+    int debugId;
+    // ...
+};
+
+// 64字节缓存行被冷数据污染
+
+// 好：分离热冷数据
+struct EntityHotData {
+    Vector3 position;    // 12 bytes
+    Vector3 velocity;    // 12 bytes
+    float health;        // 4 bytes
+    float _padding[9];   // 36 bytes填充到64字节
+    // 恰好一个缓存行！
+};
+
+struct EntityColdData {
+    std::string name;
+    std::string description;
+    Texture* icon;
+    int debugId;
+};
+
+struct Entity {
+    EntityHotData* hot;
+    EntityColdData* cold;
+};
+
+// 更新时只访问热数据数组
+std::vector&lt;EntityHotData&gt; hotData;
+
+void update() {
+    for (auto&amp; hot : hotData) {
+        hot.position += hot.velocity;
+    }
+    // 缓存命中率大幅提升！
+}
+</code></pre>
+<h3 id="33-预取prefetching"><a class="header" href="#33-预取prefetching">3.3 预取（Prefetching）</a></h3>
+<pre><code class="language-cpp">// 手动预取
+void updateWithPrefetch(std::vector&lt;Entity*&gt;&amp; entities) {
+    const size_t prefetchDistance = 8;
+
+    for (size_t i = 0; i &lt; entities.size(); i++) {
+        // 预取未来的数据
+        if (i + prefetchDistance &lt; entities.size()) {
+            __builtin_prefetch(entities[i + prefetchDistance], 0, 3);
+        }
+
+        // 处理当前数据
+        entities[i]-&gt;update();
+    }
+}
+</code></pre>
+<hr />
+<h2 id="第四章多线程模式"><a class="header" href="#第四章多线程模式">第四章：多线程模式</a></h2>
+<h3 id="41-任务系统"><a class="header" href="#41-任务系统">4.1 任务系统</a></h3>
+<pre><code class="language-cpp">// 任务接口
+class Task {
+public:
+    virtual ~Task() {}
+    virtual void execute() = 0;
+};
+
+// 工作线程
+class WorkerThread {
+public:
+    WorkerThread() : running_(false) {}
+
+    void start() {
+        running_ = true;
+        thread_ = std::thread(&amp;WorkerThread::run, this);
+    }
+
+    void stop() {
+        running_ = false;
+        condition_.notify_one();
+        if (thread_.joinable()) {
+            thread_.join();
+        }
+    }
+
+    void submit(Task* task) {
+        {
+            std::lock_guard&lt;std::mutex&gt; lock(mutex_);
+            queue_.push(task);
+        }
+        condition_.notify_one();
+    }
+
+private:
+    void run() {
+        while (running_) {
+            Task* task = nullptr;
+
+            {
+                std::unique_lock&lt;std::mutex&gt; lock(mutex_);
+                condition_.wait(lock, [this] {
+                    return !queue_.empty() || !running_;
+                });
+
+                if (!running_) break;
+
+                task = queue_.front();
+                queue_.pop();
+            }
+
+            if (task) {
+                task-&gt;execute();
+                delete task;
+            }
+        }
+    }
+
+    std::thread thread_;
+    std::queue&lt;Task*&gt; queue_;
+    std::mutex mutex_;
+    std::condition_variable condition_;
+    bool running_;
+};
+
+// 线程池
+class ThreadPool {
+public:
+    ThreadPool(size_t numThreads) {
+        workers_.resize(numThreads);
+        for (auto&amp; worker : workers_) {
+            worker.start();
+        }
+    }
+
+    ~ThreadPool() {
+        for (auto&amp; worker : workers_) {
+            worker.stop();
+        }
+    }
+
+    void submit(Task* task) {
+        // 负载均衡：提交到任务最少的线程
+        size_t minIndex = 0;
+        // 简化：随机选择
+        workers_[nextWorker_++ % workers_.size()].submit(task);
+    }
+
+private:
+    std::vector&lt;WorkerThread&gt; workers_;
+    std::atomic&lt;size_t&gt; nextWorker_{0};
+};
+
+// 使用示例
+class PhysicsTask : public Task {
+public:
+    PhysicsTask(std::vector&lt;RigidBody*&gt; bodies)
+        : bodies_(bodies) {}
+
+    virtual void execute() override {
+        for (auto body : bodies_) {
+            body-&gt;integrate();
+        }
+    }
+
+private:
+    std::vector&lt;RigidBody*&gt; bodies_;
+};
+
+void parallelPhysicsUpdate(std::vector&lt;RigidBody*&gt;&amp; bodies, ThreadPool&amp; pool) {
+    // 将物体分成N组
+    const size_t numTasks = 4;
+    size_t bodiesPerTask = bodies.size() / numTasks;
+
+    for (size_t i = 0; i &lt; numTasks; i++) {
+        size_t start = i * bodiesPerTask;
+        size_t end = (i == numTasks - 1) ? bodies.size() : start + bodiesPerTask;
+
+        std::vector&lt;RigidBody*&gt; subset(
+            bodies.begin() + start,
+            bodies.begin() + end
+        );
+
+        pool.submit(new PhysicsTask(subset));
+    }
+}
+</code></pre>
+<h3 id="42-生产者-消费者模式"><a class="header" href="#42-生产者-消费者模式">4.2 生产者-消费者模式</a></h3>
+<pre><code class="language-cpp">// 无锁环形缓冲区
+template&lt;typename T, size_t SIZE&gt;
+class LockFreeRingBuffer {
+public:
+    LockFreeRingBuffer()
+        : writeIndex_(0), readIndex_(0) {}
+
+    bool push(const T&amp; item) {
+        size_t currentWrite = writeIndex_.load(std::memory_order_relaxed);
+        size_t nextWrite = (currentWrite + 1) % SIZE;
+
+        if (nextWrite == readIndex_.load(std::memory_order_acquire)) {
+            return false;  // 缓冲区满
+        }
+
+        buffer_[currentWrite] = item;
+        writeIndex_.store(nextWrite, std::memory_order_release);
+        return true;
+    }
+
+    bool pop(T&amp; item) {
+        size_t currentRead = readIndex_.load(std::memory_order_relaxed);
+
+        if (currentRead == writeIndex_.load(std::memory_order_acquire)) {
+            return false;  // 缓冲区空
+        }
+
+        item = buffer_[currentRead];
+        readIndex_.store((currentRead + 1) % SIZE, std::memory_order_release);
+        return true;
+    }
+
+private:
+    T buffer_[SIZE];
+    std::atomic&lt;size_t&gt; writeIndex_;
+    std::atomic&lt;size_t&gt; readIndex_;
+    char padding_[64];  // 防止伪共享
+};
+
+// 使用：主线程生成命令，渲染线程消费
+struct RenderCommand {
+    enum Type { DRAW_SPRITE, DRAW_MESH, CLEAR_SCREEN };
+    Type type;
+    void* data;
+};
+
+LockFreeRingBuffer&lt;RenderCommand, 1024&gt; renderQueue;
+
+// 主线程
+void gameThread() {
+    while (running) {
+        update();
+
+        // 生成渲染命令
+        RenderCommand cmd;
+        cmd.type = RenderCommand::DRAW_SPRITE;
+        cmd.data = sprite;
+        renderQueue.push(cmd);
+    }
+}
+
+// 渲染线程
+void renderThread() {
+    while (running) {
+        RenderCommand cmd;
+        while (renderQueue.pop(cmd)) {
+            executeRenderCommand(cmd);
+        }
+
+        swapBuffers();
+    }
+}
+</code></pre>
+<hr />
+<h2 id="第五章性能测量工具"><a class="header" href="#第五章性能测量工具">第五章：性能测量工具</a></h2>
+<h3 id="51-简单计时器"><a class="header" href="#51-简单计时器">5.1 简单计时器</a></h3>
+<pre><code class="language-cpp">class Timer {
+public:
+    void start() {
+        startTime_ = std::chrono::high_resolution_clock::now();
+    }
+
+    double elapsedMs() {
+        auto endTime = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(
+            endTime - startTime_
+        );
+        return duration.count() / 1000.0;
+    }
+
+private:
+    std::chrono::time_point&lt;std::chrono::high_resolution_clock&gt; startTime_;
+};
+
+// 使用
+void benchmarkFunction() {
+    Timer timer;
+    timer.start();
+
+    expensiveOperation();
+
+    std::cout &lt;&lt; "耗时: " &lt;&lt; timer.elapsedMs() &lt;&lt; " ms\n";
+}
+</code></pre>
+<h3 id="52-性能分析器"><a class="header" href="#52-性能分析器">5.2 性能分析器</a></h3>
+<pre><code class="language-cpp">class Profiler {
+public:
+    struct ProfileData {
+        std::string name;
+        double totalTime;
+        int callCount;
+        double avgTime;
+    };
+
+    static Profiler&amp; instance() {
+        static Profiler inst;
+        return inst;
+    }
+
+    void beginSample(const std::string&amp; name) {
+        Sample sample;
+        sample.name = name;
+        sample.startTime = std::chrono::high_resolution_clock::now();
+        sampleStack_.push(sample);
+    }
+
+    void endSample() {
+        if (sampleStack_.empty()) return;
+
+        Sample sample = sampleStack_.top();
+        sampleStack_.pop();
+
+        auto endTime = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(
+            endTime - sample.startTime
+        );
+
+        auto&amp; data = results_[sample.name];
+        data.name = sample.name;
+        data.totalTime += duration.count() / 1000.0;
+        data.callCount++;
+    }
+
+    void generateReport() {
+        std::cout &lt;&lt; "性能报告:\n";
+        std::cout &lt;&lt; "------------------------\n";
+
+        for (auto&amp; pair : results_) {
+            auto&amp; data = pair.second;
+            data.avgTime = data.totalTime / data.callCount;
+
+            std::cout &lt;&lt; data.name &lt;&lt; ":\n";
+            std::cout &lt;&lt; "  调用次数: " &lt;&lt; data.callCount &lt;&lt; "\n";
+            std::cout &lt;&lt; "  总时间: " &lt;&lt; data.totalTime &lt;&lt; " ms\n";
+            std::cout &lt;&lt; "  平均时间: " &lt;&lt; data.avgTime &lt;&lt; " ms\n";
+        }
+    }
+
+    void reset() {
+        results_.clear();
+    }
+
+private:
+    struct Sample {
+        std::string name;
+        std::chrono::time_point&lt;std::chrono::high_resolution_clock&gt; startTime;
+    };
+
+    std::stack&lt;Sample&gt; sampleStack_;
+    std::map&lt;std::string, ProfileData&gt; results_;
+};
+
+// RAII辅助类
+class ProfileScope {
+public:
+    ProfileScope(const std::string&amp; name) {
+        Profiler::instance().beginSample(name);
+    }
+
+    ~ProfileScope() {
+        Profiler::instance().endSample();
+    }
+};
+
+// 使用宏简化
+#define PROFILE_SCOPE(name) ProfileScope __profile_##__LINE__(name)
+#define PROFILE_FUNCTION() ProfileScope __profile_##__LINE__(__FUNCTION__)
+
+// 使用示例
+void expensiveFunction() {
+    PROFILE_FUNCTION();
+
+    {
+        PROFILE_SCOPE("数据加载");
+        loadData();
+    }
+
+    {
+        PROFILE_SCOPE("数据处理");
+        processData();
+    }
+
+    {
+        PROFILE_SCOPE("结果保存");
+        saveResults();
+    }
+}
+
+// 游戏循环
+void gameLoop() {
+    while (running) {
+        PROFILE_SCOPE("帧");
+
+        {
+            PROFILE_SCOPE("输入");
+            processInput();
+        }
+
+        {
+            PROFILE_SCOPE("更新");
+            update();
+        }
+
+        {
+            PROFILE_SCOPE("渲染");
+            render();
+        }
+    }
+
+    Profiler::instance().generateReport();
+}
+</code></pre>
+<h3 id="53-内存追踪"><a class="header" href="#53-内存追踪">5.3 内存追踪</a></h3>
+<pre><code class="language-cpp">class MemoryTracker {
+public:
+    static MemoryTracker&amp; instance() {
+        static MemoryTracker inst;
+        return inst;
+    }
+
+    void trackAllocation(void* ptr, size_t size, const char* file, int line) {
+        std::lock_guard&lt;std::mutex&gt; lock(mutex_);
+
+        AllocationInfo info;
+        info.size = size;
+        info.file = file;
+        info.line = line;
+
+        allocations_[ptr] = info;
+        totalAllocated_ += size;
+        currentUsage_ += size;
+
+        if (currentUsage_ &gt; peakUsage_) {
+            peakUsage_ = currentUsage_;
+        }
+    }
+
+    void trackDeallocation(void* ptr) {
+        std::lock_guard&lt;std::mutex&gt; lock(mutex_);
+
+        auto it = allocations_.find(ptr);
+        if (it != allocations_.end()) {
+            currentUsage_ -= it-&gt;second.size;
+            allocations_.erase(it);
+        }
+    }
+
+    void report() {
+        std::lock_guard&lt;std::mutex&gt; lock(mutex_);
+
+        std::cout &lt;&lt; "内存使用报告:\n";
+        std::cout &lt;&lt; "总分配: " &lt;&lt; totalAllocated_ &lt;&lt; " bytes\n";
+        std::cout &lt;&lt; "当前使用: " &lt;&lt; currentUsage_ &lt;&lt; " bytes\n";
+        std::cout &lt;&lt; "峰值使用: " &lt;&lt; peakUsage_ &lt;&lt; " bytes\n";
+        std::cout &lt;&lt; "活跃分配: " &lt;&lt; allocations_.size() &lt;&lt; "\n";
+
+        if (!allocations_.empty()) {
+            std::cout &lt;&lt; "\n内存泄漏检测:\n";
+            for (const auto&amp; pair : allocations_) {
+                const auto&amp; info = pair.second;
+                std::cout &lt;&lt; "  " &lt;&lt; info.size &lt;&lt; " bytes at "
+                         &lt;&lt; info.file &lt;&lt; ":" &lt;&lt; info.line &lt;&lt; "\n";
+            }
+        }
+    }
+
+private:
+    struct AllocationInfo {
+        size_t size;
+        const char* file;
+        int line;
+    };
+
+    std::map&lt;void*, AllocationInfo&gt; allocations_;
+    std::mutex mutex_;
+    size_t totalAllocated_ = 0;
+    size_t currentUsage_ = 0;
+    size_t peakUsage_ = 0;
+};
+
+// 重载new/delete
+void* operator new(size_t size, const char* file, int line) {
+    void* ptr = malloc(size);
+    MemoryTracker::instance().trackAllocation(ptr, size, file, line);
+    return ptr;
+}
+
+void operator delete(void* ptr) noexcept {
+    MemoryTracker::instance().trackDeallocation(ptr);
+    free(ptr);
+}
+
+#define new new(__FILE__, __LINE__)
+
+// 使用
+void testMemory() {
+    int* data = new int[100];  // 自动追踪
+
+    // ... 使用数据
+
+    delete[] data;  // 自动追踪
+
+    MemoryTracker::instance().report();
+}
+</code></pre>
+<hr />
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<h3 id="关键要点"><a class="header" href="#关键要点">关键要点</a></h3>
+<ol>
+<li><strong>先测量再优化</strong> - 不要盲目优化</li>
+<li><strong>数据局部性</strong> - 利用CPU缓存</li>
+<li><strong>减少分配</strong> - 使用对象池</li>
+<li><strong>并行化</strong> - 利用多核CPU</li>
+<li><strong>选择合适的数据结构</strong> - 根据访问模式</li>
+</ol>
+<h3 id="性能优化清单"><a class="header" href="#性能优化清单">性能优化清单</a></h3>
+<p><strong>内存优化</strong>：</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用对象池管理频繁创建/销毁的对象</li>
+<li><input disabled="" type="checkbox"/>
+自定义内存分配器用于临时对象</li>
+<li><input disabled="" type="checkbox"/>
+避免小对象频繁分配</li>
+</ul>
+<p><strong>缓存优化</strong>：</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用SoA而非AoS</li>
+<li><input disabled="" type="checkbox"/>
+分离热/冷数据</li>
+<li><input disabled="" type="checkbox"/>
+保证数据连续存储</li>
+</ul>
+<p><strong>CPU优化</strong>：</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+使用性能分析器找到热点</li>
+<li><input disabled="" type="checkbox"/>
+优化循环和分支</li>
+<li><input disabled="" type="checkbox"/>
+考虑SIMD优化</li>
+</ul>
+<p><strong>并发优化</strong>：</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+识别可并行的任务</li>
+<li><input disabled="" type="checkbox"/>
+使用线程池而非临时创建线程</li>
+<li><input disabled="" type="checkbox"/>
+减少锁竞争</li>
+</ul>
+<p>继续学习：</p>
+<ul>
+<li><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F.html">← 返回主文档</a></li>
+<li><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E9%AB%98%E7%BA%A7%E7%AF%87.html">← 高级篇</a></li>
+<li><a href="./%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B.html">← 实战案例</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/设计模式-实战案例.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/设计模式-高级篇.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/设计模式-实战案例.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/设计模式-高级篇.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

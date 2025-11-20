@@ -1,0 +1,1756 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>C++游戏引擎开发 - 性能优化与最佳实践 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="c游戏引擎开发---性能优化与最佳实践"><a class="header" href="#c游戏引擎开发---性能优化与最佳实践">C++游戏引擎开发 - 性能优化与最佳实践</a></h1>
+<blockquote>
+<p>本文档涵盖引擎性能优化技术、调试方法、最佳实践和常见陷阱。</p>
+</blockquote>
+<hr />
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<ul>
+<li><a href="#%E4%B8%80%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90%E4%B8%8E%E4%BC%98%E5%8C%96">一、性能分析与优化</a></li>
+<li><a href="#%E4%BA%8C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86">二、内存管理</a></li>
+<li><a href="#%E4%B8%89%E6%B8%B2%E6%9F%93%E4%BC%98%E5%8C%96">三、渲染优化</a></li>
+<li><a href="#%E5%9B%9B%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BC%98%E5%8C%96">四、多线程优化</a></li>
+<li><a href="#%E4%BA%94%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7">五、调试技巧</a></li>
+<li><a href="#%E5%85%AD%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5">六、最佳实践</a></li>
+</ul>
+<hr />
+<h2 id="一性能分析与优化"><a class="header" href="#一性能分析与优化">一、性能分析与优化</a></h2>
+<h3 id="11-性能分析工具集成"><a class="header" href="#11-性能分析工具集成">1.1 性能分析工具集成</a></h3>
+<h4 id="cpu性能分析---chrome-tracing"><a class="header" href="#cpu性能分析---chrome-tracing">CPU性能分析 - Chrome Tracing</a></h4>
+<pre><code class="language-cpp">// profiler.h
+#include &lt;fstream&gt;
+#include &lt;chrono&gt;
+#include &lt;thread&gt;
+#include &lt;mutex&gt;
+
+class Profiler {
+public:
+    struct ProfileResult {
+        std::string name;
+        long long start;
+        long long end;
+        uint32_t threadID;
+    };
+
+private:
+    std::string sessionName;
+    std::ofstream outputStream;
+    std::mutex mutex;
+    std::vector&lt;ProfileResult&gt; results;
+    bool isActive = false;
+
+public:
+    static Profiler&amp; getInstance() {
+        static Profiler instance;
+        return instance;
+    }
+
+    void beginSession(const std::string&amp; name, const std::string&amp; filepath = "profile.json") {
+        std::lock_guard&lt;std::mutex&gt; lock(mutex);
+
+        if (isActive) {
+            endSession();
+        }
+
+        outputStream.open(filepath);
+        sessionName = name;
+        isActive = true;
+
+        writeHeader();
+    }
+
+    void endSession() {
+        std::lock_guard&lt;std::mutex&gt; lock(mutex);
+
+        if (!isActive) return;
+
+        writeFooter();
+        outputStream.close();
+        isActive = false;
+        results.clear();
+    }
+
+    void writeProfile(const ProfileResult&amp; result) {
+        std::lock_guard&lt;std::mutex&gt; lock(mutex);
+
+        if (!isActive) return;
+
+        if (!results.empty()) {
+            outputStream &lt;&lt; ",";
+        }
+
+        outputStream &lt;&lt; "{";
+        outputStream &lt;&lt; "\"cat\":\"function\",";
+        outputStream &lt;&lt; "\"dur\":" &lt;&lt; (result.end - result.start) &lt;&lt; ',';
+        outputStream &lt;&lt; "\"name\":\"" &lt;&lt; result.name &lt;&lt; "\",";
+        outputStream &lt;&lt; "\"ph\":\"X\",";
+        outputStream &lt;&lt; "\"pid\":0,";
+        outputStream &lt;&lt; "\"tid\":" &lt;&lt; result.threadID &lt;&lt; ",";
+        outputStream &lt;&lt; "\"ts\":" &lt;&lt; result.start;
+        outputStream &lt;&lt; "}";
+
+        outputStream.flush();
+    }
+
+private:
+    void writeHeader() {
+        outputStream &lt;&lt; "{\"otherData\": {},\"traceEvents\":[";
+        outputStream.flush();
+    }
+
+    void writeFooter() {
+        outputStream &lt;&lt; "]}";
+        outputStream.flush();
+    }
+};
+
+// RAII计时器
+class ProfileTimer {
+private:
+    std::string name;
+    std::chrono::time_point&lt;std::chrono::high_resolution_clock&gt; startTimepoint;
+    bool stopped;
+
+public:
+    ProfileTimer(const std::string&amp; name) : name(name), stopped(false) {
+        startTimepoint = std::chrono::high_resolution_clock::now();
+    }
+
+    ~ProfileTimer() {
+        if (!stopped) {
+            stop();
+        }
+    }
+
+    void stop() {
+        auto endTimepoint = std::chrono::high_resolution_clock::now();
+
+        long long start = std::chrono::time_point_cast&lt;std::chrono::microseconds&gt;(startTimepoint)
+            .time_since_epoch().count();
+        long long end = std::chrono::time_point_cast&lt;std::chrono::microseconds&gt;(endTimepoint)
+            .time_since_epoch().count();
+
+        uint32_t threadID = std::hash&lt;std::thread::id&gt;{}(std::this_thread::get_id());
+
+        Profiler::getInstance().writeProfile({ name, start, end, threadID });
+
+        stopped = true;
+    }
+};
+
+// 宏定义方便使用
+#ifdef ENABLE_PROFILING
+    #define PROFILE_SCOPE(name) ProfileTimer timer##__LINE__(name)
+    #define PROFILE_FUNCTION() PROFILE_SCOPE(__FUNCTION__)
+#else
+    #define PROFILE_SCOPE(name)
+    #define PROFILE_FUNCTION()
+#endif
+</code></pre>
+<h4 id="使用示例"><a class="header" href="#使用示例">使用示例</a></h4>
+<pre><code class="language-cpp">void Scene::update(float deltaTime) {
+    PROFILE_FUNCTION();
+
+    {
+        PROFILE_SCOPE("Update Physics");
+        physicsWorld-&gt;stepSimulation(deltaTime);
+    }
+
+    {
+        PROFILE_SCOPE("Update GameObjects");
+        for (auto&amp; obj : gameObjects) {
+            obj-&gt;update(deltaTime);
+        }
+    }
+
+    {
+        PROFILE_SCOPE("Update Animations");
+        animationSystem-&gt;update(deltaTime);
+    }
+}
+
+// 主函数中
+int main() {
+    Profiler::getInstance().beginSession("GameSession", "profile.json");
+
+    // 游戏循环
+    while (running) {
+        PROFILE_SCOPE("Frame");
+        update(deltaTime);
+        render();
+    }
+
+    Profiler::getInstance().endSession();
+}
+</code></pre>
+<h3 id="12-gpu性能分析"><a class="header" href="#12-gpu性能分析">1.2 GPU性能分析</a></h3>
+<h4 id="opengl查询对象"><a class="header" href="#opengl查询对象">OpenGL查询对象</a></h4>
+<pre><code class="language-cpp">// gpu_profiler.h
+class GPUProfiler {
+private:
+    struct Query {
+        std::string name;
+        GLuint queryID;
+        bool isActive;
+    };
+
+    std::unordered_map&lt;std::string, Query&gt; queries;
+    std::unordered_map&lt;std::string, double&gt; results;  // 毫秒
+
+public:
+    void initialize(const std::vector&lt;std::string&gt;&amp; queryNames) {
+        for (const auto&amp; name : queryNames) {
+            Query query;
+            query.name = name;
+            glGenQueries(1, &amp;query.queryID);
+            query.isActive = false;
+            queries[name] = query;
+        }
+    }
+
+    void beginQuery(const std::string&amp; name) {
+        auto&amp; query = queries[name];
+        glBeginQuery(GL_TIME_ELAPSED, query.queryID);
+        query.isActive = true;
+    }
+
+    void endQuery(const std::string&amp; name) {
+        auto&amp; query = queries[name];
+        if (query.isActive) {
+            glEndQuery(GL_TIME_ELAPSED);
+            query.isActive = false;
+        }
+    }
+
+    void collectResults() {
+        for (auto&amp; pair : queries) {
+            GLuint64 elapsed;
+            glGetQueryObjectui64v(pair.second.queryID, GL_QUERY_RESULT, &amp;elapsed);
+            results[pair.first] = elapsed / 1000000.0;  // 转换为毫秒
+        }
+    }
+
+    void printResults() {
+        std::cout &lt;&lt; "=== GPU Profiling Results ===" &lt;&lt; std::endl;
+        for (const auto&amp; pair : results) {
+            std::cout &lt;&lt; pair.first &lt;&lt; ": " &lt;&lt; pair.second &lt;&lt; " ms" &lt;&lt; std::endl;
+        }
+    }
+
+    double getResult(const std::string&amp; name) const {
+        auto it = results.find(name);
+        return (it != results.end()) ? it-&gt;second : 0.0;
+    }
+
+    ~GPUProfiler() {
+        for (auto&amp; pair : queries) {
+            glDeleteQueries(1, &amp;pair.second.queryID);
+        }
+    }
+};
+
+// 使用示例
+void Renderer::render(Scene* scene, Camera* camera) {
+    gpuProfiler.beginQuery("Shadow Pass");
+    renderShadows(scene);
+    gpuProfiler.endQuery("Shadow Pass");
+
+    gpuProfiler.beginQuery("Geometry Pass");
+    renderGeometry(scene, camera);
+    gpuProfiler.endQuery("Geometry Pass");
+
+    gpuProfiler.beginQuery("Lighting Pass");
+    renderLighting(scene, camera);
+    gpuProfiler.endQuery("Lighting Pass");
+
+    gpuProfiler.beginQuery("Post Processing");
+    renderPostProcessing();
+    gpuProfiler.endQuery("Post Processing");
+
+    // 每隔一段时间收集结果
+    static int frameCount = 0;
+    if (++frameCount % 60 == 0) {
+        gpuProfiler.collectResults();
+        gpuProfiler.printResults();
+    }
+}
+</code></pre>
+<h3 id="13-帧率统计"><a class="header" href="#13-帧率统计">1.3 帧率统计</a></h3>
+<pre><code class="language-cpp">// fps_counter.h
+class FPSCounter {
+private:
+    float fps = 0.0f;
+    float frameTime = 0.0f;
+    int frameCount = 0;
+    float accumTime = 0.0f;
+    float updateInterval = 0.5f;  // 每0.5秒更新一次
+
+    // 历史记录
+    std::deque&lt;float&gt; fpsHistory;
+    std::deque&lt;float&gt; frameTimeHistory;
+    size_t maxHistorySize = 120;  // 保存2秒的数据（假设60fps）
+
+public:
+    void update(float deltaTime) {
+        frameCount++;
+        accumTime += deltaTime;
+
+        if (accumTime &gt;= updateInterval) {
+            fps = frameCount / accumTime;
+            frameTime = (accumTime / frameCount) * 1000.0f;  // 毫秒
+
+            // 更新历史
+            fpsHistory.push_back(fps);
+            frameTimeHistory.push_back(frameTime);
+
+            if (fpsHistory.size() &gt; maxHistorySize) {
+                fpsHistory.pop_front();
+                frameTimeHistory.pop_front();
+            }
+
+            frameCount = 0;
+            accumTime = 0.0f;
+        }
+    }
+
+    float getFPS() const { return fps; }
+    float getFrameTime() const { return frameTime; }
+
+    float getAverageFPS() const {
+        if (fpsHistory.empty()) return 0.0f;
+        float sum = 0.0f;
+        for (float f : fpsHistory) sum += f;
+        return sum / fpsHistory.size();
+    }
+
+    float getMinFPS() const {
+        if (fpsHistory.empty()) return 0.0f;
+        return *std::min_element(fpsHistory.begin(), fpsHistory.end());
+    }
+
+    float getMaxFPS() const {
+        if (fpsHistory.empty()) return 0.0f;
+        return *std::max_element(fpsHistory.begin(), fpsHistory.end());
+    }
+
+    void renderDebugOverlay() {
+        Font* font = ResourceManager::getFont("debug");
+
+        char buffer[256];
+        sprintf(buffer, "FPS: %.1f (%.2f ms)", fps, frameTime);
+        font-&gt;renderText(buffer, 10, 10, 1.0f, glm::vec3(0.0f, 1.0f, 0.0f), 1920, 1080);
+
+        sprintf(buffer, "Avg: %.1f | Min: %.1f | Max: %.1f",
+                getAverageFPS(), getMinFPS(), getMaxFPS());
+        font-&gt;renderText(buffer, 10, 40, 1.0f, glm::vec3(1.0f, 1.0f, 0.0f), 1920, 1080);
+    }
+};
+</code></pre>
+<hr />
+<h2 id="二内存管理"><a class="header" href="#二内存管理">二、内存管理</a></h2>
+<h3 id="21-对象池-object-pool"><a class="header" href="#21-对象池-object-pool">2.1 对象池 (Object Pool)</a></h3>
+<pre><code class="language-cpp">// object_pool.h
+template&lt;typename T&gt;
+class ObjectPool {
+private:
+    struct PoolChunk {
+        T object;
+        bool inUse;
+    };
+
+    std::vector&lt;PoolChunk&gt; pool;
+    size_t capacity;
+    size_t nextFreeIndex;
+
+public:
+    ObjectPool(size_t initialCapacity = 100) : capacity(initialCapacity), nextFreeIndex(0) {
+        pool.resize(capacity);
+        for (size_t i = 0; i &lt; capacity; i++) {
+            pool[i].inUse = false;
+        }
+    }
+
+    T* acquire() {
+        // 查找空闲对象
+        for (size_t i = 0; i &lt; capacity; i++) {
+            size_t index = (nextFreeIndex + i) % capacity;
+            if (!pool[index].inUse) {
+                pool[index].inUse = true;
+                nextFreeIndex = (index + 1) % capacity;
+                return &amp;pool[index].object;
+            }
+        }
+
+        // 池已满，扩容
+        expand();
+        return acquire();
+    }
+
+    void release(T* obj) {
+        for (size_t i = 0; i &lt; pool.size(); i++) {
+            if (&amp;pool[i].object == obj) {
+                pool[i].inUse = false;
+                return;
+            }
+        }
+    }
+
+    void clear() {
+        for (auto&amp; chunk : pool) {
+            chunk.inUse = false;
+        }
+        nextFreeIndex = 0;
+    }
+
+    size_t getActiveCount() const {
+        size_t count = 0;
+        for (const auto&amp; chunk : pool) {
+            if (chunk.inUse) count++;
+        }
+        return count;
+    }
+
+    size_t getCapacity() const { return capacity; }
+
+private:
+    void expand() {
+        size_t oldCapacity = capacity;
+        capacity *= 2;
+        pool.resize(capacity);
+
+        for (size_t i = oldCapacity; i &lt; capacity; i++) {
+            pool[i].inUse = false;
+        }
+
+        std::cout &lt;&lt; "ObjectPool expanded to " &lt;&lt; capacity &lt;&lt; std::endl;
+    }
+};
+
+// 使用示例
+class BulletManager {
+private:
+    ObjectPool&lt;Bullet&gt; bulletPool;
+
+public:
+    BulletManager() : bulletPool(100) {}
+
+    void spawnBullet(const glm::vec3&amp; position, const glm::vec3&amp; direction) {
+        Bullet* bullet = bulletPool.acquire();
+        bullet-&gt;initialize(position, direction);
+    }
+
+    void despawnBullet(Bullet* bullet) {
+        bulletPool.release(bullet);
+    }
+
+    void update(float deltaTime) {
+        // 更新所有活跃子弹
+        // ...
+    }
+};
+</code></pre>
+<h3 id="22-内存分配器"><a class="header" href="#22-内存分配器">2.2 内存分配器</a></h3>
+<pre><code class="language-cpp">// stack_allocator.h
+class StackAllocator {
+private:
+    void* memory;
+    size_t size;
+    size_t offset;
+
+public:
+    StackAllocator(size_t sizeInBytes) : size(sizeInBytes), offset(0) {
+        memory = malloc(size);
+    }
+
+    ~StackAllocator() {
+        free(memory);
+    }
+
+    void* allocate(size_t allocationSize, size_t alignment = 4) {
+        // 对齐偏移
+        size_t padding = 0;
+        size_t moduloResult = offset % alignment;
+        if (moduloResult != 0) {
+            padding = alignment - moduloResult;
+        }
+
+        if (offset + padding + allocationSize &gt; size) {
+            // 内存不足
+            return nullptr;
+        }
+
+        offset += padding;
+        void* ptr = (char*)memory + offset;
+        offset += allocationSize;
+
+        return ptr;
+    }
+
+    void clear() {
+        offset = 0;
+    }
+
+    size_t getUsedMemory() const { return offset; }
+    size_t getTotalMemory() const { return size; }
+    float getUsagePercentage() const { return (float)offset / size * 100.0f; }
+};
+
+// 双缓冲帧分配器
+class DoubleBufferedAllocator {
+private:
+    StackAllocator allocators[2];
+    int currentBuffer;
+
+public:
+    DoubleBufferedAllocator(size_t sizePerBuffer)
+        : allocators{ StackAllocator(sizePerBuffer), StackAllocator(sizePerBuffer) },
+          currentBuffer(0) {}
+
+    void* allocate(size_t size, size_t alignment = 4) {
+        return allocators[currentBuffer].allocate(size, alignment);
+    }
+
+    void swapBuffers() {
+        currentBuffer = 1 - currentBuffer;
+        allocators[currentBuffer].clear();
+    }
+
+    void clearCurrentBuffer() {
+        allocators[currentBuffer].clear();
+    }
+};
+
+// 使用示例
+class Engine {
+private:
+    DoubleBufferedAllocator frameAllocator;
+
+public:
+    Engine() : frameAllocator(10 * 1024 * 1024) {}  // 10MB per buffer
+
+    void update(float deltaTime) {
+        // 使用帧分配器分配临时数据
+        int* tempArray = (int*)frameAllocator.allocate(sizeof(int) * 1000);
+        // 使用 tempArray...
+
+        // 帧结束时自动清除
+    }
+
+    void endFrame() {
+        frameAllocator.swapBuffers();
+    }
+};
+</code></pre>
+<h3 id="23-智能指针使用规范"><a class="header" href="#23-智能指针使用规范">2.3 智能指针使用规范</a></h3>
+<pre><code class="language-cpp">// 资源管理最佳实践
+class ResourceManager {
+private:
+    // 使用 shared_ptr 管理共享资源
+    std::unordered_map&lt;std::string, std::shared_ptr&lt;Texture&gt;&gt; textures;
+    std::unordered_map&lt;std::string, std::shared_ptr&lt;Mesh&gt;&gt; meshes;
+
+    // 使用 weak_ptr 避免循环引用
+    std::vector&lt;std::weak_ptr&lt;GameObject&gt;&gt; gameObjects;
+
+public:
+    std::shared_ptr&lt;Texture&gt; loadTexture(const std::string&amp; name, const std::string&amp; path) {
+        auto it = textures.find(name);
+        if (it != textures.end()) {
+            return it-&gt;second;  // 已加载，返回共享指针
+        }
+
+        auto texture = std::make_shared&lt;Texture&gt;(path);
+        textures[name] = texture;
+        return texture;
+    }
+
+    void cleanupUnusedResources() {
+        // 移除未被引用的纹理
+        for (auto it = textures.begin(); it != textures.end();) {
+            if (it-&gt;second.use_count() == 1) {  // 只有这里持有引用
+                std::cout &lt;&lt; "Removing unused texture: " &lt;&lt; it-&gt;first &lt;&lt; std::endl;
+                it = textures.erase(it);
+            } else {
+                ++it;
+            }
+        }
+
+        // 清理已销毁的游戏对象
+        gameObjects.erase(
+            std::remove_if(gameObjects.begin(), gameObjects.end(),
+                [](const std::weak_ptr&lt;GameObject&gt;&amp; wp) { return wp.expired(); }),
+            gameObjects.end()
+        );
+    }
+};
+
+// GameObject 使用智能指针
+class GameObject : public std::enable_shared_from_this&lt;GameObject&gt; {
+private:
+    std::vector&lt;std::unique_ptr&lt;Component&gt;&gt; components;  // 独占组件
+    std::weak_ptr&lt;GameObject&gt; parent;  // 避免循环引用
+    std::vector&lt;std::shared_ptr&lt;GameObject&gt;&gt; children;
+
+public:
+    template&lt;typename T&gt;
+    T* addComponent() {
+        auto component = std::make_unique&lt;T&gt;(this);
+        T* ptr = component.get();
+        components.push_back(std::move(component));
+        return ptr;
+    }
+
+    void setParent(std::shared_ptr&lt;GameObject&gt; newParent) {
+        parent = newParent;
+        if (newParent) {
+            newParent-&gt;children.push_back(shared_from_this());
+        }
+    }
+};
+</code></pre>
+<hr />
+<h2 id="三渲染优化"><a class="header" href="#三渲染优化">三、渲染优化</a></h2>
+<h3 id="31-drawcall合批"><a class="header" href="#31-drawcall合批">3.1 DrawCall合批</a></h3>
+<pre><code class="language-cpp">// batch_renderer.h
+class BatchRenderer {
+private:
+    struct BatchKey {
+        Shader* shader;
+        unsigned int VAO;
+        Material* material;
+
+        bool operator&lt;(const BatchKey&amp; other) const {
+            if (shader != other.shader) return shader &lt; other.shader;
+            if (VAO != other.VAO) return VAO &lt; other.VAO;
+            return material &lt; other.material;
+        }
+    };
+
+    struct Batch {
+        std::vector&lt;glm::mat4&gt; transforms;
+        std::vector&lt;MeshRenderer*&gt; renderers;
+    };
+
+    std::map&lt;BatchKey, Batch&gt; batches;
+    unsigned int instanceVBO;
+
+public:
+    BatchRenderer() {
+        glGenBuffers(1, &amp;instanceVBO);
+    }
+
+    void addRenderer(MeshRenderer* renderer) {
+        BatchKey key;
+        key.shader = renderer-&gt;getMaterial()-&gt;getShader();
+        key.VAO = renderer-&gt;getMesh()-&gt;getVAO();
+        key.material = renderer-&gt;getMaterial();
+
+        batches[key].renderers.push_back(renderer);
+        batches[key].transforms.push_back(renderer-&gt;getGameObject()-&gt;getTransform()-&gt;getWorldMatrix());
+    }
+
+    void render(Camera* camera) {
+        for (auto&amp; pair : batches) {
+            const BatchKey&amp; key = pair.first;
+            Batch&amp; batch = pair.second;
+
+            if (batch.transforms.empty()) continue;
+
+            // 设置shader
+            key.shader-&gt;use();
+            key.shader-&gt;setMat4("view", camera-&gt;getViewMatrix());
+            key.shader-&gt;setMat4("projection", camera-&gt;getProjectionMatrix());
+
+            // 应用材质
+            key.material-&gt;apply();
+
+            // 实例化渲染
+            if (batch.transforms.size() &gt; 1) {
+                renderInstanced(key.VAO, batch.transforms, batch.renderers[0]-&gt;getMesh());
+            } else {
+                // 单个物体，普通渲染
+                key.shader-&gt;setMat4("model", batch.transforms[0]);
+                glBindVertexArray(key.VAO);
+                glDrawElements(GL_TRIANGLES, batch.renderers[0]-&gt;getMesh()-&gt;getIndexCount(),
+                              GL_UNSIGNED_INT, 0);
+            }
+        }
+    }
+
+    void renderInstanced(unsigned int VAO, const std::vector&lt;glm::mat4&gt;&amp; transforms, Mesh* mesh) {
+        // 上传实例矩阵
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+        glBufferData(GL_ARRAY_BUFFER, transforms.size() * sizeof(glm::mat4),
+                     &amp;transforms[0], GL_DYNAMIC_DRAW);
+
+        glBindVertexArray(VAO);
+
+        // 设置实例属性（mat4需要4个属性槽位）
+        for (int i = 0; i &lt; 4; i++) {
+            glEnableVertexAttribArray(3 + i);
+            glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+                                  (void*)(sizeof(glm::vec4) * i));
+            glVertexAttribDivisor(3 + i, 1);  // 每个实例更新一次
+        }
+
+        glDrawElementsInstanced(GL_TRIANGLES, mesh-&gt;getIndexCount(),
+                               GL_UNSIGNED_INT, 0, transforms.size());
+
+        // 清理
+        for (int i = 0; i &lt; 4; i++) {
+            glVertexAttribDivisor(3 + i, 0);
+        }
+    }
+
+    void clear() {
+        batches.clear();
+    }
+
+    int getBatchCount() const { return batches.size(); }
+    int getTotalRenderers() const {
+        int count = 0;
+        for (const auto&amp; pair : batches) {
+            count += pair.second.renderers.size();
+        }
+        return count;
+    }
+};
+</code></pre>
+<h3 id="32-lod系统-level-of-detail"><a class="header" href="#32-lod系统-level-of-detail">3.2 LOD系统 (Level of Detail)</a></h3>
+<pre><code class="language-cpp">// lod_system.h
+class LODGroup : public Component {
+public:
+    struct LODLevel {
+        float distance;
+        Mesh* mesh;
+        float screenRelativeTransitionHeight;
+    };
+
+private:
+    std::vector&lt;LODLevel&gt; lodLevels;
+    int currentLOD;
+    Camera* mainCamera;
+
+public:
+    LODGroup(GameObject* go) : Component(go), currentLOD(0) {}
+
+    void addLOD(float distance, Mesh* mesh) {
+        LODLevel level;
+        level.distance = distance;
+        level.mesh = mesh;
+        lodLevels.push_back(level);
+
+        // 按距离排序
+        std::sort(lodLevels.begin(), lodLevels.end(),
+                  [](const LODLevel&amp; a, const LODLevel&amp; b) {
+                      return a.distance &lt; b.distance;
+                  });
+    }
+
+    void update(float deltaTime) override {
+        if (!mainCamera) {
+            mainCamera = Scene::getInstance().getMainCamera();
+            return;
+        }
+
+        // 计算到相机的距离
+        glm::vec3 cameraPos = mainCamera-&gt;getGameObject()-&gt;getTransform()-&gt;getPosition();
+        glm::vec3 objectPos = gameObject-&gt;getTransform()-&gt;getPosition();
+        float distance = glm::length(cameraPos - objectPos);
+
+        // 选择合适的LOD级别
+        int newLOD = 0;
+        for (size_t i = 0; i &lt; lodLevels.size(); i++) {
+            if (distance &lt; lodLevels[i].distance) {
+                newLOD = i;
+                break;
+            }
+            newLOD = i;
+        }
+
+        // LOD切换
+        if (newLOD != currentLOD) {
+            currentLOD = newLOD;
+            switchLOD(currentLOD);
+        }
+    }
+
+    void switchLOD(int level) {
+        if (level &lt; 0 || level &gt;= lodLevels.size()) return;
+
+        MeshRenderer* renderer = gameObject-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (renderer) {
+            renderer-&gt;setMesh(lodLevels[level].mesh);
+        }
+    }
+
+    int getCurrentLOD() const { return currentLOD; }
+};
+
+// 使用示例
+void setupLODs(GameObject* tree) {
+    LODGroup* lodGroup = tree-&gt;addComponent&lt;LODGroup&gt;();
+
+    lodGroup-&gt;addLOD(10.0f, ResourceManager::getMesh("tree_high"));   // 高细节
+    lodGroup-&gt;addLOD(30.0f, ResourceManager::getMesh("tree_medium")); // 中细节
+    lodGroup-&gt;addLOD(60.0f, ResourceManager::getMesh("tree_low"));    // 低细节
+    lodGroup-&gt;addLOD(100.0f, ResourceManager::getMesh("tree_billboard")); // 公告板
+}
+</code></pre>
+<h3 id="33-遮挡剔除-occlusion-culling"><a class="header" href="#33-遮挡剔除-occlusion-culling">3.3 遮挡剔除 (Occlusion Culling)</a></h3>
+<pre><code class="language-cpp">// occlusion_culling.h
+class OcclusionCullingSystem {
+private:
+    unsigned int queryFBO;
+    unsigned int depthTexture;
+    Shader* occlusionShader;
+
+    struct OcclusionQuery {
+        GameObject* object;
+        GLuint queryID;
+        bool wasVisible;
+    };
+
+    std::vector&lt;OcclusionQuery&gt; queries;
+
+public:
+    void initialize(int width, int height) {
+        // 创建深度预渲染FBO
+        glGenFramebuffers(1, &amp;queryFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, queryFBO);
+
+        glGenTextures(1, &amp;depthTexture);
+        glBindTexture(GL_TEXTURE_2D, depthTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                     width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                              GL_TEXTURE_2D, depthTexture, 0);
+
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        occlusionShader = new Shader("occlusion.vert", "occlusion.frag");
+    }
+
+    void registerObject(GameObject* object) {
+        OcclusionQuery query;
+        query.object = object;
+        glGenQueries(1, &amp;query.queryID);
+        query.wasVisible = true;
+        queries.push_back(query);
+    }
+
+    void performQueries(Camera* camera) {
+        // 第一步：渲染深度
+        glBindFramebuffer(GL_FRAMEBUFFER, queryFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+        renderDepthPass(camera);
+
+        // 第二步：执行遮挡查询
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+        glDepthMask(GL_FALSE);
+
+        for (auto&amp; query : queries) {
+            glBeginQuery(GL_ANY_SAMPLES_PASSED, query.queryID);
+            renderBoundingBox(query.object, camera);
+            glEndQuery(GL_ANY_SAMPLES_PASSED);
+        }
+
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        glDepthMask(GL_TRUE);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void collectResults() {
+        for (auto&amp; query : queries) {
+            GLuint result;
+            glGetQueryObjectuiv(query.queryID, GL_QUERY_RESULT, &amp;result);
+            query.wasVisible = (result &gt; 0);
+
+            // 根据结果启用/禁用渲染
+            MeshRenderer* renderer = query.object-&gt;getComponent&lt;MeshRenderer&gt;();
+            if (renderer) {
+                renderer-&gt;setEnabled(query.wasVisible);
+            }
+        }
+    }
+
+    int getVisibleCount() const {
+        int count = 0;
+        for (const auto&amp; query : queries) {
+            if (query.wasVisible) count++;
+        }
+        return count;
+    }
+
+private:
+    void renderDepthPass(Camera* camera) {
+        occlusionShader-&gt;use();
+        // 渲染所有大型遮挡物（墙壁、建筑等）
+    }
+
+    void renderBoundingBox(GameObject* object, Camera* camera) {
+        AABB bounds = object-&gt;getComponent&lt;MeshRenderer&gt;()-&gt;getMesh()-&gt;getBounds();
+        // 渲染包围盒
+    }
+};
+</code></pre>
+<hr />
+<h2 id="四多线程优化"><a class="header" href="#四多线程优化">四、多线程优化</a></h2>
+<h3 id="41-任务调度系统"><a class="header" href="#41-任务调度系统">4.1 任务调度系统</a></h3>
+<pre><code class="language-cpp">// task_scheduler.h
+#include &lt;functional&gt;
+#include &lt;queue&gt;
+#include &lt;thread&gt;
+#include &lt;condition_variable&gt;
+
+class TaskScheduler {
+public:
+    using Task = std::function&lt;void()&gt;;
+
+private:
+    std::vector&lt;std::thread&gt; workers;
+    std::queue&lt;Task&gt; tasks;
+    std::mutex queueMutex;
+    std::condition_variable condition;
+    bool stop;
+
+public:
+    TaskScheduler(size_t numThreads = std::thread::hardware_concurrency()) : stop(false) {
+        for (size_t i = 0; i &lt; numThreads; i++) {
+            workers.emplace_back([this]() {
+                workerThread();
+            });
+        }
+    }
+
+    ~TaskScheduler() {
+        {
+            std::unique_lock&lt;std::mutex&gt; lock(queueMutex);
+            stop = true;
+        }
+        condition.notify_all();
+
+        for (auto&amp; worker : workers) {
+            if (worker.joinable()) {
+                worker.join();
+            }
+        }
+    }
+
+    void enqueue(Task task) {
+        {
+            std::unique_lock&lt;std::mutex&gt; lock(queueMutex);
+            tasks.push(std::move(task));
+        }
+        condition.notify_one();
+    }
+
+    void enqueueAndWait(const std::vector&lt;Task&gt;&amp; taskList) {
+        std::atomic&lt;int&gt; counter(taskList.size());
+        std::mutex waitMutex;
+        std::condition_variable waitCondition;
+
+        for (const auto&amp; task : taskList) {
+            enqueue([&amp;, task]() {
+                task();
+                if (--counter == 0) {
+                    waitCondition.notify_one();
+                }
+            });
+        }
+
+        // 等待所有任务完成
+        std::unique_lock&lt;std::mutex&gt; lock(waitMutex);
+        waitCondition.wait(lock, [&amp;]() { return counter == 0; });
+    }
+
+private:
+    void workerThread() {
+        while (true) {
+            Task task;
+
+            {
+                std::unique_lock&lt;std::mutex&gt; lock(queueMutex);
+                condition.wait(lock, [this]() {
+                    return stop || !tasks.empty();
+                });
+
+                if (stop &amp;&amp; tasks.empty()) {
+                    return;
+                }
+
+                task = std::move(tasks.front());
+                tasks.pop();
+            }
+
+            task();
+        }
+    }
+};
+
+// 使用示例
+class ParallelPhysicsSystem {
+private:
+    TaskScheduler scheduler;
+
+public:
+    void update(std::vector&lt;Rigidbody*&gt;&amp; rigidbodies, float deltaTime) {
+        // 将刚体分组
+        const size_t batchSize = 100;
+        std::vector&lt;TaskScheduler::Task&gt; tasks;
+
+        for (size_t i = 0; i &lt; rigidbodies.size(); i += batchSize) {
+            size_t end = std::min(i + batchSize, rigidbodies.size());
+
+            tasks.push_back([&amp;rigidbodies, i, end, deltaTime]() {
+                for (size_t j = i; j &lt; end; j++) {
+                    rigidbodies[j]-&gt;updatePhysics(deltaTime);
+                }
+            });
+        }
+
+        // 并行执行并等待完成
+        scheduler.enqueueAndWait(tasks);
+    }
+};
+</code></pre>
+<h3 id="42-数据并行处理"><a class="header" href="#42-数据并行处理">4.2 数据并行处理</a></h3>
+<pre><code class="language-cpp">// parallel_for.h
+template&lt;typename Func&gt;
+void parallelFor(size_t begin, size_t end, Func func, size_t minBatchSize = 100) {
+    size_t numThreads = std::thread::hardware_concurrency();
+    size_t totalSize = end - begin;
+
+    if (totalSize &lt; minBatchSize) {
+        // 数据量太小，直接串行执行
+        for (size_t i = begin; i &lt; end; i++) {
+            func(i);
+        }
+        return;
+    }
+
+    size_t batchSize = (totalSize + numThreads - 1) / numThreads;
+    std::vector&lt;std::thread&gt; threads;
+
+    for (size_t t = 0; t &lt; numThreads; t++) {
+        size_t start = begin + t * batchSize;
+        size_t finish = std::min(start + batchSize, end);
+
+        if (start &gt;= end) break;
+
+        threads.emplace_back([start, finish, &amp;func]() {
+            for (size_t i = start; i &lt; finish; i++) {
+                func(i);
+            }
+        });
+    }
+
+    for (auto&amp; thread : threads) {
+        thread.join();
+    }
+}
+
+// 使用示例
+void ParticleSystem::updateParallel(float deltaTime) {
+    parallelFor(0, particles.size(), [&amp;](size_t i) {
+        if (particles[i].life &gt; 0.0f) {
+            particles[i].life -= deltaTime;
+            particles[i].position += particles[i].velocity * deltaTime;
+            particles[i].velocity.y -= 9.8f * deltaTime;
+        }
+    });
+}
+</code></pre>
+<hr />
+<h2 id="五调试技巧"><a class="header" href="#五调试技巧">五、调试技巧</a></h2>
+<h3 id="51-可视化调试"><a class="header" href="#51-可视化调试">5.1 可视化调试</a></h3>
+<pre><code class="language-cpp">// debug_drawer.h
+class DebugDrawer {
+private:
+    struct Line {
+        glm::vec3 start;
+        glm::vec3 end;
+        glm::vec4 color;
+        float duration;
+    };
+
+    struct Sphere {
+        glm::vec3 center;
+        float radius;
+        glm::vec4 color;
+        float duration;
+    };
+
+    std::vector&lt;Line&gt; lines;
+    std::vector&lt;Sphere&gt; spheres;
+
+    unsigned int lineVAO, lineVBO;
+    Shader* debugShader;
+
+public:
+    void initialize() {
+        glGenVertexArrays(1, &amp;lineVAO);
+        glGenBuffers(1, &amp;lineVBO);
+
+        debugShader = new Shader("debug.vert", "debug.frag");
+    }
+
+    void drawLine(const glm::vec3&amp; start, const glm::vec3&amp; end,
+                  const glm::vec4&amp; color = glm::vec4(1.0f),
+                  float duration = 0.0f) {
+        lines.push_back({ start, end, color, duration });
+    }
+
+    void drawRay(const glm::vec3&amp; origin, const glm::vec3&amp; direction,
+                 float length = 10.0f, const glm::vec4&amp; color = glm::vec4(1.0f, 1.0f, 0.0f, 1.0f)) {
+        drawLine(origin, origin + direction * length, color);
+    }
+
+    void drawBox(const AABB&amp; box, const glm::vec4&amp; color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)) {
+        glm::vec3 min = box.min;
+        glm::vec3 max = box.max;
+
+        // 底面
+        drawLine(glm::vec3(min.x, min.y, min.z), glm::vec3(max.x, min.y, min.z), color);
+        drawLine(glm::vec3(max.x, min.y, min.z), glm::vec3(max.x, min.y, max.z), color);
+        drawLine(glm::vec3(max.x, min.y, max.z), glm::vec3(min.x, min.y, max.z), color);
+        drawLine(glm::vec3(min.x, min.y, max.z), glm::vec3(min.x, min.y, min.z), color);
+
+        // 顶面
+        drawLine(glm::vec3(min.x, max.y, min.z), glm::vec3(max.x, max.y, min.z), color);
+        drawLine(glm::vec3(max.x, max.y, min.z), glm::vec3(max.x, max.y, max.z), color);
+        drawLine(glm::vec3(max.x, max.y, max.z), glm::vec3(min.x, max.y, max.z), color);
+        drawLine(glm::vec3(min.x, max.y, max.z), glm::vec3(min.x, max.y, min.z), color);
+
+        // 竖线
+        drawLine(glm::vec3(min.x, min.y, min.z), glm::vec3(min.x, max.y, min.z), color);
+        drawLine(glm::vec3(max.x, min.y, min.z), glm::vec3(max.x, max.y, min.z), color);
+        drawLine(glm::vec3(max.x, min.y, max.z), glm::vec3(max.x, max.y, max.z), color);
+        drawLine(glm::vec3(min.x, min.y, max.z), glm::vec3(min.x, max.y, max.z), color);
+    }
+
+    void drawSphere(const glm::vec3&amp; center, float radius,
+                    const glm::vec4&amp; color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+                    float duration = 0.0f) {
+        spheres.push_back({ center, radius, color, duration });
+    }
+
+    void render(Camera* camera) {
+        if (lines.empty()) return;
+
+        debugShader-&gt;use();
+        debugShader-&gt;setMat4("view", camera-&gt;getViewMatrix());
+        debugShader-&gt;setMat4("projection", camera-&gt;getProjectionMatrix());
+
+        // 准备线条数据
+        std::vector&lt;float&gt; vertices;
+        for (const auto&amp; line : lines) {
+            // 起点
+            vertices.push_back(line.start.x);
+            vertices.push_back(line.start.y);
+            vertices.push_back(line.start.z);
+            vertices.push_back(line.color.r);
+            vertices.push_back(line.color.g);
+            vertices.push_back(line.color.b);
+            vertices.push_back(line.color.a);
+
+            // 终点
+            vertices.push_back(line.end.x);
+            vertices.push_back(line.end.y);
+            vertices.push_back(line.end.z);
+            vertices.push_back(line.color.r);
+            vertices.push_back(line.color.g);
+            vertices.push_back(line.color.b);
+            vertices.push_back(line.color.a);
+        }
+
+        glBindVertexArray(lineVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
+                     vertices.data(), GL_DYNAMIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float),
+                             (void*)(3 * sizeof(float)));
+
+        glDrawArrays(GL_LINES, 0, vertices.size() / 7);
+        glBindVertexArray(0);
+    }
+
+    void update(float deltaTime) {
+        // 移除过期的调试绘制
+        lines.erase(
+            std::remove_if(lines.begin(), lines.end(),
+                [deltaTime](Line&amp; line) {
+                    if (line.duration &gt; 0.0f) {
+                        line.duration -= deltaTime;
+                        return line.duration &lt;= 0.0f;
+                    }
+                    return true;  // duration == 0 表示只绘制一帧
+                }),
+            lines.end()
+        );
+    }
+
+    void clear() {
+        lines.clear();
+        spheres.clear();
+    }
+};
+
+// 全局访问
+class Debug {
+public:
+    static DebugDrawer&amp; getDrawer() {
+        static DebugDrawer drawer;
+        return drawer;
+    }
+
+    static void drawLine(const glm::vec3&amp; start, const glm::vec3&amp; end,
+                        const glm::vec4&amp; color = glm::vec4(1.0f), float duration = 0.0f) {
+        getDrawer().drawLine(start, end, color, duration);
+    }
+
+    static void drawRay(const glm::vec3&amp; origin, const glm::vec3&amp; direction,
+                       float length = 10.0f) {
+        getDrawer().drawRay(origin, direction, length);
+    }
+
+    static void drawBox(const AABB&amp; box, const glm::vec4&amp; color = glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)) {
+        getDrawer().drawBox(box, color);
+    }
+};
+
+// 使用示例
+void PlayerController::update(float deltaTime) {
+    // 调试射线
+    glm::vec3 rayOrigin = transform-&gt;getPosition();
+    glm::vec3 rayDirection = transform-&gt;forward();
+    Debug::drawRay(rayOrigin, rayDirection, 10.0f);
+
+    // 调试包围盒
+    AABB bounds = GetComponent&lt;MeshRenderer&gt;()-&gt;getMesh()-&gt;getBounds();
+    Debug::drawBox(bounds);
+}
+</code></pre>
+<h3 id="52-日志系统"><a class="header" href="#52-日志系统">5.2 日志系统</a></h3>
+<pre><code class="language-cpp">// logger.h
+#include &lt;sstream&gt;
+#include &lt;fstream&gt;
+#include &lt;ctime&gt;
+
+class Logger {
+public:
+    enum Level {
+        TRACE,
+        DEBUG,
+        INFO,
+        WARNING,
+        ERROR,
+        FATAL
+    };
+
+private:
+    Level currentLevel;
+    std::ofstream logFile;
+    std::mutex mutex;
+
+    static const char* levelToString(Level level) {
+        switch (level) {
+            case TRACE: return "TRACE";
+            case DEBUG: return "DEBUG";
+            case INFO: return "INFO";
+            case WARNING: return "WARNING";
+            case ERROR: return "ERROR";
+            case FATAL: return "FATAL";
+            default: return "UNKNOWN";
+        }
+    }
+
+    std::string getCurrentTime() {
+        auto now = std::chrono::system_clock::now();
+        auto time = std::chrono::system_clock::to_time_t(now);
+        std::stringstream ss;
+        ss &lt;&lt; std::put_time(std::localtime(&amp;time), "%Y-%m-%d %H:%M:%S");
+        return ss.str();
+    }
+
+public:
+    static Logger&amp; getInstance() {
+        static Logger instance;
+        return instance;
+    }
+
+    void initialize(const std::string&amp; filename, Level level = INFO) {
+        currentLevel = level;
+        logFile.open(filename, std::ios::app);
+    }
+
+    void setLevel(Level level) {
+        currentLevel = level;
+    }
+
+    template&lt;typename... Args&gt;
+    void log(Level level, const Args&amp;... args) {
+        if (level &lt; currentLevel) return;
+
+        std::lock_guard&lt;std::mutex&gt; lock(mutex);
+
+        std::stringstream ss;
+        ss &lt;&lt; "[" &lt;&lt; getCurrentTime() &lt;&lt; "] ";
+        ss &lt;&lt; "[" &lt;&lt; levelToString(level) &lt;&lt; "] ";
+
+        ((ss &lt;&lt; args), ...);
+
+        std::string message = ss.str();
+
+        // 输出到控制台
+        if (level &gt;= WARNING) {
+            std::cerr &lt;&lt; message &lt;&lt; std::endl;
+        } else {
+            std::cout &lt;&lt; message &lt;&lt; std::endl;
+        }
+
+        // 输出到文件
+        if (logFile.is_open()) {
+            logFile &lt;&lt; message &lt;&lt; std::endl;
+            logFile.flush();
+        }
+    }
+
+    ~Logger() {
+        if (logFile.is_open()) {
+            logFile.close();
+        }
+    }
+};
+
+// 便捷宏
+#define LOG_TRACE(...) Logger::getInstance().log(Logger::TRACE, __VA_ARGS__)
+#define LOG_DEBUG(...) Logger::getInstance().log(Logger::DEBUG, __VA_ARGS__)
+#define LOG_INFO(...) Logger::getInstance().log(Logger::INFO, __VA_ARGS__)
+#define LOG_WARNING(...) Logger::getInstance().log(Logger::WARNING, __VA_ARGS__)
+#define LOG_ERROR(...) Logger::getInstance().log(Logger::ERROR, __VA_ARGS__)
+#define LOG_FATAL(...) Logger::getInstance().log(Logger::FATAL, __VA_ARGS__)
+
+// 使用示例
+void Texture::load(const std::string&amp; path) {
+    LOG_INFO("Loading texture: ", path);
+
+    if (!fileExists(path)) {
+        LOG_ERROR("Texture file not found: ", path);
+        return;
+    }
+
+    // 加载纹理...
+
+    LOG_INFO("Texture loaded successfully: ", path, " (", width, "x", height, ")");
+}
+</code></pre>
+<hr />
+<h2 id="六最佳实践"><a class="header" href="#六最佳实践">六、最佳实践</a></h2>
+<h3 id="61-代码组织"><a class="header" href="#61-代码组织">6.1 代码组织</a></h3>
+<pre><code class="language-cpp">// 项目结构最佳实践
+GameEngine/
+├── Engine/
+│   ├── Core/           // 核心系统
+│   │   ├── Application.h/cpp
+│   │   ├── Window.h/cpp
+│   │   └── Time.h/cpp
+│   ├── Rendering/      // 渲染系统
+│   │   ├── Renderer.h/cpp
+│   │   ├── Shader.h/cpp
+│   │   ├── Texture.h/cpp
+│   │   └── Material.h/cpp
+│   ├── Scene/          // 场景管理
+│   │   ├── Scene.h/cpp
+│   │   ├── GameObject.h/cpp
+│   │   └── Component.h/cpp
+│   ├── Physics/        // 物理系统
+│   │   ├── PhysicsWorld.h/cpp
+│   │   └── Rigidbody.h/cpp
+│   └── Utils/          // 工具类
+│       ├── Math.h
+│       ├── Logger.h/cpp
+│       └── Profiler.h/cpp
+├── Game/               // 游戏逻辑
+│   ├── Components/     // 游戏组件
+│   ├── Scripts/        // Lua脚本
+│   └── Data/           // 配置数据
+└── Assets/             // 资源文件
+    ├── Models/
+    ├── Textures/
+    ├── Shaders/
+    └── Audio/
+</code></pre>
+<h3 id="62-命名规范"><a class="header" href="#62-命名规范">6.2 命名规范</a></h3>
+<pre><code class="language-cpp">// Google C++ 风格指南
+
+// 类名：大驼峰
+class GameEngine {};
+class MeshRenderer {};
+
+// 函数名：小驼峰
+void updateTransform();
+float calculateDistance();
+
+// 变量名：小驼峰
+float deltaTime;
+int vertexCount;
+
+// 成员变量：小驼峰 + 后缀下划线（可选）
+class Player {
+private:
+    float health_;
+    int ammo_;
+
+public:
+    // Getter/Setter
+    float getHealth() const { return health_; }
+    void setHealth(float h) { health_ = h; }
+};
+
+// 常量：k开头 + 大驼峰
+const int kMaxPlayers = 4;
+const float kGravity = 9.8f;
+
+// 宏：全大写 + 下划线
+#define MAX_TEXTURE_UNITS 32
+#define ENABLE_PROFILING
+
+// 命名空间：小写
+namespace engine {
+namespace rendering {
+    class Shader {};
+}
+}
+</code></pre>
+<h3 id="63-错误处理"><a class="header" href="#63-错误处理">6.3 错误处理</a></h3>
+<pre><code class="language-cpp">// 使用异常处理关键错误
+class ResourceLoadException : public std::runtime_exception {
+public:
+    ResourceLoadException(const std::string&amp; message)
+        : std::runtime_exception(message.c_str()) {}
+};
+
+Texture* Texture::load(const std::string&amp; path) {
+    if (!std::filesystem::exists(path)) {
+        throw ResourceLoadException("Texture file not found: " + path);
+    }
+
+    // 加载纹理...
+    if (loadFailed) {
+        throw ResourceLoadException("Failed to decode texture: " + path);
+    }
+
+    return texture;
+}
+
+// 使用std::optional处理可能失败的操作
+std::optional&lt;GameObject*&gt; Scene::findGameObject(const std::string&amp; name) {
+    for (auto&amp; obj : gameObjects) {
+        if (obj-&gt;getName() == name) {
+            return obj;
+        }
+    }
+    return std::nullopt;
+}
+
+// 使用
+if (auto player = scene-&gt;findGameObject("Player")) {
+    player.value()-&gt;takeDamage(10);
+} else {
+    LOG_WARNING("Player not found in scene");
+}
+
+// 使用Result类型
+template&lt;typename T, typename E&gt;
+class Result {
+private:
+    bool success;
+    T value;
+    E error;
+
+public:
+    static Result Ok(T val) {
+        Result r;
+        r.success = true;
+        r.value = val;
+        return r;
+    }
+
+    static Result Err(E err) {
+        Result r;
+        r.success = false;
+        r.error = err;
+        return r;
+    }
+
+    bool isOk() const { return success; }
+    bool isErr() const { return !success; }
+
+    T&amp; getValue() { return value; }
+    E&amp; getError() { return error; }
+};
+
+// 使用
+Result&lt;Texture*, std::string&gt; loadTexture(const std::string&amp; path) {
+    if (!fileExists(path)) {
+        return Result::Err("File not found");
+    }
+
+    Texture* tex = /* load */;
+    if (!tex) {
+        return Result::Err("Decode failed");
+    }
+
+    return Result::Ok(tex);
+}
+</code></pre>
+<hr />
+<p><strong>总结</strong>：本文档涵盖了游戏引擎开发的性能优化、内存管理、渲染优化、多线程、调试技巧和最佳实践。结合前面的文档，可以构建一个高性能、可维护的商业级游戏引擎！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/游戏引擎-实战项目.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/游戏引擎-高级主题.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/游戏引擎-实战项目.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/游戏引擎-高级主题.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

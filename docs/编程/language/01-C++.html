@@ -372,6 +372,111 @@ void lambda_with_stl() {
          [](int a, int b) { return a &gt; b; });  // 降序
 }
 </code></pre>
+<h3 id="13-const关键字深入"><a class="header" href="#13-const关键字深入">1.3 const关键字深入</a></h3>
+<pre><code class="language-cpp">// 1. const变量
+const int MAX_SIZE = 100;  // 编译期常量
+// MAX_SIZE = 200;  // ❌ 错误：不能修改
+
+// 2. const指针
+void const_pointer() {
+    int value = 10;
+
+    // 指向常量的指针
+    const int* ptr1 = &amp;value;
+    // *ptr1 = 20;  // ❌ 错误：不能通过ptr1修改
+    ptr1 = nullptr;  // ✅ 可以修改指针本身
+
+    // 常量指针
+    int* const ptr2 = &amp;value;
+    *ptr2 = 20;      // ✅ 可以修改值
+    // ptr2 = nullptr;  // ❌ 错误：不能修改指针
+
+    // 指向常量的常量指针
+    const int* const ptr3 = &amp;value;
+    // *ptr3 = 30;      // ❌ 错误
+    // ptr3 = nullptr;  // ❌ 错误
+}
+
+// 3. const成员函数
+class Circle {
+private:
+    double radius;
+
+public:
+    Circle(double r) : radius(r) {}
+
+    // const成员函数：承诺不修改对象
+    double getRadius() const {
+        return radius;
+        // radius = 10;  // ❌ 错误：不能修改成员变量
+    }
+
+    void setRadius(double r) {
+        radius = r;  // ✅ 非const函数可以修改
+    }
+};
+
+// 4. mutable关键字：允许const函数修改
+class Counter {
+private:
+    mutable int access_count;  // mutable成员
+    int value;
+
+public:
+    int getValue() const {
+        access_count++;  // ✅ 可以修改mutable成员
+        return value;
+    }
+};
+</code></pre>
+<h3 id="14-static关键字深入"><a class="header" href="#14-static关键字深入">1.4 static关键字深入</a></h3>
+<pre><code class="language-cpp">// 1. 静态局部变量
+void count_calls() {
+    static int count = 0;  // 只初始化一次
+    count++;
+    cout &lt;&lt; "Called " &lt;&lt; count &lt;&lt; " times" &lt;&lt; endl;
+}
+
+// 2. 静态成员变量
+class BankAccount {
+private:
+    static double interest_rate;  // 声明
+    double balance;
+
+public:
+    static void setInterestRate(double rate) {
+        interest_rate = rate;
+    }
+
+    static double getInterestRate() {
+        return interest_rate;
+    }
+};
+
+// 定义并初始化静态成员
+double BankAccount::interest_rate = 0.03;
+
+// 使用示例
+void static_member_demo() {
+    BankAccount::setInterestRate(0.05);
+    cout &lt;&lt; BankAccount::getInterestRate() &lt;&lt; endl;
+}
+
+// 3. 静态成员函数
+class MathUtils {
+public:
+    static int add(int a, int b) {
+        return a + b;
+    }
+
+    static double pi() {
+        return 3.14159265;
+    }
+};
+
+// 调用：不需要对象
+int result = MathUtils::add(3, 4);
+</code></pre>
 <hr />
 <h2 id="第二模块面向对象编程"><a class="header" href="#第二模块面向对象编程">第二模块：面向对象编程</a></h2>
 <h3 id="21-类的基础"><a class="header" href="#21-类的基础">2.1 类的基础</a></h3>
@@ -466,6 +571,9 @@ public:
         }
         return *this;
     }
+
+    // 委托构造函数（C++11）
+    Student(const string&amp; n) : Student(n, 0) {}
 };
 
 // 使用示例
@@ -516,12 +624,12 @@ public:
 };
 
 // 派生类：矩形
-class Rectangle : public Shape {
+class RectangleShape : public Shape {
 private:
     double width, height;
 
 public:
-    Rectangle(const string&amp; c, double w, double h)
+    RectangleShape(const string&amp; c, double w, double h)
         : Shape(c), width(w), height(h) {}
 
     double area() const override {
@@ -537,7 +645,7 @@ public:
 void polymorphism_demo() {
     vector&lt;unique_ptr&lt;Shape&gt;&gt; shapes;
     shapes.push_back(make_unique&lt;Circle&gt;("red", 5.0));
-    shapes.push_back(make_unique&lt;Rectangle&gt;("blue", 4.0, 6.0));
+    shapes.push_back(make_unique&lt;RectangleShape&gt;("blue", 4.0, 6.0));
 
     for (const auto&amp; shape : shapes) {
         shape-&gt;draw();
@@ -607,6 +715,58 @@ void complex_demo() {
     cout &lt;&lt; "After +=: " &lt;&lt; c1 &lt;&lt; endl;
 }
 </code></pre>
+<h3 id="23-多重继承与虚继承"><a class="header" href="#23-多重继承与虚继承">2.3 多重继承与虚继承</a></h3>
+<pre><code class="language-cpp">// 基类
+class Flyable {
+public:
+    virtual void fly() {
+        cout &lt;&lt; "Flying..." &lt;&lt; endl;
+    }
+};
+
+class Swimmable {
+public:
+    virtual void swim() {
+        cout &lt;&lt; "Swimming..." &lt;&lt; endl;
+    }
+};
+
+// 多重继承
+class Duck : public Flyable, public Swimmable {
+public:
+    void fly() override {
+        cout &lt;&lt; "Duck is flying" &lt;&lt; endl;
+    }
+
+    void swim() override {
+        cout &lt;&lt; "Duck is swimming" &lt;&lt; endl;
+    }
+};
+
+// 菱形继承问题
+class Animal {
+protected:
+    string name;
+public:
+    Animal(const string&amp; n) : name(n) {}
+};
+
+// 虚继承解决菱形继承
+class Mammal : virtual public Animal {
+public:
+    Mammal(const string&amp; n) : Animal(n) {}
+};
+
+class Bird : virtual public Animal {
+public:
+    Bird(const string&amp; n) : Animal(n) {}
+};
+
+class Bat : public Mammal, public Bird {
+public:
+    Bat(const string&amp; n) : Animal(n), Mammal(n), Bird(n) {}
+};
+</code></pre>
 <hr />
 <h2 id="第三模块stl标准模板库"><a class="header" href="#第三模块stl标准模板库">第三模块：STL（标准模板库）</a></h2>
 <h3 id="31-容器详解"><a class="header" href="#31-容器详解">3.1 容器详解</a></h3>
@@ -663,6 +823,31 @@ void deque_demo() {
 
     // 随机访问 O(1)
     cout &lt;&lt; dq[1] &lt;&lt; endl;
+}
+
+// C++11: array固定大小数组
+void array_demo() {
+    array&lt;int, 5&gt; arr = {1, 2, 3, 4, 5};
+
+    cout &lt;&lt; "Size: " &lt;&lt; arr.size() &lt;&lt; endl;
+    cout &lt;&lt; "First: " &lt;&lt; arr.front() &lt;&lt; endl;
+    cout &lt;&lt; "Last: " &lt;&lt; arr.back() &lt;&lt; endl;
+
+    // 填充
+    arr.fill(0);
+}
+
+// C++11: forward_list单向链表
+void forward_list_demo() {
+    forward_list&lt;int&gt; flist = {1, 2, 3, 4, 5};
+
+    flist.push_front(0);
+    flist.pop_front();
+
+    // 只能向前遍历
+    for (int x : flist) {
+        cout &lt;&lt; x &lt;&lt; " ";
+    }
 }
 </code></pre>
 <h4 id="312-关联容器"><a class="header" href="#312-关联容器">3.1.2 关联容器</a></h4>
@@ -724,6 +909,18 @@ void set_demo() {
     // 范围查找
     auto lower = s.lower_bound(4);  // &gt;= 4的第一个元素
     auto upper = s.upper_bound(6);  // &gt; 6的第一个元素
+}
+
+void multimap_multiset_demo() {
+    // multimap: 允许重复键
+    multimap&lt;string, int&gt; scores;
+    scores.insert({"Alice", 85});
+    scores.insert({"Alice", 90});
+    scores.insert({"Bob", 88});
+
+    // multiset: 允许重复元素
+    multiset&lt;int&gt; mset = {1, 2, 2, 3, 3, 3};
+    cout &lt;&lt; "Count of 3: " &lt;&lt; mset.count(3) &lt;&lt; endl;  // 3
 }
 </code></pre>
 <h4 id="313-容器适配器"><a class="header" href="#313-容器适配器">3.1.3 容器适配器</a></h4>
@@ -832,6 +1029,80 @@ void binary_search_demo() {
     // 找到第一个大于5的位置
     auto it2 = upper_bound(vec.begin(), vec.end(), 5);
 }
+
+// 分区算法
+void partition_demo() {
+    vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+    // 将奇数移到前面
+    auto it = partition(vec.begin(), vec.end(),
+                       [](int x) { return x % 2 == 1; });
+
+    // stable_partition保持相对顺序
+    stable_partition(vec.begin(), vec.end(),
+                    [](int x) { return x % 2 == 1; });
+}
+
+// 排列算法
+void permutation_demo() {
+    vector&lt;int&gt; vec = {1, 2, 3};
+
+    // 生成下一个排列
+    do {
+        for (int x : vec) cout &lt;&lt; x &lt;&lt; " ";
+        cout &lt;&lt; endl;
+    } while (next_permutation(vec.begin(), vec.end()));
+}
+</code></pre>
+<h3 id="33-迭代器深入"><a class="header" href="#33-迭代器深入">3.3 迭代器深入</a></h3>
+<pre><code class="language-cpp">// 迭代器类别
+void iterator_categories() {
+    // 1. 输入迭代器（Input Iterator）
+    // 只读，单向移动
+    istream_iterator&lt;int&gt; in_it(cin);
+
+    // 2. 输出迭代器（Output Iterator）
+    // 只写，单向移动
+    ostream_iterator&lt;int&gt; out_it(cout, " ");
+
+    // 3. 前向迭代器（Forward Iterator）
+    // 可读写，单向移动，可多次遍历
+    forward_list&lt;int&gt; flist = {1, 2, 3};
+    auto fit = flist.begin();
+
+    // 4. 双向迭代器（Bidirectional Iterator）
+    // 可读写，双向移动
+    list&lt;int&gt; lst = {1, 2, 3};
+    auto lit = lst.begin();
+    ++lit;  // 前进
+    --lit;  // 后退
+
+    // 5. 随机访问迭代器（Random Access Iterator）
+    // 可读写，支持跳跃访问
+    vector&lt;int&gt; vec = {1, 2, 3, 4, 5};
+    auto vit = vec.begin();
+    vit += 3;  // 跳跃访问
+    cout &lt;&lt; vit[2] &lt;&lt; endl;  // 下标访问
+}
+
+// 迭代器适配器
+void iterator_adapters() {
+    vector&lt;int&gt; vec = {1, 2, 3, 4, 5};
+
+    // 反向迭代器
+    for (auto it = vec.rbegin(); it != vec.rend(); ++it) {
+        cout &lt;&lt; *it &lt;&lt; " ";  // 5 4 3 2 1
+    }
+
+    // 插入迭代器
+    vector&lt;int&gt; dest;
+    copy(vec.begin(), vec.end(), back_inserter(dest));
+
+    // 移动迭代器（C++11）
+    vector&lt;string&gt; src = {"a", "b", "c"};
+    vector&lt;string&gt; dst(make_move_iterator(src.begin()),
+                      make_move_iterator(src.end()));
+}
 </code></pre>
 <hr />
 <h2 id="第四模块模板编程"><a class="header" href="#第四模块模板编程">第四模块：模板编程</a></h2>
@@ -872,6 +1143,19 @@ void template_demo() {
     cout &lt;&lt; max_value(3.14, 2.71) &lt;&lt; endl;       // double版本
     cout &lt;&lt; max_value("hello", "world") &lt;&lt; endl; // 特化版本
 }
+
+// 非类型模板参数
+template&lt;typename T, size_t N&gt;
+void print_array(const T (&amp;arr)[N]) {
+    for (size_t i = 0; i &lt; N; ++i) {
+        cout &lt;&lt; arr[i] &lt;&lt; " ";
+    }
+    cout &lt;&lt; endl;
+}
+
+// 使用
+int arr[] = {1, 2, 3, 4, 5};
+print_array(arr);  // 自动推导N=5
 </code></pre>
 <h3 id="42-类模板"><a class="header" href="#42-类模板">4.2 类模板</a></h3>
 <pre><code class="language-cpp">// 基础类模板
@@ -934,6 +1218,22 @@ public:
         cout &lt;&lt; (data ? "true" : "false") &lt;&lt; endl;
     }
 };
+
+// 部分特化
+template&lt;typename T, typename U&gt;
+class Pair {
+    T first;
+    U second;
+};
+
+// 部分特化：两个类型相同
+template&lt;typename T&gt;
+class Pair&lt;T, T&gt; {
+    T first;
+    T second;
+public:
+    bool isSame() const { return first == second; }
+};
 </code></pre>
 <h3 id="43-变参模板c11"><a class="header" href="#43-变参模板c11">4.3 变参模板（C++11）</a></h3>
 <pre><code class="language-cpp">// 递归展开变参模板
@@ -960,10 +1260,82 @@ auto sum(Args... args) {
     return (args + ...);  // 一元右折叠
 }
 
+template&lt;typename... Args&gt;
+void print_all(const Args&amp;... args) {
+    (cout &lt;&lt; ... &lt;&lt; args) &lt;&lt; endl;  // 一元左折叠
+}
+
 // 使用示例
 void fold_expression_demo() {
     cout &lt;&lt; sum(1, 2, 3, 4, 5) &lt;&lt; endl;  // 15
+    print_all(1, " ", 2, " ", 3);
 }
+
+// 变参模板类
+template&lt;typename... Types&gt;
+class Tuple;
+
+// 递归继承实现tuple
+template&lt;&gt;
+class Tuple&lt;&gt; {};
+
+template&lt;typename Head, typename... Tail&gt;
+class Tuple&lt;Head, Tail...&gt; : private Tuple&lt;Tail...&gt; {
+    Head head;
+public:
+    Tuple(Head h, Tail... t)
+        : Tuple&lt;Tail...&gt;(t...), head(h) {}
+};
+</code></pre>
+<h3 id="44-模板元编程"><a class="header" href="#44-模板元编程">4.4 模板元编程</a></h3>
+<pre><code class="language-cpp">// 编译期计算阶乘
+template&lt;int N&gt;
+struct Factorial {
+    static const int value = N * Factorial&lt;N - 1&gt;::value;
+};
+
+template&lt;&gt;
+struct Factorial&lt;0&gt; {
+    static const int value = 1;
+};
+
+// 使用
+constexpr int result = Factorial&lt;5&gt;::value;  // 120
+
+// SFINAE (Substitution Failure Is Not An Error)
+template&lt;typename T&gt;
+typename enable_if&lt;is_integral&lt;T&gt;::value, T&gt;::type
+increment(T val) {
+    return val + 1;
+}
+
+template&lt;typename T&gt;
+typename enable_if&lt;is_floating_point&lt;T&gt;::value, T&gt;::type
+increment(T val) {
+    return val + 0.1;
+}
+
+// C++17: if constexpr
+template&lt;typename T&gt;
+auto increment_cpp17(T val) {
+    if constexpr (is_integral_v&lt;T&gt;) {
+        return val + 1;
+    } else if constexpr (is_floating_point_v&lt;T&gt;) {
+        return val + 0.1;
+    }
+}
+
+// 类型萃取
+template&lt;typename T&gt;
+struct TypeTraits {
+    static constexpr bool is_pointer = false;
+};
+
+template&lt;typename T&gt;
+struct TypeTraits&lt;T*&gt; {
+    static constexpr bool is_pointer = true;
+    using value_type = T;
+};
 </code></pre>
 <hr />
 <h2 id="第五模块内存管理"><a class="header" href="#第五模块内存管理">第五模块：内存管理</a></h2>
@@ -1075,6 +1447,25 @@ void raii_demo() {
     }
     // 文件自动关闭
 }
+
+// 锁的RAII封装
+class MutexGuard {
+private:
+    mutex&amp; mtx;
+
+public:
+    MutexGuard(mutex&amp; m) : mtx(m) {
+        mtx.lock();
+    }
+
+    ~MutexGuard() {
+        mtx.unlock();
+    }
+
+    // 禁止拷贝
+    MutexGuard(const MutexGuard&amp;) = delete;
+    MutexGuard&amp; operator=(const MutexGuard&amp;) = delete;
+};
 </code></pre>
 <h3 id="52-内存管理最佳实践"><a class="header" href="#52-内存管理最佳实践">5.2 内存管理最佳实践</a></h3>
 <pre><code class="language-cpp">// ❌ 常见错误
@@ -1092,6 +1483,10 @@ void bad_practices() {
     int* q = new int(10);
     delete q;
     delete q;  // 重复释放
+
+    // 4. 数组delete错误
+    int* arr = new int[10];
+    delete arr;  // ❌ 应该用delete[]
 }
 
 // ✅ 最佳实践
@@ -1109,7 +1504,77 @@ void good_practices() {
         lock_guard&lt;mutex&gt; lock(mtx);  // RAII锁
         // 临界区代码
     }  // 自动解锁
+
+    // 4. new后立即放入智能指针
+    unique_ptr&lt;int&gt; smart_ptr(new int(10));
 }
+
+// 自定义删除器
+void custom_deleter_demo() {
+    // FILE*的智能指针
+    unique_ptr&lt;FILE, decltype(&amp;fclose)&gt; file(
+        fopen("test.txt", "w"),
+        &amp;fclose
+    );
+
+    // 自定义删除器Lambda
+    auto deleter = [](int* p) {
+        cout &lt;&lt; "Custom delete" &lt;&lt; endl;
+        delete p;
+    };
+    unique_ptr&lt;int, decltype(deleter)&gt; ptr(new int(42), deleter);
+}
+</code></pre>
+<h3 id="53-内存池与对象池"><a class="header" href="#53-内存池与对象池">5.3 内存池与对象池</a></h3>
+<pre><code class="language-cpp">// 简单内存池
+template&lt;typename T, size_t BlockSize = 4096&gt;
+class MemoryPool {
+private:
+    union Node {
+        T data;
+        Node* next;
+    };
+
+    Node* free_list;
+    vector&lt;char*&gt; blocks;
+
+public:
+    MemoryPool() : free_list(nullptr) {}
+
+    ~MemoryPool() {
+        for (auto block : blocks) {
+            delete[] block;
+        }
+    }
+
+    T* allocate() {
+        if (!free_list) {
+            // 分配新块
+            char* new_block = new char[BlockSize];
+            blocks.push_back(new_block);
+
+            // 将块分割成节点
+            size_t num_nodes = BlockSize / sizeof(Node);
+            for (size_t i = 0; i &lt; num_nodes - 1; ++i) {
+                Node* node = reinterpret_cast&lt;Node*&gt;(
+                    new_block + i * sizeof(Node));
+                node-&gt;next = reinterpret_cast&lt;Node*&gt;(
+                    new_block + (i + 1) * sizeof(Node));
+            }
+            free_list = reinterpret_cast&lt;Node*&gt;(new_block);
+        }
+
+        Node* node = free_list;
+        free_list = node-&gt;next;
+        return &amp;node-&gt;data;
+    }
+
+    void deallocate(T* ptr) {
+        Node* node = reinterpret_cast&lt;Node*&gt;(ptr);
+        node-&gt;next = free_list;
+        free_list = node;
+    }
+};
 </code></pre>
 <hr />
 <h2 id="第六模块并发编程"><a class="header" href="#第六模块并发编程">第六模块：并发编程</a></h2>
@@ -1134,6 +1599,13 @@ void basic_thread_demo() {
     // 使用Lambda
     thread t3([](){ cout &lt;&lt; "Lambda thread" &lt;&lt; endl; });
     t3.join();
+
+    // 获取线程ID
+    cout &lt;&lt; "Main thread ID: " &lt;&lt; this_thread::get_id() &lt;&lt; endl;
+
+    // 硬件并发数
+    cout &lt;&lt; "Hardware concurrency: "
+         &lt;&lt; thread::hardware_concurrency() &lt;&lt; endl;
 }
 
 // 互斥锁
@@ -1157,10 +1629,41 @@ void mutex_demo() {
     cout &lt;&lt; "Counter: " &lt;&lt; shared_counter &lt;&lt; endl;  // 2000
 }
 
+// unique_lock：更灵活的锁
+void unique_lock_demo() {
+    mutex mtx;
+
+    unique_lock&lt;mutex&gt; lock(mtx);  // 自动加锁
+    // 临界区
+    lock.unlock();  // 手动解锁
+
+    // 做其他事情
+
+    lock.lock();  // 再次加锁
+    // 临界区
+    // 自动解锁
+}
+
+// 递归锁
+void recursive_mutex_demo() {
+    recursive_mutex rmtx;
+
+    function&lt;void(int)&gt; recursive_func = [&amp;](int n) {
+        lock_guard&lt;recursive_mutex&gt; lock(rmtx);
+        if (n &gt; 0) {
+            cout &lt;&lt; n &lt;&lt; " ";
+            recursive_func(n - 1);  // 可以递归加锁
+        }
+    };
+
+    recursive_func(5);
+}
+
 // 条件变量：生产者-消费者
 queue&lt;int&gt; data_queue;
 mutex queue_mutex;
 condition_variable cv;
+bool done = false;
 
 void producer() {
     for (int i = 0; i &lt; 10; ++i) {
@@ -1171,29 +1674,42 @@ void producer() {
         cout &lt;&lt; "Produced: " &lt;&lt; i &lt;&lt; endl;
         cv.notify_one();  // 通知消费者
     }
+
+    {
+        lock_guard&lt;mutex&gt; lock(queue_mutex);
+        done = true;
+    }
+    cv.notify_all();
 }
 
-void consumer() {
+void consumer(int id) {
     while (true) {
         unique_lock&lt;mutex&gt; lock(queue_mutex);
-        cv.wait(lock, []{ return !data_queue.empty(); });
+        cv.wait(lock, []{ return !data_queue.empty() || done; });
 
-        int value = data_queue.front();
-        data_queue.pop();
-        lock.unlock();
+        while (!data_queue.empty()) {
+            int value = data_queue.front();
+            data_queue.pop();
+            lock.unlock();
 
-        cout &lt;&lt; "Consumed: " &lt;&lt; value &lt;&lt; endl;
+            cout &lt;&lt; "Consumer " &lt;&lt; id &lt;&lt; " consumed: "
+                 &lt;&lt; value &lt;&lt; endl;
 
-        if (value == 9) break;
+            lock.lock();
+        }
+
+        if (done &amp;&amp; data_queue.empty()) break;
     }
 }
 
 void producer_consumer_demo() {
     thread prod(producer);
-    thread cons(consumer);
+    thread cons1(consumer, 1);
+    thread cons2(consumer, 2);
 
     prod.join();
-    cons.join();
+    cons1.join();
+    cons2.join();
 }
 </code></pre>
 <h3 id="62-异步编程"><a class="header" href="#62-异步编程">6.2 异步编程</a></h3>
@@ -1213,6 +1729,11 @@ void async_demo() {
 
     // 获取结果（阻塞）
     cout &lt;&lt; "Result: " &lt;&lt; result.get() &lt;&lt; endl;
+
+    // 延迟执行
+    future&lt;int&gt; lazy_result = async(launch::deferred, async_task, 5);
+    // 直到调用get()才执行
+    cout &lt;&lt; "Lazy result: " &lt;&lt; lazy_result.get() &lt;&lt; endl;
 }
 
 // promise: 手动设置异步结果
@@ -1229,6 +1750,41 @@ void promise_demo() {
     cout &lt;&lt; "Result: " &lt;&lt; fut.get() &lt;&lt; endl;
 
     t.join();
+}
+
+// packaged_task: 包装可调用对象
+void packaged_task_demo() {
+    packaged_task&lt;int(int)&gt; task([](int x) {
+        return x * x;
+    });
+
+    future&lt;int&gt; result = task.get_future();
+
+    thread t(std::move(task), 10);
+
+    cout &lt;&lt; "Result: " &lt;&lt; result.get() &lt;&lt; endl;
+
+    t.join();
+}
+
+// shared_future: 多个线程共享结果
+void shared_future_demo() {
+    promise&lt;int&gt; prom;
+    shared_future&lt;int&gt; sfut = prom.get_future().share();
+
+    auto waiter = [](shared_future&lt;int&gt; sf, int id) {
+        cout &lt;&lt; "Thread " &lt;&lt; id &lt;&lt; " waiting..." &lt;&lt; endl;
+        cout &lt;&lt; "Thread " &lt;&lt; id &lt;&lt; " got: " &lt;&lt; sf.get() &lt;&lt; endl;
+    };
+
+    thread t1(waiter, sfut, 1);
+    thread t2(waiter, sfut, 2);
+
+    this_thread::sleep_for(chrono::seconds(1));
+    prom.set_value(42);
+
+    t1.join();
+    t2.join();
 }
 </code></pre>
 <h3 id="63-原子操作"><a class="header" href="#63-原子操作">6.3 原子操作</a></h3>
@@ -1251,6 +1807,828 @@ void atomic_demo() {
 
     cout &lt;&lt; "Atomic counter: " &lt;&lt; atomic_counter &lt;&lt; endl;  // 2000
 }
+
+// 原子操作详解
+void atomic_operations() {
+    atomic&lt;int&gt; x(0);
+
+    // 基本操作
+    x.store(10);              // 存储
+    int val = x.load();       // 加载
+    int old = x.exchange(20); // 交换
+
+    // 比较并交换
+    int expected = 20;
+    bool success = x.compare_exchange_strong(expected, 30);
+
+    // 算术操作
+    x.fetch_add(5);   // x += 5
+    x.fetch_sub(3);   // x -= 3
+
+    // 位操作
+    x.fetch_and(0xFF);
+    x.fetch_or(0x10);
+    x.fetch_xor(0x01);
+}
+
+// 内存序
+void memory_order_demo() {
+    atomic&lt;int&gt; x(0);
+    atomic&lt;int&gt; y(0);
+
+    // Relaxed: 最松散的内存序
+    x.store(1, memory_order_relaxed);
+    int r1 = y.load(memory_order_relaxed);
+
+    // Acquire-Release: 同步内存序
+    y.store(2, memory_order_release);
+    int r2 = x.load(memory_order_acquire);
+
+    // Sequential Consistent: 最严格的内存序（默认）
+    x.store(3, memory_order_seq_cst);
+    int r3 = y.load(memory_order_seq_cst);
+}
+
+// 无锁栈
+template&lt;typename T&gt;
+class LockFreeStack {
+private:
+    struct Node {
+        T data;
+        Node* next;
+        Node(const T&amp; d) : data(d), next(nullptr) {}
+    };
+
+    atomic&lt;Node*&gt; head;
+
+public:
+    LockFreeStack() : head(nullptr) {}
+
+    void push(const T&amp; data) {
+        Node* new_node = new Node(data);
+        new_node-&gt;next = head.load();
+
+        while (!head.compare_exchange_weak(new_node-&gt;next, new_node))
+            ;
+    }
+
+    bool pop(T&amp; result) {
+        Node* old_head = head.load();
+
+        while (old_head &amp;&amp;
+               !head.compare_exchange_weak(old_head, old_head-&gt;next))
+            ;
+
+        if (old_head) {
+            result = old_head-&gt;data;
+            delete old_head;
+            return true;
+        }
+        return false;
+    }
+};
+</code></pre>
+<hr />
+<h2 id="第七模块现代c特性c11141720"><a class="header" href="#第七模块现代c特性c11141720">第七模块：现代C++特性（C++11/14/17/20）</a></h2>
+<h3 id="71-c11核心特性"><a class="header" href="#71-c11核心特性">7.1 C++11核心特性</a></h3>
+<h4 id="711-统一初始化"><a class="header" href="#711-统一初始化">7.1.1 统一初始化</a></h4>
+<pre><code class="language-cpp">void uniform_initialization() {
+    // 传统初始化
+    int x = 10;
+    int arr[] = {1, 2, 3};
+
+    // C++11统一初始化
+    int y{20};
+    int z = {30};
+    vector&lt;int&gt; vec{1, 2, 3, 4, 5};
+    map&lt;string, int&gt; m{{"a", 1}, {"b", 2}};
+
+    // 防止窄化转换
+    int i{3.14};  // ❌ 错误：窄化转换
+}
+</code></pre>
+<h4 id="712-nullptr"><a class="header" href="#712-nullptr">7.1.2 nullptr</a></h4>
+<pre><code class="language-cpp">void nullptr_demo() {
+    int* p1 = NULL;      // C风格
+    int* p2 = nullptr;   // C++11
+
+    // nullptr类型安全
+    void func(int x) {}
+    void func(int* p) {}
+
+    func(NULL);     // 可能产生歧义
+    func(nullptr);  // 明确调用指针版本
+}
+</code></pre>
+<h4 id="713-范围for循环"><a class="header" href="#713-范围for循环">7.1.3 范围for循环</a></h4>
+<pre><code class="language-cpp">void range_for() {
+    vector&lt;int&gt; vec = {1, 2, 3, 4, 5};
+
+    // 传统循环
+    for (size_t i = 0; i &lt; vec.size(); ++i) {
+        cout &lt;&lt; vec[i] &lt;&lt; " ";
+    }
+
+    // C++11范围for
+    for (int x : vec) {
+        cout &lt;&lt; x &lt;&lt; " ";
+    }
+
+    // 引用避免拷贝
+    for (const auto&amp; x : vec) {
+        cout &lt;&lt; x &lt;&lt; " ";
+    }
+
+    // 修改元素
+    for (auto&amp; x : vec) {
+        x *= 2;
+    }
+}
+</code></pre>
+<h4 id="714-default和delete"><a class="header" href="#714-default和delete">7.1.4 =default和=delete</a></h4>
+<pre><code class="language-cpp">class MyClass {
+public:
+    // 显式使用默认构造函数
+    MyClass() = default;
+
+    // 显式删除拷贝构造
+    MyClass(const MyClass&amp;) = delete;
+    MyClass&amp; operator=(const MyClass&amp;) = delete;
+
+    // 显式使用默认移动构造
+    MyClass(MyClass&amp;&amp;) = default;
+    MyClass&amp; operator=(MyClass&amp;&amp;) = default;
+};
+</code></pre>
+<h4 id="715-override和final"><a class="header" href="#715-override和final">7.1.5 override和final</a></h4>
+<pre><code class="language-cpp">class Base {
+public:
+    virtual void foo() {}
+    virtual void bar() final {}  // final: 禁止重写
+};
+
+class Derived : public Base {
+public:
+    void foo() override {}  // override: 明确重写
+    // void bar() override {}  // ❌ 错误：bar是final
+};
+
+// final类：禁止继承
+class FinalClass final {
+public:
+    void func() {}
+};
+
+// class CannotDerive : public FinalClass {};  // ❌ 错误
+</code></pre>
+<h4 id="716-委托构造"><a class="header" href="#716-委托构造">7.1.6 委托构造</a></h4>
+<pre><code class="language-cpp">class Point {
+private:
+    int x, y;
+
+public:
+    Point(int x_val, int y_val) : x(x_val), y(y_val) {
+        cout &lt;&lt; "Main constructor" &lt;&lt; endl;
+    }
+
+    // 委托构造函数
+    Point() : Point(0, 0) {
+        cout &lt;&lt; "Delegating constructor" &lt;&lt; endl;
+    }
+
+    Point(int val) : Point(val, val) {}
+};
+</code></pre>
+<h4 id="717-noexcept"><a class="header" href="#717-noexcept">7.1.7 noexcept</a></h4>
+<pre><code class="language-cpp">// 声明函数不抛出异常
+void func() noexcept {
+    // 如果抛出异常，程序会终止
+}
+
+// 条件noexcept
+template&lt;typename T&gt;
+void swap(T&amp; a, T&amp; b) noexcept(noexcept(T(std::move(a)))) {
+    T temp(std::move(a));
+    a = std::move(b);
+    b = std::move(temp);
+}
+
+// 检查是否noexcept
+static_assert(noexcept(func()), "func should be noexcept");
+</code></pre>
+<h3 id="72-c14新特性"><a class="header" href="#72-c14新特性">7.2 C++14新特性</a></h3>
+<h4 id="721-auto返回类型推导"><a class="header" href="#721-auto返回类型推导">7.2.1 auto返回类型推导</a></h4>
+<pre><code class="language-cpp">// C++11需要尾置返回类型
+template&lt;typename T1, typename T2&gt;
+auto add_cpp11(T1 a, T2 b) -&gt; decltype(a + b) {
+    return a + b;
+}
+
+// C++14可以自动推导
+template&lt;typename T1, typename T2&gt;
+auto add_cpp14(T1 a, T2 b) {
+    return a + b;
+}
+</code></pre>
+<h4 id="722-泛型lambda"><a class="header" href="#722-泛型lambda">7.2.2 泛型Lambda</a></h4>
+<pre><code class="language-cpp">void generic_lambda() {
+    // C++14: auto参数
+    auto lambda = [](auto a, auto b) {
+        return a + b;
+    };
+
+    cout &lt;&lt; lambda(1, 2) &lt;&lt; endl;      // 3
+    cout &lt;&lt; lambda(1.5, 2.5) &lt;&lt; endl;  // 4.0
+    cout &lt;&lt; lambda(string("hello"), string(" world")) &lt;&lt; endl;
+}
+</code></pre>
+<h4 id="723-变量模板"><a class="header" href="#723-变量模板">7.2.3 变量模板</a></h4>
+<pre><code class="language-cpp">template&lt;typename T&gt;
+constexpr T pi = T(3.1415926535897932385);
+
+void variable_template() {
+    cout &lt;&lt; pi&lt;double&gt; &lt;&lt; endl;
+    cout &lt;&lt; pi&lt;float&gt; &lt;&lt; endl;
+}
+</code></pre>
+<h3 id="73-c17新特性"><a class="header" href="#73-c17新特性">7.3 C++17新特性</a></h3>
+<h4 id="731-结构化绑定"><a class="header" href="#731-结构化绑定">7.3.1 结构化绑定</a></h4>
+<pre><code class="language-cpp">void structured_bindings() {
+    // pair
+    pair&lt;int, string&gt; p{1, "hello"};
+    auto [id, name] = p;
+
+    // tuple
+    tuple&lt;int, double, string&gt; t{42, 3.14, "world"};
+    auto [i, d, s] = t;
+
+    // map遍历
+    map&lt;string, int&gt; m{{"a", 1}, {"b", 2}};
+    for (const auto&amp; [key, value] : m) {
+        cout &lt;&lt; key &lt;&lt; ": " &lt;&lt; value &lt;&lt; endl;
+    }
+}
+</code></pre>
+<h4 id="732-ifswitch初始化语句"><a class="header" href="#732-ifswitch初始化语句">7.3.2 if/switch初始化语句</a></h4>
+<pre><code class="language-cpp">void init_statement() {
+    // if with initializer
+    if (auto it = m.find(key); it != m.end()) {
+        // 使用it
+    }
+
+    // switch with initializer
+    switch (auto val = getValue(); val) {
+        case 1: /*...*/ break;
+        case 2: /*...*/ break;
+    }
+}
+</code></pre>
+<h4 id="733-stdoptional"><a class="header" href="#733-stdoptional">7.3.3 std::optional</a></h4>
+<pre><code class="language-cpp">optional&lt;int&gt; find_value(const vector&lt;int&gt;&amp; vec, int target) {
+    auto it = find(vec.begin(), vec.end(), target);
+    if (it != vec.end()) {
+        return *it;
+    }
+    return nullopt;
+}
+
+void optional_demo() {
+    vector&lt;int&gt; vec = {1, 2, 3, 4, 5};
+
+    if (auto result = find_value(vec, 3); result.has_value()) {
+        cout &lt;&lt; "Found: " &lt;&lt; result.value() &lt;&lt; endl;
+    } else {
+        cout &lt;&lt; "Not found" &lt;&lt; endl;
+    }
+
+    // value_or提供默认值
+    int val = find_value(vec, 10).value_or(-1);
+}
+</code></pre>
+<h4 id="734-stdvariant"><a class="header" href="#734-stdvariant">7.3.4 std::variant</a></h4>
+<pre><code class="language-cpp">void variant_demo() {
+    variant&lt;int, double, string&gt; v;
+
+    v = 42;
+    cout &lt;&lt; get&lt;int&gt;(v) &lt;&lt; endl;
+
+    v = 3.14;
+    cout &lt;&lt; get&lt;double&gt;(v) &lt;&lt; endl;
+
+    v = "hello";
+    cout &lt;&lt; get&lt;string&gt;(v) &lt;&lt; endl;
+
+    // 访问variant
+    visit([](auto&amp;&amp; arg) {
+        cout &lt;&lt; arg &lt;&lt; endl;
+    }, v);
+
+    // 类型索引
+    cout &lt;&lt; "Index: " &lt;&lt; v.index() &lt;&lt; endl;
+}
+</code></pre>
+<h4 id="735-stdany"><a class="header" href="#735-stdany">7.3.5 std::any</a></h4>
+<pre><code class="language-cpp">void any_demo() {
+    any a = 10;
+    cout &lt;&lt; any_cast&lt;int&gt;(a) &lt;&lt; endl;
+
+    a = 3.14;
+    cout &lt;&lt; any_cast&lt;double&gt;(a) &lt;&lt; endl;
+
+    a = string("hello");
+    cout &lt;&lt; any_cast&lt;string&gt;(a) &lt;&lt; endl;
+
+    // 检查类型
+    if (a.type() == typeid(string)) {
+        cout &lt;&lt; "It's a string" &lt;&lt; endl;
+    }
+}
+</code></pre>
+<h4 id="736-stdstring_view"><a class="header" href="#736-stdstring_view">7.3.6 std::string_view</a></h4>
+<pre><code class="language-cpp">void string_view_demo() {
+    string s = "hello world";
+
+    // string_view不拷贝字符串
+    string_view sv = s;
+    string_view sub = sv.substr(0, 5);
+
+    cout &lt;&lt; sub &lt;&lt; endl;  // "hello"
+
+    // 高效的参数传递
+    auto process = [](string_view s) {
+        cout &lt;&lt; s &lt;&lt; endl;
+    };
+
+    process("literal");
+    process(s);
+    process(sv);
+}
+</code></pre>
+<h3 id="74-c20新特性"><a class="header" href="#74-c20新特性">7.4 C++20新特性</a></h3>
+<h4 id="741-概念concepts"><a class="header" href="#741-概念concepts">7.4.1 概念（Concepts）</a></h4>
+<pre><code class="language-cpp">// 定义概念
+template&lt;typename T&gt;
+concept Integral = is_integral_v&lt;T&gt;;
+
+template&lt;typename T&gt;
+concept Addable = requires(T a, T b) {
+    { a + b } -&gt; same_as&lt;T&gt;;
+};
+
+// 使用概念约束模板
+template&lt;Integral T&gt;
+T add(T a, T b) {
+    return a + b;
+}
+
+// requires子句
+template&lt;typename T&gt;
+    requires Integral&lt;T&gt; &amp;&amp; sizeof(T) &gt;= 4
+T multiply(T a, T b) {
+    return a * b;
+}
+</code></pre>
+<h4 id="742-范围ranges"><a class="header" href="#742-范围ranges">7.4.2 范围（Ranges）</a></h4>
+<pre><code class="language-cpp">#include &lt;ranges&gt;
+
+void ranges_demo() {
+    vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    // 过滤和转换
+    auto result = vec
+        | views::filter([](int x) { return x % 2 == 0; })
+        | views::transform([](int x) { return x * x; });
+
+    for (int x : result) {
+        cout &lt;&lt; x &lt;&lt; " ";  // 4 16 36 64 100
+    }
+
+    // 取前N个
+    auto first_three = vec | views::take(3);
+
+    // 跳过N个
+    auto skip_two = vec | views::drop(2);
+}
+</code></pre>
+<h4 id="743-协程coroutines"><a class="header" href="#743-协程coroutines">7.4.3 协程（Coroutines）</a></h4>
+<pre><code class="language-cpp">#include &lt;coroutine&gt;
+
+// 简单生成器
+template&lt;typename T&gt;
+struct Generator {
+    struct promise_type {
+        T current_value;
+
+        auto get_return_object() {
+            return Generator{
+                coroutine_handle&lt;promise_type&gt;::from_promise(*this)
+            };
+        }
+
+        auto initial_suspend() { return suspend_always{}; }
+        auto final_suspend() noexcept { return suspend_always{}; }
+        void return_void() {}
+        void unhandled_exception() { terminate(); }
+
+        auto yield_value(T value) {
+            current_value = value;
+            return suspend_always{};
+        }
+    };
+
+    coroutine_handle&lt;promise_type&gt; coro;
+
+    Generator(coroutine_handle&lt;promise_type&gt; h) : coro(h) {}
+    ~Generator() { if (coro) coro.destroy(); }
+
+    bool move_next() {
+        coro.resume();
+        return !coro.done();
+    }
+
+    T current_value() {
+        return coro.promise().current_value;
+    }
+};
+
+// 使用协程
+Generator&lt;int&gt; fibonacci() {
+    int a = 0, b = 1;
+    while (true) {
+        co_yield a;
+        auto next = a + b;
+        a = b;
+        b = next;
+    }
+}
+
+void coroutine_demo() {
+    auto gen = fibonacci();
+    for (int i = 0; i &lt; 10; ++i) {
+        gen.move_next();
+        cout &lt;&lt; gen.current_value() &lt;&lt; " ";
+    }
+}
+</code></pre>
+<h4 id="744-三路比较运算符"><a class="header" href="#744-三路比较运算符">7.4.4 三路比较运算符</a></h4>
+<pre><code class="language-cpp">class Point {
+    int x, y;
+
+public:
+    Point(int x, int y) : x(x), y(y) {}
+
+    // C++20: 三路比较
+    auto operator&lt;=&gt;(const Point&amp; other) const = default;
+};
+
+void three_way_comparison() {
+    Point p1(1, 2);
+    Point p2(3, 4);
+
+    // 自动生成所有比较运算符
+    bool eq = (p1 == p2);
+    bool ne = (p1 != p2);
+    bool lt = (p1 &lt; p2);
+    bool le = (p1 &lt;= p2);
+    bool gt = (p1 &gt; p2);
+    bool ge = (p1 &gt;= p2);
+}
+</code></pre>
+<hr />
+<h2 id="第八模块异常处理"><a class="header" href="#第八模块异常处理">第八模块：异常处理</a></h2>
+<h3 id="81-异常基础"><a class="header" href="#81-异常基础">8.1 异常基础</a></h3>
+<pre><code class="language-cpp">// 抛出异常
+void throw_exception() {
+    throw runtime_error("Something went wrong");
+}
+
+// 捕获异常
+void catch_exception() {
+    try {
+        throw_exception();
+    } catch (const runtime_error&amp; e) {
+        cout &lt;&lt; "Caught: " &lt;&lt; e.what() &lt;&lt; endl;
+    }
+}
+
+// 多个catch块
+void multiple_catch() {
+    try {
+        // ...
+    } catch (const invalid_argument&amp; e) {
+        cout &lt;&lt; "Invalid argument: " &lt;&lt; e.what() &lt;&lt; endl;
+    } catch (const runtime_error&amp; e) {
+        cout &lt;&lt; "Runtime error: " &lt;&lt; e.what() &lt;&lt; endl;
+    } catch (const exception&amp; e) {
+        cout &lt;&lt; "Exception: " &lt;&lt; e.what() &lt;&lt; endl;
+    } catch (...) {
+        cout &lt;&lt; "Unknown exception" &lt;&lt; endl;
+    }
+}
+</code></pre>
+<h3 id="82-自定义异常"><a class="header" href="#82-自定义异常">8.2 自定义异常</a></h3>
+<pre><code class="language-cpp">class MyException : public exception {
+private:
+    string message;
+
+public:
+    explicit MyException(const string&amp; msg) : message(msg) {}
+
+    const char* what() const noexcept override {
+        return message.c_str();
+    }
+};
+
+void custom_exception_demo() {
+    try {
+        throw MyException("Custom error occurred");
+    } catch (const MyException&amp; e) {
+        cout &lt;&lt; "Caught custom exception: " &lt;&lt; e.what() &lt;&lt; endl;
+    }
+}
+</code></pre>
+<h3 id="83-异常安全性"><a class="header" href="#83-异常安全性">8.3 异常安全性</a></h3>
+<pre><code class="language-cpp">// 基本保证：不泄漏资源
+void basic_guarantee() {
+    vector&lt;int&gt; vec;
+    vec.push_back(1);  // 如果失败，vec仍然有效
+}
+
+// 强保证：要么成功，要么保持原状
+void strong_guarantee() {
+    vector&lt;int&gt; vec = {1, 2, 3};
+    vector&lt;int&gt; backup = vec;  // 备份
+
+    try {
+        // 修改vec
+    } catch (...) {
+        vec = backup;  // 恢复
+        throw;
+    }
+}
+
+// 不抛出保证
+void nothrow_guarantee() noexcept {
+    // 保证不抛出异常
+}
+</code></pre>
+<h3 id="84-raii与异常安全"><a class="header" href="#84-raii与异常安全">8.4 RAII与异常安全</a></h3>
+<pre><code class="language-cpp">class Resource {
+public:
+    Resource() {
+        cout &lt;&lt; "Acquire resource" &lt;&lt; endl;
+    }
+
+    ~Resource() {
+        cout &lt;&lt; "Release resource" &lt;&lt; endl;
+    }
+};
+
+void raii_exception_safety() {
+    try {
+        Resource r;  // 获取资源
+
+        // 可能抛出异常的代码
+        throw runtime_error("Error");
+
+    } catch (const exception&amp; e) {
+        // 资源自动释放
+        cout &lt;&lt; "Exception: " &lt;&lt; e.what() &lt;&lt; endl;
+    }
+}
+</code></pre>
+<hr />
+<h2 id="第九模块文件与流操作"><a class="header" href="#第九模块文件与流操作">第九模块：文件与流操作</a></h2>
+<h3 id="91-文件io"><a class="header" href="#91-文件io">9.1 文件I/O</a></h3>
+<pre><code class="language-cpp">#include &lt;fstream&gt;
+
+// 写文件
+void write_file() {
+    ofstream file("output.txt");
+
+    if (file.is_open()) {
+        file &lt;&lt; "Hello, File!" &lt;&lt; endl;
+        file &lt;&lt; "Line 2" &lt;&lt; endl;
+        file.close();
+    }
+}
+
+// 读文件
+void read_file() {
+    ifstream file("input.txt");
+
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            cout &lt;&lt; line &lt;&lt; endl;
+        }
+        file.close();
+    }
+}
+
+// 二进制文件
+void binary_file() {
+    // 写二进制
+    ofstream out("data.bin", ios::binary);
+    int data[] = {1, 2, 3, 4, 5};
+    out.write(reinterpret_cast&lt;char*&gt;(data), sizeof(data));
+    out.close();
+
+    // 读二进制
+    ifstream in("data.bin", ios::binary);
+    int buffer[5];
+    in.read(reinterpret_cast&lt;char*&gt;(buffer), sizeof(buffer));
+    in.close();
+}
+
+// 文件定位
+void file_positioning() {
+    fstream file("test.txt", ios::in | ios::out);
+
+    // 移动读位置
+    file.seekg(10);  // 从头开始偏移10
+    file.seekg(-5, ios::end);  // 从尾部往前5
+
+    // 获取当前位置
+    streampos pos = file.tellg();
+
+    // 移动写位置
+    file.seekp(0, ios::beg);
+}
+</code></pre>
+<h3 id="92-字符串流"><a class="header" href="#92-字符串流">9.2 字符串流</a></h3>
+<pre><code class="language-cpp">#include &lt;sstream&gt;
+
+// 字符串流
+void stringstream_demo() {
+    stringstream ss;
+
+    // 写入
+    ss &lt;&lt; "Value: " &lt;&lt; 42 &lt;&lt; ", Pi: " &lt;&lt; 3.14;
+
+    // 读取
+    string str = ss.str();
+    cout &lt;&lt; str &lt;&lt; endl;
+
+    // 解析
+    ss.clear();
+    ss.str("10 20 30");
+    int a, b, c;
+    ss &gt;&gt; a &gt;&gt; b &gt;&gt; c;
+}
+
+// 格式化输出
+void formatting_demo() {
+    stringstream ss;
+
+    // 设置精度
+    ss &lt;&lt; fixed &lt;&lt; setprecision(2) &lt;&lt; 3.14159;
+
+    // 设置宽度
+    ss &lt;&lt; setw(10) &lt;&lt; setfill('0') &lt;&lt; 42;
+
+    // 十六进制
+    ss &lt;&lt; hex &lt;&lt; 255;
+}
+</code></pre>
+<hr />
+<h2 id="第十模块设计模式"><a class="header" href="#第十模块设计模式">第十模块：设计模式</a></h2>
+<h3 id="101-单例模式"><a class="header" href="#101-单例模式">10.1 单例模式</a></h3>
+<pre><code class="language-cpp">// 饿汉式单例
+class EagerSingleton {
+private:
+    static EagerSingleton* instance;
+
+    EagerSingleton() {}
+    EagerSingleton(const EagerSingleton&amp;) = delete;
+    EagerSingleton&amp; operator=(const EagerSingleton&amp;) = delete;
+
+public:
+    static EagerSingleton* getInstance() {
+        return instance;
+    }
+};
+
+EagerSingleton* EagerSingleton::instance = new EagerSingleton();
+
+// 懒汉式单例（C++11线程安全）
+class LazySingleton {
+private:
+    LazySingleton() {}
+    LazySingleton(const LazySingleton&amp;) = delete;
+    LazySingleton&amp; operator=(const LazySingleton&amp;) = delete;
+
+public:
+    static LazySingleton&amp; getInstance() {
+        static LazySingleton instance;  // C++11保证线程安全
+        return instance;
+    }
+};
+</code></pre>
+<h3 id="102-工厂模式"><a class="header" href="#102-工厂模式">10.2 工厂模式</a></h3>
+<pre><code class="language-cpp">// 抽象产品
+class Product {
+public:
+    virtual void use() = 0;
+    virtual ~Product() = default;
+};
+
+// 具体产品
+class ConcreteProductA : public Product {
+public:
+    void use() override {
+        cout &lt;&lt; "Using Product A" &lt;&lt; endl;
+    }
+};
+
+class ConcreteProductB : public Product {
+public:
+    void use() override {
+        cout &lt;&lt; "Using Product B" &lt;&lt; endl;
+    }
+};
+
+// 简单工厂
+class SimpleFactory {
+public:
+    static unique_ptr&lt;Product&gt; createProduct(const string&amp; type) {
+        if (type == "A") {
+            return make_unique&lt;ConcreteProductA&gt;();
+        } else if (type == "B") {
+            return make_unique&lt;ConcreteProductB&gt;();
+        }
+        return nullptr;
+    }
+};
+
+// 抽象工厂
+class AbstractFactory {
+public:
+    virtual unique_ptr&lt;Product&gt; createProduct() = 0;
+    virtual ~AbstractFactory() = default;
+};
+
+class FactoryA : public AbstractFactory {
+public:
+    unique_ptr&lt;Product&gt; createProduct() override {
+        return make_unique&lt;ConcreteProductA&gt;();
+    }
+};
+</code></pre>
+<h3 id="103-观察者模式"><a class="header" href="#103-观察者模式">10.3 观察者模式</a></h3>
+<pre><code class="language-cpp">class Observer {
+public:
+    virtual void update(int state) = 0;
+    virtual ~Observer() = default;
+};
+
+class Subject {
+private:
+    vector&lt;Observer*&gt; observers;
+    int state;
+
+public:
+    void attach(Observer* observer) {
+        observers.push_back(observer);
+    }
+
+    void detach(Observer* observer) {
+        observers.erase(
+            remove(observers.begin(), observers.end(), observer),
+            observers.end()
+        );
+    }
+
+    void setState(int s) {
+        state = s;
+        notify();
+    }
+
+    int getState() const { return state; }
+
+private:
+    void notify() {
+        for (auto observer : observers) {
+            observer-&gt;update(state);
+        }
+    }
+};
+
+class ConcreteObserver : public Observer {
+private:
+    int observer_state;
+    Subject* subject;
+
+public:
+    ConcreteObserver(Subject* s) : subject(s) {
+        subject-&gt;attach(this);
+    }
+
+    void update(int state) override {
+        observer_state = state;
+        cout &lt;&lt; "Observer state updated to: " &lt;&lt; state &lt;&lt; endl;
+    }
+};
 </code></pre>
 <hr />
 <h2 id="学习验证标准"><a class="header" href="#学习验证标准">学习验证标准</a></h2>
@@ -1264,6 +2642,8 @@ void atomic_demo() {
 理解虚函数和多态机制</li>
 <li><input disabled="" type="checkbox"/>
 熟练使用运算符重载</li>
+<li><input disabled="" type="checkbox"/>
+理解const、static关键字的各种用法</li>
 </ul>
 <h3 id="stl验证week-5-6"><a class="header" href="#stl验证week-5-6">STL验证（Week 5-6）</a></h3>
 <ul>
@@ -1272,16 +2652,20 @@ void atomic_demo() {
 <li><input disabled="" type="checkbox"/>
 能够使用STL算法解决实际问题</li>
 <li><input disabled="" type="checkbox"/>
-理解迭代器概念</li>
+理解迭代器概念和类别</li>
+<li><input disabled="" type="checkbox"/>
+掌握容器适配器的使用</li>
 </ul>
 <h3 id="模板验证week-7-8"><a class="header" href="#模板验证week-7-8">模板验证（Week 7-8）</a></h3>
 <ul>
 <li><input disabled="" type="checkbox"/>
 编写函数模板和类模板</li>
 <li><input disabled="" type="checkbox"/>
-理解模板特化</li>
+理解模板特化和偏特化</li>
 <li><input disabled="" type="checkbox"/>
 使用变参模板</li>
+<li><input disabled="" type="checkbox"/>
+了解SFINAE和编译期编程</li>
 </ul>
 <h3 id="内存验证week-9-10"><a class="header" href="#内存验证week-9-10">内存验证（Week 9-10）</a></h3>
 <ul>
@@ -1291,6 +2675,8 @@ void atomic_demo() {
 理解RAII原则</li>
 <li><input disabled="" type="checkbox"/>
 避免内存泄漏和悬空指针</li>
+<li><input disabled="" type="checkbox"/>
+理解移动语义</li>
 </ul>
 <h3 id="并发验证week-11-12"><a class="header" href="#并发验证week-11-12">并发验证（Week 11-12）</a></h3>
 <ul>
@@ -1299,9 +2685,20 @@ void atomic_demo() {
 <li><input disabled="" type="checkbox"/>
 正确使用互斥锁和条件变量</li>
 <li><input disabled="" type="checkbox"/>
-理解原子操作</li>
+理解原子操作和内存序</li>
+<li><input disabled="" type="checkbox"/>
+使用future、promise、async</li>
 </ul>
-<h3 id="综合项目验证week-13-16"><a class="header" href="#综合项目验证week-13-16">综合项目验证（Week 13-16）</a></h3>
+<h3 id="现代c验证week-13-14"><a class="header" href="#现代c验证week-13-14">现代C++验证（Week 13-14）</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+掌握C++11/14/17核心特性</li>
+<li><input disabled="" type="checkbox"/>
+了解C++20新特性（概念、范围、协程）</li>
+<li><input disabled="" type="checkbox"/>
+熟练使用智能指针、Lambda、右值引用</li>
+</ul>
+<h3 id="综合项目验证week-15-16"><a class="header" href="#综合项目验证week-15-16">综合项目验证（Week 15-16）</a></h3>
 <ul>
 <li><input disabled="" type="checkbox"/>
 完成包含以下特性的项目：
@@ -1310,6 +2707,7 @@ void atomic_demo() {
 <li>STL容器和算法</li>
 <li>智能指针管理资源</li>
 <li>多线程并发处理</li>
+<li>异常安全设计</li>
 </ul>
 </li>
 </ul>
@@ -1355,36 +2753,68 @@ void safe_increment() {
     ++counter;
 }
 </code></pre>
+<h3 id="3-异常安全错误"><a class="header" href="#3-异常安全错误">3. 异常安全错误</a></h3>
+<pre><code class="language-cpp">// ❌ 资源泄漏
+void bad_code() {
+    int* ptr = new int(10);
+    // 如果这里抛出异常，ptr永远不会被delete
+    process();
+    delete ptr;
+}
+
+// ✅ 使用RAII
+void good_code() {
+    unique_ptr&lt;int&gt; ptr = make_unique&lt;int&gt;(10);
+    // 异常安全，自动释放
+    process();
+}
+</code></pre>
 <hr />
 <h2 id="推荐学习资源"><a class="header" href="#推荐学习资源">推荐学习资源</a></h2>
 <h3 id="书籍"><a class="header" href="#书籍">书籍</a></h3>
 <ol>
 <li><strong>《C++ Primer》</strong> - Stanley Lippman（入门经典）</li>
+<li><strong>《Effective C++》</strong> - Scott Meyers（最佳实践）</li>
 <li><strong>《Effective Modern C++》</strong> - Scott Meyers（现代C++最佳实践）</li>
 <li><strong>《深度探索C++对象模型》</strong> - Stanley Lippman</li>
+<li><strong>《C++并发编程实战》</strong> - Anthony Williams</li>
+<li><strong>《C++模板元编程》</strong> - David Abrahams</li>
 </ol>
 <h3 id="在线资源"><a class="header" href="#在线资源">在线资源</a></h3>
 <ul>
-<li>cppreference.com（权威参考）</li>
-<li>learncpp.com（系统教程）</li>
-<li>CppCon视频（前沿技术）</li>
+<li><strong>cppreference.com</strong> - 权威参考文档</li>
+<li><strong>learncpp.com</strong> - 系统教程</li>
+<li><strong>CppCon</strong> - YouTube频道（前沿技术）</li>
+<li><strong>isocpp.org</strong> - C++标准委员会官网</li>
 </ul>
+<h3 id="开源项目学习"><a class="header" href="#开源项目学习">开源项目学习</a></h3>
+<ol>
+<li><strong>LLVM/Clang</strong> - 编译器基础设施</li>
+<li><strong>Boost</strong> - C++扩展库</li>
+<li><strong>Qt</strong> - 跨平台应用框架</li>
+<li><strong>Google Test</strong> - 单元测试框架</li>
+</ol>
 <h3 id="实践项目"><a class="header" href="#实践项目">实践项目</a></h3>
 <ol>
 <li><strong>命令行工具</strong>: 文件管理、日志分析</li>
 <li><strong>多线程下载器</strong>: 网络编程+并发</li>
 <li><strong>简易数据库</strong>: STL容器+文件I/O</li>
 <li><strong>游戏引擎</strong>: OOP+模板+性能优化</li>
+<li><strong>HTTP服务器</strong>: 网络+并发+设计模式</li>
 </ol>
 <hr />
-<p><strong>学习建议</strong>:</p>
+<h2 id="学习建议"><a class="header" href="#学习建议">学习建议</a></h2>
 <ol>
-<li>每天编写代码，动手实践</li>
-<li>阅读优秀开源项目源码</li>
-<li>参与代码审查和讨论</li>
-<li>关注C++新标准发展</li>
-<li>重视代码质量和性能优化</li>
+<li><strong>每天编写代码，动手实践</strong> - 理论必须结合实践</li>
+<li><strong>阅读优秀开源项目源码</strong> - 学习工业级代码风格</li>
+<li><strong>参与代码审查和讨论</strong> - 提升代码质量意识</li>
+<li><strong>关注C++新标准发展</strong> - 跟进语言演进</li>
+<li><strong>重视代码质量和性能优化</strong> - 追求卓越</li>
+<li><strong>建立知识体系</strong> - 从点到面，构建完整认知</li>
+<li><strong>持续学习，保持热情</strong> - C++是一门需要长期学习的语言</li>
 </ol>
+<hr />
+<p><strong>祝你在C++学习之路上不断进步！</strong></p>
 
                     </main>
 

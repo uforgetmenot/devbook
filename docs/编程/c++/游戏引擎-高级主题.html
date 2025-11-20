@@ -1,0 +1,2863 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>C++游戏引擎开发 - 高级主题 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="c游戏引擎开发---高级主题"><a class="header" href="#c游戏引擎开发---高级主题">C++游戏引擎开发 - 高级主题</a></h1>
+<blockquote>
+<p>本文档是《C++游戏引擎开发完全指南》的高级扩展部分，涵盖光照、阴影、物理引擎、UI系统等进阶内容。</p>
+</blockquote>
+<hr />
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<ul>
+<li><a href="#%E4%B8%80%E9%AB%98%E7%BA%A7%E5%85%89%E7%85%A7%E7%B3%BB%E7%BB%9F">一、高级光照系统</a></li>
+<li><a href="#%E4%BA%8C%E9%98%B4%E5%BD%B1%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0">二、阴影系统实现</a></li>
+<li><a href="#%E4%B8%89%E7%89%A9%E7%90%86%E5%BC%95%E6%93%8E%E9%9B%86%E6%88%90">三、物理引擎集成</a></li>
+<li><a href="#%E5%9B%9B%E5%AE%8C%E6%95%B4ui%E7%B3%BB%E7%BB%9F">四、完整UI系统</a></li>
+<li><a href="#%E4%BA%94%E5%9C%BA%E6%99%AF%E7%AE%A1%E7%90%86%E4%B8%8E%E5%BA%8F%E5%88%97%E5%8C%96">五、场景管理与序列化</a></li>
+<li><a href="#%E5%85%AD%E8%B5%84%E6%BA%90%E7%83%AD%E5%8A%A0%E8%BD%BD%E7%B3%BB%E7%BB%9F">六、资源热加载系统</a></li>
+<li><a href="#%E4%B8%83%E7%B2%92%E5%AD%90%E7%B3%BB%E7%BB%9F">七、粒子系统</a></li>
+<li><a href="#%E5%85%AB%E5%90%8E%E5%A4%84%E7%90%86%E6%95%88%E6%9E%9C">八、后处理效果</a></li>
+</ul>
+<hr />
+<h2 id="一高级光照系统"><a class="header" href="#一高级光照系统">一、高级光照系统</a></h2>
+<h3 id="11-phong光照模型"><a class="header" href="#11-phong光照模型">1.1 Phong光照模型</a></h3>
+<h4 id="完整phong光照实现"><a class="header" href="#完整phong光照实现">完整Phong光照实现</a></h4>
+<p><strong>顶点着色器</strong></p>
+<pre><code class="language-glsl">// phong.vert
+#version 330 core
+
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoords;
+
+out vec3 FragPos;
+out vec3 Normal;
+out vec2 TexCoords;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main() {
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;
+    TexCoords = aTexCoords;
+
+    gl_Position = projection * view * vec4(FragPos, 1.0);
+}
+</code></pre>
+<p><strong>片元着色器</strong></p>
+<pre><code class="language-glsl">// phong.frag
+#version 330 core
+
+struct Material {
+    sampler2D diffuse;
+    sampler2D specular;
+    float shininess;
+};
+
+struct Light {
+    vec3 position;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+in vec3 FragPos;
+in vec3 Normal;
+in vec2 TexCoords;
+
+out vec4 FragColor;
+
+uniform vec3 viewPos;
+uniform Material material;
+uniform Light light;
+
+void main() {
+    // 环境光
+    vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
+
+    // 漫反射
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(light.position - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
+
+    // 镜面反射
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
+
+    vec3 result = ambient + diffuse + specular;
+    FragColor = vec4(result, 1.0);
+}
+</code></pre>
+<h4 id="多光源系统"><a class="header" href="#多光源系统">多光源系统</a></h4>
+<pre><code class="language-cpp">// lighting_system.h
+class LightingSystem {
+public:
+    enum LightType {
+        DIRECTIONAL,
+        POINT,
+        SPOT
+    };
+
+    struct DirectionalLight {
+        glm::vec3 direction;
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
+    };
+
+    struct PointLight {
+        glm::vec3 position;
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
+
+        // 衰减参数
+        float constant;
+        float linear;
+        float quadratic;
+    };
+
+    struct SpotLight {
+        glm::vec3 position;
+        glm::vec3 direction;
+        float cutOff;
+        float outerCutOff;
+
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
+
+        float constant;
+        float linear;
+        float quadratic;
+    };
+
+private:
+    DirectionalLight dirLight;
+    std::vector&lt;PointLight&gt; pointLights;
+    std::vector&lt;SpotLight&gt; spotLights;
+
+public:
+    void setDirectionalLight(const DirectionalLight&amp; light) {
+        dirLight = light;
+    }
+
+    void addPointLight(const PointLight&amp; light) {
+        pointLights.push_back(light);
+    }
+
+    void addSpotLight(const SpotLight&amp; light) {
+        spotLights.push_back(light);
+    }
+
+    void applyToShader(Shader* shader) {
+        // 方向光
+        shader-&gt;setVec3("dirLight.direction", dirLight.direction);
+        shader-&gt;setVec3("dirLight.ambient", dirLight.ambient);
+        shader-&gt;setVec3("dirLight.diffuse", dirLight.diffuse);
+        shader-&gt;setVec3("dirLight.specular", dirLight.specular);
+
+        // 点光源
+        shader-&gt;setInt("numPointLights", pointLights.size());
+        for (size_t i = 0; i &lt; pointLights.size(); i++) {
+            std::string base = "pointLights[" + std::to_string(i) + "]";
+            shader-&gt;setVec3(base + ".position", pointLights[i].position);
+            shader-&gt;setVec3(base + ".ambient", pointLights[i].ambient);
+            shader-&gt;setVec3(base + ".diffuse", pointLights[i].diffuse);
+            shader-&gt;setVec3(base + ".specular", pointLights[i].specular);
+            shader-&gt;setFloat(base + ".constant", pointLights[i].constant);
+            shader-&gt;setFloat(base + ".linear", pointLights[i].linear);
+            shader-&gt;setFloat(base + ".quadratic", pointLights[i].quadratic);
+        }
+
+        // 聚光灯
+        shader-&gt;setInt("numSpotLights", spotLights.size());
+        for (size_t i = 0; i &lt; spotLights.size(); i++) {
+            std::string base = "spotLights[" + std::to_string(i) + "]";
+            shader-&gt;setVec3(base + ".position", spotLights[i].position);
+            shader-&gt;setVec3(base + ".direction", spotLights[i].direction);
+            shader-&gt;setFloat(base + ".cutOff", spotLights[i].cutOff);
+            shader-&gt;setFloat(base + ".outerCutOff", spotLights[i].outerCutOff);
+            // ... 其他参数
+        }
+    }
+};
+</code></pre>
+<h4 id="多光源shader"><a class="header" href="#多光源shader">多光源Shader</a></h4>
+<pre><code class="language-glsl">// multi_light.frag
+#version 330 core
+
+#define MAX_POINT_LIGHTS 10
+#define MAX_SPOT_LIGHTS 5
+
+struct Material {
+    sampler2D diffuse;
+    sampler2D specular;
+    float shininess;
+};
+
+struct DirLight {
+    vec3 direction;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+struct PointLight {
+    vec3 position;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float constant;
+    float linear;
+    float quadratic;
+};
+
+struct SpotLight {
+    vec3 position;
+    vec3 direction;
+    float cutOff;
+    float outerCutOff;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float constant;
+    float linear;
+    float quadratic;
+};
+
+in vec3 FragPos;
+in vec3 Normal;
+in vec2 TexCoords;
+
+out vec4 FragColor;
+
+uniform vec3 viewPos;
+uniform Material material;
+uniform DirLight dirLight;
+uniform PointLight pointLights[MAX_POINT_LIGHTS];
+uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
+uniform int numPointLights;
+uniform int numSpotLights;
+
+// 函数声明
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+
+void main() {
+    vec3 norm = normalize(Normal);
+    vec3 viewDir = normalize(viewPos - FragPos);
+
+    // 方向光
+    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+
+    // 点光源
+    for(int i = 0; i &lt; numPointLights; i++) {
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
+    }
+
+    // 聚光灯
+    for(int i = 0; i &lt; numSpotLights; i++) {
+        result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir);
+    }
+
+    FragColor = vec4(result, 1.0);
+}
+
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
+    vec3 lightDir = normalize(-light.direction);
+
+    // 漫反射
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    // 镜面反射
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
+    // 合成
+    vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+    vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+
+    return (ambient + diffuse + specular);
+}
+
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+    vec3 lightDir = normalize(light.position - fragPos);
+
+    // 漫反射
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    // 镜面反射
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
+    // 衰减
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance +
+                        light.quadratic * (distance * distance));
+
+    // 合成
+    vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+    vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+
+    return (ambient + diffuse + specular);
+}
+
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+    vec3 lightDir = normalize(light.position - fragPos);
+
+    // 漫反射
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    // 镜面反射
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
+    // 衰减
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance +
+                        light.quadratic * (distance * distance));
+
+    // 聚光灯强度（软边缘）
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+
+    // 合成
+    vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
+    vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
+    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoords));
+
+    ambient *= attenuation * intensity;
+    diffuse *= attenuation * intensity;
+    specular *= attenuation * intensity;
+
+    return (ambient + diffuse + specular);
+}
+</code></pre>
+<h3 id="12-pbr-physically-based-rendering"><a class="header" href="#12-pbr-physically-based-rendering">1.2 PBR (Physically Based Rendering)</a></h3>
+<h4 id="pbr理论基础"><a class="header" href="#pbr理论基础">PBR理论基础</a></h4>
+<p><strong>核心概念</strong>：</p>
+<pre><code>PBR核心要素
+├── 金属度 (Metallic)
+│   ├── 0.0 = 非金属（绝缘体）
+│   └── 1.0 = 金属
+├── 粗糙度 (Roughness)
+│   ├── 0.0 = 完全光滑（镜面）
+│   └── 1.0 = 完全粗糙（漫反射）
+├── 基础色 (Albedo/Base Color)
+│   └── 表面固有颜色
+├── 法线 (Normal)
+│   └── 表面细节
+└── AO (Ambient Occlusion)
+    └── 环境光遮蔽
+</code></pre>
+<h4 id="pbr-shader实现"><a class="header" href="#pbr-shader实现">PBR Shader实现</a></h4>
+<pre><code class="language-glsl">// pbr.frag
+#version 330 core
+
+out vec4 FragColor;
+
+in vec3 FragPos;
+in vec3 Normal;
+in vec2 TexCoords;
+
+// PBR材质输入
+uniform sampler2D albedoMap;
+uniform sampler2D normalMap;
+uniform sampler2D metallicMap;
+uniform sampler2D roughnessMap;
+uniform sampler2D aoMap;
+
+// 光源
+uniform vec3 lightPositions[4];
+uniform vec3 lightColors[4];
+
+uniform vec3 camPos;
+
+const float PI = 3.14159265359;
+
+// 法线分布函数 (Trowbridge-Reitz GGX)
+float DistributionGGX(vec3 N, vec3 H, float roughness) {
+    float a = roughness * roughness;
+    float a2 = a * a;
+    float NdotH = max(dot(N, H), 0.0);
+    float NdotH2 = NdotH * NdotH;
+
+    float nom = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom = PI * denom * denom;
+
+    return nom / denom;
+}
+
+// 几何函数 (Schlick-GGX)
+float GeometrySchlickGGX(float NdotV, float roughness) {
+    float r = (roughness + 1.0);
+    float k = (r * r) / 8.0;
+
+    float nom = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+
+    return nom / denom;
+}
+
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
+    float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+
+    return ggx1 * ggx2;
+}
+
+// Fresnel方程 (Schlick近似)
+vec3 fresnelSchlick(float cosTheta, vec3 F0) {
+    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+
+void main() {
+    // 材质属性
+    vec3 albedo = pow(texture(albedoMap, TexCoords).rgb, vec3(2.2));  // gamma校正
+    float metallic = texture(metallicMap, TexCoords).r;
+    float roughness = texture(roughnessMap, TexCoords).r;
+    float ao = texture(aoMap, TexCoords).r;
+
+    vec3 N = normalize(Normal);
+    vec3 V = normalize(camPos - FragPos);
+
+    // 计算F0（表面反射率）
+    vec3 F0 = vec3(0.04);  // 非金属的基础反射率
+    F0 = mix(F0, albedo, metallic);
+
+    // 反射率方程
+    vec3 Lo = vec3(0.0);
+    for(int i = 0; i &lt; 4; ++i) {
+        // 每个光源的辐射度
+        vec3 L = normalize(lightPositions[i] - FragPos);
+        vec3 H = normalize(V + L);
+        float distance = length(lightPositions[i] - FragPos);
+        float attenuation = 1.0 / (distance * distance);
+        vec3 radiance = lightColors[i] * attenuation;
+
+        // Cook-Torrance BRDF
+        float NDF = DistributionGGX(N, H, roughness);
+        float G = GeometrySmith(N, V, L, roughness);
+        vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
+
+        vec3 numerator = NDF * G * F;
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
+        vec3 specular = numerator / denominator;
+
+        // kS是镜面反射比例，kD是漫反射比例
+        vec3 kS = F;
+        vec3 kD = vec3(1.0) - kS;
+        kD *= 1.0 - metallic;  // 金属没有漫反射
+
+        float NdotL = max(dot(N, L), 0.0);
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+    }
+
+    // 环境光
+    vec3 ambient = vec3(0.03) * albedo * ao;
+    vec3 color = ambient + Lo;
+
+    // HDR色调映射
+    color = color / (color + vec3(1.0));
+    // Gamma校正
+    color = pow(color, vec3(1.0/2.2));
+
+    FragColor = vec4(color, 1.0);
+}
+</code></pre>
+<h4 id="pbr材质类"><a class="header" href="#pbr材质类">PBR材质类</a></h4>
+<pre><code class="language-cpp">// pbr_material.h
+class PBRMaterial {
+public:
+    // 材质参数
+    glm::vec3 albedo;
+    float metallic;
+    float roughness;
+    float ao;
+
+    // 纹理贴图
+    unsigned int albedoMap;
+    unsigned int normalMap;
+    unsigned int metallicMap;
+    unsigned int roughnessMap;
+    unsigned int aoMap;
+
+    Shader* pbrShader;
+
+    PBRMaterial()
+        : albedo(1.0f, 1.0f, 1.0f),
+          metallic(0.5f),
+          roughness(0.5f),
+          ao(1.0f),
+          albedoMap(0),
+          normalMap(0),
+          metallicMap(0),
+          roughnessMap(0),
+          aoMap(0) {}
+
+    void use() {
+        pbrShader-&gt;use();
+
+        // 设置材质参数
+        pbrShader-&gt;setVec3("material.albedo", albedo);
+        pbrShader-&gt;setFloat("material.metallic", metallic);
+        pbrShader-&gt;setFloat("material.roughness", roughness);
+        pbrShader-&gt;setFloat("material.ao", ao);
+
+        // 绑定纹理
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, albedoMap);
+        pbrShader-&gt;setInt("albedoMap", 0);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, normalMap);
+        pbrShader-&gt;setInt("normalMap", 1);
+
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, metallicMap);
+        pbrShader-&gt;setInt("metallicMap", 2);
+
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, roughnessMap);
+        pbrShader-&gt;setInt("roughnessMap", 3);
+
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, aoMap);
+        pbrShader-&gt;setInt("aoMap", 4);
+    }
+
+    // 加载PBR材质集
+    static PBRMaterial* loadFromFolder(const std::string&amp; folder) {
+        PBRMaterial* mat = new PBRMaterial();
+
+        mat-&gt;albedoMap = loadTexture((folder + "/albedo.png").c_str());
+        mat-&gt;normalMap = loadTexture((folder + "/normal.png").c_str());
+        mat-&gt;metallicMap = loadTexture((folder + "/metallic.png").c_str());
+        mat-&gt;roughnessMap = loadTexture((folder + "/roughness.png").c_str());
+        mat-&gt;aoMap = loadTexture((folder + "/ao.png").c_str());
+
+        return mat;
+    }
+};
+</code></pre>
+<hr />
+<h2 id="二阴影系统实现"><a class="header" href="#二阴影系统实现">二、阴影系统实现</a></h2>
+<h3 id="21-阴影映射-shadow-mapping"><a class="header" href="#21-阴影映射-shadow-mapping">2.1 阴影映射 (Shadow Mapping)</a></h3>
+<h4 id="基本原理"><a class="header" href="#基本原理">基本原理</a></h4>
+<pre><code>阴影映射两步渲染
+├── Pass 1: 从光源视角渲染深度贴图
+│   ├── 创建帧缓冲对象 (FBO)
+│   ├── 创建深度纹理
+│   └── 从光源视角渲染场景
+└── Pass 2: 从相机视角渲染场景
+    ├── 采样深度纹理
+    ├── 比较片元深度与阴影贴图深度
+    └── 决定是否在阴影中
+</code></pre>
+<h4 id="深度贴图生成"><a class="header" href="#深度贴图生成">深度贴图生成</a></h4>
+<pre><code class="language-cpp">// shadow_map.h
+class ShadowMap {
+private:
+    unsigned int depthMapFBO;
+    unsigned int depthMap;
+    const unsigned int SHADOW_WIDTH = 2048;
+    const unsigned int SHADOW_HEIGHT = 2048;
+
+public:
+    ShadowMap() {
+        // 创建帧缓冲
+        glGenFramebuffers(1, &amp;depthMapFBO);
+
+        // 创建深度纹理
+        glGenTextures(1, &amp;depthMap);
+        glBindTexture(GL_TEXTURE_2D, depthMap);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
+                     SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+        // 绑定深度纹理到帧缓冲
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+        glDrawBuffer(GL_NONE);
+        glReadBuffer(GL_NONE);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void beginRender() {
+        glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+        glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
+
+    void endRender(int screenWidth, int screenHeight) {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, screenWidth, screenHeight);
+    }
+
+    unsigned int getDepthMap() const { return depthMap; }
+
+    glm::mat4 getLightSpaceMatrix(const glm::vec3&amp; lightPos, const glm::vec3&amp; lightTarget) {
+        glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, 1.0f, 75.0f);
+        glm::mat4 lightView = glm::lookAt(lightPos, lightTarget, glm::vec3(0.0, 1.0, 0.0));
+        return lightProjection * lightView;
+    }
+};
+</code></pre>
+<h4 id="深度渲染shader"><a class="header" href="#深度渲染shader">深度渲染Shader</a></h4>
+<pre><code class="language-glsl">// shadow_depth.vert
+#version 330 core
+
+layout (location = 0) in vec3 aPos;
+
+uniform mat4 lightSpaceMatrix;
+uniform mat4 model;
+
+void main() {
+    gl_Position = lightSpaceMatrix * model * vec4(aPos, 1.0);
+}
+</code></pre>
+<pre><code class="language-glsl">// shadow_depth.frag
+#version 330 core
+
+void main() {
+    // 深度值自动写入深度缓冲
+}
+</code></pre>
+<h4 id="带阴影的渲染shader"><a class="header" href="#带阴影的渲染shader">带阴影的渲染Shader</a></h4>
+<pre><code class="language-glsl">// shadow.vert
+#version 330 core
+
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoords;
+
+out VS_OUT {
+    vec3 FragPos;
+    vec3 Normal;
+    vec2 TexCoords;
+    vec4 FragPosLightSpace;
+} vs_out;
+
+uniform mat4 projection;
+uniform mat4 view;
+uniform mat4 model;
+uniform mat4 lightSpaceMatrix;
+
+void main() {
+    vs_out.FragPos = vec3(model * vec4(aPos, 1.0));
+    vs_out.Normal = transpose(inverse(mat3(model))) * aNormal;
+    vs_out.TexCoords = aTexCoords;
+    vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);
+
+    gl_Position = projection * view * vec4(vs_out.FragPos, 1.0);
+}
+</code></pre>
+<pre><code class="language-glsl">// shadow.frag
+#version 330 core
+
+out vec4 FragColor;
+
+in VS_OUT {
+    vec3 FragPos;
+    vec3 Normal;
+    vec2 TexCoords;
+    vec4 FragPosLightSpace;
+} fs_in;
+
+uniform sampler2D diffuseTexture;
+uniform sampler2D shadowMap;
+
+uniform vec3 lightPos;
+uniform vec3 viewPos;
+
+float ShadowCalculation(vec4 fragPosLightSpace) {
+    // 透视除法
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+
+    // 变换到[0,1]范围
+    projCoords = projCoords * 0.5 + 0.5;
+
+    // 获取最近深度值
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+
+    // 获取当前片元深度
+    float currentDepth = projCoords.z;
+
+    // 检查是否在阴影中
+    float bias = 0.005;  // 偏移解决阴影痤疮
+    float shadow = currentDepth - bias &gt; closestDepth ? 1.0 : 0.0;
+
+    // 超出远平面的片元不在阴影中
+    if(projCoords.z &gt; 1.0)
+        shadow = 0.0;
+
+    return shadow;
+}
+
+void main() {
+    vec3 color = texture(diffuseTexture, fs_in.TexCoords).rgb;
+    vec3 normal = normalize(fs_in.Normal);
+    vec3 lightColor = vec3(1.0);
+
+    // 环境光
+    vec3 ambient = 0.15 * color;
+
+    // 漫反射
+    vec3 lightDir = normalize(lightPos - fs_in.FragPos);
+    float diff = max(dot(lightDir, normal), 0.0);
+    vec3 diffuse = diff * lightColor;
+
+    // 镜面反射
+    vec3 viewDir = normalize(viewPos - fs_in.FragPos);
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
+    vec3 specular = spec * lightColor;
+
+    // 计算阴影
+    float shadow = ShadowCalculation(fs_in.FragPosLightSpace);
+
+    vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;
+
+    FragColor = vec4(lighting, 1.0);
+}
+</code></pre>
+<h3 id="22-pcf软阴影-percentage-closer-filtering"><a class="header" href="#22-pcf软阴影-percentage-closer-filtering">2.2 PCF软阴影 (Percentage Closer Filtering)</a></h3>
+<pre><code class="language-glsl">// PCF阴影计算
+float ShadowCalculationPCF(vec4 fragPosLightSpace) {
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+
+    float currentDepth = projCoords.z;
+    float bias = 0.005;
+
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+
+    // 3x3采样
+    for(int x = -1; x &lt;= 1; ++x) {
+        for(int y = -1; y &lt;= 1; ++y) {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth - bias &gt; pcfDepth ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 9.0;
+
+    if(projCoords.z &gt; 1.0)
+        shadow = 0.0;
+
+    return shadow;
+}
+</code></pre>
+<h3 id="23-csm级联阴影-cascaded-shadow-maps"><a class="header" href="#23-csm级联阴影-cascaded-shadow-maps">2.3 CSM级联阴影 (Cascaded Shadow Maps)</a></h3>
+<pre><code class="language-cpp">// cascaded_shadow_map.h
+class CascadedShadowMap {
+private:
+    static const int CASCADE_COUNT = 4;
+
+    struct Cascade {
+        unsigned int depthMapFBO;
+        unsigned int depthMap;
+        glm::mat4 lightSpaceMatrix;
+        float splitDepth;
+    };
+
+    Cascade cascades[CASCADE_COUNT];
+    const unsigned int SHADOW_MAP_SIZE = 2048;
+
+public:
+    CascadedShadowMap() {
+        for (int i = 0; i &lt; CASCADE_COUNT; i++) {
+            // 创建每个级联的FBO和深度纹理
+            glGenFramebuffers(1, &amp;cascades[i].depthMapFBO);
+
+            glGenTextures(1, &amp;cascades[i].depthMap);
+            glBindTexture(GL_TEXTURE_2D, cascades[i].depthMap);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F,
+                         SHADOW_MAP_SIZE, SHADOW_MAP_SIZE, 0,
+                         GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+            float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+            glBindFramebuffer(GL_FRAMEBUFFER, cascades[i].depthMapFBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+                                   GL_TEXTURE_2D, cascades[i].depthMap, 0);
+            glDrawBuffer(GL_NONE);
+            glReadBuffer(GL_NONE);
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    void updateCascades(const glm::mat4&amp; cameraView, const glm::mat4&amp; cameraProjection,
+                        const glm::vec3&amp; lightDir) {
+        // 计算级联分割深度
+        float cascadeSplits[CASCADE_COUNT];
+        float nearClip = 0.1f;
+        float farClip = 100.0f;
+        float clipRange = farClip - nearClip;
+
+        float minZ = nearClip;
+        float maxZ = nearClip + clipRange;
+
+        float range = maxZ - minZ;
+        float ratio = maxZ / minZ;
+
+        // 对数分割
+        for (int i = 0; i &lt; CASCADE_COUNT; i++) {
+            float p = (i + 1) / static_cast&lt;float&gt;(CASCADE_COUNT);
+            float log = minZ * std::pow(ratio, p);
+            float uniform = minZ + range * p;
+            float d = 0.95f * (log - uniform) + uniform;  // 混合对数和均匀分割
+            cascadeSplits[i] = (d - nearClip) / clipRange;
+            cascades[i].splitDepth = (d - nearClip) / clipRange;
+        }
+
+        // 为每个级联计算光照空间矩阵
+        float lastSplitDist = 0.0;
+        for (int i = 0; i &lt; CASCADE_COUNT; i++) {
+            float splitDist = cascadeSplits[i];
+
+            // 计算视锥体角点
+            glm::vec3 frustumCorners[8] = {
+                glm::vec3(-1.0f,  1.0f, -1.0f),
+                glm::vec3( 1.0f,  1.0f, -1.0f),
+                glm::vec3( 1.0f, -1.0f, -1.0f),
+                glm::vec3(-1.0f, -1.0f, -1.0f),
+                glm::vec3(-1.0f,  1.0f,  1.0f),
+                glm::vec3( 1.0f,  1.0f,  1.0f),
+                glm::vec3( 1.0f, -1.0f,  1.0f),
+                glm::vec3(-1.0f, -1.0f,  1.0f),
+            };
+
+            glm::mat4 invCam = glm::inverse(cameraProjection * cameraView);
+            for (int j = 0; j &lt; 8; j++) {
+                glm::vec4 invCorner = invCam * glm::vec4(frustumCorners[j], 1.0f);
+                frustumCorners[j] = glm::vec3(invCorner / invCorner.w);
+            }
+
+            // 根据分割调整远近平面
+            for (int j = 0; j &lt; 4; j++) {
+                glm::vec3 dist = frustumCorners[j + 4] - frustumCorners[j];
+                frustumCorners[j + 4] = frustumCorners[j] + (dist * splitDist);
+                frustumCorners[j] = frustumCorners[j] + (dist * lastSplitDist);
+            }
+
+            // 计算视锥体中心
+            glm::vec3 frustumCenter = glm::vec3(0.0f);
+            for (int j = 0; j &lt; 8; j++) {
+                frustumCenter += frustumCorners[j];
+            }
+            frustumCenter /= 8.0f;
+
+            // 计算包围球半径
+            float radius = 0.0f;
+            for (int j = 0; j &lt; 8; j++) {
+                float distance = glm::length(frustumCorners[j] - frustumCenter);
+                radius = glm::max(radius, distance);
+            }
+            radius = std::ceil(radius * 16.0f) / 16.0f;
+
+            glm::vec3 maxExtents = glm::vec3(radius);
+            glm::vec3 minExtents = -maxExtents;
+
+            glm::mat4 lightViewMatrix = glm::lookAt(
+                frustumCenter - lightDir * -minExtents.z,
+                frustumCenter,
+                glm::vec3(0.0f, 1.0f, 0.0f)
+            );
+
+            glm::mat4 lightOrthoMatrix = glm::ortho(
+                minExtents.x, maxExtents.x,
+                minExtents.y, maxExtents.y,
+                0.0f, maxExtents.z - minExtents.z
+            );
+
+            cascades[i].lightSpaceMatrix = lightOrthoMatrix * lightViewMatrix;
+            lastSplitDist = cascadeSplits[i];
+        }
+    }
+
+    void renderCascade(int cascadeIndex, const std::function&lt;void()&gt;&amp; renderScene) {
+        glViewport(0, 0, SHADOW_MAP_SIZE, SHADOW_MAP_SIZE);
+        glBindFramebuffer(GL_FRAMEBUFFER, cascades[cascadeIndex].depthMapFBO);
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        renderScene();
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    const Cascade&amp; getCascade(int index) const {
+        return cascades[index];
+    }
+
+    int getCascadeCount() const {
+        return CASCADE_COUNT;
+    }
+};
+</code></pre>
+<hr />
+<h2 id="三物理引擎集成"><a class="header" href="#三物理引擎集成">三、物理引擎集成</a></h2>
+<h3 id="31-bullet-physics集成"><a class="header" href="#31-bullet-physics集成">3.1 Bullet Physics集成</a></h3>
+<h4 id="初始化bullet"><a class="header" href="#初始化bullet">初始化Bullet</a></h4>
+<pre><code class="language-cpp">// physics_world.h
+#include &lt;btBulletDynamicsCommon.h&gt;
+
+class PhysicsWorld {
+private:
+    btDefaultCollisionConfiguration* collisionConfiguration;
+    btCollisionDispatcher* dispatcher;
+    btBroadphaseInterface* overlappingPairCache;
+    btSequentialImpulseConstraintSolver* solver;
+    btDiscreteDynamicsWorld* dynamicsWorld;
+
+    std::vector&lt;btRigidBody*&gt; rigidBodies;
+    std::vector&lt;btCollisionShape*&gt; collisionShapes;
+
+public:
+    PhysicsWorld() {
+        // 碰撞配置
+        collisionConfiguration = new btDefaultCollisionConfiguration();
+
+        // 碰撞调度器
+        dispatcher = new btCollisionDispatcher(collisionConfiguration);
+
+        // 宽相位碰撞检测
+        overlappingPairCache = new btDbvtBroadphase();
+
+        // 约束求解器
+        solver = new btSequentialImpulseConstraintSolver();
+
+        // 动力学世界
+        dynamicsWorld = new btDiscreteDynamicsWorld(
+            dispatcher, overlappingPairCache, solver, collisionConfiguration
+        );
+
+        // 设置重力
+        dynamicsWorld-&gt;setGravity(btVector3(0, -9.8, 0));
+    }
+
+    ~PhysicsWorld() {
+        // 清理刚体
+        for (int i = dynamicsWorld-&gt;getNumCollisionObjects() - 1; i &gt;= 0; i--) {
+            btCollisionObject* obj = dynamicsWorld-&gt;getCollisionObjectArray()[i];
+            btRigidBody* body = btRigidBody::upcast(obj);
+            if (body &amp;&amp; body-&gt;getMotionState()) {
+                delete body-&gt;getMotionState();
+            }
+            dynamicsWorld-&gt;removeCollisionObject(obj);
+            delete obj;
+        }
+
+        // 清理碰撞形状
+        for (auto shape : collisionShapes) {
+            delete shape;
+        }
+
+        delete dynamicsWorld;
+        delete solver;
+        delete overlappingPairCache;
+        delete dispatcher;
+        delete collisionConfiguration;
+    }
+
+    void stepSimulation(float deltaTime) {
+        dynamicsWorld-&gt;stepSimulation(deltaTime, 10);
+    }
+
+    btRigidBody* createRigidBody(float mass, const btTransform&amp; startTransform,
+                                  btCollisionShape* shape) {
+        bool isDynamic = (mass != 0.f);
+
+        btVector3 localInertia(0, 0, 0);
+        if (isDynamic) {
+            shape-&gt;calculateLocalInertia(mass, localInertia);
+        }
+
+        btDefaultMotionState* motionState = new btDefaultMotionState(startTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
+        btRigidBody* body = new btRigidBody(rbInfo);
+
+        dynamicsWorld-&gt;addRigidBody(body);
+        rigidBodies.push_back(body);
+
+        return body;
+    }
+
+    // 创建地面
+    btRigidBody* createGround() {
+        btCollisionShape* groundShape = new btBoxShape(btVector3(50, 1, 50));
+        collisionShapes.push_back(groundShape);
+
+        btTransform groundTransform;
+        groundTransform.setIdentity();
+        groundTransform.setOrigin(btVector3(0, -1, 0));
+
+        return createRigidBody(0.0f, groundTransform, groundShape);
+    }
+
+    // 创建盒子
+    btRigidBody* createBox(const glm::vec3&amp; position, const glm::vec3&amp; halfExtents, float mass = 1.0f) {
+        btCollisionShape* boxShape = new btBoxShape(btVector3(halfExtents.x, halfExtents.y, halfExtents.z));
+        collisionShapes.push_back(boxShape);
+
+        btTransform startTransform;
+        startTransform.setIdentity();
+        startTransform.setOrigin(btVector3(position.x, position.y, position.z));
+
+        return createRigidBody(mass, startTransform, boxShape);
+    }
+
+    // 创建球体
+    btRigidBody* createSphere(const glm::vec3&amp; position, float radius, float mass = 1.0f) {
+        btCollisionShape* sphereShape = new btSphereShape(radius);
+        collisionShapes.push_back(sphereShape);
+
+        btTransform startTransform;
+        startTransform.setIdentity();
+        startTransform.setOrigin(btVector3(position.x, position.y, position.z));
+
+        return createRigidBody(mass, startTransform, sphereShape);
+    }
+
+    // 射线检测
+    bool raycast(const glm::vec3&amp; from, const glm::vec3&amp; to, glm::vec3&amp; hitPoint) {
+        btVector3 btFrom(from.x, from.y, from.z);
+        btVector3 btTo(to.x, to.y, to.z);
+
+        btCollisionWorld::ClosestRayResultCallback rayCallback(btFrom, btTo);
+        dynamicsWorld-&gt;rayTest(btFrom, btTo, rayCallback);
+
+        if (rayCallback.hasHit()) {
+            hitPoint = glm::vec3(
+                rayCallback.m_hitPointWorld.getX(),
+                rayCallback.m_hitPointWorld.getY(),
+                rayCallback.m_hitPointWorld.getZ()
+            );
+            return true;
+        }
+
+        return false;
+    }
+
+    btDiscreteDynamicsWorld* getWorld() { return dynamicsWorld; }
+};
+</code></pre>
+<h3 id="32-rigidbody组件"><a class="header" href="#32-rigidbody组件">3.2 Rigidbody组件</a></h3>
+<pre><code class="language-cpp">// rigidbody.h
+class Rigidbody : public Component {
+private:
+    btRigidBody* body;
+    PhysicsWorld* physicsWorld;
+
+    float mass;
+    bool useGravity;
+    bool isKinematic;
+
+public:
+    Rigidbody(GameObject* go)
+        : Component(go), body(nullptr), mass(1.0f),
+          useGravity(true), isKinematic(false) {
+        physicsWorld = &amp;PhysicsWorld::getInstance();
+    }
+
+    void initialize(btCollisionShape* shape) {
+        Transform* transform = gameObject-&gt;getTransform();
+        glm::vec3 pos = transform-&gt;getPosition();
+        glm::quat rot = transform-&gt;getRotation();
+
+        btTransform startTransform;
+        startTransform.setIdentity();
+        startTransform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+        startTransform.setRotation(btQuaternion(rot.x, rot.y, rot.z, rot.w));
+
+        body = physicsWorld-&gt;createRigidBody(mass, startTransform, shape);
+        body-&gt;setUserPointer(gameObject);
+
+        if (!useGravity) {
+            body-&gt;setGravity(btVector3(0, 0, 0));
+        }
+
+        if (isKinematic) {
+            body-&gt;setCollisionFlags(body-&gt;getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+            body-&gt;setActivationState(DISABLE_DEACTIVATION);
+        }
+    }
+
+    void update(float deltaTime) override {
+        if (!body || isKinematic) return;
+
+        // 从物理世界同步到Transform
+        btTransform trans;
+        body-&gt;getMotionState()-&gt;getWorldTransform(trans);
+
+        Transform* transform = gameObject-&gt;getTransform();
+
+        btVector3 origin = trans.getOrigin();
+        transform-&gt;setPosition(glm::vec3(origin.getX(), origin.getY(), origin.getZ()));
+
+        btQuaternion rotation = trans.getRotation();
+        transform-&gt;setRotation(glm::quat(rotation.getW(), rotation.getX(), rotation.getY(), rotation.getZ()));
+    }
+
+    void setKinematicTarget(const glm::vec3&amp; position, const glm::quat&amp; rotation) {
+        if (!isKinematic || !body) return;
+
+        btTransform targetTransform;
+        targetTransform.setOrigin(btVector3(position.x, position.y, position.z));
+        targetTransform.setRotation(btQuaternion(rotation.x, rotation.y, rotation.z, rotation.w));
+
+        body-&gt;getMotionState()-&gt;setWorldTransform(targetTransform);
+    }
+
+    void addForce(const glm::vec3&amp; force) {
+        if (body &amp;&amp; !isKinematic) {
+            body-&gt;activate();
+            body-&gt;applyCentralForce(btVector3(force.x, force.y, force.z));
+        }
+    }
+
+    void addImpulse(const glm::vec3&amp; impulse) {
+        if (body &amp;&amp; !isKinematic) {
+            body-&gt;activate();
+            body-&gt;applyCentralImpulse(btVector3(impulse.x, impulse.y, impulse.z));
+        }
+    }
+
+    void setVelocity(const glm::vec3&amp; velocity) {
+        if (body &amp;&amp; !isKinematic) {
+            body-&gt;setLinearVelocity(btVector3(velocity.x, velocity.y, velocity.z));
+        }
+    }
+
+    glm::vec3 getVelocity() const {
+        if (body) {
+            btVector3 vel = body-&gt;getLinearVelocity();
+            return glm::vec3(vel.getX(), vel.getY(), vel.getZ());
+        }
+        return glm::vec3(0.0f);
+    }
+
+    void setMass(float m) {
+        mass = m;
+        if (body) {
+            btVector3 inertia(0, 0, 0);
+            body-&gt;getCollisionShape()-&gt;calculateLocalInertia(mass, inertia);
+            body-&gt;setMassProps(mass, inertia);
+        }
+    }
+
+    float getMass() const { return mass; }
+    void setUseGravity(bool use) { useGravity = use; }
+    void setKinematic(bool kinematic) { isKinematic = kinematic; }
+};
+</code></pre>
+<h3 id="33-碰撞检测"><a class="header" href="#33-碰撞检测">3.3 碰撞检测</a></h3>
+<pre><code class="language-cpp">// collision_detector.h
+class CollisionDetector {
+public:
+    struct ContactPoint {
+        GameObject* objectA;
+        GameObject* objectB;
+        glm::vec3 position;
+        glm::vec3 normal;
+        float penetrationDepth;
+    };
+
+    static void checkCollisions(btDiscreteDynamicsWorld* world,
+                                std::vector&lt;ContactPoint&gt;&amp; contacts) {
+        contacts.clear();
+
+        int numManifolds = world-&gt;getDispatcher()-&gt;getNumManifolds();
+        for (int i = 0; i &lt; numManifolds; i++) {
+            btPersistentManifold* contactManifold = world-&gt;getDispatcher()-&gt;getManifoldByIndexInternal(i);
+
+            const btCollisionObject* obA = contactManifold-&gt;getBody0();
+            const btCollisionObject* obB = contactManifold-&gt;getBody1();
+
+            GameObject* objA = static_cast&lt;GameObject*&gt;(obA-&gt;getUserPointer());
+            GameObject* objB = static_cast&lt;GameObject*&gt;(obB-&gt;getUserPointer());
+
+            int numContacts = contactManifold-&gt;getNumContacts();
+            for (int j = 0; j &lt; numContacts; j++) {
+                btManifoldPoint&amp; pt = contactManifold-&gt;getContactPoint(j);
+
+                if (pt.getDistance() &lt; 0.f) {
+                    ContactPoint contact;
+                    contact.objectA = objA;
+                    contact.objectB = objB;
+
+                    const btVector3&amp; ptA = pt.getPositionWorldOnA();
+                    contact.position = glm::vec3(ptA.getX(), ptA.getY(), ptA.getZ());
+
+                    const btVector3&amp; normalOnB = pt.m_normalWorldOnB;
+                    contact.normal = glm::vec3(normalOnB.getX(), normalOnB.getY(), normalOnB.getZ());
+
+                    contact.penetrationDepth = pt.getDistance();
+
+                    contacts.push_back(contact);
+                }
+            }
+        }
+    }
+};
+</code></pre>
+<hr />
+<h2 id="四完整ui系统"><a class="header" href="#四完整ui系统">四、完整UI系统</a></h2>
+<h3 id="41-freetype字体渲染"><a class="header" href="#41-freetype字体渲染">4.1 FreeType字体渲染</a></h3>
+<h4 id="字体加载与缓存"><a class="header" href="#字体加载与缓存">字体加载与缓存</a></h4>
+<pre><code class="language-cpp">// font.h
+#include &lt;ft2build.h&gt;
+#include FT_FREETYPE_H
+
+struct Character {
+    unsigned int textureID;
+    glm::ivec2 size;
+    glm::ivec2 bearing;
+    unsigned int advance;
+};
+
+class Font {
+private:
+    std::map&lt;char, Character&gt; characters;
+    unsigned int VAO, VBO;
+    Shader* textShader;
+
+public:
+    Font(const std::string&amp; fontPath, unsigned int fontSize) {
+        FT_Library ft;
+        if (FT_Init_FreeType(&amp;ft)) {
+            std::cerr &lt;&lt; "ERROR::FREETYPE: Could not init FreeType Library" &lt;&lt; std::endl;
+            return;
+        }
+
+        FT_Face face;
+        if (FT_New_Face(ft, fontPath.c_str(), 0, &amp;face)) {
+            std::cerr &lt;&lt; "ERROR::FREETYPE: Failed to load font" &lt;&lt; std::endl;
+            return;
+        }
+
+        FT_Set_Pixel_Sizes(face, 0, fontSize);
+
+        // 禁用字节对齐限制
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        // 加载ASCII前128个字符
+        for (unsigned char c = 0; c &lt; 128; c++) {
+            if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+                std::cerr &lt;&lt; "ERROR::FREETYTPE: Failed to load Glyph" &lt;&lt; std::endl;
+                continue;
+            }
+
+            unsigned int texture;
+            glGenTextures(1, &amp;texture);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RED,
+                face-&gt;glyph-&gt;bitmap.width,
+                face-&gt;glyph-&gt;bitmap.rows,
+                0,
+                GL_RED,
+                GL_UNSIGNED_BYTE,
+                face-&gt;glyph-&gt;bitmap.buffer
+            );
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+            Character character = {
+                texture,
+                glm::ivec2(face-&gt;glyph-&gt;bitmap.width, face-&gt;glyph-&gt;bitmap.rows),
+                glm::ivec2(face-&gt;glyph-&gt;bitmap_left, face-&gt;glyph-&gt;bitmap_top),
+                static_cast&lt;unsigned int&gt;(face-&gt;glyph-&gt;advance.x)
+            };
+            characters.insert(std::pair&lt;char, Character&gt;(c, character));
+        }
+
+        FT_Done_Face(face);
+        FT_Done_FreeType(ft);
+
+        // 配置VAO/VBO用于文字渲染
+        glGenVertexArrays(1, &amp;VAO);
+        glGenBuffers(1, &amp;VBO);
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+
+    void renderText(const std::string&amp; text, float x, float y, float scale,
+                    const glm::vec3&amp; color, float screenWidth, float screenHeight) {
+        textShader-&gt;use();
+        textShader-&gt;setVec3("textColor", color);
+
+        glm::mat4 projection = glm::ortho(0.0f, screenWidth, 0.0f, screenHeight);
+        textShader-&gt;setMat4("projection", projection);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindVertexArray(VAO);
+
+        std::string::const_iterator c;
+        for (c = text.begin(); c != text.end(); c++) {
+            Character ch = characters[*c];
+
+            float xpos = x + ch.bearing.x * scale;
+            float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+
+            float w = ch.size.x * scale;
+            float h = ch.size.y * scale;
+
+            float vertices[6][4] = {
+                { xpos,     ypos + h,   0.0f, 0.0f },
+                { xpos,     ypos,       0.0f, 1.0f },
+                { xpos + w, ypos,       1.0f, 1.0f },
+
+                { xpos,     ypos + h,   0.0f, 0.0f },
+                { xpos + w, ypos,       1.0f, 1.0f },
+                { xpos + w, ypos + h,   1.0f, 0.0f }
+            };
+
+            glBindTexture(GL_TEXTURE_2D, ch.textureID);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            x += (ch.advance &gt;&gt; 6) * scale;
+        }
+
+        glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    void setShader(Shader* shader) { textShader = shader; }
+};
+</code></pre>
+<h4 id="文字渲染shader"><a class="header" href="#文字渲染shader">文字渲染Shader</a></h4>
+<pre><code class="language-glsl">// text.vert
+#version 330 core
+layout (location = 0) in vec4 vertex; // &lt;vec2 pos, vec2 tex&gt;
+out vec2 TexCoords;
+
+uniform mat4 projection;
+
+void main() {
+    gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);
+    TexCoords = vertex.zw;
+}
+</code></pre>
+<pre><code class="language-glsl">// text.frag
+#version 330 core
+in vec2 TexCoords;
+out vec4 color;
+
+uniform sampler2D text;
+uniform vec3 textColor;
+
+void main() {
+    vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);
+    color = vec4(textColor, 1.0) * sampled;
+}
+</code></pre>
+<h3 id="42-ui组件系统"><a class="header" href="#42-ui组件系统">4.2 UI组件系统</a></h3>
+<h4 id="uielement基类"><a class="header" href="#uielement基类">UIElement基类</a></h4>
+<pre><code class="language-cpp">// ui_element.h
+class UIElement {
+protected:
+    glm::vec2 position;
+    glm::vec2 size;
+    bool visible;
+    bool enabled;
+    UIElement* parent;
+    std::vector&lt;UIElement*&gt; children;
+
+public:
+    UIElement() : position(0.0f), size(100.0f),
+                  visible(true), enabled(true), parent(nullptr) {}
+
+    virtual ~UIElement() {
+        for (auto child : children) {
+            delete child;
+        }
+    }
+
+    virtual void update(float deltaTime) {
+        for (auto child : children) {
+            if (child-&gt;visible) {
+                child-&gt;update(deltaTime);
+            }
+        }
+    }
+
+    virtual void render() {
+        for (auto child : children) {
+            if (child-&gt;visible) {
+                child-&gt;render();
+            }
+        }
+    }
+
+    virtual bool handleMouseClick(float mouseX, float mouseY) {
+        if (!visible || !enabled) return false;
+
+        // 先检查子元素
+        for (auto it = children.rbegin(); it != children.rend(); ++it) {
+            if ((*it)-&gt;handleMouseClick(mouseX, mouseY)) {
+                return true;
+            }
+        }
+
+        // 检查自己是否被点击
+        if (isPointInside(mouseX, mouseY)) {
+            onClick();
+            return true;
+        }
+
+        return false;
+    }
+
+    virtual void onClick() {}
+
+    bool isPointInside(float x, float y) const {
+        glm::vec2 worldPos = getWorldPosition();
+        return x &gt;= worldPos.x &amp;&amp; x &lt;= worldPos.x + size.x &amp;&amp;
+               y &gt;= worldPos.y &amp;&amp; y &lt;= worldPos.y + size.y;
+    }
+
+    glm::vec2 getWorldPosition() const {
+        if (parent) {
+            return parent-&gt;getWorldPosition() + position;
+        }
+        return position;
+    }
+
+    void addChild(UIElement* child) {
+        child-&gt;parent = this;
+        children.push_back(child);
+    }
+
+    void setPosition(const glm::vec2&amp; pos) { position = pos; }
+    void setSize(const glm::vec2&amp; s) { size = s; }
+    void setVisible(bool v) { visible = v; }
+    void setEnabled(bool e) { enabled = e; }
+
+    glm::vec2 getPosition() const { return position; }
+    glm::vec2 getSize() const { return size; }
+    bool isVisible() const { return visible; }
+    bool isEnabled() const { return enabled; }
+};
+</code></pre>
+<h4 id="uiimage组件"><a class="header" href="#uiimage组件">UIImage组件</a></h4>
+<pre><code class="language-cpp">// ui_image.h
+class UIImage : public UIElement {
+private:
+    unsigned int textureID;
+    glm::vec4 tintColor;
+    unsigned int VAO, VBO, EBO;
+
+public:
+    UIImage(unsigned int texture)
+        : textureID(texture), tintColor(1.0f) {
+        setupMesh();
+    }
+
+    void setupMesh() {
+        float vertices[] = {
+            // 位置         // 纹理坐标
+            0.0f, 1.0f,     0.0f, 1.0f,
+            1.0f, 0.0f,     1.0f, 0.0f,
+            0.0f, 0.0f,     0.0f, 0.0f,
+            1.0f, 1.0f,     1.0f, 1.0f
+        };
+
+        unsigned int indices[] = {
+            0, 1, 2,
+            0, 3, 1
+        };
+
+        glGenVertexArrays(1, &amp;VAO);
+        glGenBuffers(1, &amp;VBO);
+        glGenBuffers(1, &amp;EBO);
+
+        glBindVertexArray(VAO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
+        glBindVertexArray(0);
+    }
+
+    void render() override {
+        if (!visible) return;
+
+        Shader* uiShader = ResourceManager::getShader("ui");
+        uiShader-&gt;use();
+
+        glm::vec2 worldPos = getWorldPosition();
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(worldPos, 0.0f));
+        model = glm::scale(model, glm::vec3(size, 1.0f));
+
+        uiShader-&gt;setMat4("model", model);
+        uiShader-&gt;setVec4("tintColor", tintColor);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        UIElement::render();  // 渲染子元素
+    }
+
+    void setTexture(unsigned int texture) { textureID = texture; }
+    void setTintColor(const glm::vec4&amp; color) { tintColor = color; }
+};
+</code></pre>
+<h4 id="uibutton组件"><a class="header" href="#uibutton组件">UIButton组件</a></h4>
+<pre><code class="language-cpp">// ui_button.h
+class UIButton : public UIElement {
+private:
+    std::string text;
+    Font* font;
+    glm::vec4 normalColor;
+    glm::vec4 hoverColor;
+    glm::vec4 pressedColor;
+    glm::vec4 currentColor;
+
+    bool isHovered;
+    bool isPressed;
+
+    std::function&lt;void()&gt; onClickCallback;
+
+    unsigned int VAO, VBO, EBO;
+
+public:
+    UIButton(const std::string&amp; buttonText, Font* f)
+        : text(buttonText), font(f),
+          normalColor(0.2f, 0.2f, 0.2f, 1.0f),
+          hoverColor(0.3f, 0.3f, 0.3f, 1.0f),
+          pressedColor(0.15f, 0.15f, 0.15f, 1.0f),
+          currentColor(normalColor),
+          isHovered(false), isPressed(false) {
+        setupMesh();
+    }
+
+    void setupMesh() {
+        float vertices[] = {
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f,
+            1.0f, 1.0f
+        };
+
+        unsigned int indices[] = {
+            0, 1, 2,
+            0, 3, 1
+        };
+
+        glGenVertexArrays(1, &amp;VAO);
+        glGenBuffers(1, &amp;VBO);
+        glGenBuffers(1, &amp;EBO);
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glBindVertexArray(0);
+    }
+
+    void update(float deltaTime) override {
+        // 更新状态
+        if (isHovered) {
+            currentColor = isPressed ? pressedColor : hoverColor;
+        } else {
+            currentColor = normalColor;
+        }
+
+        UIElement::update(deltaTime);
+    }
+
+    void render() override {
+        if (!visible) return;
+
+        // 渲染背景
+        Shader* uiShader = ResourceManager::getShader("ui_colored");
+        uiShader-&gt;use();
+
+        glm::vec2 worldPos = getWorldPosition();
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, glm::vec3(worldPos, 0.0f));
+        model = glm::scale(model, glm::vec3(size, 1.0f));
+
+        uiShader-&gt;setMat4("model", model);
+        uiShader-&gt;setVec4("color", currentColor);
+
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        // 渲染文字（居中）
+        float textWidth = calculateTextWidth(text, 1.0f);
+        float textX = worldPos.x + (size.x - textWidth) / 2.0f;
+        float textY = worldPos.y + size.y / 2.0f - 10.0f;  // 近似居中
+
+        font-&gt;renderText(text, textX, textY, 1.0f, glm::vec3(1.0f), 1280, 720);
+
+        UIElement::render();
+    }
+
+    void onClick() override {
+        if (onClickCallback) {
+            onClickCallback();
+        }
+    }
+
+    void onMouseEnter() {
+        isHovered = true;
+    }
+
+    void onMouseExit() {
+        isHovered = false;
+        isPressed = false;
+    }
+
+    void onMouseDown() {
+        isPressed = true;
+    }
+
+    void onMouseUp() {
+        isPressed = false;
+    }
+
+    void setOnClick(std::function&lt;void()&gt; callback) {
+        onClickCallback = callback;
+    }
+
+    void setText(const std::string&amp; newText) { text = newText; }
+
+private:
+    float calculateTextWidth(const std::string&amp; text, float scale) {
+        float width = 0.0f;
+        // 简化计算，实际应该使用字体度量
+        for (char c : text) {
+            width += 20.0f * scale;  // 假设每个字符20像素
+        }
+        return width;
+    }
+};
+</code></pre>
+<hr />
+<h2 id="五场景管理与序列化"><a class="header" href="#五场景管理与序列化">五、场景管理与序列化</a></h2>
+<h3 id="51-场景图系统"><a class="header" href="#51-场景图系统">5.1 场景图系统</a></h3>
+<pre><code class="language-cpp">// scene.h
+class Scene {
+private:
+    std::string name;
+    std::vector&lt;GameObject*&gt; rootObjects;
+    Camera* mainCamera;
+    LightingSystem* lightingSystem;
+    PhysicsWorld* physicsWorld;
+
+public:
+    Scene(const std::string&amp; sceneName)
+        : name(sceneName), mainCamera(nullptr) {
+        lightingSystem = new LightingSystem();
+        physicsWorld = new PhysicsWorld();
+    }
+
+    ~Scene() {
+        for (auto obj : rootObjects) {
+            delete obj;
+        }
+        delete lightingSystem;
+        delete physicsWorld;
+    }
+
+    void addGameObject(GameObject* obj) {
+        rootObjects.push_back(obj);
+    }
+
+    void removeGameObject(GameObject* obj) {
+        auto it = std::find(rootObjects.begin(), rootObjects.end(), obj);
+        if (it != rootObjects.end()) {
+            rootObjects.erase(it);
+            delete obj;
+        }
+    }
+
+    GameObject* findGameObject(const std::string&amp; name) {
+        for (auto obj : rootObjects) {
+            if (obj-&gt;getName() == name) {
+                return obj;
+            }
+            // 递归搜索子对象
+            GameObject* found = findInChildren(obj, name);
+            if (found) return found;
+        }
+        return nullptr;
+    }
+
+    void update(float deltaTime) {
+        // 更新物理
+        physicsWorld-&gt;stepSimulation(deltaTime);
+
+        // 更新所有游戏对象
+        for (auto obj : rootObjects) {
+            if (obj-&gt;isActive()) {
+                obj-&gt;update(deltaTime);
+            }
+        }
+    }
+
+    void render(Camera* camera) {
+        if (!camera) camera = mainCamera;
+        if (!camera) return;
+
+        // 应用光照
+        Shader* shader = ResourceManager::getShader("default");
+        shader-&gt;use();
+        lightingSystem-&gt;applyToShader(shader);
+
+        // 渲染所有对象
+        for (auto obj : rootObjects) {
+            if (obj-&gt;isActive()) {
+                renderGameObject(obj, camera);
+            }
+        }
+    }
+
+    void setMainCamera(Camera* camera) { mainCamera = camera; }
+    Camera* getMainCamera() const { return mainCamera; }
+
+    LightingSystem* getLightingSystem() { return lightingSystem; }
+    PhysicsWorld* getPhysicsWorld() { return physicsWorld; }
+
+    const std::vector&lt;GameObject*&gt;&amp; getRootObjects() const { return rootObjects; }
+
+private:
+    GameObject* findInChildren(GameObject* parent, const std::string&amp; name) {
+        for (auto child : parent-&gt;getChildren()) {
+            if (child-&gt;getName() == name) {
+                return child;
+            }
+            GameObject* found = findInChildren(child, name);
+            if (found) return found;
+        }
+        return nullptr;
+    }
+
+    void renderGameObject(GameObject* obj, Camera* camera) {
+        MeshRenderer* renderer = obj-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (renderer) {
+            renderer-&gt;render(camera);
+        }
+
+        // 递归渲染子对象
+        for (auto child : obj-&gt;getChildren()) {
+            if (child-&gt;isActive()) {
+                renderGameObject(child, camera);
+            }
+        }
+    }
+};
+</code></pre>
+<h3 id="52-场景序列化-json"><a class="header" href="#52-场景序列化-json">5.2 场景序列化 (JSON)</a></h3>
+<pre><code class="language-cpp">// scene_serializer.h
+#include &lt;nlohmann/json.hpp&gt;
+using json = nlohmann::json;
+
+class SceneSerializer {
+public:
+    static void saveScene(Scene* scene, const std::string&amp; filepath) {
+        json sceneJson;
+        sceneJson["name"] = scene-&gt;getName();
+
+        json objectsJson = json::array();
+        for (auto obj : scene-&gt;getRootObjects()) {
+            objectsJson.push_back(serializeGameObject(obj));
+        }
+        sceneJson["objects"] = objectsJson;
+
+        // 保存光照
+        sceneJson["lighting"] = serializeLighting(scene-&gt;getLightingSystem());
+
+        std::ofstream file(filepath);
+        file &lt;&lt; sceneJson.dump(4);  // 格式化输出
+        file.close();
+    }
+
+    static Scene* loadScene(const std::string&amp; filepath) {
+        std::ifstream file(filepath);
+        json sceneJson;
+        file &gt;&gt; sceneJson;
+        file.close();
+
+        Scene* scene = new Scene(sceneJson["name"]);
+
+        // 加载游戏对象
+        for (auto&amp; objJson : sceneJson["objects"]) {
+            GameObject* obj = deserializeGameObject(objJson);
+            scene-&gt;addGameObject(obj);
+        }
+
+        // 加载光照
+        if (sceneJson.contains("lighting")) {
+            deserializeLighting(sceneJson["lighting"], scene-&gt;getLightingSystem());
+        }
+
+        return scene;
+    }
+
+private:
+    static json serializeGameObject(GameObject* obj) {
+        json objJson;
+        objJson["name"] = obj-&gt;getName();
+        objJson["active"] = obj-&gt;isActive();
+
+        // Transform
+        Transform* transform = obj-&gt;getTransform();
+        objJson["transform"] = {
+            {"position", {transform-&gt;getPosition().x, transform-&gt;getPosition().y, transform-&gt;getPosition().z}},
+            {"rotation", {transform-&gt;getRotation().x, transform-&gt;getRotation().y,
+                          transform-&gt;getRotation().z, transform-&gt;getRotation().w}},
+            {"scale", {transform-&gt;getScale().x, transform-&gt;getScale().y, transform-&gt;getScale().z}}
+        };
+
+        // Components
+        json componentsJson = json::array();
+
+        // MeshRenderer
+        MeshRenderer* renderer = obj-&gt;getComponent&lt;MeshRenderer&gt;();
+        if (renderer) {
+            componentsJson.push_back({
+                {"type", "MeshRenderer"},
+                {"meshPath", renderer-&gt;getMeshPath()},
+                {"materialPath", renderer-&gt;getMaterialPath()}
+            });
+        }
+
+        // Rigidbody
+        Rigidbody* rb = obj-&gt;getComponent&lt;Rigidbody&gt;();
+        if (rb) {
+            componentsJson.push_back({
+                {"type", "Rigidbody"},
+                {"mass", rb-&gt;getMass()},
+                {"useGravity", rb-&gt;getUseGravity()},
+                {"isKinematic", rb-&gt;isKinematic()}
+            });
+        }
+
+        objJson["components"] = componentsJson;
+
+        // Children
+        json childrenJson = json::array();
+        for (auto child : obj-&gt;getChildren()) {
+            childrenJson.push_back(serializeGameObject(child));
+        }
+        objJson["children"] = childrenJson;
+
+        return objJson;
+    }
+
+    static GameObject* deserializeGameObject(const json&amp; objJson) {
+        GameObject* obj = new GameObject(objJson["name"]);
+        obj-&gt;setActive(objJson["active"]);
+
+        // Transform
+        auto&amp; transformJson = objJson["transform"];
+        Transform* transform = obj-&gt;getTransform();
+
+        transform-&gt;setPosition(glm::vec3(
+            transformJson["position"][0],
+            transformJson["position"][1],
+            transformJson["position"][2]
+        ));
+
+        transform-&gt;setRotation(glm::quat(
+            transformJson["rotation"][3],  // w
+            transformJson["rotation"][0],  // x
+            transformJson["rotation"][1],  // y
+            transformJson["rotation"][2]   // z
+        ));
+
+        transform-&gt;setScale(glm::vec3(
+            transformJson["scale"][0],
+            transformJson["scale"][1],
+            transformJson["scale"][2]
+        ));
+
+        // Components
+        for (auto&amp; compJson : objJson["components"]) {
+            std::string type = compJson["type"];
+
+            if (type == "MeshRenderer") {
+                MeshRenderer* renderer = obj-&gt;addComponent&lt;MeshRenderer&gt;();
+                renderer-&gt;loadMesh(compJson["meshPath"]);
+                renderer-&gt;loadMaterial(compJson["materialPath"]);
+            }
+            else if (type == "Rigidbody") {
+                Rigidbody* rb = obj-&gt;addComponent&lt;Rigidbody&gt;();
+                rb-&gt;setMass(compJson["mass"]);
+                rb-&gt;setUseGravity(compJson["useGravity"]);
+                rb-&gt;setKinematic(compJson["isKinematic"]);
+            }
+        }
+
+        // Children
+        for (auto&amp; childJson : objJson["children"]) {
+            GameObject* child = deserializeGameObject(childJson);
+            child-&gt;setParent(obj);
+        }
+
+        return obj;
+    }
+
+    static json serializeLighting(LightingSystem* lighting) {
+        json lightingJson;
+
+        // Directional Light
+        auto&amp; dirLight = lighting-&gt;getDirectionalLight();
+        lightingJson["directionalLight"] = {
+            {"direction", {dirLight.direction.x, dirLight.direction.y, dirLight.direction.z}},
+            {"ambient", {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z}},
+            {"diffuse", {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z}},
+            {"specular", {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z}}
+        };
+
+        // Point Lights
+        json pointLightsJson = json::array();
+        for (auto&amp; light : lighting-&gt;getPointLights()) {
+            pointLightsJson.push_back({
+                {"position", {light.position.x, light.position.y, light.position.z}},
+                {"ambient", {light.ambient.x, light.ambient.y, light.ambient.z}},
+                {"diffuse", {light.diffuse.x, light.diffuse.y, light.diffuse.z}},
+                {"specular", {light.specular.x, light.specular.y, light.specular.z}},
+                {"constant", light.constant},
+                {"linear", light.linear},
+                {"quadratic", light.quadratic}
+            });
+        }
+        lightingJson["pointLights"] = pointLightsJson;
+
+        return lightingJson;
+    }
+
+    static void deserializeLighting(const json&amp; lightingJson, LightingSystem* lighting) {
+        // Directional Light
+        auto&amp; dirLightJson = lightingJson["directionalLight"];
+        LightingSystem::DirectionalLight dirLight;
+
+        dirLight.direction = glm::vec3(
+            dirLightJson["direction"][0],
+            dirLightJson["direction"][1],
+            dirLightJson["direction"][2]
+        );
+        dirLight.ambient = glm::vec3(
+            dirLightJson["ambient"][0],
+            dirLightJson["ambient"][1],
+            dirLightJson["ambient"][2]
+        );
+        // ... 其他属性
+
+        lighting-&gt;setDirectionalLight(dirLight);
+
+        // Point Lights
+        for (auto&amp; pointLightJson : lightingJson["pointLights"]) {
+            LightingSystem::PointLight pointLight;
+            pointLight.position = glm::vec3(
+                pointLightJson["position"][0],
+                pointLightJson["position"][1],
+                pointLightJson["position"][2]
+            );
+            // ... 其他属性
+            lighting-&gt;addPointLight(pointLight);
+        }
+    }
+};
+</code></pre>
+<hr />
+<h2 id="六资源热加载系统"><a class="header" href="#六资源热加载系统">六、资源热加载系统</a></h2>
+<h3 id="61-文件监控"><a class="header" href="#61-文件监控">6.1 文件监控</a></h3>
+<pre><code class="language-cpp">// file_watcher.h
+#include &lt;filesystem&gt;
+#include &lt;thread&gt;
+#include &lt;chrono&gt;
+
+namespace fs = std::filesystem;
+
+class FileWatcher {
+private:
+    std::map&lt;std::string, fs::file_time_type&gt; fileTimestamps;
+    std::string watchDirectory;
+    std::thread watchThread;
+    bool running;
+
+    std::function&lt;void(const std::string&amp;)&gt; onFileModified;
+
+public:
+    FileWatcher(const std::string&amp; directory)
+        : watchDirectory(directory), running(false) {}
+
+    ~FileWatcher() {
+        stop();
+    }
+
+    void start() {
+        running = true;
+
+        // 初始化文件时间戳
+        for (auto&amp; entry : fs::recursive_directory_iterator(watchDirectory)) {
+            if (entry.is_regular_file()) {
+                fileTimestamps[entry.path().string()] = fs::last_write_time(entry.path());
+            }
+        }
+
+        watchThread = std::thread([this]() {
+            while (running) {
+                checkForChanges();
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
+        });
+    }
+
+    void stop() {
+        running = false;
+        if (watchThread.joinable()) {
+            watchThread.join();
+        }
+    }
+
+    void setOnFileModified(std::function&lt;void(const std::string&amp;)&gt; callback) {
+        onFileModified = callback;
+    }
+
+private:
+    void checkForChanges() {
+        for (auto&amp; entry : fs::recursive_directory_iterator(watchDirectory)) {
+            if (!entry.is_regular_file()) continue;
+
+            std::string path = entry.path().string();
+            auto currentTime = fs::last_write_time(entry.path());
+
+            // 新文件
+            if (fileTimestamps.find(path) == fileTimestamps.end()) {
+                fileTimestamps[path] = currentTime;
+                if (onFileModified) {
+                    onFileModified(path);
+                }
+            }
+            // 修改的文件
+            else if (fileTimestamps[path] != currentTime) {
+                fileTimestamps[path] = currentTime;
+                if (onFileModified) {
+                    onFileModified(path);
+                }
+            }
+        }
+    }
+};
+</code></pre>
+<h3 id="62-资源管理器"><a class="header" href="#62-资源管理器">6.2 资源管理器</a></h3>
+<pre><code class="language-cpp">// resource_manager.h
+class ResourceManager {
+private:
+    static std::map&lt;std::string, Shader*&gt; shaders;
+    static std::map&lt;std::string, unsigned int&gt; textures;
+    static std::map&lt;std::string, Mesh*&gt; meshes;
+    static std::map&lt;std::string, Material*&gt; materials;
+
+    static FileWatcher* fileWatcher;
+
+public:
+    static void initialize(const std::string&amp; resourcePath) {
+        fileWatcher = new FileWatcher(resourcePath);
+        fileWatcher-&gt;setOnFileModified([](const std::string&amp; path) {
+            reloadResource(path);
+        });
+        fileWatcher-&gt;start();
+    }
+
+    static void shutdown() {
+        // 清理所有资源
+        for (auto&amp; pair : shaders) delete pair.second;
+        for (auto&amp; pair : textures) glDeleteTextures(1, &amp;pair.second);
+        for (auto&amp; pair : meshes) delete pair.second;
+        for (auto&amp; pair : materials) delete pair.second;
+
+        if (fileWatcher) {
+            delete fileWatcher;
+        }
+    }
+
+    static Shader* loadShader(const std::string&amp; name, const std::string&amp; vertPath,
+                               const std::string&amp; fragPath) {
+        Shader* shader = new Shader(vertPath.c_str(), fragPath.c_str());
+        shaders[name] = shader;
+        return shader;
+    }
+
+    static Shader* getShader(const std::string&amp; name) {
+        return shaders[name];
+    }
+
+    static unsigned int loadTexture(const std::string&amp; name, const std::string&amp; path) {
+        unsigned int textureID = ::loadTexture(path.c_str());  // 全局函数
+        textures[name] = textureID;
+        return textureID;
+    }
+
+    static unsigned int getTexture(const std::string&amp; name) {
+        return textures[name];
+    }
+
+    static Mesh* loadMesh(const std::string&amp; name, const std::string&amp; path) {
+        Mesh* mesh = new Mesh(path);
+        meshes[name] = mesh;
+        return mesh;
+    }
+
+    static Mesh* getMesh(const std::string&amp; name) {
+        return meshes[name];
+    }
+
+    static void reloadResource(const std::string&amp; path) {
+        std::cout &lt;&lt; "Reloading resource: " &lt;&lt; path &lt;&lt; std::endl;
+
+        // 根据文件扩展名判断资源类型
+        if (path.ends_with(".vert") || path.ends_with(".frag")) {
+            // 重新编译Shader
+            for (auto&amp; pair : shaders) {
+                // 检查是否是这个Shader的源文件
+                // ... 重新加载逻辑
+            }
+        }
+        else if (path.ends_with(".png") || path.ends_with(".jpg")) {
+            // 重新加载纹理
+            for (auto&amp; pair : textures) {
+                // ... 重新加载逻辑
+            }
+        }
+    }
+};
+
+// 静态成员初始化
+std::map&lt;std::string, Shader*&gt; ResourceManager::shaders;
+std::map&lt;std::string, unsigned int&gt; ResourceManager::textures;
+std::map&lt;std::string, Mesh*&gt; ResourceManager::meshes;
+std::map&lt;std::string, Material*&gt; ResourceManager::materials;
+FileWatcher* ResourceManager::fileWatcher = nullptr;
+</code></pre>
+<hr />
+<h2 id="七粒子系统"><a class="header" href="#七粒子系统">七、粒子系统</a></h2>
+<h3 id="71-基础粒子系统"><a class="header" href="#71-基础粒子系统">7.1 基础粒子系统</a></h3>
+<pre><code class="language-cpp">// particle_system.h
+struct Particle {
+    glm::vec3 position;
+    glm::vec3 velocity;
+    glm::vec4 color;
+    float life;
+    float size;
+};
+
+class ParticleSystem : public Component {
+private:
+    std::vector&lt;Particle&gt; particles;
+    unsigned int maxParticles;
+
+    glm::vec3 emitPosition;
+    float emitRate;
+    float timer;
+
+    // 粒子属性范围
+    glm::vec3 velocityMin, velocityMax;
+    float lifeMin, lifeMax;
+    float sizeMin, sizeMax;
+    glm::vec4 startColor, endColor;
+
+    unsigned int VAO, VBO;
+    Shader* particleShader;
+    unsigned int particleTexture;
+
+public:
+    ParticleSystem(GameObject* go)
+        : Component(go), maxParticles(1000), emitRate(100.0f), timer(0.0f) {
+        particles.resize(maxParticles);
+
+        // 默认属性
+        velocityMin = glm::vec3(-1.0f, 0.0f, -1.0f);
+        velocityMax = glm::vec3(1.0f, 2.0f, 1.0f);
+        lifeMin = 1.0f;
+        lifeMax = 3.0f;
+        sizeMin = 0.05f;
+        sizeMax = 0.1f;
+        startColor = glm::vec4(1.0f, 0.5f, 0.0f, 1.0f);
+        endColor = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+
+        setupMesh();
+    }
+
+    void setupMesh() {
+        glGenVertexArrays(1, &amp;VAO);
+        glGenBuffers(1, &amp;VBO);
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, maxParticles * sizeof(Particle), nullptr, GL_STREAM_DRAW);
+
+        // Position
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)0);
+
+        // Color
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)offsetof(Particle, color));
+
+        // Size
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)offsetof(Particle, size));
+
+        glBindVertexArray(0);
+    }
+
+    void update(float deltaTime) override {
+        emitPosition = gameObject-&gt;getTransform()-&gt;getPosition();
+
+        // 发射新粒子
+        timer += deltaTime;
+        int newParticles = static_cast&lt;int&gt;(emitRate * deltaTime);
+        for (int i = 0; i &lt; newParticles; i++) {
+            emitParticle();
+        }
+
+        // 更新现有粒子
+        for (auto&amp; p : particles) {
+            if (p.life &gt; 0.0f) {
+                p.life -= deltaTime;
+                p.position += p.velocity * deltaTime;
+                p.velocity.y -= 9.8f * deltaTime;  // 重力
+
+                // 颜色插值
+                float lifeRatio = p.life / lifeMax;
+                p.color = glm::mix(endColor, startColor, lifeRatio);
+            }
+        }
+    }
+
+    void render(Camera* camera) {
+        // 按深度排序（从后往前）
+        glm::vec3 cameraPos = camera-&gt;getGameObject()-&gt;getTransform()-&gt;getPosition();
+        std::sort(particles.begin(), particles.end(), [&amp;cameraPos](const Particle&amp; a, const Particle&amp; b) {
+            float distA = glm::length(a.position - cameraPos);
+            float distB = glm::length(b.position - cameraPos);
+            return distA &gt; distB;
+        });
+
+        // 更新缓冲
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, particles.size() * sizeof(Particle), &amp;particles[0]);
+
+        // 渲染
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);  // 加法混合
+        glDepthMask(GL_FALSE);
+
+        particleShader-&gt;use();
+        particleShader-&gt;setMat4("view", camera-&gt;getViewMatrix());
+        particleShader-&gt;setMat4("projection", camera-&gt;getProjectionMatrix());
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, particleTexture);
+
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_POINTS, 0, maxParticles);
+        glBindVertexArray(0);
+
+        glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
+    }
+
+private:
+    void emitParticle() {
+        // 找到死亡的粒子槽位
+        for (auto&amp; p : particles) {
+            if (p.life &lt;= 0.0f) {
+                p.position = emitPosition;
+                p.velocity = randomVec3(velocityMin, velocityMax);
+                p.life = randomFloat(lifeMin, lifeMax);
+                p.size = randomFloat(sizeMin, sizeMax);
+                p.color = startColor;
+                break;
+            }
+        }
+    }
+
+    glm::vec3 randomVec3(const glm::vec3&amp; min, const glm::vec3&amp; max) {
+        return glm::vec3(
+            randomFloat(min.x, max.x),
+            randomFloat(min.y, max.y),
+            randomFloat(min.z, max.z)
+        );
+    }
+
+    float randomFloat(float min, float max) {
+        return min + static_cast&lt;float&gt;(rand()) / (static_cast&lt;float&gt;(RAND_MAX / (max - min)));
+    }
+};
+</code></pre>
+<h3 id="72-粒子shader"><a class="header" href="#72-粒子shader">7.2 粒子Shader</a></h3>
+<pre><code class="language-glsl">// particle.vert
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec4 aColor;
+layout (location = 2) in float aSize;
+
+out vec4 ParticleColor;
+
+uniform mat4 view;
+uniform mat4 projection;
+
+void main() {
+    ParticleColor = aColor;
+    gl_Position = projection * view * vec4(aPos, 1.0);
+    gl_PointSize = aSize * (1.0 / gl_Position.w) * 100.0;  // 透视缩放
+}
+</code></pre>
+<pre><code class="language-glsl">// particle.frag
+#version 330 core
+
+in vec4 ParticleColor;
+out vec4 FragColor;
+
+uniform sampler2D sprite;
+
+void main() {
+    FragColor = texture(sprite, gl_PointCoord) * ParticleColor;
+}
+</code></pre>
+<hr />
+<h2 id="八后处理效果"><a class="header" href="#八后处理效果">八、后处理效果</a></h2>
+<h3 id="81-帧缓冲设置"><a class="header" href="#81-帧缓冲设置">8.1 帧缓冲设置</a></h3>
+<pre><code class="language-cpp">// framebuffer.h
+class Framebuffer {
+private:
+    unsigned int FBO;
+    unsigned int textureColorBuffer;
+    unsigned int RBO;
+    unsigned int width, height;
+
+public:
+    Framebuffer(unsigned int w, unsigned int h) : width(w), height(h) {
+        // 创建帧缓冲
+        glGenFramebuffers(1, &amp;FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+
+        // 创建颜色纹理
+        glGenTextures(1, &amp;textureColorBuffer);
+        glBindTexture(GL_TEXTURE_2D, textureColorBuffer);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorBuffer, 0);
+
+        // 创建渲染缓冲对象（深度和模板）
+        glGenRenderbuffers(1, &amp;RBO);
+        glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
+        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+            std::cerr &lt;&lt; "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" &lt;&lt; std::endl;
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    ~Framebuffer() {
+        glDeleteFramebuffers(1, &amp;FBO);
+        glDeleteTextures(1, &amp;textureColorBuffer);
+        glDeleteRenderbuffers(1, &amp;RBO);
+    }
+
+    void bind() {
+        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+        glViewport(0, 0, width, height);
+    }
+
+    void unbind() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    unsigned int getTexture() const { return textureColorBuffer; }
+};
+</code></pre>
+<h3 id="82-后处理效果shader"><a class="header" href="#82-后处理效果shader">8.2 后处理效果Shader</a></h3>
+<pre><code class="language-glsl">// post_process.frag - 基础后处理
+#version 330 core
+
+in vec2 TexCoords;
+out vec4 FragColor;
+
+uniform sampler2D screenTexture;
+uniform float time;
+
+// 灰度
+vec3 grayscale(vec3 color) {
+    float average = 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
+    return vec3(average);
+}
+
+// 反相
+vec3 invert(vec3 color) {
+    return vec3(1.0) - color;
+}
+
+// 锐化核
+const float sharpen[9] = float[](
+    -1, -1, -1,
+    -1,  9, -1,
+    -1, -1, -1
+);
+
+// 模糊核
+const float blur[9] = float[](
+    1.0/16, 2.0/16, 1.0/16,
+    2.0/16, 4.0/16, 2.0/16,
+    1.0/16, 2.0/16, 1.0/16
+);
+
+// 边缘检测
+const float edge[9] = float[](
+    1,  1,  1,
+    1, -8,  1,
+    1,  1,  1
+);
+
+vec3 applyKernel(float kernel[9]) {
+    vec2 offsets[9] = vec2[](
+        vec2(-1,  1), vec2( 0,  1), vec2( 1,  1),
+        vec2(-1,  0), vec2( 0,  0), vec2( 1,  0),
+        vec2(-1, -1), vec2( 0, -1), vec2( 1, -1)
+    );
+
+    vec2 texelSize = 1.0 / textureSize(screenTexture, 0);
+    vec3 result = vec3(0.0);
+
+    for(int i = 0; i &lt; 9; i++) {
+        result += texture(screenTexture, TexCoords + offsets[i] * texelSize).rgb * kernel[i];
+    }
+
+    return result;
+}
+
+// Vignette（暗角）
+vec3 vignette(vec3 color, vec2 uv) {
+    float dist = distance(uv, vec2(0.5));
+    float vignette = smoothstep(0.8, 0.2, dist);
+    return color * vignette;
+}
+
+// 色差 (Chromatic Aberration)
+vec3 chromaticAberration(vec2 uv) {
+    vec2 direction = uv - vec2(0.5);
+    float distortion = length(direction) * 0.01;
+
+    vec3 color;
+    color.r = texture(screenTexture, uv - direction * distortion).r;
+    color.g = texture(screenTexture, uv).g;
+    color.b = texture(screenTexture, uv + direction * distortion).b;
+
+    return color;
+}
+
+void main() {
+    vec3 color = texture(screenTexture, TexCoords).rgb;
+
+    // 选择后处理效果
+    // color = grayscale(color);
+    // color = invert(color);
+    // color = applyKernel(sharpen);
+    // color = applyKernel(blur);
+    // color = applyKernel(edge);
+    // color = vignette(color, TexCoords);
+    // color = chromaticAberration(TexCoords);
+
+    FragColor = vec4(color, 1.0);
+}
+</code></pre>
+<h3 id="83-bloom效果"><a class="header" href="#83-bloom效果">8.3 Bloom效果</a></h3>
+<pre><code class="language-glsl">// bloom_extract.frag - 提取亮部
+#version 330 core
+
+in vec2 TexCoords;
+out vec4 BrightColor;
+
+uniform sampler2D hdrBuffer;
+uniform float threshold;
+
+void main() {
+    vec3 color = texture(hdrBuffer, TexCoords).rgb;
+    float brightness = dot(color, vec3(0.2126, 0.7152, 0.0722));
+
+    if(brightness &gt; threshold)
+        BrightColor = vec4(color, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+}
+</code></pre>
+<pre><code class="language-glsl">// bloom_blur.frag - 高斯模糊
+#version 330 core
+
+in vec2 TexCoords;
+out vec4 FragColor;
+
+uniform sampler2D image;
+uniform bool horizontal;
+
+uniform float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
+
+void main() {
+    vec2 tex_offset = 1.0 / textureSize(image, 0);
+    vec3 result = texture(image, TexCoords).rgb * weight[0];
+
+    if(horizontal) {
+        for(int i = 1; i &lt; 5; ++i) {
+            result += texture(image, TexCoords + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
+            result += texture(image, TexCoords - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];
+        }
+    }
+    else {
+        for(int i = 1; i &lt; 5; ++i) {
+            result += texture(image, TexCoords + vec2(0.0, tex_offset.y * i)).rgb * weight[i];
+            result += texture(image, TexCoords - vec2(0.0, tex_offset.y * i)).rgb * weight[i];
+        }
+    }
+
+    FragColor = vec4(result, 1.0);
+}
+</code></pre>
+<pre><code class="language-glsl">// bloom_final.frag - 合成
+#version 330 core
+
+in vec2 TexCoords;
+out vec4 FragColor;
+
+uniform sampler2D scene;
+uniform sampler2D bloomBlur;
+uniform float bloomStrength;
+
+void main() {
+    vec3 hdrColor = texture(scene, TexCoords).rgb;
+    vec3 bloomColor = texture(bloomBlur, TexCoords).rgb;
+
+    hdrColor += bloomColor * bloomStrength;
+
+    // Tone mapping
+    vec3 result = hdrColor / (hdrColor + vec3(1.0));
+
+    // Gamma correction
+    result = pow(result, vec3(1.0/2.2));
+
+    FragColor = vec4(result, 1.0);
+}
+</code></pre>
+<hr />
+<p><strong>总结</strong>：本文档详细介绍了游戏引擎的高级主题，包括：</p>
+<ol>
+<li><strong>高级光照</strong>：Phong/PBR光照模型、多光源系统</li>
+<li><strong>阴影系统</strong>：Shadow Mapping、PCF软阴影、CSM级联阴影</li>
+<li><strong>物理引擎</strong>：Bullet Physics集成、刚体、碰撞检测</li>
+<li><strong>UI系统</strong>：FreeType字体渲染、UI组件（Image、Button）</li>
+<li><strong>场景管理</strong>：场景图、JSON序列化</li>
+<li><strong>资源热加载</strong>：文件监控、资源管理器</li>
+<li><strong>粒子系统</strong>：GPU粒子、发射器</li>
+<li><strong>后处理</strong>：帧缓冲、各种屏幕特效、Bloom</li>
+</ol>
+<p>配合主文档使用，可以构建完整的商业级游戏引擎！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/游戏引擎-性能优化.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/游戏引擎.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/游戏引擎-性能优化.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/游戏引擎.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

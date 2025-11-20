@@ -1,0 +1,854 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Blender Python 自动化与插件开发专题 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../theme/pagetoc.css">
+        <link rel="stylesheet" href="../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="blender-python-自动化与插件开发专题"><a class="header" href="#blender-python-自动化与插件开发专题">Blender Python 自动化与插件开发专题</a></h1>
+<blockquote>
+<p>从基础脚本到完整插件开发,掌握 Blender Python API,提升生产效率。</p>
+</blockquote>
+<hr />
+<h2 id="-专题导航"><a class="header" href="#-专题导航">📖 专题导航</a></h2>
+<ul>
+<li><strong><a href="./Blender.html">返回主笔记</a></strong> - Blender 核心学习路径</li>
+<li><strong>当前专题</strong>: Python 自动化与插件开发深度实践</li>
+</ul>
+<hr />
+<h2 id="专题概述"><a class="header" href="#专题概述">专题概述</a></h2>
+<h3 id="学习目标"><a class="header" href="#学习目标">学习目标</a></h3>
+<p>✅ 掌握 Blender Python API 的核心模块与使用方法
+✅ 能够编写实用的自动化脚本解决重复性任务
+✅ 开发完整的 Blender 插件并集成到工作流
+✅ 理解插件发布与版本管理的最佳实践</p>
+<h3 id="适用人群"><a class="header" href="#适用人群">适用人群</a></h3>
+<ul>
+<li>完成 Blender 基础操作学习的用户</li>
+<li>具备 Python 基础知识的开发者</li>
+<li>希望提升工作效率的技术美术</li>
+<li>需要定制化工具的项目团队</li>
+</ul>
+<hr />
+<h2 id="第一章blender-python-api-基础"><a class="header" href="#第一章blender-python-api-基础">第一章:Blender Python API 基础</a></h2>
+<h3 id="11-核心模块概览"><a class="header" href="#11-核心模块概览">1.1 核心模块概览</a></h3>
+<p><strong>三大核心模块</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>模块</th><th>功能</th><th>典型用途</th></tr></thead><tbody>
+<tr><td><code>bpy.data</code></td><td>访问 Blender 数据块</td><td>读取/修改对象、材质、纹理等</td></tr>
+<tr><td><code>bpy.context</code></td><td>当前上下文</td><td>获取选中对象、活动场景等</td></tr>
+<tr><td><code>bpy.ops</code></td><td>执行操作符</td><td>调用 Blender 内置命令</td></tr>
+</tbody></table>
+</div>
+<p><strong>辅助模块</strong>:</p>
+<ul>
+<li><code>bpy.types</code>: 定义数据类型(Object、Mesh、Material 等)</li>
+<li><code>bpy.props</code>: 定义自定义属性</li>
+<li><code>bpy.utils</code>: 工具函数(注册、预览图等)</li>
+</ul>
+<h3 id="12-脚本执行方式"><a class="header" href="#12-脚本执行方式">1.2 脚本执行方式</a></h3>
+<p><strong>方式一:Text Editor</strong></p>
+<pre><code class="language-python"># 在 Blender 内部编辑器编写脚本
+# 快捷键: Alt + P 运行
+import bpy
+
+print("Hello from Blender!")
+</code></pre>
+<p><strong>方式二:命令行执行</strong></p>
+<pre><code class="language-bash"># 后台模式执行脚本
+blender --background --python script.py
+
+# 前台模式执行(有GUI)
+blender --python script.py
+</code></pre>
+<p><strong>方式三:插件形式</strong></p>
+<pre><code class="language-python"># __init__.py
+bl_info = {
+    "name": "My Addon",
+    "version": (1, 0, 0),
+    "blender": (3, 0, 0),
+}
+
+def register():
+    print("Addon registered")
+
+def unregister():
+    print("Addon unregistered")
+</code></pre>
+<hr />
+<h2 id="第二章实用脚本示例"><a class="header" href="#第二章实用脚本示例">第二章:实用脚本示例</a></h2>
+<h3 id="21-批量导入导出"><a class="header" href="#21-批量导入导出">2.1 批量导入/导出</a></h3>
+<p><strong>批量导入 FBX 文件</strong>:</p>
+<pre><code class="language-python">import bpy
+from pathlib import Path
+
+# 输入目录
+input_dir = Path("D:/Models/FBX")
+
+# 遍历所有 FBX 文件
+for fbx_file in input_dir.glob("*.fbx"):
+    print(f"Importing: {fbx_file.name}")
+
+    # 导入 FBX
+    bpy.ops.import_scene.fbx(filepath=str(fbx_file))
+
+    # 自定义处理
+    for obj in bpy.context.selected_objects:
+        # 应用变换
+        bpy.ops.object.transform_apply(
+            location=True,
+            rotation=True,
+            scale=True
+        )
+
+        # 移动到原点
+        obj.location = (0, 0, 0)
+</code></pre>
+<p><strong>批量导出选中对象为 FBX</strong>:</p>
+<pre><code class="language-python">import bpy
+from pathlib import Path
+
+output_dir = Path("D:/Export")
+output_dir.mkdir(exist_ok=True)
+
+for obj in bpy.context.selected_objects:
+    # 取消全选
+    bpy.ops.object.select_all(action='DESELECT')
+
+    # 选中当前对象
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
+
+    # 导出
+    filepath = output_dir / f"{obj.name}.fbx"
+    bpy.ops.export_scene.fbx(
+        filepath=str(filepath),
+        use_selection=True,
+        apply_unit_scale=True,
+        bake_anim=False,
+    )
+
+    print(f"Exported: {obj.name}")
+</code></pre>
+<h3 id="22-批量重命名与清理"><a class="header" href="#22-批量重命名与清理">2.2 批量重命名与清理</a></h3>
+<p><strong>规范化对象命名</strong>:</p>
+<pre><code class="language-python">import bpy
+import re
+
+# 命名规则
+def standardize_name(name):
+    # 移除空格,转大写
+    name = name.replace(' ', '_').upper()
+
+    # 移除非法字符
+    name = re.sub(r'[^A-Z0-9_]', '', name)
+
+    return name
+
+# 处理所有网格对象
+for obj in bpy.data.objects:
+    if obj.type == 'MESH':
+        old_name = obj.name
+        new_name = standardize_name(old_name)
+        obj.name = new_name
+        print(f"{old_name} -&gt; {new_name}")
+</code></pre>
+<p><strong>清理未使用数据</strong>:</p>
+<pre><code class="language-python">import bpy
+
+# 清理孤立数据块
+bpy.ops.outliner.orphans_purge(
+    do_local_ids=True,
+    do_linked_ids=True,
+    do_recursive=True
+)
+
+# 移除重复顶点
+for obj in bpy.data.objects:
+    if obj.type == 'MESH':
+        bpy.context.view_layer.objects.active = obj
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.mesh.remove_doubles(threshold=0.0001)
+        bpy.ops.object.mode_set(mode='OBJECT')
+</code></pre>
+<h3 id="23-批量渲染"><a class="header" href="#23-批量渲染">2.3 批量渲染</a></h3>
+<p><strong>多视图层渲染</strong>:</p>
+<pre><code class="language-python">import bpy
+from pathlib import Path
+
+scene = bpy.context.scene
+render = scene.render
+
+# 设置渲染引擎
+render.engine = 'CYCLES'
+render.image_settings.file_format = 'PNG'
+
+# 输出目录
+output_dir = Path("D:/Renders")
+output_dir.mkdir(exist_ok=True)
+
+# 遍历所有视图层
+for view_layer in scene.view_layers:
+    # 激活视图层
+    scene.view_layers.active = view_layer
+
+    # 设置输出路径
+    render.filepath = str(output_dir / f"{view_layer.name}_")
+
+    # 渲染
+    bpy.ops.render.render(write_still=True)
+
+    print(f"Rendered: {view_layer.name}")
+</code></pre>
+<p><strong>多摄像机批量渲染</strong>:</p>
+<pre><code class="language-python">import bpy
+
+scene = bpy.context.scene
+
+# 获取所有摄像机
+cameras = [obj for obj in bpy.data.objects if obj.type == 'CAMERA']
+
+for camera in cameras:
+    # 设置活动摄像机
+    scene.camera = camera
+
+    # 设置输出路径
+    scene.render.filepath = f"//renders/{camera.name}_"
+
+    # 渲染
+    bpy.ops.render.render(write_still=True)
+
+    print(f"Rendered from: {camera.name}")
+</code></pre>
+<hr />
+<h2 id="第三章完整插件开发案例"><a class="header" href="#第三章完整插件开发案例">第三章:完整插件开发案例</a></h2>
+<h3 id="31-资产命名与导出助手"><a class="header" href="#31-资产命名与导出助手">3.1 资产命名与导出助手</a></h3>
+<p><strong>需求分析</strong>:</p>
+<ol>
+<li>检查对象命名是否符合规范</li>
+<li>自动修复不规范命名</li>
+<li>批量导出选中对象为 FBX</li>
+<li>生成缩略图</li>
+</ol>
+<p><strong>插件结构</strong>:</p>
+<pre><code>AssetExporter/
+├── __init__.py         # 插件入口
+├── operators.py        # 操作符定义
+├── panels.py           # UI 面板
+└── utils.py            # 工具函数
+</code></pre>
+<p><strong><strong>init</strong>.py</strong>:</p>
+<pre><code class="language-python">bl_info = {
+    "name": "Asset Exporter Pro",
+    "author": "Your Name",
+    "version": (1, 0, 0),
+    "blender": (3, 6, 0),
+    "location": "View3D &gt; Sidebar &gt; Asset Tools",
+    "description": "批量导出资产并生成缩略图",
+    "category": "Import-Export",
+}
+
+import bpy
+from . import operators, panels
+
+classes = (
+    operators.ASSET_OT_check_naming,
+    operators.ASSET_OT_fix_naming,
+    operators.ASSET_OT_batch_export,
+    panels.ASSET_PT_main_panel,
+)
+
+def register():
+    for cls in classes:
+        bpy.utils.register_class(cls)
+
+    # 注册属性
+    bpy.types.Scene.asset_output_dir = bpy.props.StringProperty(
+        name="Output Directory",
+        subtype='DIR_PATH',
+        default="//exports/",
+    )
+
+def unregister():
+    for cls in reversed(classes):
+        bpy.utils.unregister_class(cls)
+
+    del bpy.types.Scene.asset_output_dir
+
+if __name__ == "__main__":
+    register()
+</code></pre>
+<p><strong>operators.py</strong>:</p>
+<pre><code class="language-python">import bpy
+import re
+from pathlib import Path
+
+# 命名规则
+NAMING_PATTERN = re.compile(r"^(CHR|PROP|ENV)_[A-Za-z0-9]+_[0-9]{3}$")
+
+class ASSET_OT_check_naming(bpy.types.Operator):
+    """检查对象命名规范"""
+    bl_idname = "asset.check_naming"
+    bl_label = "检查命名"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        invalid_objects = []
+
+        for obj in bpy.data.objects:
+            if obj.type in {'MESH', 'EMPTY', 'ARMATURE'}:
+                if not NAMING_PATTERN.match(obj.name):
+                    invalid_objects.append(obj.name)
+
+        if invalid_objects:
+            self.report({'WARNING'},
+                       f"发现 {len(invalid_objects)} 个命名不规范的对象")
+        else:
+            self.report({'INFO'}, "所有对象命名规范")
+
+        return {'FINISHED'}
+
+class ASSET_OT_fix_naming(bpy.types.Operator):
+    """自动修复命名"""
+    bl_idname = "asset.fix_naming"
+    bl_label = "自动修复"
+    bl_options = {'REGISTER', 'UNDO'}
+
+    def execute(self, context):
+        fixed_count = 0
+
+        for obj in bpy.data.objects:
+            if not NAMING_PATTERN.match(obj.name):
+                # 根据类型确定前缀
+                prefix = "PROP"
+                if obj.type == 'ARMATURE':
+                    prefix = 'CHR'
+                elif obj.type == 'EMPTY':
+                    prefix = 'ENV'
+
+                # 清理名称
+                clean_name = re.sub(r'[^A-Za-z0-9]', '_', obj.name)
+                new_name = f"{prefix}_{clean_name}_001"
+
+                obj.name = new_name
+                fixed_count += 1
+
+        self.report({'INFO'}, f"修复了 {fixed_count} 个对象")
+        return {'FINISHED'}
+
+class ASSET_OT_batch_export(bpy.types.Operator):
+    """批量导出"""
+    bl_idname = "asset.batch_export"
+    bl_label = "批量导出 FBX"
+    bl_options = {'REGISTER'}
+
+    def execute(self, context):
+        output_dir = Path(bpy.path.abspath(context.scene.asset_output_dir))
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        exported_count = 0
+
+        for obj in context.selected_objects:
+            # 导出 FBX
+            filepath = output_dir / f"{obj.name}.fbx"
+
+            bpy.ops.object.select_all(action='DESELECT')
+            obj.select_set(True)
+            context.view_layer.objects.active = obj
+
+            bpy.ops.export_scene.fbx(
+                filepath=str(filepath),
+                use_selection=True,
+                apply_unit_scale=True,
+            )
+
+            # 生成缩略图
+            thumb_path = output_dir / f"{obj.name}_thumb.png"
+            bpy.ops.view3d.camera_to_view_selected()
+            context.scene.render.filepath = str(thumb_path)
+            bpy.ops.render.render(write_still=True)
+
+            exported_count += 1
+
+        self.report({'INFO'}, f"导出了 {exported_count} 个资产")
+        return {'FINISHED'}
+</code></pre>
+<p><strong>panels.py</strong>:</p>
+<pre><code class="language-python">import bpy
+
+class ASSET_PT_main_panel(bpy.types.Panel):
+    """资产工具主面板"""
+    bl_label = "Asset Exporter Pro"
+    bl_idname = "ASSET_PT_main_panel"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_category = 'Asset Tools'
+
+    def draw(self, context):
+        layout = self.layout
+        scene = context.scene
+
+        # 命名检查区域
+        box = layout.box()
+        box.label(text="命名规范检查", icon='FILE_TEXT')
+        box.operator("asset.check_naming", icon='CHECKMARK')
+        box.operator("asset.fix_naming", icon='BRUSH_DATA')
+
+        # 导出区域
+        box = layout.box()
+        box.label(text="批量导出", icon='EXPORT')
+        box.prop(scene, "asset_output_dir")
+        box.operator("asset.batch_export", icon='EXPORT')
+
+        # 统计信息
+        selected_count = len(context.selected_objects)
+        layout.label(text=f"选中对象: {selected_count}")
+</code></pre>
+<hr />
+<h2 id="第四章高级技巧"><a class="header" href="#第四章高级技巧">第四章:高级技巧</a></h2>
+<h3 id="41-自定义属性"><a class="header" href="#41-自定义属性">4.1 自定义属性</a></h3>
+<p><strong>定义自定义属性</strong>:</p>
+<pre><code class="language-python">import bpy
+from bpy.props import *
+
+class MyAddonProperties(bpy.types.PropertyGroup):
+    my_string: StringProperty(
+        name="名称",
+        description="描述文本",
+        default="默认值",
+    )
+
+    my_int: IntProperty(
+        name="整数",
+        min=0,
+        max=100,
+        default=50,
+    )
+
+    my_float: FloatProperty(
+        name="浮点数",
+        min=0.0,
+        max=1.0,
+        default=0.5,
+        precision=2,
+    )
+
+    my_bool: BoolProperty(
+        name="布尔值",
+        default=False,
+    )
+
+    my_enum: EnumProperty(
+        name="枚举",
+        items=[
+            ('OPTION1', "选项 1", "描述 1"),
+            ('OPTION2', "选项 2", "描述 2"),
+        ],
+        default='OPTION1',
+    )
+
+def register():
+    bpy.utils.register_class(MyAddonProperties)
+    bpy.types.Scene.my_addon_props = bpy.props.PointerProperty(
+        type=MyAddonProperties
+    )
+
+def unregister():
+    del bpy.types.Scene.my_addon_props
+    bpy.utils.unregister_class(MyAddonProperties)
+</code></pre>
+<h3 id="42-模态操作符modal-operator"><a class="header" href="#42-模态操作符modal-operator">4.2 模态操作符(Modal Operator)</a></h3>
+<p><strong>交互式操作符示例</strong>:</p>
+<pre><code class="language-python">import bpy
+
+class MODAL_OT_example(bpy.types.Operator):
+    """模态操作符示例(按住鼠标拖动)"""
+    bl_idname = "modal.example"
+    bl_label = "Modal Example"
+
+    def modal(self, context, event):
+        if event.type == 'MOUSEMOVE':
+            # 鼠标移动时执行
+            delta = event.mouse_x - self.init_mouse_x
+            context.active_object.location.x = self.init_loc_x + delta * 0.01
+
+        elif event.type == 'LEFTMOUSE':
+            # 鼠标释放,完成操作
+            return {'FINISHED'}
+
+        elif event.type in {'RIGHTMOUSE', 'ESC'}:
+            # 取消操作
+            context.active_object.location.x = self.init_loc_x
+            return {'CANCELLED'}
+
+        return {'RUNNING_MODAL'}
+
+    def invoke(self, context, event):
+        if context.active_object is None:
+            self.report({'WARNING'}, "No active object")
+            return {'CANCELLED'}
+
+        # 记录初始状态
+        self.init_mouse_x = event.mouse_x
+        self.init_loc_x = context.active_object.location.x
+
+        # 进入模态模式
+        context.window_manager.modal_handler_add(self)
+        return {'RUNNING_MODAL'}
+
+def register():
+    bpy.utils.register_class(MODAL_OT_example)
+
+def unregister():
+    bpy.utils.unregister_class(MODAL_OT_example)
+</code></pre>
+<h3 id="43-错误处理与日志"><a class="header" href="#43-错误处理与日志">4.3 错误处理与日志</a></h3>
+<p><strong>健壮的错误处理</strong>:</p>
+<pre><code class="language-python">import bpy
+import logging
+
+# 配置日志
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class ROBUST_OT_export(bpy.types.Operator):
+    """健壮的导出操作符"""
+    bl_idname = "robust.export"
+    bl_label = "Robust Export"
+
+    def execute(self, context):
+        try:
+            # 尝试导出
+            self.export_selected(context)
+            self.report({'INFO'}, "导出成功")
+            return {'FINISHED'}
+
+        except FileNotFoundError as e:
+            logger.error(f"文件未找到: {e}")
+            self.report({'ERROR'}, "输出目录不存在")
+            return {'CANCELLED'}
+
+        except PermissionError as e:
+            logger.error(f"权限错误: {e}")
+            self.report({'ERROR'}, "没有写入权限")
+            return {'CANCELLED'}
+
+        except Exception as e:
+            logger.exception("未知错误")
+            self.report({'ERROR'}, f"导出失败: {str(e)}")
+            return {'CANCELLED'}
+
+    def export_selected(self, context):
+        # 导出逻辑
+        for obj in context.selected_objects:
+            filepath = f"//exports/{obj.name}.fbx"
+            bpy.ops.export_scene.fbx(
+                filepath=filepath,
+                use_selection=True,
+            )
+</code></pre>
+<hr />
+<h2 id="第五章插件发布与维护"><a class="header" href="#第五章插件发布与维护">第五章:插件发布与维护</a></h2>
+<h3 id="51-版本管理"><a class="header" href="#51-版本管理">5.1 版本管理</a></h3>
+<p><strong>bl_info 版本号规范</strong>:</p>
+<pre><code class="language-python">bl_info = {
+    "name": "My Awesome Addon",
+    "version": (1, 2, 3),  # 主版本.次版本.修订号
+    "blender": (3, 6, 0),  # 最低 Blender 版本
+    "location": "View3D &gt; Sidebar &gt; My Tab",
+    "description": "简短描述功能",
+    "doc_url": "https://docs.example.com",
+    "tracker_url": "https://github.com/user/repo/issues",
+    "category": "Object",
+}
+</code></pre>
+<h3 id="52-打包与分发"><a class="header" href="#52-打包与分发">5.2 打包与分发</a></h3>
+<p><strong>插件目录结构</strong>:</p>
+<pre><code>my_addon/
+├── __init__.py
+├── operators.py
+├── panels.py
+├── utils.py
+├── README.md
+└── LICENSE
+</code></pre>
+<p><strong>打包为 ZIP</strong>:</p>
+<pre><code class="language-bash">cd addons
+zip -r my_addon.zip my_addon/
+</code></pre>
+<h3 id="53-更新日志示例"><a class="header" href="#53-更新日志示例">5.3 更新日志示例</a></h3>
+<pre><code class="language-markdown"># Changelog
+
+## [1.2.0] - 2025-01-06
+### Added
+- 新增批量重命名功能
+- 支持导出缩略图
+
+### Changed
+- 优化导出性能
+- 改进 UI 布局
+
+### Fixed
+- 修复导出路径错误
+- 修复命名检查 Bug
+
+## [1.1.0] - 2025-01-01
+...
+</code></pre>
+<hr />
+<h2 id="附录api-速查"><a class="header" href="#附录api-速查">附录:API 速查</a></h2>
+<h3 id="常用-bpyops-操作"><a class="header" href="#常用-bpyops-操作">常用 bpy.ops 操作</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>操作</th><th>功能</th></tr></thead><tbody>
+<tr><td><code>bpy.ops.object.select_all(action='DESELECT')</code></td><td>取消全选</td></tr>
+<tr><td><code>bpy.ops.object.transform_apply(location=True)</code></td><td>应用变换</td></tr>
+<tr><td><code>bpy.ops.mesh.remove_doubles()</code></td><td>移除重复顶点</td></tr>
+<tr><td><code>bpy.ops.render.render(write_still=True)</code></td><td>渲染并保存</td></tr>
+<tr><td><code>bpy.ops.export_scene.fbx()</code></td><td>导出 FBX</td></tr>
+</tbody></table>
+</div>
+<h3 id="常用-bpydata-访问"><a class="header" href="#常用-bpydata-访问">常用 bpy.data 访问</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>访问</th><th>说明</th></tr></thead><tbody>
+<tr><td><code>bpy.data.objects</code></td><td>所有对象</td></tr>
+<tr><td><code>bpy.data.meshes</code></td><td>所有网格数据</td></tr>
+<tr><td><code>bpy.data.materials</code></td><td>所有材质</td></tr>
+<tr><td><code>bpy.data.scenes</code></td><td>所有场景</td></tr>
+<tr><td><code>bpy.data.collections</code></td><td>所有集合</td></tr>
+</tbody></table>
+</div>
+<hr />
+<p><strong>专题版本</strong>: v1.0
+<strong>最后更新</strong>: 2025-01-06
+<strong>作者</strong>: Claude Code Tech Note Generator
+<strong>许可</strong>: CC BY-SA 4.0</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../结构/Blender-GeometryNodes专题.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../结构/Blender-Shader材质专题.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../结构/Blender-GeometryNodes专题.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../结构/Blender-Shader材质专题.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../theme/segmentit.umd.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../theme/searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

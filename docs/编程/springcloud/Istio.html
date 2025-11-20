@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Istio 知识点大纲 - 开发</title>
+        <title>Istio 服务网格技术学习笔记 - 开发</title>
 
 
         <!-- Custom HTML head -->
@@ -181,87 +181,2356 @@
                         <div class="sidetoc"><nav class="pagetoc"></nav></div>
 
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="istio-知识点大纲"><a class="header" href="#istio-知识点大纲">Istio 知识点大纲</a></h1>
+<h1 id="istio-服务网格技术学习笔记"><a class="header" href="#istio-服务网格技术学习笔记">Istio 服务网格技术学习笔记</a></h1>
+<blockquote>
+<p><strong>学习目标定位</strong>: 面向0-5年经验的微服务开发者，帮助你系统掌握Istio服务网格技术，从基础概念到生产实践</p>
+<p><strong>预期学习成果</strong>:</p>
+<ul>
+<li>理解服务网格的核心概念和应用场景</li>
+<li>掌握Istio的安装、配置和核心功能</li>
+<li>能够使用Istio实现流量管理、安全控制和可观测性</li>
+<li>具备在生产环境部署和运维Istio的能力</li>
+</ul>
+</blockquote>
+<hr />
+<h2 id="-学习路径规划"><a class="header" href="#-学习路径规划">📚 学习路径规划</a></h2>
+<pre><code class="language-mermaid">graph LR
+    A[基础概念] --&gt; B[架构理解]
+    B --&gt; C[环境搭建]
+    C --&gt; D[流量管理]
+    D --&gt; E[安全控制]
+    E --&gt; F[可观测性]
+    F --&gt; G[生产实践]
+</code></pre>
+<p><strong>建议学习时间</strong>: 15-20天</p>
+<ul>
+<li>基础阶段（1-3天）: 概念理解 + 环境搭建</li>
+<li>核心功能（4-10天）: 流量管理 + 安全 + 可观测性</li>
+<li>实战进阶（11-15天）: 综合案例 + 生产部署</li>
+<li>优化提升（16-20天）: 性能调优 + 故障排查</li>
+</ul>
+<hr />
 <h2 id="1-istio-基础概念"><a class="header" href="#1-istio-基础概念">1. Istio 基础概念</a></h2>
 <h3 id="11-什么是-istio"><a class="header" href="#11-什么是-istio">1.1 什么是 Istio</a></h3>
+<p><strong>Istio</strong> 是一个开源的服务网格（Service Mesh）平台，为分布式微服务架构提供连接、保护、控制和观察服务的统一方式。</p>
+<h4 id="核心价值"><a class="header" href="#核心价值">核心价值</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>功能领域</th><th>提供能力</th><th>业务价值</th></tr></thead><tbody>
+<tr><td><strong>流量管理</strong></td><td>智能路由、负载均衡、故障恢复</td><td>提升服务可用性和用户体验</td></tr>
+<tr><td><strong>安全</strong></td><td>服务间加密、身份认证、访问控制</td><td>保障微服务通信安全</td></tr>
+<tr><td><strong>可观测性</strong></td><td>指标收集、日志聚合、分布式追踪</td><td>快速定位问题，优化性能</td></tr>
+<tr><td><strong>策略执行</strong></td><td>限流、配额管理、黑白名单</td><td>保护服务稳定性</td></tr>
+</tbody></table>
+</div>
+<h4 id="为什么需要服务网格"><a class="header" href="#为什么需要服务网格">为什么需要服务网格？</a></h4>
+<p><strong>传统微服务架构的痛点</strong>:</p>
+<pre><code class="language-java">// 传统方式：每个服务都需要实现这些功能
+@Service
+public class OrderService {
+
+    @HystrixCommand(fallbackMethod = "fallback")  // 熔断
+    @RateLimiter(limit = 100)                     // 限流
+    public Order createOrder() {
+        // 重试逻辑
+        // 超时控制
+        // 负载均衡
+        // 链路追踪
+        // 安全认证
+        // ... 业务逻辑被淹没在基础设施代码中
+    }
+}
+</code></pre>
+<p><strong>使用Istio后</strong>:</p>
+<pre><code class="language-java">// 服务网格方式：业务代码专注于业务逻辑
+@Service
+public class OrderService {
+    public Order createOrder() {
+        // 纯粹的业务逻辑
+        // 所有流量管理、安全、可观测性由Istio透明处理
+    }
+}
+</code></pre>
 <h3 id="12-服务网格架构"><a class="header" href="#12-服务网格架构">1.2 服务网格架构</a></h3>
+<h4 id="服务网格的本质"><a class="header" href="#服务网格的本质">服务网格的本质</a></h4>
+<p>服务网格将服务间通信的复杂性从应用层下沉到基础设施层：</p>
+<pre><code>┌─────────────────────────────────────────────────────┐
+│              应用层（微服务）                          │
+│  [Service A]  [Service B]  [Service C]              │
+└──────┬───────────┬──────────────┬───────────────────┘
+       │           │              │
+┌──────▼───────────▼──────────────▼───────────────────┐
+│           服务网格层（Istio）                          │
+│  流量管理 | 安全 | 可观测性 | 策略                     │
+│  [Proxy]   [Proxy]   [Proxy]                        │
+└─────────────────────────────────────────────────────┘
+</code></pre>
+<h4 id="istio架构模式"><a class="header" href="#istio架构模式">Istio架构模式</a></h4>
+<p>Istio采用<strong>控制平面 + 数据平面</strong>的架构：</p>
+<pre><code>           ┌─────────────────────────────────┐
+           │      控制平面 (istiod)           │
+           │  ┌──────────┐  ┌──────────┐    │
+           │  │  Pilot   │  │ Citadel  │    │
+           │  │ 配置分发  │  │  证书管理 │    │
+           │  └──────────┘  └──────────┘    │
+           └──────────┬──────────────────────┘
+                      │ 配置下发
+         ┌────────────┼────────────┐
+         │            │            │
+    ┌────▼───┐   ┌────▼───┐   ┌────▼───┐
+    │Service │   │Service │   │Service │
+    │   A    │   │   B    │   │   C    │
+    └────┬───┘   └────┬───┘   └────┬───┘
+    ┌────▼───┐   ┌────▼───┐   ┌────▼───┐
+    │ Envoy  │   │ Envoy  │   │ Envoy  │  数据平面
+    │ Proxy  ├───┤ Proxy  ├───┤ Proxy  │
+    └────────┘   └────────┘   └────────┘
+</code></pre>
 <h3 id="13-istio-核心功能"><a class="header" href="#13-istio-核心功能">1.3 Istio 核心功能</a></h3>
+<h4 id="功能全景图"><a class="header" href="#功能全景图">功能全景图</a></h4>
+<pre><code class="language-yaml">Istio核心功能:
+  流量管理:
+    - 请求路由: 基于HTTP header、权重、URL路径
+    - 负载均衡: 轮询、随机、最少连接
+    - 故障恢复: 超时、重试、熔断
+    - 故障注入: 延迟注入、错误注入
+    - 流量镜像: 生产流量复制到测试环境
+
+  安全:
+    - 双向TLS: 自动加密服务间通信
+    - 身份认证: JWT、mTLS
+    - 访问控制: RBAC、黑白名单
+    - 审计日志: 记录所有访问行为
+
+  可观测性:
+    - 指标: 请求量、错误率、延迟
+    - 日志: 访问日志、应用日志
+    - 追踪: 分布式链路追踪
+    - 拓扑: 服务依赖关系可视化
+
+  策略执行:
+    - 速率限制: QPS限流
+    - 配额管理: 资源配额
+    - 黑白名单: IP/服务访问控制
+</code></pre>
 <h3 id="14-istio-vs-其他服务网格"><a class="header" href="#14-istio-vs-其他服务网格">1.4 Istio vs 其他服务网格</a></h3>
+<h4 id="技术对比"><a class="header" href="#技术对比">技术对比</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>Istio</th><th>Linkerd</th><th>Consul Connect</th></tr></thead><tbody>
+<tr><td><strong>复杂度</strong></td><td>较高</td><td>低</td><td>中等</td></tr>
+<tr><td><strong>性能开销</strong></td><td>中等</td><td>低</td><td>中等</td></tr>
+<tr><td><strong>功能完整性</strong></td><td>非常完善</td><td>基础功能</td><td>完善</td></tr>
+<tr><td><strong>社区活跃度</strong></td><td>非常高</td><td>高</td><td>高</td></tr>
+<tr><td><strong>学习曲线</strong></td><td>陡峭</td><td>平缓</td><td>中等</td></tr>
+<tr><td><strong>多集群支持</strong></td><td>优秀</td><td>良好</td><td>良好</td></tr>
+<tr><td><strong>云原生集成</strong></td><td>Kubernetes为主</td><td>Kubernetes</td><td>多平台</td></tr>
+</tbody></table>
+</div>
+<h4 id="选型建议"><a class="header" href="#选型建议">选型建议</a></h4>
+<p><strong>选择Istio的场景</strong>:</p>
+<ul>
+<li>✅ 需要完整的服务网格功能（流量管理、安全、可观测性）</li>
+<li>✅ 基于Kubernetes的微服务架构</li>
+<li>✅ 团队有较强的运维能力</li>
+<li>✅ 需要精细的流量控制和策略管理</li>
+</ul>
+<p><strong>不建议使用Istio的场景</strong>:</p>
+<ul>
+<li>❌ 团队规模小，运维能力有限</li>
+<li>❌ 微服务数量少（&lt;10个）</li>
+<li>❌ 对性能极度敏感的场景</li>
+<li>❌ 非Kubernetes环境</li>
+</ul>
+<hr />
 <h2 id="2-istio-架构组件"><a class="header" href="#2-istio-架构组件">2. Istio 架构组件</a></h2>
 <h3 id="21-控制平面-control-plane"><a class="header" href="#21-控制平面-control-plane">2.1 控制平面 (Control Plane)</a></h3>
-<h4 id="211-pilot"><a class="header" href="#211-pilot">2.1.1 Pilot</a></h4>
-<h4 id="212-citadel"><a class="header" href="#212-citadel">2.1.2 Citadel</a></h4>
-<h4 id="213-galley"><a class="header" href="#213-galley">2.1.3 Galley</a></h4>
+<h4 id="istiod---统一控制平面"><a class="header" href="#istiod---统一控制平面">istiod - 统一控制平面</a></h4>
+<p>从Istio 1.5开始，控制平面组件（Pilot、Citadel、Galley）整合为单一的<strong>istiod</strong>进程，降低了复杂度。</p>
+<pre><code>┌─────────────────────────────────────────┐
+│           istiod                        │
+│  ┌───────────────────────────────────┐  │
+│  │  Pilot (服务发现和流量管理)        │  │
+│  │  - 从K8s API获取服务信息           │  │
+│  │  - 转换为Envoy配置                │  │
+│  │  - 下发配置到Envoy代理             │  │
+│  └───────────────────────────────────┘  │
+│  ┌───────────────────────────────────┐  │
+│  │  Citadel (证书和密钥管理)         │  │
+│  │  - 生成和分发证书                 │  │
+│  │  - 管理服务身份                   │  │
+│  └───────────────────────────────────┘  │
+│  ┌───────────────────────────────────┐  │
+│  │  Galley (配置验证和分发)          │  │
+│  │  - 验证Istio配置                  │  │
+│  │  - 处理和分发配置                 │  │
+│  └───────────────────────────────────┘  │
+└─────────────────────────────────────────┘
+</code></pre>
+<h4 id="pilot---服务发现和配置管理"><a class="header" href="#pilot---服务发现和配置管理">Pilot - 服务发现和配置管理</a></h4>
+<p><strong>核心职责</strong>:</p>
+<ol>
+<li><strong>服务发现</strong>: 从Kubernetes等平台获取服务注册信息</li>
+<li><strong>流量管理配置</strong>: 处理VirtualService、DestinationRule等资源</li>
+<li><strong>配置分发</strong>: 将配置转换为Envoy xDS API格式并推送</li>
+</ol>
+<p><strong>工作流程</strong>:</p>
+<pre><code>┌──────────────┐
+│ K8s Service  │
+│   Endpoint   │
+└──────┬───────┘
+       │ 1. 监听变化
+       ▼
+┌──────────────┐     2. 转换配置      ┌──────────────┐
+│    Pilot     ├──────────────────────▶│   Envoy      │
+│  (istiod)    │                       │    Proxy     │
+└──────┬───────┘                       └──────────────┘
+       │ 3. 读取Istio配置
+       ▼
+┌──────────────┐
+│VirtualService│
+│ DestRule     │
+└──────────────┘
+</code></pre>
+<h4 id="citadel---安全和证书管理"><a class="header" href="#citadel---安全和证书管理">Citadel - 安全和证书管理</a></h4>
+<p><strong>核心职责</strong>:</p>
+<ol>
+<li><strong>密钥和证书管理</strong>: 自动生成、分发、轮换证书</li>
+<li><strong>身份管理</strong>: 为每个服务提供强身份标识</li>
+<li><strong>认证策略</strong>: 执行服务间认证策略</li>
+</ol>
+<p><strong>证书生命周期</strong>:</p>
+<pre><code class="language-yaml">证书生命周期:
+  1. 证书生成: Citadel作为CA签发证书
+  2. 证书分发: 通过SDS (Secret Discovery Service) 分发到Envoy
+  3. 证书使用: Envoy使用证书建立mTLS连接
+  4. 证书轮换: 证书过期前自动轮换（默认24小时有效期）
+</code></pre>
+<h4 id="galley---配置验证和处理"><a class="header" href="#galley---配置验证和处理">Galley - 配置验证和处理</a></h4>
+<p><strong>核心职责</strong>:</p>
+<ol>
+<li><strong>配置验证</strong>: 验证Istio配置的正确性</li>
+<li><strong>配置转换</strong>: 将用户配置转换为内部格式</li>
+<li><strong>配置分发</strong>: 向其他控制平面组件分发配置</li>
+</ol>
 <h3 id="22-数据平面-data-plane"><a class="header" href="#22-数据平面-data-plane">2.2 数据平面 (Data Plane)</a></h3>
-<h4 id="221-envoy-proxy"><a class="header" href="#221-envoy-proxy">2.2.1 Envoy Proxy</a></h4>
-<h4 id="222-sidecar-模式"><a class="header" href="#222-sidecar-模式">2.2.2 Sidecar 模式</a></h4>
+<h4 id="envoy-proxy---高性能代理"><a class="header" href="#envoy-proxy---高性能代理">Envoy Proxy - 高性能代理</a></h4>
+<p><strong>Envoy</strong> 是Istio数据平面的核心，是一个用C++编写的高性能L7代理。</p>
+<p><strong>Envoy核心特性</strong>:</p>
+<pre><code class="language-yaml">Envoy特性:
+  性能:
+    - C++实现，高性能低延迟
+    - 异步非阻塞架构
+    - 支持HTTP/1.1、HTTP/2、gRPC
+
+  可观测性:
+    - 丰富的指标统计
+    - 分布式追踪支持
+    - 访问日志记录
+
+  高级功能:
+    - 动态配置更新（xDS API）
+    - 健康检查和熔断
+    - 多种负载均衡算法
+    - 流量镜像和故障注入
+</code></pre>
+<p><strong>Envoy配置结构</strong>:</p>
+<pre><code class="language-yaml"># Envoy配置示例（简化版）
+static_resources:
+  listeners:  # 监听器：监听入站流量
+    - name: listener_0
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 15001
+      filter_chains:
+        - filters:
+            - name: envoy.http_connection_manager
+              typed_config:
+                stat_prefix: ingress_http
+                route_config:  # 路由配置
+                  virtual_hosts:
+                    - name: backend
+                      domains: ["*"]
+                      routes:
+                        - match: { prefix: "/" }
+                          route: { cluster: service_backend }
+
+  clusters:  # 集群：后端服务集群
+    - name: service_backend
+      connect_timeout: 0.25s
+      type: STRICT_DNS
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: service_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: backend-service
+                      port_value: 8080
+</code></pre>
+<h4 id="sidecar-模式"><a class="header" href="#sidecar-模式">Sidecar 模式</a></h4>
+<p><strong>Sidecar注入原理</strong>:</p>
+<p>Istio使用Kubernetes的<strong>MutatingAdmissionWebhook</strong>机制，在Pod创建时自动注入Envoy容器。</p>
+<pre><code>原始Pod:                     注入后的Pod:
+┌──────────────┐            ┌──────────────────────────┐
+│  Container   │            │  ┌────────────────────┐  │
+│  (应用)      │            │  │ Init Container     │  │
+│              │            │  │ (istio-init)       │  │
+└──────────────┘            │  │ 配置iptables规则   │  │
+                            │  └────────────────────┘  │
+                            │  ┌────────────────────┐  │
+                            │  │ App Container      │  │
+                            │  │ (应用)             │  │
+                            │  └────────────────────┘  │
+                            │  ┌────────────────────┐  │
+                            │  │ Sidecar Container  │  │
+                            │  │ (istio-proxy)      │  │
+                            │  │ Envoy代理          │  │
+                            │  └────────────────────┘  │
+                            └──────────────────────────┘
+</code></pre>
+<p><strong>流量拦截机制</strong>:</p>
+<pre><code class="language-bash"># istio-init容器配置的iptables规则
+iptables -t nat -A OUTPUT -p tcp -j ISTIO_OUTPUT
+iptables -t nat -A ISTIO_OUTPUT -d 127.0.0.1/32 -j RETURN
+iptables -t nat -A ISTIO_OUTPUT -j ISTIO_REDIRECT
+iptables -t nat -A ISTIO_REDIRECT -p tcp -j REDIRECT --to-ports 15001
+
+# 效果：所有出站流量重定向到Envoy的15001端口
+</code></pre>
+<hr />
 <h2 id="3-istio-安装与配置"><a class="header" href="#3-istio-安装与配置">3. Istio 安装与配置</a></h2>
 <h3 id="31-环境要求"><a class="header" href="#31-环境要求">3.1 环境要求</a></h3>
+<h4 id="硬件和软件要求"><a class="header" href="#硬件和软件要求">硬件和软件要求</a></h4>
+<pre><code class="language-yaml">最低要求:
+  Kubernetes版本: 1.22+
+  节点配置:
+    - CPU: 2核心
+    - 内存: 4GB
+    - 存储: 20GB
+
+推荐配置（生产环境）:
+  Kubernetes版本: 1.24+
+  节点配置:
+    - CPU: 4核心
+    - 内存: 8GB
+    - 存储: 50GB
+  集群规模:
+    - 最小: 3个节点
+    - 推荐: 5+个节点
+</code></pre>
+<h4 id="准备kubernetes集群"><a class="header" href="#准备kubernetes集群">准备Kubernetes集群</a></h4>
+<pre><code class="language-bash"># 验证集群状态
+kubectl cluster-info
+kubectl get nodes
+
+# 检查Kubernetes版本
+kubectl version --short
+
+# 确保有足够的资源
+kubectl top nodes
+</code></pre>
 <h3 id="32-安装方式"><a class="header" href="#32-安装方式">3.2 安装方式</a></h3>
-<h4 id="321-istioctl-安装"><a class="header" href="#321-istioctl-安装">3.2.1 istioctl 安装</a></h4>
+<h4 id="321-istioctl-安装推荐"><a class="header" href="#321-istioctl-安装推荐">3.2.1 istioctl 安装（推荐）</a></h4>
+<p><strong>步骤1: 下载Istio</strong></p>
+<pre><code class="language-bash"># 下载最新版本的Istio
+curl -L https://istio.io/downloadIstio | sh -
+
+# 或者指定版本
+curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.20.0 sh -
+
+# 进入Istio目录
+cd istio-1.20.0
+
+# 将istioctl添加到PATH
+export PATH=$PWD/bin:$PATH
+
+# 验证安装
+istioctl version
+</code></pre>
+<p><strong>步骤2: 预检查</strong></p>
+<pre><code class="language-bash"># 检查集群是否满足Istio要求
+istioctl x precheck
+
+# 输出示例：
+✔ No issues found when checking the cluster. Istio is safe to install or upgrade!
+</code></pre>
+<p><strong>步骤3: 安装Istio</strong></p>
+<pre><code class="language-bash"># 使用默认配置安装
+istioctl install --set profile=default -y
+
+# 安装过程输出：
+✔ Istio core installed
+✔ Istiod installed
+✔ Ingress gateways installed
+✔ Installation complete
+</code></pre>
+<p><strong>配置Profile说明</strong>:</p>
+<div class="table-wrapper"><table><thead><tr><th>Profile</th><th>描述</th><th>适用场景</th></tr></thead><tbody>
+<tr><td><strong>default</strong></td><td>默认配置，包含核心组件和Ingress Gateway</td><td>生产环境推荐</td></tr>
+<tr><td><strong>demo</strong></td><td>包含所有功能，用于演示</td><td>学习和测试</td></tr>
+<tr><td><strong>minimal</strong></td><td>最小安装，只有控制平面</td><td>资源受限环境</td></tr>
+<tr><td><strong>production</strong></td><td>生产优化配置</td><td>生产环境高可用</td></tr>
+<tr><td><strong>preview</strong></td><td>包含实验性功能</td><td>测试新特性</td></tr>
+</tbody></table>
+</div>
+<p><strong>步骤4: 验证安装</strong></p>
+<pre><code class="language-bash"># 检查组件状态
+kubectl get pods -n istio-system
+
+# 期望输出：
+NAME                                    READY   STATUS    RESTARTS   AGE
+istiod-5847c59c69-lwkxj                 1/1     Running   0          2m
+istio-ingressgateway-7d6b8f5c9f-xyz     1/1     Running   0          2m
+
+# 检查服务
+kubectl get svc -n istio-system
+
+# 验证istio配置
+istioctl verify-install
+</code></pre>
 <h4 id="322-helm-安装"><a class="header" href="#322-helm-安装">3.2.2 Helm 安装</a></h4>
+<p><strong>步骤1: 添加Helm仓库</strong></p>
+<pre><code class="language-bash"># 添加Istio Helm仓库
+helm repo add istio https://istio-release.storage.googleapis.com/charts
+helm repo update
+</code></pre>
+<p><strong>步骤2: 创建命名空间</strong></p>
+<pre><code class="language-bash">kubectl create namespace istio-system
+</code></pre>
+<p><strong>步骤3: 安装Istio Base</strong></p>
+<pre><code class="language-bash"># 安装Istio基础组件（CRD等）
+helm install istio-base istio/base -n istio-system
+</code></pre>
+<p><strong>步骤4: 安装Istiod</strong></p>
+<pre><code class="language-bash"># 安装Istio控制平面
+helm install istiod istio/istiod -n istio-system --wait
+</code></pre>
+<p><strong>步骤5: 安装Ingress Gateway</strong></p>
+<pre><code class="language-bash"># 安装Ingress Gateway
+helm install istio-ingressgateway istio/gateway -n istio-system
+</code></pre>
 <h4 id="323-operator-安装"><a class="header" href="#323-operator-安装">3.2.3 Operator 安装</a></h4>
+<pre><code class="language-bash"># 安装Istio Operator
+istioctl operator init
+
+# 创建IstioOperator资源
+kubectl apply -f - &lt;&lt;EOF
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: istio-controlplane
+spec:
+  profile: default
+  components:
+    egressGateways:
+    - name: istio-egressgateway
+      enabled: true
+EOF
+
+# 查看operator状态
+kubectl get istiooperator -n istio-system
+</code></pre>
 <h3 id="33-配置文件详解"><a class="header" href="#33-配置文件详解">3.3 配置文件详解</a></h3>
+<h4 id="istiooperator-配置结构"><a class="header" href="#istiooperator-配置结构">IstioOperator 配置结构</a></h4>
+<pre><code class="language-yaml">apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  namespace: istio-system
+  name: istio-installation
+spec:
+  # 配置Profile
+  profile: default
+
+  # 全局配置
+  meshConfig:
+    # 访问日志
+    accessLogFile: /dev/stdout
+    accessLogEncoding: JSON
+
+    # 默认配置
+    defaultConfig:
+      # 追踪配置
+      tracing:
+        sampling: 100.0  # 采样率100%
+        zipkin:
+          address: zipkin.istio-system:9411
+
+      # 代理资源限制
+      proxyMetadata:
+        CPU_LIMIT: "2000m"
+        MEMORY_LIMIT: "1024Mi"
+
+    # 出站流量策略
+    outboundTrafficPolicy:
+      mode: ALLOW_ANY  # ALLOW_ANY 或 REGISTRY_ONLY
+
+    # 启用自动mTLS
+    enableAutoMtls: true
+
+  # 组件配置
+  components:
+    # Pilot配置
+    pilot:
+      enabled: true
+      k8s:
+        resources:
+          requests:
+            cpu: 500m
+            memory: 2048Mi
+        hpaSpec:
+          minReplicas: 2
+          maxReplicas: 5
+
+    # Ingress Gateway配置
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: true
+      k8s:
+        service:
+          type: LoadBalancer
+          ports:
+          - port: 80
+            name: http
+          - port: 443
+            name: https
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1024Mi
+        hpaSpec:
+          minReplicas: 2
+          maxReplicas: 5
+
+    # Egress Gateway配置
+    egressGateways:
+    - name: istio-egressgateway
+      enabled: false
+
+  # 值覆盖
+  values:
+    global:
+      # 代理配置
+      proxy:
+        # 资源限制
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 2000m
+            memory: 1024Mi
+        # 日志级别
+        logLevel: warning
+
+      # 多集群配置
+      multiCluster:
+        clusterName: cluster-1
+</code></pre>
 <h3 id="34-验证安装"><a class="header" href="#34-验证安装">3.4 验证安装</a></h3>
+<h4 id="完整验证流程"><a class="header" href="#完整验证流程">完整验证流程</a></h4>
+<p><strong>1. 检查控制平面状态</strong></p>
+<pre><code class="language-bash"># 查看所有Istio组件
+kubectl get all -n istio-system
+
+# 查看Pod详细信息
+kubectl describe pod -n istio-system -l app=istiod
+
+# 检查istiod日志
+kubectl logs -n istio-system -l app=istiod --tail=100
+</code></pre>
+<p><strong>2. 部署示例应用</strong></p>
+<pre><code class="language-bash"># 创建测试命名空间并启用自动注入
+kubectl create namespace bookinfo
+kubectl label namespace bookinfo istio-injection=enabled
+
+# 部署Bookinfo示例应用
+kubectl apply -n bookinfo -f samples/bookinfo/platform/kube/bookinfo.yaml
+
+# 检查部署状态
+kubectl get pods -n bookinfo
+
+# 期望输出：每个Pod都有2个容器（应用+Envoy）
+NAME                             READY   STATUS    RESTARTS   AGE
+details-v1-5f4d584748-xyz        2/2     Running   0          1m
+productpage-v1-564d4686f-abc     2/2     Running   0          1m
+ratings-v1-686ccfb5d8-def        2/2     Running   0          1m
+reviews-v1-86896b7648-ghi        2/2     Running   0          1m
+</code></pre>
+<p><strong>3. 验证服务连通性</strong></p>
+<pre><code class="language-bash"># 进入productpage pod测试
+kubectl exec -n bookinfo deploy/productpage-v1 -c productpage -- curl -s ratings:9080/ratings/0
+
+# 期望输出：
+{"id":0,"ratings":{"Reviewer1":5,"Reviewer2":4}}
+</code></pre>
+<p><strong>4. 配置Ingress Gateway</strong></p>
+<pre><code class="language-yaml"># 创建Gateway和VirtualService
+kubectl apply -n bookinfo -f - &lt;&lt;EOF
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: bookinfo
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - bookinfo-gateway
+  http:
+  - match:
+    - uri:
+        exact: /productpage
+    route:
+    - destination:
+        host: productpage
+        port:
+          number: 9080
+EOF
+</code></pre>
+<p><strong>5. 访问应用</strong></p>
+<pre><code class="language-bash"># 获取Ingress Gateway地址
+export INGRESS_HOST=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export INGRESS_PORT=$(kubectl get svc istio-ingressgateway -n istio-system -o jsonpath='{.spec.ports[?(@.name=="http")].port}')
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+
+# 访问应用
+curl -s http://${GATEWAY_URL}/productpage | grep -o "&lt;title&gt;.*&lt;/title&gt;"
+
+# 期望输出：
+&lt;title&gt;Simple Bookstore App&lt;/title&gt;
+</code></pre>
+<p><strong>6. 验证Sidecar注入</strong></p>
+<pre><code class="language-bash"># 查看Pod的容器
+kubectl get pod -n bookinfo -l app=productpage -o jsonpath='{.items[0].spec.containers[*].name}'
+
+# 期望输出：
+productpage istio-proxy
+
+# 查看Sidecar配置
+istioctl proxy-config listener -n bookinfo deploy/productpage-v1
+</code></pre>
+<hr />
 <h2 id="4-流量管理-traffic-management"><a class="header" href="#4-流量管理-traffic-management">4. 流量管理 (Traffic Management)</a></h2>
 <h3 id="41-virtual-service"><a class="header" href="#41-virtual-service">4.1 Virtual Service</a></h3>
+<p><strong>VirtualService</strong> 是Istio流量路由的核心资源，定义了如何将请求路由到目标服务。</p>
+<h4 id="基本概念"><a class="header" href="#基本概念">基本概念</a></h4>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: reviews-route
+spec:
+  hosts:              # 目标主机
+  - reviews
+  http:               # HTTP路由规则
+  - match:            # 匹配条件
+    - headers:
+        end-user:
+          exact: jason
+    route:            # 路由目标
+    - destination:
+        host: reviews
+        subset: v2
+  - route:            # 默认路由
+    - destination:
+        host: reviews
+        subset: v1
+</code></pre>
+<h4 id="实战案例1-基于用户的路由"><a class="header" href="#实战案例1-基于用户的路由">实战案例1: 基于用户的路由</a></h4>
+<p><strong>场景</strong>: 将特定用户的请求路由到v2版本，其他用户使用v1版本</p>
+<pre><code class="language-yaml"># 1. 创建DestinationRule定义服务版本
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: reviews-destination
+spec:
+  host: reviews
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+  - name: v3
+    labels:
+      version: v3
+---
+# 2. 创建VirtualService配置路由
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+  - reviews
+  http:
+  - match:
+    - headers:
+        end-user:
+          exact: jason
+    route:
+    - destination:
+        host: reviews
+        subset: v2
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+</code></pre>
+<p><strong>验证</strong>:</p>
+<pre><code class="language-bash"># 不带header访问
+kubectl exec -n bookinfo deploy/productpage-v1 -c productpage -- \
+  curl -s productpage:9080/productpage | grep reviews-v1
+
+# 带header访问
+kubectl exec -n bookinfo deploy/productpage-v1 -c productpage -- \
+  curl -s -H "end-user: jason" productpage:9080/productpage | grep reviews-v2
+</code></pre>
+<h4 id="实战案例2-uri路径路由"><a class="header" href="#实战案例2-uri路径路由">实战案例2: URI路径路由</a></h4>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api-routing
+spec:
+  hosts:
+  - api.example.com
+  http:
+  # /api/v1/* 路由到v1服务
+  - match:
+    - uri:
+        prefix: /api/v1/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: api-service-v1
+
+  # /api/v2/* 路由到v2服务
+  - match:
+    - uri:
+        prefix: /api/v2/
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: api-service-v2
+
+  # 默认路由
+  - route:
+    - destination:
+        host: api-service-v1
+</code></pre>
 <h3 id="42-destination-rule"><a class="header" href="#42-destination-rule">4.2 Destination Rule</a></h3>
+<p><strong>DestinationRule</strong> 定义了流量路由到目标服务后的策略，包括负载均衡、连接池、熔断等。</p>
+<h4 id="负载均衡策略"><a class="header" href="#负载均衡策略">负载均衡策略</a></h4>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: reviews-lb
+spec:
+  host: reviews
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_REQUEST  # 最少请求数
+      # 其他选项:
+      # ROUND_ROBIN      - 轮询（默认）
+      # RANDOM           - 随机
+      # PASSTHROUGH      - 直传
+      # LEAST_CONN       - 最少连接数
+
+    # 连接池配置
+    connectionPool:
+      tcp:
+        maxConnections: 100         # TCP最大连接数
+        connectTimeout: 30ms        # 连接超时
+      http:
+        http1MaxPendingRequests: 50 # HTTP/1.1最大等待请求数
+        http2MaxRequests: 100       # HTTP/2最大请求数
+        maxRequestsPerConnection: 2 # 每连接最大请求数
+        maxRetries: 3               # 最大重试次数
+
+    # 熔断配置
+    outlierDetection:
+      consecutiveErrors: 5          # 连续错误次数
+      interval: 30s                 # 检测间隔
+      baseEjectionTime: 30s         # 基础驱逐时间
+      maxEjectionPercent: 50        # 最大驱逐百分比
+      minHealthPercent: 30          # 最小健康百分比
+</code></pre>
+<h4 id="实战案例-熔断配置"><a class="header" href="#实战案例-熔断配置">实战案例: 熔断配置</a></h4>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: httpbin-circuit-breaker
+spec:
+  host: httpbin
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 1
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutiveErrors: 1
+      interval: 1s
+      baseEjectionTime: 3m
+      maxEjectionPercent: 100
+</code></pre>
+<p><strong>测试熔断</strong>:</p>
+<pre><code class="language-bash"># 部署测试客户端
+kubectl apply -f samples/httpbin/sample-client/fortio-deploy.yaml
+
+# 正常请求（单线程）
+kubectl exec deploy/fortio -c fortio -- fortio load -c 1 -qps 0 -n 20 http://httpbin:8000/get
+# 输出: Code 200 : 20 (100.0 %)
+
+# 触发熔断（多线程）
+kubectl exec deploy/fortio -c fortio -- fortio load -c 3 -qps 0 -n 30 http://httpbin:8000/get
+# 输出: Code 200 : 25 (83.3 %), Code 503 : 5 (16.7 %)  # 部分请求被熔断
+</code></pre>
 <h3 id="43-gateway"><a class="header" href="#43-gateway">4.3 Gateway</a></h3>
+<p><strong>Gateway</strong> 管理进出网格的流量，类似于Kubernetes Ingress，但功能更强大。</p>
+<h4 id="ingress-gateway配置"><a class="header" href="#ingress-gateway配置">Ingress Gateway配置</a></h4>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: my-gateway
+spec:
+  selector:
+    istio: ingressgateway  # 使用默认Ingress Gateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "example.com"
+    - "api.example.com"
+
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: example-com-cert  # K8s Secret名称
+    hosts:
+    - "example.com"
+</code></pre>
+<h4 id="实战案例-https配置"><a class="header" href="#实战案例-https配置">实战案例: HTTPS配置</a></h4>
+<p><strong>步骤1: 创建证书Secret</strong></p>
+<pre><code class="language-bash"># 创建自签名证书（测试用）
+openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=example.com"
+
+# 创建Secret
+kubectl create secret tls example-com-cert \
+  --cert=cert.pem \
+  --key=key.pem \
+  -n istio-system
+</code></pre>
+<p><strong>步骤2: 配置Gateway和VirtualService</strong></p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: https-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: example-com-cert
+    hosts:
+    - "example.com"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: example-vs
+spec:
+  hosts:
+  - "example.com"
+  gateways:
+  - https-gateway
+  http:
+  - route:
+    - destination:
+        host: my-service
+        port:
+          number: 8080
+</code></pre>
 <h3 id="44-service-entry"><a class="header" href="#44-service-entry">4.4 Service Entry</a></h3>
+<p><strong>ServiceEntry</strong> 允许将外部服务注册到服务网格中，使其可以被网格管理。</p>
+<h4 id="实战案例-访问外部api"><a class="header" href="#实战案例-访问外部api">实战案例: 访问外部API</a></h4>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: external-api
+spec:
+  hosts:
+  - api.external.com
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  location: MESH_EXTERNAL
+  resolution: DNS
+---
+# 配置VirtualService控制访问
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: external-api-vs
+spec:
+  hosts:
+  - api.external.com
+  http:
+  - timeout: 3s
+    retries:
+      attempts: 3
+      perTryTimeout: 1s
+    route:
+    - destination:
+        host: api.external.com
+</code></pre>
 <h3 id="45-流量路由策略"><a class="header" href="#45-流量路由策略">4.5 流量路由策略</a></h3>
-<h4 id="451-基于权重的路由"><a class="header" href="#451-基于权重的路由">4.5.1 基于权重的路由</a></h4>
+<h4 id="451-基于权重的路由金丝雀发布"><a class="header" href="#451-基于权重的路由金丝雀发布">4.5.1 基于权重的路由（金丝雀发布）</a></h4>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: reviews-canary
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+      weight: 90  # 90%流量到v1
+    - destination:
+        host: reviews
+        subset: v2
+      weight: 10  # 10%流量到v2（金丝雀）
+</code></pre>
+<p><strong>渐进式发布流程</strong>:</p>
+<pre><code class="language-bash"># 阶段1: 10%流量到v2
+kubectl apply -f canary-10percent.yaml
+
+# 观察指标，如果正常，增加到50%
+kubectl apply -f canary-50percent.yaml
+
+# 继续观察，如果正常，全量切换到v2
+kubectl apply -f canary-100percent.yaml
+</code></pre>
 <h4 id="452-基于内容的路由"><a class="header" href="#452-基于内容的路由">4.5.2 基于内容的路由</a></h4>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: content-based-routing
+spec:
+  hosts:
+  - myservice
+  http:
+  # 移动端流量
+  - match:
+    - headers:
+        user-agent:
+          regex: ".*Mobile.*"
+    route:
+    - destination:
+        host: myservice
+        subset: mobile
+
+  # API请求
+  - match:
+    - uri:
+        prefix: /api/
+    route:
+    - destination:
+        host: myservice
+        subset: api
+
+  # 默认路由
+  - route:
+    - destination:
+        host: myservice
+        subset: web
+</code></pre>
 <h4 id="453-故障注入"><a class="header" href="#453-故障注入">4.5.3 故障注入</a></h4>
+<p><strong>延迟注入</strong>:</p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: ratings-delay
+spec:
+  hosts:
+  - ratings
+  http:
+  - fault:
+      delay:
+        percentage:
+          value: 50.0      # 50%请求注入延迟
+        fixedDelay: 7s     # 延迟7秒
+    route:
+    - destination:
+        host: ratings
+</code></pre>
+<p><strong>错误注入</strong>:</p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: ratings-abort
+spec:
+  hosts:
+  - ratings
+  http:
+  - fault:
+      abort:
+        percentage:
+          value: 20.0      # 20%请求返回错误
+        httpStatus: 500    # 返回HTTP 500
+    route:
+    - destination:
+        host: ratings
+</code></pre>
 <h4 id="454-超时和重试"><a class="header" href="#454-超时和重试">4.5.4 超时和重试</a></h4>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: reviews-timeout-retry
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+    timeout: 10s              # 总超时10秒
+    retries:
+      attempts: 3             # 最多重试3次
+      perTryTimeout: 2s       # 每次尝试超时2秒
+      retryOn: 5xx,reset,connect-failure,refused-stream
+</code></pre>
+<hr />
 <h2 id="5-安全管理-security"><a class="header" href="#5-安全管理-security">5. 安全管理 (Security)</a></h2>
 <h3 id="51-认证-authentication"><a class="header" href="#51-认证-authentication">5.1 认证 (Authentication)</a></h3>
 <h4 id="511-双向-tls-mtls"><a class="header" href="#511-双向-tls-mtls">5.1.1 双向 TLS (mTLS)</a></h4>
+<p><strong>mTLS工作原理</strong>:</p>
+<pre><code>客户端服务                         服务端服务
+┌─────────────┐                   ┌─────────────┐
+│  App A      │                   │  App B      │
+└──────┬──────┘                   └──────▲──────┘
+       │                                  │
+┌──────▼──────┐                   ┌──────┴──────┐
+│Envoy Proxy A│◄──── mTLS握手 ────►│Envoy Proxy B│
+└─────────────┘                   └─────────────┘
+    │                                      │
+    │ 1. 客户端发送证书                      │
+    │ 2. 服务端验证证书                      │
+    │ 3. 服务端发送证书                      │
+    │ 4. 客户端验证证书                      │
+    │ 5. 建立加密连接                        │
+</code></pre>
+<p><strong>全局启用mTLS</strong>:</p>
+<pre><code class="language-yaml"># PeerAuthentication: 配置服务端如何接受连接
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system  # 应用到整个网格
+spec:
+  mtls:
+    mode: STRICT  # STRICT | PERMISSIVE | DISABLE
+</code></pre>
+<p><strong>模式说明</strong>:</p>
+<ul>
+<li><code>STRICT</code>: 只接受mTLS连接</li>
+<li><code>PERMISSIVE</code>: 同时接受mTLS和明文连接（用于迁移期）</li>
+<li><code>DISABLE</code>: 禁用mTLS</li>
+</ul>
+<p><strong>命名空间级别mTLS</strong>:</p>
+<pre><code class="language-yaml">apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: namespace-policy
+  namespace: my-namespace
+spec:
+  mtls:
+    mode: STRICT
+</code></pre>
+<p><strong>服务级别mTLS</strong>:</p>
+<pre><code class="language-yaml">apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: service-policy
+  namespace: my-namespace
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  mtls:
+    mode: STRICT
+  portLevelMtls:
+    8080:
+      mode: DISABLE  # 8080端口禁用mTLS
+</code></pre>
+<p><strong>验证mTLS</strong>:</p>
+<pre><code class="language-bash"># 检查mTLS配置
+istioctl x describe pod &lt;pod-name&gt; -n &lt;namespace&gt;
+
+# 检查连接是否使用mTLS
+istioctl proxy-config secret &lt;pod-name&gt; -n &lt;namespace&gt;
+
+# 查看证书信息
+kubectl exec &lt;pod-name&gt; -n &lt;namespace&gt; -c istio-proxy -- \
+  openssl s_client -showcerts -connect &lt;service&gt;:8080
+</code></pre>
 <h4 id="512-jwt-认证"><a class="header" href="#512-jwt-认证">5.1.2 JWT 认证</a></h4>
+<pre><code class="language-yaml">apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: jwt-auth
+  namespace: my-namespace
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  jwtRules:
+  - issuer: "https://accounts.google.com"
+    jwksUri: "https://www.googleapis.com/oauth2/v3/certs"
+    audiences:
+    - "myapp-audience"
+    forwardOriginalToken: true
+    outputPayloadToHeader: "x-jwt-payload"
+</code></pre>
+<p><strong>实战案例: JWT + OAuth2</strong></p>
+<pre><code class="language-yaml"># 1. 配置JWT认证
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: oauth2-jwt
+spec:
+  selector:
+    matchLabels:
+      app: api-server
+  jwtRules:
+  - issuer: "https://auth.example.com"
+    jwksUri: "https://auth.example.com/.well-known/jwks.json"
+---
+# 2. 配置授权策略（要求必须有有效JWT）
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: require-jwt
+spec:
+  selector:
+    matchLabels:
+      app: api-server
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        requestPrincipals: ["*"]  # 必须有有效的JWT
+</code></pre>
+<p><strong>测试JWT认证</strong>:</p>
+<pre><code class="language-bash"># 不带Token访问（应该被拒绝）
+curl -X GET http://$GATEWAY_URL/api/data
+
+# 带Token访问
+TOKEN=$(curl -s https://auth.example.com/token -d "client_id=xxx&amp;client_secret=yyy" | jq -r .access_token)
+curl -X GET http://$GATEWAY_URL/api/data -H "Authorization: Bearer $TOKEN"
+</code></pre>
 <h3 id="52-授权-authorization"><a class="header" href="#52-授权-authorization">5.2 授权 (Authorization)</a></h3>
-<h4 id="521-rbac-策略"><a class="header" href="#521-rbac-策略">5.2.1 RBAC 策略</a></h4>
-<h4 id="522-authorization-policy"><a class="header" href="#522-authorization-policy">5.2.2 Authorization Policy</a></h4>
+<h4 id="authorizationpolicy-核心概念"><a class="header" href="#authorizationpolicy-核心概念">AuthorizationPolicy 核心概念</a></h4>
+<pre><code class="language-yaml">apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: policy-name
+  namespace: my-namespace
+spec:
+  selector:        # 应用到哪些工作负载
+    matchLabels:
+      app: myapp
+
+  action: ALLOW    # ALLOW | DENY | AUDIT | CUSTOM
+
+  rules:
+  - from:          # 来源条件
+    - source:
+        principals: ["cluster.local/ns/default/sa/myapp"]
+        namespaces: ["default"]
+
+    to:            # 目标条件
+    - operation:
+        methods: ["GET", "POST"]
+        paths: ["/api/*"]
+        ports: ["8080"]
+
+    when:          # 额外条件
+    - key: request.headers[x-api-key]
+      values: ["secret-key"]
+</code></pre>
+<h4 id="实战案例1-基于命名空间的访问控制"><a class="header" href="#实战案例1-基于命名空间的访问控制">实战案例1: 基于命名空间的访问控制</a></h4>
+<pre><code class="language-yaml"># 只允许default命名空间的服务访问
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-default-ns
+  namespace: production
+spec:
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces: ["default"]
+</code></pre>
+<h4 id="实战案例2-基于服务账号的rbac"><a class="header" href="#实战案例2-基于服务账号的rbac">实战案例2: 基于服务账号的RBAC</a></h4>
+<pre><code class="language-yaml"># 只允许特定ServiceAccount访问
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: service-account-rbac
+spec:
+  selector:
+    matchLabels:
+      app: database
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals:
+        - "cluster.local/ns/default/sa/api-service"
+        - "cluster.local/ns/default/sa/worker-service"
+    to:
+    - operation:
+        methods: ["GET", "POST"]
+</code></pre>
+<h4 id="实战案例3-基于http方法的访问控制"><a class="header" href="#实战案例3-基于http方法的访问控制">实战案例3: 基于HTTP方法的访问控制</a></h4>
+<pre><code class="language-yaml">apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: http-method-policy
+spec:
+  selector:
+    matchLabels:
+      app: api-server
+  action: ALLOW
+  rules:
+  # 允许所有人GET
+  - to:
+    - operation:
+        methods: ["GET"]
+
+  # 只允许admin执行POST/PUT/DELETE
+  - from:
+    - source:
+        requestPrincipals: ["*"]
+    to:
+    - operation:
+        methods: ["POST", "PUT", "DELETE"]
+    when:
+    - key: request.auth.claims[role]
+      values: ["admin"]
+</code></pre>
+<h4 id="实战案例4-ip黑白名单"><a class="header" href="#实战案例4-ip黑白名单">实战案例4: IP黑白名单</a></h4>
+<pre><code class="language-yaml"># IP白名单
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: ip-whitelist
+spec:
+  selector:
+    matchLabels:
+      app: admin-panel
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        ipBlocks:
+        - "10.0.0.0/8"      # 内网
+        - "192.168.1.100"   # 特定IP
+---
+# IP黑名单
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: ip-blacklist
+spec:
+  selector:
+    matchLabels:
+      app: public-api
+  action: DENY
+  rules:
+  - from:
+    - source:
+        ipBlocks:
+        - "203.0.113.0/24"  # 恶意IP段
+</code></pre>
 <h3 id="53-安全策略配置"><a class="header" href="#53-安全策略配置">5.3 安全策略配置</a></h3>
+<h4 id="完整的安全配置示例"><a class="header" href="#完整的安全配置示例">完整的安全配置示例</a></h4>
+<pre><code class="language-yaml"># 1. 启用全局STRICT mTLS
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: global-mtls
+  namespace: istio-system
+spec:
+  mtls:
+    mode: STRICT
+---
+# 2. 配置JWT认证
+apiVersion: security.istio.io/v1beta1
+kind: RequestAuthentication
+metadata:
+  name: jwt-auth
+  namespace: production
+spec:
+  jwtRules:
+  - issuer: "https://auth.example.com"
+    jwksUri: "https://auth.example.com/.well-known/jwks.json"
+---
+# 3. 默认拒绝所有访问
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-all
+  namespace: production
+spec:
+  {}  # 空规则 = 拒绝所有
+---
+# 4. 白名单允许特定访问
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-specific
+  namespace: production
+spec:
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals: ["cluster.local/ns/production/sa/frontend"]
+    to:
+    - operation:
+        methods: ["GET", "POST"]
+        paths: ["/api/*"]
+    when:
+    - key: request.auth.claims[role]
+      values: ["user", "admin"]
+</code></pre>
+<hr />
 <h2 id="6-可观测性-observability"><a class="header" href="#6-可观测性-observability">6. 可观测性 (Observability)</a></h2>
 <h3 id="61-指标监控"><a class="header" href="#61-指标监控">6.1 指标监控</a></h3>
 <h4 id="611-prometheus-集成"><a class="header" href="#611-prometheus-集成">6.1.1 Prometheus 集成</a></h4>
+<p><strong>安装Prometheus</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/prometheus.yaml
+</code></pre>
+<p><strong>Istio自动收集的指标</strong>:</p>
+<pre><code class="language-yaml">标准指标:
+  请求指标:
+    - istio_requests_total: 请求总数
+    - istio_request_duration_milliseconds: 请求延迟
+    - istio_request_bytes: 请求大小
+    - istio_response_bytes: 响应大小
+
+  TCP指标:
+    - istio_tcp_connections_opened_total: TCP连接打开总数
+    - istio_tcp_connections_closed_total: TCP连接关闭总数
+    - istio_tcp_sent_bytes_total: 发送字节总数
+    - istio_tcp_received_bytes_total: 接收字节总数
+</code></pre>
+<p><strong>自定义指标查询</strong>:</p>
+<pre><code class="language-bash"># 端口转发Prometheus
+kubectl port-forward -n istio-system svc/prometheus 9090:9090
+
+# 访问 http://localhost:9090
+
+# PromQL查询示例：
+
+# 1. 请求成功率
+sum(rate(istio_requests_total{response_code!~"5.*"}[5m])) / sum(rate(istio_requests_total[5m]))
+
+# 2. P99延迟
+histogram_quantile(0.99, sum(rate(istio_request_duration_milliseconds_bucket[5m])) by (le, destination_workload))
+
+# 3. 错误率
+sum(rate(istio_requests_total{response_code=~"5.*"}[5m])) by (destination_workload)
+
+# 4. 请求速率(QPS)
+sum(rate(istio_requests_total[1m])) by (destination_workload)
+</code></pre>
 <h4 id="612-grafana-仪表板"><a class="header" href="#612-grafana-仪表板">6.1.2 Grafana 仪表板</a></h4>
+<p><strong>安装Grafana</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/grafana.yaml
+
+# 访问Grafana
+kubectl port-forward -n istio-system svc/grafana 3000:3000
+# 浏览器打开 http://localhost:3000
+</code></pre>
+<p><strong>Istio内置Dashboard</strong>:</p>
+<ol>
+<li><strong>Istio Mesh Dashboard</strong>: 整体网格健康状况</li>
+<li><strong>Istio Service Dashboard</strong>: 单个服务详细指标</li>
+<li><strong>Istio Workload Dashboard</strong>: 工作负载级别指标</li>
+<li><strong>Istio Performance Dashboard</strong>: 性能分析</li>
+<li><strong>Istio Control Plane Dashboard</strong>: 控制平面监控</li>
+</ol>
 <h3 id="62-分布式追踪"><a class="header" href="#62-分布式追踪">6.2 分布式追踪</a></h3>
 <h4 id="621-jaeger-集成"><a class="header" href="#621-jaeger-集成">6.2.1 Jaeger 集成</a></h4>
-<h4 id="622-zipkin-集成"><a class="header" href="#622-zipkin-集成">6.2.2 Zipkin 集成</a></h4>
+<p><strong>安装Jaeger</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/jaeger.yaml
+</code></pre>
+<p><strong>配置追踪采样率</strong>:</p>
+<pre><code class="language-yaml">apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  meshConfig:
+    defaultConfig:
+      tracing:
+        sampling: 100.0  # 采样率100%（生产环境建议1-10%）
+        zipkin:
+          address: jaeger-collector.istio-system:9411
+</code></pre>
+<p><strong>应用程序传播追踪Header</strong>:</p>
+<pre><code class="language-java">// Spring Boot示例
+@GetMapping("/api/users/{id}")
+public User getUser(@PathVariable Long id, HttpServletRequest request) {
+    // Istio需要传播以下Headers:
+    String[] tracingHeaders = {
+        "x-request-id",
+        "x-b3-traceid",
+        "x-b3-spanid",
+        "x-b3-parentspanid",
+        "x-b3-sampled",
+        "x-b3-flags",
+        "x-ot-span-context"
+    };
+
+    // 传播Headers到下游服务
+    HttpHeaders headers = new HttpHeaders();
+    for (String header : tracingHeaders) {
+        String value = request.getHeader(header);
+        if (value != null) {
+            headers.add(header, value);
+        }
+    }
+
+    // 调用下游服务
+    return restTemplate.exchange(
+        "http://user-service/users/" + id,
+        HttpMethod.GET,
+        new HttpEntity&lt;&gt;(headers),
+        User.class
+    ).getBody();
+}
+</code></pre>
+<p><strong>访问Jaeger UI</strong>:</p>
+<pre><code class="language-bash">kubectl port-forward -n istio-system svc/tracing 16686:16686
+# 浏览器打开 http://localhost:16686
+</code></pre>
 <h3 id="63-日志管理"><a class="header" href="#63-日志管理">6.3 日志管理</a></h3>
 <h4 id="631-访问日志"><a class="header" href="#631-访问日志">6.3.1 访问日志</a></h4>
-<h4 id="632-应用日志"><a class="header" href="#632-应用日志">6.3.2 应用日志</a></h4>
+<p><strong>全局启用访问日志</strong>:</p>
+<pre><code class="language-yaml">apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  meshConfig:
+    accessLogFile: /dev/stdout
+    accessLogEncoding: JSON
+    accessLogFormat: |
+      {
+        "start_time": "%START_TIME%",
+        "method": "%REQ(:METHOD)%",
+        "path": "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%",
+        "protocol": "%PROTOCOL%",
+        "response_code": "%RESPONSE_CODE%",
+        "response_flags": "%RESPONSE_FLAGS%",
+        "bytes_received": "%BYTES_RECEIVED%",
+        "bytes_sent": "%BYTES_SENT%",
+        "duration": "%DURATION%",
+        "upstream_service_time": "%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%",
+        "x_forwarded_for": "%REQ(X-FORWARDED-FOR)%",
+        "user_agent": "%REQ(USER-AGENT)%",
+        "request_id": "%REQ(X-REQUEST-ID)%",
+        "authority": "%REQ(:AUTHORITY)%",
+        "upstream_host": "%UPSTREAM_HOST%",
+        "upstream_cluster": "%UPSTREAM_CLUSTER%"
+      }
+</code></pre>
+<p><strong>查看访问日志</strong>:</p>
+<pre><code class="language-bash"># 查看特定Pod的访问日志
+kubectl logs &lt;pod-name&gt; -c istio-proxy -n &lt;namespace&gt;
+
+# 实时跟踪
+kubectl logs -f &lt;pod-name&gt; -c istio-proxy -n &lt;namespace&gt;
+
+# 使用stern（多Pod日志聚合工具）
+stern -n &lt;namespace&gt; &lt;pod-label&gt; -c istio-proxy
+</code></pre>
+<h4 id="632-应用日志聚合"><a class="header" href="#632-应用日志聚合">6.3.2 应用日志聚合</a></h4>
+<p><strong>使用EFK Stack</strong>:</p>
+<pre><code class="language-bash"># 部署Elasticsearch
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/extras/elasticsearch.yaml
+
+# 部署Fluentd
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/extras/fluentd-daemonset.yaml
+
+# 部署Kibana
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/extras/kibana.yaml
+
+# 访问Kibana
+kubectl port-forward -n istio-system svc/kibana 5601:5601
+</code></pre>
 <h3 id="64-kiali-服务拓扑"><a class="header" href="#64-kiali-服务拓扑">6.4 Kiali 服务拓扑</a></h3>
-<h2 id="7-策略与遥测-policy-and-telemetry"><a class="header" href="#7-策略与遥测-policy-and-telemetry">7. 策略与遥测 (Policy and Telemetry)</a></h2>
-<h3 id="71-mixer-组件"><a class="header" href="#71-mixer-组件">7.1 Mixer 组件</a></h3>
-<h3 id="72-适配器-adapters"><a class="header" href="#72-适配器-adapters">7.2 适配器 (Adapters)</a></h3>
-<h3 id="73-模板-templates"><a class="header" href="#73-模板-templates">7.3 模板 (Templates)</a></h3>
-<h3 id="74-策略执行"><a class="header" href="#74-策略执行">7.4 策略执行</a></h3>
-<h2 id="8-多集群管理"><a class="header" href="#8-多集群管理">8. 多集群管理</a></h2>
-<h3 id="81-多集群部署"><a class="header" href="#81-多集群部署">8.1 多集群部署</a></h3>
-<h3 id="82-跨集群服务发现"><a class="header" href="#82-跨集群服务发现">8.2 跨集群服务发现</a></h3>
-<h3 id="83-多集群网络配置"><a class="header" href="#83-多集群网络配置">8.3 多集群网络配置</a></h3>
-<h2 id="9-istio-实践案例"><a class="header" href="#9-istio-实践案例">9. Istio 实践案例</a></h2>
-<h3 id="91-微服务治理"><a class="header" href="#91-微服务治理">9.1 微服务治理</a></h3>
-<h3 id="92-灰度发布"><a class="header" href="#92-灰度发布">9.2 灰度发布</a></h3>
-<h3 id="93-蓝绿部署"><a class="header" href="#93-蓝绿部署">9.3 蓝绿部署</a></h3>
-<h3 id="94-服务限流"><a class="header" href="#94-服务限流">9.4 服务限流</a></h3>
-<h3 id="95-熔断降级"><a class="header" href="#95-熔断降级">9.5 熔断降级</a></h3>
-<h2 id="10-故障排查与调优"><a class="header" href="#10-故障排查与调优">10. 故障排查与调优</a></h2>
-<h3 id="101-常见问题诊断"><a class="header" href="#101-常见问题诊断">10.1 常见问题诊断</a></h3>
-<h3 id="102-性能优化"><a class="header" href="#102-性能优化">10.2 性能优化</a></h3>
-<h3 id="103-配置验证"><a class="header" href="#103-配置验证">10.3 配置验证</a></h3>
-<h3 id="104-调试工具"><a class="header" href="#104-调试工具">10.4 调试工具</a></h3>
-<h2 id="11-istio-最佳实践"><a class="header" href="#11-istio-最佳实践">11. Istio 最佳实践</a></h2>
-<h3 id="111-生产环境部署建议"><a class="header" href="#111-生产环境部署建议">11.1 生产环境部署建议</a></h3>
-<h3 id="112-配置管理策略"><a class="header" href="#112-配置管理策略">11.2 配置管理策略</a></h3>
-<h3 id="113-升级和维护"><a class="header" href="#113-升级和维护">11.3 升级和维护</a></h3>
-<h3 id="114-安全加固"><a class="header" href="#114-安全加固">11.4 安全加固</a></h3>
-<h2 id="12-istio-生态系统"><a class="header" href="#12-istio-生态系统">12. Istio 生态系统</a></h2>
-<h3 id="121-与-kubernetes-集成"><a class="header" href="#121-与-kubernetes-集成">12.1 与 Kubernetes 集成</a></h3>
-<h3 id="122-与-cicd-集成"><a class="header" href="#122-与-cicd-集成">12.2 与 CI/CD 集成</a></h3>
-<h3 id="123-第三方插件"><a class="header" href="#123-第三方插件">12.3 第三方插件</a></h3>
-<h3 id="124-社区工具"><a class="header" href="#124-社区工具">12.4 社区工具</a></h3>
+<p><strong>安装Kiali</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/kiali.yaml
+
+# 访问Kiali
+kubectl port-forward -n istio-system svc/kiali 20001:20001
+# 浏览器打开 http://localhost:20001
+</code></pre>
+<p><strong>Kiali核心功能</strong>:</p>
+<ol>
+<li><strong>服务拓扑可视化</strong>: 实时查看服务间调用关系</li>
+<li><strong>流量动画</strong>: 可视化请求流量和错误</li>
+<li><strong>配置验证</strong>: 检查Istio配置的正确性</li>
+<li><strong>追踪集成</strong>: 集成Jaeger链路追踪</li>
+<li><strong>指标图表</strong>: 集成Prometheus指标</li>
+</ol>
+<p><strong>Kiali使用场景</strong>:</p>
+<pre><code class="language-yaml">常见用途:
+  1. 故障排查:
+     - 快速定位哪个服务出现错误
+     - 查看服务间调用关系
+     - 分析请求延迟来源
+
+  2. 配置管理:
+     - 可视化编辑VirtualService
+     - 验证配置正确性
+     - 查看生效的路由规则
+
+  3. 流量分析:
+     - 查看流量分布
+     - 分析QPS和错误率
+     - 监控金丝雀发布效果
+</code></pre>
+<hr />
+<h2 id="7-istio-实践案例"><a class="header" href="#7-istio-实践案例">7. Istio 实践案例</a></h2>
+<h3 id="71-微服务治理"><a class="header" href="#71-微服务治理">7.1 微服务治理</a></h3>
+<h4 id="完整的电商微服务案例"><a class="header" href="#完整的电商微服务案例">完整的电商微服务案例</a></h4>
+<p><strong>架构图</strong>:</p>
+<pre><code>                    ┌─────────────┐
+                    │   Gateway   │
+                    └──────┬──────┘
+                           │
+              ┌────────────┼────────────┐
+              │            │            │
+         ┌────▼───┐   ┌────▼───┐   ┌────▼───┐
+         │ Web UI │   │  API   │   │ Mobile │
+         └────┬───┘   │ Gateway│   │  API   │
+              │       └────┬───┘   └────┬───┘
+              │            │            │
+              └────────────┼────────────┘
+                           │
+           ┌───────────────┼───────────────┐
+           │               │               │
+      ┌────▼────┐    ┌─────▼────┐    ┌────▼────┐
+      │ Product │    │  Order   │    │  User   │
+      │ Service │    │ Service  │    │ Service │
+      └────┬────┘    └─────┬────┘    └────┬────┘
+           │               │               │
+           └───────────────┼───────────────┘
+                           │
+                      ┌────▼────┐
+                      │Database │
+                      └─────────┘
+</code></pre>
+<p><strong>部署服务</strong>:</p>
+<pre><code class="language-yaml"># Product Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service-v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: product-service
+        version: v1
+    spec:
+      containers:
+      - name: product-service
+        image: myregistry/product-service:v1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_URL
+          value: "jdbc:mysql://mysql:3306/products"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: product-service
+</code></pre>
+<p><strong>配置流量管理</strong>:</p>
+<pre><code class="language-yaml"># DestinationRule
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: product-service
+spec:
+  host: product-service
+  trafficPolicy:
+    loadBalancer:
+      simple: LEAST_REQUEST
+    connectionPool:
+      tcp:
+        maxConnections: 100
+      http:
+        http1MaxPendingRequests: 50
+        maxRequestsPerConnection: 2
+    outlierDetection:
+      consecutiveErrors: 5
+      interval: 30s
+      baseEjectionTime: 30s
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+---
+# VirtualService
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: product-service
+spec:
+  hosts:
+  - product-service
+  http:
+  - match:
+    - headers:
+        x-version:
+          exact: "v2"
+    route:
+    - destination:
+        host: product-service
+        subset: v2
+  - route:
+    - destination:
+        host: product-service
+        subset: v1
+      weight: 95
+    - destination:
+        host: product-service
+        subset: v2
+      weight: 5
+    timeout: 3s
+    retries:
+      attempts: 3
+      perTryTimeout: 1s
+</code></pre>
+<h3 id="72-灰度发布"><a class="header" href="#72-灰度发布">7.2 灰度发布</a></h3>
+<h4 id="完整的灰度发布流程"><a class="header" href="#完整的灰度发布流程">完整的灰度发布流程</a></h4>
+<p><strong>阶段1: 部署新版本（流量0%）</strong></p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-service-v2
+spec:
+  replicas: 1  # 先部署1个实例
+  selector:
+    matchLabels:
+      app: api-service
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: api-service
+        version: v2
+    spec:
+      containers:
+      - name: api-service
+        image: myregistry/api-service:v2
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api-service
+spec:
+  hosts:
+  - api-service
+  http:
+  - route:
+    - destination:
+        host: api-service
+        subset: v1
+      weight: 100  # 100%流量到v1
+    - destination:
+        host: api-service
+        subset: v2
+      weight: 0    # 0%流量到v2
+</code></pre>
+<p><strong>阶段2: 内部测试（特定用户）</strong></p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api-service
+spec:
+  hosts:
+  - api-service
+  http:
+  - match:
+    - headers:
+        x-canary:
+          exact: "true"
+    route:
+    - destination:
+        host: api-service
+        subset: v2
+  - route:
+    - destination:
+        host: api-service
+        subset: v1
+</code></pre>
+<p><strong>阶段3: 小流量灰度（5%）</strong></p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api-service
+spec:
+  hosts:
+  - api-service
+  http:
+  - route:
+    - destination:
+        host: api-service
+        subset: v1
+      weight: 95
+    - destination:
+        host: api-service
+        subset: v2
+      weight: 5
+</code></pre>
+<p><strong>阶段4: 观察指标</strong></p>
+<pre><code class="language-bash"># 使用Prometheus查询错误率
+curl 'http://prometheus:9090/api/v1/query?query=sum(rate(istio_requests_total{destination_workload="api-service",response_code=~"5.*"}[5m]))/sum(rate(istio_requests_total{destination_workload="api-service"}[5m]))'
+
+# 查询P99延迟
+curl 'http://prometheus:9090/api/v1/query?query=histogram_quantile(0.99,sum(rate(istio_request_duration_milliseconds_bucket{destination_workload="api-service"}[5m]))by(le,destination_version))'
+</code></pre>
+<p><strong>阶段5: 逐步扩大（50%）</strong></p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api-service
+spec:
+  hosts:
+  - api-service
+  http:
+  - route:
+    - destination:
+        host: api-service
+        subset: v1
+      weight: 50
+    - destination:
+        host: api-service
+        subset: v2
+      weight: 50
+</code></pre>
+<p><strong>阶段6: 全量切换</strong></p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api-service
+spec:
+  hosts:
+  - api-service
+  http:
+  - route:
+    - destination:
+        host: api-service
+        subset: v2
+      weight: 100
+</code></pre>
+<p><strong>阶段7: 清理旧版本</strong></p>
+<pre><code class="language-bash"># 删除v1版本的Deployment
+kubectl delete deployment api-service-v1
+</code></pre>
+<h3 id="73-蓝绿部署"><a class="header" href="#73-蓝绿部署">7.3 蓝绿部署</a></h3>
+<pre><code class="language-yaml"># 初始状态：所有流量到蓝色环境
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: myapp-blue-green
+spec:
+  hosts:
+  - myapp
+  http:
+  - route:
+    - destination:
+        host: myapp
+        subset: blue
+      weight: 100
+---
+# 切换：一次性切换到绿色环境
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: myapp-blue-green
+spec:
+  hosts:
+  - myapp
+  http:
+  - route:
+    - destination:
+        host: myapp
+        subset: green
+      weight: 100
+</code></pre>
+<h3 id="74-服务限流"><a class="header" href="#74-服务限流">7.4 服务限流</a></h3>
+<p><strong>全局限流配置</strong>:</p>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: EnvoyFilter
+metadata:
+  name: global-ratelimit
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.local_ratelimit
+        typed_config:
+          "@type": type.googleapis.com/udpa.type.v1.TypedStruct
+          type_url: type.googleapis.com/envoy.extensions.filters.http.local_ratelimit.v3.LocalRateLimit
+          value:
+            stat_prefix: http_local_rate_limiter
+            token_bucket:
+              max_tokens: 1000
+              tokens_per_fill: 1000
+              fill_interval: 1s
+            filter_enabled:
+              runtime_key: local_rate_limit_enabled
+              default_value:
+                numerator: 100
+                denominator: HUNDRED
+            filter_enforced:
+              runtime_key: local_rate_limit_enforced
+              default_value:
+                numerator: 100
+                denominator: HUNDRED
+</code></pre>
+<h3 id="75-熔断降级"><a class="header" href="#75-熔断降级">7.5 熔断降级</a></h3>
+<pre><code class="language-yaml">apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: backend-circuit-breaker
+spec:
+  host: backend-service
+  trafficPolicy:
+    connectionPool:
+      tcp:
+        maxConnections: 10
+      http:
+        http1MaxPendingRequests: 1
+        maxRequestsPerConnection: 1
+    outlierDetection:
+      consecutiveGatewayErrors: 3
+      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 100
+      minHealthPercent: 0
+</code></pre>
+<hr />
+<h2 id="8-故障排查与调优"><a class="header" href="#8-故障排查与调优">8. 故障排查与调优</a></h2>
+<h3 id="81-常见问题诊断"><a class="header" href="#81-常见问题诊断">8.1 常见问题诊断</a></h3>
+<h4 id="问题1-sidecar未注入"><a class="header" href="#问题1-sidecar未注入">问题1: Sidecar未注入</a></h4>
+<p><strong>症状</strong>:</p>
+<pre><code class="language-bash">kubectl get pods -n myapp
+# 输出: READY列显示1/1而不是2/2
+</code></pre>
+<p><strong>诊断步骤</strong>:</p>
+<pre><code class="language-bash"># 1. 检查命名空间标签
+kubectl get namespace myapp --show-labels
+
+# 2. 检查Pod annotations
+kubectl get pod &lt;pod-name&gt; -n myapp -o yaml | grep sidecar.istio.io/inject
+
+# 3. 检查istiod日志
+kubectl logs -n istio-system -l app=istiod
+</code></pre>
+<p><strong>解决方案</strong>:</p>
+<pre><code class="language-bash"># 方案1: 给命名空间添加标签
+kubectl label namespace myapp istio-injection=enabled
+
+# 方案2: 给Pod添加annotation
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    sidecar.istio.io/inject: "true"
+
+# 重新创建Pod
+kubectl rollout restart deployment/&lt;deployment-name&gt; -n myapp
+</code></pre>
+<h4 id="问题2-503-service-unavailable"><a class="header" href="#问题2-503-service-unavailable">问题2: 503 Service Unavailable</a></h4>
+<p><strong>可能原因</strong>:</p>
+<ol>
+<li>目标服务不存在</li>
+<li>DestinationRule配置错误</li>
+<li>mTLS配置不匹配</li>
+<li>熔断器触发</li>
+</ol>
+<p><strong>诊断步骤</strong>:</p>
+<pre><code class="language-bash"># 1. 检查服务是否存在
+kubectl get svc &lt;service-name&gt; -n &lt;namespace&gt;
+
+# 2. 检查Endpoints
+kubectl get endpoints &lt;service-name&gt; -n &lt;namespace&gt;
+
+# 3. 检查Envoy配置
+istioctl proxy-config cluster &lt;pod-name&gt; -n &lt;namespace&gt;
+istioctl proxy-config endpoint &lt;pod-name&gt; -n &lt;namespace&gt;
+
+# 4. 查看Envoy访问日志
+kubectl logs &lt;pod-name&gt; -n &lt;namespace&gt; -c istio-proxy
+
+# 5. 检查mTLS配置
+istioctl x describe pod &lt;pod-name&gt; -n &lt;namespace&gt;
+</code></pre>
+<p><strong>解决方案</strong>:</p>
+<pre><code class="language-bash"># 如果是mTLS问题，临时设置为PERMISSIVE模式
+kubectl apply -f - &lt;&lt;EOF
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: &lt;namespace&gt;
+spec:
+  mtls:
+    mode: PERMISSIVE
+EOF
+</code></pre>
+<h4 id="问题3-配置不生效"><a class="header" href="#问题3-配置不生效">问题3: 配置不生效</a></h4>
+<p><strong>诊断工具</strong>:</p>
+<pre><code class="language-bash"># 1. 验证配置语法
+istioctl analyze -n &lt;namespace&gt;
+
+# 2. 检查配置是否下发到Proxy
+istioctl proxy-config route &lt;pod-name&gt; -n &lt;namespace&gt;
+
+# 3. 查看配置同步状态
+istioctl proxy-status
+
+# 4. 导出Envoy配置
+istioctl proxy-config all &lt;pod-name&gt; -n &lt;namespace&gt; -o json &gt; envoy-config.json
+</code></pre>
+<h3 id="82-性能优化"><a class="header" href="#82-性能优化">8.2 性能优化</a></h3>
+<h4 id="优化控制平面"><a class="header" href="#优化控制平面">优化控制平面</a></h4>
+<pre><code class="language-yaml">apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  components:
+    pilot:
+      k8s:
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 2048Mi
+          limits:
+            cpu: 4000m
+            memory: 4096Mi
+        hpaSpec:
+          minReplicas: 2
+          maxReplicas: 10
+          metrics:
+          - type: Resource
+            resource:
+              name: cpu
+              target:
+                type: Utilization
+                averageUtilization: 80
+        env:
+        # 调整推送间隔
+        - name: PILOT_PUSH_THROTTLE
+          value: "100"
+        # 调整防抖时间
+        - name: PILOT_DEBOUNCE_AFTER
+          value: "100ms"
+        # 调整防抖最大时间
+        - name: PILOT_DEBOUNCE_MAX
+          value: "10s"
+</code></pre>
+<h4 id="优化数据平面"><a class="header" href="#优化数据平面">优化数据平面</a></h4>
+<pre><code class="language-yaml"># 1. 调整Sidecar资源
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  values:
+    global:
+      proxy:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 2000m
+            memory: 1024Mi
+---
+# 2. 限制Sidecar配置范围
+apiVersion: networking.istio.io/v1beta1
+kind: Sidecar
+metadata:
+  name: default
+  namespace: myapp
+spec:
+  egress:
+  - hosts:
+    - "./*"           # 只允许访问同命名空间
+    - "istio-system/*" # 和istio-system命名空间的服务
+</code></pre>
+<h4 id="优化追踪采样"><a class="header" href="#优化追踪采样">优化追踪采样</a></h4>
+<pre><code class="language-yaml"># 生产环境降低采样率
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  meshConfig:
+    defaultConfig:
+      tracing:
+        sampling: 1.0  # 1%采样率
+</code></pre>
+<h3 id="83-配置验证"><a class="header" href="#83-配置验证">8.3 配置验证</a></h3>
+<pre><code class="language-bash"># 全面分析配置
+istioctl analyze --all-namespaces
+
+# 常见问题示例：
+# [IST0101] (VirtualService myapp.default) Referenced host not found: "myservice"
+# [IST0102] (VirtualService myapp.default) More than one selector matches the same set of pods
+# [IST0104] (Gateway mygateway.default) Failed to resolve gateway selector label: istio=ingressgateway
+</code></pre>
+<h3 id="84-调试工具"><a class="header" href="#84-调试工具">8.4 调试工具</a></h3>
+<h4 id="istioctl-debug命令"><a class="header" href="#istioctl-debug命令">istioctl debug命令</a></h4>
+<pre><code class="language-bash"># 1. 查看Pod详细信息
+istioctl x describe pod &lt;pod-name&gt; -n &lt;namespace&gt;
+
+# 2. 验证连通性
+istioctl experimental check-inject \
+  --filename deployment.yaml
+
+# 3. 查看xDS同步状态
+istioctl proxy-status
+
+# 4. 实时查看xDS事件
+istioctl experimental wait \
+  --for=distribution \
+  VirtualService/myapp.default
+
+# 5. 导出Envoy日志
+kubectl logs &lt;pod-name&gt; -c istio-proxy --tail=1000
+</code></pre>
+<hr />
+<h2 id="9-istio-最佳实践"><a class="header" href="#9-istio-最佳实践">9. Istio 最佳实践</a></h2>
+<h3 id="91-生产环境部署建议"><a class="header" href="#91-生产环境部署建议">9.1 生产环境部署建议</a></h3>
+<h4 id="高可用配置"><a class="header" href="#高可用配置">高可用配置</a></h4>
+<pre><code class="language-yaml">apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: production-install
+spec:
+  profile: production
+
+  components:
+    pilot:
+      k8s:
+        replicaCount: 3  # 至少3个副本
+        hpaSpec:
+          minReplicas: 3
+          maxReplicas: 10
+        affinity:
+          podAntiAffinity:  # Pod反亲和性
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: istiod
+              topologyKey: kubernetes.io/hostname
+
+    ingressGateways:
+    - name: istio-ingressgateway
+      enabled: true
+      k8s:
+        replicaCount: 3
+        hpaSpec:
+          minReplicas: 3
+          maxReplicas: 10
+        service:
+          type: LoadBalancer
+          loadBalancerSourceRanges:
+          - "10.0.0.0/8"
+</code></pre>
+<h3 id="92-配置管理策略"><a class="header" href="#92-配置管理策略">9.2 配置管理策略</a></h3>
+<h4 id="gitops工作流"><a class="header" href="#gitops工作流">GitOps工作流</a></h4>
+<pre><code class="language-yaml"># 使用Git管理所有Istio配置
+istio-config/
+├── base/
+│   ├── mesh-config.yaml
+│   ├── gateways/
+│   ├── virtual-services/
+│   └── destination-rules/
+├── overlays/
+│   ├── dev/
+│   ├── staging/
+│   └── production/
+└── kustomization.yaml
+</code></pre>
+<h4 id="配置版本控制"><a class="header" href="#配置版本控制">配置版本控制</a></h4>
+<pre><code class="language-yaml"># 为配置添加版本号
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: myapp
+  labels:
+    version: "v1.2.3"
+  annotations:
+    config.istio.io/version: "1.2.3"
+    config.istio.io/last-updated: "2024-01-15T10:00:00Z"
+spec:
+  # ...
+</code></pre>
+<h3 id="93-升级和维护"><a class="header" href="#93-升级和维护">9.3 升级和维护</a></h3>
+<h4 id="金丝雀升级istio"><a class="header" href="#金丝雀升级istio">金丝雀升级Istio</a></h4>
+<pre><code class="language-bash"># 1. 下载新版本
+istioctl x precheck
+istioctl install --set revision=1-20-0
+
+# 2. 逐步迁移命名空间
+kubectl label namespace test-ns istio.io/rev=1-20-0 --overwrite
+kubectl rollout restart deployment -n test-ns
+
+# 3. 验证新版本
+istioctl version
+istioctl proxy-status
+
+# 4. 迁移所有命名空间后，卸载旧版本
+istioctl x uninstall --revision=1-19-0
+</code></pre>
+<h3 id="94-安全加固"><a class="header" href="#94-安全加固">9.4 安全加固</a></h3>
+<pre><code class="language-yaml"># 1. 启用STRICT mTLS
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: istio-system
+spec:
+  mtls:
+    mode: STRICT
+
+# 2. 默认拒绝所有流量
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-all
+  namespace: istio-system
+spec:
+  {}
+
+# 3. 限制Egress流量
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+spec:
+  meshConfig:
+    outboundTrafficPolicy:
+      mode: REGISTRY_ONLY  # 只允许访问注册的服务
+
+# 4. 启用审计日志
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: audit-policy
+spec:
+  action: AUDIT
+</code></pre>
+<hr />
+<h2 id="10-学习验证标准"><a class="header" href="#10-学习验证标准">10. 学习验证标准</a></h2>
+<p>完成本笔记学习后，你应该能够：</p>
+<h3 id="验证标准1-基础知识必须"><a class="header" href="#验证标准1-基础知识必须">验证标准1: 基础知识（必须）</a></h3>
+<p><strong>测试任务</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+解释服务网格的概念和Istio的核心价值</li>
+<li><input disabled="" type="checkbox"/>
+描述Istio架构中控制平面和数据平面的职责</li>
+<li><input disabled="" type="checkbox"/>
+说明Sidecar模式的工作原理</li>
+<li><input disabled="" type="checkbox"/>
+在Kubernetes集群中成功安装Istio</li>
+</ul>
+<p><strong>验证方式</strong>: 在本地或云环境搭建Istio，部署示例应用</p>
+<h3 id="验证标准2-流量管理必须"><a class="header" href="#验证标准2-流量管理必须">验证标准2: 流量管理（必须）</a></h3>
+<p><strong>测试任务</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+配置VirtualService实现基于Header的路由</li>
+<li><input disabled="" type="checkbox"/>
+使用DestinationRule配置负载均衡和熔断</li>
+<li><input disabled="" type="checkbox"/>
+实现金丝雀发布（10% -&gt; 50% -&gt; 100%）</li>
+<li><input disabled="" type="checkbox"/>
+配置超时和重试策略</li>
+</ul>
+<p><strong>验证方式</strong>: 完成一个完整的灰度发布流程，观察流量分布</p>
+<h3 id="验证标准3-安全控制必须"><a class="header" href="#验证标准3-安全控制必须">验证标准3: 安全控制（必须）</a></h3>
+<p><strong>测试任务</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+启用全局mTLS</li>
+<li><input disabled="" type="checkbox"/>
+配置基于命名空间的访问控制</li>
+<li><input disabled="" type="checkbox"/>
+实现JWT认证</li>
+<li><input disabled="" type="checkbox"/>
+创建AuthorizationPolicy限制HTTP方法</li>
+</ul>
+<p><strong>验证方式</strong>: 验证未授权请求被拒绝，授权请求可以通过</p>
+<h3 id="验证标准4-可观测性推荐"><a class="header" href="#验证标准4-可观测性推荐">验证标准4: 可观测性（推荐）</a></h3>
+<p><strong>测试任务</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+查看Prometheus中的Istio指标</li>
+<li><input disabled="" type="checkbox"/>
+使用Grafana分析服务性能</li>
+<li><input disabled="" type="checkbox"/>
+通过Jaeger追踪请求链路</li>
+<li><input disabled="" type="checkbox"/>
+使用Kiali可视化服务拓扑</li>
+</ul>
+<p><strong>验证方式</strong>: 分析一次慢请求的根因，定位到具体服务</p>
+<h3 id="验证标准5-生产实践进阶"><a class="header" href="#验证标准5-生产实践进阶">验证标准5: 生产实践（进阶）</a></h3>
+<p><strong>测试任务</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+诊断并解决一个503错误</li>
+<li><input disabled="" type="checkbox"/>
+实现一个完整的蓝绿部署</li>
+<li><input disabled="" type="checkbox"/>
+配置服务的限流和熔断策略</li>
+<li><input disabled="" type="checkbox"/>
+执行Istio版本升级</li>
+</ul>
+<p><strong>验证方式</strong>: 在模拟生产环境中完成以上任务</p>
+<hr />
+<h2 id="11-扩展资源"><a class="header" href="#11-扩展资源">11. 扩展资源</a></h2>
+<h3 id="官方文档"><a class="header" href="#官方文档">官方文档</a></h3>
+<ul>
+<li>Istio官方文档: https://istio.io/docs/</li>
+<li>Istio GitHub: https://github.com/istio/istio</li>
+<li>Envoy文档: https://www.envoyproxy.io/docs/</li>
+</ul>
+<h3 id="推荐书籍"><a class="header" href="#推荐书籍">推荐书籍</a></h3>
+<ul>
+<li>《Istio实战》</li>
+<li>《服务网格实践指南》</li>
+<li>《云原生服务网格Istio》</li>
+</ul>
+<h3 id="在线课程"><a class="header" href="#在线课程">在线课程</a></h3>
+<ul>
+<li>Istio官方Workshop: https://istio.io/learn/</li>
+<li>CNCF Istio培训</li>
+<li>Udemy Istio课程</li>
+</ul>
+<h3 id="社区资源"><a class="header" href="#社区资源">社区资源</a></h3>
+<ul>
+<li>Istio Slack: https://istio.slack.com</li>
+<li>Istio Discuss: https://discuss.istio.io</li>
+<li>IstioCon大会视频</li>
+</ul>
+<h3 id="实践项目"><a class="header" href="#实践项目">实践项目</a></h3>
+<ol>
+<li>搭建一个完整的微服务电商系统，使用Istio实现所有流量管理</li>
+<li>实现一个基于Istio的多集群服务网格</li>
+<li>开发Istio监控告警系统</li>
+</ol>
+<h3 id="进阶主题"><a class="header" href="#进阶主题">进阶主题</a></h3>
+<ul>
+<li>Istio多集群管理</li>
+<li>Istio与Service Mesh Interface（SMI）</li>
+<li>Istio性能调优深入</li>
+<li>Istio扩展开发（WebAssembly插件）</li>
+<li>Istio与Kubernetes Operator集成</li>
+</ul>
+<hr />
+<h2 id="-学习记录"><a class="header" href="#-学习记录">📝 学习记录</a></h2>
+<p><strong>建议</strong>: 在学习过程中记录你的实践笔记、遇到的问题和解决方案。</p>
+<pre><code class="language-yaml">学习日志模板:
+  日期: 2024-01-15
+  学习内容: Istio流量管理 - VirtualService和DestinationRule
+  实践案例:
+    - 完成了基于Header的路由配置
+    - 实现了reviews服务的金丝雀发布
+  遇到的问题:
+    - 配置不生效: 原因是DestinationRule中的subset名称拼写错误
+  心得体会:
+    - Istio的声明式配置非常强大，但需要注意配置的验证
+    - istioctl analyze命令非常有用
+  下一步计划:
+    - 学习安全相关配置
+    - 研究mTLS的工作原理
+</code></pre>
+<hr />
+<h2 id="-总结"><a class="header" href="#-总结">🎯 总结</a></h2>
+<p>Istio是一个功能强大的服务网格平台，它能够为微服务架构提供：</p>
+<ul>
+<li>🚀 智能的流量管理能力</li>
+<li>🔒 强大的安全控制机制</li>
+<li>📊 全面的可观测性支持</li>
+<li>🛡️ 灵活的策略执行能力</li>
+</ul>
+<p>通过系统学习本笔记，你将掌握从Istio基础到生产实践的完整知识体系。记住，<strong>实践是最好的学习方式</strong>，动手搭建环境、部署应用、配置策略，在实践中加深理解。</p>
+<p>祝你学习顺利！🎉</p>
 
                     </main>
 
@@ -271,7 +2540,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../编程/springcloud/seata.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../编程/springcloud/springboot.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -285,7 +2554,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../编程/springcloud/seata.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../编程/springcloud/springboot.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

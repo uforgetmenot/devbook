@@ -1,0 +1,1829 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>C++游戏引擎开发完全指南 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="c游戏引擎开发完全指南"><a class="header" href="#c游戏引擎开发完全指南">C++游戏引擎开发完全指南</a></h1>
+<h2 id="一游戏引擎概述"><a class="header" href="#一游戏引擎概述">一、游戏引擎概述</a></h2>
+<h3 id="11-什么是游戏引擎"><a class="header" href="#11-什么是游戏引擎">1.1 什么是游戏引擎</a></h3>
+<p>游戏引擎是一个为游戏设计者提供编写游戏所需的各种工具的软件框架，其目的在于让游戏设计者能容易和快速地制作游戏程序而无需从零开始。大多数游戏引擎包含以下主要模块：</p>
+<h4 id="核心模块架构"><a class="header" href="#核心模块架构">核心模块架构</a></h4>
+<pre><code>游戏引擎核心架构
+├── 渲染系统 (Rendering System)
+│   ├── 图形API封装 (OpenGL/Vulkan/DirectX)
+│   ├── 渲染管线
+│   ├── 材质系统
+│   ├── 光照系统
+│   └── 后处理效果
+├── 资源管理系统 (Resource Management)
+│   ├── 模型加载 (Mesh)
+│   ├── 纹理管理 (Texture)
+│   ├── 材质管理 (Material)
+│   └── 资源缓存
+├── 场景管理系统 (Scene Management)
+│   ├── GameObject-Component架构
+│   ├── 场景图 (Scene Graph)
+│   ├── 空间分割 (Spatial Partitioning)
+│   └── 剔除系统 (Culling)
+├── 物理系统 (Physics System)
+│   ├── 刚体动力学
+│   ├── 碰撞检测
+│   └── 物理模拟
+├── 动画系统 (Animation System)
+│   ├── 骨骼动画
+│   ├── 蒙皮动画
+│   ├── 动画混合
+│   └── 逆向动力学 (IK)
+├── 音频系统 (Audio System)
+│   ├── 音频播放
+│   ├── 3D音效
+│   └── 音频混合
+├── 输入系统 (Input System)
+│   ├── 键盘输入
+│   ├── 鼠标输入
+│   └── 手柄输入
+├── UI系统 (User Interface)
+│   ├── GUI控件
+│   ├── 文字渲染
+│   └── 事件系统
+└── 脚本系统 (Scripting System)
+    ├── Lua/Python集成
+    ├── 热更新支持
+    └── 脚本调试
+</code></pre>
+<h3 id="12-unity引擎架构参考"><a class="header" href="#12-unity引擎架构参考">1.2 Unity引擎架构参考</a></h3>
+<p>以Unity为例，理解商业引擎的组成：</p>
+<div class="table-wrapper"><table><thead><tr><th>模块</th><th>功能</th><th>实现难点</th></tr></thead><tbody>
+<tr><td><strong>渲染层</strong></td><td>图形渲染、材质系统、光照</td><td>GPU编程、Shader优化</td></tr>
+<tr><td><strong>编辑器</strong></td><td>场景编辑、Inspector、Project视图</td><td>UI框架、序列化</td></tr>
+<tr><td><strong>资源系统</strong></td><td>Asset管理、打包、加载</td><td>资源依赖管理</td></tr>
+<tr><td><strong>脚本虚拟机</strong></td><td>C#/Lua运行环境</td><td>性能优化、内存管理</td></tr>
+<tr><td><strong>物理引擎</strong></td><td>PhysX/Box2D集成</td><td>物理精度与性能平衡</td></tr>
+<tr><td><strong>动画系统</strong></td><td>Animator、Timeline</td><td>状态机、动画混合</td></tr>
+</tbody></table>
+</div>
+<h3 id="13-学习路径规划"><a class="header" href="#13-学习路径规划">1.3 学习路径规划</a></h3>
+<pre><code>基础阶段 (第1-6周)
+├── OpenGL环境搭建
+├── 图形渲染基础 (三角形、立方体)
+├── Shader编程入门
+└── 纹理加载与贴图
+
+进阶阶段 (第7-12周)
+├── 资源管理系统
+├── GameObject-Component架构
+├── 相机系统
+└── 输入处理
+
+高级阶段 (第13-20周)
+├── 骨骼动画系统
+├── 音频集成
+├── 多线程渲染
+└── 性能优化
+</code></pre>
+<hr />
+<h2 id="二opengl开发环境搭建"><a class="header" href="#二opengl开发环境搭建">二、OpenGL开发环境搭建</a></h2>
+<h3 id="21-开发工具链准备"><a class="header" href="#21-开发工具链准备">2.1 开发工具链准备</a></h3>
+<h4 id="必备工具清单"><a class="header" href="#必备工具清单">必备工具清单</a></h4>
+<ul>
+<li><strong>编译器</strong>: Visual Studio 2019+ (Windows) / Xcode (macOS) / GCC/Clang (Linux)</li>
+<li><strong>IDE</strong>: CLion (推荐，跨平台) / Visual Studio</li>
+<li><strong>构建工具</strong>: CMake 3.15+</li>
+<li><strong>版本控制</strong>: Git</li>
+<li><strong>调试工具</strong>: RenderDoc (图形调试) / NVIDIA Nsight</li>
+</ul>
+<h4 id="windows环境配置"><a class="header" href="#windows环境配置">Windows环境配置</a></h4>
+<pre><code class="language-bash"># 1. 安装Visual Studio 2019/2022
+# 需勾选"使用C++的桌面开发"工作负载
+
+# 2. 安装CMake
+# 下载地址: https://cmake.org/download/
+# 添加到系统PATH
+
+# 3. 验证安装
+cmake --version
+git --version
+</code></pre>
+<h4 id="macos环境配置"><a class="header" href="#macos环境配置">macOS环境配置</a></h4>
+<pre><code class="language-bash"># 1. 安装Xcode Command Line Tools
+xcode-select --install
+
+# 2. 安装Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# 3. 安装CMake
+brew install cmake
+
+# 4. 验证环境
+clang --version
+cmake --version
+</code></pre>
+<h3 id="22-依赖库配置"><a class="header" href="#22-依赖库配置">2.2 依赖库配置</a></h3>
+<h4 id="核心依赖库"><a class="header" href="#核心依赖库">核心依赖库</a></h4>
+<pre><code class="language-cmake"># CMakeLists.txt 基础配置
+cmake_minimum_required(VERSION 3.15)
+project(GameEngine)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# GLFW - 窗口和输入管理
+find_package(glfw3 REQUIRED)
+
+# GLAD - OpenGL函数加载器
+add_subdirectory(third_party/glad)
+
+# GLM - 数学库
+find_package(glm REQUIRED)
+
+# stb_image - 图像加载
+include_directories(third_party/stb)
+
+# 引擎目标
+add_executable(GameEngine
+    src/main.cpp
+    src/window.cpp
+    src/renderer.cpp
+)
+
+target_link_libraries(GameEngine
+    glfw
+    glad
+    glm
+)
+</code></pre>
+<h4 id="第三方库集成"><a class="header" href="#第三方库集成">第三方库集成</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>库名</th><th>用途</th><th>版本要求</th></tr></thead><tbody>
+<tr><td><strong>GLFW</strong></td><td>窗口管理、输入处理</td><td>3.3+</td></tr>
+<tr><td><strong>GLAD</strong></td><td>OpenGL函数加载</td><td>-</td></tr>
+<tr><td><strong>GLM</strong></td><td>数学运算（向量、矩阵）</td><td>0.9.9+</td></tr>
+<tr><td><strong>stb_image</strong></td><td>图像加载</td><td>-</td></tr>
+<tr><td><strong>FreeType</strong></td><td>字体渲染</td><td>2.10+</td></tr>
+<tr><td><strong>FMOD/OpenAL</strong></td><td>音频播放</td><td>-</td></tr>
+<tr><td><strong>Assimp</strong></td><td>模型导入</td><td>5.0+</td></tr>
+</tbody></table>
+</div>
+<h3 id="23-创建第一个opengl窗口"><a class="header" href="#23-创建第一个opengl窗口">2.3 创建第一个OpenGL窗口</a></h3>
+<h4 id="完整示例代码"><a class="header" href="#完整示例代码">完整示例代码</a></h4>
+<pre><code class="language-cpp">// main.cpp
+#include &lt;glad/glad.h&gt;
+#include &lt;GLFW/glfw3.h&gt;
+#include &lt;iostream&gt;
+
+// 窗口大小改变回调
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+// 输入处理
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
+
+int main() {
+    // 1. 初始化GLFW
+    if (!glfwInit()) {
+        std::cerr &lt;&lt; "Failed to initialize GLFW" &lt;&lt; std::endl;
+        return -1;
+    }
+
+    // 2. 配置OpenGL版本 (3.3 Core Profile)
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    // 3. 创建窗口
+    GLFWwindow* window = glfwCreateWindow(800, 600, "My Game Engine", nullptr, nullptr);
+    if (!window) {
+        std::cerr &lt;&lt; "Failed to create GLFW window" &lt;&lt; std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // 4. 加载OpenGL函数
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr &lt;&lt; "Failed to initialize GLAD" &lt;&lt; std::endl;
+        return -1;
+    }
+
+    // 5. 配置OpenGL状态
+    glViewport(0, 0, 800, 600);
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
+    // 6. 主循环
+    while (!glfwWindowShouldClose(window)) {
+        // 处理输入
+        processInput(window);
+
+        // 渲染
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // 交换缓冲
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // 7. 清理资源
+    glfwTerminate();
+    return 0;
+}
+</code></pre>
+<h4 id="关键概念解析"><a class="header" href="#关键概念解析">关键概念解析</a></h4>
+<p><strong>GLFW初始化流程</strong>:</p>
+<pre><code class="language-cpp">// OpenGL上下文创建过程
+1. glfwInit()                    // 初始化GLFW库
+2. glfwWindowHint()              // 设置窗口属性（版本、Profile）
+3. glfwCreateWindow()            // 创建窗口和OpenGL上下文
+4. glfwMakeContextCurrent()      // 激活上下文
+5. gladLoadGLLoader()            // 加载OpenGL函数指针
+</code></pre>
+<p><strong>Core Profile vs Compatibility Profile</strong>:</p>
+<ul>
+<li><strong>Core Profile</strong>: 移除了所有废弃功能，强制使用现代OpenGL（VAO、VBO）</li>
+<li><strong>Compatibility Profile</strong>: 保留旧版本API，兼容性好但性能差</li>
+</ul>
+<hr />
+<h2 id="三图形渲染基础"><a class="header" href="#三图形渲染基础">三、图形渲染基础</a></h2>
+<h3 id="31-opengl渲染管线"><a class="header" href="#31-opengl渲染管线">3.1 OpenGL渲染管线</a></h3>
+<h4 id="完整渲染管线流程"><a class="header" href="#完整渲染管线流程">完整渲染管线流程</a></h4>
+<pre><code>顶点数据 (Vertex Data)
+    ↓
+[顶点着色器] Vertex Shader ← Uniform变量
+    ↓ (gl_Position)
+[图元装配] Primitive Assembly
+    ↓
+[光栅化] Rasterization
+    ↓ (片元)
+[片元着色器] Fragment Shader ← 纹理采样
+    ↓ (颜色值)
+[测试与混合] Tests &amp; Blending
+    ↓
+帧缓冲 (Framebuffer)
+</code></pre>
+<h3 id="32-绘制三角形"><a class="header" href="#32-绘制三角形">3.2 绘制三角形</a></h3>
+<h4 id="现代opengl绘制流程"><a class="header" href="#现代opengl绘制流程">现代OpenGL绘制流程</a></h4>
+<pre><code class="language-cpp">// 1. 定义顶点数据
+float vertices[] = {
+    // 位置              // 颜色
+    -0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // 左下 - 红色
+     0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // 右下 - 绿色
+     0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // 顶部 - 蓝色
+};
+
+// 2. 创建VAO和VBO
+unsigned int VAO, VBO;
+glGenVertexArrays(1, &amp;VAO);
+glGenBuffers(1, &amp;VBO);
+
+// 3. 绑定VAO (记录后续所有顶点属性配置)
+glBindVertexArray(VAO);
+
+// 4. 绑定VBO并上传数据到GPU
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+// 5. 配置顶点属性指针
+// 位置属性 (location = 0)
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+
+// 颜色属性 (location = 1)
+glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+glEnableVertexAttribArray(1);
+
+// 6. 解绑VAO
+glBindVertexArray(0);
+
+// 7. 渲染循环中绘制
+while (!glfwWindowShouldClose(window)) {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(shaderProgram);
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+</code></pre>
+<h4 id="关键概念详解"><a class="header" href="#关键概念详解">关键概念详解</a></h4>
+<p><strong>VAO (Vertex Array Object) - 顶点数组对象</strong>:</p>
+<pre><code class="language-cpp">// VAO的作用：记录顶点属性配置状态
+// 类比：VAO像一个配置文件，记录了如何解析VBO中的数据
+
+glBindVertexArray(VAO);  // 开始记录
+    glBindBuffer(...);
+    glVertexAttribPointer(...);  // 这些配置都会被VAO记录
+    glEnableVertexAttribArray(...);
+glBindVertexArray(0);    // 结束记录
+
+// 渲染时只需绑定VAO即可恢复所有配置
+glBindVertexArray(VAO);
+glDrawArrays(...);
+</code></pre>
+<p><strong>VBO (Vertex Buffer Object) - 顶点缓冲对象</strong>:</p>
+<pre><code class="language-cpp">// VBO的作用：在显存中存储顶点数据
+
+// 数据上传模式
+GL_STATIC_DRAW  // 数据几乎不会改变 (最常用)
+GL_DYNAMIC_DRAW // 数据会频繁改变
+GL_STREAM_DRAW  // 数据每次绘制都会改变
+</code></pre>
+<h3 id="33-索引绘制-ebo"><a class="header" href="#33-索引绘制-ebo">3.3 索引绘制 (EBO)</a></h3>
+<h4 id="使用索引减少顶点重复"><a class="header" href="#使用索引减少顶点重复">使用索引减少顶点重复</a></h4>
+<pre><code class="language-cpp">// 绘制正方形需要2个三角形，共6个顶点
+// 但实际只需要4个顶点，通过索引复用
+
+float vertices[] = {
+    // 位置           // 纹理坐标
+     0.5f,  0.5f, 0.0f,  1.0f, 1.0f,  // 右上
+     0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  // 右下
+    -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  // 左下
+    -0.5f,  0.5f, 0.0f,  0.0f, 1.0f   // 左上
+};
+
+unsigned int indices[] = {
+    0, 1, 3,  // 第一个三角形
+    1, 2, 3   // 第二个三角形
+};
+
+// 创建EBO
+unsigned int EBO;
+glGenBuffers(1, &amp;EBO);
+
+glBindVertexArray(VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+glBindVertexArray(0);
+
+// 使用索引绘制
+glBindVertexArray(VAO);
+glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+</code></pre>
+<h3 id="34-绘制立方体"><a class="header" href="#34-绘制立方体">3.4 绘制立方体</a></h3>
+<h4 id="完整立方体数据"><a class="header" href="#完整立方体数据">完整立方体数据</a></h4>
+<pre><code class="language-cpp">float cubeVertices[] = {
+    // 后面 (Z = -0.5)
+    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+
+    // 前面 (Z = 0.5)
+    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+
+    // 左面、右面、底面、顶面... (省略)
+};
+
+unsigned int cubeIndices[] = {
+    // 后面
+    0, 1, 2,  2, 3, 0,
+    // 前面
+    4, 5, 6,  6, 7, 4,
+    // ... (每个面2个三角形)
+};
+
+// 启用深度测试 (Z-Buffer)
+glEnable(GL_DEPTH_TEST);
+
+// 渲染循环
+while (!glfwWindowShouldClose(window)) {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // 清除深度缓冲
+
+    // 设置变换矩阵
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f/600.0f, 0.1f, 100.0f);
+
+    // 传递给Shader
+    setMat4(shaderProgram, "model", model);
+    setMat4(shaderProgram, "view", view);
+    setMat4(shaderProgram, "projection", projection);
+
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+}
+</code></pre>
+<hr />
+<h2 id="四shader编程核心"><a class="header" href="#四shader编程核心">四、Shader编程核心</a></h2>
+<h3 id="41-shader基础概念"><a class="header" href="#41-shader基础概念">4.1 Shader基础概念</a></h3>
+<h4 id="shader类比理解"><a class="header" href="#shader类比理解">Shader类比理解</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>概念</th><th>C/C++开发</th><th>Shader开发</th></tr></thead><tbody>
+<tr><td><strong>目标硬件</strong></td><td>CPU</td><td>GPU</td></tr>
+<tr><td><strong>编程语言</strong></td><td>C/C++</td><td>GLSL (OpenGL Shading Language)</td></tr>
+<tr><td><strong>编译流程</strong></td><td>创建.cpp文件 → 编译 → 链接</td><td>创建Shader源码 → 编译 → 链接到Program</td></tr>
+<tr><td><strong>执行方式</strong></td><td>串行为主</td><td>高度并行</td></tr>
+<tr><td><strong>数据传递</strong></td><td>函数参数</td><td>Uniform/Attribute变量</td></tr>
+</tbody></table>
+</div>
+<h3 id="42-完整shader系统实现"><a class="header" href="#42-完整shader系统实现">4.2 完整Shader系统实现</a></h3>
+<h4 id="shader类封装"><a class="header" href="#shader类封装">Shader类封装</a></h4>
+<pre><code class="language-cpp">// shader.h
+#ifndef SHADER_H
+#define SHADER_H
+
+#include &lt;glad/glad.h&gt;
+#include &lt;glm/glm.hpp&gt;
+#include &lt;string&gt;
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;iostream&gt;
+
+class Shader {
+public:
+    unsigned int ID;  // Program ID
+
+    // 构造函数：读取并编译着色器
+    Shader(const char* vertexPath, const char* fragmentPath) {
+        // 1. 从文件读取源码
+        std::string vertexCode;
+        std::string fragmentCode;
+        std::ifstream vShaderFile;
+        std::ifstream fShaderFile;
+
+        vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+        fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+        try {
+            vShaderFile.open(vertexPath);
+            fShaderFile.open(fragmentPath);
+            std::stringstream vShaderStream, fShaderStream;
+
+            vShaderStream &lt;&lt; vShaderFile.rdbuf();
+            fShaderStream &lt;&lt; fShaderFile.rdbuf();
+
+            vShaderFile.close();
+            fShaderFile.close();
+
+            vertexCode = vShaderStream.str();
+            fragmentCode = fShaderStream.str();
+        } catch (std::ifstream::failure&amp; e) {
+            std::cerr &lt;&lt; "ERROR::SHADER::FILE_READ_FAILED: " &lt;&lt; e.what() &lt;&lt; std::endl;
+        }
+
+        const char* vShaderCode = vertexCode.c_str();
+        const char* fShaderCode = fragmentCode.c_str();
+
+        // 2. 编译着色器
+        unsigned int vertex, fragment;
+
+        // 顶点着色器
+        vertex = glCreateShader(GL_VERTEX_SHADER);
+        glShaderSource(vertex, 1, &amp;vShaderCode, nullptr);
+        glCompileShader(vertex);
+        checkCompileErrors(vertex, "VERTEX");
+
+        // 片元着色器
+        fragment = glCreateShader(GL_FRAGMENT_SHADER);
+        glShaderSource(fragment, 1, &amp;fShaderCode, nullptr);
+        glCompileShader(fragment);
+        checkCompileErrors(fragment, "FRAGMENT");
+
+        // 3. 链接着色器程序
+        ID = glCreateProgram();
+        glAttachShader(ID, vertex);
+        glAttachShader(ID, fragment);
+        glLinkProgram(ID);
+        checkCompileErrors(ID, "PROGRAM");
+
+        // 4. 删除已链接的着色器
+        glDeleteShader(vertex);
+        glDeleteShader(fragment);
+    }
+
+    // 使用程序
+    void use() {
+        glUseProgram(ID);
+    }
+
+    // Uniform工具函数
+    void setBool(const std::string&amp; name, bool value) const {
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
+    }
+
+    void setInt(const std::string&amp; name, int value) const {
+        glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+    }
+
+    void setFloat(const std::string&amp; name, float value) const {
+        glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+    }
+
+    void setVec3(const std::string&amp; name, const glm::vec3&amp; value) const {
+        glUniform3fv(glGetUniformLocation(ID, name.c_str()), 1, &amp;value[0]);
+    }
+
+    void setMat4(const std::string&amp; name, const glm::mat4&amp; mat) const {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &amp;mat[0][0]);
+    }
+
+private:
+    void checkCompileErrors(unsigned int shader, std::string type) {
+        int success;
+        char infoLog[1024];
+
+        if (type != "PROGRAM") {
+            glGetShaderiv(shader, GL_COMPILE_STATUS, &amp;success);
+            if (!success) {
+                glGetShaderInfoLog(shader, 1024, nullptr, infoLog);
+                std::cerr &lt;&lt; "ERROR::SHADER_COMPILATION_ERROR of type: " &lt;&lt; type &lt;&lt; "\n"
+                          &lt;&lt; infoLog &lt;&lt; std::endl;
+            }
+        } else {
+            glGetProgramiv(shader, GL_LINK_STATUS, &amp;success);
+            if (!success) {
+                glGetProgramInfoLog(shader, 1024, nullptr, infoLog);
+                std::cerr &lt;&lt; "ERROR::PROGRAM_LINKING_ERROR of type: " &lt;&lt; type &lt;&lt; "\n"
+                          &lt;&lt; infoLog &lt;&lt; std::endl;
+            }
+        }
+    }
+};
+
+#endif
+</code></pre>
+<h4 id="基础顶点着色器"><a class="header" href="#基础顶点着色器">基础顶点着色器</a></h4>
+<pre><code class="language-glsl">// basic.vert
+#version 330 core
+
+layout (location = 0) in vec3 aPos;       // 位置
+layout (location = 1) in vec3 aColor;     // 颜色
+layout (location = 2) in vec2 aTexCoord;  // 纹理坐标
+
+out vec3 vertexColor;   // 传递给片元着色器
+out vec2 TexCoord;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main() {
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    vertexColor = aColor;
+    TexCoord = aTexCoord;
+}
+</code></pre>
+<h4 id="基础片元着色器"><a class="header" href="#基础片元着色器">基础片元着色器</a></h4>
+<pre><code class="language-glsl">// basic.frag
+#version 330 core
+
+in vec3 vertexColor;
+in vec2 TexCoord;
+
+out vec4 FragColor;
+
+uniform sampler2D texture1;
+uniform sampler2D texture2;
+uniform float mixValue;
+
+void main() {
+    // 混合两张纹理
+    vec4 texColor1 = texture(texture1, TexCoord);
+    vec4 texColor2 = texture(texture2, TexCoord);
+    FragColor = mix(texColor1, texColor2, mixValue) * vec4(vertexColor, 1.0);
+}
+</code></pre>
+<h3 id="43-shader变量类型"><a class="header" href="#43-shader变量类型">4.3 Shader变量类型</a></h3>
+<h4 id="数据传递方式对比"><a class="header" href="#数据传递方式对比">数据传递方式对比</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>变量类型</th><th>用途</th><th>更新频率</th><th>存储位置</th></tr></thead><tbody>
+<tr><td><strong>Attribute</strong></td><td>顶点数据（位置、颜色）</td><td>每个顶点不同</td><td>VBO</td></tr>
+<tr><td><strong>Uniform</strong></td><td>全局参数（变换矩阵、时间）</td><td>所有顶点相同</td><td>Shader常量区</td></tr>
+<tr><td><strong>Varying</strong></td><td>顶点→片元传递数据</td><td>插值后的值</td><td>光栅化插值</td></tr>
+<tr><td><strong>Texture</strong></td><td>纹理采样</td><td>按纹理坐标查询</td><td>纹理单元</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="五纹理与材质系统"><a class="header" href="#五纹理与材质系统">五、纹理与材质系统</a></h2>
+<h3 id="51-纹理加载与渲染"><a class="header" href="#51-纹理加载与渲染">5.1 纹理加载与渲染</a></h3>
+<h4 id="使用stb_image加载纹理"><a class="header" href="#使用stb_image加载纹理">使用stb_image加载纹理</a></h4>
+<pre><code class="language-cpp">// texture_loader.cpp
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+unsigned int loadTexture(const char* path) {
+    unsigned int textureID;
+    glGenTextures(1, &amp;textureID);
+
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load(path, &amp;width, &amp;height, &amp;nrChannels, 0);
+
+    if (data) {
+        GLenum format;
+        if (nrChannels == 1)
+            format = GL_RED;
+        else if (nrChannels == 3)
+            format = GL_RGB;
+        else if (nrChannels == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        // 设置纹理参数
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    } else {
+        std::cerr &lt;&lt; "Failed to load texture: " &lt;&lt; path &lt;&lt; std::endl;
+        stbi_image_free(data);
+    }
+
+    return textureID;
+}
+</code></pre>
+<h3 id="52-压缩纹理格式"><a class="header" href="#52-压缩纹理格式">5.2 压缩纹理格式</a></h3>
+<h4 id="常见压缩格式对比"><a class="header" href="#常见压缩格式对比">常见压缩格式对比</a></h4>
+<div class="table-wrapper"><table><thead><tr><th>格式</th><th>压缩比</th><th>平台支持</th><th>适用场景</th><th>质量</th></tr></thead><tbody>
+<tr><td><strong>PNG/JPG</strong></td><td>1:1 (未压缩)</td><td>全平台</td><td>开发阶段</td><td>无损</td></tr>
+<tr><td><strong>DXT1/BC1</strong></td><td>6:1</td><td>PC/主机</td><td>不透明纹理</td><td>中等</td></tr>
+<tr><td><strong>DXT5/BC3</strong></td><td>4:1</td><td>PC/主机</td><td>带Alpha纹理</td><td>中等</td></tr>
+<tr><td><strong>ETC2</strong></td><td>6:1</td><td>Android/iOS</td><td>移动平台</td><td>良好</td></tr>
+<tr><td><strong>ASTC</strong></td><td>可变</td><td>现代GPU</td><td>高质量需求</td><td>优秀</td></tr>
+<tr><td><strong>PVRTC</strong></td><td>8:1</td><td>iOS</td><td>PowerVR GPU</td><td>一般</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="六mesh与模型系统"><a class="header" href="#六mesh与模型系统">六、Mesh与模型系统</a></h2>
+<h3 id="61-自定义mesh文件格式"><a class="header" href="#61-自定义mesh文件格式">6.1 自定义Mesh文件格式</a></h3>
+<h4 id="二进制mesh格式设计"><a class="header" href="#二进制mesh格式设计">二进制Mesh格式设计</a></h4>
+<pre><code class="language-cpp">// mesh_format.h
+struct MeshHeader {
+    char magic[4];           // "MESH"
+    uint32_t version;        // 版本号
+    uint32_t vertexCount;    // 顶点数量
+    uint32_t indexCount;     // 索引数量
+    uint32_t vertexFormat;   // 顶点格式标志位
+};
+
+enum VertexFormat {
+    HAS_POSITION  = 1 &lt;&lt; 0,
+    HAS_NORMAL    = 1 &lt;&lt; 1,
+    HAS_TEXCOORD  = 1 &lt;&lt; 2,
+    HAS_TANGENT   = 1 &lt;&lt; 3,
+    HAS_COLOR     = 1 &lt;&lt; 4,
+    HAS_BONE_DATA = 1 &lt;&lt; 5
+};
+
+struct Vertex {
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec2 texCoords;
+    glm::vec3 tangent;
+    glm::vec4 color;
+    int boneIDs[4];
+    float boneWeights[4];
+};
+</code></pre>
+<h4 id="mesh类实现"><a class="header" href="#mesh类实现">Mesh类实现</a></h4>
+<pre><code class="language-cpp">// mesh.cpp
+class Mesh {
+public:
+    std::vector&lt;Vertex&gt; vertices;
+    std::vector&lt;unsigned int&gt; indices;
+    Material* material;
+
+    unsigned int VAO, VBO, EBO;
+
+    Mesh(std::vector&lt;Vertex&gt; vertices, std::vector&lt;unsigned int&gt; indices) {
+        this-&gt;vertices = vertices;
+        this-&gt;indices = indices;
+        setupMesh();
+    }
+
+    void draw() {
+        if (material) {
+            material-&gt;use();
+        }
+
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+    }
+
+private:
+    void setupMesh() {
+        glGenVertexArrays(1, &amp;VAO);
+        glGenBuffers(1, &amp;VBO);
+        glGenBuffers(1, &amp;EBO);
+
+        glBindVertexArray(VAO);
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &amp;vertices[0], GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &amp;indices[0], GL_STATIC_DRAW);
+
+        // 位置
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+
+        // 法线
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+
+        // 纹理坐标
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
+
+        glBindVertexArray(0);
+    }
+};
+</code></pre>
+<h3 id="62-blender模型导出"><a class="header" href="#62-blender模型导出">6.2 Blender模型导出</a></h3>
+<h4 id="python导出脚本"><a class="header" href="#python导出脚本">Python导出脚本</a></h4>
+<pre><code class="language-python"># blender_export.py
+import bpy
+import struct
+
+def export_mesh(filepath):
+    obj = bpy.context.active_object
+    mesh = obj.data
+
+    # 应用修改器
+    mesh.calc_loop_triangles()
+    mesh.calc_normals_split()
+
+    vertices = []
+    indices = []
+
+    # 导出顶点
+    for tri in mesh.loop_triangles:
+        for loop_index in tri.loops:
+            loop = mesh.loops[loop_index]
+            vert = mesh.vertices[loop.vertex_index]
+
+            # 位置
+            pos = vert.co
+            # 法线
+            normal = loop.normal
+            # UV坐标
+            uv = mesh.uv_layers.active.data[loop_index].uv if mesh.uv_layers.active else (0, 0)
+
+            vertices.append((pos.x, pos.y, pos.z, normal.x, normal.y, normal.z, uv.x, uv.y))
+            indices.append(len(vertices) - 1)
+
+    # 写入文件
+    with open(filepath, 'wb') as f:
+        # 写入头部
+        f.write(b'MESH')
+        f.write(struct.pack('I', 1))  # version
+        f.write(struct.pack('I', len(vertices)))
+        f.write(struct.pack('I', len(indices)))
+
+        # 写入顶点数据
+        for v in vertices:
+            f.write(struct.pack('8f', *v))
+
+        # 写入索引数据
+        for i in indices:
+            f.write(struct.pack('I', i))
+
+# 使用
+export_mesh("/path/to/model.mesh")
+</code></pre>
+<hr />
+<h2 id="七gameobject-component架构"><a class="header" href="#七gameobject-component架构">七、GameObject-Component架构</a></h2>
+<h3 id="71-设计模式原理"><a class="header" href="#71-设计模式原理">7.1 设计模式原理</a></h3>
+<h4 id="unity风格的组件系统"><a class="header" href="#unity风格的组件系统">Unity风格的组件系统</a></h4>
+<pre><code class="language-cpp">// game_object.h
+class Component;
+class Transform;
+
+class GameObject {
+private:
+    std::string name;
+    bool active;
+    Transform* transform;
+    std::vector&lt;Component*&gt; components;
+    std::vector&lt;GameObject*&gt; children;
+    GameObject* parent;
+
+public:
+    GameObject(const std::string&amp; name = "GameObject")
+        : name(name), active(true), parent(nullptr) {
+        transform = new Transform(this);
+    }
+
+    ~GameObject() {
+        for (auto comp : components) delete comp;
+        for (auto child : children) delete child;
+        delete transform;
+    }
+
+    // 添加组件
+    template&lt;typename T&gt;
+    T* addComponent() {
+        static_assert(std::is_base_of&lt;Component, T&gt;::value, "T must inherit from Component");
+        T* component = new T(this);
+        components.push_back(component);
+        component-&gt;awake();
+        return component;
+    }
+
+    // 获取组件
+    template&lt;typename T&gt;
+    T* getComponent() {
+        for (auto comp : components) {
+            T* result = dynamic_cast&lt;T*&gt;(comp);
+            if (result) return result;
+        }
+        return nullptr;
+    }
+
+    // 生命周期
+    void start() {
+        for (auto comp : components) comp-&gt;start();
+        for (auto child : children) child-&gt;start();
+    }
+
+    void update(float deltaTime) {
+        if (!active) return;
+        for (auto comp : components) {
+            if (comp-&gt;isEnabled()) comp-&gt;update(deltaTime);
+        }
+        for (auto child : children) child-&gt;update(deltaTime);
+    }
+
+    Transform* getTransform() { return transform; }
+};
+</code></pre>
+<h3 id="72-component基类"><a class="header" href="#72-component基类">7.2 Component基类</a></h3>
+<pre><code class="language-cpp">// component.h
+class Component {
+protected:
+    GameObject* gameObject;
+    bool enabled;
+
+public:
+    Component(GameObject* go) : gameObject(go), enabled(true) {}
+    virtual ~Component() = default;
+
+    virtual void awake() {}
+    virtual void start() {}
+    virtual void update(float deltaTime) {}
+    virtual void lateUpdate(float deltaTime) {}
+    virtual void onDestroy() {}
+
+    bool isEnabled() const { return enabled; }
+    void setEnabled(bool value) { enabled = value; }
+
+    GameObject* getGameObject() { return gameObject; }
+};
+</code></pre>
+<h3 id="73-transform组件"><a class="header" href="#73-transform组件">7.3 Transform组件</a></h3>
+<pre><code class="language-cpp">// transform.h
+class Transform : public Component {
+private:
+    glm::vec3 position;
+    glm::quat rotation;
+    glm::vec3 scale;
+
+    mutable glm::mat4 localMatrix;
+    mutable glm::mat4 worldMatrix;
+    mutable bool dirty;
+
+public:
+    Transform(GameObject* go)
+        : Component(go),
+          position(0.0f),
+          rotation(glm::quat(1, 0, 0, 0)),
+          scale(1.0f),
+          dirty(true) {}
+
+    // 位置
+    void setPosition(const glm::vec3&amp; pos) {
+        position = pos;
+        markDirty();
+    }
+
+    glm::vec3 getPosition() const { return position; }
+
+    // 旋转
+    void setRotation(const glm::quat&amp; rot) {
+        rotation = rot;
+        markDirty();
+    }
+
+    void rotate(float angle, const glm::vec3&amp; axis) {
+        rotation = glm::rotate(rotation, glm::radians(angle), axis);
+        markDirty();
+    }
+
+    // 缩放
+    void setScale(const glm::vec3&amp; s) {
+        scale = s;
+        markDirty();
+    }
+
+    // 矩阵计算
+    glm::mat4 getLocalMatrix() const {
+        if (dirty) {
+            localMatrix = glm::translate(glm::mat4(1.0f), position) *
+                          glm::mat4_cast(rotation) *
+                          glm::scale(glm::mat4(1.0f), scale);
+        }
+        return localMatrix;
+    }
+
+    glm::mat4 getWorldMatrix() const {
+        glm::mat4 parentMatrix = glm::mat4(1.0f);
+        GameObject* parent = gameObject-&gt;getParent();
+        if (parent) {
+            parentMatrix = parent-&gt;getTransform()-&gt;getWorldMatrix();
+        }
+        return parentMatrix * getLocalMatrix();
+    }
+
+private:
+    void markDirty() {
+        dirty = true;
+    }
+};
+</code></pre>
+<hr />
+<h2 id="八骨骼动画系统"><a class="header" href="#八骨骼动画系统">八、骨骼动画系统</a></h2>
+<h3 id="81-骨骼动画原理"><a class="header" href="#81-骨骼动画原理">8.1 骨骼动画原理</a></h3>
+<h4 id="骨骼层级结构"><a class="header" href="#骨骼层级结构">骨骼层级结构</a></h4>
+<pre><code>骨骼动画核心概念
+├── 骨骼 (Bone)
+│   ├── 名称
+│   ├── 父骨骼索引
+│   ├── 逆绑定矩阵 (Inverse Bind Matrix)
+│   └── 局部变换 (Position, Rotation, Scale)
+├── 关键帧 (Keyframe)
+│   ├── 时间戳
+│   └── 骨骼变换数据
+├── 动画片段 (Animation Clip)
+│   ├── 时长
+│   ├── 帧率
+│   └── 关键帧列表
+└── 蒙皮 (Skinning)
+    ├── 顶点权重 (Vertex Weight)
+    └── 骨骼索引 (Bone Index)
+</code></pre>
+<h3 id="82-骨骼数据结构"><a class="header" href="#82-骨骼数据结构">8.2 骨骼数据结构</a></h3>
+<h4 id="bone类定义"><a class="header" href="#bone类定义">Bone类定义</a></h4>
+<pre><code class="language-cpp">// bone.h
+struct BoneInfo {
+    int id;
+    glm::mat4 offset;  // 逆绑定矩阵
+};
+
+class Bone {
+public:
+    std::string name;
+    int id;
+    glm::mat4 localTransform;
+
+    std::vector&lt;KeyPosition&gt; positions;
+    std::vector&lt;KeyRotation&gt; rotations;
+    std::vector&lt;KeyScale&gt; scales;
+
+    struct KeyPosition {
+        glm::vec3 position;
+        float timeStamp;
+    };
+
+    struct KeyRotation {
+        glm::quat orientation;
+        float timeStamp;
+    };
+
+    struct KeyScale {
+        glm::vec3 scale;
+        float timeStamp;
+    };
+
+    // 插值计算
+    glm::mat4 interpolate(float animationTime) {
+        glm::mat4 translation = interpolatePosition(animationTime);
+        glm::mat4 rotation = interpolateRotation(animationTime);
+        glm::mat4 scale = interpolateScale(animationTime);
+
+        return translation * rotation * scale;
+    }
+
+private:
+    glm::mat4 interpolatePosition(float animationTime) {
+        if (positions.size() == 1) {
+            return glm::translate(glm::mat4(1.0f), positions[0].position);
+        }
+
+        int p0Index = getPositionIndex(animationTime);
+        int p1Index = p0Index + 1;
+
+        float scaleFactor = getScaleFactor(
+            positions[p0Index].timeStamp,
+            positions[p1Index].timeStamp,
+            animationTime
+        );
+
+        glm::vec3 finalPosition = glm::mix(
+            positions[p0Index].position,
+            positions[p1Index].position,
+            scaleFactor
+        );
+
+        return glm::translate(glm::mat4(1.0f), finalPosition);
+    }
+
+    glm::mat4 interpolateRotation(float animationTime) {
+        if (rotations.size() == 1) {
+            return glm::mat4_cast(glm::normalize(rotations[0].orientation));
+        }
+
+        int p0Index = getRotationIndex(animationTime);
+        int p1Index = p0Index + 1;
+
+        float scaleFactor = getScaleFactor(
+            rotations[p0Index].timeStamp,
+            rotations[p1Index].timeStamp,
+            animationTime
+        );
+
+        glm::quat finalRotation = glm::slerp(  // 球面线性插值
+            rotations[p0Index].orientation,
+            rotations[p1Index].orientation,
+            scaleFactor
+        );
+
+        return glm::mat4_cast(glm::normalize(finalRotation));
+    }
+
+    float getScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime) {
+        float midWayLength = animationTime - lastTimeStamp;
+        float framesDiff = nextTimeStamp - lastTimeStamp;
+        return midWayLength / framesDiff;
+    }
+};
+</code></pre>
+<h3 id="83-骨骼动画shader"><a class="header" href="#83-骨骼动画shader">8.3 骨骼动画Shader</a></h3>
+<h4 id="顶点着色器"><a class="header" href="#顶点着色器">顶点着色器</a></h4>
+<pre><code class="language-glsl">// skinning.vert
+#version 330 core
+
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoords;
+layout (location = 3) in ivec4 aBoneIds;      // 骨骼索引
+layout (location = 4) in vec4 aWeights;       // 骨骼权重
+
+const int MAX_BONES = 100;
+const int MAX_BONE_INFLUENCE = 4;
+
+uniform mat4 finalBonesMatrices[MAX_BONES];
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+out vec2 TexCoords;
+out vec3 Normal;
+out vec3 FragPos;
+
+void main() {
+    // 蒙皮计算
+    vec4 totalPosition = vec4(0.0f);
+    vec3 totalNormal = vec3(0.0f);
+
+    for(int i = 0; i &lt; MAX_BONE_INFLUENCE; i++) {
+        if(aBoneIds[i] == -1)
+            continue;
+
+        if(aBoneIds[i] &gt;= MAX_BONES) {
+            totalPosition = vec4(aPos, 1.0f);
+            break;
+        }
+
+        vec4 localPosition = finalBonesMatrices[aBoneIds[i]] * vec4(aPos, 1.0f);
+        totalPosition += localPosition * aWeights[i];
+
+        vec3 localNormal = mat3(finalBonesMatrices[aBoneIds[i]]) * aNormal;
+        totalNormal += localNormal * aWeights[i];
+    }
+
+    if(totalPosition.w == 0.0f) {
+        totalPosition = vec4(aPos, 1.0f);
+        totalNormal = aNormal;
+    }
+
+    // 最终变换
+    mat4 viewModel = view * model;
+    FragPos = vec3(model * totalPosition);
+    Normal = mat3(transpose(inverse(model))) * totalNormal;
+    TexCoords = aTexCoords;
+
+    gl_Position = projection * viewModel * totalPosition;
+}
+</code></pre>
+<hr />
+<h2 id="九音频系统集成"><a class="header" href="#九音频系统集成">九、音频系统集成</a></h2>
+<h3 id="91-fmod集成"><a class="header" href="#91-fmod集成">9.1 FMOD集成</a></h3>
+<h4 id="音频引擎初始化"><a class="header" href="#音频引擎初始化">音频引擎初始化</a></h4>
+<pre><code class="language-cpp">// audio_engine.h
+#include &lt;fmod.hpp&gt;
+#include &lt;fmod_studio.hpp&gt;
+
+class AudioEngine {
+private:
+    FMOD::Studio::System* studioSystem;
+    FMOD::System* coreSystem;
+
+    std::map&lt;std::string, FMOD::Sound*&gt; sounds;
+    std::map&lt;std::string, FMOD::Studio::EventInstance*&gt; events;
+
+public:
+    static AudioEngine&amp; getInstance() {
+        static AudioEngine instance;
+        return instance;
+    }
+
+    void init() {
+        // 创建FMOD Studio系统
+        FMOD::Studio::System::create(&amp;studioSystem);
+        studioSystem-&gt;getCoreSystem(&amp;coreSystem);
+
+        // 初始化
+        coreSystem-&gt;setSoftwareFormat(0, FMOD_SPEAKERMODE_5POINT1, 0);
+        studioSystem-&gt;initialize(512, FMOD_STUDIO_INIT_NORMAL, FMOD_INIT_NORMAL, nullptr);
+    }
+
+    void update() {
+        studioSystem-&gt;update();
+    }
+
+    // 加载音频文件
+    void loadSound(const std::string&amp; name, const std::string&amp; path, bool loop = false) {
+        FMOD::Sound* sound;
+        FMOD_MODE mode = loop ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF;
+        coreSystem-&gt;createSound(path.c_str(), mode | FMOD_3D, nullptr, &amp;sound);
+        sounds[name] = sound;
+    }
+
+    // 播放音效
+    void playSound(const std::string&amp; name, const glm::vec3&amp; position, float volume = 1.0f) {
+        auto it = sounds.find(name);
+        if (it == sounds.end()) return;
+
+        FMOD::Channel* channel = nullptr;
+        coreSystem-&gt;playSound(it-&gt;second, nullptr, true, &amp;channel);
+
+        // 设置3D位置
+        FMOD_VECTOR pos = { position.x, position.y, position.z };
+        channel-&gt;set3DAttributes(&amp;pos, nullptr);
+
+        // 设置音量
+        channel-&gt;setVolume(volume);
+        channel-&gt;setPaused(false);
+    }
+
+    void shutdown() {
+        for (auto&amp; pair : sounds) {
+            pair.second-&gt;release();
+        }
+        studioSystem-&gt;release();
+    }
+};
+</code></pre>
+<hr />
+<h2 id="十多线程渲染"><a class="header" href="#十多线程渲染">十、多线程渲染</a></h2>
+<h3 id="101-渲染命令封装"><a class="header" href="#101-渲染命令封装">10.1 渲染命令封装</a></h3>
+<h4 id="命令基类"><a class="header" href="#命令基类">命令基类</a></h4>
+<pre><code class="language-cpp">// render_command.h
+class RenderCommand {
+public:
+    virtual ~RenderCommand() = default;
+    virtual void execute() = 0;
+};
+
+// 具体命令示例
+class DrawMeshCommand : public RenderCommand {
+private:
+    unsigned int VAO;
+    unsigned int indexCount;
+    Shader* shader;
+    glm::mat4 modelMatrix;
+    glm::mat4 viewMatrix;
+    glm::mat4 projectionMatrix;
+
+public:
+    DrawMeshCommand(unsigned int vao, unsigned int count, Shader* s,
+                    const glm::mat4&amp; model, const glm::mat4&amp; view, const glm::mat4&amp; proj)
+        : VAO(vao), indexCount(count), shader(s),
+          modelMatrix(model), viewMatrix(view), projectionMatrix(proj) {}
+
+    void execute() override {
+        shader-&gt;use();
+        shader-&gt;setMat4("model", modelMatrix);
+        shader-&gt;setMat4("view", viewMatrix);
+        shader-&gt;setMat4("projection", projectionMatrix);
+
+        glBindVertexArray(VAO);
+        glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+    }
+};
+</code></pre>
+<hr />
+<h2 id="十一性能优化与调试"><a class="header" href="#十一性能优化与调试">十一、性能优化与调试</a></h2>
+<h3 id="111-视锥剔除-frustum-culling"><a class="header" href="#111-视锥剔除-frustum-culling">11.1 视锥剔除 (Frustum Culling)</a></h3>
+<h4 id="实现frustum剔除"><a class="header" href="#实现frustum剔除">实现frustum剔除</a></h4>
+<pre><code class="language-cpp">// frustum.h
+class Frustum {
+private:
+    enum Planes {
+        LEFT = 0, RIGHT, BOTTOM, TOP, NEAR, FAR
+    };
+
+    glm::vec4 planes[6];
+
+public:
+    void update(const glm::mat4&amp; viewProjection) {
+        // 提取6个平面方程 (Gribb-Hartmann方法)
+        planes[LEFT]   = viewProjection[3] + viewProjection[0];
+        planes[RIGHT]  = viewProjection[3] - viewProjection[0];
+        planes[BOTTOM] = viewProjection[3] + viewProjection[1];
+        planes[TOP]    = viewProjection[3] - viewProjection[1];
+        planes[NEAR]   = viewProjection[3] + viewProjection[2];
+        planes[FAR]    = viewProjection[3] - viewProjection[2];
+
+        // 归一化
+        for (int i = 0; i &lt; 6; i++) {
+            float length = glm::length(glm::vec3(planes[i]));
+            planes[i] /= length;
+        }
+    }
+
+    bool isBoxVisible(const AABB&amp; box) const {
+        for (int i = 0; i &lt; 6; i++) {
+            glm::vec3 normal(planes[i]);
+            float d = planes[i].w;
+
+            // 获取最远正顶点
+            glm::vec3 pVertex = box.min;
+            if (normal.x &gt;= 0) pVertex.x = box.max.x;
+            if (normal.y &gt;= 0) pVertex.y = box.max.y;
+            if (normal.z &gt;= 0) pVertex.z = box.max.z;
+
+            if (glm::dot(normal, pVertex) + d &lt; 0) {
+                return false;  // 在平面外侧
+            }
+        }
+        return true;
+    }
+};
+</code></pre>
+<hr />
+<h2 id="十二脚本系统---lua集成"><a class="header" href="#十二脚本系统---lua集成">十二、脚本系统 - Lua集成</a></h2>
+<h3 id="121-使用sol2集成lua"><a class="header" href="#121-使用sol2集成lua">12.1 使用Sol2集成Lua</a></h3>
+<h4 id="环境搭建"><a class="header" href="#环境搭建">环境搭建</a></h4>
+<pre><code class="language-cpp">// lua_manager.h
+#include &lt;sol/sol.hpp&gt;
+
+class LuaManager {
+private:
+    sol::state lua;
+
+public:
+    static LuaManager&amp; getInstance() {
+        static LuaManager instance;
+        return instance;
+    }
+
+    void init() {
+        lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string, sol::lib::table);
+
+        // 注册引擎API
+        registerTypes();
+    }
+
+    void registerTypes() {
+        // 注册Vector3
+        lua.new_usertype&lt;glm::vec3&gt;("Vector3",
+            sol::constructors&lt;glm::vec3(), glm::vec3(float, float, float)&gt;(),
+            "x", &amp;glm::vec3::x,
+            "y", &amp;glm::vec3::y,
+            "z", &amp;glm::vec3::z
+        );
+
+        // 注册GameObject
+        lua.new_usertype&lt;GameObject&gt;("GameObject",
+            "name", &amp;GameObject::getName,
+            "transform", &amp;GameObject::getTransform
+        );
+    }
+
+    void executeFile(const std::string&amp; filepath) {
+        try {
+            lua.script_file(filepath);
+        } catch (const sol::error&amp; e) {
+            std::cerr &lt;&lt; "Lua error: " &lt;&lt; e.what() &lt;&lt; std::endl;
+        }
+    }
+};
+</code></pre>
+<h3 id="122-示例lua脚本"><a class="header" href="#122-示例lua脚本">12.2 示例Lua脚本</a></h3>
+<h4 id="角色控制器脚本"><a class="header" href="#角色控制器脚本">角色控制器脚本</a></h4>
+<pre><code class="language-lua">-- player_controller.lua
+Script = {}
+
+function Script:Awake()
+    print("Player controller initialized")
+    self.moveSpeed = 5.0
+    self.rotateSpeed = 180.0
+end
+
+function Script:Start()
+    self.initialY = self.transform.position.y
+end
+
+function Script:Update(deltaTime)
+    -- 移动输入
+    local moveInput = Vector3(0, 0, 0)
+
+    if Input.getKey("W") then
+        moveInput.z = moveInput.z - 1
+    end
+    if Input.getKey("S") then
+        moveInput.z = moveInput.z + 1
+    end
+    if Input.getKey("A") then
+        moveInput.x = moveInput.x - 1
+    end
+    if Input.getKey("D") then
+        moveInput.x = moveInput.x + 1
+    end
+
+    -- 应用移动
+    if moveInput:length() &gt; 0 then
+        moveInput = moveInput:normalize()
+        local movement = moveInput * self.moveSpeed * deltaTime
+
+        local pos = self.transform.position
+        pos.x = pos.x + movement.x
+        pos.z = pos.z + movement.z
+        self.transform.position = pos
+    end
+end
+
+return Script
+</code></pre>
+<hr />
+<h2 id="十三实战项目第三人称角色游戏"><a class="header" href="#十三实战项目第三人称角色游戏">十三、实战项目：第三人称角色游戏</a></h2>
+<h3 id="131-项目架构"><a class="header" href="#131-项目架构">13.1 项目架构</a></h3>
+<pre><code>ThirdPersonGame/
+├── Engine/
+│   ├── Core/
+│   │   ├── GameObject.h/cpp
+│   │   ├── Component.h/cpp
+│   │   ├── Transform.h/cpp
+│   │   └── Scene.h/cpp
+│   ├── Rendering/
+│   │   ├── Shader.h/cpp
+│   │   ├── Mesh.h/cpp
+│   │   ├── Material.h/cpp
+│   │   └── Camera.h/cpp
+│   ├── Animation/
+│   │   ├── Animator.h/cpp
+│   │   └── Animation.h/cpp
+│   └── Scripting/
+│       ├── LuaManager.h/cpp
+│       └── LuaScript.h/cpp
+├── Game/
+│   ├── Scripts/
+│   │   ├── player_controller.lua
+│   │   ├── camera_follow.lua
+│   │   └── enemy_ai.lua
+│   └── Assets/
+│       ├── Models/
+│       ├── Textures/
+│       └── Shaders/
+└── main.cpp
+</code></pre>
+<h3 id="132-完整游戏主循环"><a class="header" href="#132-完整游戏主循环">13.2 完整游戏主循环</a></h3>
+<pre><code class="language-cpp">// main.cpp
+int main() {
+    // 1. 初始化引擎
+    if (!glfwInit()) return -1;
+
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "Third Person Game", nullptr, nullptr);
+    glfwMakeContextCurrent(window);
+    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+    // 2. 初始化子系统
+    AudioEngine::getInstance().init();
+    LuaManager::getInstance().init();
+
+    // 3. 加载场景
+    Scene* scene = new Scene();
+
+    // 创建玩家
+    GameObject* player = new GameObject("Player");
+    MeshRenderer* renderer = player-&gt;addComponent&lt;MeshRenderer&gt;();
+
+    LuaScript* playerScript = player-&gt;addComponent&lt;LuaScript&gt;();
+    playerScript-&gt;loadScript("game/scripts/player_controller.lua");
+
+    scene-&gt;addGameObject(player);
+
+    // 4. 游戏主循环
+    float lastFrame = 0.0f;
+
+    while (!glfwWindowShouldClose(window)) {
+        float currentFrame = glfwGetTime();
+        float deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        // 输入
+        processInput(window);
+
+        // 更新
+        scene-&gt;update(deltaTime);
+        AudioEngine::getInstance().update();
+
+        // 渲染
+        glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        scene-&gt;render(camera);
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // 5. 清理
+    delete scene;
+    AudioEngine::getInstance().shutdown();
+    glfwTerminate();
+    return 0;
+}
+</code></pre>
+<hr />
+<h2 id="十四学习成果验证"><a class="header" href="#十四学习成果验证">十四、学习成果验证</a></h2>
+<h3 id="验证标准"><a class="header" href="#验证标准">验证标准</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>验证项</th><th>要求</th><th>检验方法</th></tr></thead><tbody>
+<tr><td><strong>环境搭建</strong></td><td>成功编译运行OpenGL窗口</td><td>显示800x600蓝绿色窗口</td></tr>
+<tr><td><strong>基础渲染</strong></td><td>绘制旋转的彩色立方体</td><td>使用VAO/VBO/EBO，深度测试</td></tr>
+<tr><td><strong>Shader编程</strong></td><td>实现自定义光照Shader</td><td>Phong光照模型</td></tr>
+<tr><td><strong>模型加载</strong></td><td>导入并渲染FBX模型</td><td>使用Assimp加载，正确显示材质</td></tr>
+<tr><td><strong>动画系统</strong></td><td>播放骨骼动画</td><td>加载.fbx动画文件，流畅播放</td></tr>
+</tbody></table>
+</div>
+<h3 id="完整项目checklist"><a class="header" href="#完整项目checklist">完整项目Checklist</a></h3>
+<ul>
+<li><input disabled="" type="checkbox"/>
+创建GameObject-Component系统</li>
+<li><input disabled="" type="checkbox"/>
+实现Camera相机控制</li>
+<li><input disabled="" type="checkbox"/>
+实现骨骼动画系统</li>
+<li><input disabled="" type="checkbox"/>
+集成Lua脚本</li>
+<li><input disabled="" type="checkbox"/>
+添加音频播放功能</li>
+<li><input disabled="" type="checkbox"/>
+实现GUI系统(FreeType文字渲染)</li>
+<li><input disabled="" type="checkbox"/>
+性能优化(Frustum Culling, Batching)</li>
+<li><input disabled="" type="checkbox"/>
+完成一个可玩的Demo游戏</li>
+</ul>
+<hr />
+<h2 id="十五扩展学习资源"><a class="header" href="#十五扩展学习资源">十五、扩展学习资源</a></h2>
+<h3 id="推荐书籍"><a class="header" href="#推荐书籍">推荐书籍</a></h3>
+<ol>
+<li><strong>《Game Engine Architecture》</strong> - Jason Gregory (引擎架构圣经)</li>
+<li><strong>《Real-Time Rendering》</strong> - Tomas Akenine-Möller (实时渲染)</li>
+<li><strong>《Physically Based Rendering》</strong> - Matt Pharr (PBR渲染)</li>
+<li><strong>《C++ Primer Plus》</strong> - Stephen Prata (C++基础)</li>
+</ol>
+<h3 id="开源项目学习"><a class="header" href="#开源项目学习">开源项目学习</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>项目</th><th>难度</th><th>学习重点</th></tr></thead><tbody>
+<tr><td><strong>Hazel Engine</strong></td><td>中等</td><td>现代C++引擎架构</td></tr>
+<tr><td><strong>Piccolo Engine</strong></td><td>高级</td><td>商业级引擎系统</td></tr>
+<tr><td><strong>Lumix Engine</strong></td><td>高级</td><td>数据驱动架构</td></tr>
+<tr><td><strong>cpp-game-engine-book</strong></td><td>入门</td><td>渐进式教学项目</td></tr>
+</tbody></table>
+</div>
+<h3 id="在线资源"><a class="header" href="#在线资源">在线资源</a></h3>
+<ul>
+<li><strong>LearnOpenGL</strong>: https://learnopengl.com/ (OpenGL入门必读)</li>
+<li><strong>OpenGL Reference</strong>: https://www.khronos.org/opengl/wiki/</li>
+<li><strong>Shadertoy</strong>: https://www.shadertoy.com/ (Shader练习平台)</li>
+<li><strong>GDC Vault</strong>: https://www.gdcvault.com/ (行业技术分享)</li>
+</ul>
+<h3 id="工具推荐"><a class="header" href="#工具推荐">工具推荐</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>工具类型</th><th>推荐工具</th><th>用途</th></tr></thead><tbody>
+<tr><td><strong>建模</strong></td><td>Blender</td><td>免费开源3D建模</td></tr>
+<tr><td><strong>音频</strong></td><td>FMOD Studio</td><td>专业音频编辑</td></tr>
+<tr><td><strong>纹理</strong></td><td>Substance Painter</td><td>PBR材质制作</td></tr>
+<tr><td><strong>调试</strong></td><td>RenderDoc</td><td>图形调试</td></tr>
+<tr><td><strong>性能</strong></td><td>easy_profiler</td><td>C++性能分析</td></tr>
+</tbody></table>
+</div>
+<hr />
+<h2 id="附录常见问题解决"><a class="header" href="#附录常见问题解决">附录：常见问题解决</a></h2>
+<h3 id="a-编译错误"><a class="header" href="#a-编译错误">A. 编译错误</a></h3>
+<pre><code class="language-bash"># 问题：找不到GLFW头文件
+# 解决：配置CMake
+find_package(glfw3 REQUIRED)
+include_directories(${GLFW_INCLUDE_DIRS})
+
+# 问题：链接错误 undefined reference to `glfwInit`
+# 解决：链接库
+target_link_libraries(YourTarget glfw ${GLFW_LIBRARIES})
+</code></pre>
+<h3 id="b-渲染问题"><a class="header" href="#b-渲染问题">B. 渲染问题</a></h3>
+<pre><code class="language-cpp">// 问题：模型不显示
+// 检查清单：
+1. 是否启用深度测试？ glEnable(GL_DEPTH_TEST);
+2. 是否清除深度缓冲？ glClear(GL_DEPTH_BUFFER_BIT);
+3. 相机位置是否正确？
+4. 模型是否在视锥内？
+5. Shader是否编译成功？
+
+// 问题：纹理显示为黑色
+// 解决：
+1. 检查纹理单元绑定
+2. 确认Shader中sampler2D设置
+3. 验证纹理坐标范围[0,1]
+</code></pre>
+<h3 id="c-性能问题"><a class="header" href="#c-性能问题">C. 性能问题</a></h3>
+<pre><code class="language-cpp">// 问题：帧率过低
+// 优化方向：
+1. 减少DrawCall (批处理、Instancing)
+2. 降低顶点数量 (LOD系统)
+3. 使用压缩纹理
+4. 实现视锥剔除
+5. 使用索引绘制复用顶点
+6. 多线程分离逻辑和渲染
+</code></pre>
+<hr />
+<h2 id="参考项目"><a class="header" href="#参考项目">参考项目</a></h2>
+<p>本笔记主要参考了开源项目 <strong><a href="https://github.com/ThisisGame/cpp-game-engine-book">cpp-game-engine-book</a></strong>，该项目提供了从基础到进阶的完整游戏引擎开发教程，包含22个章节的详细讲解和配套实例代码。</p>
+<h3 id="章节覆盖"><a class="header" href="#章节覆盖">章节覆盖</a></h3>
+<ul>
+<li>第1-6章：OpenGL基础、Shader、纹理、索引缓冲</li>
+<li>第7-12章：Mesh格式、GameObject架构、相机、输入、引擎分层</li>
+<li>第13-17章：文字渲染、GUI控件、音频、性能分析、Lua集成</li>
+<li>第18-21章：骨骼动画、蒙皮权重、FBX导入、多线程渲染</li>
+</ul>
+<hr />
+<p><strong>学习建议</strong>：</p>
+<ol>
+<li>从最基础的三角形开始，每个知识点都亲手实现</li>
+<li>遇到问题优先查阅官方文档和调试输出</li>
+<li>定期重构代码，保持架构清晰</li>
+<li>多参考开源项目的实现方式</li>
+<li>制作小Demo验证学习成果</li>
+<li>关注图形学最新技术发展</li>
+</ol>
+<p>祝你在游戏引擎开发的道路上不断进步！</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/游戏引擎-高级主题.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/设计模式-实战案例.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/游戏引擎-高级主题.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/设计模式-实战案例.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

@@ -1,0 +1,1715 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Fast DDS 深度技术学习笔记（第二部分） - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="fast-dds-深度技术学习笔记第二部分"><a class="header" href="#fast-dds-深度技术学习笔记第二部分">Fast DDS 深度技术学习笔记（第二部分）</a></h1>
+<blockquote>
+<p>本笔记分为4个部分，本文件为第二部分，包含模块三、模块四</p>
+<ul>
+<li><a href="fastdds.html">第一部分：技术概述、模块一、模块二</a></li>
+<li><a href="fastdds_part3.html">第三部分：模块五、模块六、模块七</a></li>
+<li><a href="fastdds_part4.html">第四部分：常见问题、验证标准、总结</a></li>
+</ul>
+</blockquote>
+<hr />
+<h2 id="模块三高级传输与性能优化"><a class="header" href="#模块三高级传输与性能优化">模块三：高级传输与性能优化</a></h2>
+<h3 id="31-传输层深度配置"><a class="header" href="#31-传输层深度配置">3.1 传输层深度配置</a></h3>
+<p>Fast DDS支持多种传输协议，理解并正确配置传输层是性能优化的关键。</p>
+<h4 id="udp传输默认"><a class="header" href="#udp传输默认">UDP传输（默认）</a></h4>
+<pre><code class="language-cpp">#include &lt;fastdds/rtps/transport/UDPv4TransportDescriptor.h&gt;
+#include &lt;fastdds/rtps/transport/UDPv6TransportDescriptor.h&gt;
+
+class UDPTransportConfiguration {
+public:
+    void configure_udp_transport() {
+        using namespace eprosima::fastdds::rtps;
+        using namespace eprosima::fastrtps::rtps;
+
+        DomainParticipantQos qos;
+
+        // 禁用内置传输
+        qos.transport().use_builtin_transports = false;
+
+        // 创建UDPv4传输描述符
+        auto udp_transport = std::make_shared&lt;UDPv4TransportDescriptor&gt;();
+
+        // UDP发送缓冲区大小（字节）
+        udp_transport-&gt;sendBufferSize = 1024 * 1024;  // 1MB
+
+        // UDP接收缓冲区大小（字节）
+        udp_transport-&gt;receiveBufferSize = 1024 * 1024;  // 1MB
+
+        // 最大消息大小（字节）
+        udp_transport-&gt;maxMessageSize = 65500;  // 接近UDP最大值
+
+        // TTL（Time To Live）
+        udp_transport-&gt;TTL = 1;  // 仅本地网络
+
+        // 非阻塞发送
+        udp_transport-&gt;non_blocking_send = true;
+
+        // 绑定地址和端口
+        // 0.0.0.0 表示监听所有接口
+        // 特定IP可以限制监听接口
+        // udp_transport-&gt;interfaceWhiteList.push_back("192.168.1.100");
+
+        // 添加到参与者QoS
+        qos.transport().user_transports.push_back(udp_transport);
+
+        // 创建参与者
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+
+    // UDPv6配置
+    void configure_udpv6_transport() {
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+        qos.transport().use_builtin_transports = false;
+
+        auto udpv6_transport = std::make_shared&lt;UDPv6TransportDescriptor&gt;();
+
+        udpv6_transport-&gt;sendBufferSize = 1024 * 1024;
+        udpv6_transport-&gt;receiveBufferSize = 1024 * 1024;
+
+        qos.transport().user_transports.push_back(udpv6_transport);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+
+    // 混合IPv4/IPv6配置
+    void configure_dual_stack() {
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+        qos.transport().use_builtin_transports = false;
+
+        // 同时添加UDPv4和UDPv6
+        auto udp4 = std::make_shared&lt;UDPv4TransportDescriptor&gt;();
+        auto udp6 = std::make_shared&lt;UDPv6TransportDescriptor&gt;();
+
+        qos.transport().user_transports.push_back(udp4);
+        qos.transport().user_transports.push_back(udp6);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+};
+</code></pre>
+<h4 id="tcp传输配置"><a class="header" href="#tcp传输配置">TCP传输配置</a></h4>
+<pre><code class="language-cpp">#include &lt;fastdds/rtps/transport/TCPv4TransportDescriptor.h&gt;
+
+class TCPTransportConfiguration {
+public:
+    // TCP服务器配置
+    void configure_tcp_server() {
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+        qos.transport().use_builtin_transports = false;
+
+        auto tcp_transport = std::make_shared&lt;TCPv4TransportDescriptor&gt;();
+
+        // 监听端口
+        tcp_transport-&gt;add_listener_port(5100);
+
+        // 保活参数（TCP Keep-Alive）
+        tcp_transport-&gt;keep_alive_frequency_ms = 5000;      // 5秒发送一次心跳
+        tcp_transport-&gt;keep_alive_timeout_ms = 25000;       // 25秒超时
+
+        // TCP缓冲区
+        tcp_transport-&gt;sendBufferSize = 2 * 1024 * 1024;    // 2MB
+        tcp_transport-&gt;receiveBufferSize = 2 * 1024 * 1024; // 2MB
+
+        // 最大消息大小
+        tcp_transport-&gt;maxMessageSize = 10 * 1024 * 1024;   // 10MB（TCP可以很大）
+
+        // TLS/SSL配置（可选）
+        // tcp_transport-&gt;apply_security = true;
+        // tcp_transport-&gt;tls_config.password = "password";
+        // tcp_transport-&gt;tls_config.cert_chain_file = "server-cert.pem";
+        // tcp_transport-&gt;tls_config.private_key_file = "server-key.pem";
+
+        qos.transport().user_transports.push_back(tcp_transport);
+
+        // WAN通信需要配置公网IP
+        Locator_t wan_locator;
+        wan_locator.kind = LOCATOR_KIND_TCPv4;
+        wan_locator.port = 5100;
+        IPLocator::setIPv4(wan_locator, "203.0.113.1");  // 公网IP
+        IPLocator::setLogicalPort(wan_locator, 5100);
+
+        qos.wire_protocol().builtin.metatrafficUnicastLocatorList.push_back(wan_locator);
+        qos.wire_protocol().default_unicast_locator_list.push_back(wan_locator);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+
+    // TCP客户端配置
+    void configure_tcp_client() {
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+        qos.transport().use_builtin_transports = false;
+
+        auto tcp_transport = std::make_shared&lt;TCPv4TransportDescriptor&gt;();
+
+        // 客户端不需要监听端口
+        // 连接到服务器
+        tcp_transport-&gt;keep_alive_frequency_ms = 5000;
+        tcp_transport-&gt;keep_alive_timeout_ms = 25000;
+
+        qos.transport().user_transports.push_back(tcp_transport);
+
+        // 配置初始对等点（服务器地址）
+        Locator_t server_locator;
+        server_locator.kind = LOCATOR_KIND_TCPv4;
+        server_locator.port = 5100;
+        IPLocator::setIPv4(server_locator, "192.168.1.100");  // 服务器IP
+        IPLocator::setLogicalPort(server_locator, 5100);
+
+        qos.wire_protocol().builtin.initialPeersList.push_back(server_locator);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+};
+</code></pre>
+<h4 id="共享内存传输shm"><a class="header" href="#共享内存传输shm">共享内存传输（SHM）</a></h4>
+<pre><code class="language-cpp">#include &lt;fastdds/rtps/transport/SharedMemTransportDescriptor.h&gt;
+
+class SharedMemoryTransportConfiguration {
+public:
+    void configure_shm_transport() {
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+        qos.transport().use_builtin_transports = false;
+
+        // 共享内存传输
+        auto shm_transport = std::make_shared&lt;SharedMemTransportDescriptor&gt;();
+
+        // 共享内存段大小（字节）
+        shm_transport-&gt;segment_size(2 * 1024 * 1024);  // 2MB
+
+        // 最大消息大小
+        shm_transport-&gt;maxMessageSize = 10 * 1024 * 1024;  // 10MB
+
+        // 健康检查周期（毫秒）
+        shm_transport-&gt;healthy_check_timeout_ms(1000);
+
+        // 端口队列容量
+        shm_transport-&gt;port_queue_capacity(512);
+
+        // 共享内存段超时
+        shm_transport-&gt;segment_overflow_policy(
+            eprosima::fastdds::rtps::SharedMemTransportDescriptor::SegmentOverflowPolicy::DROP_OLDEST_SEGMENT
+        );
+
+        qos.transport().user_transports.push_back(shm_transport);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+
+    // 混合传输：SHM + UDP（本地用SHM，远程用UDP）
+    void configure_hybrid_transport() {
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+        qos.transport().use_builtin_transports = false;
+
+        // 共享内存（本地高速通信）
+        auto shm_transport = std::make_shared&lt;SharedMemTransportDescriptor&gt;();
+        shm_transport-&gt;segment_size(2 * 1024 * 1024);
+
+        // UDP（跨机器通信）
+        auto udp_transport = std::make_shared&lt;UDPv4TransportDescriptor&gt;();
+        udp_transport-&gt;sendBufferSize = 1024 * 1024;
+        udp_transport-&gt;receiveBufferSize = 1024 * 1024;
+
+        // Fast DDS会自动选择：
+        // - 本地进程间通信使用SHM
+        // - 跨机器通信使用UDP
+        qos.transport().user_transports.push_back(shm_transport);
+        qos.transport().user_transports.push_back(udp_transport);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+};
+</code></pre>
+<p><strong>重点难点：共享内存传输的限制</strong></p>
+<pre><code class="language-cpp">class SHMTransportLimitations {
+public:
+    void explain_shm_limitations() {
+        /*
+        共享内存传输的限制和注意事项：
+
+        1. 仅限本地通信
+           - SHM只能用于同一台机器的进程间通信
+           - 无法跨网络使用
+
+        2. 平台兼容性
+           - Windows: 使用文件映射
+           - Linux: 使用POSIX共享内存
+           - 跨平台应用需要测试
+
+        3. 资源清理
+           - 进程异常终止可能留下共享内存段
+           - Linux: 检查 /dev/shm/
+           - Windows: 使用进程资源管理器
+
+        4. 性能考量
+           - 零拷贝：数据不经过网络栈
+           - 延迟：&lt;100微秒（vs UDP的~200微秒）
+           - 吞吐量：数GB/s（vs UDP的~100MB/s）
+
+        5. 大小限制
+           - Linux默认/dev/shm大小约为RAM的50%
+           - 可能需要调整：sudo mount -o remount,size=4G /dev/shm
+        */
+    }
+
+    // 诊断共享内存问题
+    void diagnose_shm_issues() {
+        #ifdef __linux__
+        // Linux: 查看共享内存使用情况
+        std::system("ls -lh /dev/shm/");
+        std::system("df -h /dev/shm");
+
+        // 清理遗留的共享内存段
+        std::system("rm -f /dev/shm/fast_datasharing_*");
+        std::system("rm -f /dev/shm/fastrtps_*");
+        #endif
+
+        #ifdef _WIN32
+        // Windows: 使用Process Explorer查看Section Objects
+        std::cout &lt;&lt; "在Process Explorer中查看Section Objects" &lt;&lt; std::endl;
+        #endif
+    }
+};
+</code></pre>
+<h3 id="32-零拷贝数据传输"><a class="header" href="#32-零拷贝数据传输">3.2 零拷贝数据传输</a></h3>
+<p>零拷贝（Zero-Copy）技术避免数据在内存中的多次拷贝，极大提升性能。</p>
+<h4 id="数据共享data-sharing"><a class="header" href="#数据共享data-sharing">数据共享（Data Sharing）</a></h4>
+<pre><code class="language-cpp">#include &lt;fastdds/dds/domain/qos/DomainParticipantQos.hpp&gt;
+
+class ZeroCopyDataSharing {
+public:
+    void configure_data_sharing() {
+        using namespace eprosima::fastdds::dds;
+
+        DomainParticipantQos participant_qos;
+        participant_qos.transport().use_builtin_transports = false;
+
+        // 启用共享内存传输
+        auto shm_transport = std::make_shared&lt;eprosima::fastdds::rtps::SharedMemTransportDescriptor&gt;();
+        participant_qos.transport().user_transports.push_back(shm_transport);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, participant_qos);
+
+        // 配置DataWriter启用数据共享
+        DataWriterQos writer_qos;
+
+        // 自动模式：Fast DDS自动决定是否使用数据共享
+        writer_qos.data_sharing().automatic();
+
+        // 强制开启数据共享
+        // writer_qos.data_sharing().on("/tmp");  // 指定共享内存路径
+
+        // 关闭数据共享
+        // writer_qos.data_sharing().off();
+
+        // 创建DataWriter
+        // DataWriter* writer = publisher-&gt;create_datawriter(topic, writer_qos);
+
+        // 配置DataReader
+        DataReaderQos reader_qos;
+        reader_qos.data_sharing().automatic();
+
+        // DataReader* reader = subscriber-&gt;create_datareader(topic, reader_qos);
+    }
+
+    // 数据共享性能测试
+    void benchmark_data_sharing() {
+        using namespace eprosima::fastdds::dds;
+
+        // 场景1：不使用数据共享
+        DataWriterQos no_sharing_qos;
+        no_sharing_qos.data_sharing().off();
+
+        auto start1 = std::chrono::high_resolution_clock::now();
+        // 发送大量数据...
+        auto end1 = std::chrono::high_resolution_clock::now();
+        auto duration1 = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(end1 - start1);
+
+        // 场景2：使用数据共享
+        DataWriterQos sharing_qos;
+        sharing_qos.data_sharing().on("/tmp");
+
+        auto start2 = std::chrono::high_resolution_clock::now();
+        // 发送相同大量数据...
+        auto end2 = std::chrono::high_resolution_clock::now();
+        auto duration2 = std::chrono::duration_cast&lt;std::chrono::microseconds&gt;(end2 - start2);
+
+        std::cout &lt;&lt; "不使用数据共享: " &lt;&lt; duration1.count() &lt;&lt; " μs" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "使用数据共享: " &lt;&lt; duration2.count() &lt;&lt; " μs" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "性能提升: "
+                  &lt;&lt; (double)duration1.count() / duration2.count() &lt;&lt; "x" &lt;&lt; std::endl;
+
+        /*
+        典型结果：
+        - 小消息(&lt;1KB): 提升不明显
+        - 中等消息(1KB-100KB): 2-3x提升
+        - 大消息(&gt;100KB): 5-10x提升
+        */
+    }
+};
+</code></pre>
+<h4 id="贷款模式loan-mode"><a class="header" href="#贷款模式loan-mode">贷款模式（Loan Mode）</a></h4>
+<pre><code class="language-cpp">class LoanSampleZeroCopy {
+public:
+    // 发布者使用贷款模式
+    void publish_with_loan() {
+        using namespace eprosima::fastdds::dds;
+
+        // DataWriter已创建...
+        DataWriter* writer;  // 假设已初始化
+
+        // 请求贷款样本（零拷贝）
+        void* loan_sample = nullptr;
+        ReturnCode_t ret = writer-&gt;loan_sample(loan_sample);
+
+        if (ret == ReturnCode_t::RETCODE_OK) {
+            // 直接在共享内存中填充数据
+            HelloWorld* sample = static_cast&lt;HelloWorld*&gt;(loan_sample);
+            sample-&gt;index(12345);
+            sample-&gt;message("Zero-Copy Message");
+
+            // 发布（不拷贝数据）
+            ret = writer-&gt;write(loan_sample, eprosima::fastrtps::rtps::InstanceHandle_t());
+
+            if (ret != ReturnCode_t::RETCODE_OK) {
+                // 发送失败，归还贷款
+                writer-&gt;discard_loan(loan_sample);
+            }
+            // 成功发送后，Fast DDS会自动管理内存
+        } else {
+            std::cerr &lt;&lt; "Failed to loan sample" &lt;&lt; std::endl;
+        }
+    }
+
+    // 订阅者使用贷款模式
+    void subscribe_with_loan() {
+        using namespace eprosima::fastdds::dds;
+
+        DataReader* reader;  // 假设已初始化
+
+        // 使用贷款API读取（零拷贝）
+        eprosima::fastdds::dds::SampleInfo info;
+        void* data = nullptr;
+
+        ReturnCode_t ret = reader-&gt;take_next_sample(&amp;data, &amp;info);
+
+        if (ret == ReturnCode_t::RETCODE_OK &amp;&amp; info.valid_data) {
+            HelloWorld* sample = static_cast&lt;HelloWorld*&gt;(data);
+
+            // 直接访问共享内存中的数据（零拷贝）
+            std::cout &lt;&lt; "Received: " &lt;&lt; sample-&gt;message() &lt;&lt; std::endl;
+
+            // 归还贷款
+            reader-&gt;return_loan(&amp;data, 1);
+        }
+    }
+
+    // 完整的零拷贝通信示例
+    class ZeroCopyPublisher {
+    private:
+        DataWriter* writer_;
+
+    public:
+        void send_large_data(const std::vector&lt;uint8_t&gt;&amp; data) {
+            // 假设数据结构：
+            // struct LargeData {
+            //     std::vector&lt;uint8_t&gt; payload;
+            // };
+
+            void* loan_sample = nullptr;
+            if (writer_-&gt;loan_sample(loan_sample) == ReturnCode_t::RETCODE_OK) {
+                LargeData* sample = static_cast&lt;LargeData*&gt;(loan_sample);
+
+                // 零拷贝：直接移动数据到共享内存
+                sample-&gt;payload = std::move(data);  // 使用移动语义
+
+                if (writer_-&gt;write(loan_sample, eprosima::fastrtps::rtps::InstanceHandle_t())
+                    != ReturnCode_t::RETCODE_OK) {
+                    writer_-&gt;discard_loan(loan_sample);
+                }
+            }
+        }
+    };
+};
+</code></pre>
+<h3 id="33-流量控制flow-control"><a class="header" href="#33-流量控制flow-control">3.3 流量控制（Flow Control）</a></h3>
+<p>流量控制防止发送方过快发送数据，导致接收方或网络拥塞。</p>
+<pre><code class="language-cpp">#include &lt;fastdds/rtps/flowcontrol/FlowControllerDescriptor.hpp&gt;
+
+class FlowControlConfiguration {
+public:
+    // 配置流量控制器
+    void configure_flow_controller() {
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos participant_qos;
+
+        // 创建流量控制器描述符
+        std::shared_ptr&lt;FlowControllerDescriptor&gt; flow_controller_descriptor =
+            std::make_shared&lt;FlowControllerDescriptor&gt;();
+
+        flow_controller_descriptor-&gt;name = "VideoStreamFlowController";
+
+        // 调度器策略
+        flow_controller_descriptor-&gt;scheduler = FlowControllerSchedulerPolicy::FIFO;
+        // 可选：ROUND_ROBIN, HIGH_PRIORITY, PRIORITY_WITH_RESERVATION
+
+        // 最大字节数/周期
+        flow_controller_descriptor-&gt;max_bytes_per_period = 1024 * 1024;  // 1MB
+
+        // 周期时间（纳秒）
+        flow_controller_descriptor-&gt;period_ms = 100;  // 100毫秒
+
+        // 添加到参与者
+        participant_qos.flow_controllers().push_back(flow_controller_descriptor);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, participant_qos);
+
+        // 在DataWriter中使用流量控制器
+        DataWriterQos writer_qos;
+        writer_qos.publish_mode().kind = PublishModeQosPolicyKind::ASYNCHRONOUS_PUBLISH_MODE;
+        writer_qos.publish_mode().flow_controller_name = "VideoStreamFlowController";
+
+        // DataWriter* writer = publisher-&gt;create_datawriter(topic, writer_qos);
+
+        // 结果：每100ms最多发送1MB数据 = 10MB/s带宽限制
+    }
+
+    // 多优先级流量控制
+    void configure_priority_flow_control() {
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos participant_qos;
+
+        // 高优先级流量控制器（控制指令）
+        auto high_priority_fc = std::make_shared&lt;FlowControllerDescriptor&gt;();
+        high_priority_fc-&gt;name = "HighPriorityFC";
+        high_priority_fc-&gt;scheduler = FlowControllerSchedulerPolicy::HIGH_PRIORITY;
+        high_priority_fc-&gt;max_bytes_per_period = 100 * 1024;  // 100KB
+        high_priority_fc-&gt;period_ms = 10;  // 10ms周期
+
+        // 低优先级流量控制器（视频流）
+        auto low_priority_fc = std::make_shared&lt;FlowControllerDescriptor&gt;();
+        low_priority_fc-&gt;name = "LowPriorityFC";
+        low_priority_fc-&gt;scheduler = FlowControllerSchedulerPolicy::FIFO;
+        low_priority_fc-&gt;max_bytes_per_period = 5 * 1024 * 1024;  // 5MB
+        low_priority_fc-&gt;period_ms = 100;  // 100ms周期
+
+        participant_qos.flow_controllers().push_back(high_priority_fc);
+        participant_qos.flow_controllers().push_back(low_priority_fc);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, participant_qos);
+
+        // 控制指令使用高优先级
+        DataWriterQos control_qos;
+        control_qos.publish_mode().kind = PublishModeQosPolicyKind::ASYNCHRONOUS_PUBLISH_MODE;
+        control_qos.publish_mode().flow_controller_name = "HighPriorityFC";
+
+        // 视频流使用低优先级
+        DataWriterQos video_qos;
+        video_qos.publish_mode().kind = PublishModeQosPolicyKind::ASYNCHRONOUS_PUBLISH_MODE;
+        video_qos.publish_mode().flow_controller_name = "LowPriorityFC";
+    }
+
+    // 动态带宽限制
+    class DynamicBandwidthLimiter {
+    private:
+        DataWriter* writer_;
+        std::atomic&lt;int&gt; current_bandwidth_mbps_{10};  // 初始10MB/s
+
+    public:
+        void adjust_bandwidth(int mbps) {
+            current_bandwidth_mbps_ = mbps;
+
+            // 重新配置流量控制器
+            // 注意：Fast DDS不支持运行时修改流量控制器
+            // 需要重新创建DataWriter或使用应用层限流
+        }
+
+        // 应用层限流实现
+        void send_with_rate_limit(const HelloWorld&amp; sample) {
+            static auto last_send_time = std::chrono::steady_clock::now();
+            static size_t bytes_sent_in_window = 0;
+            const size_t window_ms = 1000;  // 1秒窗口
+
+            auto now = std::chrono::steady_clock::now();
+            auto elapsed = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(
+                now - last_send_time).count();
+
+            if (elapsed &gt;= window_ms) {
+                // 重置窗口
+                last_send_time = now;
+                bytes_sent_in_window = 0;
+            }
+
+            size_t sample_size = 1024;  // 假设样本大小
+            size_t max_bytes_per_window = current_bandwidth_mbps_ * 1024 * 1024;
+
+            if (bytes_sent_in_window + sample_size &lt;= max_bytes_per_window) {
+                writer_-&gt;write(&amp;sample);
+                bytes_sent_in_window += sample_size;
+            } else {
+                // 等待下一个窗口
+                std::this_thread::sleep_for(
+                    std::chrono::milliseconds(window_ms - elapsed));
+                writer_-&gt;write(&amp;sample);
+                last_send_time = std::chrono::steady_clock::now();
+                bytes_sent_in_window = sample_size;
+            }
+        }
+    };
+};
+</code></pre>
+<h3 id="34-批量传输优化"><a class="header" href="#34-批量传输优化">3.4 批量传输优化</a></h3>
+<p>批量发送多个样本可以减少网络开销，提高吞吐量。</p>
+<pre><code class="language-cpp">class BatchingOptimization {
+public:
+    // 启用批量传输
+    void enable_batching() {
+        using namespace eprosima::fastdds::dds;
+
+        PublisherQos publisher_qos;
+
+        // 启用批量发送
+        publisher_qos.properties().properties().emplace_back(
+            "fastdds.batch_mode", "true");
+
+        // 批量大小限制（字节）
+        publisher_qos.properties().properties().emplace_back(
+            "fastdds.batch_max_size", "65536");  // 64KB
+
+        // 批量超时（毫秒）
+        publisher_qos.properties().properties().emplace_back(
+            "fastdds.batch_timeout_ms", "10");  // 10ms
+
+        Publisher* publisher = participant_-&gt;create_publisher(publisher_qos);
+
+        /*
+        批量传输工作原理：
+        1. 收集多个样本到批量缓冲区
+        2. 达到batch_max_size或batch_timeout_ms时发送
+        3. 单个网络包传输多个样本
+        4. 减少网络开销（包头、UDP/IP头）
+        */
+    }
+
+    // 批量发送性能测试
+    void benchmark_batching() {
+        using namespace eprosima::fastdds::dds;
+
+        const int NUM_SAMPLES = 10000;
+        HelloWorld sample;
+
+        // 场景1：不使用批量
+        auto start1 = std::chrono::high_resolution_clock::now();
+        for (int i = 0; i &lt; NUM_SAMPLES; ++i) {
+            sample.index(i);
+            writer_no_batch_-&gt;write(&amp;sample);
+        }
+        auto end1 = std::chrono::high_resolution_clock::now();
+        auto duration1 = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end1 - start1);
+
+        // 场景2：使用批量
+        auto start2 = std::chrono::high_resolution_clock::now();
+        for (int i = 0; i &lt; NUM_SAMPLES; ++i) {
+            sample.index(i);
+            writer_with_batch_-&gt;write(&amp;sample);
+        }
+        auto end2 = std::chrono::high_resolution_clock::now();
+        auto duration2 = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end2 - start2);
+
+        std::cout &lt;&lt; "不使用批量: " &lt;&lt; duration1.count() &lt;&lt; " ms" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "使用批量: " &lt;&lt; duration2.count() &lt;&lt; " ms" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "吞吐量提升: "
+                  &lt;&lt; (double)duration1.count() / duration2.count() &lt;&lt; "x" &lt;&lt; std::endl;
+
+        /*
+        典型结果：
+        - 小样本（&lt;100字节）：3-5x吞吐量提升
+        - 中等样本（100-1000字节）：2-3x提升
+        - 大样本（&gt;1000字节）：1-2x提升
+        */
+    }
+};
+</code></pre>
+<h3 id="35-性能基准测试与调优"><a class="header" href="#35-性能基准测试与调优">3.5 性能基准测试与调优</a></h3>
+<pre><code class="language-cpp">class PerformanceBenchmark {
+public:
+    // 延迟测试
+    struct LatencyStats {
+        double min_us;
+        double max_us;
+        double avg_us;
+        double p50_us;
+        double p95_us;
+        double p99_us;
+    };
+
+    LatencyStats measure_latency(int num_samples = 1000) {
+        using namespace eprosima::fastdds::dds;
+
+        std::vector&lt;double&gt; latencies;
+        latencies.reserve(num_samples);
+
+        HelloWorld sample;
+        SampleInfo info;
+
+        for (int i = 0; i &lt; num_samples; ++i) {
+            // 记录发送时间
+            auto send_time = std::chrono::high_resolution_clock::now();
+            sample.index(i);
+            sample.message("Latency Test");
+
+            writer_-&gt;write(&amp;sample);
+
+            // 等待接收
+            HelloWorld received_sample;
+            while (reader_-&gt;take_next_sample(&amp;received_sample, &amp;info)
+                   != ReturnCode_t::RETCODE_OK || !info.valid_data) {
+                std::this_thread::sleep_for(std::chrono::microseconds(1));
+            }
+
+            auto recv_time = std::chrono::high_resolution_clock::now();
+            double latency_us = std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(
+                recv_time - send_time).count() / 1000.0;
+
+            latencies.push_back(latency_us);
+        }
+
+        // 计算统计数据
+        std::sort(latencies.begin(), latencies.end());
+
+        LatencyStats stats;
+        stats.min_us = latencies.front();
+        stats.max_us = latencies.back();
+        stats.avg_us = std::accumulate(latencies.begin(), latencies.end(), 0.0)
+                       / latencies.size();
+        stats.p50_us = latencies[latencies.size() / 2];
+        stats.p95_us = latencies[latencies.size() * 95 / 100];
+        stats.p99_us = latencies[latencies.size() * 99 / 100];
+
+        return stats;
+    }
+
+    // 吞吐量测试
+    struct ThroughputStats {
+        double samples_per_sec;
+        double mbytes_per_sec;
+        size_t total_samples;
+        size_t total_bytes;
+    };
+
+    ThroughputStats measure_throughput(int duration_sec = 10, size_t sample_size = 1024) {
+        using namespace eprosima::fastdds::dds;
+
+        // 准备样本
+        std::vector&lt;uint8_t&gt; payload(sample_size, 0x42);
+        LargeData sample;
+        sample.payload(payload);
+
+        size_t total_samples = 0;
+        size_t total_bytes = 0;
+
+        auto start_time = std::chrono::steady_clock::now();
+        auto end_time = start_time + std::chrono::seconds(duration_sec);
+
+        while (std::chrono::steady_clock::now() &lt; end_time) {
+            if (writer_-&gt;write(&amp;sample) == ReturnCode_t::RETCODE_OK) {
+                total_samples++;
+                total_bytes += sample_size;
+            }
+        }
+
+        auto actual_duration = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(
+            std::chrono::steady_clock::now() - start_time).count() / 1000.0;
+
+        ThroughputStats stats;
+        stats.total_samples = total_samples;
+        stats.total_bytes = total_bytes;
+        stats.samples_per_sec = total_samples / actual_duration;
+        stats.mbytes_per_sec = (total_bytes / (1024.0 * 1024.0)) / actual_duration;
+
+        return stats;
+    }
+
+    // 综合性能报告
+    void generate_performance_report() {
+        std::cout &lt;&lt; "=== Fast DDS Performance Report ===" &lt;&lt; std::endl;
+
+        // 测试1：延迟（小消息）
+        std::cout &lt;&lt; "\n--- Latency Test (100 bytes) ---" &lt;&lt; std::endl;
+        auto latency_stats = measure_latency(1000);
+        std::cout &lt;&lt; "Min: " &lt;&lt; latency_stats.min_us &lt;&lt; " μs" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Avg: " &lt;&lt; latency_stats.avg_us &lt;&lt; " μs" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "P50: " &lt;&lt; latency_stats.p50_us &lt;&lt; " μs" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "P95: " &lt;&lt; latency_stats.p95_us &lt;&lt; " μs" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "P99: " &lt;&lt; latency_stats.p99_us &lt;&lt; " μs" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Max: " &lt;&lt; latency_stats.max_us &lt;&lt; " μs" &lt;&lt; std::endl;
+
+        // 测试2：吞吐量（1KB消息）
+        std::cout &lt;&lt; "\n--- Throughput Test (1KB samples) ---" &lt;&lt; std::endl;
+        auto throughput_1kb = measure_throughput(10, 1024);
+        std::cout &lt;&lt; "Samples/sec: " &lt;&lt; throughput_1kb.samples_per_sec &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Throughput: " &lt;&lt; throughput_1kb.mbytes_per_sec &lt;&lt; " MB/s" &lt;&lt; std::endl;
+
+        // 测试3：吞吐量（1MB消息）
+        std::cout &lt;&lt; "\n--- Throughput Test (1MB samples) ---" &lt;&lt; std::endl;
+        auto throughput_1mb = measure_throughput(10, 1024 * 1024);
+        std::cout &lt;&lt; "Samples/sec: " &lt;&lt; throughput_1mb.samples_per_sec &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Throughput: " &lt;&lt; throughput_1mb.mbytes_per_sec &lt;&lt; " MB/s" &lt;&lt; std::endl;
+
+        /*
+        典型性能数据（局域网，共享内存）：
+
+        延迟（100字节）：
+        - UDP: 200-500 μs
+        - 共享内存: 50-100 μs
+
+        吞吐量（1KB）：
+        - UDP: 50,000-100,000 samples/sec (50-100 MB/s)
+        - 共享内存: 200,000-500,000 samples/sec (200-500 MB/s)
+
+        吞吐量（1MB）：
+        - UDP: 80-120 MB/s
+        - 共享内存: 2-5 GB/s
+        */
+    }
+
+    // 性能调优建议
+    void tuning_recommendations() {
+        std::cout &lt;&lt; "\n=== Performance Tuning Recommendations ===" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n1. 降低延迟：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 使用共享内存传输（同机器）" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 使用BEST_EFFORT可靠性" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 禁用Nagle算法（TCP）" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 使用同步发布模式" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n2. 提高吞吐量：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 启用批量传输" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 增大发送/接收缓冲区" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 使用异步发布模式" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 启用数据共享（零拷贝）" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n3. 减少CPU使用：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 使用监听器而非轮询" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 减少发现流量（Discovery Server）" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 使用合适的History深度" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n4. 降低内存占用：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 设置合理的ResourceLimits" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 使用KEEP_LAST而非KEEP_ALL" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "   - 限制最大样本数" &lt;&lt; std::endl;
+    }
+
+private:
+    DataWriter* writer_;
+    DataReader* reader_;
+};
+</code></pre>
+<hr />
+<h2 id="模块四服务发现机制详解"><a class="header" href="#模块四服务发现机制详解">模块四：服务发现机制详解</a></h2>
+<h3 id="41-简单发现协议spdp--sedp"><a class="header" href="#41-简单发现协议spdp--sedp">4.1 简单发现协议（SPDP &amp; SEDP）</a></h3>
+<p>DDS使用两阶段发现协议：SPDP发现参与者，SEDP发现端点（DataReader/DataWriter）。</p>
+<pre><code class="language-cpp">#include &lt;fastdds/dds/domain/DomainParticipant.hpp&gt;
+
+class SimpleDiscoveryProtocol {
+public:
+    // 基础SPDP配置
+    void configure_spdp() {
+        using namespace eprosima::fastdds::dds;
+        using namespace eprosima::fastrtps::rtps;
+
+        DomainParticipantQos qos;
+
+        // SPDP配置
+        auto&amp; discovery_config = qos.wire_protocol().builtin.discovery_config;
+
+        // 租约时间（Lease Duration）
+        discovery_config.leaseDuration = Duration_t(20, 0);  // 20秒
+
+        // 公告周期（Announcement Period）
+        discovery_config.leaseDuration_announcementperiod = Duration_t(5, 0);  // 每5秒公告一次
+
+        /*
+        工作原理：
+        1. 每个Participant每5秒广播自己的存在
+        2. 如果20秒内没有收到某Participant的公告，认为它离线
+        3. 使用多播或单播发送公告
+        */
+
+        // 初始对等节点列表（Initial Peers List）
+        // 用于单播发现，避免多播
+        Locator_t peer_locator;
+        peer_locator.kind = LOCATOR_KIND_UDPv4;
+        peer_locator.port = 7400;  // 默认SPDP端口
+        IPLocator::setIPv4(peer_locator, "192.168.1.100");
+
+        qos.wire_protocol().builtin.initialPeersList.push_back(peer_locator);
+
+        // 可以添加多个对等节点
+        Locator_t peer2;
+        peer2.kind = LOCATOR_KIND_UDPv4;
+        peer2.port = 7400;
+        IPLocator::setIPv4(peer2, "192.168.1.101");
+        qos.wire_protocol().builtin.initialPeersList.push_back(peer2);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+
+    // 监听发现事件
+    class DiscoveryListener : public DomainParticipantListener {
+    public:
+        // 参与者发现事件
+        void on_participant_discovery(
+            DomainParticipant* participant,
+            eprosima::fastrtps::rtps::ParticipantDiscoveryInfo&amp;&amp; info) override {
+
+            if (info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT) {
+                std::cout &lt;&lt; "=== New Participant Discovered ===" &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Name: " &lt;&lt; info.info.m_participantName &lt;&lt; std::endl;
+                std::cout &lt;&lt; "GUID: " &lt;&lt; info.info.m_guid &lt;&lt; std::endl;
+
+                // 获取参与者的定位器（网络地址）
+                for (const auto&amp; locator : info.info.metatraffic_locators.unicast) {
+                    std::cout &lt;&lt; "  Unicast: " &lt;&lt; locator &lt;&lt; std::endl;
+                }
+                for (const auto&amp; locator : info.info.metatraffic_locators.multicast) {
+                    std::cout &lt;&lt; "  Multicast: " &lt;&lt; locator &lt;&lt; std::endl;
+                }
+
+            } else if (info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::REMOVED_PARTICIPANT) {
+                std::cout &lt;&lt; "=== Participant Left ===" &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Name: " &lt;&lt; info.info.m_participantName &lt;&lt; std::endl;
+
+            } else if (info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::CHANGED_QOS_PARTICIPANT) {
+                std::cout &lt;&lt; "=== Participant QoS Changed ===" &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Name: " &lt;&lt; info.info.m_participantName &lt;&lt; std::endl;
+            }
+        }
+
+        // DataReader发现事件
+        void on_subscriber_discovery(
+            DomainParticipant* participant,
+            eprosima::fastrtps::rtps::ReaderDiscoveryInfo&amp;&amp; info) override {
+
+            if (info.status == eprosima::fastrtps::rtps::ReaderDiscoveryInfo::DISCOVERED_READER) {
+                std::cout &lt;&lt; "=== New DataReader Discovered ===" &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Topic: " &lt;&lt; info.info.topicName() &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Type: " &lt;&lt; info.info.typeName() &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Reliability: "
+                          &lt;&lt; (info.info.m_qos.m_reliability.kind == eprosima::fastdds::dds::RELIABLE_RELIABILITY_QOS
+                              ? "RELIABLE" : "BEST_EFFORT")
+                          &lt;&lt; std::endl;
+
+            } else if (info.status == eprosima::fastrtps::rtps::ReaderDiscoveryInfo::REMOVED_READER) {
+                std::cout &lt;&lt; "=== DataReader Removed ===" &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Topic: " &lt;&lt; info.info.topicName() &lt;&lt; std::endl;
+            }
+        }
+
+        // DataWriter发现事件
+        void on_publisher_discovery(
+            DomainParticipant* participant,
+            eprosima::fastrtps::rtps::WriterDiscoveryInfo&amp;&amp; info) override {
+
+            if (info.status == eprosima::fastrtps::rtps::WriterDiscoveryInfo::DISCOVERED_WRITER) {
+                std::cout &lt;&lt; "=== New DataWriter Discovered ===" &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Topic: " &lt;&lt; info.info.topicName() &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Type: " &lt;&lt; info.info.typeName() &lt;&lt; std::endl;
+
+            } else if (info.status == eprosima::fastrtps::rtps::WriterDiscoveryInfo::REMOVED_WRITER) {
+                std::cout &lt;&lt; "=== DataWriter Removed ===" &lt;&lt; std::endl;
+                std::cout &lt;&lt; "Topic: " &lt;&lt; info.info.topicName() &lt;&lt; std::endl;
+            }
+        }
+    };
+
+    // 使用发现监听器
+    void use_discovery_listener() {
+        using namespace eprosima::fastdds::dds;
+
+        DomainParticipantQos qos;
+        DiscoveryListener listener;
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(
+                0, qos, &amp;listener);
+
+        // 现在所有发现事件都会触发监听器回调
+    }
+};
+</code></pre>
+<p><strong>重点难点：发现协议的网络流量</strong></p>
+<pre><code class="language-cpp">class DiscoveryTrafficAnalysis {
+public:
+    void analyze_discovery_traffic() {
+        /*
+        SPDP/SEDP网络流量分析：
+
+        场景1：10个Participant，每个有5个DataWriter
+        -----------------------------------------------
+        SPDP流量：
+        - 每个Participant每5秒发送1个SPDP公告（~500字节）
+        - 总SPDP流量：10 * 500字节 / 5秒 = 1 KB/s
+
+        SEDP流量：
+        - 每个新端点发现时，广播端点信息（~1KB）
+        - 50个端点 * 1KB = 50KB（一次性）
+        - 后续变化时再发送
+
+        总发现流量：~1 KB/s（稳定状态）
+
+        场景2：100个Participant，每个有10个DataWriter
+        -----------------------------------------------
+        SPDP流量：100 * 500字节 / 5秒 = 10 KB/s
+        SEDP流量：1000个端点 * 1KB = 1MB（一次性）
+
+        总发现流量：~10 KB/s（稳定状态）
+
+        问题：大规模系统（&gt;100 Participants）发现流量过大
+        解决：使用Discovery Server模式
+        */
+    }
+
+    // 计算发现流量
+    double estimate_discovery_bandwidth(
+        int num_participants,
+        int endpoints_per_participant,
+        double announcement_period_sec) {
+
+        // SPDP流量估算
+        const double spdp_packet_size = 500.0;  // 字节
+        double spdp_bw = (num_participants * spdp_packet_size) / announcement_period_sec;
+
+        // SEDP是一次性的，不计入持续带宽
+
+        return spdp_bw;  // 字节/秒
+    }
+};
+</code></pre>
+<h3 id="42-discovery-server模式"><a class="header" href="#42-discovery-server模式">4.2 Discovery Server模式</a></h3>
+<p>Discovery Server使用中心化服务器管理发现，大幅减少网络流量。</p>
+<pre><code class="language-cpp">class DiscoveryServerMode {
+public:
+    // 配置Discovery Server
+    DomainParticipant* create_discovery_server() {
+        using namespace eprosima::fastdds::dds;
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+
+        // 设置为SERVER模式
+        qos.wire_protocol().builtin.discovery_config.discoveryProtocol =
+            DiscoveryProtocol_t::SERVER;
+
+        // 服务器GUID前缀（必须唯一）
+        std::istringstream("44.53.00.5f.45.50.52.4f.53.49.4d.41") &gt;&gt; qos.wire_protocol().prefix;
+
+        // 服务器监听地址
+        Locator_t server_locator;
+        server_locator.kind = LOCATOR_KIND_UDPv4;
+        server_locator.port = 11811;  // 默认Discovery Server端口
+        IPLocator::setIPv4(server_locator, "0.0.0.0");  // 监听所有接口
+
+        qos.wire_protocol().builtin.metatrafficUnicastLocatorList.push_back(server_locator);
+
+        // 服务器不使用多播
+        qos.wire_protocol().builtin.metatrafficMulticastLocatorList.clear();
+
+        DomainParticipant* server =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+
+        std::cout &lt;&lt; "Discovery Server started on port 11811" &lt;&lt; std::endl;
+        return server;
+    }
+
+    // 配置Discovery Client
+    DomainParticipant* create_discovery_client(const std::string&amp; server_ip) {
+        using namespace eprosima::fastdds::dds;
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+
+        // 设置为CLIENT模式
+        qos.wire_protocol().builtin.discovery_config.discoveryProtocol =
+            DiscoveryProtocol_t::CLIENT;
+
+        // 配置服务器连接
+        RemoteServerAttributes server;
+
+        // 服务器GUID（必须与服务器一致）
+        std::istringstream("44.53.00.5f.45.50.52.4f.53.49.4d.41") &gt;&gt; server.guidPrefix;
+
+        // 服务器地址
+        Locator_t server_locator;
+        server_locator.kind = LOCATOR_KIND_UDPv4;
+        server_locator.port = 11811;
+        IPLocator::setIPv4(server_locator, server_ip);
+        server.metatrafficUnicastLocatorList.push_back(server_locator);
+
+        qos.wire_protocol().builtin.discovery_config.m_DiscoveryServers.push_back(server);
+
+        DomainParticipant* client =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+
+        std::cout &lt;&lt; "Discovery Client connected to " &lt;&lt; server_ip &lt;&lt; std::endl;
+        return client;
+    }
+
+    // 冗余Discovery Server配置
+    DomainParticipant* create_client_with_redundant_servers() {
+        using namespace eprosima::fastdds::dds;
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+        qos.wire_protocol().builtin.discovery_config.discoveryProtocol =
+            DiscoveryProtocol_t::CLIENT;
+
+        // 服务器1
+        RemoteServerAttributes server1;
+        std::istringstream("44.53.00.5f.45.50.52.4f.53.49.4d.41") &gt;&gt; server1.guidPrefix;
+        Locator_t loc1;
+        loc1.kind = LOCATOR_KIND_UDPv4;
+        loc1.port = 11811;
+        IPLocator::setIPv4(loc1, "192.168.1.100");
+        server1.metatrafficUnicastLocatorList.push_back(loc1);
+
+        // 服务器2（备份）
+        RemoteServerAttributes server2;
+        std::istringstream("44.53.00.5f.45.50.52.4f.53.49.4d.42") &gt;&gt; server2.guidPrefix;
+        Locator_t loc2;
+        loc2.kind = LOCATOR_KIND_UDPv4;
+        loc2.port = 11811;
+        IPLocator::setIPv4(loc2, "192.168.1.101");
+        server2.metatrafficUnicastLocatorList.push_back(loc2);
+
+        // 添加两个服务器
+        qos.wire_protocol().builtin.discovery_config.m_DiscoveryServers.push_back(server1);
+        qos.wire_protocol().builtin.discovery_config.m_DiscoveryServers.push_back(server2);
+
+        DomainParticipant* client =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+
+        /*
+        客户端行为：
+        1. 尝试连接server1
+        2. 如果server1不可用，连接server2
+        3. 两个服务器都会同步发现信息
+        4. 提供高可用性
+        */
+
+        return client;
+    }
+
+    // 完整的Discovery Server示例
+    class DiscoveryServerExample {
+    public:
+        void run_server() {
+            DomainParticipant* server = create_discovery_server();
+
+            std::cout &lt;&lt; "Discovery Server running. Press Enter to stop..." &lt;&lt; std::endl;
+            std::cin.ignore();
+
+            DomainParticipantFactory::get_instance()-&gt;delete_participant(server);
+        }
+
+        void run_client(const std::string&amp; server_ip) {
+            DomainParticipant* client = create_discovery_client(server_ip);
+
+            // 创建发布者和订阅者
+            Publisher* publisher = client-&gt;create_publisher(PUBLISHER_QOS_DEFAULT);
+            Subscriber* subscriber = client-&gt;create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+
+            // ... 正常使用Fast DDS ...
+
+            std::cout &lt;&lt; "Discovery Client running. Press Enter to stop..." &lt;&lt; std::endl;
+            std::cin.ignore();
+
+            client-&gt;delete_publisher(publisher);
+            client-&gt;delete_subscriber(subscriber);
+            DomainParticipantFactory::get_instance()-&gt;delete_participant(client);
+        }
+    };
+};
+</code></pre>
+<p><strong>Discovery Server vs Simple Discovery对比</strong></p>
+<pre><code class="language-cpp">class DiscoveryComparison {
+public:
+    void compare_discovery_modes() {
+        std::cout &lt;&lt; "=== Discovery Mode Comparison ===" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\nSimple Discovery (SPDP/SEDP):" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "优点：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 完全去中心化，无单点故障" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 自动发现，无需配置" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 动态拓扑，节点可随时加入" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n缺点：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - O(N²)网络复杂度" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 大规模系统发现流量大" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 多播可能被防火墙阻止" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n适用场景：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 小型系统（&lt;50 participants）" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 局域网环境" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 动态拓扑" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n\nDiscovery Server:" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "优点：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - O(N)网络复杂度" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 大幅减少发现流量" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 适合WAN和防火墙环境" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 支持冗余服务器" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n缺点：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 中心化架构" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 需要配置服务器地址" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 服务器故障影响发现" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n适用场景：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 大型系统（&gt;50 participants）" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 跨WAN通信" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 防火墙环境" &lt;&lt; std::endl;
+
+        // 流量对比
+        int num_participants = 100;
+        double simple_bw = num_participants * 500.0 / 5.0;  // bytes/sec
+        double server_bw = num_participants * 100.0 / 10.0; // bytes/sec (估算)
+
+        std::cout &lt;&lt; "\n\n流量对比 (100 participants):" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Simple Discovery: ~" &lt;&lt; simple_bw / 1024.0 &lt;&lt; " KB/s" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "Discovery Server: ~" &lt;&lt; server_bw / 1024.0 &lt;&lt; " KB/s" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "减少: " &lt;&lt; (1.0 - server_bw / simple_bw) * 100 &lt;&lt; "%" &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h3 id="43-静态发现static-discovery"><a class="header" href="#43-静态发现static-discovery">4.3 静态发现（Static Discovery）</a></h3>
+<p>静态发现完全跳过发现协议，通过配置文件预定义所有端点。</p>
+<pre><code class="language-cpp">class StaticDiscoveryConfiguration {
+public:
+    // 生成静态发现XML配置
+    void generate_static_discovery_xml() {
+        const char* xml_config = R"(
+&lt;?xml version="1.0" encoding="UTF-8" ?&gt;
+&lt;staticdiscovery&gt;
+    &lt;!-- 参与者1: 机器人控制器 --&gt;
+    &lt;participant&gt;
+        &lt;name&gt;RobotController&lt;/name&gt;
+
+        &lt;!-- DataWriter: 发布控制指令 --&gt;
+        &lt;writer&gt;
+            &lt;userId&gt;1&lt;/userId&gt;
+            &lt;entityID&gt;3&lt;/entityID&gt;
+            &lt;topicName&gt;ControlCommand&lt;/topicName&gt;
+            &lt;topicDataType&gt;ControlMsg&lt;/topicDataType&gt;
+            &lt;topicKind&gt;NO_KEY&lt;/topicKind&gt;
+            &lt;reliabilityQos&gt;RELIABLE_RELIABILITY_QOS&lt;/reliabilityQos&gt;
+            &lt;durabilityQos&gt;VOLATILE_DURABILITY_QOS&lt;/durabilityQos&gt;
+        &lt;/writer&gt;
+
+        &lt;!-- DataReader: 订阅传感器数据 --&gt;
+        &lt;reader&gt;
+            &lt;userId&gt;2&lt;/userId&gt;
+            &lt;entityID&gt;4&lt;/entityID&gt;
+            &lt;topicName&gt;SensorData&lt;/topicName&gt;
+            &lt;topicDataType&gt;SensorReading&lt;/topicDataType&gt;
+            &lt;topicKind&gt;WITH_KEY&lt;/topicKind&gt;
+            &lt;reliabilityQos&gt;BEST_EFFORT_RELIABILITY_QOS&lt;/reliabilityQos&gt;
+            &lt;durabilityQos&gt;VOLATILE_DURABILITY_QOS&lt;/durabilityQos&gt;
+        &lt;/reader&gt;
+    &lt;/participant&gt;
+
+    &lt;!-- 参与者2: 传感器节点 --&gt;
+    &lt;participant&gt;
+        &lt;name&gt;SensorNode&lt;/name&gt;
+
+        &lt;!-- DataWriter: 发布传感器数据 --&gt;
+        &lt;writer&gt;
+            &lt;userId&gt;3&lt;/userId&gt;
+            &lt;entityID&gt;3&lt;/entityID&gt;
+            &lt;topicName&gt;SensorData&lt;/topicName&gt;
+            &lt;topicDataType&gt;SensorReading&lt;/topicDataType&gt;
+            &lt;topicKind&gt;WITH_KEY&lt;/topicKind&gt;
+            &lt;reliabilityQos&gt;BEST_EFFORT_RELIABILITY_QOS&lt;/reliabilityQos&gt;
+            &lt;durabilityQos&gt;VOLATILE_DURABILITY_QOS&lt;/durabilityQos&gt;
+
+            &lt;!-- 定位器配置 --&gt;
+            &lt;unicastLocator address="192.168.1.100" port="7410"/&gt;
+        &lt;/writer&gt;
+
+        &lt;!-- DataReader: 订阅控制指令 --&gt;
+        &lt;reader&gt;
+            &lt;userId&gt;4&lt;/userId&gt;
+            &lt;entityID&gt;4&lt;/entityID&gt;
+            &lt;topicName&gt;ControlCommand&lt;/topicName&gt;
+            &lt;topicDataType&gt;ControlMsg&lt;/topicDataType&gt;
+            &lt;topicKind&gt;NO_KEY&lt;/topicKind&gt;
+            &lt;reliabilityQos&gt;RELIABLE_RELIABILITY_QOS&lt;/reliabilityQos&gt;
+            &lt;durabilityQos&gt;VOLATILE_DURABILITY_QOS&lt;/durabilityQos&gt;
+
+            &lt;unicastLocator address="192.168.1.101" port="7411"/&gt;
+        &lt;/reader&gt;
+    &lt;/participant&gt;
+&lt;/staticdiscovery&gt;
+        )";
+
+        std::ofstream file("static_discovery.xml");
+        file &lt;&lt; xml_config;
+        file.close();
+
+        std::cout &lt;&lt; "静态发现配置已生成: static_discovery.xml" &lt;&lt; std::endl;
+    }
+
+    // 配置使用静态发现
+    void configure_static_discovery() {
+        using namespace eprosima::fastdds::dds;
+        using namespace eprosima::fastdds::rtps;
+
+        DomainParticipantQos qos;
+
+        // 禁用动态端点发现协议
+        qos.wire_protocol().builtin.discovery_config.use_SIMPLE_EndpointDiscoveryProtocol = false;
+
+        // 启用静态端点发现协议
+        qos.wire_protocol().builtin.discovery_config.use_STATIC_EndpointDiscoveryProtocol = true;
+
+        // 指定静态发现XML文件
+        qos.wire_protocol().builtin.discovery_config.static_edp_xml_config("static_discovery.xml");
+
+        // 可选：保留参与者发现（SPDP）
+        // 如果完全静态，也可以禁用SPDP
+        // qos.wire_protocol().builtin.discovery_config.discoveryProtocol = DiscoveryProtocol_t::NONE;
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+
+        std::cout &lt;&lt; "静态发现已启用" &lt;&lt; std::endl;
+    }
+
+    // 静态发现的优缺点
+    void static_discovery_analysis() {
+        std::cout &lt;&lt; "=== 静态发现分析 ===" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n优点：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 零发现开销（无网络流量）" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 确定性启动时间" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 最低延迟" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 适合嵌入式和实时系统" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n缺点：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 缺乏灵活性" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 配置复杂" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 拓扑变化需要重新配置" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 不支持动态节点加入" &lt;&lt; std::endl;
+
+        std::cout &lt;&lt; "\n适用场景：" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 固定拓扑的嵌入式系统" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 实时性要求极高的系统" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 资源受限环境" &lt;&lt; std::endl;
+        std::cout &lt;&lt; "  - 确定性系统" &lt;&lt; std::endl;
+    }
+};
+</code></pre>
+<h3 id="44-发现优化技巧"><a class="header" href="#44-发现优化技巧">4.4 发现优化技巧</a></h3>
+<pre><code class="language-cpp">class DiscoveryOptimization {
+public:
+    // 减少发现流量
+    void reduce_discovery_traffic() {
+        using namespace eprosima::fastdds::dds;
+
+        DomainParticipantQos qos;
+
+        // 1. 增加公告周期（减少频率）
+        qos.wire_protocol().builtin.discovery_config.leaseDuration = Duration_t(60, 0);  // 60秒
+        qos.wire_protocol().builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(20, 0);  // 20秒
+
+        // 2. 使用单播而非多播
+        qos.wire_protocol().builtin.discovery_config.use_SIMPLE_EndpointDiscoveryProtocol = true;
+
+        // 添加已知对等点
+        Locator_t peer;
+        peer.kind = LOCATOR_KIND_UDPv4;
+        peer.port = 7400;
+        IPLocator::setIPv4(peer, "192.168.1.100");
+        qos.wire_protocol().builtin.initialPeersList.push_back(peer);
+
+        // 3. 禁用不需要的内置端点
+        qos.wire_protocol().builtin.use_WriterLivelinessProtocol = false;  // 如果不需要
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+
+    // 加速发现过程
+    void accelerate_discovery() {
+        using namespace eprosima::fastdds::dds;
+
+        DomainParticipantQos qos;
+
+        // 1. 减少公告周期（增加频率）
+        qos.wire_protocol().builtin.discovery_config.leaseDuration = Duration_t(5, 0);   // 5秒
+        qos.wire_protocol().builtin.discovery_config.leaseDuration_announcementperiod = Duration_t(1, 0);  // 1秒
+
+        // 2. 使用Discovery Server（更快）
+        qos.wire_protocol().builtin.discovery_config.discoveryProtocol =
+            eprosima::fastdds::rtps::DiscoveryProtocol_t::SERVER;
+
+        // 3. 预配置初始对等点
+        // 跳过多播扫描阶段
+        Locator_t peer;
+        peer.kind = LOCATOR_KIND_UDPv4;
+        peer.port = 7400;
+        IPLocator::setIPv4(peer, "192.168.1.100");
+        qos.wire_protocol().builtin.initialPeersList.push_back(peer);
+
+        DomainParticipant* participant =
+            DomainParticipantFactory::get_instance()-&gt;create_participant(0, qos);
+    }
+
+    // 过滤不相关的发现信息
+    void filter_discovery() {
+        using namespace eprosima::fastdds::dds;
+
+        // 使用分区（Partition）隔离
+        PublisherQos pub_qos;
+        pub_qos.partition().push_back("sensors");
+
+        SubscriberQos sub_qos;
+        sub_qos.partition().push_back("sensors");
+
+        // 只有相同分区的DataWriter/DataReader才会匹配
+        // 减少不必要的端点发现
+
+        // 使用Topic过滤
+        // 只订阅感兴趣的Topic，避免发现所有Topic
+    }
+
+    // 监控发现性能
+    class DiscoveryMonitor {
+    private:
+        std::chrono::steady_clock::time_point start_time_;
+        int discovered_participants_ = 0;
+        int discovered_writers_ = 0;
+        int discovered_readers_ = 0;
+
+    public:
+        DiscoveryMonitor() : start_time_(std::chrono::steady_clock::now()) {}
+
+        class MonitorListener : public DomainParticipantListener {
+        private:
+            DiscoveryMonitor* monitor_;
+
+        public:
+            MonitorListener(DiscoveryMonitor* monitor) : monitor_(monitor) {}
+
+            void on_participant_discovery(
+                DomainParticipant* participant,
+                eprosima::fastrtps::rtps::ParticipantDiscoveryInfo&amp;&amp; info) override {
+
+                if (info.status == eprosima::fastrtps::rtps::ParticipantDiscoveryInfo::DISCOVERED_PARTICIPANT) {
+                    monitor_-&gt;discovered_participants_++;
+                    monitor_-&gt;print_stats();
+                }
+            }
+
+            void on_publisher_discovery(
+                DomainParticipant* participant,
+                eprosima::fastrtps::rtps::WriterDiscoveryInfo&amp;&amp; info) override {
+
+                if (info.status == eprosima::fastrtps::rtps::WriterDiscoveryInfo::DISCOVERED_WRITER) {
+                    monitor_-&gt;discovered_writers_++;
+                    monitor_-&gt;print_stats();
+                }
+            }
+
+            void on_subscriber_discovery(
+                DomainParticipant* participant,
+                eprosima::fastrtps::rtps::ReaderDiscoveryInfo&amp;&amp; info) override {
+
+                if (info.status == eprosima::fastrtps::rtps::ReaderDiscoveryInfo::DISCOVERED_READER) {
+                    monitor_-&gt;discovered_readers_++;
+                    monitor_-&gt;print_stats();
+                }
+            }
+        };
+
+        void print_stats() {
+            auto now = std::chrono::steady_clock::now();
+            auto elapsed = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(
+                now - start_time_).count();
+
+            std::cout &lt;&lt; "=== Discovery Stats (at " &lt;&lt; elapsed &lt;&lt; " ms) ===" &lt;&lt; std::endl;
+            std::cout &lt;&lt; "Participants: " &lt;&lt; discovered_participants_ &lt;&lt; std::endl;
+            std::cout &lt;&lt; "DataWriters: " &lt;&lt; discovered_writers_ &lt;&lt; std::endl;
+            std::cout &lt;&lt; "DataReaders: " &lt;&lt; discovered_readers_ &lt;&lt; std::endl;
+            std::cout &lt;&lt; std::endl;
+        }
+    };
+};
+</code></pre>
+<hr />
+<blockquote>
+<p>📝 <strong>继续阅读：</strong> <a href="fastdds_part3.html">第三部分 - 模块五、模块六、模块七</a></p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/c++/fastdds_modules_supplement.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/c++/fastdds_part3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/c++/fastdds_modules_supplement.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/c++/fastdds_part3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

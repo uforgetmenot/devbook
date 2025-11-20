@@ -1,0 +1,637 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>TCP/IP实际案例分析 - 开发</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../../theme/pagetoc.css">
+        <link rel="stylesheet" href="../../theme/help-overlay.css">
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "../../searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="../../toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">开发</h1>
+
+                    <div class="right-buttons">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="搜索本书内容..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
+<h1 id="tcpip实际案例分析"><a class="header" href="#tcpip实际案例分析">TCP/IP实际案例分析</a></h1>
+<blockquote>
+<p>本笔记是<a href="tcpip.html">TCP/IP协议学习笔记</a>的扩展部分，专注于实际生产环境案例</p>
+</blockquote>
+<h2 id="-目录"><a class="header" href="#-目录">📋 目录</a></h2>
+<ul>
+<li><a href="#%E7%AC%AC%E4%B8%80%E7%AB%A0%E9%AB%98%E5%B9%B6%E5%8F%91%E7%B3%BB%E7%BB%9F%E6%A1%88%E4%BE%8B">第一章：高并发系统案例</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0%E7%BD%91%E7%BB%9C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E6%A1%88%E4%BE%8B">第二章：网络性能优化案例</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E6%A1%88%E4%BE%8B">第三章：故障排查案例</a></li>
+</ul>
+<hr />
+<h2 id="第一章高并发系统案例"><a class="header" href="#第一章高并发系统案例">第一章：高并发系统案例</a></h2>
+<h3 id="11-c10k问题"><a class="header" href="#11-c10k问题">1.1 C10K问题</a></h3>
+<h4 id="问题描述"><a class="header" href="#问题描述">问题描述</a></h4>
+<pre><code>C10K: 单机同时处理10,000个并发连接
+
+瓶颈：
+1. 进程/线程模型：每个连接一个线程，资源消耗大
+2. select/poll：O(n)复杂度，性能瓶颈
+3. 内存消耗：每个连接占用内存
+
+解决方案：
+1. I/O多路复用：epoll/kqueue
+2. 事件驱动架构
+3. 异步非阻塞I/O
+4. 零拷贝技术
+</code></pre>
+<h4 id="实现示例"><a class="header" href="#实现示例">实现示例</a></h4>
+<pre><code class="language-python">import asyncio
+
+class HighConcurrencyServer:
+    """高并发服务器实现"""
+
+    def __init__(self, host='0.0.0.0', port=8888):
+        self.host = host
+        self.port = port
+        self.connections = 0
+
+    async def handle_client(self, reader, writer):
+        """处理客户端连接"""
+        self.connections += 1
+        addr = writer.get_extra_info('peername')
+
+        try:
+            while True:
+                data = await reader.read(1024)
+                if not data:
+                    break
+
+                response = f"Echo: {data.decode('utf-8')}"
+                writer.write(response.encode('utf-8'))
+                await writer.drain()
+        finally:
+            self.connections -= 1
+            writer.close()
+            await writer.wait_closed()
+
+    async def run(self):
+        """运行服务器"""
+        server = await asyncio.start_server(
+            self.handle_client,
+            self.host,
+            self.port
+        )
+
+        print(f"服务器启动: {self.host}:{self.port}")
+
+        async with server:
+            await server.serve_forever()
+
+# 使用示例
+# server = HighConcurrencyServer()
+# asyncio.run(server.run())
+</code></pre>
+<h3 id="12-负载均衡案例"><a class="header" href="#12-负载均衡案例">1.2 负载均衡案例</a></h3>
+<h4 id="nginx负载均衡配置"><a class="header" href="#nginx负载均衡配置">Nginx负载均衡配置</a></h4>
+<pre><code class="language-nginx">upstream backend_servers {
+    # 负载均衡策略
+    # 1. 轮询（默认）
+    # 2. least_conn - 最少连接
+    # 3. ip_hash - IP哈希
+    # 4. weighted - 加权轮询
+
+    least_conn;  # 使用最少连接策略
+
+    server 192.168.1.101:8080 weight=3;
+    server 192.168.1.102:8080 weight=2;
+    server 192.168.1.103:8080 weight=1;
+
+    # 健康检查
+    check interval=3000 rise=2 fall=3 timeout=1000;
+}
+
+server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        proxy_pass http://backend_servers;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # 连接超时
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
+}
+</code></pre>
+<hr />
+<h2 id="第二章网络性能优化案例"><a class="header" href="#第二章网络性能优化案例">第二章：网络性能优化案例</a></h2>
+<h3 id="21-time_wait过多问题"><a class="header" href="#21-time_wait过多问题">2.1 TIME_WAIT过多问题</a></h3>
+<h4 id="问题现象"><a class="header" href="#问题现象">问题现象</a></h4>
+<pre><code class="language-bash"># 大量TIME_WAIT连接
+ss -tan | awk 'NR&gt;1 {print $1}' | sort | uniq -c
+# 输出：
+# 10000 TIME_WAIT
+</code></pre>
+<h4 id="原因分析"><a class="header" href="#原因分析">原因分析</a></h4>
+<pre><code>1. 短连接频繁创建和关闭
+2. 主动关闭方进入TIME_WAIT状态
+3. 默认等待2MSL（约60秒）
+4. 端口资源耗尽
+</code></pre>
+<h4 id="解决方案"><a class="header" href="#解决方案">解决方案</a></h4>
+<pre><code class="language-bash"># 1. 系统级优化
+sysctl -w net.ipv4.tcp_tw_reuse=1      # 重用TIME_WAIT端口
+sysctl -w net.ipv4.tcp_tw_recycle=0    # 不建议启用（NAT问题）
+sysctl -w net.ipv4.tcp_fin_timeout=15  # 减少FIN_WAIT_2超时
+
+# 2. 增大端口范围
+sysctl -w net.ipv4.ip_local_port_range="1024 65535"
+
+# 3. 应用层优化
+# - 使用长连接（HTTP Keep-Alive）
+# - 使用连接池
+# - 让客户端主动关闭连接
+</code></pre>
+<pre><code class="language-python"># 应用层优化示例：连接池
+import queue
+import socket
+
+class ConnectionPool:
+    """简单连接池实现"""
+
+    def __init__(self, host, port, max_connections=10):
+        self.host = host
+        self.port = port
+        self.max_connections = max_connections
+        self.pool = queue.Queue(maxsize=max_connections)
+
+        # 预创建连接
+        for _ in range(max_connections):
+            conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            conn.connect((host, port))
+            self.pool.put(conn)
+
+    def get_connection(self):
+        """获取连接"""
+        return self.pool.get()
+
+    def return_connection(self, conn):
+        """归还连接"""
+        self.pool.put(conn)
+
+# 使用连接池
+pool = ConnectionPool('127.0.0.1', 8888)
+conn = pool.get_connection()
+# 使用连接
+pool.return_connection(conn)
+</code></pre>
+<h3 id="22-慢速攻击防御"><a class="header" href="#22-慢速攻击防御">2.2 慢速攻击防御</a></h3>
+<h4 id="slowloris攻击"><a class="header" href="#slowloris攻击">Slowloris攻击</a></h4>
+<pre><code class="language-python"># 防御措施：设置超时
+
+import socket
+import time
+
+def handle_client_with_timeout(client_socket):
+    """设置接收超时"""
+    client_socket.settimeout(10)  # 10秒超时
+
+    try:
+        # 接收HTTP头部
+        headers = b""
+        start_time = time.time()
+
+        while b"\r\n\r\n" not in headers:
+            # 检查总超时
+            if time.time() - start_time &gt; 30:
+                raise TimeoutError("请求超时")
+
+            data = client_socket.recv(1024)
+            if not data:
+                break
+            headers += data
+
+        # 处理请求
+        response = b"HTTP/1.1 200 OK\r\n\r\nHello"
+        client_socket.sendall(response)
+    except (socket.timeout, TimeoutError):
+        print("客户端超时")
+    finally:
+        client_socket.close()
+</code></pre>
+<hr />
+<h2 id="第三章故障排查案例"><a class="header" href="#第三章故障排查案例">第三章：故障排查案例</a></h2>
+<h3 id="31-网络丢包问题"><a class="header" href="#31-网络丢包问题">3.1 网络丢包问题</a></h3>
+<h4 id="问题现象-1"><a class="header" href="#问题现象-1">问题现象</a></h4>
+<pre><code class="language-bash"># ping测试发现丢包
+ping -c 100 target_host
+# 10% packet loss
+</code></pre>
+<h4 id="排查步骤"><a class="header" href="#排查步骤">排查步骤</a></h4>
+<pre><code class="language-bash"># 1. 检查物理链路
+ethtool eth0
+# 查看错误统计
+
+# 2. 检查网卡队列
+ifconfig eth0
+# 查看dropped, overruns
+
+# 3. 检查系统负载
+uptime
+top
+
+# 4. 检查TCP重传
+netstat -s | grep -i retrans
+
+# 5. 使用mtr追踪
+mtr --report target_host
+</code></pre>
+<h3 id="32-dns解析缓慢"><a class="header" href="#32-dns解析缓慢">3.2 DNS解析缓慢</a></h3>
+<h4 id="问题现象-2"><a class="header" href="#问题现象-2">问题现象</a></h4>
+<pre><code class="language-python">import time
+import socket
+
+start = time.time()
+ip = socket.gethostbyname('www.example.com')
+elapsed = time.time() - start
+print(f"DNS解析耗时: {elapsed:.2f}秒")
+# 输出：DNS解析耗时: 5.23秒
+</code></pre>
+<h4 id="解决方案-1"><a class="header" href="#解决方案-1">解决方案</a></h4>
+<pre><code class="language-bash"># 1. 更换DNS服务器
+# /etc/resolv.conf
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+
+# 2. 安装本地DNS缓存
+sudo apt install dnsmasq
+
+# 3. 检查/etc/hosts
+cat /etc/hosts
+
+# 4. 增大DNS缓存
+# /etc/systemd/resolved.conf
+[Resolve]
+Cache=yes
+CacheFromLocalhost=yes
+</code></pre>
+<pre><code class="language-python"># Python应用层缓存
+import socket
+from functools import lru_cache
+
+@lru_cache(maxsize=1000)
+def cached_dns_lookup(hostname):
+    """带缓存的DNS查询"""
+    return socket.gethostbyname(hostname)
+
+# 使用
+ip = cached_dns_lookup('www.example.com')
+</code></pre>
+<h3 id="33-连接被重置问题"><a class="header" href="#33-连接被重置问题">3.3 连接被重置问题</a></h3>
+<h4 id="问题现象-3"><a class="header" href="#问题现象-3">问题现象</a></h4>
+<pre><code>ConnectionResetError: [Errno 104] Connection reset by peer
+</code></pre>
+<h4 id="可能原因"><a class="header" href="#可能原因">可能原因</a></h4>
+<pre><code>1. 服务器主动关闭连接
+2. 防火墙阻断
+3. 服务器崩溃
+4. 负载均衡器超时
+5. 应用层协议错误
+</code></pre>
+<h4 id="排查方法"><a class="header" href="#排查方法">排查方法</a></h4>
+<pre><code class="language-bash"># 1. 抓包分析
+tcpdump -i eth0 -w reset.pcap host target_ip
+# 查看RST包原因
+
+# 2. 检查防火墙
+iptables -L -n -v
+
+# 3. 检查服务器日志
+tail -f /var/log/application.log
+
+# 4. 测试连接稳定性
+while true; do
+    nc -zv target_ip target_port
+    sleep 1
+done
+</code></pre>
+<hr />
+<h2 id="实战项目示例"><a class="header" href="#实战项目示例">实战项目示例</a></h2>
+<h3 id="http代理服务器"><a class="header" href="#http代理服务器">HTTP代理服务器</a></h3>
+<pre><code class="language-python">import socket
+import threading
+import select
+
+class HTTPProxy:
+    """简单的HTTP代理服务器"""
+
+    def __init__(self, host='0.0.0.0', port=8080):
+        self.host = host
+        self.port = port
+
+    def handle_client(self, client_socket):
+        """处理客户端请求"""
+        try:
+            # 接收客户端请求
+            request = client_socket.recv(4096)
+            if not request:
+                return
+
+            # 解析请求
+            first_line = request.split(b'\n')[0]
+            url = first_line.split(b' ')[1]
+
+            # 提取目标服务器
+            http_pos = url.find(b'://')
+            if http_pos == -1:
+                temp = url
+            else:
+                temp = url[(http_pos + 3):]
+
+            port_pos = temp.find(b':')
+            webserver_pos = temp.find(b'/')
+
+            if webserver_pos == -1:
+                webserver_pos = len(temp)
+
+            webserver = ""
+            port = 80
+
+            if port_pos == -1 or webserver_pos &lt; port_pos:
+                port = 80
+                webserver = temp[:webserver_pos]
+            else:
+                port = int(temp[(port_pos + 1):webserver_pos])
+                webserver = temp[:port_pos]
+
+            # 连接目标服务器
+            server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server_socket.connect((webserver.decode(), port))
+            server_socket.sendall(request)
+
+            # 转发响应
+            while True:
+                data = server_socket.recv(4096)
+                if not data:
+                    break
+                client_socket.sendall(data)
+
+        except Exception as e:
+            print(f"代理错误: {e}")
+        finally:
+            client_socket.close()
+
+    def start(self):
+        """启动代理服务器"""
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server_socket.bind((self.host, self.port))
+        server_socket.listen(10)
+
+        print(f"HTTP代理服务器启动: {self.host}:{self.port}")
+
+        try:
+            while True:
+                client_socket, addr = server_socket.accept()
+                print(f"连接来自: {addr}")
+
+                client_thread = threading.Thread(
+                    target=self.handle_client,
+                    args=(client_socket,)
+                )
+                client_thread.start()
+        except KeyboardInterrupt:
+            print("\n代理服务器关闭")
+        finally:
+            server_socket.close()
+
+# 使用示例
+# proxy = HTTPProxy()
+# proxy.start()
+</code></pre>
+<hr />
+<p><strong>返回</strong>: <a href="tcpip.html">TCP/IP协议学习笔记主文档</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../../编程/network/protocol_iot.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../../编程/network/tcpip-programming.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../../编程/network/protocol_iot.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../../编程/network/tcpip-programming.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../theme/segmentit.umd.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../theme/searcher.js"></script>
+
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
+
+        <!-- Custom JS scripts -->
+        <script src="../../theme/pagetoc.js"></script>
+
+
+
+    </div>
+    </body>
+</html>
+

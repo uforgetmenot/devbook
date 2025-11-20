@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Seata 开发知识点 - 开发</title>
+        <title>TCP/IP故障诊断与工具 - 开发</title>
 
 
         <!-- Custom HTML head -->
@@ -181,189 +181,287 @@
                         <div class="sidetoc"><nav class="pagetoc"></nav></div>
 
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
-<h1 id="seata-开发知识点"><a class="header" href="#seata-开发知识点">Seata 开发知识点</a></h1>
-<h2 id="1-基础概念"><a class="header" href="#1-基础概念">1. 基础概念</a></h2>
-<h3 id="11-分布式事务概述"><a class="header" href="#11-分布式事务概述">1.1 分布式事务概述</a></h3>
+<h1 id="tcpip故障诊断与工具"><a class="header" href="#tcpip故障诊断与工具">TCP/IP故障诊断与工具</a></h1>
+<blockquote>
+<p>本笔记是<a href="tcpip.html">TCP/IP协议学习笔记</a>的扩展部分，专注于网络故障诊断</p>
+</blockquote>
+<h2 id="-目录"><a class="header" href="#-目录">📋 目录</a></h2>
 <ul>
-<li>分布式事务问题</li>
-<li>CAP理论</li>
-<li>BASE理论</li>
-<li>2PC/3PC协议</li>
+<li><a href="#%E7%AC%AC%E4%B8%80%E7%AB%A0wireshark%E6%8A%93%E5%8C%85%E5%88%86%E6%9E%90">第一章：Wireshark抓包分析</a></li>
+<li><a href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0%E5%B8%B8%E7%94%A8%E8%AF%8A%E6%96%AD%E5%B7%A5%E5%85%B7">第二章：常用诊断工具</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%89%E7%AB%A0%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5">第三章：网络故障排查</a></li>
 </ul>
-<h3 id="12-seata简介"><a class="header" href="#12-seata简介">1.2 Seata简介</a></h3>
-<ul>
-<li>Seata是什么</li>
-<li>Seata的优势</li>
-<li>与其他分布式事务解决方案对比</li>
-</ul>
-<h2 id="2-核心组件"><a class="header" href="#2-核心组件">2. 核心组件</a></h2>
-<h3 id="21-transaction-coordinator-tc"><a class="header" href="#21-transaction-coordinator-tc">2.1 Transaction Coordinator (TC)</a></h3>
-<ul>
-<li>TC的职责</li>
-<li>事务协调机制</li>
-<li>全局事务管理</li>
-</ul>
-<h3 id="22-transaction-manager-tm"><a class="header" href="#22-transaction-manager-tm">2.2 Transaction Manager (TM)</a></h3>
-<ul>
-<li>TM的作用</li>
-<li>事务边界定义</li>
-<li>全局事务控制</li>
-</ul>
-<h3 id="23-resource-manager-rm"><a class="header" href="#23-resource-manager-rm">2.3 Resource Manager (RM)</a></h3>
-<ul>
-<li>RM的功能</li>
-<li>分支事务管理</li>
-<li>资源注册机制</li>
-</ul>
-<h2 id="3-事务模式"><a class="header" href="#3-事务模式">3. 事务模式</a></h2>
-<h3 id="31-at模式"><a class="header" href="#31-at模式">3.1 AT模式</a></h3>
-<ul>
-<li>AT模式原理</li>
-<li>自动补偿机制</li>
-<li>使用场景和限制</li>
-</ul>
-<h3 id="32-tcc模式"><a class="header" href="#32-tcc模式">3.2 TCC模式</a></h3>
-<ul>
-<li>TCC模式概念</li>
-<li>Try-Confirm-Cancel实现</li>
-<li>业务无侵入性考虑</li>
-</ul>
-<h3 id="33-saga模式"><a class="header" href="#33-saga模式">3.3 SAGA模式</a></h3>
-<ul>
-<li>SAGA长事务处理</li>
-<li>状态机配置</li>
-<li>补偿机制设计</li>
-</ul>
-<h3 id="34-xa模式"><a class="header" href="#34-xa模式">3.4 XA模式</a></h3>
-<ul>
-<li>XA协议支持</li>
-<li>强一致性保证</li>
-<li>性能考量</li>
-</ul>
-<h2 id="4-环境搭建"><a class="header" href="#4-环境搭建">4. 环境搭建</a></h2>
-<h3 id="41-seata-server部署"><a class="header" href="#41-seata-server部署">4.1 Seata Server部署</a></h3>
-<ul>
-<li>单机部署</li>
-<li>集群部署</li>
-<li>配置文件详解</li>
-</ul>
-<h3 id="42-注册中心集成"><a class="header" href="#42-注册中心集成">4.2 注册中心集成</a></h3>
-<ul>
-<li>Nacos集成</li>
-<li>Eureka集成</li>
-<li>Consul集成</li>
-</ul>
-<h3 id="43-配置中心集成"><a class="header" href="#43-配置中心集成">4.3 配置中心集成</a></h3>
-<ul>
-<li>配置中心选择</li>
-<li>配置管理策略</li>
-<li>动态配置更新</li>
-</ul>
-<h2 id="5-客户端集成"><a class="header" href="#5-客户端集成">5. 客户端集成</a></h2>
-<h3 id="51-spring-boot集成"><a class="header" href="#51-spring-boot集成">5.1 Spring Boot集成</a></h3>
-<ul>
-<li>依赖配置</li>
-<li>自动配置原理</li>
-<li>注解使用</li>
-</ul>
-<h3 id="52-spring-cloud集成"><a class="header" href="#52-spring-cloud集成">5.2 Spring Cloud集成</a></h3>
-<ul>
-<li>服务发现配置</li>
-<li>负载均衡</li>
-<li>熔断降级</li>
-</ul>
-<h3 id="53-数据源代理"><a class="header" href="#53-数据源代理">5.3 数据源代理</a></h3>
-<ul>
-<li>DataSourceProxy配置</li>
-<li>连接池集成</li>
-<li>多数据源支持</li>
-</ul>
-<h2 id="6-开发实践"><a class="header" href="#6-开发实践">6. 开发实践</a></h2>
-<h3 id="61-全局事务注解"><a class="header" href="#61-全局事务注解">6.1 全局事务注解</a></h3>
-<ul>
-<li>@GlobalTransactional使用</li>
-<li>事务传播机制</li>
-<li>异常处理策略</li>
-</ul>
-<h3 id="62-分支事务管理"><a class="header" href="#62-分支事务管理">6.2 分支事务管理</a></h3>
-<ul>
-<li>本地事务控制</li>
-<li>分支事务注册</li>
-<li>资源锁定机制</li>
-</ul>
-<h3 id="63-tcc模式开发"><a class="header" href="#63-tcc模式开发">6.3 TCC模式开发</a></h3>
-<ul>
-<li>TCC接口定义</li>
-<li>业务方法实现</li>
-<li>幂等性保证</li>
-</ul>
-<h2 id="7-高级特性"><a class="header" href="#7-高级特性">7. 高级特性</a></h2>
-<h3 id="71-事务隔离级别"><a class="header" href="#71-事务隔离级别">7.1 事务隔离级别</a></h3>
-<ul>
-<li>读未提交</li>
-<li>读已提交</li>
-<li>全局锁机制</li>
-</ul>
-<h3 id="72-性能优化"><a class="header" href="#72-性能优化">7.2 性能优化</a></h3>
-<ul>
-<li>批量操作优化</li>
-<li>异步处理机制</li>
-<li>资源池调优</li>
-</ul>
-<h3 id="73-监控与治理"><a class="header" href="#73-监控与治理">7.3 监控与治理</a></h3>
-<ul>
-<li>事务状态监控</li>
-<li>性能指标统计</li>
-<li>异常告警机制</li>
-</ul>
-<h2 id="8-故障处理"><a class="header" href="#8-故障处理">8. 故障处理</a></h2>
-<h3 id="81-常见问题诊断"><a class="header" href="#81-常见问题诊断">8.1 常见问题诊断</a></h3>
-<ul>
-<li>事务超时处理</li>
-<li>死锁检测</li>
-<li>数据一致性问题</li>
-</ul>
-<h3 id="82-容错机制"><a class="header" href="#82-容错机制">8.2 容错机制</a></h3>
-<ul>
-<li>网络分区处理</li>
-<li>节点故障恢复</li>
-<li>数据补偿策略</li>
-</ul>
-<h3 id="83-运维管理"><a class="header" href="#83-运维管理">8.3 运维管理</a></h3>
-<ul>
-<li>日志分析</li>
-<li>事务回滚</li>
-<li>手动干预机制</li>
-</ul>
-<h2 id="9-最佳实践"><a class="header" href="#9-最佳实践">9. 最佳实践</a></h2>
-<h3 id="91-设计原则"><a class="header" href="#91-设计原则">9.1 设计原则</a></h3>
-<ul>
-<li>事务边界设计</li>
-<li>业务拆分策略</li>
-<li>数据库设计考虑</li>
-</ul>
-<h3 id="92-性能调优"><a class="header" href="#92-性能调优">9.2 性能调优</a></h3>
-<ul>
-<li>参数配置优化</li>
-<li>网络通信优化</li>
-<li>数据库连接优化</li>
-</ul>
-<h3 id="93-生产部署"><a class="header" href="#93-生产部署">9.3 生产部署</a></h3>
-<ul>
-<li>部署架构设计</li>
-<li>容量规划</li>
-<li>灾备方案</li>
-</ul>
+<hr />
+<h2 id="第一章wireshark抓包分析"><a class="header" href="#第一章wireshark抓包分析">第一章：Wireshark抓包分析</a></h2>
+<h3 id="11-wireshark基础"><a class="header" href="#11-wireshark基础">1.1 Wireshark基础</a></h3>
+<h4 id="常用过滤器"><a class="header" href="#常用过滤器">常用过滤器</a></h4>
+<pre><code># 显示过滤器（Display Filter）
+tcp.port == 80              # HTTP流量
+ip.addr == 192.168.1.1      # 特定IP
+tcp.flags.syn == 1          # SYN包
+http.request.method == "GET"  # HTTP GET请求
+
+# 捕获过滤器（Capture Filter）- BPF语法
+host 192.168.1.1            # 特定主机
+port 80                     # 特定端口
+tcp port 80                 # TCP 80端口
+</code></pre>
+<h4 id="tcp流分析"><a class="header" href="#tcp流分析">TCP流分析</a></h4>
+<pre><code>1. 右键数据包 -&gt; Follow -&gt; TCP Stream
+2. 查看完整的TCP对话
+3. 分析三次握手和四次挥手
+4. 检查数据传输情况
+</code></pre>
+<h3 id="12-tcpdump使用"><a class="header" href="#12-tcpdump使用">1.2 tcpdump使用</a></h3>
+<pre><code class="language-bash"># 基础抓包
+tcpdump -i eth0
+
+# 抓取特定端口
+tcpdump -i eth0 port 80
+
+# 保存到文件
+tcpdump -i eth0 -w capture.pcap
+
+# 读取文件
+tcpdump -r capture.pcap
+
+# 显示详细信息
+tcpdump -i eth0 -v
+
+# 只抓取TCP SYN包
+tcpdump -i eth0 'tcp[tcpflags] &amp; (tcp-syn) != 0'
+
+# 抓取特定主机
+tcpdump -i eth0 host 192.168.1.1
+
+# 抓取HTTP请求
+tcpdump -i eth0 -A 'tcp port 80 and (((ip[2:2] - ((ip[0]&amp;0xf)&lt;&lt;2)) - ((tcp[12]&amp;0xf0)&gt;&gt;2)) != 0)'
+</code></pre>
+<hr />
+<h2 id="第二章常用诊断工具"><a class="header" href="#第二章常用诊断工具">第二章：常用诊断工具</a></h2>
+<h3 id="21-网络连接工具"><a class="header" href="#21-网络连接工具">2.1 网络连接工具</a></h3>
+<pre><code class="language-bash"># netstat - 查看网络连接
+netstat -tuln          # TCP/UDP监听端口
+netstat -tupn          # 所有TCP/UDP连接（显示PID）
+netstat -anp | grep :80  # 查看80端口占用
+
+# ss - 现代化替代工具（推荐）
+ss -tuln               # TCP/UDP监听端口
+ss -tupn               # 所有TCP/UDP连接
+ss -s                  # 统计信息
+
+# lsof - 查看打开的文件和网络连接
+lsof -i :80            # 查看80端口占用
+lsof -i TCP            # 查看所有TCP连接
+lsof -i @192.168.1.1   # 查看特定IP的连接
+</code></pre>
+<h3 id="22-路由追踪"><a class="header" href="#22-路由追踪">2.2 路由追踪</a></h3>
+<pre><code class="language-bash"># traceroute
+traceroute www.google.com
+
+# Windows
+tracert www.google.com
+
+# mtr - 实时路由追踪
+mtr www.google.com
+
+# 输出示例：
+#                     Loss%   Snt   Last   Avg  Best  Wrst
+#  1. 192.168.1.1     0.0%    10    1.2   1.1   0.9   1.5
+#  2. 10.0.0.1        0.0%    10   10.5  11.2  10.0  15.0
+</code></pre>
+<h3 id="23-dns诊断"><a class="header" href="#23-dns诊断">2.3 DNS诊断</a></h3>
+<pre><code class="language-bash"># nslookup
+nslookup www.google.com
+
+# dig（推荐）
+dig www.google.com
+dig www.google.com @8.8.8.8  # 指定DNS服务器
+dig www.google.com A          # 查询A记录
+dig www.google.com AAAA       # 查询IPv6记录
+dig www.google.com MX         # 查询邮件服务器
+
+# host
+host www.google.com
+</code></pre>
+<h3 id="24-性能测试"><a class="header" href="#24-性能测试">2.4 性能测试</a></h3>
+<pre><code class="language-bash"># iperf3 - 带宽测试
+# 服务端
+iperf3 -s
+
+# 客户端
+iperf3 -c server_ip -t 30  # 测试30秒
+
+# ping - 延迟测试
+ping -c 100 www.google.com
+
+# 输出统计
+# round-trip min/avg/max = 40.1/45.3/52.8 ms
+</code></pre>
+<hr />
+<h2 id="第三章网络故障排查"><a class="header" href="#第三章网络故障排查">第三章：网络故障排查</a></h2>
+<h3 id="31-故障排查流程"><a class="header" href="#31-故障排查流程">3.1 故障排查流程</a></h3>
+<pre><code>1. 确认问题范围
+   - 单台主机还是整个网络？
+   - 特定服务还是所有服务？
+
+2. 检查物理层
+   - 网线连接
+   - 网卡状态：ethtool eth0
+   - 链路指示灯
+
+3. 检查网络层
+   - IP配置：ip addr
+   - 路由表：ip route
+   - ping网关
+
+4. 检查DNS
+   - nslookup/dig
+   - /etc/resolv.conf
+
+5. 检查防火墙
+   - iptables -L
+   - firewalld
+
+6. 检查应用层
+   - 服务状态
+   - 端口监听
+   - 日志文件
+</code></pre>
+<h3 id="32-常见问题诊断"><a class="header" href="#32-常见问题诊断">3.2 常见问题诊断</a></h3>
+<h4 id="无法连接远程服务器"><a class="header" href="#无法连接远程服务器">无法连接远程服务器</a></h4>
+<pre><code class="language-bash"># 1. ping测试连通性
+ping 192.168.1.100
+
+# 2. 测试端口是否开放
+telnet 192.168.1.100 80
+nc -zv 192.168.1.100 80
+
+# 3. 追踪路由
+traceroute 192.168.1.100
+
+# 4. 检查防火墙
+iptables -L -n | grep 80
+</code></pre>
+<h4 id="dns解析失败"><a class="header" href="#dns解析失败">DNS解析失败</a></h4>
+<pre><code class="language-bash"># 1. 测试DNS服务器
+dig @8.8.8.8 www.google.com
+
+# 2. 检查DNS配置
+cat /etc/resolv.conf
+
+# 3. 清除DNS缓存
+# Linux
+systemd-resolve --flush-caches
+
+# Windows
+ipconfig /flushdns
+</code></pre>
+<h4 id="网络延迟高"><a class="header" href="#网络延迟高">网络延迟高</a></h4>
+<pre><code class="language-bash"># 1. ping测试延迟
+ping -c 100 target_host
+
+# 2. mtr追踪路由
+mtr --report target_host
+
+# 3. 检查网卡统计
+ethtool -S eth0  # 查看错误包
+
+# 4. 检查TCP重传
+netstat -s | grep retrans
+</code></pre>
+<h4 id="time_wait过多"><a class="header" href="#time_wait过多">TIME_WAIT过多</a></h4>
+<pre><code class="language-bash"># 查看TIME_WAIT数量
+ss -tan | awk 'NR&gt;1 {print $1}' | sort | uniq -c
+
+# 解决方案
+# 1. 启用TIME_WAIT重用
+sysctl -w net.ipv4.tcp_tw_reuse=1
+
+# 2. 减少FIN_TIMEOUT
+sysctl -w net.ipv4.tcp_fin_timeout=15
+
+# 3. 应用层使用连接池
+</code></pre>
+<h3 id="33-python网络诊断工具"><a class="header" href="#33-python网络诊断工具">3.3 Python网络诊断工具</a></h3>
+<pre><code class="language-python">import socket
+import subprocess
+import platform
+
+class NetworkDiagnostic:
+    @staticmethod
+    def check_connectivity(host, port=80, timeout=5):
+        """检查连通性"""
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(timeout)
+            result = sock.connect_ex((host, port))
+            sock.close()
+            return result == 0
+        except:
+            return False
+
+    @staticmethod
+    def ping(host, count=4):
+        """执行ping测试"""
+        param = '-n' if platform.system().lower() == 'windows' else '-c'
+        command = ['ping', param, str(count), host]
+
+        try:
+            output = subprocess.check_output(command, stderr=subprocess.STDOUT)
+            return output.decode('utf-8')
+        except subprocess.CalledProcessError as e:
+            return f"Ping失败: {e.output.decode('utf-8')}"
+
+    @staticmethod
+    def dns_lookup(hostname):
+        """DNS查询"""
+        try:
+            ip = socket.gethostbyname(hostname)
+            return {'hostname': hostname, 'ip': ip, 'status': 'success'}
+        except socket.gaierror as e:
+            return {'hostname': hostname, 'error': str(e), 'status': 'failed'}
+
+    @staticmethod
+    def port_scan(host, ports):
+        """端口扫描"""
+        open_ports = []
+        for port in ports:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.settimeout(1)
+            result = sock.connect_ex((host, port))
+            if result == 0:
+                open_ports.append(port)
+            sock.close()
+        return open_ports
+
+# 使用示例
+diag = NetworkDiagnostic()
+
+# 检查连通性
+print(diag.check_connectivity('www.google.com', 80))
+
+# Ping测试
+print(diag.ping('8.8.8.8'))
+
+# DNS查询
+print(diag.dns_lookup('www.google.com'))
+
+# 端口扫描
+print(diag.port_scan('127.0.0.1', [22, 80, 443, 3306, 8080]))
+</code></pre>
+<hr />
+<p><strong>返回</strong>: <a href="tcpip.html">TCP/IP协议学习笔记主文档</a></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../编程/springcloud/Istio.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../编程/network/tcpip-security.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../../编程/springcloud/springboot.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../编程/network/tcpip.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -373,11 +471,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../编程/springcloud/Istio.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../编程/network/tcpip-security.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../../编程/springcloud/springboot.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../编程/network/tcpip.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

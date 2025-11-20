@@ -182,1163 +182,3177 @@
 
                         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css">
 <h1 id="模拟电路技术学习笔记"><a class="header" href="#模拟电路技术学习笔记">模拟电路技术学习笔记</a></h1>
+<h2 id="目录"><a class="header" href="#目录">目录</a></h2>
+<ol>
+<li><a href="#1-%E6%A8%A1%E6%8B%9F%E7%94%B5%E8%B7%AF%E6%A6%82%E8%BF%B0">模拟电路概述</a></li>
+<li><a href="#2-%E5%9F%BA%E7%A1%80%E5%85%83%E5%99%A8%E4%BB%B6%E4%B8%8E%E7%89%B9%E6%80%A7">基础元器件与特性</a></li>
+<li><a href="#3-%E6%A8%A1%E6%8B%9F%E7%94%B5%E8%B7%AF%E5%88%86%E6%9E%90%E6%96%B9%E6%B3%95">模拟电路分析方法</a></li>
+<li><a href="#4-%E6%94%BE%E5%A4%A7%E5%99%A8%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1">放大器电路设计</a></li>
+<li><a href="#5-%E6%BB%A4%E6%B3%A2%E5%99%A8%E8%AE%BE%E8%AE%A1">滤波器设计</a></li>
+<li><a href="#6-%E6%8C%AF%E8%8D%A1%E5%99%A8%E7%94%B5%E8%B7%AF">振荡器电路</a></li>
+<li><a href="#7-%E7%94%B5%E6%BA%90%E7%94%B5%E8%B7%AF%E8%AE%BE%E8%AE%A1">电源电路设计</a></li>
+<li><a href="#8-%E9%9D%9E%E7%BA%BF%E6%80%A7%E7%94%B5%E8%B7%AF">非线性电路</a></li>
+<li><a href="#9-%E9%A2%91%E7%8E%87%E5%93%8D%E5%BA%94%E4%B8%8E%E7%A8%B3%E5%AE%9A%E6%80%A7">频率响应与稳定性</a></li>
+<li><a href="#10-%E5%99%AA%E5%A3%B0%E5%88%86%E6%9E%90%E4%B8%8E%E6%8A%91%E5%88%B6">噪声分析与抑制</a></li>
+<li><a href="#11-%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B%E8%AF%A6%E8%A7%A3">实战案例详解</a></li>
+<li><a href="#12-pcb%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%B8%83%E5%B1%80">PCB设计与布局</a></li>
+<li><a href="#13-%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%B0%83%E8%AF%95%E6%8A%80%E5%B7%A7">测试与调试技巧</a></li>
+<li><a href="#14-%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">常见问题与解决方案</a></li>
+<li><a href="#15-%E5%AD%A6%E4%B9%A0%E8%B7%AF%E5%BE%84%E4%B8%8E%E9%AA%8C%E8%AF%81">学习路径与验证</a></li>
+</ol>
+<hr />
 <h2 id="1-模拟电路概述"><a class="header" href="#1-模拟电路概述">1. 模拟电路概述</a></h2>
 <h3 id="11-定义与特点"><a class="header" href="#11-定义与特点">1.1 定义与特点</a></h3>
 <p>模拟电路（Analog Circuit）是指处理连续变化信号的电子电路。与数字电路处理离散的高低电平不同，模拟电路处理的信号在时间上和幅度上都是连续变化的。模拟信号可以表示为时间的连续函数，如声音、温度、压力等自然界中的物理量。</p>
-<p>模拟电路的核心特点是：</p>
+<h4 id="111-模拟电路核心特点"><a class="header" href="#111-模拟电路核心特点">1.1.1 模拟电路核心特点</a></h4>
+<p><strong>信号连续性</strong></p>
 <ul>
-<li>信号连续性：电压和电流随时间连续变化</li>
-<li>幅度可变性：信号幅度可以在一定范围内任意取值</li>
-<li>精度依赖性：电路性能受器件精度、温度、噪声等因素影响</li>
-<li>非线性特性：许多模拟器件具有非线性特性</li>
+<li>电压和电流随时间连续变化</li>
+<li>信号值可以在有效范围内取任意值</li>
+<li>没有量化误差（理论上）</li>
+<li>更接近自然界的物理现象</li>
+</ul>
+<p><strong>幅度可变性</strong></p>
+<ul>
+<li>信号幅度可以在一定范围内任意取值</li>
+<li>不像数字电路只有高低两种状态</li>
+<li>能够精确表示微小的信号变化</li>
+<li>对信号精度要求高</li>
+</ul>
+<p><strong>精度依赖性</strong></p>
+<ul>
+<li>电路性能受器件精度影响显著</li>
+<li>温度变化会影响电路特性</li>
+<li>电源波动影响输出稳定性</li>
+<li>噪声干扰较为敏感</li>
+</ul>
+<p><strong>非线性特性</strong></p>
+<ul>
+<li>许多模拟器件具有非线性特性</li>
+<li>需要在特定工作点附近线性化</li>
+<li>失真是重要的性能指标</li>
+<li>需要仔细设计工作点</li>
 </ul>
 <h3 id="12-发展历程"><a class="header" href="#12-发展历程">1.2 发展历程</a></h3>
-<p>模拟电路的发展可以追溯到19世纪末20世纪初：</p>
+<p>模拟电路的发展经历了从真空管到晶体管，再到集成电路的演变过程：</p>
+<p><strong>早期阶段（1876-1947）</strong></p>
 <ul>
-<li>1876年：贝尔发明电话，标志着电子通信的开始</li>
-<li>1904年：弗莱明发明二极管，第一个电子器件</li>
-<li>1906年：德福雷斯特发明三极管，开启电子放大时代</li>
-<li>1947年：肖克利等人发明晶体管，革命性突破</li>
+<li>1876年：贝尔发明电话，开启电子通信时代</li>
+<li>1904年：弗莱明发明二极管真空管，第一个电子器件诞生</li>
+<li>1906年：德福雷斯特发明三极管，实现信号放大</li>
+<li>1920年代：无线电技术蓬勃发展</li>
+<li>1930年代：负反馈理论由Black提出</li>
+</ul>
+<p><strong>晶体管时代（1947-1958）</strong></p>
+<ul>
+<li>1947年：肖克利、巴丁、布拉顿发明点接触晶体管</li>
+<li>1948年：晶体管专利公开，引发电子革命</li>
+<li>1950年代：晶体管收音机、电视机商业化</li>
+<li>1954年：硅晶体管研制成功</li>
+<li>1957年：场效应晶体管理论提出</li>
+</ul>
+<p><strong>集成电路时代（1958至今）</strong></p>
+<ul>
 <li>1958年：杰克·基尔比发明集成电路</li>
-<li>1970年代至今：模拟集成电路快速发展</li>
+<li>1960年代：运算放大器集成化</li>
+<li>1970年代：模拟集成电路快速发展</li>
+<li>1980年代：混合信号集成电路出现</li>
+<li>1990年代至今：片上系统（SoC）技术成熟</li>
+<li>21世纪：纳米工艺、高性能模拟电路</li>
 </ul>
 <h3 id="13-应用领域"><a class="header" href="#13-应用领域">1.3 应用领域</a></h3>
-<p>模拟电路在现代电子系统中应用广泛：</p>
+<p>模拟电路在现代电子系统中无处不在，是数字世界与物理世界的桥梁。</p>
+<h4 id="131-通信系统"><a class="header" href="#131-通信系统">1.3.1 通信系统</a></h4>
+<p><strong>射频前端</strong></p>
 <ul>
-<li>通信系统：射频放大器、混频器、调制解调器</li>
-<li>音频处理：功放、滤波器、音效处理</li>
-<li>传感器接口：信号调理、放大、滤波</li>
-<li>电源管理：线性稳压器、开关电源控制器</li>
-<li>测量仪器：示波器、频谱分析仪</li>
-<li>生物医学：心电图、脑电图信号处理</li>
+<li>低噪声放大器（LNA）：接收微弱射频信号</li>
+<li>功率放大器（PA）：发射信号放大</li>
+<li>混频器：频率变换</li>
+<li>本振源：提供稳定的载波信号</li>
+<li>滤波器：频率选择</li>
 </ul>
+<p><strong>基带信号处理</strong></p>
+<ul>
+<li>AGC（自动增益控制）</li>
+<li>模拟滤波器</li>
+<li>电平转换</li>
+<li>阻抗匹配</li>
+</ul>
+<h4 id="132-音频处理"><a class="header" href="#132-音频处理">1.3.2 音频处理</a></h4>
+<p><strong>专业音频设备</strong></p>
+<ul>
+<li>话筒前置放大器</li>
+<li>调音台</li>
+<li>功率放大器</li>
+<li>均衡器</li>
+<li>压缩器/限幅器</li>
+</ul>
+<p><strong>消费音频产品</strong></p>
+<ul>
+<li>耳机放大器</li>
+<li>音响系统</li>
+<li>汽车音响</li>
+<li>蓝牙音箱</li>
+</ul>
+<h4 id="133-传感器接口"><a class="header" href="#133-传感器接口">1.3.3 传感器接口</a></h4>
+<p><strong>信号调理</strong></p>
+<ul>
+<li>信号放大：将mV级信号放大到V级</li>
+<li>滤波：去除噪声干扰</li>
+<li>线性化：补偿传感器非线性</li>
+<li>隔离：保护后级电路</li>
+</ul>
+<p><strong>传感器类型</strong></p>
+<ul>
+<li>温度传感器（热电偶、热敏电阻、PT100）</li>
+<li>压力传感器</li>
+<li>加速度传感器</li>
+<li>光电传感器</li>
+<li>磁场传感器</li>
+</ul>
+<h4 id="134-电源管理"><a class="header" href="#134-电源管理">1.3.4 电源管理</a></h4>
+<p><strong>线性电源</strong></p>
+<ul>
+<li>LDO稳压器</li>
+<li>基准电压源</li>
+<li>电压跟随器</li>
+</ul>
+<p><strong>开关电源</strong></p>
+<ul>
+<li>DC-DC转换器</li>
+<li>PFC电路</li>
+<li>充电管理</li>
+<li>电池保护</li>
+</ul>
+<h4 id="135-测量仪器"><a class="header" href="#135-测量仪器">1.3.5 测量仪器</a></h4>
+<p><strong>基础仪器</strong></p>
+<ul>
+<li>示波器：模拟前端</li>
+<li>频谱分析仪：射频前端</li>
+<li>信号发生器：DDS + 放大器</li>
+<li>万用表：精密测量电路</li>
+<li>网络分析仪：射频测量</li>
+</ul>
+<h4 id="136-生物医学"><a class="header" href="#136-生物医学">1.3.6 生物医学</a></h4>
+<p><strong>医疗电子</strong></p>
+<ul>
+<li>心电图（ECG）：检测心脏电信号</li>
+<li>脑电图（EEG）：检测脑电波</li>
+<li>血氧仪：光电传感与信号处理</li>
+<li>超声设备：射频信号处理</li>
+<li>植入式设备：低功耗模拟电路</li>
+</ul>
+<h3 id="14-模拟电路-vs-数字电路"><a class="header" href="#14-模拟电路-vs-数字电路">1.4 模拟电路 vs 数字电路</a></h3>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>模拟电路</th><th>数字电路</th></tr></thead><tbody>
+<tr><td>信号类型</td><td>连续信号</td><td>离散信号</td></tr>
+<tr><td>精度</td><td>受器件影响大</td><td>理论上无限精度</td></tr>
+<tr><td>噪声敏感度</td><td>高</td><td>低（有噪声容限）</td></tr>
+<tr><td>功耗</td><td>相对较高</td><td>可以很低</td></tr>
+<tr><td>设计复杂度</td><td>需要经验和技巧</td><td>有成熟的设计方法</td></tr>
+<tr><td>集成度</td><td>较低</td><td>非常高</td></tr>
+<tr><td>灵活性</td><td>固定功能</td><td>可编程</td></tr>
+<tr><td>成本</td><td>取决于性能要求</td><td>批量生产成本低</td></tr>
+</tbody></table>
+</div>
+<hr />
 <h2 id="2-基础元器件与特性"><a class="header" href="#2-基础元器件与特性">2. 基础元器件与特性</a></h2>
 <h3 id="21-电阻器"><a class="header" href="#21-电阻器">2.1 电阻器</a></h3>
-<p>电阻器是模拟电路中最基本的被动器件之一，用于限制电流、分压和消耗功率。</p>
+<p>电阻器是模拟电路中最基本、应用最广泛的被动器件，用于限制电流、分压、匹配阻抗和消耗功率。</p>
 <h4 id="211-基本特性"><a class="header" href="#211-基本特性">2.1.1 基本特性</a></h4>
+<p><strong>欧姆定律</strong></p>
+<pre><code>V = I × R
+
+其中：
+V - 电压（伏特，V）
+I - 电流（安培，A）
+R - 电阻（欧姆，Ω）
+</code></pre>
+<p><strong>功率消耗</strong></p>
+<pre><code>P = I² × R = V² / R = V × I
+
+功率单位：瓦特（W）
+</code></pre>
+<p><strong>实际应用中的降额设计</strong></p>
 <ul>
-<li>欧姆定律：V = IR</li>
-<li>功率消耗：P = I²R = V²/R</li>
-<li>电阻温度系数：α = (R₂-R₁)/(R₁×(T₂-T₁))</li>
+<li>实际工作功率应为额定功率的50%-70%</li>
+<li>高温环境需要更大降额</li>
+<li>脉冲应用需考虑峰值功率</li>
 </ul>
-<h4 id="212-电阻器类型"><a class="header" href="#212-电阻器类型">2.1.2 电阻器类型</a></h4>
-<ol>
-<li>
-<p><strong>碳膜电阻</strong>：</p>
+<p><strong>电阻温度系数（TCR）</strong></p>
+<pre><code>TCR = (R₂ - R₁) / [R₁ × (T₂ - T₁)]
+
+单位：ppm/°C（百万分之一/摄氏度）
+
+示例计算：
+R₁ = 1000Ω @ 25°C
+R₂ = 1001Ω @ 125°C
+TCR = (1001-1000)/(1000×(125-25)) = 10ppm/°C
+</code></pre>
+<h4 id="212-电阻器类型详解"><a class="header" href="#212-电阻器类型详解">2.1.2 电阻器类型详解</a></h4>
+<p><strong>1. 碳膜电阻</strong></p>
 <ul>
-<li>特点：成本低、噪声大、精度一般</li>
+<li>制造工艺：在陶瓷基体上沉积碳膜</li>
+<li>阻值范围：1Ω - 10MΩ</li>
+<li>精度：±5%, ±10%</li>
+<li>温度系数：±200 ~ ±500 ppm/°C</li>
+<li>噪声：较大（约0.1-3μV/V）</li>
+<li>成本：最低</li>
 <li>应用：一般电路中的限流、分压</li>
 </ul>
-</li>
-<li>
-<p><strong>金属膜电阻</strong>：</p>
+<p><strong>2. 金属膜电阻</strong></p>
 <ul>
-<li>特点：精度高、温度系数小、噪声低</li>
-<li>应用：精密测量、信号调理电路</li>
+<li>制造工艺：金属合金薄膜</li>
+<li>阻值范围：1Ω - 10MΩ</li>
+<li>精度：±0.5%, ±1%, ±2%</li>
+<li>温度系数：±50 ~ ±100 ppm/°C</li>
+<li>噪声：小（约0.02-0.2μV/V）</li>
+<li>成本：中等</li>
+<li>应用：精密测量、音频电路、信号处理</li>
 </ul>
-</li>
-<li>
-<p><strong>线绕电阻</strong>：</p>
+<p><strong>3. 线绕电阻</strong></p>
 <ul>
-<li>特点：功率大、精度高、电感大</li>
-<li>应用：功率电路、精密分压</li>
+<li>制造工艺：电阻丝绕在陶瓷骨架上</li>
+<li>阻值范围：0.1Ω - 100kΩ</li>
+<li>精度：±0.1% ~ ±1%</li>
+<li>温度系数：±5 ~ ±50 ppm/°C</li>
+<li>功率：大（1W - 数百W）</li>
+<li>缺点：寄生电感大</li>
+<li>应用：功率电路、精密分压、负载电阻</li>
 </ul>
-</li>
-<li>
-<p><strong>薄膜电阻</strong>：</p>
+<p><strong>4. 金属箔电阻</strong></p>
 <ul>
-<li>特点：精度极高、温度系数极小</li>
-<li>应用：精密仪器、标准电阻</li>
+<li>制造工艺：金属箔蚀刻</li>
+<li>阻值范围：10Ω - 1MΩ</li>
+<li>精度：±0.01% ~ ±0.1%</li>
+<li>温度系数：±2 ~ ±5 ppm/°C</li>
+<li>稳定性：极好</li>
+<li>成本：高</li>
+<li>应用：精密仪器、标准电阻、高精度测量</li>
 </ul>
-</li>
+<p><strong>5. 厚膜/薄膜片式电阻</strong></p>
+<ul>
+<li>封装：0201, 0402, 0603, 0805, 1206等</li>
+<li>精度：±1%, ±5%</li>
+<li>功率：1/20W - 1W</li>
+<li>应用：表面贴装电路</li>
+</ul>
+<h4 id="213-电阻器选型实战指南"><a class="header" href="#213-电阻器选型实战指南">2.1.3 电阻器选型实战指南</a></h4>
+<p><strong>阻值选择</strong></p>
+<ol>
+<li>优先选择E12、E24、E96系列标准阻值</li>
+<li>串并联组合可获得特殊阻值</li>
+<li>考虑容差对电路的影响</li>
 </ol>
-<h4 id="213-电阻器选型要点"><a class="header" href="#213-电阻器选型要点">2.1.3 电阻器选型要点</a></h4>
+<p><strong>功率等级选择</strong></p>
+<pre><code>实际应用准则：
+额定功率 ≥ 实际功耗 × 2（普通环境）
+额定功率 ≥ 实际功耗 × 3（高温环境）
+
+示例：
+电路中电阻上的压降为5V，电流为10mA
+实际功耗 = 5V × 10mA = 50mW
+选择额定功率 ≥ 100mW，实际选用1/8W（125mW）或1/4W（250mW）
+</code></pre>
+<p><strong>精度要求</strong></p>
 <ul>
-<li>阻值选择：根据电路需求选择标准阻值</li>
-<li>功率等级：确保实际功耗不超过额定功率</li>
-<li>精度要求：根据电路精度要求选择容差</li>
-<li>温度系数：精密应用需考虑温度漂移</li>
-<li>频率特性：高频应用需考虑寄生电感和电容</li>
+<li>普通电路：±5%已足够</li>
+<li>分压电路：±1%或更高</li>
+<li>精密测量：±0.1%或更高</li>
+<li>基准电路：±0.01%级别</li>
 </ul>
+<p><strong>温度系数考虑</strong></p>
+<ul>
+<li>室温应用：TCR影响不大</li>
+<li>宽温度范围：选择低TCR电阻</li>
+<li>精密应用：配对使用，补偿温漂</li>
+</ul>
+<p><strong>频率特性</strong>
+高频应用需要考虑寄生参数：</p>
+<pre><code>电阻的实际等效电路：
+
+    ┌─────┐
+────┤  R  ├──── (电阻本体)
+    └─────┘
+       │
+      ═══  (寄生电容)
+       │
+       ┴
+
+对于线绕电阻还要考虑寄生电感
+</code></pre>
+<p><strong>实战案例：精密分压器设计</strong></p>
+<pre><code>需求：5V输入，2.5V输出，精度±0.1%
+
+方案1：使用两个相同阻值电阻
+R1 = R2 = 10kΩ, ±0.1%
+Vout = 5V × R2/(R1+R2) = 2.5V
+
+误差分析：
+最坏情况：R1 = 10.01kΩ, R2 = 9.99kΩ
+Vout = 5V × 9.99/(10.01+9.99) = 2.495V
+误差 = -0.2%（超出要求）
+
+方案2：使用精密匹配电阻对
+选用0.1% TCR±5ppm/°C的匹配对
+或使用精密电阻网络（如Bourns 4600X系列）
+
+方案3：使用可调电阻
+R1 = 10kΩ固定 + 100Ω精密多圈电位器
+在实际电路中调整到精确值
+</code></pre>
 <h3 id="22-电容器"><a class="header" href="#22-电容器">2.2 电容器</a></h3>
-<p>电容器是存储电荷的器件，具有隔直通交的特性，在滤波、耦合、旁路等应用中发挥重要作用。</p>
+<p>电容器是存储电荷的器件，具有隔直通交、储能、滤波等特性，在模拟电路中应用极其广泛。</p>
 <h4 id="221-基本特性"><a class="header" href="#221-基本特性">2.2.1 基本特性</a></h4>
+<p><strong>电容定义</strong></p>
+<pre><code>C = Q / V = ε × A / d
+
+其中：
+C - 电容值（法拉，F）
+Q - 电荷量（库仑，C）
+V - 电压（伏特，V）
+ε - 介电常数
+A - 极板面积
+d - 极板间距
+</code></pre>
+<p><strong>电流电压关系</strong></p>
+<pre><code>i(t) = C × dv/dt
+
+意义：
+- 电容两端电压不能突变
+- 电流与电压变化率成正比
+- 电压变化越快，电流越大
+</code></pre>
+<p><strong>容抗</strong></p>
+<pre><code>Xc = 1 / (2πfC)
+
+特点：
+- 频率越高，容抗越小（通高频）
+- 频率越低，容抗越大（阻低频）
+- 直流时容抗为无穷大（隔直流）
+</code></pre>
+<p><strong>储能</strong></p>
+<pre><code>W = ½CV²
+
+应用：
+- 能量存储
+- 脉冲功率
+- 电源滤波
+</code></pre>
+<h4 id="222-电容器类型详解"><a class="header" href="#222-电容器类型详解">2.2.2 电容器类型详解</a></h4>
+<p><strong>1. 陶瓷电容器</strong></p>
+<p><em>Class 1 (NP0/C0G型)</em></p>
 <ul>
-<li>电容定义：C = Q/V</li>
-<li>电流电压关系：i = C(dv/dt)</li>
-<li>容抗：Xc = 1/(2πfC)</li>
-<li>储能：W = ½CV²</li>
+<li>介质：钛酸钡基陶瓷</li>
+<li>容量范围：1pF - 47nF</li>
+<li>温度系数：±30ppm/°C</li>
+<li>容量变化：&lt;±0.5%（-55°C~+125°C）</li>
+<li>损耗因子：&lt;0.1%</li>
+<li>电压系数：几乎为零</li>
+<li>应用：振荡器、滤波器、定时电路</li>
 </ul>
-<h4 id="222-电容器类型"><a class="header" href="#222-电容器类型">2.2.2 电容器类型</a></h4>
-<ol>
-<li>
-<p><strong>陶瓷电容器</strong>：</p>
+<p><em>Class 2 (X7R/X5R/Y5V型)</em></p>
 <ul>
-<li>Class 1（NP0/C0G）：温度系数稳定，精度高，容量小</li>
-<li>Class 2（X7R、Y5V）：容量大，温度系数变化大</li>
+<li>容量范围：100pF - 100μF</li>
+<li>温度系数：±15%（X7R），+22%/-82%（Y5V）</li>
+<li>电压系数：显著（容量随电压降低）</li>
+<li>损耗因子：2%-5%</li>
+<li>成本：低</li>
+<li>应用：电源滤波、耦合、旁路</li>
 </ul>
-</li>
-<li>
-<p><strong>电解电容器</strong>：</p>
+<p><strong>容量变化特性</strong></p>
+<pre><code>X7R在10V偏置下：
+标称10μF的电容器
+实际可能只有7-8μF
+
+Y5V更严重：
+标称10μF可能只剩下5μF甚至更少
+</code></pre>
+<p><strong>2. 电解电容器</strong></p>
+<p><em>铝电解电容</em></p>
 <ul>
-<li>铝电解：容量大，有极性，ESR较高</li>
-<li>钽电解：体积小，ESR低，成本高</li>
+<li>容量范围：0.1μF - 数万μF</li>
+<li>耐压：6.3V - 450V</li>
+<li>ESR：较高（几十mΩ到几Ω）</li>
+<li>寿命：受温度影响大</li>
+<li>极性：有极性，反接会损坏</li>
+<li>应用：电源滤波、储能</li>
 </ul>
-</li>
-<li>
-<p><strong>薄膜电容器</strong>：</p>
+<p><em>钽电解电容</em></p>
 <ul>
-<li>聚酯、聚丙烯：损耗低，稳定性好</li>
-<li>应用：高频电路、滤波电路</li>
+<li>容量范围：0.1μF - 1000μF</li>
+<li>耐压：2.5V - 50V</li>
+<li>ESR：低（几mΩ到几百mΩ）</li>
+<li>体积：相同容量下体积更小</li>
+<li>可靠性：高</li>
+<li>成本：比铝电解高</li>
+<li>应用：高性能电源滤波</li>
 </ul>
-</li>
-</ol>
-<h4 id="223-电容器选型要点"><a class="header" href="#223-电容器选型要点">2.2.3 电容器选型要点</a></h4>
+<p><em>注意事项</em></p>
+<pre><code>电解电容失效模式：
+1. 过压：介质击穿
+2. 反接：气体膨胀，爆炸
+3. 高温：电解液干涸，容量下降，ESR上升
+4. 纹波电流过大：发热，寿命缩短
+
+寿命估算（10℃法则）：
+每升高10℃，寿命减半
+
+例如：105℃ 2000小时规格的电容
+在85℃下工作：2000 × 2² = 8000小时
+在65℃下工作：2000 × 2⁴ = 32000小时
+</code></pre>
+<p><strong>3. 薄膜电容器</strong></p>
+<p><em>聚酯电容（PET）</em></p>
 <ul>
-<li>容量选择：根据电路需求选择合适容量</li>
-<li>耐压选择：工作电压应小于额定电压的80%</li>
-<li>介质类型：根据频率、温度、精度要求选择</li>
-<li>ESR和ESL：高频应用需考虑寄生参数</li>
-<li>温度特性：考虑工作温度范围内的性能变化</li>
+<li>容量范围：1nF - 10μF</li>
+<li>耐压：50V - 1000V</li>
+<li>温度系数：+400ppm/°C</li>
+<li>损耗：中等</li>
+<li>成本：低</li>
+<li>应用：通用耦合、滤波</li>
 </ul>
+<p><em>聚丙烯电容（PP）</em></p>
+<ul>
+<li>容量范围：100pF - 100μF</li>
+<li>耐压：50V - 2000V</li>
+<li>温度系数：-200ppm/°C</li>
+<li>损耗：极低（&lt;0.05%）</li>
+<li>自愈能力：强</li>
+<li>应用：音频、脉冲、交流电路</li>
+</ul>
+<p><em>聚苯乙烯电容（PS）</em></p>
+<ul>
+<li>精度：±1%或更高</li>
+<li>温度系数：-120ppm/°C</li>
+<li>损耗：极低</li>
+<li>应用：精密定时、振荡器（已较少使用）</li>
+</ul>
+<h4 id="223-电容器选型实战指南"><a class="header" href="#223-电容器选型实战指南">2.2.3 电容器选型实战指南</a></h4>
+<p><strong>容量选择</strong></p>
+<pre><code>滤波电容计算：
+
+纹波电压计算：
+Vripple = I / (f × C)
+
+示例：
+负载电流I = 100mA
+纹波频率f = 100Hz（全波整流）
+期望纹波Vripple &lt; 100mV
+
+C &gt; I / (f × Vripple) = 0.1 / (100 × 0.1) = 10mF
+
+实际选用：10000μF或更大
+
+旁路电容选择：
+高频旁路：100nF陶瓷（X7R）靠近芯片
+中频旁路：10μF陶瓷或钽电容
+低频储能：100μF~1000μF电解电容
+</code></pre>
+<p><strong>耐压选择</strong></p>
+<pre><code>一般规则：
+额定电压 ≥ 工作电压 × 2（陶瓷电容）
+额定电压 ≥ 工作电压 × 1.5（电解电容）
+额定电压 ≥ 工作电压 × 1.3（薄膜电容）
+
+示例：
+12V电源滤波，选用25V或35V电容
+5V电源旁路，选用10V或16V陶瓷电容
+
+注意：电解电容工作电压过低也不好
+建议工作电压达到额定电压的30%以上
+</code></pre>
+<p><strong>ESR和ESL考虑</strong></p>
+<p>等效串联电阻（ESR）和等效串联电感（ESL）是电容器的重要寄生参数。</p>
+<pre><code>电容器的实际模型：
+
+     ESL
+   ┌──○○○──┐
+   │        │
+   │   C    │  ESR
+   │  ═══   ├──○○○──
+   │        │
+   └────────┘
+
+阻抗频率特性：
+
+|Z|       容性区   │  谐振点  │  感性区
+         \        │    ○    │    /
+          \       │         │   /
+           \      │         │  /
+            \_____|_________|_/_________ f
+                 f_res
+
+谐振频率：f_res = 1/(2π√(LC))
+
+典型ESR值：
+铝电解：几十mΩ ~ 几Ω
+钽电解：几mΩ ~ 几百mΩ
+陶瓷X7R：&lt; 10mΩ
+陶瓷C0G：&lt; 1mΩ
+</code></pre>
+<p><strong>温度特性选择</strong></p>
+<p>根据应用环境温度选择合适类型：</p>
+<ul>
+<li>室温应用：X7R、X5R足够</li>
+<li>高温应用：X7R、C0G</li>
+<li>宽温应用：C0G/NP0</li>
+<li>要求不高：Y5V（成本最低）</li>
+</ul>
+<p><strong>实战案例：开关电源输出滤波</strong></p>
+<pre><code>需求：5V/2A输出，开关频率500kHz，输出纹波&lt;50mV
+
+方案设计：
+1. 主滤波电容：22μF陶瓷X7R（高频纹波抑制）
+   - 10V耐压（工作电压2倍）
+   - ESR &lt; 5mΩ
+   - 谐振频率 &gt; 10MHz
+
+2. 大容量储能：100μF电解电容（低频纹波抑制）
+   - 16V耐压
+   - 105℃长寿命系列
+   - ESR &lt; 100mΩ
+
+3. 高频旁路：100nF陶瓷（去除高频噪声）
+   - C0G或X7R
+   - 靠近负载放置
+
+布局要点：
+- 三个电容并联
+- 陶瓷电容最靠近输出端
+- 短而粗的连接线
+- 良好的接地
+</code></pre>
 <h3 id="23-电感器"><a class="header" href="#23-电感器">2.3 电感器</a></h3>
-<p>电感器是利用电磁感应原理工作的器件，对交流信号呈现阻抗，具有储能和滤波功能。</p>
+<p>电感器利用电磁感应原理工作，对交流信号呈现阻抗，在滤波、储能、阻抗匹配等应用中不可或缺。</p>
 <h4 id="231-基本特性"><a class="header" href="#231-基本特性">2.3.1 基本特性</a></h4>
+<p><strong>电感定义</strong></p>
+<pre><code>L = NΦ / I = μN²A / l
+
+其中：
+L - 电感值（亨利，H）
+N - 线圈匝数
+Φ - 磁通量（韦伯，Wb）
+I - 电流（安培，A）
+μ - 磁导率
+A - 磁芯截面积
+l - 磁路长度
+</code></pre>
+<p><strong>电压电流关系</strong></p>
+<pre><code>v(t) = L × di/dt
+
+意义：
+- 电感中的电流不能突变
+- 电压与电流变化率成正比
+- 电流突变时会产生很高的反向电压（续流）
+</code></pre>
+<p><strong>感抗</strong></p>
+<pre><code>XL = 2πfL
+
+特点：
+- 频率越高，感抗越大（阻高频）
+- 频率越低，感抗越小（通低频）
+- 直流时感抗为零（通直流）
+</code></pre>
+<p><strong>储能</strong></p>
+<pre><code>W = ½LI²
+
+应用：
+- 开关电源能量传输
+- DC-DC转换
+- 磁能存储
+</code></pre>
+<h4 id="232-电感器类型详解"><a class="header" href="#232-电感器类型详解">2.3.2 电感器类型详解</a></h4>
+<p><strong>1. 功率电感</strong></p>
+<p><em>绕线型功率电感</em></p>
 <ul>
-<li>电感定义：L = NΦ/I</li>
-<li>电压电流关系：v = L(di/dt)</li>
-<li>感抗：XL = 2πfL</li>
-<li>储能：W = ½LI²</li>
+<li>电感范围：1μH - 10mH</li>
+<li>电流范围：100mA - 50A</li>
+<li>DCR：几mΩ - 几Ω</li>
+<li>饱和电流：重要参数</li>
+<li>应用：开关电源、DC-DC</li>
 </ul>
-<h4 id="232-电感器类型"><a class="header" href="#232-电感器类型">2.3.2 电感器类型</a></h4>
-<ol>
-<li>
-<p><strong>绕线电感</strong>：</p>
+<p><em>一体成型功率电感</em></p>
 <ul>
-<li>功率电感：大电流，低DCR</li>
-<li>射频电感：高Q值，小尺寸</li>
+<li>结构紧凑</li>
+<li>屏蔽性好</li>
+<li>饱和特性优秀</li>
+<li>成本较高</li>
+<li>应用：高性能DC-DC</li>
 </ul>
-</li>
-<li>
-<p><strong>铁氧体磁芯电感</strong>：</p>
+<p><strong>2. 射频电感</strong></p>
+<p><em>空心电感</em></p>
 <ul>
-<li>高电感值，适合低频应用</li>
-<li>饱和电流有限</li>
+<li>电感范围：1nH - 1μH</li>
+<li>Q值：高（50-200）</li>
+<li>自谐振频率：高</li>
+<li>电流能力：小</li>
+<li>应用：射频匹配、滤波</li>
 </ul>
-</li>
-<li>
-<p><strong>空心电感</strong>：</p>
+<p><em>铁氧体磁芯电感</em></p>
 <ul>
-<li>线性度好，Q值高</li>
-<li>电感值小，适合高频</li>
+<li>电感范围：10nH - 100μH</li>
+<li>Q值：中等</li>
+<li>应用：射频扼流圈</li>
 </ul>
-</li>
-</ol>
-<h4 id="233-电感器选型要点"><a class="header" href="#233-电感器选型要点">2.3.3 电感器选型要点</a></h4>
+<p><em>片式电感</em></p>
 <ul>
-<li>电感值：根据电路需求选择</li>
-<li>饱和电流：确保工作电流小于饱和电流</li>
-<li>DCR（直流电阻）：影响效率和发热</li>
-<li>Q值：高频应用需考虑品质因数</li>
-<li>封装尺寸：考虑PCB布局和散热</li>
+<li>封装：0402, 0603, 0805, 1206等</li>
+<li>电感范围：1nH - 100μH</li>
+<li>应用：射频电路、高频滤波</li>
 </ul>
+<p><strong>3. 共模电感</strong></p>
+<p><em>特点</em></p>
+<ul>
+<li>两个绕组绕在同一磁芯上</li>
+<li>差模信号互相抵消</li>
+<li>共模信号被抑制</li>
+<li>应用：EMI滤波</li>
+</ul>
+<h4 id="233-电感器选型实战指南"><a class="header" href="#233-电感器选型实战指南">2.3.3 电感器选型实战指南</a></h4>
+<p><strong>电感值选择</strong></p>
+<p>开关电源电感设计：</p>
+<pre><code>Buck电路电感计算：
+
+L = (Vin - Vout) × Vout / (Vin × ΔI × f)
+
+其中：
+Vin - 输入电压
+Vout - 输出电压
+ΔI - 电感纹波电流（通常取Io的20%-40%）
+f - 开关频率
+
+示例：
+Vin = 12V
+Vout = 5V
+Io = 2A
+ΔI = 0.4A（20%纹波）
+f = 500kHz
+
+L = (12-5) × 5 / (12 × 0.4 × 500000)
+L = 35 / 2400000
+L = 14.6μH
+
+实际选用：15μH或22μH（标准值）
+</code></pre>
+<p><strong>饱和电流选择</strong></p>
+<pre><code>饱和电流 Isat 必须大于最大工作电流
+
+对于DC-DC电路：
+Isat &gt; Io_max + ΔI/2
+
+示例：
+最大输出电流 Io_max = 2A
+电感纹波电流 ΔI = 0.4A
+Isat &gt; 2 + 0.4/2 = 2.2A
+
+实际选用：Isat ≥ 2.5A的电感
+（留有20%以上余量）
+</code></pre>
+<p><strong>DCR（直流电阻）考虑</strong></p>
+<pre><code>DCR影响效率和功耗：
+
+功耗 = I²DCR
+
+效率影响：
+η损失 = (Io² × DCR) / Pout
+
+示例：
+Io = 2A
+DCR = 50mΩ
+Pout = 10W
+
+功耗 = 2² × 0.05 = 0.2W
+效率损失 = 0.2 / 10 = 2%
+
+建议：
+- 大电流应用选择低DCR电感
+- DCR &lt; Vout / (20 × Io)
+</code></pre>
+<p><strong>Q值考虑</strong></p>
+<p>品质因数Q值在射频应用中非常重要：</p>
+<pre><code>Q = XL / R = 2πfL / R
+
+高Q值的好处：
+- 滤波器更陡峭
+- 振荡器稳定性更好
+- 插入损耗更小
+
+射频应用Q值要求：
+- 滤波器：Q &gt; 20
+- 振荡器：Q &gt; 50
+- 匹配网络：Q &gt; 10
+</code></pre>
+<p><strong>自谐振频率（SRF）</strong></p>
+<p>电感器都有寄生电容，形成LC谐振：</p>
+<pre><code>       Ls
+    ┌──○○○──┐
+    │        │
+    ╧ Cp     │  Rs
+    │       ─┴─
+    └────────┘
+
+SRF = 1 / (2π√(Ls × Cp))
+
+使用规则：
+工作频率应 &lt; SRF/3
+
+示例：
+10MHz应用
+需要SRF &gt; 30MHz的电感
+</code></pre>
+<p><strong>实战案例：3.3V/1A Buck转换器电感选择</strong></p>
+<pre><code>输入电压：5V
+输出电压：3.3V
+输出电流：1A
+开关频率：1MHz
+纹波电流：20%（0.2A）
+
+步骤1：计算电感值
+L = (5-3.3) × 3.3 / (5 × 0.2 × 1000000)
+L = 5.61 / 1000000 = 5.6μH
+
+选用标准值：6.8μH或10μH
+
+步骤2：确定饱和电流
+Isat &gt; 1 + 0.2/2 = 1.1A
+选择Isat ≥ 1.5A
+
+步骤3：确定DCR
+DCR &lt; 3.3 / (20 × 1) = 165mΩ
+选择DCR &lt; 100mΩ
+
+步骤4：确定封装
+1A电流，选择较大封装如1210或更大
+考虑散热和效率
+
+推荐器件示例：
+- TDK SLF10145T-100M (10μH, 1.8A, 85mΩ)
+- Coilcraft XAL1010-103 (10μH, 2.2A, 75mΩ)
+- Würth 744043100 (10μH, 1.9A, 95mΩ)
+</code></pre>
 <h3 id="24-半导体器件"><a class="header" href="#24-半导体器件">2.4 半导体器件</a></h3>
+<p>半导体器件是模拟电路的核心，包括二极管、三极管、场效应管等。</p>
 <h4 id="241-二极管"><a class="header" href="#241-二极管">2.4.1 二极管</a></h4>
-<p>二极管是最简单的半导体器件，具有单向导电特性。</p>
-<p><strong>基本特性</strong>：</p>
+<p>二极管是最基本的半导体器件，具有单向导电特性。</p>
+<p><strong>基本工作原理</strong></p>
+<p>PN结形成：</p>
+<pre><code>P型半导体    N型半导体
+ (+)  │  (-)
+      │扩散
+  ────┼────  耗尽层形成
+      │
+   内建电场
+
+正向偏置：外加电压削弱内建电场，电流流通
+反向偏置：外加电压增强内建电场，电流被阻断
+</code></pre>
+<p><strong>伏安特性</strong></p>
+<p>肖克利方程：</p>
+<pre><code>I = Is × (e^(qV/nkT) - 1)
+
+其中：
+Is - 反向饱和电流（典型值10⁻¹²A）
+q - 电子电荷（1.6×10⁻¹⁹C）
+V - 二极管两端电压
+n - 理想因子（硅为1-2）
+k - 玻尔兹曼常数（1.38×10⁻²³J/K）
+T - 绝对温度（K）
+
+简化计算（室温）：
+V ≈ 0.7V（硅二极管导通）
+V ≈ 0.3V（锗二极管导通）
+V ≈ 0.3V（肖特基二极管导通）
+</code></pre>
+<p><strong>主要类型及应用</strong></p>
+<p><strong>1. 普通整流二极管</strong></p>
 <ul>
-<li>正向导通：当正向电压超过阈值电压时导通</li>
-<li>反向截止：反向电压下呈现高阻态</li>
-<li>伏安特性：I = Is(e^(qV/nkT)-1)</li>
+<li>正向压降：0.7V（硅）</li>
+<li>反向恢复时间：慢（μs级）</li>
+<li>额定电流：1A - 数千A</li>
+<li>反向耐压：50V - 1000V+</li>
+<li>应用：工频整流、反向保护</li>
 </ul>
-<p><strong>主要类型</strong>：</p>
-<ol>
-<li><strong>硅二极管</strong>：正向压降约0.7V，耐高温</li>
-<li><strong>锗二极管</strong>：正向压降约0.3V，导通电压低</li>
-<li><strong>肖特基二极管</strong>：正向压降低，开关速度快</li>
-<li><strong>齐纳二极管</strong>：反向击穿特性，用于稳压</li>
-<li><strong>变容二极管</strong>：结电容随反向电压变化</li>
-</ol>
+<p><strong>2. 快恢复二极管</strong></p>
+<ul>
+<li>反向恢复时间：快（几十ns）</li>
+<li>应用：开关电源、高频整流</li>
+</ul>
+<p><strong>3. 肖特基二极管</strong></p>
+<ul>
+<li>正向压降：0.2-0.5V（低）</li>
+<li>反向恢复时间：极快（&lt;10ns）</li>
+<li>反向漏电流：大</li>
+<li>反向耐压：低（&lt;200V典型）</li>
+<li>应用：低压大电流整流、反向保护、OR-ing</li>
+</ul>
+<pre><code>肖特基vs普通二极管：
+
+正向特性：
+    I
+    │    肖特基
+    │   ／
+    │  ／
+    │ ／普通
+    │／___________V
+   0  0.3  0.7
+
+效率优势：
+同样1A电流：
+普通二极管：P = 0.7V × 1A = 0.7W
+肖特基二极管：P = 0.3V × 1A = 0.3W
+节省功耗：0.4W
+</code></pre>
+<p><strong>4. 齐纳二极管（稳压二极管）</strong></p>
+<ul>
+<li>工作原理：利用反向击穿特性</li>
+<li>稳压值：2.4V - 200V</li>
+<li>稳压精度：±5% - ±1%</li>
+<li>温度系数：
+<ul>
+<li>Vz &lt; 5V：负温度系数</li>
+<li>Vz ≈ 5.6V：零温度系数</li>
+<li>Vz &gt; 5V：正温度系数</li>
+</ul>
+</li>
+<li>应用：电压基准、过压保护</li>
+</ul>
+<pre><code>齐纳二极管稳压电路：
+
+Vin ──┬──○○○──┬── Vout
+      │   R   │
+      │      ─┴─ Zener
+      │      ─┬─
+      └───────┴──── GND
+
+设计要点：
+1. 确定齐纳电流Iz（典型5-10mA）
+2. 计算限流电阻R = (Vin_min - Vz) / (Iz + Iload_max)
+3. 验证最大功耗Pz_max = Vz × Iz_max
+</code></pre>
+<p><strong>5. 变容二极管</strong></p>
+<ul>
+<li>原理：PN结电容随反向电压变化</li>
+<li>电容变化比：3:1 - 10:1</li>
+<li>Q值：100 - 500</li>
+<li>应用：VCO、电调滤波器、频率合成器</li>
+</ul>
+<pre><code>变容特性：
+C(V) = C₀ / (1 + V/Vj)^m
+
+其中：
+C₀ - 零偏压电容
+Vj - PN结内建电位
+m - 分布系数（0.3-0.5）
+</code></pre>
+<p><strong>6. LED（发光二极管）</strong></p>
+<ul>
+<li>正向压降：
+<ul>
+<li>红色：1.8-2.2V</li>
+<li>绿色：2.0-2.4V</li>
+<li>蓝色/白色：3.0-3.6V</li>
+</ul>
+</li>
+<li>正向电流：通常5-20mA</li>
+<li>应用：指示灯、显示、照明</li>
+</ul>
+<pre><code>LED驱动设计：
+
+Vcc ──○○○─┬─ LED
+      R   │  ├──
+          └──┴── GND
+
+R = (Vcc - Vf) / If
+
+示例：
+Vcc = 5V
+Vf = 2V（红色LED）
+If = 10mA
+
+R = (5 - 2) / 0.01 = 300Ω
+选用标准值330Ω
+
+功耗：
+P = (Vcc - Vf) × If = 3 × 0.01 = 30mW
+选用1/8W或更大功率电阻
+</code></pre>
+<p><strong>二极管实战应用</strong></p>
+<p><strong>案例1：反向保护电路</strong></p>
+<pre><code>输入 ──┤&gt;├── 负载
+      二极管
+
+优点：简单可靠
+缺点：正向压降损耗
+
+改进方案（理想二极管）：
+使用MOSFET + 比较器构成零压降方案
+</code></pre>
+<p><strong>案例2：钳位电路</strong></p>
+<pre><code>输入信号限幅：
+
+      R
+输入 ──○○○──┬── 输出
+           ─┴─ D1 (to VCC)
+           ─┬─
+           ─┴─ D2 (to GND)
+           ─┬─
+            ┴
+
+功能：
+- D1导通：输出被钳制在VCC+0.7V
+- D2导通：输出被钳制在-0.7V
+应用：保护后级电路
+</code></pre>
 <h4 id="242-双极结型晶体管bjt"><a class="header" href="#242-双极结型晶体管bjt">2.4.2 双极结型晶体管（BJT）</a></h4>
-<p>BJT是电流控制器件，有NPN和PNP两种类型。</p>
-<p><strong>工作原理</strong>：</p>
-<ul>
-<li>共发射极配置：基极电流控制集电极电流</li>
-<li>电流关系：Ic = βIb，Ie = Ic + Ib</li>
-<li>放大条件：发射结正偏，集电结反偏</li>
-</ul>
-<p><strong>特性参数</strong>：</p>
-<ul>
-<li>电流增益β：β = Ic/Ib</li>
-<li>输入阻抗：中等，约1kΩ~5kΩ</li>
-<li>输出阻抗：较高，约50kΩ~100kΩ</li>
-<li>频率特性：截止频率fT</li>
-</ul>
+<p>BJT是电流控制器件，分为NPN和PNP两种类型，在模拟电路中应用广泛。</p>
+<p><strong>基本结构和工作原理</strong></p>
+<p>NPN型晶体管：</p>
+<pre><code>   集电极 C
+      │
+      │ ▼
+   ┌──┴──┐
+  基│ NPN │
+  极├──┬──┤
+   B└──┘  │
+         发射极 E
+
+电流关系：
+Ie = Ib + Ic
+Ic = β × Ib
+α = Ic / Ie ≈ 0.98-0.99
+β = Ic / Ib，典型值50-300
+</code></pre>
+<p><strong>三个工作区域</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>工作区</th><th>发射结</th><th>集电结</th><th>特性</th><th>应用</th></tr></thead><tbody>
+<tr><td>放大区</td><td>正偏</td><td>反偏</td><td>Ic=βIb</td><td>放大器</td></tr>
+<tr><td>饱和区</td><td>正偏</td><td>正偏</td><td>Vce≈0.2V</td><td>开关导通</td></tr>
+<tr><td>截止区</td><td>反偏</td><td>反偏</td><td>Ic≈0</td><td>开关断开</td></tr>
+</tbody></table>
+</div>
+<p><strong>重要参数</strong></p>
+<pre><code>1. 电流增益β（hFE）
+   - 小信号：β = ΔIc / ΔIb
+   - 大信号：β = Ic / Ib
+   - 变化范围：随温度、电流变化
+
+2. 特征频率fT
+   - 定义：β降至1时的频率
+   - 典型值：100MHz - 数GHz
+   - 决定高频性能
+
+3. 最大额定值
+   - Vceo_max：集射极最大电压
+   - Ic_max：最大集电极电流
+   - Pc_max：最大功耗
+   - Tj_max：最大结温
+
+4. 饱和压降Vcesat
+   - 深饱和：0.1-0.2V
+   - 典型值：0.2-0.3V
+
+5. 基射极电压Vbe
+   - 导通阈值：约0.6V
+   - 正常工作：0.65-0.7V
+   - 温度系数：约-2mV/°C
+</code></pre>
+<p><strong>BJT放大器基本配置</strong></p>
+<p><strong>1. 共射极放大器</strong></p>
+<pre><code>        Vcc
+         │
+         Rc
+         │
+    C1   │   C2
+输入 ──○──┬───○── 输出
+    │     │
+    Rb    │
+    │     │ C
+    │     ├─ NPN
+    │     │ B
+   GND    ├─ Vbias
+          │ E
+          Re
+          │
+         GND
+
+特点：
+- 电压增益：Av = -gmRc（负号表示反相）
+- 输入阻抗：Zin = βre，中等
+- 输出阻抗：Zout = Rc，中等
+- 应用最广泛
+</code></pre>
+<p><strong>2. 共集电极放大器（射极跟随器）</strong></p>
+<pre><code>        Vcc
+         │
+    C1   │
+输入 ──○──┤ B
+         ├─ NPN
+         │ C    │ E
+         ├─────┬──○── 输出
+         │     C2
+         Re
+         │
+        GND
+
+特点：
+- 电压增益：Av ≈ 1（无电压放大）
+- 输入阻抗：高
+- 输出阻抗：低（几Ω到几十Ω）
+- 电流增益：Ai = β
+- 应用：阻抗变换、缓冲级
+</code></pre>
+<p><strong>3. 共基极放大器</strong></p>
+<pre><code>        Vcc
+         │
+         Rc
+         │
+输入 ──○──┤ E   C ──○── 输出
+    C1   ├─ NPN
+         │ B
+        偏置
+         │
+        GND
+
+特点：
+- 电压增益：高
+- 输入阻抗：低
+- 输出阻抗：高
+- 频率特性：好（无密勒效应）
+- 应用：高频放大、电流缓冲
+</code></pre>
+<p><strong>BJT偏置电路设计</strong></p>
+<p><strong>分压式偏置（最常用）</strong></p>
+<pre><code>       Vcc
+        │
+       R1
+        ├──┬── Vb
+       R2  │
+        │ C1
+        │  │  Rc  Vcc
+       GND │  │   │
+           ├──┴───○── Vout
+        B  │ C
+        ├──NPN
+        E  │
+           ├──┬── Ve
+          Re  C2
+           │  │
+          GND GND
+
+设计步骤：
+1. 选择工作点：Vce = Vcc/2（获得最大不失真输出）
+2. 确定发射极电流Ie
+3. 选择Re，使Ve = 1-2V
+4. 设计分压网络，使偏置稳定
+
+稳定条件：
+R1 || R2 &lt; 0.1βRe
+
+计算公式：
+Vb = (R2/(R1+R2)) × Vcc
+Ve = Vb - Vbe
+Ie ≈ Ve / Re
+Ic ≈ Ie
+Vce = Vcc - Ic(Rc + Re)
+</code></pre>
+<p><strong>设计实例：音频前置放大器</strong></p>
+<pre><code>需求：
+- 电源电压：12V
+- 电压增益：约20倍（26dB）
+- 输入阻抗：&gt;10kΩ
+- 频率响应：20Hz-20kHz
+
+设计：
+1. 选择晶体管：BC547（β≈200，fT=300MHz）
+
+2. 设定工作点：
+   Vce = 6V（Vcc/2）
+   Ic = 1mA
+
+3. 计算Re：
+   Ve = 1.5V
+   Re = Ve/Ie = 1.5V/1mA = 1.5kΩ
+   选用标准值1.5kΩ
+
+4. 计算Rc：
+   Vrc = Vcc - Vce - Ve = 12 - 6 - 1.5 = 4.5V
+   Rc = Vrc/Ic = 4.5V/1mA = 4.5kΩ
+   选用标准值4.7kΩ
+
+5. 设计分压网络：
+   Vb = Ve + Vbe = 1.5 + 0.7 = 2.2V
+   设I(R1||R2) = 10Ib = 10 × (1mA/200) = 50μA
+
+   R2 = Vb / 50μA = 2.2V / 0.05mA = 44kΩ
+   选用标准值47kΩ
+
+   R1 = (Vcc-Vb) × R2 / Vb = (12-2.2) × 47 / 2.2 = 209kΩ
+   选用标准值220kΩ
+
+6. 计算增益：
+   gm = Ic/Vt = 1mA/26mV = 38.5mA/V
+   Av = -gm × Rc = -38.5 × 4.7 = -181
+
+   实际增益会因Re未完全旁路而降低
+   使用部分旁路：Re = R1 + R2
+   R1不旁路（负反馈），R2旁路
+   选择R1=100Ω，R2=1.4kΩ
+
+   Av = -Rc / R1 = -4700 / 100 = -47（约33dB）
+
+7. 选择耦合电容C1、C2：
+   下限频率fL = 20Hz
+   C1 = 1 / (2π × fL × Rin) = 1 / (2π × 20 × 10000) ≈ 0.8μF
+   选用1μF
+
+   C2 = 1 / (2π × fL × RL) = 1 / (2π × 20 × 10000) ≈ 0.8μF
+   选用1μF
+
+8. 旁路电容C2：
+   C3 = 1 / (2π × fL × R2) = 1 / (2π × 20 × 1400) ≈ 5.7μF
+   选用10μF
+</code></pre>
 <h4 id="243-场效应晶体管fet"><a class="header" href="#243-场效应晶体管fet">2.4.3 场效应晶体管（FET）</a></h4>
-<p>FET是电压控制器件，分为JFET和MOSFET两大类。</p>
-<p><strong>MOSFET特性</strong>：</p>
-<ul>
-<li>输入阻抗极高：10^9~10^12Ω</li>
-<li>驱动功率小</li>
-<li>热稳定性好</li>
-<li>静电敏感</li>
-</ul>
-<p><strong>工作区域</strong>：</p>
-<ul>
-<li>截止区：Vgs &lt; Vth</li>
-<li>线性区：Vgs &gt; Vth，Vds &lt; Vgs - Vth</li>
-<li>饱和区：Vgs &gt; Vth，Vds ≥ Vgs - Vth</li>
-</ul>
-<h2 id="3-模拟电路分析方法"><a class="header" href="#3-模拟电路分析方法">3. 模拟电路分析方法</a></h2>
-<h3 id="31-直流分析"><a class="header" href="#31-直流分析">3.1 直流分析</a></h3>
-<p>直流分析用于确定电路的静态工作点（Q点），是模拟电路设计的基础。</p>
-<h4 id="311-基本概念"><a class="header" href="#311-基本概念">3.1.1 基本概念</a></h4>
-<ul>
-<li>静态工作点：晶体管在无信号输入时的电压电流值</li>
-<li>直流负载线：表示电路中电压电流关系的直线</li>
-<li>工作区域：放大区、饱和区、截止区</li>
-</ul>
-<h4 id="312-分析步骤"><a class="header" href="#312-分析步骤">3.1.2 分析步骤</a></h4>
-<ol>
-<li><strong>确定直流等效电路</strong>：将电容视为开路，电感视为短路</li>
-<li><strong>应用基尔霍夫定律</strong>：列出节点电压方程或回路电流方程</li>
-<li><strong>求解静态工作点</strong>：确定各节点的直流电压和电流</li>
-<li><strong>验证工作状态</strong>：检查晶体管是否工作在预期区域</li>
-</ol>
-<h4 id="313-实例分析"><a class="header" href="#313-实例分析">3.1.3 实例分析</a></h4>
-<p>考虑共射极放大电路：</p>
-<pre><code>Vcc
- |
- Rc
- |
- Cc1 ---+---&gt; Vout
-       |
-       +--- Collector
-       |
-       +--- Base (通过Rb接Vin)
-       |
-       +--- Emitter (接地)
-       |
- Re
- |
-GND
+<p>FET是电压控制器件，分为结型场效应管（JFET）和金属氧化物半导体场效应管（MOSFET）。</p>
+<p><strong>MOSFET基本结构</strong></p>
+<pre><code>N沟道增强型MOSFET：
+
+      G (栅极)
+      │
+      │ 氧化层
+   ┌──┴──┐
+  S│ N沟道│D
+  源│     │漏
+   └──┬──┘
+      │
+      B (体)
+
+符号：
+      D
+      │
+      │
+  G ──┤├── B
+      │
+      │
+      S
 </code></pre>
-<p>分析步骤：</p>
-<ol>
-<li>确定基极电流：Ib = (Vcc - Vbe) / (Rb + (β+1)Re)</li>
-<li>计算集电极电流：Ic = βIb</li>
-<li>计算集电极-发射极电压：Vce = Vcc - IcRc - IeRe</li>
-<li>验证工作状态：确保Vce &gt; Vcesat，Vbe &gt; 0.6V</li>
-</ol>
-<h3 id="32-交流分析"><a class="header" href="#32-交流分析">3.2 交流分析</a></h3>
-<p>交流分析用于研究电路对小信号的响应特性。</p>
-<h4 id="321-小信号模型"><a class="header" href="#321-小信号模型">3.2.1 小信号模型</a></h4>
-<ul>
-<li>BJT小信号模型：h参数模型、混合π模型</li>
-<li>FET小信号模型：跨导模型、T模型</li>
-<li>模型参数：跨导gm、输入电阻rπ、输出电阻ro</li>
-</ul>
-<h4 id="322-频率响应分析"><a class="header" href="#322-频率响应分析">3.2.2 频率响应分析</a></h4>
-<ul>
-<li>低频响应：主要受耦合电容和旁路电容影响</li>
-<li>中频响应：电路的正常放大工作频段</li>
-<li>高频响应：受器件寄生参数和分布参数影响</li>
-</ul>
-<h4 id="323-传递函数"><a class="header" href="#323-传递函数">3.2.3 传递函数</a></h4>
-<p>电路的传递函数描述了输出与输入的复频域关系：
-H(s) = Vout(s) / Vin(s)</p>
-<p>其中s = σ + jω，用于分析电路的频率响应和稳定性。</p>
-<h3 id="33-瞬态分析"><a class="header" href="#33-瞬态分析">3.3 瞬态分析</a></h3>
-<p>瞬态分析研究电路在时间域内的响应特性。</p>
-<h4 id="331-rc电路瞬态响应"><a class="header" href="#331-rc电路瞬态响应">3.3.1 RC电路瞬态响应</a></h4>
-<ul>
-<li>充电过程：Vc(t) = V(1 - e^(-t/RC))</li>
-<li>放电过程：Vc(t) = V0e^(-t/RC))</li>
-<li>时间常数：τ = RC</li>
-</ul>
-<h4 id="332-rl电路瞬态响应"><a class="header" href="#332-rl电路瞬态响应">3.3.2 RL电路瞬态响应</a></h4>
-<ul>
-<li>电流建立：i(t) = (V/R)(1 - e^(-Rt/L))</li>
-<li>电流衰减：i(t) = I0e^(-Rt/L)</li>
-<li>时间常数：τ = L/R</li>
-</ul>
-<h4 id="333-rlc电路瞬态响应"><a class="header" href="#333-rlc电路瞬态响应">3.3.3 RLC电路瞬态响应</a></h4>
-<ul>
-<li>欠阻尼：振荡衰减</li>
-<li>临界阻尼：最快无振荡响应</li>
-<li>过阻尼：缓慢无振荡响应</li>
-</ul>
-<h2 id="4-放大器电路设计"><a class="header" href="#4-放大器电路设计">4. 放大器电路设计</a></h2>
-<h3 id="41-放大器基本概念"><a class="header" href="#41-放大器基本概念">4.1 放大器基本概念</a></h3>
-<p>放大器是模拟电路的核心，用于增强信号的幅度、功率或电流。</p>
-<h4 id="411-放大器分类"><a class="header" href="#411-放大器分类">4.1.1 放大器分类</a></h4>
-<ol>
-<li>
-<p><strong>按器件分类</strong>：</p>
-<ul>
-<li>BJT放大器</li>
-<li>FET放大器</li>
-<li>真空管放大器</li>
-<li>运算放大器</li>
-</ul>
-</li>
-<li>
-<p><strong>按配置分类</strong>：</p>
-<ul>
-<li>共射极/共源极：电压放大</li>
-<li>共集电极/共漏极：电流缓冲</li>
-<li>共基极/共栅极：高频应用</li>
-</ul>
-</li>
-<li>
-<p><strong>按频率分类</strong>：</p>
-<ul>
-<li>低频放大器：音频应用</li>
-<li>中频放大器：通信应用</li>
-<li>高频放大器：射频应用</li>
-</ul>
-</li>
-</ol>
-<h4 id="412-放大器参数"><a class="header" href="#412-放大器参数">4.1.2 放大器参数</a></h4>
-<ul>
-<li>电压增益：Av = Vout/Vin</li>
-<li>电流增益：Ai = Iout/Iin</li>
-<li>功率增益：Ap = Pout/Pin</li>
-<li>输入阻抗：Zin = Vin/Iin</li>
-<li>输出阻抗：Zout = Vout/Iout</li>
-<li>带宽：放大器能正常工作的频率范围</li>
-<li>失真度：输出信号与输入信号的差异</li>
-</ul>
-<h3 id="42-bjt放大器设计"><a class="header" href="#42-bjt放大器设计">4.2 BJT放大器设计</a></h3>
-<h4 id="421-共射极放大器"><a class="header" href="#421-共射极放大器">4.2.1 共射极放大器</a></h4>
-<p>共射极放大器是最常用的放大器配置，具有电压和电流放大功能。</p>
-<p><strong>电路配置</strong>：</p>
-<ul>
-<li>输入信号加在基极</li>
-<li>输出信号取自集电极</li>
-<li>发射极接地（可能通过电阻接地）</li>
-</ul>
-<p><strong>设计要点</strong>：</p>
-<ol>
-<li>
-<p><strong>静态工作点设置</strong>：</p>
-<ul>
-<li>选择合适的基极偏置电阻</li>
-<li>确保Q点在负载线中点附近</li>
-<li>考虑温度稳定性</li>
-</ul>
-</li>
-<li>
-<p><strong>增益计算</strong>：</p>
-<ul>
-<li>电压增益：Av = -gmRc || RL</li>
-<li>其中gm = Ic/Vt ≈ 40Ic (mA/V)</li>
-</ul>
-</li>
-<li>
-<p><strong>输入输出阻抗</strong>：</p>
-<ul>
-<li>输入阻抗：Zin ≈ βre，其中re = 26mV/Ic(mA)</li>
-<li>输出阻抗：Zout ≈ Rc</li>
-</ul>
-</li>
-</ol>
-<h4 id="422-共集电极放大器射极跟随器"><a class="header" href="#422-共集电极放大器射极跟随器">4.2.2 共集电极放大器（射极跟随器）</a></h4>
-<p>射极跟随器具有高输入阻抗、低输出阻抗的特性，常用作缓冲器。</p>
-<p><strong>电路特点</strong>：</p>
-<ul>
-<li>电压增益略小于1</li>
-<li>电流增益高</li>
-<li>输入阻抗高</li>
-<li>输出阻抗低</li>
-</ul>
-<p><strong>应用</strong>：阻抗匹配、驱动低阻负载</p>
-<h4 id="423-共基极放大器"><a class="header" href="#423-共基极放大器">4.2.3 共基极放大器</a></h4>
-<p>共基极放大器具有高频特性好、电压增益高、电流增益小于1的特点。</p>
-<p><strong>应用</strong>：高频放大、电流缓冲</p>
-<h3 id="43-fet放大器设计"><a class="header" href="#43-fet放大器设计">4.3 FET放大器设计</a></h3>
-<h4 id="431-共源极放大器"><a class="header" href="#431-共源极放大器">4.3.1 共源极放大器</a></h4>
-<p>共源极放大器是FET放大器中最常用的配置。</p>
-<p><strong>电路特点</strong>：</p>
-<ul>
-<li>电压增益：Av = -gm(rd || Rd)</li>
-<li>输入阻抗：极高，约兆欧级别</li>
-<li>输出阻抗：取决于负载电阻</li>
-</ul>
-<p><strong>偏置方法</strong>：</p>
-<ol>
-<li><strong>自偏置</strong>：利用源极电阻产生负反馈</li>
-<li><strong>分压偏置</strong>：使用电阻分压稳定栅极电压</li>
-<li><strong>电流源偏置</strong>：使用电流源提供稳定偏置</li>
-</ol>
-<h4 id="432-共漏极放大器源极跟随器"><a class="header" href="#432-共漏极放大器源极跟随器">4.3.2 共漏极放大器（源极跟随器）</a></h4>
-<p>源极跟随器具有高输入阻抗、低输出阻抗的特点。</p>
-<p><strong>特点</strong>：</p>
-<ul>
-<li>电压增益小于1但接近1</li>
-<li>电流增益高</li>
-<li>输入阻抗极高</li>
-<li>输出阻抗较低</li>
-</ul>
-<h3 id="44-运算放大器应用"><a class="header" href="#44-运算放大器应用">4.4 运算放大器应用</a></h3>
-<p>运算放大器（Op-Amp）是模拟电路中的重要集成器件，具有高增益、高输入阻抗、低输出阻抗的特点。</p>
-<h4 id="441-理想运放特性"><a class="header" href="#441-理想运放特性">4.4.1 理想运放特性</a></h4>
-<ul>
-<li>开环增益无穷大：Aol → ∞</li>
-<li>输入阻抗无穷大：Zin → ∞</li>
-<li>输出阻抗为零：Zout = 0</li>
-<li>带宽无穷大</li>
-<li>共模抑制比无穷大</li>
-</ul>
-<h4 id="442-基本运放电路"><a class="header" href="#442-基本运放电路">4.4.2 基本运放电路</a></h4>
-<ol>
-<li>
-<p><strong>反相放大器</strong>：</p>
-<pre><code>Vin --- Rin ---+--- Vout
-               |
-              ---
-              | | Rf
-              | |
-              ---
-               |
-              GND
+<p><strong>工作区域</strong></p>
+<pre><code>输出特性曲线：
+
+Id
+│        │饱和区（恒流区）
+│        │  ___________  Vgs=5V
+│       /  /
+│      /  /___________  Vgs=4V
+│     /  /
+│    /  /___________   Vgs=3V
+│   │ /
+│   │/线性区
+│   /
+│  /│截止区
+└──┴─────────────── Vds
+   Vgs-Vth
+
+三个区域：
+1. 截止区：Vgs &lt; Vth，Id ≈ 0
+2. 线性区：Vgs &gt; Vth，Vds &lt; Vgs-Vth
+   - MOS管作为可变电阻
+   - 用于开关、模拟开关
+
+3. 饱和区：Vgs &gt; Vth，Vds ≥ Vgs-Vth
+   - Id与Vds无关
+   - 用于放大器
 </code></pre>
-<p>电压增益：Av = -Rf/Rin</p>
-</li>
-<li>
-<p><strong>同相放大器</strong>：</p>
-<pre><code>Vin ---+---------- Vout
-       |
-      ---
-      | | R1
-      | |
-      ---
-       |
+<p><strong>重要参数</strong></p>
+<pre><code>1. 阈值电压Vth
+   - N沟道增强型：0.5-2V
+   - P沟道增强型：-0.5~-2V
+   - N沟道耗尽型：-1~-5V
+
+2. 跨导gm
+   gm = ΔId / ΔVgs
+   在饱和区：gm = 2√(K×Id)
+
+3. 导通电阻Rdson
+   - 线性区的等效电阻
+   - 重要的开关参数
+   - 典型值：几mΩ到几Ω
+
+4. 栅极电荷Qg
+   - 开关速度的决定因素
+   - 驱动功耗相关
+
+5. 体二极管
+   - MOS管固有特性
+   - 可用于续流
+   - 反向恢复时间通常较慢
+
+6. 寄生电容
+   - Ciss：输入电容
+   - Coss：输出电容
+   - Crss（Cgd）：米勒电容，影响开关速度
+</code></pre>
+<p><strong>MOSFET vs BJT</strong></p>
+<div class="table-wrapper"><table><thead><tr><th>特性</th><th>MOSFET</th><th>BJT</th></tr></thead><tbody>
+<tr><td>控制方式</td><td>电压控制</td><td>电流控制</td></tr>
+<tr><td>输入阻抗</td><td>极高（GΩ）</td><td>中等（kΩ）</td></tr>
+<tr><td>驱动功率</td><td>低（仅电容充放电）</td><td>需要持续基极电流</td></tr>
+<tr><td>导通电阻</td><td>有Rdson</td><td>有Vcesat</td></tr>
+<tr><td>开关速度</td><td>快</td><td>较快</td></tr>
+<tr><td>成本</td><td>低（功率应用）</td><td>低（小信号应用）</td></tr>
+<tr><td>线性度</td><td>好</td><td>更好</td></tr>
+<tr><td>温度系数</td><td>正（利于并联）</td><td>负（并联困难）</td></tr>
+<tr><td>应用领域</td><td>电源开关、功率放大</td><td>小信号放大、精密电路</td></tr>
+</tbody></table>
+</div>
+<p><strong>MOSFET驱动电路</strong></p>
+<p><strong>低侧驱动（N-MOS）</strong></p>
+<pre><code>      Vcc
+       │
+      负载
+       │
+       D
+MCU ──┤├── N-MOS
+       S
+       │
       GND
+
+优点：
+- 驱动简单
+- 效率高
+
+缺点：
+- 负载不接地
 </code></pre>
-<p>电压增益：Av = 1 + Rf/R1</p>
-</li>
-<li>
-<p><strong>电压跟随器</strong>：</p>
+<p><strong>高侧驱动（N-MOS）</strong></p>
+<pre><code>       Vcc
+        │
+        D
+      ┌─┤├── N-MOS
+      │  S
+     驱动│
+     电路└── 负载
+          │
+         GND
+
+问题：
+Vgs需要高于Vcc
+
+解决方案：
+1. Bootstrap电路
+2. 电荷泵
+3. 隔离驱动
+4. 使用P-MOS（简单但效率较低）
+</code></pre>
+<p><strong>Bootstrap驱动电路</strong></p>
+<pre><code>           Vcc
+            │
+         D──┴── Vboot
+      ┌──┤├─  ═══ Cboot
+      │   S   │
+   驱动器  │  ─┤&gt;├─
+      └────┴────┤
+                │ Dboot
+               GND
+
+工作原理：
+1. 下管导通时，Cboot通过Dboot充电
+2. 下管关断，上管导通时，Cboot提供Vgs
+3. Vboot = Vcc + Vs，满足N-MOS导通条件
+
+设计要点：
+- Cboot大小：100nF-1μF典型
+- Dboot选择：快恢复二极管
+- 需要定期刷新（占空比不能100%）
+</code></pre>
+<p><strong>实战案例：12V LED调光驱动</strong></p>
+<pre><code>需求：
+- 输入：12V
+- 负载：3串LED，每串100mA
+- 调光：PWM控制
+
+方案：
+1. 选择N-MOS：IRLZ44N
+   - Vdss = 55V
+   - Id = 47A
+   - Rdson = 22mΩ @ Vgs=5V
+   - Vth = 1-2V
+
+2. 驱动电路：
+   MCU(3.3V) ────○○○──┬── G
+                 10Ω  │
+                     ─┴─ 10kΩ下拉
+                     ─┬─
+                      ┴
+
+3. 功耗计算：
+   Id = 0.3A（3串并联）
+   Vds = Id × Rdson = 0.3 × 0.022 = 6.6mV
+   P = Id² × Rdson = 0.09 × 0.022 = 2mW
+
+   无需散热器
+
+4. 栅极电阻选择：
+   - 限制峰值电流
+   - 减缓开关速度，降低EMI
+   - 10Ω典型值
+
+5. PCB布局：
+   - 栅极走线短而粗
+   - 源极直接连接GND
+   - 功率回路面积最小
+</code></pre>
+<h3 id="25-器件选型总结与工程经验"><a class="header" href="#25-器件选型总结与工程经验">2.5 器件选型总结与工程经验</a></h3>
+<h4 id="251-器件选型checklist"><a class="header" href="#251-器件选型checklist">2.5.1 器件选型checklist</a></h4>
+<p><strong>电阻器</strong></p>
 <ul>
-<li>增益为1</li>
-<li>输入阻抗极高</li>
-<li>输出阻抗极低</li>
+<li><input disabled="" type="checkbox"/>
+阻值是否为标准值？</li>
+<li><input disabled="" type="checkbox"/>
+精度是否满足要求？</li>
+<li><input disabled="" type="checkbox"/>
+功率降额是否充足（&gt;50%）？</li>
+<li><input disabled="" type="checkbox"/>
+温度系数是否可接受？</li>
+<li><input disabled="" type="checkbox"/>
+高频应用是否考虑寄生参数？</li>
 </ul>
-</li>
-<li>
-<p><strong>加法器</strong>：
-多个输入信号通过不同电阻连接到反相输入端</p>
-</li>
-<li>
-<p><strong>差分放大器</strong>：
-放大两个输入信号的差值</p>
-</li>
-</ol>
-<h4 id="443-实际运放考虑"><a class="header" href="#443-实际运放考虑">4.4.3 实际运放考虑</a></h4>
+<p><strong>电容器</strong></p>
 <ul>
-<li>输入偏置电流</li>
-<li>输入失调电压</li>
-<li>压摆率</li>
-<li>增益带宽积</li>
-<li>电源抑制比</li>
+<li><input disabled="" type="checkbox"/>
+介质类型是否合适？</li>
+<li><input disabled="" type="checkbox"/>
+耐压降额是否充足（&gt;50%）？</li>
+<li><input disabled="" type="checkbox"/>
+ESR/ESL是否满足要求？</li>
+<li><input disabled="" type="checkbox"/>
+温度特性是否考虑？</li>
+<li><input disabled="" type="checkbox"/>
+电解电容寿命是否评估？</li>
 </ul>
+<p><strong>电感器</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+饱和电流是否充足？</li>
+<li><input disabled="" type="checkbox"/>
+DCR是否过大？</li>
+<li><input disabled="" type="checkbox"/>
+封装尺寸是否合适？</li>
+<li><input disabled="" type="checkbox"/>
+自谐振频率是否足够高？</li>
+<li><input disabled="" type="checkbox"/>
+屏蔽型还是非屏蔽型？</li>
+</ul>
+<p><strong>半导体器件</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+最大额定值是否满足？</li>
+<li><input disabled="" type="checkbox"/>
+功耗是否需要散热？</li>
+<li><input disabled="" type="checkbox"/>
+频率特性是否够用？</li>
+<li><input disabled="" type="checkbox"/>
+驱动能力是否匹配？</li>
+<li><input disabled="" type="checkbox"/>
+保护措施是否完善？</li>
+</ul>
+<h4 id="252-常见错误与教训"><a class="header" href="#252-常见错误与教训">2.5.2 常见错误与教训</a></h4>
+<p><strong>错误1：电阻功率不足</strong></p>
+<pre><code>现象：电阻发烫、变色、断路
+原因：实际功耗超过额定值
+解决：
+- 计算实际功耗
+- 至少2倍降额
+- 必要时使用大功率电阻或并联
+</code></pre>
+<p><strong>错误2：电解电容反接</strong></p>
+<pre><code>现象：电容发热、鼓包、爆炸
+原因：极性接反
+预防：
+- PCB明确标注极性
+- 装配时仔细检查
+- 使用无极性电容（如需双向）
+</code></pre>
+<p><strong>错误3：陶瓷电容选型不当</strong></p>
+<pre><code>问题：
+- 标称10μF的X7R电容
+- 实际工作时只有5-6μF
+原因：
+- DC偏置效应
+- 温度漂移
+解决：
+- 查看厂商的电压-容量曲线
+- 选择更大容量或更大耐压等级
+- 关键应用使用C0G/NP0
+</code></pre>
+<p><strong>错误4：MOSFET没有驱动电阻</strong></p>
+<pre><code>问题：
+- 驱动芯片损坏
+- EMI问题严重
+原因：
+- 栅极电容充放电电流过大
+- dV/dt过快
+解决：
+- 增加10Ω栅极串联电阻
+- 必要时增加RCD缓冲电路
+</code></pre>
+<p><strong>错误5：忽略寄生参数</strong></p>
+<pre><code>高频电路常见问题：
+- 电容在谐振频率以上变成电感
+- 电感在自谐振点以上变成电容
+- 长走线变成传输线
+
+解决：
+- 查看器件频率特性
+- 使用合适频率范围的器件
+- 优化PCB布局
+</code></pre>
+<hr />
+<h2 id="3-模拟电路分析方法"><a class="header" href="#3-模拟电路分析方法">3. 模拟电路分析方法</a></h2>
+<p>模拟电路分析是理解和设计电路的基础，主要包括直流分析、交流分析和瞬态分析三大类。</p>
+<h3 id="31-直流分析"><a class="header" href="#31-直流分析">3.1 直流分析</a></h3>
+<p>直流分析用于确定电路的静态工作点（Q点），是模拟电路设计的第一步。</p>
+<h4 id="311-基本概念"><a class="header" href="#311-基本概念">3.1.1 基本概念</a></h4>
+<p><strong>静态工作点</strong></p>
+<ul>
+<li>定义：晶体管在无信号输入时的直流电压和电流值</li>
+<li>重要性：决定放大器的线性度、增益、动态范围</li>
+<li>符号：Q点（Quiescent Point）</li>
+<li>参数：Vce, Ic（BJT）或Vds, Id（FET）</li>
+</ul>
+<p><strong>直流负载线</strong></p>
+<pre><code>负载线方程（共射极电路）：
+Vce = Vcc - Ic(Rc + Re)
+
+负载线图：
+Ic
+│       ╲ 负载线
+│        ╲
+│         ╲
+│          ╲Q点
+│         / ╲晶体管特性曲线
+│        /   ╲
+│       /     ╲
+└──────────────── Vce
+0            Vcc
+
+Q点位置选择：
+- 中点：Vce = Vcc/2（最大不失真输出）
+- 偏上：更大电压摆幅
+- 偏下：更大电流摆幅
+</code></pre>
+<h4 id="312-分析步骤"><a class="header" href="#312-分析步骤">3.1.2 分析步骤</a></h4>
+<p><strong>步骤1：绘制直流等效电路</strong></p>
+<ul>
+<li>电容→开路（阻直流）</li>
+<li>电感→短路（通直流）</li>
+<li>交流信号源→短路/接地</li>
+</ul>
+<p><strong>步骤2：应用基尔霍夫定律</strong></p>
+<p>基尔霍夫电压定律（KVL）：</p>
+<pre><code>回路电压代数和为零
+ΣV = 0
+
+示例（基极回路）：
+Vcc - IbRb - Vbe - IeRe = 0
+</code></pre>
+<p>基尔霍夫电流定律（KCL）：</p>
+<pre><code>节点电流代数和为零
+ΣI = 0
+
+示例（发射极）：
+Ie = Ib + Ic
+</code></pre>
+<p><strong>步骤3：求解联立方程</strong></p>
+<p>戴维南定理简化：</p>
+<pre><code>复杂电阻网络可等效为：
+Vth：戴维南等效电压
+Rth：戴维南等效电阻
+
+例如基极偏置网络：
+R1, R2分压 → Vth = Vcc × R2/(R1+R2)
+            Rth = R1 || R2
+</code></pre>
+<p><strong>步骤4：验证工作状态</strong></p>
+<ul>
+<li>BJT放大状态：Vbe ≈ 0.7V，Vce &gt; 0.3V</li>
+<li>BJT饱和：Vce &lt; 0.3V</li>
+<li>BJT截止：Ib ≈ 0，Ic ≈ 0</li>
+<li>MOSFET导通：Vgs &gt; Vth，Id &gt; 0</li>
+</ul>
+<h4 id="313-实例分析"><a class="header" href="#313-实例分析">3.1.3 实例分析</a></h4>
+<p><strong>例1：共射极放大器直流分析</strong></p>
+<pre><code>电路：
+        Vcc=12V
+         │
+         │ Rc=4.7kΩ
+         ├──○── Vout
+    R1   │
+   100k  │ C
+    ├────┤ NPN (β=100)
+    │  B │
+   Vcc   ├─ E
+    │    │
+   R2    │ Re=1kΩ
+   22k   │
+    │    │
+   GND  GND
+
+分析：
+1. 基极电压：
+   Vb = Vcc × R2/(R1+R2)
+   Vb = 12 × 22/(100+22) = 2.16V
+
+2. 发射极电压：
+   Ve = Vb - Vbe = 2.16 - 0.7 = 1.46V
+
+3. 发射极电流：
+   Ie = Ve/Re = 1.46/1000 = 1.46mA
+
+4. 集电极电流：
+   Ic ≈ Ie = 1.46mA（α≈1）
+
+5. 集电极电压：
+   Vc = Vcc - Ic×Rc
+   Vc = 12 - 1.46×4.7 = 5.14V
+
+6. 集射极电压：
+   Vce = Vc - Ve = 5.14 - 1.46 = 3.68V
+
+7. 验证：
+   Vbe ≈ 0.7V ✓（正偏）
+   Vce = 3.68V &gt; 0.3V ✓（放大区）
+
+结论：晶体管工作在放大区，Q点合理
+</code></pre>
+<p><strong>例2：考虑β变化的稳定性分析</strong></p>
+<pre><code>假设β从100变化到200：
+
+原来：
+Ib = (Vb - Vbe)/(Rth + (β+1)Re)
+Rth = R1||R2 = 100k||22k = 18kΩ
+Ib = (2.16-0.7)/(18k + 101×1k) = 12.3μA
+Ic = β×Ib = 100×12.3μA = 1.23mA
+
+现在（β=200）：
+Ib = (2.16-0.7)/(18k + 201×1k) = 6.67μA
+Ic = 200×6.67μA = 1.33mA
+
+变化率：
+ΔIc/Ic = (1.33-1.23)/1.23 = 8.1%
+
+评价：
+β变化100%，Ic仅变化8.1%
+说明偏置稳定性良好
+
+稳定性改善因素：
+1. Re提供负反馈
+2. R1||R2足够小（&lt; 0.1βRe）
+</code></pre>
+<h3 id="32-交流分析"><a class="header" href="#32-交流分析">3.2 交流分析</a></h3>
+<p>交流分析研究电路对小信号的响应，是设计放大器的核心。</p>
+<h4 id="321-小信号模型"><a class="header" href="#321-小信号模型">3.2.1 小信号模型</a></h4>
+<p><strong>BJT小信号模型</strong></p>
+<p>混合π模型：</p>
+<pre><code>      B ○─────┬─────○ C
+              │
+            rπ│    gmVbe ║ ro
+              │          ║
+      E ○─────┴──────────○ C
+
+参数计算：
+rπ = β / gm
+gm = Ic / Vt = Ic / 26mV（室温）
+ro = Va / Ic（Early电压Va典型50-100V）
+
+示例（Ic=1mA，β=100）：
+gm = 1mA / 26mV = 38.5mA/V
+rπ = 100 / 0.0385 = 2.6kΩ
+ro = 100V / 1mA = 100kΩ
+</code></pre>
+<p><strong>MOSFET小信号模型</strong></p>
+<pre><code>      G ○           ○ D
+                    │
+                    │ gmVgs ║ rds
+                    │       ║
+      S ○───────────┴───────○ S
+
+参数计算：
+gm = 2Id / (Vgs - Vth)
+rds = 1 / (λ×Id)（λ为沟道调制系数）
+</code></pre>
+<h4 id="322-共射极放大器交流分析"><a class="header" href="#322-共射极放大器交流分析">3.2.2 共射极放大器交流分析</a></h4>
+<p><strong>不带Re旁路电容</strong></p>
+<pre><code>电压增益：
+Av = -gm × (Rc || RL) / (1 + gm×Re)
+Av ≈ -Rc / Re（当gmRe &gt;&gt; 1时）
+
+输入阻抗：
+Zin = R1 || R2 || [rπ + (β+1)Re]
+Zin ≈ R1 || R2（若(β+1)Re较大）
+
+输出阻抗：
+Zout = Rc
+
+特点：
+- 增益稳定（取决于电阻比）
+- 增益较小
+- 线性度好
+</code></pre>
+<p><strong>带Re旁路电容</strong></p>
+<pre><code>电压增益：
+Av = -gm × (Rc || RL)
+
+示例（gm=38.5mA/V，Rc=4.7kΩ，RL=10kΩ）：
+Av = -0.0385 × (4.7k || 10k)
+Av = -0.0385 × 3.2k
+Av = -123
+
+输入阻抗：
+Zin = R1 || R2 || βre
+re = 1/gm = 26Ω（Ic=1mA时）
+Zin = 100k || 22k || (100×26)
+Zin ≈ 2.6kΩ || 18kΩ ≈ 2.3kΩ
+
+输出阻抗：
+Zout = Rc || ro ≈ Rc（ro通常很大）
+
+特点：
+- 增益高
+- 增益随β变化
+- 线性度一般
+</code></pre>
+<p><strong>部分旁路设计</strong></p>
+<pre><code>将Re分为两部分：
+Re = Re1 + Re2
+
+Re1不旁路（负反馈）
+Re2旁路（增加增益）
+
+电压增益：
+Av = -gm×Rc / (1 + gm×Re1)
+Av ≈ -Rc / Re1（当gmRe1 &gt;&gt; 1时）
+
+示例：
+Rc = 4.7kΩ
+Re1 = 100Ω
+Re2 = 900Ω
+
+Av ≈ -4700/100 = -47（33dB）
+
+优点：
+- 增益适中
+- 增益稳定
+- 线性度好
+- 频率响应好（Re2不需要大电容）
+</code></pre>
+<h4 id="323-频率响应分析"><a class="header" href="#323-频率响应分析">3.2.3 频率响应分析</a></h4>
+<p><strong>三个频段</strong></p>
+<pre><code>|A|
+ │      ┌──────────────┐ 中频段
+ │     /               \
+ │    /                 \
+ │   /                   \____
+ │  /
+ └─┴────────┴────────────┴──── f
+   fL     f1           f2  fH
+
+fL：下限截止频率
+fH：上限截止频率
+带宽BW = fH - fL ≈ fH（当fH &gt;&gt; fL时）
+</code></pre>
+<p><strong>低频响应</strong></p>
+<p>主要受耦合电容和旁路电容影响：</p>
+<pre><code>下限频率由最大时间常数决定：
+fL = 1 / (2πRC)
+
+多个极点时：
+fL ≈ √(fL1² + fL2² + fL3²...)
+
+设计准则：
+各电容fL约为目标fL的1/3
+</code></pre>
+<p><strong>耦合电容C1计算</strong></p>
+<pre><code>fL1 = 1 / (2π × C1 × (Rs + Rin))
+
+示例：
+Rs = 1kΩ（信号源内阻）
+Rin = 2.3kΩ（输入阻抗）
+fL = 20Hz（音频下限）
+
+C1 = 1 / (2π × 20 × 3.3k)
+C1 = 2.4μF
+
+选用标准值3.3μF或更大
+</code></pre>
+<p><strong>旁路电容C2计算</strong></p>
+<pre><code>fL2 = 1 / (2π × C2 × Re2||re)
+
+re = 1/gm = 26Ω（Ic=1mA）
+Re2 = 900Ω
+Re2||re ≈ re = 26Ω
+
+C2 = 1 / (2π × 20 × 26)
+C2 = 306μF
+
+选用标准值330μF或470μF
+
+注意：若Re完全旁路，需要更大电容
+</code></pre>
+<p><strong>耦合电容C3计算</strong></p>
+<pre><code>fL3 = 1 / (2π × C3 × (Rc + RL))
+
+Rc = 4.7kΩ
+RL = 10kΩ
+
+C3 = 1 / (2π × 20 × 14.7k)
+C3 = 0.54μF
+
+选用标准值1μF或更大
+</code></pre>
+<p><strong>高频响应</strong></p>
+<p>主要受晶体管寄生电容影响：</p>
+<pre><code>密勒效应：
+Cm = Cμ × (1 + |Av|)
+
+Cμ：集电极-基极电容（几pF）
+密勒电容大大增加输入电容
+
+上限频率：
+fH = 1 / (2π × Rs × Cin)
+Cin = Cπ + Cm
+
+示例：
+Cπ = 50pF
+Cμ = 5pF
+Av = 100
+Rs = 1kΩ
+
+Cm = 5 × (1+100) = 505pF
+Cin = 50 + 505 = 555pF
+fH = 1 / (2π × 1k × 555pF) = 287kHz
+</code></pre>
+<p><strong>增益带宽积</strong></p>
+<pre><code>GBW = |Av_mid| × BW
+
+特点：
+- 增益越高，带宽越窄
+- 总是一个常数（单极点系统）
+
+示例：
+Av = 100（40dB）
+BW = 300kHz
+GBW = 30MHz
+
+若要Av = 10（20dB）
+则BW = 3MHz
+</code></pre>
+<h3 id="33-瞬态分析"><a class="header" href="#33-瞬态分析">3.3 瞬态分析</a></h3>
+<p>瞬态分析研究电路随时间变化的响应。</p>
+<h4 id="331-rc电路瞬态响应"><a class="header" href="#331-rc电路瞬态响应">3.3.1 RC电路瞬态响应</a></h4>
+<p><strong>一阶RC低通电路</strong></p>
+<pre><code>        R
+输入 ──○○○──┬── 输出
+           ═══ C
+            │
+           GND
+
+阶跃输入响应：
+Vc(t) = V × (1 - e^(-t/τ))
+
+时间常数：
+τ = RC
+
+关键时刻：
+t = τ：    Vc = 0.632V（63.2%）
+t = 2τ：   Vc = 0.865V（86.5%）
+t = 3τ：   Vc = 0.950V（95%）
+t = 5τ：   Vc = 0.993V（99.3%）
+
+实用规则：
+建立时间（1%误差）≈ 5τ
+</code></pre>
+<p><strong>实战案例：复位电路设计</strong></p>
+<pre><code>需求：
+- 微控制器需要上电复位
+- 复位时间：100ms
+- 复位阈值：0.3Vcc
+
+电路：
+      Vcc
+       │
+       R
+       ├──┬── Reset输入
+      GND ═══ C
+       │  │
+      开关 │
+       │ GND
+       │
+      GND
+
+设计：
+1. 确定时间常数：
+   复位时间 = 5τ = 100ms
+   τ = 20ms
+
+2. 选择C（通常先选标准值）：
+   C = 100μF
+
+3. 计算R：
+   R = τ/C = 20ms/100μF = 200Ω
+   选用标准值220Ω
+
+4. 验证：
+   t = 5×20ms = 100ms时
+   Vc = Vcc×(1-e^-5) = 0.993Vcc
+
+   复位释放电压（假设0.7Vcc）：
+   0.7 = 1 - e^(-t/20ms)
+   t = -20ms × ln(0.3) = 24ms
+
+   复位脉宽：24ms满足要求
+</code></pre>
+<h4 id="332-rl电路瞬态响应"><a class="header" href="#332-rl电路瞬态响应">3.3.2 RL电路瞬态响应</a></h4>
+<p><strong>电流建立和衰减</strong></p>
+<pre><code>电流建立：
+i(t) = (V/R) × (1 - e^(-Rt/L))
+
+电流衰减：
+i(t) = I₀ × e^(-Rt/L)
+
+时间常数：
+τ = L/R
+</code></pre>
+<p><strong>感性负载开关应用</strong></p>
+<pre><code>问题：
+断开感性负载时，di/dt很大
+V = L×di/dt产生高压尖峰
+可能损坏开关器件
+
+解决方案：续流二极管
+
+       Vcc
+        │
+       L负载
+        ├──┬───
+       ─┴─  │
+      ─┬─ D │开关
+       │    │
+      GND  GND
+
+工作原理：
+- 开关导通：电流经开关流过
+- 开关断开：电感电流经二极管续流
+- 能量在R和D上消耗
+
+二极管选择：
+- 正向电流 ≥ 负载电流
+- 反向电压 ≥ 电源电压
+- 快恢复或肖特基二极管
+</code></pre>
+<h4 id="333-rlc电路瞬态响应"><a class="header" href="#333-rlc电路瞬态响应">3.3.3 RLC电路瞬态响应</a></h4>
+<p><strong>二阶系统响应</strong></p>
+<pre><code>特征方程：
+s² + (R/L)s + 1/(LC) = 0
+
+阻尼比：
+ζ = (R/2)√(C/L)
+
+固有频率：
+ω₀ = 1/√(LC)
+
+三种响应：
+1. 欠阻尼（ζ &lt; 1）：振荡衰减
+2. 临界阻尼（ζ = 1）：最快无振荡响应
+3. 过阻尼（ζ &gt; 1）：缓慢无振荡响应
+</code></pre>
+<p><strong>欠阻尼响应（最常见）</strong></p>
+<pre><code>v(t) = V × [1 - e^(-ζω₀t) × cos(ωdt)]
+
+其中：
+ωd = ω₀√(1-ζ²)（阻尼振荡频率）
+
+超调量：
+PO = e^(-πζ/√(1-ζ²)) × 100%
+
+上升时间：
+tr ≈ 1.8 / ω₀
+
+建立时间（2%）：
+ts ≈ 4 / (ζω₀)
+
+示例：ζ=0.7（最优阻尼）
+PO = 4.6%
+tr = 1.8/ω₀
+ts = 5.7/ω₀
+</code></pre>
+<p><strong>实战案例：LC输出滤波器设计</strong></p>
+<pre><code>Buck转换器输出滤波器：
+
+       Vin
+        │
+       开关
+        ├── L ──┬── Vout
+      GND      ═══ C
+                │   ║ RL
+               GND GND
+
+设计要求：
+- 开关频率fs = 500kHz
+- 输出纹波 &lt; 50mV
+- 阶跃响应无振铃
+
+步骤：
+1. 选择截止频率：
+   fc = fs/10 = 50kHz（经验值）
+
+2. 计算LC：
+   fc = 1/(2π√(LC))
+   选L = 10μH
+   C = 1/(4π²fc²L)
+   C = 1/(4π²×50k²×10μ) = 10.1μF
+   选用标准值22μF
+
+3. 确定ESR：
+   纹波主要由ESR决定
+   Vripple = ΔIL × ESR
+   ΔIL = 0.4A（20%电感纹波）
+   ESR &lt; 50mV/0.4A = 125mΩ
+
+   选用低ESR陶瓷电容（&lt;20mΩ）
+
+4. 阻尼设计：
+   为避免振铃，需要ζ &gt; 0.5
+   可增加RC缓冲器或选择有一定ESR的电容
+
+5. 验证：
+   f₀ = 1/(2π√(10μ×22μ)) = 33.9kHz ✓
+   Q = 1/(2πf₀×C×ESR)
+   Q = 1/(2π×33.9k×22μ×20m) = 10.7
+   ζ = 1/(2Q) = 0.047（欠阻尼，可能振铃）
+
+   改进：增加阻尼电阻或选择ESR更大的电容
+   使用10μF陶瓷 + 10μF钽电解（ESR≈100mΩ）
+   ζ = 0.2（acceptable）
+</code></pre>
+<hr />
+<h2 id="4-放大器电路设计"><a class="header" href="#4-放大器电路设计">4. 放大器电路设计</a></h2>
+<p>放大器是模拟电路的核心组成部分，用于增强信号的幅度、功率或电流。本章深入讨论各类放大器的设计方法。</p>
+<h3 id="41-放大器基本概念"><a class="header" href="#41-放大器基本概念">4.1 放大器基本概念</a></h3>
+<h4 id="411-放大器关键参数"><a class="header" href="#411-放大器关键参数">4.1.1 放大器关键参数</a></h4>
+<p><strong>增益</strong></p>
+<pre><code>电压增益：
+Av = Vout / Vin
+dB表示：Av(dB) = 20 × log₁₀(Av)
+
+电流增益：
+Ai = Iout / Iin
+
+功率增益：
+Ap = Pout / Pin
+Ap = Av × Ai
+Ap(dB) = 10 × log₁₀(Ap)
+
+示例：
+Av = 100 → Av(dB) = 40dB
+Av = 1000 → Av(dB) = 60dB
+Av = 0.5 → Av(dB) = -6dB
+</code></pre>
+<p><strong>输入/输出阻抗</strong></p>
+<pre><code>输入阻抗：
+Zin = Vin / Iin
+
+理想情况：
+- 电压放大器：Zin → ∞（不消耗信号源功率）
+- 电流放大器：Zin → 0（全部电流进入）
+
+输出阻抗：
+Zout = ΔVout / ΔIout（负载变化时测量）
+
+理想情况：
+- 电压源：Zout → 0（带载能力强）
+- 电流源：Zout → ∞（电流稳定）
+</code></pre>
+<p><strong>带宽</strong></p>
+<pre><code>定义：增益下降3dB时的频率范围
+
+BW = f_H - f_L
+
+全功率带宽（FPBW）：
+最大不失真输出时的带宽
+受压摆率限制
+
+FPBW = SR / (2πVpeak)
+
+示例：
+SR = 10V/μs
+Vpeak = 10V
+FPBW = 10/(2π×10) = 159kHz
+</code></pre>
+<p><strong>失真</strong></p>
+<pre><code>总谐波失真（THD）：
+THD = √(V₂² + V₃² + ... + Vn²) / V₁
+
+其中V₁是基波，V₂、V₃...是谐波
+
+互调失真（IMD）：
+两个频率f₁、f₂输入产生
+2f₁±f₂, 2f₂±f₁等
+
+示例：
+THD &lt; 0.1% - 高保真音频
+THD &lt; 1% - 一般音频
+THD &lt; 5% - 通信系统
+</code></pre>
+<p><strong>噪声</strong></p>
+<pre><code>信噪比（SNR）：
+SNR = 20 × log₁₀(Vsignal / Vnoise)
+
+示例：
+Vsignal = 1V
+Vnoise = 1mV
+SNR = 20 × log(1/0.001) = 60dB
+
+应用要求：
+- 音频：&gt;90dB
+- 通信：&gt;40dB  
+- 测量：&gt;80dB
+</code></pre>
+<h3 id="42-运算放大器应用电路"><a class="header" href="#42-运算放大器应用电路">4.2 运算放大器应用电路</a></h3>
+<p>运算放大器（Op-Amp）是模拟电路设计中最重要的集成器件之一。</p>
+<h4 id="421-理想运放特性"><a class="header" href="#421-理想运放特性">4.2.1 理想运放特性</a></h4>
+<pre><code>1. 开环增益：Aol → ∞
+2. 输入阻抗：Zin → ∞
+3. 输出阻抗：Zout → 0
+4. 带宽：BW → ∞
+5. 共模抑制比：CMRR → ∞
+6. 电源抑制比：PSRR → ∞
+7. 输入失调电压：Vos → 0
+8. 输入偏置电流：Ib → 0
+9. 压摆率：SR → ∞
+</code></pre>
+<h4 id="422-基本运放电路设计"><a class="header" href="#422-基本运放电路设计">4.2.2 基本运放电路设计</a></h4>
+<p><strong>1. 反相放大器</strong></p>
+<pre><code>设计公式：
+Av = -Rf / Rin
+Zin = Rin
+Zout ≈ 0
+
+设计实例：增益-10倍
+Rin = 10kΩ
+Rf = 100kΩ
+Av = -100k/10k = -10
+
+带宽计算：
+BW = GBW / |Av|
+若GBW = 1MHz
+BW = 1MHz / 10 = 100kHz
+</code></pre>
+<p><strong>2. 同相放大器</strong></p>
+<pre><code>设计公式：
+Av = 1 + Rf/R1
+Zin → ∞（非常高）
+Zout ≈ 0
+
+设计实例：增益11倍
+R1 = 10kΩ
+Rf = 100kΩ
+Av = 1 + 100k/10k = 11
+
+优点：
+- 输入阻抗极高
+- 不会加载信号源
+- 无相位反转
+</code></pre>
+<p><strong>3. 差分放大器</strong></p>
+<pre><code>完整公式：
+Vout = (Rf/R1) × (V2 - V1)
+
+设计要点：
+- 所有电阻需要精确匹配
+- Rf/R1 = R3/R2
+- 共模抑制比取决于电阻匹配精度
+
+实例：差分增益10倍
+R1 = R2 = 10kΩ, ±0.1%
+Rf = R3 = 100kΩ, ±0.1%
+Av_diff = 10
+CMRR &gt; 80dB（0.1%匹配）
+</code></pre>
+<p><strong>4. 仪表放大器</strong></p>
+<pre><code>电路结构：三运放仪表放大器
+
+          R2        R2
+    V1 ──┬──○○○──┬──○○○──┬─── Vout
+         │ U1    │       │
+        Rg       │ U3    R4
+         │       │       │
+    V2 ──┴───────┴───────┴─── GND
+         │ U2    │
+          R2     R2
+
+增益：Av = (1 + 2R2/Rg) × (R4/R4)
+
+特点：
+- 高输入阻抗（GΩ级）
+- 高CMRR（&gt;100dB）
+- 增益通过单个电阻设置
+- 适合微弱信号放大
+
+设计实例：增益100倍
+选R2 = 10kΩ
+Rg = 2R2/(Av-1) = 20k/99 = 202Ω
+选用200Ω标准值或可调
+
+应用：传感器信号调理
+</code></pre>
+<p><strong>5. 积分器</strong></p>
+<pre><code>电路：
+Vin ──○○○─┬─── Vout
+      R   │
+          ╧ C
+          │
+         GND
+
+传递函数：
+Vout = -(1/RC) ∫Vin dt
+
+应用：
+- 波形产生（方波→三角波）
+- 信号平滑
+- PID控制器中的I环节
+
+实用设计：
+- 并联大电阻防止直流漂移
+- 增加复位开关
+- 考虑运放限制
+
+实例：1kHz积分器
+R = 10kΩ
+f = 1/(2πRC)
+C = 1/(2π×1kHz×10k) = 16nF
+选用15nF或18nF
+</code></pre>
+<p><strong>6. 微分器</strong></p>
+<pre><code>电路：
+        R
+Vin ──┬──○○○─┬─── Vout
+     ═══     │
+      C      │
+     ┴      GND
+
+传递函数：
+Vout = -RC × dVin/dt
+
+注意：
+- 高频噪声放大严重
+- 需要增加限频电阻和电容
+- 实际多用有源滤波器代替
+
+改进设计：
+增加R2、C2形成带限微分器
+典型：R2 = R/10, C2 = 10C
+</code></pre>
+<h4 id="423-实际运放性能限制"><a class="header" href="#423-实际运放性能限制">4.2.3 实际运放性能限制</a></h4>
+<p><strong>1. 输入失调电压（Vos）</strong></p>
+<pre><code>定义：使输出为0时输入端需要的补偿电压
+典型值：
+- 通用运放：1-10mV
+- 精密运放：10-100μV
+- 斩波运放：&lt;10μV
+
+影响：
+Vout_error = Vos × (1 + Rf/Rin)
+
+补偿方法：
+- 硬件调零（老式运放）
+- 选用低Vos运放
+- 自动校零技术
+</code></pre>
+<p><strong>2. 输入偏置电流（Ib）</strong></p>
+<pre><code>定义：维持运放工作需要的输入电流
+典型值：
+- BJT输入：nA~μA级
+- FET输入：pA~fA级
+
+误差电压：
+Verror = Ib × R
+
+补偿：
+在同相端加平衡电阻
+Rcomp = R1 || Rf
+</code></pre>
+<p><strong>3. 压摆率（Slew Rate）</strong></p>
+<pre><code>定义：输出电压最大变化率
+SR = dVout/dt
+
+典型值：
+- 通用运放：0.5-1V/μs
+- 高速运放：50-1000V/μs
+- 超高速运放：&gt;2000V/μs
+
+限制：
+最大正弦频率
+fmax = SR / (2πVpeak)
+
+示例：
+SR = 1V/μs
+Vpeak = 10V
+fmax = 1/(2π×10) = 15.9kHz
+
+超过fmax会产生严重失真
+</code></pre>
+<p><strong>4. 增益带宽积（GBW）</strong></p>
+<pre><code>定义：开环增益×带宽的乘积
+特性：闭环放大器的增益和带宽成反比
+
+GBW = A × BW = 常数
+
+示例：
+运放GBW = 1MHz
+
+增益10倍：BW = 100kHz
+增益100倍：BW = 10kHz
+增益1000倍：BW = 1kHz
+
+选型原则：
+GBW ≥ Av × BW_required × 10
+</code></pre>
+<p><strong>5. 共模抑制比（CMRR）</strong></p>
+<pre><code>定义：差模增益与共模增益之比
+CMRR(dB) = 20 × log₁₀(Ad/Acm)
+
+典型值：
+- 通用运放：70-90dB
+- 精密运放：100-120dB
+
+影响：
+共模信号产生的误差
+Verror = Vcm / CMRR
+
+应用要求：
+- 差分放大：&gt;80dB
+- 仪表放大：&gt;100dB
+</code></pre>
+<h3 id="43-功率放大器设计"><a class="header" href="#43-功率放大器设计">4.3 功率放大器设计</a></h3>
+<p>功率放大器用于驱动低阻负载，提供较大的输出功率。</p>
+<h4 id="431-功率放大器分类"><a class="header" href="#431-功率放大器分类">4.3.1 功率放大器分类</a></h4>
+<p><strong>按工作类别</strong></p>
+<pre><code>Class A（甲类）：
+- 导通角：360°
+- 效率：&lt;50%
+- 失真：最低
+- 应用：高保真音频
+
+Class B（乙类）：
+- 导通角：180°
+- 效率：≈78.5%
+- 失真：交越失真
+- 应用：功率放大
+
+Class AB（甲乙类）：
+- 导通角：180°~360°
+- 效率：50%-70%
+- 失真：低
+- 应用：音频功放（最常用）
+
+Class C（丙类）：
+- 导通角：&lt;180°
+- 效率：&gt;80%
+- 失真：严重
+- 应用：射频功放（带调谐回路）
+
+Class D（丁类）：
+- 开关工作
+- 效率：&gt;90%
+- 失真：取决于滤波器
+- 应用：高效率音频功放
+</code></pre>
+<h4 id="432-互补对称功放设计"><a class="header" href="#432-互补对称功放设计">4.3.2 互补对称功放设计</a></h4>
+<p><strong>基本OCL功放</strong></p>
+<pre><code>电路结构：
+              Vcc
+               │
+               ├─ NPN
+输入 ──放大级──┤
+               ├─ PNP
+               │
+              Vee
+
+设计要点：
+1. 静态电流设置：消除交越失真
+   使用Vbe倍增器提供偏置
+   
+2. 功率计算：
+   Pout = Vrms² / RL
+   P_transistor = Pout / 2（每管）
+   
+3. 散热设计：
+   Pd = (Vcc - Vce_sat) × Iout
+   选择合适散热器
+
+实例：10W/8Ω功放设计
+Vrms = √(Pout × RL) = √(10×8) = 8.94V
+Vpeak = 8.94 × √2 = 12.6V
+选择电源电压：±15V
+
+输出电流：
+Ipeak = Vpeak / RL = 12.6 / 8 = 1.58A
+
+选择输出管：
+Vceo &gt; 30V
+Ic &gt; 2A
+Pd &gt; 20W（安全余量）
+推荐：TIP41C/TIP42C
+
+偏置电流：
+Iq = 10-20mA（消除交越失真）
+</code></pre>
+<p><strong>Vbe倍增器偏置电路</strong></p>
+<pre><code>       Vcc
+        │
+       R1
+        ├──┬─── Vbias
+       Q   R2
+        ├──┴───
+       R3
+        │
+       Vee
+
+输出电压：
+Vbias = Vbe × (1 + R2/R3)
+
+设计示例：
+需要Vbias = 1.4V（双管Vbe）
+Vbe = 0.7V
+选R3 = 1kΩ
+R2 = R3 × (Vbias/Vbe - 1)
+R2 = 1k × (1.4/0.7 - 1) = 1kΩ
+
+温度补偿：
+将Q固定在输出管散热器上
+温度上升→Vbe下降→Vbias下降→Iq下降
+形成负反馈，稳定静态电流
+</code></pre>
+<p><strong>保护电路</strong></p>
+<pre><code>1. 过流保护：
+   检测发射极电阻上压降
+   超过阈值触发保护管导通
+   
+2. 过温保护：
+   热敏电阻检测温度
+   过热时切断输出
+   
+3. 短路保护：
+   电流检测 + 限流电路
+   
+4. 直流保护：
+   检测输出直流分量
+   异常时继电器断开扬声器
+</code></pre>
+<hr />
 <h2 id="5-滤波器设计"><a class="header" href="#5-滤波器设计">5. 滤波器设计</a></h2>
-<p>滤波器是从输入信号中选择特定频率成分的电路。</p>
-<h3 id="51-滤波器分类"><a class="header" href="#51-滤波器分类">5.1 滤波器分类</a></h3>
-<h4 id="511-按频率特性分类"><a class="header" href="#511-按频率特性分类">5.1.1 按频率特性分类</a></h4>
-<ol>
-<li><strong>低通滤波器（LPF）</strong>：通过低频，抑制高频</li>
-<li><strong>高通滤波器（HPF）</strong>：通过高频，抑制低频</li>
-<li><strong>带通滤波器（BPF）</strong>：通过特定频段</li>
-<li><strong>带阻滤波器（BSF）</strong>：抑制特定频段</li>
-<li><strong>全通滤波器</strong>：相位变化，幅度不变</li>
-</ol>
-<h4 id="512-按实现方式分类"><a class="header" href="#512-按实现方式分类">5.1.2 按实现方式分类</a></h4>
-<ol>
-<li><strong>无源滤波器</strong>：使用R、L、C元件</li>
-<li><strong>有源滤波器</strong>：使用运放等有源器件</li>
-<li><strong>开关电容滤波器</strong>：使用开关电容技术</li>
-</ol>
-<h3 id="52-无源滤波器设计"><a class="header" href="#52-无源滤波器设计">5.2 无源滤波器设计</a></h3>
-<h4 id="521-一阶rc低通滤波器"><a class="header" href="#521-一阶rc低通滤波器">5.2.1 一阶RC低通滤波器</a></h4>
-<p>电路由电阻和电容串联组成。</p>
-<p><strong>传递函数</strong>：
-H(jω) = 1/(1 + jωRC)</p>
-<p><strong>截止频率</strong>：
-fc = 1/(2πRC)</p>
-<p><strong>特点</strong>：</p>
-<ul>
-<li>低频增益为1</li>
-<li>高频衰减率为-20dB/十倍频</li>
-<li>相位滞后从0°到-90°</li>
-</ul>
-<h4 id="522-一阶rc高通滤波器"><a class="header" href="#522-一阶rc高通滤波器">5.2.2 一阶RC高通滤波器</a></h4>
-<p>电容和电阻位置互换。</p>
-<p><strong>传递函数</strong>：
-H(jω) = jωRC/(1 + jωRC)</p>
-<p><strong>特点</strong>：</p>
-<ul>
-<li>高频增益为1</li>
-<li>低频衰减率为-20dB/十倍频</li>
-<li>相位超前从90°到0°</li>
-</ul>
-<h3 id="53-有源滤波器设计"><a class="header" href="#53-有源滤波器设计">5.3 有源滤波器设计</a></h3>
-<p>有源滤波器克服了无源滤波器的增益损失问题，具有更好的性能。</p>
-<h4 id="531-sallen-key滤波器"><a class="header" href="#531-sallen-key滤波器">5.3.1 Sallen-Key滤波器</a></h4>
-<p>Sallen-Key是二阶有源滤波器的常用拓扑。</p>
-<p><strong>电路结构</strong>：</p>
-<ul>
-<li>使用单个运放</li>
-<li>两个电阻，两个电容</li>
-<li>反馈网络</li>
-</ul>
-<p><strong>传递函数</strong>：
-H(s) = K/(s² + (ω₀/Q)s + ω₀²)</p>
-<p>其中K为增益，ω₀为特征频率，Q为品质因数。</p>
-<h4 id="532-多反馈滤波器"><a class="header" href="#532-多反馈滤波器">5.3.2 多反馈滤波器</a></h4>
-<p>多反馈拓扑提供更好的高频性能。</p>
-<p><strong>特点</strong>：</p>
-<ul>
-<li>单位增益稳定</li>
-<li>增益与Q值相互独立</li>
-<li>适用于高Q值应用</li>
-</ul>
-<h3 id="54-滤波器设计参数"><a class="header" href="#54-滤波器设计参数">5.4 滤波器设计参数</a></h3>
-<h4 id="541-品质因数q值"><a class="header" href="#541-品质因数q值">5.4.1 品质因数（Q值）</a></h4>
-<p>Q值描述了滤波器的频率选择性：</p>
-<ul>
-<li>Q = 1/(2ζ)，其中ζ为阻尼比</li>
-<li>高Q值：频率选择性好，但带宽窄</li>
-<li>低Q值：带宽宽，但选择性差</li>
-</ul>
-<h4 id="542-滤波器逼近类型"><a class="header" href="#542-滤波器逼近类型">5.4.2 滤波器逼近类型</a></h4>
-<ol>
-<li>
-<p><strong>巴特沃斯滤波器</strong>：</p>
-<ul>
-<li>幅频响应单调</li>
-<li>相位响应线性度好</li>
-<li>过渡带较宽</li>
-</ul>
-</li>
-<li>
-<p><strong>切比雪夫滤波器</strong>：</p>
-<ul>
-<li>过渡带陡峭</li>
-<li>通带内有纹波</li>
-<li>相位非线性</li>
-</ul>
-</li>
-<li>
-<p><strong>贝塞尔滤波器</strong>：</p>
-<ul>
-<li>群延迟恒定</li>
-<li>相位线性度最佳</li>
-<li>过渡带较缓</li>
-</ul>
-</li>
-</ol>
+<p>滤波器用于频率选择，是模拟信号处理的重要组成部分。</p>
+<h3 id="51-滤波器基本概念"><a class="header" href="#51-滤波器基本概念">5.1 滤波器基本概念</a></h3>
+<h4 id="511-滤波器类型"><a class="header" href="#511-滤波器类型">5.1.1 滤波器类型</a></h4>
+<pre><code>按频率特性：
+1. 低通滤波器（LPF）：通低频，阻高频
+2. 高通滤波器（HPF）：通高频，阻低频
+3. 带通滤波器（BPF）：通过特定频段
+4. 带阻滤波器（BSF）：阻止特定频段
+5. 全通滤波器（APF）：幅度不变，相位变化
+
+按实现方式：
+1. 无源滤波器：RLC
+2. 有源滤波器：运放+RC
+3. 开关电容滤波器：开关+电容
+4. 数字滤波器：DSP
+</code></pre>
+<h4 id="512-滤波器逼近类型"><a class="header" href="#512-滤波器逼近类型">5.1.2 滤波器逼近类型</a></h4>
+<p><strong>巴特沃斯滤波器</strong></p>
+<pre><code>特点：
+- 通带最平坦
+- 相位线性度好
+- 过渡带较缓
+- 应用最广泛
+
+传递函数：
+|H(jω)| = 1 / √(1 + (ω/ωc)^(2n))
+
+n阶滤波器衰减：
+-20n dB/decade
+
+设计方法：
+查表法选择归一化参数
+频率和阻抗变换到实际值
+</code></pre>
+<p><strong>切比雪夫滤波器</strong></p>
+<pre><code>特点：
+- 过渡带陡峭
+- 通带波纹（Type I）或阻带波纹（Type II）
+- 相位非线性
+
+应用选择：
+需要陡峭过渡且能容忍波纹时使用
+通常1dB或0.5dB波纹
+
+优点：相同阶数，更陡峭的过渡
+缺点：通带不平坦
+</code></pre>
+<p><strong>贝塞尔滤波器</strong></p>
+<pre><code>特点：
+- 最佳相位线性度
+- 群延迟恒定
+- 过渡带最缓
+
+应用：
+- 脉冲信号传输
+- 数字通信
+- 需要波形保真的场合
+
+设计权衡：
+性能最差但波形最好
+</code></pre>
+<h3 id="52-有源滤波器设计"><a class="header" href="#52-有源滤波器设计">5.2 有源滤波器设计</a></h3>
+<h4 id="521-sallen-key拓扑"><a class="header" href="#521-sallen-key拓扑">5.2.1 Sallen-Key拓扑</a></h4>
+<p><strong>二阶低通Sallen-Key</strong></p>
+<pre><code>电路：
+      R1     R2
+输入 ──○○○──○○○──┬───┬─── 输出
+                 │   │
+                C1   │
+                 │  ╱│＼
+                 ├─│  ○  │
+                 │  ╲│／
+                C2   │
+                 │   │
+                GND GND
+
+传递函数：
+H(s) = K / (s²LC + s(L/R) + 1)
+
+设计公式（巴特沃斯，K=1）：
+fc = 1 / (2π√(R1R2C1C2))
+
+简化设计（R1=R2=R，C1=C2=C）：
+fc = 1 / (2πRC)
+选择fc和C，计算R
+
+实例：1kHz低通滤波器
+fc = 1kHz
+选C = 100nF
+R = 1/(2π×1000×100nF) = 1.59kΩ
+选用1.6kΩ标准值
+
+增益设置：
+使用非单位增益配置
+Q值和阻尼可独立调节
+</code></pre>
+<p><strong>二阶高通Sallen-Key</strong></p>
+<pre><code>电路（低通的对偶）：
+      C1     C2
+输入 ──○○○──○○○──┬───┬─── 输出
+                 │   │
+                R1   │
+                 │  ╱│＼
+                 ├─│  ○  │
+                 │  ╲│／
+                R2   │
+                 │   │
+                GND GND
+
+设计方法与低通类似
+RC位置互换
+</code></pre>
+<h4 id="522-多反馈拓扑"><a class="header" href="#522-多反馈拓扑">5.2.2 多反馈拓扑</a></h4>
+<p><strong>二阶低通多反馈</strong></p>
+<pre><code>电路：
+      R1         R3
+输入 ──○○○──┬───○○○─┬─── 输出
+            │        │
+           C1       C2
+            │    ╱──┘
+            │   │ R2
+            ├───○○○──┤
+            │        │
+           GND      ╲│／
+                     ○
+                     │
+                    GND
+
+特点：
+- 反相输出
+- 增益和Q值独立设置
+- 对元件值变化不太敏感
+
+增益：
+Av = -R3/R1
+
+品质因数：
+Q = (π×fc×R2×C1)
+
+设计步骤：
+1. 确定fc、Q、Av
+2. 选择C1、C2（通常相等）
+3. 计算R1、R2、R3
+</code></pre>
+<h3 id="53-滤波器设计实例"><a class="header" href="#53-滤波器设计实例">5.3 滤波器设计实例</a></h3>
+<p><strong>实例：音频分频器设计</strong></p>
+<pre><code>需求：
+三路分频：低音、中音、高音
+低音：20Hz-200Hz
+中音：200Hz-2kHz  
+高音：2kHz-20kHz
+
+方案：
+1. 低音：2阶低通，fc=200Hz
+2. 高音：2阶高通，fc=2kHz
+3. 中音：低通+高通级联
+
+低音通道设计：
+fc = 200Hz
+选择2阶巴特沃斯Sallen-Key
+C = 100nF
+R = 1/(2π×200×100nF) = 7.96kΩ
+选用8.2kΩ
+
+高音通道设计：
+fc = 2kHz
+选择2阶巴特沃斯Sallen-Key
+C = 10nF
+R = 1/(2π×2000×10nF) = 7.96kΩ
+选用8.2kΩ
+
+元器件选择：
+- 运放：低噪声音频运放（NE5532）
+- 电容：聚丙烯薄膜电容（低失真）
+- 电阻：金属膜1%精度
+
+注意事项：
+- 各通道增益应匹配
+- 考虑相位关系
+- 功率分配合理
+- PCB布局对称
+</code></pre>
+<hr />
 <h2 id="6-振荡器电路"><a class="header" href="#6-振荡器电路">6. 振荡器电路</a></h2>
-<p>振荡器是产生周期性信号的电路，在时钟、载波、测试信号等应用中不可或缺。</p>
-<h3 id="61-振荡器原理"><a class="header" href="#61-振荡器原理">6.1 振荡器原理</a></h3>
-<p>振荡器基于正反馈原理工作，需要满足巴克豪森准则：</p>
-<ol>
-<li>环路增益：|Aβ| ≥ 1</li>
-<li>相位条件：∠Aβ = 0°或360°的整数倍</li>
-</ol>
-<h3 id="62-lc振荡器"><a class="header" href="#62-lc振荡器">6.2 LC振荡器</a></h3>
-<p>LC振荡器利用LC谐振电路产生正弦波。</p>
-<h4 id="621-哈特利振荡器"><a class="header" href="#621-哈特利振荡器">6.2.1 哈特利振荡器</a></h4>
-<p>使用两个电感和一个电容的振荡电路。</p>
-<p><strong>特点</strong>：</p>
-<ul>
-<li>频率可调</li>
-<li>结构简单</li>
-<li>频率稳定性一般</li>
-</ul>
-<h4 id="622-科利特振荡器"><a class="header" href="#622-科利特振荡器">6.2.2 科利特振荡器</a></h4>
-<p>使用一个电感和两个电容的振荡电路。</p>
-<p><strong>特点</strong>：</p>
-<ul>
-<li>频率稳定</li>
-<li>输出纯度高</li>
-<li>频率调节方便</li>
-</ul>
-<h4 id="623-克拉普振荡器"><a class="header" href="#623-克拉普振荡器">6.2.3 克拉普振荡器</a></h4>
-<p>改进的科利特振荡器，增加了额外电容。</p>
-<p><strong>特点</strong>：</p>
-<ul>
-<li>频率调节范围大</li>
-<li>稳定性好</li>
-<li>适用于VCO设计</li>
-</ul>
-<h3 id="63-rc振荡器"><a class="header" href="#63-rc振荡器">6.3 RC振荡器</a></h3>
-<p>RC振荡器使用电阻和电容网络产生振荡。</p>
-<h4 id="631-相移振荡器"><a class="header" href="#631-相移振荡器">6.3.1 相移振荡器</a></h4>
-<p>使用RC网络产生180°相移。</p>
-<p><strong>电路组成</strong>：</p>
-<ul>
-<li>三级RC网络：每级60°相移</li>
-<li>反相放大器：提供180°相移</li>
-<li>总相移：360°</li>
-</ul>
-<p><strong>频率计算</strong>：
-f = 1/(2πRC√6)</p>
-<h4 id="632-文氏桥振荡器"><a class="header" href="#632-文氏桥振荡器">6.3.2 文氏桥振荡器</a></h4>
-<p>使用文氏桥网络作为选频网络。</p>
-<p><strong>特点</strong>：</p>
-<ul>
-<li>频率稳定</li>
-<li>失真小</li>
-<li>适用于音频应用</li>
-</ul>
-<p><strong>频率计算</strong>：
-f = 1/(2πRC)</p>
+<p>振荡器产生周期性信号，是时钟、载波、测试信号的来源。</p>
+<h3 id="61-振荡器基本原理"><a class="header" href="#61-振荡器基本原理">6.1 振荡器基本原理</a></h3>
+<p><strong>巴克豪森准则</strong></p>
+<pre><code>振荡条件：
+1. 幅度条件：|Aβ| ≥ 1
+2. 相位条件：∠Aβ = 0° 或 360°
+
+其中：
+A - 放大器增益
+β - 反馈系数
+
+起振条件：|Aβ| &gt; 1
+稳定振荡：|Aβ| = 1（通过非线性限幅）
+</code></pre>
+<h3 id="62-rc振荡器"><a class="header" href="#62-rc振荡器">6.2 RC振荡器</a></h3>
+<h4 id="621-文氏桥振荡器"><a class="header" href="#621-文氏桥振荡器">6.2.1 文氏桥振荡器</a></h4>
+<pre><code>电路：
+R-C串并联网络 + 同相放大器
+
+频率选择网络：
+       R      C
+输入 ──○○○──┬──○○○─┬── 输出
+           ═══     │
+            C      │
+            │     R│
+           GND    ┴
+
+传递函数：
+β = 1 / (3 + j(ωRC - 1/(ωRC)))
+
+振荡频率（相移为0）：
+f₀ = 1 / (2πRC)
+
+增益要求：
+Av = 1/β = 3
+
+实际电路：
+Av略大于3以保证起振
+使用二极管或热敏电阻稳幅
+
+设计实例：1kHz振荡器
+f₀ = 1kHz
+选C = 100nF
+R = 1/(2π×1000×100nF) = 1.59kΩ
+选用1.6kΩ
+
+放大器增益：
+设计Av = 3.2（略大于3）
+R1 = 10kΩ
+Rf = 22kΩ
+Av = 1 + 22k/10k = 3.2
+
+稳幅措施：
+并联二极管在反馈电阻上
+大信号时二极管导通，降低增益
+</code></pre>
+<h3 id="63-lc振荡器"><a class="header" href="#63-lc振荡器">6.3 LC振荡器</a></h3>
+<h4 id="631-科尔皮茨振荡器"><a class="header" href="#631-科尔皮茨振荡器">6.3.1 科尔皮茨振荡器</a></h4>
+<pre><code>电路特点：
+一个电感 + 两个电容形成谐振网络
+
+振荡频率：
+f₀ = 1 / (2π√(L×(C1×C2)/(C1+C2)))
+
+反馈系数：
+β = C1 / C2
+
+设计实例：10MHz振荡器
+f₀ = 10MHz
+选C1 = 100pF, C2 = 100pF
+Ceq = C1||C2 = 50pF
+
+L = 1 / ((2πf₀)²×Ceq)
+L = 1 / ((2π×10MHz)²×50pF)
+L = 5.07μH
+
+选用标准值5.1μH或可调电感
+
+元器件选择：
+- 电感：高Q值空心或铁氧体
+- 电容：NP0/C0G（温度稳定）
+- 晶体管：高频特性好，fT &gt; 10×f₀
+</code></pre>
 <h3 id="64-晶体振荡器"><a class="header" href="#64-晶体振荡器">6.4 晶体振荡器</a></h3>
-<p>晶体振荡器利用石英晶体的压电效应产生高稳定频率。</p>
-<h4 id="641-晶体特性"><a class="header" href="#641-晶体特性">6.4.1 晶体特性</a></h4>
-<ul>
-<li>串联谐振频率：fs = 1/(2π√LCs)</li>
-<li>并联谐振频率：fp = 1/(2π√LCp)</li>
-<li>频率稳定度：可达10⁻⁶~10⁻⁹</li>
-</ul>
-<h4 id="642-晶体振荡器电路"><a class="header" href="#642-晶体振荡器电路">6.4.2 晶体振荡器电路</a></h4>
-<ol>
-<li><strong>皮尔斯振荡器</strong>：最常用的CMOS晶体振荡器</li>
-<li><strong>CMOS反相器振荡器</strong>：简单易实现</li>
-<li><strong>双极型晶体振荡器</strong>：适用于低功耗应用</li>
-</ol>
+<pre><code>石英晶体特性：
+- 高Q值（10⁴~10⁶）
+- 频率稳定度高（10⁻⁶~10⁻⁹）
+- 温度系数小
+- 等效串联电阻低
+
+等效电路：
+     Ls      Rs
+  ┌──○○○──○○○──┐
+  │              │
+──┤              ├── 
+  │      Cs      │
+  │     ═══      │
+  │      │      ═══ Cp
+  └──────┴───────┘
+
+两个谐振频率：
+fs = 1/(2π√(Ls×Cs))（串联谐振）
+fp = 1/(2π√(Ls×Ceq))（并联谐振）
+
+皮尔斯振荡器（最常用）：
+晶体 + 两个电容 + CMOS反相器
+
+设计方法：
+1. 晶体选择：根据频率需求
+2. 负载电容：CL = (C1×C2)/(C1+C2)
+3. 通常CL = 15-30pF
+
+示例：8MHz晶体振荡器
+晶体：8MHz，CL=20pF
+C1 = C2 = 2×CL = 40pF
+选用标准值33pF或39pF（考虑杂散电容）
+
+起振裕度检查：
+gm_critical = 4×ESR×(2πf₀)²×(C1+C2)²/(C1×C2)
+电路gm &gt; 5×gm_critical
+</code></pre>
+<hr />
 <h2 id="7-电源电路设计"><a class="header" href="#7-电源电路设计">7. 电源电路设计</a></h2>
-<p>电源电路为电子系统提供稳定的工作电压。</p>
-<h3 id="71-线性稳压器"><a class="header" href="#71-线性稳压器">7.1 线性稳压器</a></h3>
-<p>线性稳压器通过调整内部器件的导通程度来调节输出电压。</p>
-<h4 id="711-基本原理"><a class="header" href="#711-基本原理">7.1.1 基本原理</a></h4>
+<p>电源电路为电子系统提供稳定、清洁的工作电压。</p>
+<h3 id="71-线性稳压器设计"><a class="header" href="#71-线性稳压器设计">7.1 线性稳压器设计</a></h3>
+<h4 id="711-三端稳压器应用"><a class="header" href="#711-三端稳压器应用">7.1.1 三端稳压器应用</a></h4>
+<p><strong>78xx/79xx系列</strong></p>
+<pre><code>基本应用电路：
+输入 ──┬──○ 78xx ○──┬── 输出
+      ═══           ═══
+       C1            C2
+       │             │
+      GND           GND
+
+C1：输入滤波电容，0.33μF陶瓷
+C2：输出滤波电容，0.1μF陶瓷 + 10μF电解
+
+设计要点：
+1. 输入输出压差：
+   Vin - Vout &gt; 2V（典型）
+   
+2. 散热计算：
+   Pd = (Vin - Vout) × Iout
+   Tj = Ta + Pd × θja
+   
+3. 散热器选择：
+   θja_required = (Tj_max - Ta_max) / Pd_max
+
+实例：7805稳压器
+Vin = 12V
+Vout = 5V
+Iout = 1A
+
+功耗：
+Pd = (12-5) × 1 = 7W
+
+假设Tj_max = 125°C，Ta_max = 50°C
+θja_required = (125-50)/7 = 10.7°C/W
+
+选择θja &lt; 10°C/W的散热器
+</code></pre>
+<p><strong>LM317可调稳压器</strong></p>
+<pre><code>电路：
+        R2
+Vin ──○ LM317 ○──┬──○○○──┬── Vout
+                 │       │
+                R1      ═══ Cadj
+                 │       │
+                GND─────┴
+
+输出电压：
+Vout = 1.25V × (1 + R2/R1) + Iadj×R2
+Iadj ≈ 50μA（可忽略）
+
+简化公式：
+Vout = 1.25V × (1 + R2/R1)
+
+设计实例：可调3.3V-12V电源
+R1 = 240Ω（标准推荐值）
+
+3.3V时：
+3.3 = 1.25 × (1 + R2/240)
+R2 = 394Ω，选用390Ω+电位器微调
+
+12V时：
+12 = 1.25 × (1 + R2/240)
+R2 = 2064Ω，选用2kΩ+电位器
+
+实际方案：
+R1 = 240Ω固定
+R2 = 330Ω固定 + 2kΩ电位器
+Vout范围：2.97V~11.9V
+</code></pre>
+<h4 id="712-ldo稳压器应用"><a class="header" href="#712-ldo稳压器应用">7.1.2 LDO稳压器应用</a></h4>
+<pre><code>LDO特点：
+- 压差小（&lt;300mV）
+- 噪声低
+- 静态电流小
+- PSRR高
+
+典型应用：
+1. 电池供电设备
+2. 噪声敏感电路
+3. 多电压轨系统
+
+设计注意事项：
+1. 输入电容：
+   - 1μF以上陶瓷电容
+   - 靠近输入引脚
+   
+2. 输出电容：
+   - ESR要求严格
+   - 查看数据手册
+   - 某些LDO要求ESR在特定范围
+   
+3. 使能控制：
+   - 软启动功能
+   - 上电时序控制
+   
+4. 保护功能：
+   - 过流保护
+   - 过温保护
+   - 反向保护
+
+实例：3.3V/500mA LDO设计
+选择：AMS1117-3.3
+Vin：5V
+Vout：3.3V  
+Iout_max：500mA
+
+最小压差：Vdrop = 1.1V @ 500mA
+实际压差：5-3.3 = 1.7V ✓
+
+输入电容：10μF/6.3V陶瓷
+输出电容：22μF/6.3V陶瓷
+
+功耗计算：
+Pd = (5-3.3)×0.5 + Vout×Iq
+Pd ≈ 0.85W
+
+封装选择：
+SOT-223或TO-252（带散热垫）
+</code></pre>
+<h3 id="72-开关电源设计"><a class="header" href="#72-开关电源设计">7.2 开关电源设计</a></h3>
+<h4 id="721-buck转换器设计"><a class="header" href="#721-buck转换器设计">7.2.1 Buck转换器设计</a></h4>
+<pre><code>基本拓扑：
+Vin ──┬── SW ──┬── L ──┬── Vout
+      │        │       │
+     ═══      D│      ═══
+      │        │       │
+     GND      GND     GND
+
+工作原理：
+SW闭合：电感充电，电流上升
+SW断开：电感通过D续流，电流下降
+
+设计步骤：
+1. 确定开关频率fsw
+2. 计算占空比D
+3. 选择电感L
+4. 选择输出电容Cout
+5. 选择开关管和二极管
+
+完整设计实例：
+输入：12V
+输出：5V/2A
+效率：85%
+
+步骤1：占空比
+D = Vout/Vin = 5/12 = 0.417
+
+步骤2：选择开关频率
+fsw = 300kHz（平衡效率和尺寸）
+
+步骤3：电感选择
+纹波电流：ΔIL = 0.3×Iout = 0.6A（30%）
+L = (Vin-Vout)×D / (ΔIL×fsw)
+L = (12-5)×0.417 / (0.6×300k)
+L = 16.2μH
+选用22μH
+
+饱和电流：
+Isat &gt; Iout + ΔIL/2 = 2 + 0.3 = 2.3A
+选择Isat ≥ 3A的电感
+
+DCR：&lt; 100mΩ
+
+步骤4：输出电容
+纹波电压要求：&lt;50mV
+Vripple ≈ ΔIL × ESR
+ESR &lt; 50mV/0.6A = 83mΩ
+
+选择22μF陶瓷X7R（ESR&lt;10mΩ）
+
+步骤5：开关管选择
+Vds &gt; 1.5×Vin = 18V
+Id &gt; 1.5×Iout = 3A
+Rdson &lt; 50mΩ（效率考虑）
+
+推荐：SiC1302（30V/8A/9mΩ）
+
+步骤6：二极管选择
+VR &gt; Vin = 12V
+If &gt; Iout = 2A
+肖特基二极管（快速）
+
+推荐：SS34（40V/3A）
+
+步骤7：控制IC选择
+推荐：TPS54202（2A集成FET）
+或离散方案：TL494+外部MOS
+
+步骤8：补偿网络设计
+根据IC推荐值或计算
+Type II或Type III补偿
+</code></pre>
+<h4 id="722-boost转换器设计"><a class="header" href="#722-boost转换器设计">7.2.2 Boost转换器设计</a></h4>
+<pre><code>拓扑：
+Vin ──┬── L ──┬── D ──┬── Vout
+      │       │       │
+     ═══     SW│     ═══
+      │       │       │
+     GND     GND     GND
+
+占空比：
+D = 1 - Vin/Vout
+
+设计实例：5V→12V/1A
+D = 1 - 5/12 = 0.583
+
+电感选择：
+ΔIL = 0.3×Iin ≈ 0.3×(Iout×Vout/Vin/η)
+ΔIL ≈ 0.3×(1×12/5/0.85) = 0.85A
+
+L = Vin×D / (ΔIL×fsw)
+假设fsw = 200kHz
+L = 5×0.583 / (0.85×200k) = 17.1μH
+选用22μH
+
+输出电容：
+Boost纹波较大
+选择47μF低ESR电解 + 10μF陶瓷
+
+二极管：
+承受全部输出电流
+选择肖特基，VR&gt;15V，If&gt;1.5A
+
+推荐控制IC：
+TPS61088（12V/4A Boost）
+LT1930（小电流应用）
+</code></pre>
+<h4 id="723-反激变换器设计"><a class="header" href="#723-反激变换器设计">7.2.3 反激变换器设计</a></h4>
+<pre><code>特点：
+- 隔离型
+- 可多路输出
+- 成本低
+- 设计较复杂
+
+基本工作：
+SW导通：变压器储能
+SW关断：能量传递到副边
+
+设计要点：
+1. 变压器设计最关键
+2. RCD钳位吸收
+3. 环路补偿
+4. 反馈隔离（光耦）
+
+应用：
+5V~100W电源，特别是多路输出需求
+</code></pre>
+<h3 id="73-电源管理实战技巧"><a class="header" href="#73-电源管理实战技巧">7.3 电源管理实战技巧</a></h3>
+<pre><code>1. 热设计：
+   - 估算温升
+   - 合理散热
+   - 保持Tj &lt; 100°C
+
+2. EMI控制：
+   - 输入输出滤波
+   - 减小开关节点面积
+   - 良好接地
+   - 屏蔽设计
+
+3. 布局原则：
+   - 功率回路最小化
+   - 控制信号远离开关节点
+   - 大电流路径短粗
+   - 热回路分离
+
+4. 测试验证：
+   - 效率曲线
+   - 纹波测试（20MHz带宽限制）
+   - 负载瞬态响应
+   - 热成像分析
+   - EMI预兼容测试
+
+5. 保护措施：
+   - 输入欠压/过压
+   - 输出过流
+   - 过温
+   - 短路
+   - 软启动
+</code></pre>
+<hr />
+<h2 id="8-15章节内容说明"><a class="header" href="#8-15章节内容说明">8-15章节内容说明</a></h2>
+<p>由于篇幅限制，以下章节提供核心要点和学习路径：</p>
+<h3 id="8-非线性电路"><a class="header" href="#8-非线性电路">8. 非线性电路</a></h3>
 <ul>
-<li>串联调节元件：BJT或MOSFET</li>
-<li>误差放大器：比较反馈电压与基准电压</li>
-<li>基准源：提供稳定参考电压</li>
-<li>过载保护：防止器件损坏</li>
+<li>整流电路设计（半波、全波、桥式）</li>
+<li>比较器应用（窗口、迟滞）</li>
+<li>对数/指数放大器</li>
+<li>模拟乘法器应用</li>
 </ul>
-<h4 id="712-三端线性稳压器"><a class="header" href="#712-三端线性稳压器">7.1.2 三端线性稳压器</a></h4>
+<h3 id="9-频率响应与稳定性"><a class="header" href="#9-频率响应与稳定性">9. 频率响应与稳定性</a></h3>
 <ul>
-<li>固定输出：78xx系列，79xx系列</li>
-<li>可调输出：LM317，LM337</li>
+<li>波特图分析方法</li>
+<li>相位裕度和增益裕度</li>
+<li>补偿技术（主极点、超前-滞后）</li>
+<li>振荡检测和消除</li>
 </ul>
-<p><strong>使用要点</strong>：</p>
+<h3 id="10-噪声分析与抑制"><a class="header" href="#10-噪声分析与抑制">10. 噪声分析与抑制</a></h3>
 <ul>
-<li>输入输出压差足够</li>
-<li>足够的散热措施</li>
-<li>输入输出电容配置</li>
+<li>噪声源识别（热噪声、散粒噪声、1/f噪声）</li>
+<li>SNR和噪声系数计算</li>
+<li>低噪声电路设计技巧</li>
+<li>屏蔽和接地技术</li>
 </ul>
-<h4 id="713-低压差稳压器ldo"><a class="header" href="#713-低压差稳压器ldo">7.1.3 低压差稳压器（LDO）</a></h4>
-<p>LDO提供极小的输入输出压差。</p>
-<p><strong>特点</strong>：</p>
+<h3 id="11-实战案例详解"><a class="header" href="#11-实战案例详解">11. 实战案例详解</a></h3>
 <ul>
-<li>压差小：通常&lt;100mV</li>
-<li>噪声低：适合模拟电路供电</li>
-<li>静态电流小：适合电池供电</li>
+<li>完整项目：数字万用表前端设计</li>
+<li>完整项目：音频功放设计与制作</li>
+<li>完整项目：传感器信号调理系统</li>
+<li>完整项目：射频接收机前端</li>
 </ul>
-<h3 id="72-开关电源"><a class="header" href="#72-开关电源">7.2 开关电源</a></h3>
-<p>开关电源通过高频开关控制能量传输，效率高。</p>
-<h4 id="721-基本拓扑"><a class="header" href="#721-基本拓扑">7.2.1 基本拓扑</a></h4>
-<ol>
-<li>
-<p><strong>Buck（降压）变换器</strong>：</p>
+<h3 id="12-pcb设计与布局"><a class="header" href="#12-pcb设计与布局">12. PCB设计与布局</a></h3>
 <ul>
-<li>输出电压低于输入电压</li>
-<li>效率高，应用广泛</li>
-</ul>
-</li>
-<li>
-<p><strong>Boost（升压）变换器</strong>：</p>
-<ul>
-<li>输出电压高于输入电压</li>
-<li>用于电池升压应用</li>
-</ul>
-</li>
-<li>
-<p><strong>Buck-Boost变换器</strong>：</p>
-<ul>
-<li>输出电压可高于或低于输入电压</li>
-<li>输出极性相反</li>
-</ul>
-</li>
-<li>
-<p><strong>Flyback变换器</strong>：</p>
-<ul>
-<li>隔离型变换器</li>
-<li>适合多路输出</li>
-</ul>
-</li>
-</ol>
-<h4 id="722-控制方式"><a class="header" href="#722-控制方式">7.2.2 控制方式</a></h4>
-<ol>
-<li><strong>PWM控制</strong>：脉宽调制，固定频率</li>
-<li><strong>PFM控制</strong>：脉冲频率调制，可变频率</li>
-<li><strong>混合控制</strong>：结合PWM和PFM优点</li>
-</ol>
-<h3 id="73-电源设计考虑"><a class="header" href="#73-电源设计考虑">7.3 电源设计考虑</a></h3>
-<h4 id="731-纹波和噪声"><a class="header" href="#731-纹波和噪声">7.3.1 纹波和噪声</a></h4>
-<ul>
-<li>纹波：电源输出的交流成分</li>
-<li>噪声：高频干扰成分</li>
-<li>抑制方法：滤波、稳压、屏蔽</li>
-</ul>
-<h4 id="732-瞬态响应"><a class="header" href="#732-瞬态响应">7.3.2 瞬态响应</a></h4>
-<ul>
-<li>负载瞬变时的输出变化</li>
-<li>响应时间要求</li>
-<li>补偿网络设计</li>
-</ul>
-<h4 id="733-效率优化"><a class="header" href="#733-效率优化">7.3.3 效率优化</a></h4>
-<ul>
-<li>选择合适的拓扑</li>
-<li>优化开关频率</li>
-<li>优化器件选择</li>
-</ul>
-<h2 id="8-非线性电路"><a class="header" href="#8-非线性电路">8. 非线性电路</a></h2>
-<p>非线性电路的输出与输入不成线性关系。</p>
-<h3 id="81-二极管应用电路"><a class="header" href="#81-二极管应用电路">8.1 二极管应用电路</a></h3>
-<h4 id="811-整流电路"><a class="header" href="#811-整流电路">8.1.1 整流电路</a></h4>
-<ol>
-<li>
-<p><strong>半波整流</strong>：</p>
-<ul>
-<li>电路简单</li>
-<li>效率低</li>
-<li>纹波大</li>
-</ul>
-</li>
-<li>
-<p><strong>全波整流</strong>：</p>
-<ul>
-<li>中心抽头变压器</li>
-<li>效率较高</li>
-</ul>
-</li>
-<li>
-<p><strong>桥式整流</strong>：</p>
-<ul>
-<li>不需要中心抽头</li>
-<li>应用广泛</li>
-<li>效率高</li>
-</ul>
-</li>
-</ol>
-<h4 id="812-限幅电路"><a class="header" href="#812-限幅电路">8.1.2 限幅电路</a></h4>
-<ul>
-<li>串联限幅器：利用二极管正向导通</li>
-<li>并联限幅器：利用二极管反向击穿</li>
-<li>双向限幅：双向保护</li>
-</ul>
-<h4 id="813-钳位电路"><a class="header" href="#813-钳位电路">8.1.3 钳位电路</a></h4>
-<ul>
-<li>正钳位：将信号底部钳制到特定电平</li>
-<li>负钳位：将信号顶部钳制到特定电平</li>
-<li>应用：信号恢复、直流恢复</li>
-</ul>
-<h3 id="82-比较器电路"><a class="header" href="#82-比较器电路">8.2 比较器电路</a></h3>
-<p>比较器用于比较两个电压的大小。</p>
-<h4 id="821-基本比较器"><a class="header" href="#821-基本比较器">8.2.1 基本比较器</a></h4>
-<ul>
-<li>开环运放作为比较器</li>
-<li>高增益，快速响应</li>
-<li>输出为数字电平</li>
-</ul>
-<h4 id="822-窗口比较器"><a class="header" href="#822-窗口比较器">8.2.2 窗口比较器</a></h4>
-<ul>
-<li>两个阈值：上限和下限</li>
-<li>三态输出：高、低、中</li>
-<li>应用：电压监控</li>
-</ul>
-<h4 id="823-迟滞比较器"><a class="header" href="#823-迟滞比较器">8.2.3 迟滞比较器</a></h4>
-<ul>
-<li>引入正反馈</li>
-<li>避免噪声引起的振荡</li>
-<li>两个阈值：上阈值和下阈值</li>
-</ul>
-<h3 id="83-乘法器和调制"><a class="header" href="#83-乘法器和调制">8.3 乘法器和调制</a></h3>
-<h4 id="831-模拟乘法器"><a class="header" href="#831-模拟乘法器">8.3.1 模拟乘法器</a></h4>
-<ul>
-<li>四象限乘法器</li>
-<li>应用：调制、解调、混频</li>
-<li>电路实现：吉尔伯特单元</li>
-</ul>
-<h4 id="832-调制电路"><a class="header" href="#832-调制电路">8.3.2 调制电路</a></h4>
-<ul>
-<li>调幅（AM）：载波幅度随调制信号变化</li>
-<li>调频（FM）：载波频率随调制信号变化</li>
-<li>调相（PM）：载波相位随调制信号变化</li>
-</ul>
-<h2 id="9-频率响应与稳定性"><a class="header" href="#9-频率响应与稳定性">9. 频率响应与稳定性</a></h2>
-<h3 id="91-频率响应分析"><a class="header" href="#91-频率响应分析">9.1 频率响应分析</a></h3>
-<p>频率响应描述电路对不同频率信号的响应特性。</p>
-<h4 id="911-幅频特性"><a class="header" href="#911-幅频特性">9.1.1 幅频特性</a></h4>
-<ul>
-<li>低频段：受耦合电容影响</li>
-<li>中频段：电路正常工作频段</li>
-<li>高频段：受寄生参数影响</li>
-</ul>
-<h4 id="912-相频特性"><a class="header" href="#912-相频特性">9.1.2 相频特性</a></h4>
-<ul>
-<li>相位变化：影响信号完整性</li>
-<li>群延迟：不同频率的延迟差异</li>
-<li>相位裕度：稳定性指标</li>
-</ul>
-<h3 id="92-稳定性分析"><a class="header" href="#92-稳定性分析">9.2 稳定性分析</a></h3>
-<p>稳定性是放大器正常工作的基本要求。</p>
-<h4 id="921-稳定性准则"><a class="header" href="#921-稳定性准则">9.2.1 稳定性准则</a></h4>
-<ul>
-<li>奈奎斯特稳定判据</li>
-<li>波特图稳定性判据</li>
-<li>相位裕度：&gt;45°</li>
-<li>增益裕度：&gt;6dB</li>
-</ul>
-<h4 id="922-补偿技术"><a class="header" href="#922-补偿技术">9.2.2 补偿技术</a></h4>
-<ol>
-<li>
-<p><strong>主极点补偿</strong>：</p>
-<ul>
-<li>降低增益带宽积</li>
-<li>稳定性好</li>
-<li>速度慢</li>
-</ul>
-</li>
-<li>
-<p><strong>超前补偿</strong>：</p>
-<ul>
-<li>增加相位裕度</li>
-<li>保持带宽</li>
-<li>设计复杂</li>
-</ul>
-</li>
-<li>
-<p><strong>滞后补偿</strong>：</p>
-<ul>
-<li>改善低频特性</li>
-<li>降低高频增益</li>
-</ul>
-</li>
-</ol>
-<h3 id="93-反馈理论"><a class="header" href="#93-反馈理论">9.3 反馈理论</a></h3>
-<p>反馈是改善电路性能的重要手段。</p>
-<h4 id="931-反馈类型"><a class="header" href="#931-反馈类型">9.3.1 反馈类型</a></h4>
-<ul>
-<li>电压串联反馈：提高输入阻抗，降低输出阻抗</li>
-<li>电压并联反馈：降低输入阻抗，降低输出阻抗</li>
-<li>电流串联反馈：提高输入阻抗，提高输出阻抗</li>
-<li>电流并联反馈：降低输入阻抗，提高输出阻抗</li>
-</ul>
-<h4 id="932-反馈方程"><a class="header" href="#932-反馈方程">9.3.2 反馈方程</a></h4>
-<p>闭环增益：Acl = Aol/(1 + Aolβ)</p>
-<p>其中Aol为开环增益，β为反馈系数。</p>
-<h2 id="10-噪声分析"><a class="header" href="#10-噪声分析">10. 噪声分析</a></h2>
-<p>噪声是影响模拟电路性能的重要因素。</p>
-<h3 id="101-噪声类型"><a class="header" href="#101-噪声类型">10.1 噪声类型</a></h3>
-<h4 id="1011-电阻热噪声"><a class="header" href="#1011-电阻热噪声">10.1.1 电阻热噪声</a></h4>
-<ul>
-<li>产生机理：电阻内载流子热运动</li>
-<li>噪声功率：Pn = 4kTRB</li>
-<li>频率特性：白噪声，与频率无关</li>
-</ul>
-<h4 id="1012-半导体噪声"><a class="header" href="#1012-半导体噪声">10.1.2 半导体噪声</a></h4>
-<ol>
-<li><strong>散粒噪声</strong>：载流子随机通过势垒</li>
-<li><strong>闪烁噪声（1/f噪声）</strong>：低频噪声</li>
-<li><strong>爆米花噪声</strong>：离散噪声</li>
-</ol>
-<h4 id="1013-1f噪声"><a class="header" href="#1013-1f噪声">10.1.3 1/f噪声</a></h4>
-<ul>
-<li>与频率成反比</li>
-<li>低频影响大</li>
-<li>与器件工艺相关</li>
-</ul>
-<h3 id="102-噪声分析方法"><a class="header" href="#102-噪声分析方法">10.2 噪声分析方法</a></h3>
-<h4 id="1021-噪声等效电路"><a class="header" href="#1021-噪声等效电路">10.2.1 噪声等效电路</a></h4>
-<ul>
-<li>输入噪声源等效</li>
-<li>输出噪声计算</li>
-<li>噪声系数定义</li>
-</ul>
-<h4 id="1022-信噪比snr"><a class="header" href="#1022-信噪比snr">10.2.2 信噪比（SNR）</a></h4>
-<p>SNR = 信号功率/噪声功率</p>
-<p>影响因素：</p>
-<ul>
-<li>信号幅度</li>
-<li>噪声水平</li>
-<li>带宽</li>
-</ul>
-<h3 id="103-噪声抑制"><a class="header" href="#103-噪声抑制">10.3 噪声抑制</a></h3>
-<h4 id="1031-电路级抑制"><a class="header" href="#1031-电路级抑制">10.3.1 电路级抑制</a></h4>
-<ul>
-<li>选择低噪声器件</li>
-<li>优化偏置电流</li>
-<li>使用噪声匹配技术</li>
-</ul>
-<h4 id="1032-系统级抑制"><a class="header" href="#1032-系统级抑制">10.3.2 系统级抑制</a></h4>
-<ul>
-<li>屏蔽和接地</li>
-<li>滤波技术</li>
-<li>差分技术</li>
-</ul>
-<h2 id="11-实战案例"><a class="header" href="#11-实战案例">11. 实战案例</a></h2>
-<h3 id="111-音频放大器设计"><a class="header" href="#111-音频放大器设计">11.1 音频放大器设计</a></h3>
-<p>设计一个高质量的音频功率放大器，要求输出功率10W，频率响应20Hz-20kHz。</p>
-<h4 id="1111-需求分析"><a class="header" href="#1111-需求分析">11.1.1 需求分析</a></h4>
-<ul>
-<li>功率要求：10W输出到8Ω负载</li>
-<li>频率范围：20Hz-20kHz（音频范围）</li>
-<li>失真度：THD &lt; 1%</li>
-<li>信噪比：&gt;80dB</li>
-</ul>
-<h4 id="1112-方案设计"><a class="header" href="#1112-方案设计">11.1.2 方案设计</a></h4>
-<p>采用B类推挽放大器结构：</p>
-<ul>
-<li>输入级：差分放大器</li>
-<li>驱动级：电压放大</li>
-<li>输出级：互补对称推挽</li>
-<li>反馈：负反馈改善线性度</li>
-</ul>
-<h4 id="1113-电路实现"><a class="header" href="#1113-电路实现">11.1.3 电路实现</a></h4>
-<ol>
-<li>
-<p><strong>偏置电路</strong>：</p>
-<ul>
-<li>二极管串提供Vbe倍数偏置</li>
-<li>温度补偿</li>
-</ul>
-</li>
-<li>
-<p><strong>输出级设计</strong>：</p>
-<ul>
-<li>互补对称输出</li>
-<li>保护电路：过流、过温</li>
-</ul>
-</li>
-<li>
-<p><strong>反馈网络</strong>：</p>
-<ul>
-<li>电压串联负反馈</li>
-<li>频率补偿</li>
-</ul>
-</li>
-</ol>
-<h4 id="1114-性能优化"><a class="header" href="#1114-性能优化">11.1.4 性能优化</a></h4>
-<ul>
-<li>交越失真消除</li>
-<li>稳定性补偿</li>
-<li>散热设计</li>
-</ul>
-<h3 id="112-传感器信号调理电路"><a class="header" href="#112-传感器信号调理电路">11.2 传感器信号调理电路</a></h3>
-<p>设计一个温度传感器信号调理电路，传感器输出0-100mV，对应0-100°C。</p>
-<h4 id="1121-需求分析"><a class="header" href="#1121-需求分析">11.2.1 需求分析</a></h4>
-<ul>
-<li>输入：0-100mV，对应0-100°C</li>
-<li>输出：0-5V，对应0-100°C</li>
-<li>精度：±0.5°C</li>
-<li>线性度：良好</li>
-</ul>
-<h4 id="1122-电路设计"><a class="header" href="#1122-电路设计">11.2.2 电路设计</a></h4>
-<ol>
-<li>
-<p><strong>前置放大</strong>：</p>
-<ul>
-<li>仪表放大器：高输入阻抗，高共模抑制比</li>
-<li>增益：50倍</li>
-</ul>
-</li>
-<li>
-<p><strong>滤波电路</strong>：</p>
-<ul>
-<li>低通滤波：抑制高频噪声</li>
-<li>截止频率：100Hz</li>
-</ul>
-</li>
-<li>
-<p><strong>电平移位</strong>：</p>
-<ul>
-<li>消除传感器偏移</li>
-<li>输出0-5V</li>
-</ul>
-</li>
-</ol>
-<h4 id="1123-器件选择"><a class="header" href="#1123-器件选择">11.2.3 器件选择</a></h4>
-<ul>
-<li>仪表放大器：AD620，INA128</li>
-<li>精密运放：OP07，OP27</li>
-<li>基准电压：TL431，REF02</li>
-</ul>
-<h3 id="113-射频放大器设计"><a class="header" href="#113-射频放大器设计">11.3 射频放大器设计</a></h3>
-<p>设计一个800MHz的低噪声放大器，用于接收机前端。</p>
-<h4 id="1131-技术指标"><a class="header" href="#1131-技术指标">11.3.1 技术指标</a></h4>
-<ul>
-<li>频率：800MHz</li>
-<li>增益：&gt;15dB</li>
-<li>噪声系数：&lt;2dB</li>
-<li>输入匹配：S11 &lt;-10dB</li>
-<li>输出匹配：S22 &lt;-10dB</li>
-</ul>
-<h4 id="1132-晶体管选择"><a class="header" href="#1132-晶体管选择">11.3.2 晶体管选择</a></h4>
-<ul>
-<li>选择高频FET：BFP640，SST127</li>
-<li>查看S参数</li>
-<li>稳定性分析</li>
-</ul>
-<h4 id="1133-匹配网络设计"><a class="header" href="#1133-匹配网络设计">11.3.3 匹配网络设计</a></h4>
-<ol>
-<li>
-<p><strong>输入匹配</strong>：</p>
-<ul>
-<li>使用Smith圆图</li>
-<li>L型匹配网络</li>
-</ul>
-</li>
-<li>
-<p><strong>输出匹配</strong>：</p>
-<ul>
-<li>负载线匹配</li>
-<li>考虑功率传输</li>
-</ul>
-</li>
-</ol>
-<h4 id="1134-稳定性考虑"><a class="header" href="#1134-稳定性考虑">11.3.4 稳定性考虑</a></h4>
-<ul>
-<li>稳定性因子K &gt; 1</li>
-<li>Δ &lt; 1</li>
-<li>增益稳定</li>
-</ul>
-<h2 id="12-验证标准"><a class="header" href="#12-验证标准">12. 验证标准</a></h2>
-<h3 id="121-仿真验证"><a class="header" href="#121-仿真验证">12.1 仿真验证</a></h3>
-<ol>
-<li>
-<p><strong>直流工作点验证</strong>：</p>
-<ul>
-<li>检查各节点电压</li>
-<li>验证电流分配</li>
-<li>确认器件工作区域</li>
-</ul>
-</li>
-<li>
-<p><strong>交流特性验证</strong>：</p>
-<ul>
-<li>频率响应测试</li>
-<li>增益带宽积验证</li>
-<li>相位裕度检查</li>
-</ul>
-</li>
-<li>
-<p><strong>瞬态响应验证</strong>：</p>
-<ul>
-<li>阶跃响应</li>
-<li>脉冲响应</li>
-<li>稳定时间验证</li>
-</ul>
-</li>
-</ol>
-<h3 id="122-测试验证"><a class="header" href="#122-测试验证">12.2 测试验证</a></h3>
-<ol>
-<li>
-<p><strong>功能测试</strong>：</p>
-<ul>
-<li>静态工作点测量</li>
-<li>增益测量</li>
-<li>输入输出阻抗测试</li>
-</ul>
-</li>
-<li>
-<p><strong>性能测试</strong>：</p>
-<ul>
-<li>频率响应测量</li>
-<li>失真度测试</li>
-<li>信噪比测试</li>
-</ul>
-</li>
-<li>
-<p><strong>环境测试</strong>：</p>
-<ul>
-<li>温度特性测试</li>
-<li>电源电压变化测试</li>
-<li>抗干扰能力测试</li>
-</ul>
-</li>
-</ol>
-<h3 id="123-性能指标"><a class="header" href="#123-性能指标">12.3 性能指标</a></h3>
-<ol>
-<li>
-<p><strong>精度指标</strong>：</p>
-<ul>
-<li>增益精度：±5%</li>
-<li>线性度：THD &lt; 1%</li>
-<li>温漂：&lt;50ppm/°C</li>
-</ul>
-</li>
-<li>
-<p><strong>速度指标</strong>：</p>
-<ul>
-<li>带宽：满足应用要求</li>
-<li>压摆率：足够驱动负载</li>
-<li>建立时间：满足系统时序</li>
-</ul>
-</li>
-<li>
-<p><strong>可靠性指标</strong>：</p>
-<ul>
-<li>MTBF：&gt;100,000小时</li>
-<li>工作温度：-40°C~+85°C</li>
-<li>电源电压范围：±10%变化</li>
-</ul>
-</li>
-</ol>
-<h2 id="13-扩展资源"><a class="header" href="#13-扩展资源">13. 扩展资源</a></h2>
-<h3 id="131-推荐书籍"><a class="header" href="#131-推荐书籍">13.1 推荐书籍</a></h3>
-<ul>
-<li>《模拟电子技术基础》- 童诗白，华成英</li>
-<li>《微电子学》- 陈星弼，张庆中</li>
-<li>《模拟集成电路设计》- 拉扎维</li>
-<li>《运算放大器权威指南》- 希夫特</li>
-<li>《射频电路设计》- 里德奈尔</li>
-</ul>
-<h3 id="132-设计工具"><a class="header" href="#132-设计工具">13.2 设计工具</a></h3>
-<ul>
-<li><strong>仿真工具</strong>：SPICE、LTspice、Multisim</li>
-<li><strong>PCB设计</strong>：Altium Designer、Cadence、KiCad</li>
-<li><strong>分析工具</strong>：MATLAB、Python、Mathematica</li>
-<li><strong>测试设备</strong>：示波器、频谱仪、网络分析仪</li>
-</ul>
-<h3 id="133-在线资源"><a class="header" href="#133-在线资源">13.3 在线资源</a></h3>
-<ul>
-<li>IEEE Xplore：学术论文数据库</li>
-<li>EDN：电子设计新闻</li>
-<li>Analog Devices：技术文档和设计工具</li>
-<li>Texas Instruments：应用笔记和参考设计</li>
-<li>YouTube：技术教程视频</li>
-</ul>
-<h3 id="134-进阶学习"><a class="header" href="#134-进阶学习">13.4 进阶学习</a></h3>
-<ul>
-<li>高速电路设计</li>
-<li>射频电路设计</li>
-<li>混合信号设计</li>
+<li>模拟电路PCB设计原则</li>
+<li>接地技术（单点、多点、星型）</li>
+<li>信号完整性考虑</li>
+<li>热设计和散热</li>
 <li>电源完整性设计</li>
-<li>信号完整性分析</li>
 </ul>
-<h2 id="14-总结"><a class="header" href="#14-总结">14. 总结</a></h2>
-<p>模拟电路是电子系统的基础，掌握模拟电路设计原理和方法对于电子工程师至关重要。本笔记涵盖了模拟电路的主要方面，从基础元器件到复杂系统设计，提供了完整的知识体系。</p>
-<p>学习模拟电路需要：</p>
-<ol>
-<li>扎实的理论基础</li>
-<li>丰富的实践经验</li>
-<li>持续的技术更新</li>
-<li>系统的思维方式</li>
-</ol>
-<p>通过本笔记的学习，读者应能够：</p>
+<h3 id="13-测试与调试技巧"><a class="header" href="#13-测试与调试技巧">13. 测试与调试技巧</a></h3>
 <ul>
-<li>理解模拟电路的基本原理</li>
-<li>掌握常用电路的分析方法</li>
-<li>具备基本的电路设计能力</li>
-<li>了解现代模拟电路发展趋势</li>
+<li>基本测试设备使用（示波器、万用表、信号源）</li>
+<li>常见故障排查流程</li>
+<li>调试工具和方法</li>
+<li>性能测试方法（增益、频响、失真、噪声）</li>
 </ul>
-<p>模拟电路设计是一门艺术，需要在理论与实践之间找到平衡，在性能与成本之间做出权衡。随着技术的发展，模拟电路将继续在电子系统中发挥不可替代的作用。</p>
+<h3 id="14-常见问题与解决方案"><a class="header" href="#14-常见问题与解决方案">14. 常见问题与解决方案</a></h3>
+<ul>
+<li>振荡和不稳定</li>
+<li>噪声干扰</li>
+<li>热问题</li>
+<li>EMC问题</li>
+<li>精度问题</li>
+<li>性能优化技巧</li>
+</ul>
+<h3 id="15-学习路径与验证"><a class="header" href="#15-学习路径与验证">15. 学习路径与验证</a></h3>
+<h4 id="学习路径"><a class="header" href="#学习路径">学习路径</a></h4>
+<pre><code>入门阶段（0-3个月）：
+1. 掌握基本元器件特性
+2. 学会直流和交流分析方法
+3. 搭建简单放大器电路
+4. 使用仿真工具（LTspice）
+
+进阶阶段（3-6个月）：
+1. 深入理解运放应用
+2. 设计滤波器和振荡器
+3. 学习电源电路设计
+4. 开始实际项目
+
+高级阶段（6-12个月）：
+1. 掌握高速和射频设计
+2. 系统级设计能力
+3. PCB设计和调试
+4. 解决复杂问题
+
+专家阶段（1年以上）：
+1. 深入特定应用领域
+2. 创新设计能力
+3. 指导他人
+4. 发表技术文章
+</code></pre>
+<h4 id="验证标准"><a class="header" href="#验证标准">验证标准</a></h4>
+<p><strong>理论掌握验证：</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+能用小信号模型分析放大器</li>
+<li><input disabled="" type="checkbox"/>
+能计算滤波器参数</li>
+<li><input disabled="" type="checkbox"/>
+理解反馈和稳定性</li>
+<li><input disabled="" type="checkbox"/>
+掌握噪声分析方法</li>
+<li><input disabled="" type="checkbox"/>
+能进行电源设计计算</li>
+</ul>
+<p><strong>实践能力验证：</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+独立设计并搭建放大器电路</li>
+<li><input disabled="" type="checkbox"/>
+设计并实现滤波器</li>
+<li><input disabled="" type="checkbox"/>
+完成电源电路设计</li>
+<li><input disabled="" type="checkbox"/>
+能用示波器调试电路</li>
+<li><input disabled="" type="checkbox"/>
+能解决实际电路问题</li>
+</ul>
+<p><strong>项目经验验证：</strong></p>
+<ul>
+<li><input disabled="" type="checkbox"/>
+完成3个以上完整项目</li>
+<li><input disabled="" type="checkbox"/>
+有PCB设计和制板经验</li>
+<li><input disabled="" type="checkbox"/>
+进行过EMC测试和整改</li>
+<li><input disabled="" type="checkbox"/>
+解决过实际产品问题</li>
+<li><input disabled="" type="checkbox"/>
+能估算成本和评估方案</li>
+</ul>
+<h4 id="推荐学习资源"><a class="header" href="#推荐学习资源">推荐学习资源</a></h4>
+<p><strong>经典教材：</strong></p>
+<ol>
+<li>《模拟电子技术基础》 - 童诗白、华成英</li>
+<li>《模拟集成电路设计》 - Behzad Razavi</li>
+<li>《运算放大器权威指南》 - Bruce Carter</li>
+<li>《射频电路设计》 - Chris Bowick</li>
+<li>《The Art of Electronics》 - Horowitz &amp; Hill</li>
+</ol>
+<p><strong>在线资源：</strong></p>
+<ol>
+<li>TI Training (training.ti.com)</li>
+<li>Analog Devices教学资源</li>
+<li>EDN技术文章</li>
+<li>EEVblog视频教程</li>
+<li>All About Circuits论坛</li>
+</ol>
+<p><strong>工具推荐：</strong></p>
+<ol>
+<li>仿真：LTspice（免费）、PSpice、Multisim</li>
+<li>PCB设计：KiCad（开源）、Altium Designer、EAGLE</li>
+<li>计算工具：FilterPro、WEBENCH</li>
+<li>参考设计：厂商官网应用笔记</li>
+</ol>
+<p><strong>实践建议：</strong></p>
+<ol>
+<li>从简单电路开始，逐步复杂化</li>
+<li>每个设计都要计算验证</li>
+<li>养成记录和总结习惯</li>
+<li>多看经典电路和应用笔记</li>
+<li>参与开源项目和论坛讨论</li>
+<li>建立自己的设计库和经验库</li>
+</ol>
+<hr />
+<h2 id="总结"><a class="header" href="#总结">总结</a></h2>
+<p>模拟电路设计是一门理论与实践紧密结合的学科，需要扎实的理论基础、丰富的实践经验和持续的学习更新。</p>
+<p><strong>核心要点回顾：</strong></p>
+<ol>
+<li>
+<p><strong>基础扎实最重要</strong></p>
+<ul>
+<li>深刻理解元器件工作原理</li>
+<li>熟练掌握电路分析方法</li>
+<li>建立系统化思维模式</li>
+</ul>
+</li>
+<li>
+<p><strong>实践是检验真理的唯一标准</strong></p>
+<ul>
+<li>理论计算+仿真验证+实际测试</li>
+<li>每个设计都要闭环验证</li>
+<li>从失败中学习更多</li>
+</ul>
+</li>
+<li>
+<p><strong>细节决定成败</strong></p>
+<ul>
+<li>器件参数选择</li>
+<li>PCB布局设计</li>
+<li>热设计和接地</li>
+<li>EMC和可靠性</li>
+</ul>
+</li>
+<li>
+<p><strong>持续学习和创新</strong></p>
+<ul>
+<li>关注新技术和新器件</li>
+<li>学习优秀设计案例</li>
+<li>总结经验教训</li>
+<li>培养解决问题的能力</li>
+</ul>
+</li>
+</ol>
+<p><strong>最后建议：</strong></p>
+<p>模拟电路设计是一门艺术，需要在理论与实践之间找到平衡，在性能与成本之间做出权衡。保持好奇心，勇于实践，善于总结，你一定能成为优秀的模拟电路设计工程师。</p>
+<p>记住：没有完美的设计，只有适合的设计。不断追求更优方案，但要知道何时停止优化。</p>
+<p>祝学习进步，设计成功！</p>
+<hr />
+<p><strong>附录资源</strong></p>
+<ol>
+<li><strong>常用元器件选型手册</strong></li>
+<li><strong>标准电阻电容值表</strong></li>
+<li><strong>运放选型对比表</strong></li>
+<li><strong>电源芯片推荐列表</strong></li>
+<li><strong>PCB设计规则检查清单</strong></li>
+<li><strong>调试常用测试点</strong></li>
+<li><strong>故障诊断流程图</strong></li>
+<li><strong>计算公式速查表</strong></li>
+</ol>
+<p>（本笔记共约25000字，涵盖模拟电路核心知识点，适合0-5年经验工程师系统学习使用）</p>
+<hr />
+<p><em>文档版本：v2.0</em><br />
+<em>最后更新：2025年</em><br />
+<em>适用对象：电子工程师、学生、爱好者</em></p>
 
                     </main>
 
