@@ -1,0 +1,1124 @@
+# TCP/IP网络编程实战
+
+> 本笔记是[TCP/IP协议学习笔记](tcpip.md)的扩展部分，专注于高性能网络编程的实战技巧
+
+## 📋 目录
+
+- [第一章：I/O模型](#第一章io模型)
+- [第二章：I/O多路复用](#第二章io多路复用)
+- [第三章：异步网络编程](#第三章异步网络编程)
+- [第四章：高性能服务器架构](#第四章高性能服务器架构)
+- [第五章：协议设计](#第五章协议设计)
+
+---
+
+## 第一章：I/O模型
+
+### 1.1 五种I/O模型
+
+#### I/O模型分类
+
+```
+1. 阻塞I/O (Blocking I/O)
+   - 进程阻塞直到I/O操作完成
+   - 最简单但效率最低
+
+2. 非阻塞I/O (Non-blocking I/O)
+   - 立即返回，需要轮询
+   - CPU占用高
+
+3. I/O多路复用 (I/O Multiplexing)
+   - select/poll/epoll
+   - 监控多个文件描述符
+
+4. 信号驱动I/O (Signal-driven I/O)
+   - 数据准备好时发送信号
+   - 较少使用
+
+5. 异步I/O (Asynchronous I/O)
+   - 内核完成I/O后通知应用
+   - 性能最高
+```
+
+#### 阻塞I/O示例
+
+```python
+import socket
+
+def blocking_io_server():
+    """阻塞I/O服务器"""
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(('0.0.0.0', 8888))
+    server_socket.listen(5)
+
+    print("阻塞I/O服务器启动，监听端口 8888")
+
+    while True:
+        # 阻塞等待连接
+        client_socket, client_address = server_socket.accept()
+        print(f"新连接来自: {client_address}")
+
+        # 阻塞读取数据
+        data = client_socket.recv(1024)
+        if data:
+            print(f"收到数据: {data.decode('utf-8')}")
+            # 阻塞发送数据
+            client_socket.sendall(b"Echo: " + data)
+
+        client_socket.close()
+
+# 使用示例
+# blocking_io_server()
+```
+
+#### 非阻塞I/O示例
+
+```python
+import socket
+import errno
+
+def non_blocking_io_server():
+    """非阻塞I/O服务器（轮询模式）"""
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.setblocking(False)  # 设置为非阻塞
+    server_socket.bind(('0.0.0.0', 8888))
+    server_socket.listen(5)
+
+    print("非阻塞I/O服务器启动，监听端口 8888")
+
+    client_sockets = []
+
+    while True:
+        # 尝试接受连接（不阻塞）
+        try:
+            client_socket, client_address = server_socket.accept()
+            client_socket.setblocking(False)
+            client_sockets.append(client_socket)
+            print(f"新连接来自: {client_address}")
+        except BlockingIOError:
+            pass  # 没有新连接，继续
+
+        # 轮询所有客户端socket
+        for client_socket in client_sockets[:]:  # 使用切片复制列表
+            try:
+                data = client_socket.recv(1024)
+                if data:
+                    print(f"收到数据: {data.decode('utf-8')}")
+                    client_socket.sendall(b"Echo: " + data)
+                else:
+                    # 客户端关闭连接
+                    client_socket.close()
+                    client_sockets.remove(client_socket)
+            except BlockingIOError:
+                pass  # 没有数据可读
+            except Exception as e:
+                print(f"错误: {e}")
+                client_socket.close()
+                client_sockets.remove(client_socket)
+
+# 使用示例
+# non_blocking_io_server()
+```
+
+---
+
+## 第二章：I/O多路复用
+
+### 2.1 select实现
+
+#### select基础
+
+```python
+import socket
+import select
+
+def select_server():
+    """使用select实现的服务器"""
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(('0.0.0.0', 8888))
+    server_socket.listen(5)
+    server_socket.setblocking(False)
+
+    print("Select服务器启动，监听端口 8888")
+
+    # 维护要监控的socket列表
+    inputs = [server_socket]
+    outputs = []
+
+    while inputs:
+        # select监控：可读、可写、异常
+        readable, writable, exceptional = select.select(inputs, outputs, inputs)
+
+        # 处理可读的socket
+        for s in readable:
+            if s is server_socket:
+                # 服务器socket可读，表示有新连接
+                client_socket, client_address = s.accept()
+                print(f"新连接来自: {client_address}")
+                client_socket.setblocking(False)
+                inputs.append(client_socket)
+            else:
+                # 客户端socket可读，表示有数据
+                try:
+                    data = s.recv(1024)
+                    if data:
+                        print(f"收到数据: {data.decode('utf-8')}")
+                        # 回显数据
+                        s.sendall(b"Echo: " + data)
+                    else:
+                        # 客户端关闭连接
+                        print(f"客户端断开连接")
+                        inputs.remove(s)
+                        if s in outputs:
+                            outputs.remove(s)
+                        s.close()
+                except Exception as e:
+                    print(f"错误: {e}")
+                    inputs.remove(s)
+                    if s in outputs:
+                        outputs.remove(s)
+                    s.close()
+
+        # 处理异常的socket
+        for s in exceptional:
+            print(f"Socket异常")
+            inputs.remove(s)
+            if s in outputs:
+                outputs.remove(s)
+            s.close()
+
+# 使用示例
+# select_server()
+```
+
+**select的局限性**
+
+```
+1. 文件描述符数量限制（Linux默认1024）
+2. 每次调用需要将fd集合从用户空间拷贝到内核空间
+3. 需要轮询所有fd才能找到就绪的fd
+4. 不能跨平台（Windows实现不同）
+
+性能：O(n) - 需要遍历所有fd
+```
+
+### 2.2 poll实现
+
+#### poll基础
+
+```python
+import socket
+import select
+
+def poll_server():
+    """使用poll实现的服务器"""
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(('0.0.0.0', 8888))
+    server_socket.listen(5)
+    server_socket.setblocking(False)
+
+    print("Poll服务器启动，监听端口 8888")
+
+    # 创建poll对象
+    poller = select.poll()
+
+    # 注册服务器socket，监听可读事件
+    poller.register(server_socket, select.POLLIN)
+
+    # 文件描述符到socket对象的映射
+    fd_to_socket = {server_socket.fileno(): server_socket}
+
+    while True:
+        # 等待事件（超时1秒）
+        events = poller.poll(1000)
+
+        for fd, event in events:
+            s = fd_to_socket[fd]
+
+            if event & select.POLLIN:
+                # 可读事件
+                if s is server_socket:
+                    # 新连接
+                    client_socket, client_address = s.accept()
+                    print(f"新连接来自: {client_address}")
+                    client_socket.setblocking(False)
+                    fd_to_socket[client_socket.fileno()] = client_socket
+                    poller.register(client_socket, select.POLLIN)
+                else:
+                    # 数据到达
+                    try:
+                        data = s.recv(1024)
+                        if data:
+                            print(f"收到数据: {data.decode('utf-8')}")
+                            s.sendall(b"Echo: " + data)
+                        else:
+                            # 客户端关闭
+                            print("客户端断开连接")
+                            poller.unregister(s)
+                            del fd_to_socket[s.fileno()]
+                            s.close()
+                    except Exception as e:
+                        print(f"错误: {e}")
+                        poller.unregister(s)
+                        del fd_to_socket[s.fileno()]
+                        s.close()
+
+            elif event & select.POLLHUP:
+                # 连接挂起
+                print("连接挂起")
+                poller.unregister(s)
+                del fd_to_socket[s.fileno()]
+                s.close()
+
+            elif event & select.POLLERR:
+                # 错误事件
+                print("Socket错误")
+                poller.unregister(s)
+                del fd_to_socket[s.fileno()]
+                s.close()
+
+# 使用示例
+# poll_server()
+```
+
+**poll的改进**
+
+```
+1. 没有文件描述符数量限制
+2. 使用链表存储，不需要遍历整个集合
+3. 仍需要将fd集合拷贝到内核空间
+
+性能：O(n) - 仍需遍历所有fd
+```
+
+### 2.3 epoll实现（Linux）
+
+#### epoll基础
+
+```python
+import socket
+import select
+
+def epoll_server():
+    """使用epoll实现的高性能服务器（仅Linux）"""
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(('0.0.0.0', 8888))
+    server_socket.listen(5)
+    server_socket.setblocking(False)
+
+    print("Epoll服务器启动，监听端口 8888")
+
+    # 创建epoll对象
+    epoll = select.epoll()
+
+    # 注册服务器socket
+    epoll.register(server_socket.fileno(), select.EPOLLIN)
+
+    # 文件描述符到socket对象的映射
+    fd_to_socket = {server_socket.fileno(): server_socket}
+
+    try:
+        while True:
+            # 等待事件（超时1秒）
+            events = epoll.poll(1)
+
+            for fd, event in events:
+                s = fd_to_socket[fd]
+
+                if event & select.EPOLLIN:
+                    # 可读事件
+                    if s is server_socket:
+                        # 新连接
+                        try:
+                            while True:
+                                client_socket, client_address = s.accept()
+                                print(f"新连接来自: {client_address}")
+                                client_socket.setblocking(False)
+                                fd = client_socket.fileno()
+                                fd_to_socket[fd] = client_socket
+                                # EPOLLET: 边缘触发模式
+                                epoll.register(fd, select.EPOLLIN | select.EPOLLET)
+                        except BlockingIOError:
+                            pass  # 没有更多连接
+                    else:
+                        # 数据到达
+                        try:
+                            data = s.recv(1024)
+                            if data:
+                                print(f"收到数据: {data.decode('utf-8')}")
+                                s.sendall(b"Echo: " + data)
+                            else:
+                                # 客户端关闭
+                                print("客户端断开连接")
+                                epoll.unregister(s.fileno())
+                                del fd_to_socket[s.fileno()]
+                                s.close()
+                        except Exception as e:
+                            print(f"错误: {e}")
+                            epoll.unregister(s.fileno())
+                            del fd_to_socket[s.fileno()]
+                            s.close()
+
+                elif event & select.EPOLLHUP:
+                    # 连接挂起
+                    print("连接挂起")
+                    epoll.unregister(s.fileno())
+                    del fd_to_socket[s.fileno()]
+                    s.close()
+
+                elif event & select.EPOLLERR:
+                    # 错误事件
+                    print("Socket错误")
+                    epoll.unregister(s.fileno())
+                    del fd_to_socket[s.fileno()]
+                    s.close()
+
+    finally:
+        epoll.unregister(server_socket.fileno())
+        epoll.close()
+        server_socket.close()
+
+# 使用示例
+# epoll_server()
+```
+
+**epoll的优势**
+
+```
+1. 没有文件描述符数量限制
+2. 不需要每次都拷贝fd集合（使用内核事件表）
+3. 只返回就绪的fd，无需遍历
+4. 支持边缘触发（ET）和水平触发（LT）
+
+性能：O(1) - 直接获取就绪的fd
+
+epoll模式：
+- LT（Level Trigger）水平触发：
+  只要有数据就一直通知（默认模式）
+
+- ET（Edge Trigger）边缘触发：
+  只在状态变化时通知一次（高性能模式）
+```
+
+#### epoll工作模式对比
+
+```python
+import socket
+import select
+
+def epoll_lt_server():
+    """水平触发模式（Level Trigger）"""
+    # 代码同上，不使用EPOLLET标志
+    epoll.register(fd, select.EPOLLIN)  # LT模式
+
+def epoll_et_server():
+    """边缘触发模式（Edge Trigger）"""
+    # 必须循环读取直到EAGAIN
+    epoll.register(fd, select.EPOLLIN | select.EPOLLET)  # ET模式
+
+    # ET模式必须一次性读完所有数据
+    while True:
+        try:
+            data = s.recv(1024)
+            if not data:
+                break
+            buffer += data
+        except BlockingIOError:
+            break  # 读取完毕
+```
+
+### 2.4 选择合适的I/O模型
+
+#### 对比表
+
+| 特性 | select | poll | epoll (Linux) | kqueue (BSD) |
+|------|--------|------|---------------|--------------|
+| **最大连接数** | 1024 | 无限制 | 无限制 | 无限制 |
+| **性能** | O(n) | O(n) | O(1) | O(1) |
+| **跨平台** | 是 | 是 | 否 | 否 |
+| **边缘触发** | 否 | 否 | 是 | 是 |
+| **内存拷贝** | 每次 | 每次 | 仅注册时 | 仅注册时 |
+
+#### 推荐选择
+
+```python
+# 跨平台方案：使用selectors模块
+import selectors
+import socket
+
+def universal_server():
+    """使用selectors的跨平台服务器"""
+    # selectors自动选择最优I/O多路复用机制
+    # Linux: epoll
+    # BSD: kqueue
+    # Windows: select
+    sel = selectors.DefaultSelector()
+
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(('0.0.0.0', 8888))
+    server_socket.listen(5)
+    server_socket.setblocking(False)
+
+    def accept_connection(sock):
+        """接受新连接"""
+        client_socket, client_address = sock.accept()
+        print(f"新连接来自: {client_address}")
+        client_socket.setblocking(False)
+        sel.register(client_socket, selectors.EVENT_READ, read_data)
+
+    def read_data(sock):
+        """读取数据"""
+        try:
+            data = sock.recv(1024)
+            if data:
+                print(f"收到数据: {data.decode('utf-8')}")
+                sock.sendall(b"Echo: " + data)
+            else:
+                print("客户端断开连接")
+                sel.unregister(sock)
+                sock.close()
+        except Exception as e:
+            print(f"错误: {e}")
+            sel.unregister(sock)
+            sock.close()
+
+    # 注册服务器socket
+    sel.register(server_socket, selectors.EVENT_READ, accept_connection)
+
+    print("服务器启动，监听端口 8888")
+
+    try:
+        while True:
+            # 等待事件
+            events = sel.select(timeout=1)
+            for key, mask in events:
+                callback = key.data
+                callback(key.fileobj)
+    except KeyboardInterrupt:
+        print("\n服务器关闭")
+    finally:
+        sel.close()
+        server_socket.close()
+
+# 使用示例
+# universal_server()
+```
+
+---
+
+## 第三章：异步网络编程
+
+### 3.1 asyncio基础
+
+#### asyncio概述
+
+```python
+import asyncio
+
+# 协程函数
+async def hello_world():
+    """简单的异步函数"""
+    print("Hello")
+    await asyncio.sleep(1)  # 异步等待1秒
+    print("World")
+    return "Done"
+
+# 运行协程
+# Python 3.7+
+asyncio.run(hello_world())
+
+# Python 3.6
+# loop = asyncio.get_event_loop()
+# loop.run_until_complete(hello_world())
+```
+
+#### asyncio TCP服务器
+
+```python
+import asyncio
+
+async def handle_client(reader, writer):
+    """处理客户端连接"""
+    addr = writer.get_extra_info('peername')
+    print(f"新连接来自: {addr}")
+
+    try:
+        while True:
+            # 异步读取数据
+            data = await reader.read(1024)
+            if not data:
+                break
+
+            message = data.decode('utf-8')
+            print(f"收到来自 {addr} 的数据: {message}")
+
+            # 异步发送数据
+            response = f"Echo: {message}"
+            writer.write(response.encode('utf-8'))
+            await writer.drain()  # 确保数据发送完毕
+    except Exception as e:
+        print(f"错误: {e}")
+    finally:
+        print(f"客户端 {addr} 断开连接")
+        writer.close()
+        await writer.wait_closed()
+
+async def run_server():
+    """启动异步TCP服务器"""
+    server = await asyncio.start_server(
+        handle_client,
+        '0.0.0.0',
+        8888
+    )
+
+    addr = server.sockets[0].getsockname()
+    print(f"服务器启动，监听 {addr}")
+
+    async with server:
+        await server.serve_forever()
+
+# 使用示例
+# asyncio.run(run_server())
+```
+
+#### asyncio TCP客户端
+
+```python
+import asyncio
+
+async def tcp_client():
+    """异步TCP客户端"""
+    # 连接服务器
+    reader, writer = await asyncio.open_connection('127.0.0.1', 8888)
+
+    print("连接成功")
+
+    # 发送多条消息
+    messages = ['Hello', 'World', 'Python', 'asyncio']
+
+    for message in messages:
+        print(f"发送: {message}")
+        writer.write(message.encode('utf-8'))
+        await writer.drain()
+
+        # 接收响应
+        data = await reader.read(1024)
+        print(f"收到: {data.decode('utf-8')}")
+
+        await asyncio.sleep(1)
+
+    # 关闭连接
+    print("关闭连接")
+    writer.close()
+    await writer.wait_closed()
+
+# 使用示例
+# asyncio.run(tcp_client())
+```
+
+### 3.2 异步并发处理
+
+#### 并发多个任务
+
+```python
+import asyncio
+import time
+
+async def fetch_data(name, delay):
+    """模拟异步获取数据"""
+    print(f"{name}: 开始获取数据")
+    await asyncio.sleep(delay)
+    print(f"{name}: 数据获取完成")
+    return f"{name} 的数据"
+
+async def main():
+    """并发执行多个任务"""
+    start_time = time.time()
+
+    # 方法1: 使用gather
+    results = await asyncio.gather(
+        fetch_data("任务1", 2),
+        fetch_data("任务2", 1),
+        fetch_data("任务3", 3)
+    )
+    print(f"结果: {results}")
+
+    # 方法2: 使用create_task
+    task1 = asyncio.create_task(fetch_data("任务A", 2))
+    task2 = asyncio.create_task(fetch_data("任务B", 1))
+    task3 = asyncio.create_task(fetch_data("任务C", 3))
+
+    result1 = await task1
+    result2 = await task2
+    result3 = await task3
+
+    elapsed = time.time() - start_time
+    print(f"总耗时: {elapsed:.2f}秒")
+
+# 使用示例
+# asyncio.run(main())
+```
+
+#### 异步HTTP请求（aiohttp）
+
+```python
+import asyncio
+import aiohttp
+
+async def fetch_url(session, url):
+    """异步获取URL内容"""
+    async with session.get(url) as response:
+        return await response.text()
+
+async def fetch_multiple_urls():
+    """并发获取多个URL"""
+    urls = [
+        'https://httpbin.org/delay/1',
+        'https://httpbin.org/delay/2',
+        'https://httpbin.org/delay/1',
+    ]
+
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_url(session, url) for url in urls]
+        results = await asyncio.gather(*tasks)
+
+        for i, result in enumerate(results):
+            print(f"URL {i+1} 响应长度: {len(result)}")
+
+# 使用示例
+# asyncio.run(fetch_multiple_urls())
+```
+
+### 3.3 异步队列和生产者-消费者模式
+
+```python
+import asyncio
+import random
+
+async def producer(queue, producer_id):
+    """生产者"""
+    for i in range(5):
+        item = f"Producer-{producer_id}-Item-{i}"
+        await queue.put(item)
+        print(f"生产: {item}")
+        await asyncio.sleep(random.uniform(0.1, 0.5))
+
+    await queue.put(None)  # 发送结束信号
+
+async def consumer(queue, consumer_id):
+    """消费者"""
+    while True:
+        item = await queue.get()
+        if item is None:
+            queue.task_done()
+            await queue.put(None)  # 传递结束信号
+            break
+
+        print(f"消费者-{consumer_id} 处理: {item}")
+        await asyncio.sleep(random.uniform(0.2, 0.8))
+        queue.task_done()
+
+async def main():
+    """生产者-消费者模式"""
+    queue = asyncio.Queue(maxsize=10)
+
+    # 创建生产者和消费者
+    producers = [asyncio.create_task(producer(queue, i)) for i in range(2)]
+    consumers = [asyncio.create_task(consumer(queue, i)) for i in range(3)]
+
+    # 等待生产者完成
+    await asyncio.gather(*producers)
+
+    # 等待队列处理完毕
+    await queue.join()
+
+    # 等待消费者完成
+    await asyncio.gather(*consumers)
+
+# 使用示例
+# asyncio.run(main())
+```
+
+---
+
+## 第四章：高性能服务器架构
+
+### 4.1 多进程架构
+
+#### 预派生进程池
+
+```python
+import socket
+import multiprocessing
+import signal
+import os
+
+def worker_process(server_socket, worker_id):
+    """工作进程"""
+    print(f"Worker {worker_id} (PID: {os.getpid()}) 启动")
+
+    # 忽略SIGINT，由主进程处理
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+    while True:
+        try:
+            client_socket, client_address = server_socket.accept()
+            print(f"Worker {worker_id} 处理来自 {client_address} 的连接")
+
+            with client_socket:
+                data = client_socket.recv(1024)
+                if data:
+                    response = f"Worker {worker_id} Echo: {data.decode('utf-8')}"
+                    client_socket.sendall(response.encode('utf-8'))
+        except KeyboardInterrupt:
+            break
+        except Exception as e:
+            print(f"Worker {worker_id} 错误: {e}")
+
+    print(f"Worker {worker_id} 退出")
+
+def multi_process_server(num_workers=4):
+    """多进程服务器"""
+    # 创建监听socket
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    server_socket.bind(('0.0.0.0', 8888))
+    server_socket.listen(128)
+
+    print(f"多进程服务器启动，{num_workers} 个工作进程")
+
+    # 创建工作进程池
+    workers = []
+    for i in range(num_workers):
+        p = multiprocessing.Process(target=worker_process, args=(server_socket, i))
+        p.start()
+        workers.append(p)
+
+    try:
+        # 主进程等待
+        for worker in workers:
+            worker.join()
+    except KeyboardInterrupt:
+        print("\n关闭服务器...")
+        for worker in workers:
+            worker.terminate()
+        for worker in workers:
+            worker.join()
+
+    server_socket.close()
+
+# 使用示例
+# if __name__ == '__main__':
+#     multi_process_server(num_workers=4)
+```
+
+### 4.2 多线程架构
+
+#### 线程池服务器
+
+```python
+import socket
+import threading
+from concurrent.futures import ThreadPoolExecutor
+
+class ThreadPoolServer:
+    def __init__(self, host='0.0.0.0', port=8888, max_workers=10):
+        self.host = host
+        self.port = port
+        self.max_workers = max_workers
+        self.server_socket = None
+        self.executor = None
+
+    def handle_client(self, client_socket, client_address):
+        """处理客户端连接"""
+        thread_id = threading.current_thread().name
+        print(f"[{thread_id}] 处理来自 {client_address} 的连接")
+
+        try:
+            while True:
+                data = client_socket.recv(1024)
+                if not data:
+                    break
+
+                message = data.decode('utf-8')
+                print(f"[{thread_id}] 收到: {message}")
+
+                response = f"[{thread_id}] Echo: {message}"
+                client_socket.sendall(response.encode('utf-8'))
+        except Exception as e:
+            print(f"[{thread_id}] 错误: {e}")
+        finally:
+            print(f"[{thread_id}] 客户端 {client_address} 断开连接")
+            client_socket.close()
+
+    def start(self):
+        """启动服务器"""
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server_socket.bind((self.host, self.port))
+        self.server_socket.listen(128)
+
+        print(f"线程池服务器启动，监听 {self.host}:{self.port}")
+        print(f"线程池大小: {self.max_workers}")
+
+        # 创建线程池
+        self.executor = ThreadPoolExecutor(max_workers=self.max_workers)
+
+        try:
+            while True:
+                client_socket, client_address = self.server_socket.accept()
+                # 提交任务到线程池
+                self.executor.submit(self.handle_client, client_socket, client_address)
+        except KeyboardInterrupt:
+            print("\n关闭服务器...")
+        finally:
+            self.executor.shutdown(wait=True)
+            self.server_socket.close()
+
+# 使用示例
+# server = ThreadPoolServer(max_workers=10)
+# server.start()
+```
+
+### 4.3 Reactor模式
+
+#### 单Reactor单线程
+
+```python
+import socket
+import selectors
+
+class Reactor:
+    """Reactor模式实现"""
+    def __init__(self, host='0.0.0.0', port=8888):
+        self.host = host
+        self.port = port
+        self.selector = selectors.DefaultSelector()
+        self.server_socket = None
+
+    def accept_handler(self, sock):
+        """接受连接处理器"""
+        client_socket, client_address = sock.accept()
+        print(f"新连接来自: {client_address}")
+        client_socket.setblocking(False)
+        self.selector.register(client_socket, selectors.EVENT_READ, self.read_handler)
+
+    def read_handler(self, sock):
+        """读数据处理器"""
+        try:
+            data = sock.recv(1024)
+            if data:
+                print(f"收到数据: {data.decode('utf-8')}")
+                # 修改为写事件
+                self.selector.modify(sock, selectors.EVENT_WRITE,
+                                    lambda s: self.write_handler(s, data))
+            else:
+                print("客户端断开连接")
+                self.selector.unregister(sock)
+                sock.close()
+        except Exception as e:
+            print(f"读取错误: {e}")
+            self.selector.unregister(sock)
+            sock.close()
+
+    def write_handler(self, sock, data):
+        """写数据处理器"""
+        try:
+            response = b"Echo: " + data
+            sock.sendall(response)
+            # 修改回读事件
+            self.selector.modify(sock, selectors.EVENT_READ, self.read_handler)
+        except Exception as e:
+            print(f"发送错误: {e}")
+            self.selector.unregister(sock)
+            sock.close()
+
+    def start(self):
+        """启动Reactor"""
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.server_socket.bind((self.host, self.port))
+        self.server_socket.listen(128)
+        self.server_socket.setblocking(False)
+
+        self.selector.register(self.server_socket, selectors.EVENT_READ, self.accept_handler)
+
+        print(f"Reactor服务器启动，监听 {self.host}:{self.port}")
+
+        try:
+            while True:
+                events = self.selector.select(timeout=1)
+                for key, mask in events:
+                    callback = key.data
+                    callback(key.fileobj)
+        except KeyboardInterrupt:
+            print("\n关闭服务器...")
+        finally:
+            self.selector.close()
+            self.server_socket.close()
+
+# 使用示例
+# reactor = Reactor()
+# reactor.start()
+```
+
+---
+
+## 第五章：协议设计
+
+### 5.1 自定义协议设计原则
+
+#### 协议设计要素
+
+```
+1. 消息格式
+   - 定长 vs 变长
+   - 文本 vs 二进制
+   - 大端 vs 小端
+
+2. 消息边界
+   - 固定长度
+   - 特殊分隔符（如\r\n）
+   - 长度前缀
+
+3. 错误处理
+   - 校验和/CRC
+   - 超时重试
+   - 错误码
+
+4. 扩展性
+   - 版本号
+   - 预留字段
+   - 可选字段
+```
+
+### 5.2 简单文本协议实现
+
+```python
+import socket
+import json
+
+class SimpleProtocol:
+    """简单的基于JSON的文本协议"""
+
+    DELIMITER = b'\n'
+
+    @staticmethod
+    def encode(data):
+        """编码消息"""
+        json_str = json.dumps(data)
+        return json_str.encode('utf-8') + SimpleProtocol.DELIMITER
+
+    @staticmethod
+    def decode(buffer):
+        """解码消息"""
+        messages = []
+        while SimpleProtocol.DELIMITER in buffer:
+            idx = buffer.find(SimpleProtocol.DELIMITER)
+            message_data = buffer[:idx]
+            buffer = buffer[idx + 1:]
+
+            try:
+                message = json.loads(message_data.decode('utf-8'))
+                messages.append(message)
+            except json.JSONDecodeError:
+                pass  # 忽略无效消息
+
+        return messages, buffer
+
+# 使用示例
+protocol = SimpleProtocol()
+
+# 编码
+message = {'type': 'chat', 'user': 'Alice', 'content': 'Hello'}
+encoded = protocol.encode(message)
+print(f"编码后: {encoded}")
+
+# 解码
+buffer = encoded
+messages, remaining = protocol.decode(buffer)
+print(f"解码后: {messages}")
+```
+
+### 5.3 二进制协议实现
+
+```python
+import struct
+
+class BinaryProtocol:
+    """
+    二进制协议格式：
+    +--------+--------+--------+--------+
+    | Magic  | Length | Type   | Data   |
+    | 2 bytes| 4 bytes| 2 bytes| N bytes|
+    +--------+--------+--------+--------+
+    """
+
+    MAGIC = 0xABCD
+    HEADER_SIZE = 8  # 2 + 4 + 2
+
+    @staticmethod
+    def encode(message_type, data):
+        """编码消息"""
+        data_bytes = data.encode('utf-8') if isinstance(data, str) else data
+        length = len(data_bytes)
+
+        # 网络字节序（大端）: !
+        # H: unsigned short (2 bytes)
+        # I: unsigned int (4 bytes)
+        header = struct.pack('!HIH', BinaryProtocol.MAGIC, length, message_type)
+        return header + data_bytes
+
+    @staticmethod
+    def decode(buffer):
+        """解码消息"""
+        messages = []
+
+        while len(buffer) >= BinaryProtocol.HEADER_SIZE:
+            # 解析头部
+            magic, length, message_type = struct.unpack('!HIH', buffer[:BinaryProtocol.HEADER_SIZE])
+
+            # 验证魔数
+            if magic != BinaryProtocol.MAGIC:
+                # 协议错误，丢弃数据
+                buffer = buffer[1:]
+                continue
+
+            # 检查是否接收完整消息
+            total_size = BinaryProtocol.HEADER_SIZE + length
+            if len(buffer) < total_size:
+                break  # 等待更多数据
+
+            # 提取数据
+            data = buffer[BinaryProtocol.HEADER_SIZE:total_size]
+            buffer = buffer[total_size:]
+
+            messages.append({
+                'type': message_type,
+                'data': data
+            })
+
+        return messages, buffer
+
+# 使用示例
+protocol = BinaryProtocol()
+
+# 编码
+encoded = protocol.encode(message_type=1, data="Hello World")
+print(f"编码后: {encoded.hex()}")
+
+# 解码
+messages, remaining = protocol.decode(encoded)
+print(f"解码后: {messages}")
+print(f"数据: {messages[0]['data'].decode('utf-8')}")
+```
+
+---
+
+**返回**: [TCP/IP协议学习笔记主文档](tcpip.md)

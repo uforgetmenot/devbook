@@ -1,681 +1,1031 @@
-# Fast DDS 技术笔记
+# Fast DDS 深度技术学习笔记（第一部分）
 
-## 概述
-Fast DDS（原名Fast RTPS）是eProsima开发的高性能实时发布订阅（DDS）中间件实现，遵循OMG DDS标准。它提供了分布式系统中的数据通信服务，支持实时、可靠、高性能的数据交换，广泛应用于机器人、自动驾驶、工业4.0等领域。
+> 本笔记分为4个部分，本文件为第一部分，包含技术概述、模块一、模块二
+> - [第二部分：模块三、模块四](fastdds_part2.md)
+> - [第三部分：模块五、模块六、模块七](fastdds_part3.md)
+> - [第四部分：常见问题、验证标准、总结](fastdds_part4.md)
 
-## 核心架构
+---
 
-### 1. DDS基础概念
-- **Domain**: 通信域，隔离不同应用的数据通信
-- **Participant**: 域参与者，应用程序在域中的代理
-- **Publisher**: 发布者，管理一个或多个DataWriter
-- **Subscriber**: 订阅者，管理一个或多个DataReader
-- **DataWriter**: 数据写入器，发布特定类型的数据
-- **DataReader**: 数据读取器，订阅特定类型的数据
-- **Topic**: 主题，定义数据的类型和名称
+## 技术概述与应用场景
 
-### 2. 系统架构
-```
-Application Layer
-├── DDS API Layer
-├── RTPS Protocol Layer
-├── Transport Layer (UDP/TCP/SHM)
-└── Operating System Layer
-```
+### 什么是Fast DDS
 
-## 基础数据结构和API
+Fast DDS（原名Fast RTPS）是eProsima公司开发的高性能DDS（Data Distribution Service）中间件实现，完全遵循OMG DDS标准规范。它是一个基于发布-订阅模式的实时数据分发框架，专为分布式系统中的高效、可靠、实时数据通信而设计。
 
-### 1. 核心头文件
+**核心特点：**
+- 完整实现DDS-RTPS协议栈
+- 支持零拷贝数据传输
+- 提供多种QoS策略组合（22种）
+- 跨平台支持（Linux、Windows、macOS）
+- 低延迟高吞吐量（微秒级延迟）
+- 自动服务发现机制
+- 内置安全传输支持（DDS Security）
+
+### 应用领域
+
+**1. 自动驾驶系统**
+- 传感器数据融合（激光雷达、摄像头、毫米波雷达）
+- 控制指令实时分发
+- 车辆间通信（V2V）
+- 车路协同（V2X）
+
+**2. 机器人操作系统**
+- ROS 2的底层通信框架
+- 多机器人协同控制
+- 传感器数据流处理
+- 实时控制指令传输
+
+**3. 工业自动化**
+- 工业物联网数据采集
+- 分布式控制系统
+- 实时监控与诊断
+- 边缘计算节点通信
+
+**4. 智能交通系统**
+- 交通信号控制
+- 车辆定位追踪
+- 实时路况分析
+- 应急响应系统
+
+### 与其他中间件对比
+
+| 特性 | Fast DDS | ZeroMQ | gRPC | MQTT |
+|------|----------|---------|------|------|
+| 通信模式 | 发布-订阅 | 多模式 | RPC | 发布-订阅 |
+| 实时性 | 微秒级 | 毫秒级 | 毫秒级 | 秒级 |
+| QoS策略 | 22种 | 无 | 有限 | 3级 |
+| 服务发现 | 自动 | 手动 | 手动 | Broker |
+| 数据可靠性 | 可配置 | 可配置 | TCP保证 | 3级 |
+| 适用场景 | 实时系统 | 通用 | 微服务 | IoT |
+
+---
+
+## 系统学习路线图（4-6周）
+
+### 第1周：DDS基础与环境搭建
+
+**学习目标：**
+- 理解DDS的核心概念
+- 完成开发环境配置
+- 实现第一个发布-订阅程序
+
+**学习内容：**
+1. Domain、Participant、Topic概念
+2. Publisher/Subscriber架构
+3. IDL数据类型定义
+4. 基本通信实现
+
+**实践任务：**
 ```cpp
-#include <fastdds/dds/domain/DomainParticipant.hpp>
-#include <fastdds/dds/domain/DomainParticipantFactory.hpp>
-#include <fastdds/dds/topic/TypeSupport.hpp>
-#include <fastdds/dds/topic/Topic.hpp>
-#include <fastdds/dds/publisher/Publisher.hpp>
-#include <fastdds/dds/publisher/DataWriter.hpp>
-#include <fastdds/dds/subscriber/Subscriber.hpp>
-#include <fastdds/dds/subscriber/DataReader.hpp>
-#include <fastdds/dds/subscriber/DataReaderListener.hpp>
-
-using namespace eprosima::fastdds::dds;
+// 任务1：实现HelloWorld发布者
+// 任务2：实现HelloWorld订阅者
+// 任务3：观察服务发现过程
+// 验证标准：能够在两个进程间成功传输数据
 ```
 
-### 2. 数据类型定义
+### 第2周：QoS策略深入
+
+**学习目标：**
+- 掌握常用QoS策略
+- 理解QoS兼容性规则
+- 根据场景选择合适的QoS
+
+**学习内容：**
+1. Reliability（可靠性）
+2. Durability（持久性）
+3. History与ResourceLimits
+4. Deadline与Lifespan
+
+**实践任务：**
 ```cpp
-// 使用IDL定义数据结构
-// HelloWorld.idl
-struct HelloWorld {
-    unsigned long index;
-    string message;
+// 任务1：对比RELIABLE vs BEST_EFFORT的性能差异
+// 任务2：实现配置管理系统（使用TRANSIENT_LOCAL）
+// 任务3：测试不同History深度对内存的影响
+// 验证标准：能够根据应用场景选择并配置合适的QoS策略
+```
+
+### 第3周：传输优化与性能调优
+
+**学习目标：**
+- 掌握多种传输方式
+- 实现零拷贝传输
+- 进行性能基准测试
+
+**学习内容：**
+1. UDP/TCP/共享内存传输
+2. 零拷贝技术
+3. 流量控制
+4. 批量传输
+
+**实践任务：**
+```cpp
+// 任务1：配置共享内存传输并测试性能
+// 任务2：实现大数据传输（1MB+）并优化
+// 任务3：使用流量控制限制视频流带宽
+// 验证标准：能够将传输延迟降低到100微秒以内
+```
+
+### 第4周：服务发现与安全机制
+
+**学习目标：**
+- 理解服务发现原理
+- 配置Discovery Server
+- 实现安全传输
+
+**学习内容：**
+1. 简单发现协议（SPDP）
+2. Discovery Server模式
+3. DDS Security插件
+4. 证书生成与配置
+
+**实践任务：**
+```bash
+# 任务1：配置Discovery Server并测试
+# 任务2：生成安全证书
+# 任务3：实现端到端加密通信
+# 验证标准：能够在安全环境下进行身份认证和数据加密
+```
+
+### 第5-6周：综合项目实战
+
+**项目1：分布式传感器网络**（已在笔记中提供完整代码）
+- 多传感器节点数据采集
+- 中心数据处理与分析
+- 实时监控与告警
+
+**项目2：机器人多节点通信系统**
+- 传感器数据发布
+- 运动控制指令订阅
+- 状态监控与日志记录
+
+**验证标准：**
+- [ ] 系统可支持10+节点同时通信
+- [ ] 传输延迟<10ms（局域网）
+- [ ] 系统运行稳定，无内存泄漏
+- [ ] 能够处理节点动态上下线
+
+---
+
+## 模块一：DDS核心架构与概念模型
+
+### 1.1 DCPS概念模型深度解析
+
+DDS规范定义了DCPS（Data-Centric Publish-Subscribe）模型，这是理解Fast DDS的核心基础。
+
+#### Domain（通信域）
+
+Domain是DDS中最顶层的概念，用于隔离不同应用系统的数据通信。
+
+**关键特性：**
+- Domain ID范围：0-232（实际常用0-232）
+- 不同Domain之间完全隔离，无法通信
+- 同一Domain内的参与者可以自动发现
+- 端口计算公式：`7400 + 250 * domainId + offsetId`
+
+**实战场景：**
+```cpp
+// 场景1：同一物理网络上运行多个独立系统
+DomainParticipant* robotSystem = factory->create_participant(0, qos);  // 机器人系统
+DomainParticipant* monitorSystem = factory->create_participant(1, qos); // 监控系统
+
+// 场景2：开发测试与生产环境隔离
+const int DEV_DOMAIN = 0;
+const int PROD_DOMAIN = 10;
+DomainParticipant* participant = factory->create_participant(
+    is_production ? PROD_DOMAIN : DEV_DOMAIN, qos);
+```
+
+**重点难点：Domain与网络隔离**
+- Domain只是逻辑隔离，不是网络隔离
+- 需要通过防火墙或网络分段实现物理隔离
+- 多播地址会根据Domain ID计算，避免冲突
+
+#### DomainParticipant（域参与者）
+
+DomainParticipant是应用程序在DDS域中的代理，是创建其他DDS实体的工厂。
+
+**生命周期管理：**
+```cpp
+class DomainParticipantManager {
+private:
+    DomainParticipant* participant_;
+    std::vector<Publisher*> publishers_;
+    std::vector<Subscriber*> subscribers_;
+    std::vector<Topic*> topics_;
+    std::vector<DataReader*> data_readers_;
+    std::vector<DataWriter*> data_writers_;
+
+public:
+    bool initialize(int domain_id) {
+        DomainParticipantQos qos;
+
+        // 配置参与者名称（用于调试）
+        qos.name("RobotController_" + std::to_string(::getpid()));
+
+        // 配置资源限制
+        qos.allocation().participants.initial = 1;
+        qos.allocation().participants.maximum = 10;
+        qos.allocation().readers.initial = 5;
+        qos.allocation().readers.maximum = 20;
+        qos.allocation().writers.initial = 5;
+        qos.allocation().writers.maximum = 20;
+
+        // 配置线程设置
+        qos.transport().use_builtin_transports = true;
+
+        participant_ = DomainParticipantFactory::get_instance()
+            ->create_participant(domain_id, qos);
+
+        return participant_ != nullptr;
+    }
+
+    ~DomainParticipantManager() {
+        // 必须按照相反顺序删除实体
+        for (auto* reader : data_readers_) {
+            if (reader && subscriber_) subscriber_->delete_datareader(reader);
+        }
+        for (auto* writer : data_writers_) {
+            if (writer && publisher_) publisher_->delete_datawriter(writer);
+        }
+        for (auto* topic : topics_) {
+            if (topic) participant_->delete_topic(topic);
+        }
+        if (subscriber_) participant_->delete_subscriber(subscriber_);
+        if (publisher_) participant_->delete_publisher(publisher_);
+        if (participant_) {
+            DomainParticipantFactory::get_instance()
+                ->delete_participant(participant_);
+        }
+    }
+
+private:
+    Publisher* publisher_;
+    Subscriber* subscriber_;
+};
+```
+
+**重点难点：资源清理顺序**
+- 必须先删除DataReader/DataWriter
+- 然后删除Subscriber/Publisher
+- 最后删除Topic和Participant
+- 顺序错误会导致段错误或内存泄漏
+
+#### Topic（主题）
+
+Topic定义了数据的类型和名称，是发布者和订阅者之间的契约。
+
+**Topic匹配规则：**
+```cpp
+// 匹配条件：主题名称 + 数据类型名称 + QoS兼容性
+// 1. 相同主题名称
+Topic* pub_topic = participant->create_topic("SensorData", "SensorReading", qos);
+Topic* sub_topic = participant->create_topic("SensorData", "SensorReading", qos);
+
+// 2. 数据类型必须一致（通过TypeSupport注册）
+TypeSupport type1(new SensorReadingPubSubType());
+type1.register_type(participant, "SensorReading");
+
+// 3. QoS策略必须兼容
+DataWriterQos writer_qos;
+writer_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+
+DataReaderQos reader_qos;
+reader_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;  // 兼容
+// reader_qos.reliability().kind = BEST_EFFORT_RELIABILITY_QOS;  // 不兼容！
+```
+
+**实战案例：动态类型发现**
+```cpp
+class TopicRegistry {
+private:
+    std::map<std::string, Topic*> topics_;
+    DomainParticipant* participant_;
+
+public:
+    Topic* get_or_create_topic(const std::string& topic_name,
+                               const std::string& type_name) {
+        std::string key = topic_name + "::" + type_name;
+
+        auto it = topics_.find(key);
+        if (it != topics_.end()) {
+            return it->second;
+        }
+
+        Topic* topic = participant_->create_topic(
+            topic_name, type_name, TOPIC_QOS_DEFAULT);
+
+        if (topic) {
+            topics_[key] = topic;
+        }
+
+        return topic;
+    }
+
+    bool topic_exists(const std::string& topic_name) {
+        // 查找域中已存在的主题
+        return participant_->find_topic(topic_name,
+            std::chrono::seconds(1)) != nullptr;
+    }
+};
+```
+
+### 1.2 数据类型系统详解
+
+Fast DDS支持多种数据类型定义方式，最常用的是IDL（Interface Definition Language）。
+
+#### IDL类型定义完整指南
+
+**基本类型映射：**
+```idl
+// HelloWorld.idl - 完整示例
+module sensor {
+    // 基本类型
+    struct Temperature {
+        float celsius;
+        float fahrenheit;
+        int64 timestamp;
+    };
+
+    // 数组类型
+    struct MultiSensor {
+        float values[10];           // 固定长度数组
+        sequence<float> readings;   // 动态长度序列
+        sequence<float, 100> limited_readings;  // 有限长度序列
+    };
+
+    // 嵌套结构
+    struct SensorPacket {
+        string sensor_id;           // 动态字符串
+        Temperature temp_data;      // 嵌套结构
+        sequence<double> raw_data;  // 动态数组
+    };
+
+    // 枚举类型
+    enum SensorStatus {
+        ACTIVE,
+        IDLE,
+        ERROR,
+        MAINTENANCE
+    };
+
+    // 联合类型
+    union SensorValue switch(long) {
+        case 1: float float_value;
+        case 2: double double_value;
+        case 3: long long_value;
+    };
+
+    // 可选字段（IDL 4.2）
+    struct AdvancedSensor {
+        @optional string description;
+        @key long sensor_id;        // 键字段用于实例区分
+        float value;
+    };
+};
+```
+
+**IDL编译与代码生成：**
+```bash
+# 使用Fast DDS-Gen生成C++代码
+fastddsgen -replace -typeobject HelloWorld.idl
+
+# 生成的文件：
+# - HelloWorld.h           - 数据结构定义
+# - HelloWorld.cxx         - 数据结构实现
+# - HelloWorldPubSubTypes.h    - 序列化类型定义
+# - HelloWorldPubSubTypes.cxx  - 序列化类型实现
+# - HelloWorldTypeObject.h     - 类型对象定义
+# - HelloWorldTypeObject.cxx   - 类型对象实现
+```
+
+#### 类型注册与管理
+
+```cpp
+#include "HelloWorld.h"
+#include "HelloWorldPubSubTypes.h"
+
+class TypeManager {
+private:
+    DomainParticipant* participant_;
+    std::map<std::string, TypeSupport> registered_types_;
+
+public:
+    bool register_type(const std::string& type_name) {
+        // 检查是否已注册
+        if (registered_types_.find(type_name) != registered_types_.end()) {
+            return true;
+        }
+
+        // 创建TypeSupport
+        TypeSupport type;
+        if (type_name == "HelloWorld") {
+            type = TypeSupport(new HelloWorldPubSubType());
+        }
+        // ... 其他类型
+
+        // 注册类型
+        if (type.register_type(participant_) == ReturnCode_t::RETCODE_OK) {
+            registered_types_[type_name] = type;
+            return true;
+        }
+
+        return false;
+    }
+
+    TypeSupport get_type(const std::string& type_name) {
+        auto it = registered_types_.find(type_name);
+        if (it != registered_types_.end()) {
+            return it->second;
+        }
+        return TypeSupport(nullptr);
+    }
+};
+```
+
+**重点难点：类型版本兼容性**
+
+DDS支持数据类型的演化，但有严格的兼容性规则：
+
+```cpp
+// 版本1
+struct SensorData_v1 {
+    long sensor_id;
+    float value;
 };
 
-// 生成的C++代码将包含：
-// - HelloWorld.h: 数据结构定义
-// - HelloWorldPubSubTypes.h: 序列化支持
+// 版本2 - 兼容的演化
+struct SensorData_v2 {
+    long sensor_id;
+    float value;
+    @optional string description;  // 新增可选字段 - 兼容
+    // float calibration_factor;   // 新增必填字段 - 不兼容！
+};
+
+// 兼容性规则：
+// ✓ 添加可选字段
+// ✓ 删除可选字段
+// ✗ 添加必填字段
+// ✗ 改变字段类型
+// ✗ 改变字段顺序
+// ✗ 删除必填字段
 ```
 
-### 3. 基础初始化
+### 1.3 Publisher/Subscriber架构模式
+
+#### 发布者设计模式
+
+**单发布者-多数据写入器模式：**
 ```cpp
-// 创建参与者工厂
-DomainParticipantFactory* factory = DomainParticipantFactory::get_instance();
-
-// 创建域参与者
-DomainParticipant* participant = factory->create_participant(0, PARTICIPANT_QOS_DEFAULT);
-if (participant == nullptr) {
-    std::cerr << "Failed to create participant" << std::endl;
-    return -1;
-}
-
-// 注册数据类型
-TypeSupport type(new HelloWorldPubSubType());
-type.register_type(participant);
-
-// 创建主题
-Topic* topic = participant->create_topic("HelloWorldTopic", "HelloWorld", TOPIC_QOS_DEFAULT);
-if (topic == nullptr) {
-    std::cerr << "Failed to create topic" << std::endl;
-    return -1;
-}
-```
-
-## 发布者实现
-
-### 1. 创建发布者和数据写入器
-```cpp
-class HelloWorldPublisher {
+class MultiTopicPublisher {
 private:
     DomainParticipant* participant_;
     Publisher* publisher_;
-    Topic* topic_;
-    DataWriter* writer_;
-    TypeSupport type_;
-    HelloWorld hello_;
+    std::map<std::string, DataWriter*> writers_;
 
 public:
-    HelloWorldPublisher() : participant_(nullptr), publisher_(nullptr),
-                           topic_(nullptr), writer_(nullptr), type_(new HelloWorldPubSubType()) {}
+    bool initialize() {
+        // 创建发布者（共享传输资源）
+        PublisherQos pub_qos = PUBLISHER_QOS_DEFAULT;
 
-    bool init() {
-        // 创建域参与者
-        DomainParticipantQos participantQos;
-        participant_ = DomainParticipantFactory::get_instance()->create_participant(0, participantQos);
+        // 配置分区
+        pub_qos.partition().push_back("sensors");
+        pub_qos.partition().push_back("control");
 
-        if (participant_ == nullptr) {
-            return false;
-        }
-
-        // 注册类型
-        type_.register_type(participant_);
-
-        // 创建主题
-        topic_ = participant_->create_topic("HelloWorldTopic", type_.get_type_name(), TOPIC_QOS_DEFAULT);
-
-        if (topic_ == nullptr) {
-            return false;
-        }
-
-        // 创建发布者
-        publisher_ = participant_->create_publisher(PUBLISHER_QOS_DEFAULT, nullptr);
-
-        if (publisher_ == nullptr) {
-            return false;
-        }
-
-        // 创建数据写入器
-        DataWriterQos writer_qos = DATAWRITER_QOS_DEFAULT;
-        writer_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
-        writer_qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
-
-        writer_ = publisher_->create_datawriter(topic_, writer_qos, nullptr);
-
-        if (writer_ == nullptr) {
-            return false;
-        }
-
-        return true;
+        publisher_ = participant_->create_publisher(pub_qos);
+        return publisher_ != nullptr;
     }
 
-    bool publish() {
-        hello_.index(hello_.index() + 1);
-        hello_.message("Hello world " + std::to_string(hello_.index()));
-
-        return writer_->write(&hello_);
+    DataWriter* create_writer(const std::string& topic_name,
+                             Topic* topic,
+                             const DataWriterQos& qos) {
+        DataWriter* writer = publisher_->create_datawriter(topic, qos);
+        if (writer) {
+            writers_[topic_name] = writer;
+        }
+        return writer;
     }
 
-    void run(uint32_t samples) {
-        for (uint32_t i = 0; i < samples; ++i) {
-            if (!publish()) {
-                std::cerr << "Failed to write sample " << i << std::endl;
-                break;
+    // 批量发送优化
+    bool publish_batch(const std::vector<std::pair<std::string, void*>>& samples) {
+        bool all_success = true;
+
+        // Fast DDS会自动批量打包发送
+        for (const auto& [topic_name, sample] : samples) {
+            auto it = writers_.find(topic_name);
+            if (it != writers_.end()) {
+                if (it->second->write(sample) != ReturnCode_t::RETCODE_OK) {
+                    all_success = false;
+                }
             }
-            std::cout << "Sample " << i << " sent" << std::endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
+
+        return all_success;
     }
 };
 ```
 
-### 2. QoS策略配置
+#### 订阅者设计模式
+
+**基于监听器的异步接收：**
 ```cpp
-void configure_writer_qos(DataWriterQos& qos) {
-    // 可靠性设置
-    qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
-    qos.reliability().max_blocking_time.seconds = 1;
-    qos.reliability().max_blocking_time.nanosec = 0;
-
-    // 持久性设置
-    qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
-
-    // 历史设置
-    qos.history().kind = KEEP_LAST_HISTORY_QOS;
-    qos.history().depth = 30;
-
-    // 资源限制
-    qos.resource_limits().max_samples = 50;
-    qos.resource_limits().allocated_samples = 20;
-    qos.resource_limits().max_instances = 10;
-
-    // 截止时间
-    qos.deadline().period.seconds = 2;
-    qos.deadline().period.nanosec = 0;
-
-    // 生命周期
-    qos.lifespan().duration.seconds = 5;
-    qos.lifespan().duration.nanosec = 0;
-}
-```
-
-## 订阅者实现
-
-### 1. 数据读取器监听器
-```cpp
-class HelloWorldListener : public DataReaderListener {
-public:
-    HelloWorldListener() : samples_(0) {}
-
-    ~HelloWorldListener() override {}
-
-    void on_data_available(DataReader* reader) override {
-        SampleInfo info;
-        if (reader->take_next_sample(&hello_, &info) == ReturnCode_t::RETCODE_OK) {
-            if (info.valid_data) {
-                samples_++;
-                std::cout << "Message: " << hello_.message() << " with index: "
-                         << hello_.index() << " RECEIVED." << std::endl;
-            }
-        }
-    }
-
-    void on_subscription_matched(DataReader*, const SubscriptionMatchedStatus& info) override {
-        if (info.current_count_change == 1) {
-            std::cout << "Subscriber matched." << std::endl;
-        } else if (info.current_count_change == -1) {
-            std::cout << "Subscriber unmatched." << std::endl;
-        }
-    }
-
+class MultiTopicSubscriber {
 private:
-    HelloWorld hello_;
-    std::atomic_int samples_;
-};
-```
+    struct TopicInfo {
+        DataReader* reader;
+        std::shared_ptr<DataReaderListener> listener;
+        std::function<void(void*)> callback;
+    };
 
-### 2. 创建订阅者和数据读取器
-```cpp
-class HelloWorldSubscriber {
-private:
     DomainParticipant* participant_;
     Subscriber* subscriber_;
-    DataReader* reader_;
-    Topic* topic_;
-    TypeSupport type_;
-    HelloWorldListener listener_;
+    std::map<std::string, TopicInfo> topics_;
 
 public:
-    HelloWorldSubscriber() : participant_(nullptr), subscriber_(nullptr),
-                            reader_(nullptr), topic_(nullptr), type_(new HelloWorldPubSubType()) {}
+    // 通用监听器模板
+    template<typename T>
+    class GenericListener : public DataReaderListener {
+    private:
+        std::function<void(T&, const SampleInfo&)> callback_;
 
-    bool init() {
-        // 创建域参与者
-        DomainParticipantQos participantQos;
-        participant_ = DomainParticipantFactory::get_instance()->create_participant(0, participantQos);
+    public:
+        GenericListener(std::function<void(T&, const SampleInfo&)> callback)
+            : callback_(callback) {}
 
-        if (participant_ == nullptr) {
-            return false;
+        void on_data_available(DataReader* reader) override {
+            T sample;
+            SampleInfo info;
+
+            while (reader->take_next_sample(&sample, &info) == ReturnCode_t::RETCODE_OK) {
+                if (info.valid_data) {
+                    callback_(sample, info);
+                }
+            }
         }
 
-        // 注册类型
-        type_.register_type(participant_);
-
-        // 创建主题
-        topic_ = participant_->create_topic("HelloWorldTopic", type_.get_type_name(), TOPIC_QOS_DEFAULT);
-
-        if (topic_ == nullptr) {
-            return false;
+        void on_subscription_matched(DataReader* reader,
+                                    const SubscriptionMatchedStatus& info) override {
+            if (info.current_count_change == 1) {
+                std::cout << "New publisher matched" << std::endl;
+            }
         }
+    };
 
-        // 创建订阅者
-        subscriber_ = participant_->create_subscriber(SUBSCRIBER_QOS_DEFAULT, nullptr);
+    // 订阅主题并注册回调
+    template<typename T>
+    bool subscribe(const std::string& topic_name,
+                  Topic* topic,
+                  std::function<void(T&, const SampleInfo&)> callback) {
+        auto listener = std::make_shared<GenericListener<T>>(callback);
 
-        if (subscriber_ == nullptr) {
-            return false;
-        }
-
-        // 创建数据读取器
         DataReaderQos reader_qos = DATAREADER_QOS_DEFAULT;
-        reader_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
-        reader_qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+        DataReader* reader = subscriber_->create_datareader(
+            topic, reader_qos, listener.get());
 
-        reader_ = subscriber_->create_datareader(topic_, reader_qos, &listener_);
+        if (!reader) return false;
 
-        if (reader_ == nullptr) {
-            return false;
+        TopicInfo info;
+        info.reader = reader;
+        info.listener = listener;
+        topics_[topic_name] = info;
+
+        return true;
+    }
+};
+
+// 使用示例
+MultiTopicSubscriber subscriber;
+subscriber.subscribe<SensorData>("temperature",
+    temp_topic,
+    [](SensorData& data, const SampleInfo& info) {
+        std::cout << "Temperature: " << data.value() << std::endl;
+    });
+```
+
+**基于轮询的同步接收：**
+```cpp
+class PollingSubscriber {
+private:
+    DataReader* reader_;
+
+public:
+    // 读取单个样本
+    bool read_next(HelloWorld& sample) {
+        SampleInfo info;
+        ReturnCode_t ret = reader_->take_next_sample(&sample, &info);
+        return ret == ReturnCode_t::RETCODE_OK && info.valid_data;
+    }
+
+    // 读取所有可用样本
+    std::vector<HelloWorld> read_all() {
+        std::vector<HelloWorld> samples;
+        HelloWorld sample;
+        SampleInfo info;
+
+        while (reader_->take_next_sample(&sample, &info) == ReturnCode_t::RETCODE_OK) {
+            if (info.valid_data) {
+                samples.push_back(sample);
+            }
+        }
+
+        return samples;
+    }
+
+    // 条件等待（WaitSet模式）
+    bool wait_for_data(std::chrono::seconds timeout) {
+        WaitSet wait_set;
+        StatusCondition& condition = reader_->get_statuscondition();
+        condition.set_enabled_statuses(StatusMask::data_available());
+        wait_set.attach_condition(condition);
+
+        ConditionSeq active_conditions;
+        ReturnCode_t ret = wait_set.wait(active_conditions,
+            eprosima::fastrtps::Duration_t(timeout.count(), 0));
+
+        return ret == ReturnCode_t::RETCODE_OK;
+    }
+};
+```
+
+---
+
+## 模块二：QoS策略深度剖析
+
+QoS（Quality of Service）是DDS的核心特性，提供22种策略来精确控制数据传输行为。
+
+### 2.1 可靠性策略（Reliability）
+
+可靠性策略决定数据传输的可靠程度。
+
+#### RELIABLE vs BEST_EFFORT
+
+```cpp
+// RELIABLE - 可靠传输
+DataWriterQos reliable_qos;
+reliable_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+reliable_qos.reliability().max_blocking_time = Duration_t(1, 0);  // 阻塞1秒
+
+// 使用场景：
+// - 控制指令（必须送达）
+// - 配置数据（不能丢失）
+// - 日志记录（需要完整性）
+
+// BEST_EFFORT - 尽力而为
+DataWriterQos besteffort_qos;
+besteffort_qos.reliability().kind = BEST_EFFORT_RELIABILITY_QOS;
+
+// 使用场景：
+// - 高频传感器数据（允许丢失）
+// - 视频流（旧数据无意义）
+// - 实时遥测（最新数据最重要）
+```
+
+**重点难点：RELIABLE模式的性能开销**
+
+```cpp
+// 案例：理解RELIABLE的重传机制
+class ReliabilityAnalyzer {
+public:
+    void demonstrate_reliable_overhead() {
+        // 配置1：默认可靠传输
+        DataWriterQos qos1;
+        qos1.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        qos1.reliability().max_blocking_time = Duration_t(0, 100000000); // 100ms
+
+        // 问题：写入可能阻塞直到确认收到
+        auto start = std::chrono::high_resolution_clock::now();
+        writer1->write(&large_sample);  // 可能阻塞
+        auto end = std::chrono::high_resolution_clock::now();
+
+        // 配置2：异步可靠传输
+        DataWriterQos qos2;
+        qos2.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        qos2.publish_mode().kind = ASYNCHRONOUS_PUBLISH_MODE;
+        qos2.publish_mode().flow_controller_name = "MyFlowController";
+
+        // 优势：写入立即返回，后台重传
+        writer2->write(&large_sample);  // 立即返回
+
+        // 监控重传统计
+        PublicationMatchedStatus status;
+        writer2->get_publication_matched_status(status);
+    }
+};
+```
+
+### 2.2 持久性策略（Durability）
+
+持久性策略控制数据的生命周期和晚加入订阅者的行为。
+
+```cpp
+// VOLATILE - 易失性（默认）
+DataWriterQos volatile_qos;
+volatile_qos.durability().kind = VOLATILE_DURABILITY_QOS;
+// 特点：不保存历史数据，晚加入的订阅者收不到之前的数据
+
+// TRANSIENT_LOCAL - 本地瞬态
+DataWriterQos transient_qos;
+transient_qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+transient_qos.history().kind = KEEP_LAST_HISTORY_QOS;
+transient_qos.history().depth = 10;
+// 特点：保存最近N个样本，晚加入的订阅者可以收到
+
+// TRANSIENT - 瞬态（需要持久化服务）
+// PERSISTENT - 持久化（需要持久化服务）
+```
+
+**实战案例：配置管理系统**
+
+```cpp
+class ConfigurationManager {
+private:
+    struct Configuration {
+        std::string config_name;
+        std::map<std::string, std::string> parameters;
+        int64_t version;
+    };
+
+    DataWriter* config_writer_;
+
+public:
+    bool setup_config_publisher() {
+        // 配置发布者：使用TRANSIENT_LOCAL确保晚启动的节点也能收到配置
+        DataWriterQos qos;
+
+        // 持久性：保存配置数据
+        qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+
+        // 历史：保存所有配置版本
+        qos.history().kind = KEEP_ALL_HISTORY_QOS;
+
+        // 可靠性：确保配置送达
+        qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+
+        // 资源限制：最多保存100个配置版本
+        qos.resource_limits().max_samples = 100;
+        qos.resource_limits().max_instances = 10;
+        qos.resource_limits().max_samples_per_instance = 10;
+
+        config_writer_ = publisher_->create_datawriter(config_topic_, qos);
+        return config_writer_ != nullptr;
+    }
+
+    bool publish_config(const Configuration& config) {
+        return config_writer_->write(&config) == ReturnCode_t::RETCODE_OK;
+    }
+};
+```
+
+### 2.3 历史策略（History）与资源限制
+
+历史策略与资源限制策略配合使用，控制数据缓存行为。
+
+```cpp
+// 配置组合1：保持最后N个样本
+DataWriterQos keep_last_qos;
+keep_last_qos.history().kind = KEEP_LAST_HISTORY_QOS;
+keep_last_qos.history().depth = 30;  // 保持最后30个
+keep_last_qos.resource_limits().max_samples = 50;
+keep_last_qos.resource_limits().max_instances = 10;
+keep_last_qos.resource_limits().max_samples_per_instance = 5;
+
+// 配置组合2：保持所有样本（直到资源耗尽）
+DataWriterQos keep_all_qos;
+keep_all_qos.history().kind = KEEP_ALL_HISTORY_QOS;
+keep_all_qos.resource_limits().max_samples = 1000;  // 最多1000个样本
+keep_all_qos.resource_limits().max_instances = 100;
+keep_all_qos.resource_limits().max_samples_per_instance = 10;
+```
+
+**重点难点：理解Instance概念**
+
+```cpp
+// IDL定义（注意@key标记）
+struct VehiclePosition {
+    @key string vehicle_id;  // 键字段
+    double latitude;
+    double longitude;
+    int64_t timestamp;
+};
+
+// 每个唯一的vehicle_id代表一个Instance
+// 资源限制分别应用于每个Instance
+
+class InstanceManager {
+public:
+    void demonstrate_instance_management() {
+        // 假设max_instances=10, max_samples_per_instance=5
+
+        VehiclePosition pos;
+
+        // Instance 1: vehicle_id = "CAR001"
+        pos.vehicle_id("CAR001");
+        for (int i = 0; i < 5; ++i) {
+            pos.timestamp(i);
+            writer_->write(&pos);  // 5个样本在instance "CAR001"
+        }
+
+        // Instance 2: vehicle_id = "CAR002"
+        pos.vehicle_id("CAR002");
+        for (int i = 0; i < 5; ++i) {
+            pos.timestamp(i);
+            writer_->write(&pos);  // 5个样本在instance "CAR002"
+        }
+
+        // 现在总共10个样本，但分布在2个instance
+
+        // 如果再添加第11个instance的第1个样本
+        pos.vehicle_id("CAR011");
+        writer_->write(&pos);  // 这会怎样？
+
+        // 答案：取决于history设置
+        // KEEP_LAST: 丢弃某个instance的最老样本
+        // KEEP_ALL: 阻塞或失败（取决于max_blocking_time）
+    }
+
+    // 显式管理Instance生命周期
+    void manage_instance_lifecycle() {
+        VehiclePosition pos;
+        pos.vehicle_id("CAR001");
+
+        // 注册实例
+        InstanceHandle_t handle = writer_->register_instance(&pos);
+
+        // 写入多个样本
+        for (int i = 0; i < 10; ++i) {
+            pos.timestamp(i);
+            writer_->write(&pos, handle);  // 使用handle更高效
+        }
+
+        // 注销实例（通知订阅者该实例已结束）
+        writer_->unregister_instance(&pos, handle);
+
+        // 释放实例（释放资源）
+        writer_->dispose(&pos, handle);
+    }
+};
+```
+
+### 2.4 截止时间与生命周期
+
+```cpp
+// Deadline - 数据更新截止时间
+DataWriterQos deadline_qos;
+deadline_qos.deadline().period = Duration_t(0, 100000000);  // 100ms内必须更新
+
+// 发布者必须每100ms发送一次数据，否则触发deadline_missed
+class DeadlineMonitoredPublisher {
+private:
+    DataWriter* writer_;
+    std::atomic<bool> running_{true};
+
+    class MyWriterListener : public DataWriterListener {
+    public:
+        void on_offered_deadline_missed(DataWriter* writer,
+                                       const OfferedDeadlineMissedStatus& status) override {
+            std::cerr << "Deadline missed! Total: " << status.total_count << std::endl;
+        }
+    };
+
+    MyWriterListener listener_;
+
+public:
+    void publish_loop() {
+        HelloWorld sample;
+        int count = 0;
+
+        while (running_) {
+            sample.index(count++);
+            writer_->write(&sample);
+
+            // 必须在deadline之前发送下一个样本
+            std::this_thread::sleep_for(std::chrono::milliseconds(90));  // 安全裕度
+        }
+    }
+};
+
+// Lifespan - 数据生命周期
+DataWriterQos lifespan_qos;
+lifespan_qos.lifespan().duration = Duration_t(5, 0);  // 数据5秒后自动过期
+
+// 适用场景：传感器数据（5秒后的旧数据无用）
+```
+
+### 2.5 QoS兼容性矩阵
+
+**发布者-订阅者QoS匹配规则：**
+
+| Writer QoS | Reader QoS | 是否匹配 | 说明 |
+|-----------|-----------|---------|------|
+| RELIABLE | RELIABLE | ✓ | 完全匹配 |
+| RELIABLE | BEST_EFFORT | ✓ | Writer提供更高保证 |
+| BEST_EFFORT | RELIABLE | ✗ | Writer无法满足Reader要求 |
+| BEST_EFFORT | BEST_EFFORT | ✓ | 完全匹配 |
+| TRANSIENT_LOCAL | VOLATILE | ✓ | Writer提供更高持久性 |
+| VOLATILE | TRANSIENT_LOCAL | ✗ | Writer无法提供历史数据 |
+
+```cpp
+// 实用工具：检查QoS兼容性
+class QosCompatibilityChecker {
+public:
+    struct QosPolicy {
+        ReliabilityQosPolicyKind reliability;
+        DurabilityQosPolicyKind durability;
+    };
+
+    bool is_compatible(const QosPolicy& offered,  // Writer提供的QoS
+                      const QosPolicy& requested) { // Reader请求的QoS
+        // 可靠性检查
+        if (requested.reliability == RELIABLE_RELIABILITY_QOS &&
+            offered.reliability == BEST_EFFORT_RELIABILITY_QOS) {
+            return false;  // Writer无法满足Reader的可靠性要求
+        }
+
+        // 持久性检查
+        if (requested.durability == TRANSIENT_LOCAL_DURABILITY_QOS &&
+            offered.durability == VOLATILE_DURABILITY_QOS) {
+            return false;  // Writer无法提供历史数据
         }
 
         return true;
     }
 
-    void run(uint32_t samples) {
-        std::cout << "Subscriber running. Please press enter to stop the Subscriber" << std::endl;
-        std::cin.ignore();
-    }
-};
-```
+    void print_qos_info(DataWriter* writer, DataReader* reader) {
+        PublicationMatchedStatus pub_status;
+        writer->get_publication_matched_status(pub_status);
 
-## 高级特性
+        std::cout << "Matched readers: " << pub_status.current_count << std::endl;
+        std::cout << "Total readers seen: " << pub_status.total_count << std::endl;
 
-### 1. 内容过滤主题
-```cpp
-// 创建内容过滤主题
-ContentFilteredTopic* filtered_topic = participant_->create_contentfilteredtopic(
-    "HelloWorldFilteredTopic",
-    topic_,
-    "index > 5",  // 过滤表达式
-    std::vector<std::string>()  // 参数
-);
-
-// 使用过滤主题创建数据读取器
-DataReader* filtered_reader = subscriber_->create_datareader(filtered_topic, reader_qos, &listener_);
-```
-
-### 2. 多播传输
-```cpp
-// 配置多播传输
-DomainParticipantQos participant_qos;
-participant_qos.transport().use_builtin_transports = false;
-
-// 添加UDP多播传输
-auto udp_transport = std::make_shared<UDPv4TransportDescriptor>();
-udp_transport->sendBufferSize = 9216;
-udp_transport->receiveBufferSize = 9216;
-udp_transport->non_blocking_send = true;
-
-participant_qos.transport().user_transports.push_back(udp_transport);
-
-// 设置多播地址
-Locator_t multicast_locator;
-multicast_locator.kind = LOCATOR_KIND_UDPv4;
-multicast_locator.port = 7400;
-IPLocator::setIPv4(multicast_locator, "239.255.1.4");
-
-DataWriterQos writer_qos;
-writer_qos.endpoint().multicast_locator_list.push_back(multicast_locator);
-```
-
-### 3. 安全传输
-```cpp
-#include <fastdds/rtps/security/exceptions/SecurityException.h>
-
-// 配置DDS安全
-DomainParticipantQos participant_qos;
-participant_qos.properties().properties().emplace_back("dds.sec.auth.plugin",
-    "builtin.PKI-DH");
-participant_qos.properties().properties().emplace_back("dds.sec.auth.builtin.PKI-DH.identity_ca",
-    "file://ca_cert.pem");
-participant_qos.properties().properties().emplace_back("dds.sec.auth.builtin.PKI-DH.identity_certificate",
-    "file://cert.pem");
-participant_qos.properties().properties().emplace_back("dds.sec.auth.builtin.PKI-DH.private_key",
-    "file://private_key.pem");
-
-// 访问控制
-participant_qos.properties().properties().emplace_back("dds.sec.access.plugin",
-    "builtin.Access-Permissions");
-participant_qos.properties().properties().emplace_back("dds.sec.access.builtin.Access-Permissions.permissions_ca",
-    "file://permissions_ca_cert.pem");
-participant_qos.properties().properties().emplace_back("dds.sec.access.builtin.Access-Permissions.governance",
-    "file://governance.p7s");
-participant_qos.properties().properties().emplace_back("dds.sec.access.builtin.Access-Permissions.permissions",
-    "file://permissions.p7s");
-
-// 加密
-participant_qos.properties().properties().emplace_back("dds.sec.crypto.plugin",
-    "builtin.AES-GCM-GMAC");
-```
-
-## 性能优化
-
-### 1. 零拷贝传输
-```cpp
-// 配置共享内存传输
-DomainParticipantQos participant_qos;
-participant_qos.transport().use_builtin_transports = false;
-
-auto shm_transport = std::make_shared<SharedMemTransportDescriptor>();
-shm_transport->segment_size(2 * 1024 * 1024);  // 2MB段大小
-shm_transport->port_queue_capacity(512);        // 端口队列容量
-shm_transport->healthy_check_timeout_ms(1000);  // 健康检查超时
-
-participant_qos.transport().user_transports.push_back(shm_transport);
-
-// 配置数据写入器使用零拷贝
-DataWriterQos writer_qos;
-writer_qos.publish_mode().kind = ASYNCHRONOUS_PUBLISH_MODE;
-writer_qos.endpoint().history_memory_policy = PREALLOCATED_WITH_REALLOC_MEMORY_MODE;
-```
-
-### 2. 批量传输
-```cpp
-// 配置批量传输
-PublisherQos publisher_qos;
-publisher_qos.batch().enable = true;
-publisher_qos.batch().max_messages = 10;
-publisher_qos.batch().max_latency_ms = 100;
-publisher_qos.batch().max_bytes = 8192;
-
-Publisher* batch_publisher = participant_->create_publisher(publisher_qos);
-```
-
-### 3. 内存池优化
-```cpp
-// 配置资源限制和内存分配
-DataWriterQos writer_qos;
-writer_qos.resource_limits().max_samples = 5000;
-writer_qos.resource_limits().max_instances = 10;
-writer_qos.resource_limits().max_samples_per_instance = 400;
-
-// 预分配内存
-writer_qos.endpoint().history_memory_policy = PREALLOCATED_MEMORY_MODE;
-
-// 配置写入器数据生命周期
-writer_qos.writer_data_lifecycle().autodispose_unregistered_instances = false;
-```
-
-## 发现机制
-
-### 1. 简单发现协议
-```cpp
-// 配置内置发现
-DomainParticipantQos participant_qos;
-
-// 设置发现服务器
-RemoteServerAttributes server;
-server.ReadguidPrefix("44.53.00.5f.45.50.52.4f.53.49.4d.41");
-
-Locator_t server_locator;
-server_locator.kind = LOCATOR_KIND_UDPv4;
-server_locator.port = 11811;
-IPLocator::setIPv4(server_locator, "192.168.1.100");
-server.metatrafficUnicastLocatorList.push_back(server_locator);
-
-participant_qos.wire_protocol().builtin.discovery_config.discoveryProtocol =
-    DiscoveryProtocol_t::SERVER;
-participant_qos.wire_protocol().builtin.discovery_config.m_DiscoveryServers.push_back(server);
-```
-
-### 2. 静态发现
-```cpp
-// 使用XML配置静态发现
-const char* xml_config = R"(
-<profiles xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
-    <participant profile_name="static_discovery_profile">
-        <rtps>
-            <builtin>
-                <discovery_config>
-                    <discoveryProtocol>SIMPLE</discoveryProtocol>
-                    <use_SIMPLE_EndpointDiscoveryProtocol>false</use_SIMPLE_EndpointDiscoveryProtocol>
-                    <use_STATIC_EndpointDiscoveryProtocol>true</use_STATIC_EndpointDiscoveryProtocol>
-                    <static_edp_xml_config>static_discovery.xml</static_edp_xml_config>
-                </discovery_config>
-            </builtin>
-        </rtps>
-    </participant>
-</profiles>
-)";
-
-DomainParticipantFactory::get_instance()->load_XML_profiles_string(xml_config, strlen(xml_config));
-
-DomainParticipantQos participant_qos;
-DomainParticipantFactory::get_instance()->get_participant_qos_from_profile(
-    "static_discovery_profile", participant_qos);
-```
-
-## 监控和诊断
-
-### 1. 统计信息收集
-```cpp
-#include <fastdds/statistics/dds/subscriber/qos/DataReaderQos.hpp>
-
-// 启用统计信息收集
-DomainParticipantQos participant_qos;
-participant_qos.properties().properties().emplace_back(
-    "fastdds.statistics", "HISTORY_LATENCY_TOPIC;NETWORK_LATENCY_TOPIC");
-
-// 创建统计信息订阅者
-using namespace eprosima::fastdds::statistics::dds;
-
-class StatisticsListener : public DataReaderListener {
-public:
-    void on_data_available(DataReader* reader) override {
-        WriterReaderData statistics_sample;
-        SampleInfo info;
-        if (reader->take_next_sample(&statistics_sample, &info) == ReturnCode_t::RETCODE_OK) {
-            if (info.valid_data) {
-                std::cout << "Statistics: " << statistics_sample.src_ts()
-                         << " -> " << statistics_sample.data() << std::endl;
-            }
-        }
-    }
-};
-
-StatisticsListener stats_listener;
-DataReader* stats_reader = subscriber_->create_datareader(stats_topic, reader_qos, &stats_listener);
-```
-
-### 2. 日志系统
-```cpp
-#include <fastdds/dds/log/Log.hpp>
-
-// 配置日志级别
-eprosima::fastdds::dds::Log::SetVerbosity(eprosima::fastdds::dds::Log::Kind::Warning);
-
-// 设置日志过滤器
-eprosima::fastdds::dds::Log::SetCategoryFilter(std::regex("(SECURITY|DISCOVERY)"));
-
-// 自定义日志消费者
-class CustomLogConsumer : public eprosima::fastdds::dds::LogConsumer {
-public:
-    virtual void Consume(const eprosima::fastdds::dds::Log::Entry& entry) override {
-        std::string timestamp = std::to_string(entry.timestamp.time_since_epoch().count());
-        std::cout << timestamp << " [" << entry.kind << "] " << entry.message << std::endl;
-    }
-};
-
-CustomLogConsumer log_consumer;
-eprosima::fastdds::dds::Log::RegisterConsumer(&log_consumer);
-```
-
-## 实际应用示例
-
-### 1. 机器人遥测系统
-```cpp
-struct RobotTelemetry {
-    double x, y, z;           // 位置
-    double roll, pitch, yaw;  // 姿态
-    double battery_level;     // 电量
-    uint64_t timestamp;       // 时间戳
-};
-
-class RobotTelemetryPublisher {
-private:
-    DomainParticipant* participant_;
-    DataWriter* writer_;
-    RobotTelemetry telemetry_;
-
-public:
-    bool init() {
-        // 初始化DDS组件
-        // ...
-
-        // 配置高频实时传输
-        DataWriterQos writer_qos;
-        writer_qos.reliability().kind = BEST_EFFORT_RELIABILITY_QOS;  // 最佳努力
-        writer_qos.deadline().period.seconds = 0;
-        writer_qos.deadline().period.nanosec = 100000000;  // 100ms截止时间
-
-        writer_ = publisher_->create_datawriter(topic_, writer_qos, nullptr);
-        return writer_ != nullptr;
-    }
-
-    void publish_telemetry(double x, double y, double z,
-                          double roll, double pitch, double yaw,
-                          double battery) {
-        telemetry_.x = x;
-        telemetry_.y = y;
-        telemetry_.z = z;
-        telemetry_.roll = roll;
-        telemetry_.pitch = pitch;
-        telemetry_.yaw = yaw;
-        telemetry_.battery_level = battery;
-        telemetry_.timestamp = std::chrono::duration_cast<std::chrono::microseconds>(
-            std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-
-        writer_->write(&telemetry_);
-    }
-};
-```
-
-### 2. 分布式传感器网络
-```cpp
-class SensorDataCollector {
-private:
-    std::map<std::string, DataReader*> sensor_readers_;
-    std::map<std::string, std::shared_ptr<SensorDataListener>> listeners_;
-
-public:
-    void add_sensor(const std::string& sensor_id, const std::string& topic_name) {
-        // 为每个传感器创建独立的数据读取器
-        Topic* sensor_topic = participant_->create_topic(topic_name, "SensorData", TOPIC_QOS_DEFAULT);
-
-        auto listener = std::make_shared<SensorDataListener>(sensor_id);
-        listeners_[sensor_id] = listener;
-
-        DataReaderQos reader_qos;
-        reader_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
-        reader_qos.durability().kind = VOLATILE_DURABILITY_QOS;
-
-        DataReader* reader = subscriber_->create_datareader(sensor_topic, reader_qos, listener.get());
-        sensor_readers_[sensor_id] = reader;
-    }
-
-    void process_all_sensors() {
-        // 处理来自所有传感器的数据
-        for (auto& [sensor_id, listener] : listeners_) {
-            auto data = listener->get_latest_data();
-            if (data.has_value()) {
-                process_sensor_data(sensor_id, data.value());
-            }
+        if (pub_status.current_count == 0 && pub_status.total_count > 0) {
+            std::cout << "Warning: Readers found but not matched - QoS incompatible!" << std::endl;
         }
     }
 };
 ```
 
-### 3. 实时控制系统
+### 2.6 QoS策略应用场景速查表
+
+| 应用场景 | Reliability | Durability | History | 其他关键QoS |
+|---------|------------|-----------|---------|-----------|
+| 高频传感器数据 | BEST_EFFORT | VOLATILE | KEEP_LAST(1) | Deadline(100ms) |
+| 控制指令 | RELIABLE | VOLATILE | KEEP_LAST(10) | max_blocking_time(50ms) |
+| 配置数据 | RELIABLE | TRANSIENT_LOCAL | KEEP_ALL | ResourceLimits合理设置 |
+| 日志记录 | RELIABLE | TRANSIENT_LOCAL | KEEP_ALL | 大ResourceLimits |
+| 视频流 | BEST_EFFORT | VOLATILE | KEEP_LAST(1) | FlowController限制带宽 |
+| 状态更新 | RELIABLE | TRANSIENT_LOCAL | KEEP_LAST(1) | Lifespan(60s) |
+
 ```cpp
-class RealTimeController {
-private:
-    DataWriter* command_writer_;
-    DataReader* feedback_reader_;
-    std::mutex control_mutex_;
-    std::condition_variable control_cv_;
-    bool feedback_received_ = false;
-
+// 快速QoS配置模板类
+class QoSTemplates {
 public:
-    bool send_command_and_wait_feedback(const ControlCommand& command,
-                                       ControlFeedback& feedback,
-                                       std::chrono::milliseconds timeout) {
-        std::unique_lock<std::mutex> lock(control_mutex_);
-
-        // 发送控制命令
-        feedback_received_ = false;
-        if (command_writer_->write(&command) != ReturnCode_t::RETCODE_OK) {
-            return false;
-        }
-
-        // 等待反馈
-        return control_cv_.wait_for(lock, timeout, [this] { return feedback_received_; });
+    // 传感器数据模板
+    static DataWriterQos sensor_data_qos() {
+        DataWriterQos qos;
+        qos.reliability().kind = BEST_EFFORT_RELIABILITY_QOS;
+        qos.durability().kind = VOLATILE_DURABILITY_QOS;
+        qos.history().kind = KEEP_LAST_HISTORY_QOS;
+        qos.history().depth = 1;
+        qos.deadline().period = Duration_t(0, 100000000); // 100ms
+        return qos;
     }
 
-    void on_feedback_received(const ControlFeedback& feedback) {
-        std::lock_guard<std::mutex> lock(control_mutex_);
-        feedback_received_ = true;
-        control_cv_.notify_all();
+    // 控制指令模板
+    static DataWriterQos control_command_qos() {
+        DataWriterQos qos;
+        qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        qos.reliability().max_blocking_time = Duration_t(0, 50000000); // 50ms
+        qos.durability().kind = VOLATILE_DURABILITY_QOS;
+        qos.history().kind = KEEP_LAST_HISTORY_QOS;
+        qos.history().depth = 10;
+        return qos;
+    }
+
+    // 配置数据模板
+    static DataWriterQos configuration_qos() {
+        DataWriterQos qos;
+        qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        qos.durability().kind = TRANSIENT_LOCAL_DURABILITY_QOS;
+        qos.history().kind = KEEP_ALL_HISTORY_QOS;
+        qos.resource_limits().max_samples = 100;
+        qos.resource_limits().max_instances = 10;
+        return qos;
+    }
+
+    // 视频流模板
+    static DataWriterQos video_stream_qos() {
+        DataWriterQos qos;
+        qos.reliability().kind = BEST_EFFORT_RELIABILITY_QOS;
+        qos.durability().kind = VOLATILE_DURABILITY_QOS;
+        qos.history().kind = KEEP_LAST_HISTORY_QOS;
+        qos.history().depth = 1;
+        qos.publish_mode().kind = ASYNCHRONOUS_PUBLISH_MODE;
+        qos.publish_mode().flow_controller_name = "VideoFlowController";
+        return qos;
     }
 };
 ```
 
-## 错误处理和调试
+---
 
-### 1. 返回码处理
-```cpp
-ReturnCode_t check_dds_operation(ReturnCode_t return_code, const std::string& operation) {
-    switch (return_code) {
-        case ReturnCode_t::RETCODE_OK:
-            break;
-        case ReturnCode_t::RETCODE_ERROR:
-            std::cerr << "Generic error in " << operation << std::endl;
-            break;
-        case ReturnCode_t::RETCODE_TIMEOUT:
-            std::cerr << "Timeout in " << operation << std::endl;
-            break;
-        case ReturnCode_t::RETCODE_NO_DATA:
-            std::cerr << "No data available in " << operation << std::endl;
-            break;
-        default:
-            std::cerr << "Unknown error in " << operation << std::endl;
-            break;
-    }
-    return return_code;
-}
-
-// 使用示例
-ReturnCode_t ret = writer_->write(&sample);
-check_dds_operation(ret, "DataWriter::write");
-```
-
-### 2. 连接状态监控
-```cpp
-class ConnectionMonitor : public DataWriterListener, public DataReaderListener {
-public:
-    void on_publication_matched(DataWriter* writer, const PublicationMatchedStatus& info) override {
-        if (info.current_count_change > 0) {
-            std::cout << "New subscriber connected. Total: " << info.current_count << std::endl;
-        } else if (info.current_count_change < 0) {
-            std::cout << "Subscriber disconnected. Total: " << info.current_count << std::endl;
-        }
-    }
-
-    void on_subscription_matched(DataReader* reader, const SubscriptionMatchedStatus& info) override {
-        if (info.current_count_change > 0) {
-            std::cout << "New publisher connected. Total: " << info.current_count << std::endl;
-        } else if (info.current_count_change < 0) {
-            std::cout << "Publisher disconnected. Total: " << info.current_count << std::endl;
-        }
-    }
-
-    void on_offered_deadline_missed(DataWriter* writer, const OfferedDeadlineMissedStatus& status) override {
-        std::cout << "Deadline missed: " << status.total_count << " times" << std::endl;
-    }
-};
-```
-
-Fast DDS是一个功能强大、性能优异的实时通信中间件，特别适用于对实时性、可靠性要求较高的分布式系统。通过合理配置QoS策略、优化传输机制和监控系统状态，可以构建出高效、稳定的分布式应用系统。掌握Fast DDS的核心概念和编程模式，对于开发现代分布式实时系统至关重要。
+> 📝 **继续阅读：** [第二部分 - 模块三、模块四](fastdds_part2.md)

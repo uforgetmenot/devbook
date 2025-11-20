@@ -1,0 +1,1988 @@
+# Python 爬虫完全指南
+
+## 概述
+
+本笔记系统性地讲解Python爬虫技术，从基础原理到高级应用，涵盖网络请求、数据解析、反爬虫对抗、性能优化、分布式架构等核心技术栈。适合0-5年经验的开发者系统学习。
+
+**学习目标**：
+- 深入理解爬虫工作原理和HTTP协议
+- 掌握主流爬虫框架和工具链
+- 能够应对各种反爬虫机制
+- 具备大规模数据采集的架构设计能力
+
+---
+
+## 第一部分：爬虫基础与核心原理
+
+### 1.1 什么是网络爬虫
+
+**定义**：网络爬虫（Web Crawler/Spider）是一种按照一定规则，自动抓取互联网信息的程序或脚本。
+
+**工作流程**：
+```
+发起请求 → 获取响应 → 解析数据 → 提取信息 → 存储数据 → 循环迭代
+```
+
+**技术本质**：
+1. **模拟浏览器行为**：发送HTTP请求，接收服务器响应
+2. **数据解析**：从HTML/JSON/XML中提取目标数据
+3. **自动化迭代**：批量处理多个页面或数据源
+
+**爬虫分类**：
+- **通用爬虫**：搜索引擎使用，广度优先遍历整个互联网
+- **聚焦爬虫**：针对特定网站或主题的定向爬取
+- **增量爬虫**：只爬取新增或更新的内容
+
+### 1.2 HTTP协议深度解析
+
+#### 1.2.1 HTTP请求结构
+
+```
+GET /api/data HTTP/1.1
+Host: example.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+Accept: text/html,application/json
+Cookie: sessionid=abc123
+Connection: keep-alive
+```
+
+**核心组成**：
+1. **请求行**：方法 + URL + 协议版本
+2. **请求头**：元数据（User-Agent、Cookie、Referer等）
+3. **请求体**：POST数据（表单、JSON）
+
+**常用HTTP方法**：
+- `GET`：获取资源（幂等、可缓存）
+- `POST`：提交数据（非幂等、不可缓存）
+- `PUT`：更新资源
+- `DELETE`：删除资源
+
+#### 1.2.2 HTTP响应结构
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Set-Cookie: sessionid=xyz789; Path=/
+Content-Length: 1024
+
+<!DOCTYPE html>
+<html>...</html>
+```
+
+**状态码分类**：
+- `2xx 成功`：200 OK、201 Created
+- `3xx 重定向`：301 永久重定向、302 临时重定向
+- `4xx 客户端错误`：403 Forbidden、404 Not Found、429 Too Many Requests
+- `5xx 服务器错误`：500 Internal Server Error、502 Bad Gateway
+
+#### 1.2.3 HTTPS与SSL/TLS
+
+**加密原理**：
+```python
+# HTTPS请求验证
+import requests
+
+# 忽略SSL证书验证（仅用于测试）
+response = requests.get('https://example.com', verify=False)
+
+# 使用自定义证书
+response = requests.get('https://example.com', cert=('/path/cert.pem', '/path/key.pem'))
+```
+
+**重点**：
+- HTTPS = HTTP + SSL/TLS
+- 非对称加密（握手） + 对称加密（数据传输）
+- 证书验证防止中间人攻击
+
+### 1.3 网络请求核心技术
+
+#### 1.3.1 urllib库（Python标准库）
+
+```python
+import urllib.request
+import urllib.parse
+
+# 基础GET请求
+url = 'http://httpbin.org/get'
+response = urllib.request.urlopen(url)
+html = response.read().decode('utf-8')
+print(html)
+
+# 带参数的GET请求
+params = urllib.parse.urlencode({'name': '张三', 'age': 25})
+url = f'http://httpbin.org/get?{params}'
+response = urllib.request.urlopen(url)
+
+# POST请求
+data = urllib.parse.urlencode({'username': 'admin', 'password': '123456'}).encode('utf-8')
+request = urllib.request.Request('http://httpbin.org/post', data=data)
+response = urllib.request.urlopen(request)
+
+# 设置请求头
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    'Referer': 'http://example.com'
+}
+request = urllib.request.Request(url, headers=headers)
+response = urllib.request.urlopen(request)
+```
+
+**异常处理**：
+```python
+from urllib.error import URLError, HTTPError
+import socket
+
+try:
+    response = urllib.request.urlopen('http://example.com', timeout=5)
+except HTTPError as e:
+    print(f'HTTP错误: {e.code} - {e.reason}')
+except URLError as e:
+    print(f'URL错误: {e.reason}')
+except socket.timeout:
+    print('请求超时')
+```
+
+#### 1.3.2 requests库（推荐使用）
+
+```python
+import requests
+from requests.exceptions import RequestException
+
+# 基础请求
+response = requests.get('http://httpbin.org/get')
+print(response.text)          # 文本内容
+print(response.content)       # 二进制内容
+print(response.json())        # JSON解析
+print(response.status_code)   # 状态码
+print(response.headers)       # 响应头
+
+# 带参数的GET请求
+params = {'name': '李四', 'age': 30}
+response = requests.get('http://httpbin.org/get', params=params)
+
+# POST请求
+# 表单格式
+data = {'username': 'admin', 'password': '123456'}
+response = requests.post('http://httpbin.org/post', data=data)
+
+# JSON格式
+json_data = {'key': 'value'}
+response = requests.post('http://httpbin.org/post', json=json_data)
+
+# 设置请求头
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+    'Referer': 'http://example.com',
+    'Cookie': 'sessionid=abc123'
+}
+response = requests.get('http://httpbin.org/headers', headers=headers)
+
+# 文件上传
+files = {'file': open('document.txt', 'rb')}
+response = requests.post('http://httpbin.org/post', files=files)
+
+# 超时设置
+response = requests.get('http://httpbin.org/delay/3', timeout=5)
+
+# 代理设置
+proxies = {
+    'http': 'http://10.10.10.10:8888',
+    'https': 'https://10.10.10.10:8888'
+}
+response = requests.get('http://httpbin.org/ip', proxies=proxies)
+```
+
+**Session会话管理**：
+```python
+# 保持Cookie状态
+session = requests.Session()
+
+# 登录
+login_data = {'username': 'admin', 'password': '123456'}
+session.post('http://example.com/login', data=login_data)
+
+# 后续请求自动携带Cookie
+response = session.get('http://example.com/user/profile')
+
+# 设置全局请求头
+session.headers.update({'User-Agent': 'Custom Agent'})
+
+# 关闭连接
+session.close()
+```
+
+**高级特性**：
+```python
+# 禁止重定向
+response = requests.get('http://github.com', allow_redirects=False)
+
+# 流式下载大文件
+response = requests.get('http://example.com/large_file.zip', stream=True)
+with open('large_file.zip', 'wb') as f:
+    for chunk in response.iter_content(chunk_size=8192):
+        f.write(chunk)
+
+# 认证
+from requests.auth import HTTPBasicAuth
+response = requests.get('http://example.com', auth=HTTPBasicAuth('user', 'pass'))
+
+# SSL证书验证
+response = requests.get('https://example.com', verify='/path/to/cert.pem')
+```
+
+---
+
+## 第二部分：数据解析技术
+
+### 2.1 正则表达式解析
+
+#### 2.1.1 正则基础语法
+
+```python
+import re
+
+# 基础匹配
+text = '<div class="title">Python爬虫教程</div>'
+pattern = r'<div class="title">(.*?)</div>'
+result = re.search(pattern, text)
+print(result.group(1))  # 输出: Python爬虫教程
+
+# 查找所有匹配
+html = '''
+<li>项目1</li>
+<li>项目2</li>
+<li>项目3</li>
+'''
+items = re.findall(r'<li>(.*?)</li>', html)
+print(items)  # ['项目1', '项目2', '项目3']
+
+# 替换
+text = '电话: 138-1234-5678'
+result = re.sub(r'\d{3}-\d{4}-\d{4}', '***-****-****', text)
+```
+
+**常用元字符**：
+- `.`：任意字符（除换行符）
+- `*`：0次或多次
+- `+`：1次或多次
+- `?`：0次或1次（非贪婪）
+- `{m,n}`：m到n次
+- `^`：行首
+- `$`：行尾
+- `\d`：数字
+- `\w`：字母数字下划线
+- `\s`：空白字符
+
+**实战案例：提取网页标题**：
+```python
+html = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Python爬虫实战 - 从入门到精通</title>
+</head>
+<body>
+    <h1>欢迎学习爬虫</h1>
+</body>
+</html>
+'''
+
+# 提取标题
+title = re.search(r'<title>(.*?)</title>', html).group(1)
+print(title)  # Python爬虫实战 - 从入门到精通
+
+# 提取所有链接
+html_with_links = '''
+<a href="https://example.com/page1">链接1</a>
+<a href="https://example.com/page2">链接2</a>
+'''
+links = re.findall(r'<a href="(.*?)">', html_with_links)
+print(links)  # ['https://example.com/page1', 'https://example.com/page2']
+```
+
+**性能优化**：
+```python
+# 编译正则表达式（多次使用时）
+pattern = re.compile(r'<li>(.*?)</li>')
+for i in range(1000):
+    result = pattern.findall(html)
+```
+
+### 2.2 BeautifulSoup解析
+
+#### 2.2.1 基础用法
+
+```python
+from bs4 import BeautifulSoup
+
+html = '''
+<!DOCTYPE html>
+<html>
+<head>
+    <title>示例页面</title>
+</head>
+<body>
+    <div class="container">
+        <h1 id="main-title">Python爬虫</h1>
+        <ul class="item-list">
+            <li class="item">项目1</li>
+            <li class="item">项目2</li>
+            <li class="item active">项目3</li>
+        </ul>
+        <a href="https://example.com">链接</a>
+    </div>
+</body>
+</html>
+'''
+
+# 创建BeautifulSoup对象
+soup = BeautifulSoup(html, 'html.parser')  # 或 'lxml', 'html5lib'
+
+# 查找单个元素
+title = soup.find('title')
+print(title.string)  # 示例页面
+
+h1 = soup.find('h1', id='main-title')
+print(h1.text)  # Python爬虫
+
+# 查找所有元素
+items = soup.find_all('li', class_='item')
+for item in items:
+    print(item.text)
+
+# CSS选择器
+container = soup.select_one('.container')
+active_item = soup.select_one('li.active')
+all_items = soup.select('ul.item-list > li')
+```
+
+#### 2.2.2 高级选择器
+
+```python
+# 属性选择
+link = soup.find('a', href='https://example.com')
+link = soup.find('a', attrs={'href': 'https://example.com'})
+
+# 多条件查询
+items = soup.find_all('li', class_='item', limit=2)  # 只返回前2个
+
+# 正则匹配
+import re
+tags = soup.find_all(re.compile('^h'))  # 查找所有h标签（h1, h2, h3...）
+tags = soup.find_all('a', href=re.compile(r'https://'))
+
+# 函数过滤
+def has_class_but_no_id(tag):
+    return tag.has_attr('class') and not tag.has_attr('id')
+
+results = soup.find_all(has_class_but_no_id)
+
+# 遍历DOM树
+for child in soup.div.children:  # 直接子节点
+    print(child)
+
+for descendant in soup.div.descendants:  # 所有后代节点
+    print(descendant)
+
+# 父节点和兄弟节点
+print(soup.li.parent)          # 父节点
+print(soup.li.next_sibling)    # 下一个兄弟节点
+print(soup.li.previous_sibling)  # 上一个兄弟节点
+```
+
+#### 2.2.3 数据提取
+
+```python
+# 获取文本
+print(soup.h1.text)          # 包含子标签的所有文本
+print(soup.h1.get_text())    # 同上
+print(soup.h1.string)        # 直接文本（如有子标签返回None）
+
+# 获取属性
+link = soup.find('a')
+print(link['href'])          # 获取href属性
+print(link.get('href'))      # 安全获取
+print(link.attrs)            # 所有属性字典
+
+# 修改内容
+soup.h1.string = '新标题'
+link['href'] = 'https://new-url.com'
+
+# 输出HTML
+print(soup.prettify())       # 格式化输出
+print(str(soup))             # 字符串形式
+```
+
+**实战案例：爬取豆瓣电影Top250**：
+```python
+import requests
+from bs4 import BeautifulSoup
+
+def crawl_douban_top250(page=0):
+    url = f'https://movie.douban.com/top250?start={page * 25}'
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    }
+
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.text, 'html.parser')
+
+    movies = []
+    for item in soup.select('.item'):
+        movie = {
+            'title': item.select_one('.title').text,
+            'rating': item.select_one('.rating_num').text,
+            'quote': item.select_one('.inq').text if item.select_one('.inq') else '',
+            'link': item.select_one('a')['href']
+        }
+        movies.append(movie)
+
+    return movies
+
+# 爬取前10页
+all_movies = []
+for page in range(10):
+    all_movies.extend(crawl_douban_top250(page))
+    print(f'已爬取第{page+1}页')
+```
+
+### 2.3 lxml与XPath解析
+
+#### 2.3.1 XPath语法基础
+
+```python
+from lxml import etree
+
+html = '''
+<html>
+<body>
+    <div class="content">
+        <ul id="list">
+            <li class="item-0">第一项</li>
+            <li class="item-1"><a href="link1.html">第二项</a></li>
+            <li class="item-2"><a href="link2.html">第三项</a></li>
+        </ul>
+    </div>
+</body>
+</html>
+'''
+
+# 解析HTML
+tree = etree.HTML(html)
+
+# 基础路径表达式
+# / : 从根节点开始
+# // : 从任意位置开始
+# . : 当前节点
+# .. : 父节点
+# @ : 属性
+
+# 查找所有li标签
+lis = tree.xpath('//li')
+for li in lis:
+    print(etree.tostring(li, encoding='unicode'))
+
+# 获取文本
+texts = tree.xpath('//li/text()')  # 直接文本
+print(texts)
+
+# 获取所有后代文本
+texts = tree.xpath('//li//text()')
+print(texts)
+
+# 获取属性
+hrefs = tree.xpath('//a/@href')
+print(hrefs)  # ['link1.html', 'link2.html']
+
+# 按属性筛选
+items = tree.xpath('//li[@class="item-1"]')
+items = tree.xpath('//ul[@id="list"]/li')
+
+# 模糊匹配
+items = tree.xpath('//li[contains(@class, "item")]')
+items = tree.xpath('//a[starts-with(@href, "link")]')
+
+# 逻辑运算
+items = tree.xpath('//li[@class="item-0" or @class="item-1"]')
+items = tree.xpath('//li[@class="item-0" and text()="第一项"]')
+
+# 位置筛选
+first_li = tree.xpath('//li[1]')           # 第一个
+last_li = tree.xpath('//li[last()]')       # 最后一个
+first_two = tree.xpath('//li[position()<=2]')  # 前两个
+```
+
+#### 2.3.2 高级XPath技巧
+
+```python
+# 轴选择
+# ancestor: 祖先节点
+# parent: 父节点
+# following-sibling: 后续兄弟节点
+# preceding-sibling: 前面兄弟节点
+
+# 获取父节点
+parent = tree.xpath('//a/parent::*')
+
+# 获取祖先节点
+ancestors = tree.xpath('//a/ancestor::div')
+
+# 获取兄弟节点
+siblings = tree.xpath('//li[@class="item-1"]/following-sibling::li')
+
+# 多条件组合
+complex = tree.xpath('//li[contains(@class, "item") and position()>1]/a/@href')
+```
+
+**实战案例：爬取新闻列表**：
+```python
+import requests
+from lxml import etree
+
+def crawl_news():
+    url = 'http://news.example.com'
+    response = requests.get(url)
+    tree = etree.HTML(response.content)
+
+    # XPath提取
+    news_list = []
+    for news in tree.xpath('//div[@class="news-item"]'):
+        item = {
+            'title': news.xpath('.//h3/text()')[0],
+            'time': news.xpath('.//span[@class="time"]/text()')[0],
+            'link': news.xpath('.//a/@href')[0],
+            'summary': news.xpath('.//p[@class="summary"]/text()')[0].strip()
+        }
+        news_list.append(item)
+
+    return news_list
+```
+
+### 2.4 JSON数据解析
+
+```python
+import json
+import requests
+
+# 解析JSON字符串
+json_str = '{"name": "张三", "age": 25, "skills": ["Python", "Java"]}'
+data = json.loads(json_str)
+print(data['name'])  # 张三
+
+# 对象转JSON
+obj = {'name': '李四', 'age': 30}
+json_str = json.dumps(obj, ensure_ascii=False, indent=2)
+print(json_str)
+
+# 文件操作
+with open('data.json', 'w', encoding='utf-8') as f:
+    json.dump(obj, f, ensure_ascii=False, indent=2)
+
+with open('data.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+# API响应解析
+response = requests.get('https://api.github.com/users/github')
+user_data = response.json()
+print(user_data['login'])
+print(user_data['public_repos'])
+
+# 处理嵌套JSON
+nested_json = {
+    "users": [
+        {"id": 1, "name": "Alice", "address": {"city": "北京", "street": "朝阳路"}},
+        {"id": 2, "name": "Bob", "address": {"city": "上海", "street": "南京路"}}
+    ]
+}
+
+for user in nested_json['users']:
+    print(f"{user['name']} 住在 {user['address']['city']}")
+```
+
+---
+
+## 第三部分：动态网页爬取
+
+### 3.1 Selenium自动化
+
+#### 3.1.1 环境配置
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+
+# Chrome配置
+chrome_options = Options()
+chrome_options.add_argument('--headless')  # 无头模式
+chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_argument('user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64)')
+
+# 禁止加载图片（提速）
+prefs = {'profile.managed_default_content_settings.images': 2}
+chrome_options.add_experimental_option('prefs', prefs)
+
+# 创建driver
+driver = webdriver.Chrome(options=chrome_options)
+```
+
+#### 3.1.2 基础操作
+
+```python
+# 访问页面
+driver.get('https://www.baidu.com')
+
+# 窗口操作
+driver.maximize_window()
+driver.set_window_size(1920, 1080)
+
+# 元素定位
+element = driver.find_element(By.ID, 'kw')
+element = driver.find_element(By.NAME, 'wd')
+element = driver.find_element(By.CLASS_NAME, 'input')
+element = driver.find_element(By.TAG_NAME, 'input')
+element = driver.find_element(By.CSS_SELECTOR, '#kw')
+element = driver.find_element(By.XPATH, '//input[@id="kw"]')
+element = driver.find_element(By.LINK_TEXT, '新闻')
+element = driver.find_element(By.PARTIAL_LINK_TEXT, '新')
+
+# 查找多个元素
+elements = driver.find_elements(By.CLASS_NAME, 'item')
+
+# 元素交互
+element.send_keys('Python爬虫')  # 输入
+element.clear()                   # 清空
+element.click()                   # 点击
+element.submit()                  # 提交表单
+
+# 获取信息
+text = element.text
+attr = element.get_attribute('href')
+is_displayed = element.is_displayed()
+is_enabled = element.is_enabled()
+
+# JavaScript执行
+driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+driver.execute_script('arguments[0].click()', element)
+
+# 截图
+driver.save_screenshot('screenshot.png')
+element.screenshot('element.png')
+
+# 关闭浏览器
+driver.close()  # 关闭当前窗口
+driver.quit()   # 关闭所有窗口
+```
+
+#### 3.1.3 高级技术
+
+**等待机制**：
+```python
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+# 显式等待（推荐）
+wait = WebDriverWait(driver, 10)
+element = wait.until(
+    EC.presence_of_element_located((By.ID, 'content'))
+)
+
+# 常用等待条件
+wait.until(EC.title_contains('关键词'))
+wait.until(EC.element_to_be_clickable((By.ID, 'button')))
+wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'item')))
+wait.until(EC.invisibility_of_element_located((By.ID, 'loading')))
+
+# 隐式等待（全局生效）
+driver.implicitly_wait(10)
+
+# 强制等待（不推荐）
+import time
+time.sleep(5)
+```
+
+**切换窗口/框架**：
+```python
+# 切换iframe
+iframe = driver.find_element(By.TAG_NAME, 'iframe')
+driver.switch_to.frame(iframe)
+driver.switch_to.default_content()  # 返回主文档
+
+# 切换窗口
+driver.switch_to.window(driver.window_handles[1])  # 切换到第二个窗口
+driver.switch_to.window(driver.window_handles[0])  # 返回第一个窗口
+
+# 弹窗处理
+alert = driver.switch_to.alert
+alert.accept()   # 确定
+alert.dismiss()  # 取消
+alert.send_keys('文本')  # 输入
+```
+
+**Cookie操作**：
+```python
+# 获取所有Cookie
+cookies = driver.get_cookies()
+
+# 获取指定Cookie
+cookie = driver.get_cookie('sessionid')
+
+# 添加Cookie
+driver.add_cookie({'name': 'token', 'value': 'abc123'})
+
+# 删除Cookie
+driver.delete_cookie('token')
+driver.delete_all_cookies()
+
+# 保存和加载Cookie
+import pickle
+
+# 保存
+pickle.dump(driver.get_cookies(), open('cookies.pkl', 'wb'))
+
+# 加载
+driver.get('https://example.com')
+for cookie in pickle.load(open('cookies.pkl', 'rb')):
+    driver.add_cookie(cookie)
+driver.refresh()
+```
+
+**实战案例：爬取淘宝商品**：
+```python
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import time
+
+def crawl_taobao(keyword):
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    driver = webdriver.Chrome(options=options)
+
+    try:
+        # 访问淘宝
+        driver.get('https://www.taobao.com')
+
+        # 输入搜索关键词
+        search_input = driver.find_element(By.ID, 'q')
+        search_input.send_keys(keyword)
+        search_input.submit()
+
+        # 等待商品加载
+        wait = WebDriverWait(driver, 10)
+        wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '.item')))
+
+        # 滚动加载更多
+        for i in range(3):
+            driver.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+            time.sleep(2)
+
+        # 提取商品信息
+        items = driver.find_elements(By.CSS_SELECTOR, '.item')
+        products = []
+        for item in items[:20]:
+            try:
+                product = {
+                    'title': item.find_element(By.CSS_SELECTOR, '.title').text,
+                    'price': item.find_element(By.CSS_SELECTOR, '.price').text,
+                    'sales': item.find_element(By.CSS_SELECTOR, '.deal-cnt').text,
+                    'link': item.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
+                }
+                products.append(product)
+            except:
+                continue
+
+        return products
+    finally:
+        driver.quit()
+
+# 使用
+products = crawl_taobao('Python书籍')
+for p in products:
+    print(p)
+```
+
+### 3.2 无头浏览器优化
+
+```python
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+# Chrome无头模式配置
+chrome_options = Options()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--disable-gpu')
+chrome_options.add_argument('--window-size=1920,1080')
+chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+
+# 绕过反爬检测
+chrome_options.add_experimental_option('excludeSwitches', ['enable-automation'])
+chrome_options.add_experimental_option('useAutomationExtension', False)
+
+driver = webdriver.Chrome(options=chrome_options)
+
+# 隐藏webdriver特征
+driver.execute_cdp_cmd('Page.addScriptToEvaluateOnNewDocument', {
+    'source': '''
+        Object.defineProperty(navigator, 'webdriver', {
+            get: () => undefined
+        })
+    '''
+})
+```
+
+### 3.3 Playwright（推荐）
+
+```python
+from playwright.sync_api import sync_playwright
+
+def crawl_with_playwright(url):
+    with sync_playwright() as p:
+        # 启动浏览器
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(
+            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            viewport={'width': 1920, 'height': 1080}
+        )
+        page = context.new_page()
+
+        # 访问页面
+        page.goto(url)
+
+        # 等待元素
+        page.wait_for_selector('.content')
+
+        # 点击操作
+        page.click('#button')
+
+        # 输入
+        page.fill('#input', 'text')
+
+        # 执行JavaScript
+        page.evaluate('window.scrollTo(0, document.body.scrollHeight)')
+
+        # 获取内容
+        content = page.content()
+        title = page.title()
+
+        # 截图
+        page.screenshot(path='screenshot.png')
+
+        # 关闭
+        browser.close()
+
+        return content
+
+# 异步版本
+import asyncio
+from playwright.async_api import async_playwright
+
+async def crawl_async(url):
+    async with async_playwright() as p:
+        browser = await p.chromium.launch()
+        page = await browser.new_page()
+        await page.goto(url)
+        content = await page.content()
+        await browser.close()
+        return content
+
+# 运行
+asyncio.run(crawl_async('https://example.com'))
+```
+
+---
+
+## 第四部分：反爬虫对抗策略
+
+### 4.1 User-Agent处理
+
+```python
+import random
+
+# User-Agent池
+USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
+]
+
+# 随机选择
+def get_random_ua():
+    return random.choice(USER_AGENTS)
+
+# 使用
+headers = {'User-Agent': get_random_ua()}
+response = requests.get(url, headers=headers)
+
+# 使用fake_useragent库
+from fake_useragent import UserAgent
+
+ua = UserAgent()
+headers = {'User-Agent': ua.random}
+```
+
+### 4.2 代理IP
+
+#### 4.2.1 代理基础
+
+```python
+import requests
+
+# HTTP代理
+proxies = {
+    'http': 'http://user:pass@10.10.10.10:8888',
+    'https': 'http://user:pass@10.10.10.10:8888'
+}
+response = requests.get('http://httpbin.org/ip', proxies=proxies)
+
+# SOCKS代理
+proxies = {
+    'http': 'socks5://127.0.0.1:1080',
+    'https': 'socks5://127.0.0.1:1080'
+}
+```
+
+#### 4.2.2 代理池设计
+
+```python
+import requests
+from queue import Queue
+import threading
+
+class ProxyPool:
+    def __init__(self):
+        self.proxies = Queue()
+        self.failed_proxies = set()
+
+    def add_proxy(self, proxy):
+        """添加代理到池"""
+        if proxy not in self.failed_proxies:
+            self.proxies.put(proxy)
+
+    def get_proxy(self):
+        """获取可用代理"""
+        if self.proxies.empty():
+            return None
+        return self.proxies.get()
+
+    def return_proxy(self, proxy, success=True):
+        """归还代理"""
+        if success:
+            self.proxies.put(proxy)
+        else:
+            self.failed_proxies.add(proxy)
+
+    def verify_proxy(self, proxy):
+        """验证代理可用性"""
+        try:
+            response = requests.get(
+                'http://httpbin.org/ip',
+                proxies={'http': proxy, 'https': proxy},
+                timeout=5
+            )
+            return response.status_code == 200
+        except:
+            return False
+
+    def load_proxies(self, proxy_list):
+        """批量加载代理"""
+        for proxy in proxy_list:
+            if self.verify_proxy(proxy):
+                self.add_proxy(proxy)
+
+# 使用示例
+pool = ProxyPool()
+pool.load_proxies([
+    'http://10.10.10.10:8888',
+    'http://10.10.10.11:8888'
+])
+
+# 爬取时使用
+proxy = pool.get_proxy()
+try:
+    response = requests.get(url, proxies={'http': proxy, 'https': proxy})
+    pool.return_proxy(proxy, success=True)
+except:
+    pool.return_proxy(proxy, success=False)
+```
+
+### 4.3 Cookie与Session
+
+```python
+import requests
+
+# Session自动管理Cookie
+session = requests.Session()
+
+# 模拟登录
+login_url = 'http://example.com/login'
+login_data = {'username': 'user', 'password': 'pass'}
+session.post(login_url, data=login_data)
+
+# 后续请求自动携带Cookie
+response = session.get('http://example.com/user/profile')
+
+# 手动设置Cookie
+session.cookies.set('key', 'value')
+
+# 从浏览器复制Cookie
+cookies_str = 'sessionid=abc123; token=xyz789'
+cookies_dict = {item.split('=')[0]: item.split('=')[1] for item in cookies_str.split('; ')}
+response = requests.get(url, cookies=cookies_dict)
+```
+
+### 4.4 验证码识别
+
+#### 4.4.1 图像验证码
+
+```python
+# 使用pytesseract识别
+from PIL import Image
+import pytesseract
+
+# 简单验证码
+image = Image.open('captcha.png')
+code = pytesseract.image_to_string(image)
+print(code)
+
+# 预处理提高准确率
+def preprocess_captcha(image_path):
+    img = Image.open(image_path)
+    # 转灰度
+    img = img.convert('L')
+    # 二值化
+    threshold = 140
+    table = []
+    for i in range(256):
+        if i < threshold:
+            table.append(0)
+        else:
+            table.append(1)
+    img = img.point(table, '1')
+    return img
+
+img = preprocess_captcha('captcha.png')
+code = pytesseract.image_to_string(img)
+```
+
+#### 4.4.2 滑块验证码
+
+```python
+from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+import time
+
+def crack_slide_captcha(driver):
+    # 定位滑块和背景图
+    slider = driver.find_element(By.CLASS_NAME, 'slider')
+    background = driver.find_element(By.CLASS_NAME, 'captcha-bg')
+
+    # 计算滑动距离（需要图像处理）
+    distance = calculate_distance(background)
+
+    # 模拟人工滑动
+    action = ActionChains(driver)
+    action.click_and_hold(slider).perform()
+
+    # 分段移动
+    tracks = get_tracks(distance)
+    for track in tracks:
+        action.move_by_offset(track, 0).perform()
+        time.sleep(0.01)
+
+    time.sleep(0.5)
+    action.release().perform()
+
+def get_tracks(distance):
+    """生成滑动轨迹"""
+    tracks = []
+    current = 0
+    mid = distance * 4 / 5
+    t = 0.2
+    v = 0
+
+    while current < distance:
+        if current < mid:
+            a = 2
+        else:
+            a = -3
+        v0 = v
+        v = v0 + a * t
+        move = v0 * t + 1 / 2 * a * t * t
+        current += move
+        tracks.append(round(move))
+
+    return tracks
+```
+
+### 4.5 频率限制与延时
+
+```python
+import time
+import random
+
+# 固定延时
+time.sleep(2)
+
+# 随机延时
+time.sleep(random.uniform(1, 3))
+
+# 基于令牌桶的限流
+class RateLimiter:
+    def __init__(self, rate, capacity):
+        self.rate = rate  # 令牌生成速率（每秒）
+        self.capacity = capacity  # 桶容量
+        self.tokens = capacity
+        self.last_time = time.time()
+
+    def acquire(self):
+        """获取令牌"""
+        now = time.time()
+        # 补充令牌
+        self.tokens = min(
+            self.capacity,
+            self.tokens + (now - self.last_time) * self.rate
+        )
+        self.last_time = now
+
+        if self.tokens >= 1:
+            self.tokens -= 1
+            return True
+        else:
+            # 等待下一个令牌
+            wait_time = (1 - self.tokens) / self.rate
+            time.sleep(wait_time)
+            self.tokens = 0
+            self.last_time = time.time()
+            return True
+
+# 使用
+limiter = RateLimiter(rate=2, capacity=10)  # 每秒2个请求，最多积累10个
+
+for i in range(100):
+    limiter.acquire()
+    response = requests.get(url)
+    print(f'请求 {i+1} 完成')
+```
+
+---
+
+## 第五部分：数据存储
+
+### 5.1 文件存储
+
+#### 5.1.1 文本文件
+
+```python
+# 写入文本
+with open('data.txt', 'w', encoding='utf-8') as f:
+    f.write('数据内容\n')
+
+# 追加模式
+with open('data.txt', 'a', encoding='utf-8') as f:
+    f.write('新数据\n')
+
+# CSV文件
+import csv
+
+# 写入
+with open('data.csv', 'w', newline='', encoding='utf-8-sig') as f:
+    writer = csv.writer(f)
+    writer.writerow(['姓名', '年龄', '城市'])
+    writer.writerow(['张三', 25, '北京'])
+    writer.writerows([
+        ['李四', 30, '上海'],
+        ['王五', 28, '广州']
+    ])
+
+# 字典写入
+with open('data.csv', 'w', newline='', encoding='utf-8-sig') as f:
+    fieldnames = ['name', 'age', 'city']
+    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerow({'name': '张三', 'age': 25, 'city': '北京'})
+
+# 读取
+with open('data.csv', 'r', encoding='utf-8-sig') as f:
+    reader = csv.reader(f)
+    next(reader)  # 跳过标题行
+    for row in reader:
+        print(row)
+```
+
+#### 5.1.2 JSON文件
+
+```python
+import json
+
+# 保存
+data = [
+    {'name': '张三', 'age': 25},
+    {'name': '李四', 'age': 30}
+]
+
+with open('data.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+
+# 追加（需要先读取）
+with open('data.json', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+data.append({'name': '王五', 'age': 28})
+
+with open('data.json', 'w', encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+```
+
+### 5.2 MySQL数据库
+
+```python
+import pymysql
+
+# 连接数据库
+conn = pymysql.connect(
+    host='localhost',
+    user='root',
+    password='password',
+    database='spider_db',
+    charset='utf8mb4'
+)
+cursor = conn.cursor()
+
+# 创建表
+create_table_sql = '''
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255),
+    price DECIMAL(10, 2),
+    sales INT,
+    url VARCHAR(512),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+'''
+cursor.execute(create_table_sql)
+
+# 插入数据
+insert_sql = 'INSERT INTO products (title, price, sales, url) VALUES (%s, %s, %s, %s)'
+cursor.execute(insert_sql, ('商品名称', 99.99, 1000, 'http://example.com'))
+
+# 批量插入
+data = [
+    ('商品1', 50.00, 500, 'url1'),
+    ('商品2', 80.00, 800, 'url2')
+]
+cursor.executemany(insert_sql, data)
+
+# 提交事务
+conn.commit()
+
+# 查询数据
+cursor.execute('SELECT * FROM products WHERE price > %s', (50,))
+results = cursor.fetchall()
+for row in results:
+    print(row)
+
+# 使用字典游标
+cursor = conn.cursor(pymysql.cursors.DictCursor)
+cursor.execute('SELECT * FROM products')
+results = cursor.fetchall()
+for row in results:
+    print(row['title'], row['price'])
+
+# 关闭连接
+cursor.close()
+conn.close()
+
+# 上下文管理器
+class Database:
+    def __init__(self, **kwargs):
+        self.config = kwargs
+
+    def __enter__(self):
+        self.conn = pymysql.connect(**self.config)
+        self.cursor = self.conn.cursor(pymysql.cursors.DictCursor)
+        return self.cursor
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self.conn.commit()
+        else:
+            self.conn.rollback()
+        self.cursor.close()
+        self.conn.close()
+
+# 使用
+db_config = {
+    'host': 'localhost',
+    'user': 'root',
+    'password': 'password',
+    'database': 'spider_db',
+    'charset': 'utf8mb4'
+}
+
+with Database(**db_config) as cursor:
+    cursor.execute('INSERT INTO products (title, price) VALUES (%s, %s)', ('商品', 99))
+```
+
+### 5.3 MongoDB数据库
+
+```python
+from pymongo import MongoClient
+from datetime import datetime
+
+# 连接MongoDB
+client = MongoClient('mongodb://localhost:27017/')
+db = client['spider_db']
+collection = db['products']
+
+# 插入单条数据
+product = {
+    'title': '商品名称',
+    'price': 99.99,
+    'sales': 1000,
+    'url': 'http://example.com',
+    'created_at': datetime.now()
+}
+result = collection.insert_one(product)
+print(f'插入ID: {result.inserted_id}')
+
+# 批量插入
+products = [
+    {'title': '商品1', 'price': 50.00},
+    {'title': '商品2', 'price': 80.00}
+]
+result = collection.insert_many(products)
+print(f'插入{len(result.inserted_ids)}条数据')
+
+# 查询
+# 查询全部
+for item in collection.find():
+    print(item)
+
+# 条件查询
+for item in collection.find({'price': {'$gt': 50}}):
+    print(item['title'], item['price'])
+
+# 查询单条
+product = collection.find_one({'title': '商品名称'})
+
+# 排序和限制
+for item in collection.find().sort('price', -1).limit(10):
+    print(item)
+
+# 更新
+collection.update_one(
+    {'title': '商品名称'},
+    {'$set': {'price': 89.99}}
+)
+
+# 批量更新
+collection.update_many(
+    {'price': {'$lt': 100}},
+    {'$inc': {'sales': 10}}
+)
+
+# 删除
+collection.delete_one({'title': '商品名称'})
+collection.delete_many({'price': {'$lt': 50}})
+
+# 聚合查询
+pipeline = [
+    {'$match': {'price': {'$gt': 50}}},
+    {'$group': {'_id': None, 'avg_price': {'$avg': '$price'}}},
+    {'$project': {'_id': 0, 'avg_price': 1}}
+]
+result = list(collection.aggregate(pipeline))
+print(result)
+
+# 索引
+collection.create_index('title')
+collection.create_index([('price', -1), ('sales', -1)])
+```
+
+---
+
+## 第六部分：高级爬虫技术
+
+### 6.1 多线程爬虫
+
+```python
+import threading
+import queue
+import requests
+from bs4 import BeautifulSoup
+
+class MultiThreadCrawler:
+    def __init__(self, thread_num=5):
+        self.thread_num = thread_num
+        self.url_queue = queue.Queue()
+        self.result_queue = queue.Queue()
+        self.threads = []
+
+    def add_url(self, url):
+        """添加URL到队列"""
+        self.url_queue.put(url)
+
+    def worker(self):
+        """工作线程"""
+        while True:
+            try:
+                url = self.url_queue.get(timeout=5)
+                result = self.crawl(url)
+                self.result_queue.put(result)
+                self.url_queue.task_done()
+            except queue.Empty:
+                break
+
+    def crawl(self, url):
+        """爬取单个URL"""
+        try:
+            response = requests.get(url, timeout=10)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            # 提取数据
+            data = {
+                'url': url,
+                'title': soup.title.string if soup.title else '',
+                'status': response.status_code
+            }
+            return data
+        except Exception as e:
+            return {'url': url, 'error': str(e)}
+
+    def start(self):
+        """启动多线程"""
+        for i in range(self.thread_num):
+            t = threading.Thread(target=self.worker)
+            t.start()
+            self.threads.append(t)
+
+    def wait_completion(self):
+        """等待所有任务完成"""
+        self.url_queue.join()
+        for t in self.threads:
+            t.join()
+
+    def get_results(self):
+        """获取所有结果"""
+        results = []
+        while not self.result_queue.empty():
+            results.append(self.result_queue.get())
+        return results
+
+# 使用
+crawler = MultiThreadCrawler(thread_num=10)
+
+# 添加URL
+urls = [f'http://example.com/page{i}' for i in range(100)]
+for url in urls:
+    crawler.add_url(url)
+
+# 启动爬虫
+crawler.start()
+crawler.wait_completion()
+
+# 获取结果
+results = crawler.get_results()
+print(f'爬取完成，共{len(results)}条数据')
+```
+
+### 6.2 异步爬虫
+
+```python
+import asyncio
+import aiohttp
+from bs4 import BeautifulSoup
+
+async def fetch(session, url):
+    """异步请求单个URL"""
+    async with session.get(url) as response:
+        return await response.text()
+
+async def parse(html, url):
+    """解析HTML"""
+    soup = BeautifulSoup(html, 'html.parser')
+    return {
+        'url': url,
+        'title': soup.title.string if soup.title else ''
+    }
+
+async def crawl_url(session, url, semaphore):
+    """爬取并解析URL"""
+    async with semaphore:
+        try:
+            html = await fetch(session, url)
+            result = await parse(html, url)
+            return result
+        except Exception as e:
+            return {'url': url, 'error': str(e)}
+
+async def main(urls, concurrent_limit=10):
+    """主函数"""
+    semaphore = asyncio.Semaphore(concurrent_limit)
+
+    async with aiohttp.ClientSession() as session:
+        tasks = [crawl_url(session, url, semaphore) for url in urls]
+        results = await asyncio.gather(*tasks)
+        return results
+
+# 使用
+urls = [f'http://example.com/page{i}' for i in range(100)]
+results = asyncio.run(main(urls, concurrent_limit=20))
+print(f'爬取完成，共{len(results)}条数据')
+```
+
+### 6.3 Scrapy框架
+
+#### 6.3.1 基础架构
+
+```bash
+# 创建项目
+scrapy startproject myspider
+cd myspider
+scrapy genspider example example.com
+```
+
+**Spider示例**：
+```python
+# myspider/spiders/example.py
+import scrapy
+
+class ExampleSpider(scrapy.Spider):
+    name = 'example'
+    allowed_domains = ['example.com']
+    start_urls = ['http://example.com/']
+
+    def parse(self, response):
+        # 提取数据
+        for item in response.css('.item'):
+            yield {
+                'title': item.css('.title::text').get(),
+                'price': item.css('.price::text').get(),
+                'link': item.css('a::attr(href)').get()
+            }
+
+        # 跟进链接
+        next_page = response.css('a.next::attr(href)').get()
+        if next_page:
+            yield response.follow(next_page, callback=self.parse)
+```
+
+**Item定义**：
+```python
+# myspider/items.py
+import scrapy
+
+class ProductItem(scrapy.Item):
+    title = scrapy.Field()
+    price = scrapy.Field()
+    sales = scrapy.Field()
+    url = scrapy.Field()
+```
+
+**Pipeline处理**：
+```python
+# myspider/pipelines.py
+import pymongo
+
+class MongoPipeline:
+    def __init__(self, mongo_uri, mongo_db):
+        self.mongo_uri = mongo_uri
+        self.mongo_db = mongo_db
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            mongo_uri=crawler.settings.get('MONGO_URI'),
+            mongo_db=crawler.settings.get('MONGO_DB')
+        )
+
+    def open_spider(self, spider):
+        self.client = pymongo.MongoClient(self.mongo_uri)
+        self.db = self.client[self.mongo_db]
+
+    def close_spider(self, spider):
+        self.client.close()
+
+    def process_item(self, item, spider):
+        self.db[spider.name].insert_one(dict(item))
+        return item
+```
+
+**中间件**：
+```python
+# myspider/middlewares.py
+from scrapy import signals
+import random
+
+class RandomUserAgentMiddleware:
+    def __init__(self, user_agents):
+        self.user_agents = user_agents
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler.settings.get('USER_AGENTS'))
+
+    def process_request(self, request, spider):
+        request.headers['User-Agent'] = random.choice(self.user_agents)
+```
+
+**配置文件**：
+```python
+# myspider/settings.py
+
+# 遵守robots.txt
+ROBOTSTXT_OBEY = False
+
+# 并发数
+CONCURRENT_REQUESTS = 16
+
+# 下载延迟
+DOWNLOAD_DELAY = 2
+
+# 自动限流
+AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_TARGET_CONCURRENCY = 2
+
+# 中间件
+DOWNLOADER_MIDDLEWARES = {
+    'myspider.middlewares.RandomUserAgentMiddleware': 543,
+}
+
+# Pipeline
+ITEM_PIPELINES = {
+    'myspider.pipelines.MongoPipeline': 300,
+}
+
+# 数据库配置
+MONGO_URI = 'mongodb://localhost:27017/'
+MONGO_DB = 'spider_db'
+
+# User-Agent列表
+USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) ...',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) ...'
+]
+```
+
+**运行爬虫**：
+```bash
+# 命令行运行
+scrapy crawl example
+
+# 输出到文件
+scrapy crawl example -o data.json
+scrapy crawl example -o data.csv
+
+# 代码运行
+from scrapy.crawler import CrawlerProcess
+
+process = CrawlerProcess(get_project_settings())
+process.crawl(ExampleSpider)
+process.start()
+```
+
+---
+
+## 第七部分：JavaScript逆向与加密破解
+
+### 7.1 JavaScript逆向基础
+
+**工具准备**：
+- Chrome DevTools
+- Fiddler/Charles抓包工具
+- JS美化工具
+
+**定位加密代码**：
+```javascript
+// 1. 搜索关键字
+// 在Sources面板搜索: encrypt, decode, sign, token
+
+// 2. XHR断点
+// Network -> XHR -> 右键添加断点
+
+// 3. 事件监听断点
+// Sources -> Event Listener Breakpoints -> Mouse -> click
+```
+
+**调试技巧**：
+```python
+# Python调用JavaScript
+import execjs
+
+# 读取JS文件
+with open('encrypt.js', 'r', encoding='utf-8') as f:
+    js_code = f.read()
+
+# 编译JS
+ctx = execjs.compile(js_code)
+
+# 调用函数
+result = ctx.call('encrypt', 'password123')
+print(result)
+
+# 使用Node.js环境
+ctx = execjs.compile(js_code, cwd='node_modules')
+```
+
+### 7.2 常见加密算法
+
+```python
+import hashlib
+import hmac
+import base64
+from Crypto.Cipher import AES
+
+# MD5
+def md5_encrypt(text):
+    return hashlib.md5(text.encode()).hexdigest()
+
+# SHA256
+def sha256_encrypt(text):
+    return hashlib.sha256(text.encode()).hexdigest()
+
+# Base64
+def base64_encode(text):
+    return base64.b64encode(text.encode()).decode()
+
+def base64_decode(text):
+    return base64.b64decode(text).decode()
+
+# HMAC
+def hmac_sha256(key, message):
+    return hmac.new(key.encode(), message.encode(), hashlib.sha256).hexdigest()
+
+# AES加密
+def aes_encrypt(key, text):
+    # PKCS7 padding
+    block_size = 16
+    padding = block_size - len(text) % block_size
+    text = text + chr(padding) * padding
+
+    cipher = AES.new(key.encode(), AES.MODE_ECB)
+    encrypted = cipher.encrypt(text.encode())
+    return base64.b64encode(encrypted).decode()
+
+def aes_decrypt(key, encrypted_text):
+    cipher = AES.new(key.encode(), AES.MODE_ECB)
+    decrypted = cipher.decrypt(base64.b64decode(encrypted_text))
+    # 去除padding
+    padding = decrypted[-1]
+    return decrypted[:-padding].decode()
+```
+
+### 7.3 实战案例：破解登录加密
+
+```python
+import requests
+import execjs
+import re
+
+class LoginCracker:
+    def __init__(self):
+        self.session = requests.Session()
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+
+    def get_encrypt_js(self):
+        """获取加密JS代码"""
+        response = self.session.get('http://example.com/login', headers=self.headers)
+        # 提取JS文件URL
+        js_url = re.search(r'<script src="(.*?encrypt.*?\.js)">', response.text).group(1)
+        js_response = self.session.get(f'http://example.com{js_url}')
+        return js_response.text
+
+    def encrypt_password(self, password, js_code):
+        """加密密码"""
+        ctx = execjs.compile(js_code)
+        encrypted = ctx.call('encryptPassword', password)
+        return encrypted
+
+    def login(self, username, password):
+        """登录"""
+        # 获取JS代码
+        js_code = self.get_encrypt_js()
+
+        # 加密密码
+        encrypted_pwd = self.encrypt_password(password, js_code)
+
+        # 提交登录
+        login_data = {
+            'username': username,
+            'password': encrypted_pwd
+        }
+        response = self.session.post(
+            'http://example.com/api/login',
+            json=login_data,
+            headers=self.headers
+        )
+        return response.json()
+
+# 使用
+cracker = LoginCracker()
+result = cracker.login('admin', 'password123')
+print(result)
+```
+
+---
+
+## 第八部分：移动端爬虫
+
+### 8.1 Fiddler抓包
+
+**配置步骤**：
+1. 电脑端设置代理端口（默认8888）
+2. 手机连接同一WiFi
+3. 手机设置代理为电脑IP:8888
+4. 安装Fiddler证书（抓HTTPS）
+
+**过滤规则**：
+```
+# 只显示指定域名
+example.com
+
+# 只显示POST请求
+=POST
+
+# 组合过滤
+example.com =POST
+```
+
+### 8.2 Mitmproxy抓包
+
+```python
+# 安装
+pip install mitmproxy
+
+# 启动
+mitmproxy
+mitmdump
+
+# 编写脚本
+# addon.py
+from mitmproxy import http
+
+def request(flow: http.HTTPFlow):
+    # 修改请求
+    if 'api.example.com' in flow.request.pretty_url:
+        print(f'请求: {flow.request.pretty_url}')
+        print(f'请求头: {flow.request.headers}')
+        print(f'请求体: {flow.request.text}')
+
+def response(flow: http.HTTPFlow):
+    # 修改响应
+    if 'api.example.com' in flow.request.pretty_url:
+        print(f'响应: {flow.response.status_code}')
+        print(f'响应体: {flow.response.text}')
+
+# 运行
+# mitmdump -s addon.py
+```
+
+### 8.3 Appium自动化
+
+```python
+from appium import webdriver
+
+# 配置
+caps = {
+    'platformName': 'Android',
+    'platformVersion': '11',
+    'deviceName': 'Android Emulator',
+    'appPackage': 'com.example.app',
+    'appActivity': '.MainActivity',
+    'automationName': 'UiAutomator2'
+}
+
+# 连接
+driver = webdriver.Remote('http://localhost:4723/wd/hub', caps)
+
+# 操作
+# 查找元素
+element = driver.find_element('id', 'com.example:id/username')
+element.send_keys('admin')
+
+# 点击
+driver.find_element('id', 'com.example:id/login_btn').click()
+
+# 滑动
+driver.swipe(100, 500, 100, 100, 500)
+
+# 获取页面源码
+page_source = driver.page_source
+
+# 截图
+driver.save_screenshot('screenshot.png')
+
+# 关闭
+driver.quit()
+```
+
+---
+
+## 验证标准
+
+完成学习后，你应该能够：
+
+1. **基础能力**
+   - 独立编写requests爬虫脚本
+   - 使用BeautifulSoup/XPath解析网页
+   - 处理常见反爬虫机制（UA、Cookie、代理）
+
+2. **进阶能力**
+   - 使用Selenium处理动态网页
+   - 设计多线程/异步爬虫提升性能
+   - 将数据存储到MySQL/MongoDB
+
+3. **高级能力**
+   - 破解JavaScript加密和签名
+   - 构建Scrapy分布式爬虫
+   - 处理移动端APP爬虫
+
+4. **实战项目**
+   - 完成一个完整的爬虫项目（选题、设计、实现、部署）
+   - 数据量级：10万+条记录
+   - 包含完整的异常处理和日志记录
+
+---
+
+## 扩展学习资源
+
+**推荐书籍**：
+- 《Python网络爬虫权威指南》
+- 《精通Python爬虫框架Scrapy》
+
+**在线资源**：
+- GitHub: wistbean/learn_python3_spider
+- 官方文档: Scrapy、Selenium、BeautifulSoup
+
+**实战平台**：
+- httpbin.org: 测试HTTP请求
+- quotes.toscrape.com: 爬虫练习网站
+
+**技术社区**：
+- Stack Overflow
+- GitHub Issues
+- Python中文社区
+
+---
+
+## 总结
+
+Python爬虫是一门实践性极强的技术，需要：
+1. **扎实的基础**：HTTP协议、HTML/CSS、Python编程
+2. **持续学习**：反爬虫技术不断升级，需要保持学习
+3. **合法合规**：遵守robots.txt，尊重网站版权
+4. **解决问题的能力**：每个网站都有独特的反爬策略
+
+**学习路径建议**：
+基础语法 → HTTP协议 → requests → 数据解析 → 动态网页 → 反爬虫对抗 → 高性能爬虫 → 分布式架构 → 实战项目
+
+持续实践，不断总结，你一定能成为爬虫高手！
