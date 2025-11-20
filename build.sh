@@ -20,4 +20,15 @@ fi
 # Copy book directory to docs - will abort if it fails due to set -e
 cp -r book docs
 
+# Remove .git directories from book and docs if they exist
+if [ -d "book/.git" ]; then
+    rm -rf book/.git
+fi
+
+if [ -d "docs/.git" ]; then
+    rm -rf docs/.git
+fi
+
+
+
 echo "Build completed successfully."
